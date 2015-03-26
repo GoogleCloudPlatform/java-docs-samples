@@ -1,0 +1,6 @@
+language: java
+
+env:
+  - TEST_DIR=unittests
+
+script: cd $TEST_DIR && mvn test
