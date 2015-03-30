@@ -1,0 +1,29 @@
+<!-- [START backends] -->
+<backends>
+	<backend name="memdb">
+		<class>B8</class>
+		<instances>5</instances>
+	</backend>
+	<backend name="worker">
+		<options>
+			<fail-fast>true</fail-fast>
+		</options>
+	</backend>
+	<backend name="cmdline">
+		<options>
+			<dynamic>true</dynamic>
+		</options>
+	</backend>
+</backends>
+<!-- [END backends] -->
+
+<!-- Since this page does not have executable code, this section is separate
+rather than nested, as nesting would have significantly complicated the
+include regions. -->
+<!-- [START class-example] -->
+<backends>
+	<backend name="cmdline">
+		<class>B4</class>
+	</backend>
+</backends>
+<!-- [END class-example] -->
