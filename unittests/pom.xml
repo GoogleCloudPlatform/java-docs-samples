@@ -108,14 +108,16 @@
                 <version>${appengine.version}</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
-                    <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
-                    <!-- address>0.0.0.0</address>
-                    <port>8080</port -->
-                    <!-- Comment in the below snippet to enable local debugging with a remove debugger
-                         like those included with Eclipse or IntelliJ -->
-                    <!-- jvmFlags>
-                      <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
-                    </jvmFlags -->
+                    <!-- The snippet below is linked from
+                         https://cloud.google.com/appengine/docs/java/tools/devserver#High_Replication_Consistency_Model
+                         and
+                         https://cloud.google.com/appengine/docs/java/tools/maven
+                    -->
+                    <!-- [START maven_test_highrep_configuration] -->
+                    <jvmFlags>
+                        <jvmFlag>-Ddatastore.default_high_rep_job_policy_unapplied_job_pct=20</jvmFlag>
+                    </jvmFlags>
+                    <!-- [END maven_test_highrep_configuration] -->
                 </configuration>
             </plugin>
             <plugin>
