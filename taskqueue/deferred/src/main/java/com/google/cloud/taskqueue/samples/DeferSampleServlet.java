@@ -1,0 +1,60 @@
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.taskqueue.samples;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import com.google.appengine.api.taskqueue.DeferredTask;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+
+/**
+ * This small servlet demonstrates how to use the DeferredTask
+ * interface to background a task on the AppEngine task queues,
+ * without needing to create a separate URL handler.
+ */
+public class DeferSampleServlet extends HttpServlet {
+
+    //[START defer]
+    public static class ExpensiveOperation implements DeferredTask {
+        @Override
+        public void run() {
+            System.out.println("Doing an expensive operation...");
+            // expensive operation to be backgrounded goes here
+        }
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse
+            resp) throws IOException {
+        // Add the task to the default queue.
+        Queue queue = QueueFactory.getDefaultQueue();
+
+        // Wait 5 seconds to run for demonstration purposes
+        queue.add(TaskOptions.Builder.withPayload(new ExpensiveOperation())
+                .etaMillis(System.currentTimeMillis() + 5000));
+
+        resp.setContentType("text/plain");
+        resp.getWriter().println("Task is backgrounded on queue!");
+    }
+    //[END defer]
+
+}
