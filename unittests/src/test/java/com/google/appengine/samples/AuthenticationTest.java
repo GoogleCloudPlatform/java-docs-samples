@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.appengine.samples.unittest;
+package com.google.appengine.samples;
 
-// [START auth]
+// [START AuthenticationTest]
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -24,28 +25,28 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class AuthenticationTest {
 
-    private final LocalServiceTestHelper helper =
-            new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-                    .setEnvIsAdmin(true).setEnvIsLoggedIn(true);
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+          .setEnvIsAdmin(true).setEnvIsLoggedIn(true);
 
-    @Before
-    public void setUp() {
-        helper.setUp();
-    }
+  @Before
+  public void setUp() {
+    helper.setUp();
+  }
 
-    @After
-    public void tearDown() {
-        helper.tearDown();
-    }
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
 
-    @Test
-    public void testIsAdmin() {
-        UserService userService = UserServiceFactory.getUserService();
-        assertTrue(userService.isUserAdmin());
-    }
+  @Test
+  public void testIsAdmin() {
+    UserService userService = UserServiceFactory.getUserService();
+    assertTrue(userService.isUserAdmin());
+  }
 }
-// [END auth]
+// [END AuthenticationTest]

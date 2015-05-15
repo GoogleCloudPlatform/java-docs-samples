@@ -13,54 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.appengine.samples.unittest;
+package com.google.appengine.samples;
 
-// [START memcache_example_1]
+
+// [START imports]
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-// [END memcache_example_1]
+// [END imports]
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-// [START memcache_example_2]
+// [START NameAndHelper]
 public class LocalMemcacheTest {
 
-    private final LocalServiceTestHelper helper =
-            new LocalServiceTestHelper(new LocalMemcacheServiceTestConfig());
-    // [END memcache_example_2]
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalMemcacheServiceTestConfig());
 
-    @Before
-    public void setUp() {
-        helper.setUp();
-    }
+  // [END NameAndHelper]
 
-    @After
-    public void tearDown() {
-        helper.tearDown();
-    }
+  @Before
+  public void setUp() {
+    helper.setUp();
+  }
 
-    // run this test twice to prove we're not leaking any state across tests
-    private void doTest() {
-        // [START memcache_example_3]
-        MemcacheService ms = MemcacheServiceFactory.getMemcacheService();
-        assertFalse(ms.contains("yar"));
-        ms.put("yar", "foo");
-        assertTrue(ms.contains("yar"));
-        // [END memcache_example_3]
-    }
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
 
-    @Test
-    public void testInsert1() {
-        doTest();
-    }
+  // run this test twice to prove we're not leaking any state across tests
 
-    @Test
-    public void testInsert2() {
-        doTest();
-    }
+  // [START doTest]
+  private void doTest() {
+    MemcacheService ms = MemcacheServiceFactory.getMemcacheService();
+    assertFalse(ms.contains("yar"));
+    ms.put("yar", "foo");
+    assertTrue(ms.contains("yar"));
+  }
+  // [END doTest]
+
+  @Test
+  public void testInsert1() {
+    doTest();
+  }
+
+  @Test
+  public void testInsert2() {
+    doTest();
+  }
 }

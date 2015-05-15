@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.appengine.samples.unittest;
+package com.google.appengine.samples;
 
-// [START datastore_example_1]
+// [START LocalDatastoreTest]
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -28,40 +28,41 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LocalDatastoreTest {
 
-    private final LocalServiceTestHelper helper = new
-            LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-    @Before
-    public void setUp() {
-        helper.setUp();
-    }
+  @Before
+  public void setUp() {
+    helper.setUp();
+  }
 
-    @After
-    public void tearDown() {
-        helper.tearDown();
-    }
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
 
-    // run this test twice to prove we're not leaking any state across tests
-    private void doTest() {
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        assertEquals(0, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
-        ds.put(new Entity("yam"));
-        ds.put(new Entity("yam"));
-        assertEquals(2, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
-    }
+  // run this test twice to prove we're not leaking any state across tests
+  private void doTest() {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
+    ds.put(new Entity("yam"));
+    ds.put(new Entity("yam"));
+    assertEquals(2, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
+  }
 
-    @Test
-    public void testInsert1() {
-        doTest();
-    }
+  @Test
+  public void testInsert1() {
+    doTest();
+  }
 
-    @Test
-    public void testInsert2() {
-        doTest();
-    }
+  @Test
+  public void testInsert2() {
+    doTest();
+  }
 }
-// [END datastore_example_1]
+
+// [END LocalDatastoreTest]
