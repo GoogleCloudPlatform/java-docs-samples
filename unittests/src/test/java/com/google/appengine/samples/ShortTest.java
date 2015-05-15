@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.appengine.samples.unittest;
+package com.google.appengine.samples;
 
-// [START local_capabilities]
+// [START ShortTest]
+
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.capabilities.CapabilityStatus;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -28,29 +29,30 @@ import com.google.apphosting.api.ApiProxy;
 import org.junit.After;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class CapabilitiesTest {
+public class ShortTest {
+  private LocalServiceTestHelper helper;
 
-    private LocalServiceTestHelper helper;
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
 
-    @After
-    public void tearDown() {
-        helper.tearDown();
-    }
 
-    @Test(expected = ApiProxy.CapabilityDisabledException.class)
-    public void testDisabledDatastore() {
-        Capability testOne = new Capability("datastore_v3");
-        CapabilityStatus testStatus = CapabilityStatus.DISABLED;
-        //Initialize
-        LocalCapabilitiesServiceTestConfig config =
-                new LocalCapabilitiesServiceTestConfig().setCapabilityStatus(testOne, testStatus);
-        helper = new LocalServiceTestHelper(config);
-        helper.setUp();
-        FetchOptions fo = FetchOptions.Builder.withLimit(10);
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        assertEquals(0, ds.prepare(new Query("yam")).countEntities(fo));
-    }
+  @Test(expected = ApiProxy.CapabilityDisabledException.class)
+  public void testDisabledDatastore() {
+    Capability testOne = new Capability("datastore_v3");
+    CapabilityStatus testStatus = CapabilityStatus.DISABLED;
+    //Initialize
+    LocalCapabilitiesServiceTestConfig config =
+        new LocalCapabilitiesServiceTestConfig().setCapabilityStatus(testOne, testStatus);
+    helper = new LocalServiceTestHelper(config);
+    helper.setUp();
+    FetchOptions fo = FetchOptions.Builder.withLimit(10);
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    assertEquals(0, ds.prepare(new Query("yam")).countEntities(fo));
+  }
 }
-// [END local_capabilities]
+
+// [END ShortTest]

@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.appengine.samples.unittest;
 
-// [START framework]
+package com.google.appengine.samples;
+
+// [START MyFirstTest]
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class MyFirstTest {
-    @Test
-    public void testAddition() {
-        assertEquals(4, 2 + 2);
-    }
+  @Test
+  public void testAddition() {
+    assertEquals(4, 2 + 2);
+  }
 }
-// [END framework]
+// [END MyFirstTest]
