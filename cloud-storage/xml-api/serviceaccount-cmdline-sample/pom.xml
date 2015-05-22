@@ -19,7 +19,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>com.google.api.services.samples.storage.serviceaccount.cmdline.StorageServiceAccountSample</mainClass>
+          <mainClass>StorageServiceAccountSample</mainClass>
         </configuration>
       </plugin>
     </plugins>
