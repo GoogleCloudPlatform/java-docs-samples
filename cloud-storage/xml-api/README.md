@@ -1,4 +1,4 @@
-cloud-storage-docs-xml-api-examples
+java-docs-samples/cloud-storage XML API Examples
 ===================================
 
 Samples used in Google Cloud Storage documentation (https://developers.google.com/storage/docs/xml-api-java-samples).
