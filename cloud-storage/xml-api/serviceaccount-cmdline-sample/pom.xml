@@ -29,7 +29,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1beta2-rev43-1.18.0-rc</version>
+      <version>v1-rev35-1.20.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
@@ -37,13 +37,13 @@
       <version>${project.http.version}</version>
     </dependency>
     <dependency>
-	<groupId>com.google.guava</groupId>
-	<artifactId>guava</artifactId>
-	<version>16.0.1</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
     </dependency>
   </dependencies>
   <properties>
-    <project.http.version>1.17.0-rc</project.http.version>
+    <project.http.version>1.20.0</project.http.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
