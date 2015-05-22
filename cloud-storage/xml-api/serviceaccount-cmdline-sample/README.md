@@ -6,43 +6,44 @@ Browse Online
 
 The main file is [StorageServiceAccountSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/serviceaccount-cmdline-sample/src/main/java/StorageServiceAccountSample.java).
 
-Get a Service Account
----------------------
 
-See the instructions at https://developers.google.com/storage/docs/xml-api-java-samples
-for setting up a service account.
+Setup
+-----
 
-Checkout Instructions
----------------------
-
-1. **Prerequisites:**
-    1. install the latest version of [Java](http//java.com) and [Maven](http://maven.apache.org/download.html).
-    1. [Create](https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets) a Google Cloud Storage bucket
-    1. You must also be able to work with [GitHub](https://help.github.com/articles/set-up-git) repositories.
-    1. You may need to set your `JAVA_HOME`.
-
-1. Clone repository.
+* [Create](https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets) a Google Cloud Storage bucket
+* This module uses [Application Default Credentials](https://developers.google.com/accounts/docs/application-default-credentials). If you are running it outside of [Google Compute Engine](https://cloud.google.com/compute/), you'll need to
+    * Download the json private key for a [Service Account](https://cloud.google.com/storage/docs/authentication#service_accounts) and have it available.
+    * Set an environment variable: `export GOOGLE_APPLICATION_CREDENTIALS=path/to/your-key.json`
+* You must also be able to work with [GitHub](https://help.github.com/articles/set-up-git) repositories.
+* Clone repository.
 
         git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-        cd java-docs-samples/cloud-storage/xml-api/serviceaccount-cmdline-sample
-
-1. Update key.json file.
-1. Compile and run
-
-        mvn compile install
-        export GOOGLE_APPLICATION_CREDENTIALS=key.json
-        mvn -q exec:java -Dexec.args="your-bucket-name"
 
 
-To enable logging of HTTP requests and responses (highly recommended when 
+Command-line Instructions
+-------------------------
+
+* **Prerequisites:**
+    * Install the latest version of [Java](http//java.com) and [Maven](http://maven.apache.org/download.html).
+    * Set the environment variable: `export GOOGLE_APPLICATION_CREDENTIALS=your-key-filename.json`
+    * You may need to set your `JAVA_HOME`.
+
+```bash
+cd java-docs-samples/cloud-storage/xml-api/serviceaccount-cmdline-sample
+# Compile and run
+mvn compile install
+mvn -q exec:java -Dexec.args="your-bucket-name"
+```
+
+To enable logging of HTTP requests and responses (highly recommended when
 developing), please take a look at logging.properties.
 
-Set Up a Project in Eclipse
----------------------------
+
+Eclipse Instructions
+--------------------
 
 * **Prerequisites:**
     * Install [Eclipse](http://www.eclipse.org/downloads/), the [Maven plugin](http://eclipse.org/m2e/), and optionally the [GitHub plugin](http://eclipse.github.com/).
-    * [Create](https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets) a Google Cloud Storage bucket
 
 * Set up Eclipse Preferences
 
@@ -52,23 +53,15 @@ Set Up a Project in Eclipse
         * check on "Download Artifact Sources"
         * check on "Download Artifact JavaDoc"
 
-* Clone the `serviceaccount-cmdline-sample` to your computer
-
-    * You can use either a plugin with Eclipse or any other tool you normally use
-to work with GitHub repositories.
-
-* Create a new project using `serviceaccount-cmdline-sample`
+* Create a new project using `cloud-storage/xml-api/serviceaccount-cmdline-sample`
 
     * Create a new Java Project.
-    * Choose the **Location** of the project to be the root directory of the sample you cloned locally.
-    * Make sure the Eclipse package name matches the package name used in the
-code file `com.google.api.services.samples.storage.serviceaccount.cmdline`.
+    * Choose the **Location** of the project to be the location of `serviceaccount-cmdline-sample`
     * Select the project and **Convert to Maven Project** to add Maven Dependencies.
-    * Update the key.json file.
     * Click on Run > Run configurations
         * Navigate to your **Java Application**'s configuration section
-        * In the **Arguments** tab, add your bucket name as a **Program argument**
-        * In the **Environment** tab, create a variable `GOOGLE_APPLICATION_CREDENTIALS` and set it to `key.json`
+        * In the **Arguments** tab, add the name of the bucket you created above as a **Program argument**
+        * In the **Environment** tab, create a variable `GOOGLE_APPLICATION_CREDENTIALS` and set it to the path to your json private key file.
 
 * Run
 
