@@ -4,7 +4,7 @@ Using the Service Account Command Line Sample
 Browse Online
 --------------
 
-The main file is [StorageServiceAccountSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/storage-serviceaccount-cmdline-sample/src/main/java/StorageServiceAccountSample.java).
+The main file is [StorageServiceAccountSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/serviceaccount-cmdline-sample/src/main/java/StorageServiceAccountSample.java).
 
 Get a Service Account
 ---------------------
@@ -24,7 +24,7 @@ You may need to set your `JAVA_HOME`.
 
         cd [someDirectory]
         git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-        cd java-docs-samples/cloud-storage/xml-api/storage-serviceaccount-cmdline-sample
+        cd java-docs-samples/cloud-storage/xml-api/serviceaccount-cmdline-sample
 
 2. Update key.p12 file.
 3. Edit `StorageServiceAccountSample.java` to add your bucket and service account email.
@@ -51,12 +51,12 @@ Set Up a Project in Eclipse
         * check on "Download Artifact Sources"
         * check on "Download Artifact JavaDoc"
 
-* Clone the `storage-serviceaccount-cmdline-sample` to your computer
+* Clone the `serviceaccount-cmdline-sample` to your computer
 
     * You can use either a plugin with Eclipse or any other tool you normally use
 to work with GitHub repositories.
 
-* Create a new project using `storage-serviceaccount-cmdline-sample`
+* Create a new project using `serviceaccount-cmdline-sample`
 
     * Create a new Java Project.
     * Choose the **Location** of the project to be the root directory of the sample you cloned locally.

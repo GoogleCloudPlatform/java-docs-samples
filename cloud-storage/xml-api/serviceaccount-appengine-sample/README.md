@@ -4,7 +4,7 @@ Using the Service Account App Engine Sample
 Browse Online
 -------------
 
-The main code file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/storage-serviceaccount-cmdline-sample/src/main/java/StorageServiceAccountSample.java). 
+The main code file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/serviceaccount-appengine-sample/src/main/java/StorageServiceAccountSample.java). 
 
 Add Your App Engine Service Account Name to the Project Team
 ------------------------------------------------------------
@@ -22,7 +22,7 @@ https://help.github.com/articles/set-up-git).
 
     cd [someDirectory]
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-    cd java-docs-samples/cloud-storage/xml-api/storage-serviceaccount-appengine-sample
+    cd java-docs-samples/cloud-storage/xml-api/serviceaccount-appengine-sample
     mvn clean package
 
 To enable logging of HTTP requests and responses (highly recommended when 

@@ -7,7 +7,7 @@
     <version>5</version>
   </parent>
   <groupId>com.google.apis-samples</groupId>
-  <artifactId>storage-serviceaccounts-appengine-sample</artifactId>
+  <artifactId>serviceaccounts-appengine-sample</artifactId>
   <version>1.0.0</version>
   <name>Example for Google Cloud Storage using OAuth 2.0 Service Accounts on Google App Engine</name>
   <packaging>war</packaging>
