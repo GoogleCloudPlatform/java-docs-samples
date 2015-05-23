@@ -21,6 +21,7 @@
     <modules>
         <module>taskqueue/deferred</module>
         <module>unittests</module>
+        <module>bigquery</module>
     </modules>
 
     <dependencyManagement>
@@ -67,11 +68,6 @@
             <artifactId>appengine-api-stubs</artifactId>
             <version>${appengine.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.target.version}</version>
         </dependency>
     </dependencies>
   </dependencyManagement>

@@ -10,10 +10,7 @@ import com.google.gson.stream.JsonReader;
 
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 
 /**
@@ -29,22 +26,22 @@ public class StreamingSampleTest extends BigquerySampleTest {
   public StreamingSampleTest() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
     super();
   }
-  
+
   @Test
   public void testStream() throws IOException{
     JsonReader json = new JsonReader(
-        new FileReader(
-            new File(RESOURCE_PATH.resolve("streamrows.json").toString())));
+            new InputStreamReader(BigquerySampleTest
+                    .class.getResourceAsStream("/streamrows.json")));
     Iterator<TableDataInsertAllResponse> response = StreamingSample.run(
         CONSTANTS.getProjectId(),
         CONSTANTS.getDatasetId(),
         CONSTANTS.getCurrentTableId(),
         json);
-    
+
     while(response.hasNext()){
       assertTrue(!response.next().isEmpty());
     }
-    
+
   }
-  
+
 }
