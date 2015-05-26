@@ -1,10 +1,10 @@
-Using the Service Account Command Line Sample
+Using the Command Line Sample
 ==============================================================
 
 Browse Online
 --------------
 
-The main file is [StorageServiceAccountSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/serviceaccount-cmdline-sample/src/main/java/StorageServiceAccountSample.java).
+The main file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/cmdline-sample/src/main/java/StorageSample.java).
 
 
 Setup
@@ -29,7 +29,7 @@ Command-line Instructions
     * You may need to set your `JAVA_HOME`.
 
 ```bash
-cd java-docs-samples/cloud-storage/xml-api/serviceaccount-cmdline-sample
+cd java-docs-samples/cloud-storage/xml-api/cmdline-sample
 # Compile and run
 mvn compile install
 mvn -q exec:java -Dexec.args="your-bucket-name"
@@ -53,10 +53,10 @@ Eclipse Instructions
         * check on "Download Artifact Sources"
         * check on "Download Artifact JavaDoc"
 
-* Create a new project using `cloud-storage/xml-api/serviceaccount-cmdline-sample`
+* Create a new project using `cloud-storage/xml-api/cmdline-sample`
 
     * Create a new Java Project.
-    * Choose the **Location** of the project to be the location of `serviceaccount-cmdline-sample`
+    * Choose the **Location** of the project to be the location of `cmdline-sample`
     * Select the project and **Convert to Maven Project** to add Maven Dependencies.
     * Click on Run > Run configurations
         * Navigate to your **Java Application**'s configuration section
@@ -67,4 +67,4 @@ Eclipse Instructions
 
     * Right-click on project
     * Run As > Java Application
-    * If asked, type "StorageServiceAccountSample" and click OK
+    * If asked, type "StorageSample" and click OK

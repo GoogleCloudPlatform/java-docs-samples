@@ -19,7 +19,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>StorageServiceAccountSample</mainClass>
+          <mainClass>StorageSample</mainClass>
         </configuration>
       </plugin>
     </plugins>

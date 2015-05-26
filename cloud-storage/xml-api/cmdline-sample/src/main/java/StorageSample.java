@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-public class StorageServiceAccountSample {
+public class StorageSample {
 
   /** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
   private static final String STORAGE_SCOPE =
@@ -57,7 +57,7 @@ public class StorageServiceAccountSample {
       String bucketName = args[0];
 
       //[START snippet]
-      // Build a service account credential.
+      // Build an account credential.
       GoogleCredential credential = GoogleCredential.getApplicationDefault()
           .createScoped(Collections.singleton(STORAGE_SCOPE));
 
