@@ -177,6 +177,11 @@
         <module name="TodoComment"/>
         <module name="UpperEll"/>
 
+        <module name="HiddenField">
+          <property name="ignoreSetter" value="true" />
+          <property name="ignoreConstructorParameter" value="true" />
+        </module>
+
     </module>
 
     <!-- Support @SuppressWarnings (added in Checkstyle 5.7) -->

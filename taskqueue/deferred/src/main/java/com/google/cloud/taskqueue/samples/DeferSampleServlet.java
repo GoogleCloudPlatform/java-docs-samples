@@ -59,8 +59,8 @@ public class DeferSampleServlet extends HttpServlet {
      * @param resp servlet response
      */
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse
-            resp) throws IOException {
+    public void doGet(final HttpServletRequest request, final
+    HttpServletResponse resp) throws IOException {
         // Add the task to the default queue.
         Queue queue = QueueFactory.getDefaultQueue();
 
