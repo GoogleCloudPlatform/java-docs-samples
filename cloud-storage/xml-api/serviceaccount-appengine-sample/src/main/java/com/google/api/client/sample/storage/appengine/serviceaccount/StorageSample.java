@@ -1,4 +1,3 @@
-//[START all]
 /*
  * Copyright (c) 2012 Google Inc.
  *
@@ -102,4 +101,3 @@ public class StorageSample extends HttpServlet {
     }
   }
 }
-//[END all]
