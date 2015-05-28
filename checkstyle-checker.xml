@@ -69,6 +69,8 @@
         <!-- required for SuppressWarningsFilter (and other Suppress* rules not used here) -->
         <!-- see http://checkstyle.sourceforge.net/config_annotation.html#SuppressWarningsHolder -->
         <module name="SuppressWarningsHolder"/>
+        <!-- required for SuppressWithNearbyCommentFilter -->
+        <module name="FileContentsHolder"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
@@ -187,6 +189,10 @@
     <!-- Support @SuppressWarnings (added in Checkstyle 5.7) -->
     <!-- see http://checkstyle.sourceforge.net/config.html#SuppressWarningsFilter -->
     <module name="SuppressWarningsFilter"/>
+    <!-- Similar to SuppressWarningsFilter, but via comment rather than
+         annotation. This is needed to suppress warnings on imports, which
+         SuppressWarnings doesn't support. -->
+    <module name="SuppressWithNearbyCommentFilter"/>
 
     <!-- Checks properties file for a duplicated properties. -->
     <!-- See http://checkstyle.sourceforge.net/config_misc.html#UniqueProperties -->

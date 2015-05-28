@@ -6,9 +6,9 @@
     <artifactId>doc-samples</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>../../..</relativePath>
   </parent>
-  
+
   <groupId>com.google.apis-samples</groupId>
   <artifactId>serviceaccounts-appengine-sample</artifactId>
   <version>1.0.0</version>
