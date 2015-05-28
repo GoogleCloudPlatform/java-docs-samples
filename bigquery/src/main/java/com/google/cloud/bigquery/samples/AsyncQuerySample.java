@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -32,14 +32,14 @@ import java.util.Scanner;
  */
 public class AsyncQuerySample extends BigqueryUtils{
 
-  
+
   // [START main]
   /**
    * @param args
    * @throws IOException
    * @throws InterruptedException
    */
-  public static void main(String[] args) 
+  public static void main(String[] args)
       throws IOException, InterruptedException {
 
     Scanner scanner = new Scanner(System.in);
@@ -63,27 +63,27 @@ public class AsyncQuerySample extends BigqueryUtils{
   // [START run]
   public static Iterator<GetQueryResultsResponse> run(String projectId,
       String queryString,
-      boolean batch, 
-      long waitTime) 
+      boolean batch,
+      long waitTime)
       throws IOException, InterruptedException{
-    
+
     Bigquery bigquery = BigqueryServiceFactory.getService();
 
     Job query = asyncQuery(bigquery, projectId, queryString, batch);
     Bigquery.Jobs.Get getRequest = bigquery.jobs().get(
         projectId, query.getJobReference().getJobId());
-    
-    //Poll every waitTime milliseconds, 
+
+    //Poll every waitTime milliseconds,
     //retrying at most retries times if there are errors
     pollJob(getRequest, waitTime);
 
     GetQueryResults resultsRequest = bigquery.jobs().getQueryResults(
         projectId, query.getJobReference().getJobId());
-    
+
      return getPages(resultsRequest);
   }
   // [END run]
-  
+
   // [START asyncQuery]
   /**
    * Inserts an asynchronous query Job for a particular query
@@ -94,21 +94,21 @@ public class AsyncQuerySample extends BigqueryUtils{
    * @return a reference to the inserted query job
    * @throws IOException
    */
-  public static Job asyncQuery(Bigquery bigquery, 
+  public static Job asyncQuery(Bigquery bigquery,
       String projectId,
       String querySql,
       boolean batch) throws IOException {
-    
+
     JobConfigurationQuery query_config = new JobConfigurationQuery()
           .setQuery(querySql);
-    
+
     if(batch){
       query_config.setPriority("BATCH");
     }
-    
+
     Job job = new Job().setConfiguration(
         new JobConfiguration().setQuery(query_config));
-            
+
     return bigquery.jobs().insert(projectId, job).execute();
   }
   // [END asyncQuery]

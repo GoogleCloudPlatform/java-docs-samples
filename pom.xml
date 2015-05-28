@@ -33,7 +33,7 @@
               <artifactId>maven-checkstyle-plugin</artifactId>
               <version>2.15</version>
                <configuration>
-                    <configLocation>config/sun_checks.xml</configLocation>
+                    <configLocation>checkstyle-checker.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                      <failOnViolation>false</failOnViolation>
                 </configuration>
