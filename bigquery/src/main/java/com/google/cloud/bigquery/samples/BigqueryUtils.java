@@ -43,7 +43,7 @@ public final class BigqueryUtils {
    * Private contructor to prevent creation of this class, which is just all
    * static helper methods.
    */
-  private BigqueryUtils() {
+  protected BigqueryUtils() {
 
   }
 
