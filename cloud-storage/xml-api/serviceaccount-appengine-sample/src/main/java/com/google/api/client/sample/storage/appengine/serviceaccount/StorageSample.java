@@ -26,8 +26,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import java.net.HttpURLConnection.HTTP_OK;
 import java.util.Arrays;
 
 import javax.servlet.http.HttpServlet;
@@ -40,6 +38,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Marc Cohen
  */
 public class StorageSample extends HttpServlet {
+
+  /** HTTP status code for a resource that wasn't found. */
+  private static final int HTTP_NOT_FOUND = 404;
+  /** HTTP status code for a resource that was found. */
+  private static final int HTTP_OK = 200;
 
   /** The base endpoint for Google Cloud Storage api calls. */
   private static final String GCS_URI =
