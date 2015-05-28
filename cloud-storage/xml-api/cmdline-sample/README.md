@@ -1,3 +1,5 @@
+This is the sample used in the [Cloud Storage Java documentation](https://cloud.google.com/storage/docs/xml-api-java-samples).
+
 Using the Command Line Sample
 ==============================================================
 
