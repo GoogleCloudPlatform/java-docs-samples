@@ -20,11 +20,7 @@
         <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <prerequisites>
-        <maven>3.1.0</maven>
-    </prerequisites>
-
+  
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>

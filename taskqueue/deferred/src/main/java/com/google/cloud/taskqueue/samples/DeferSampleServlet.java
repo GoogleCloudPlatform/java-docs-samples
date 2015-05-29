@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * This package demonstrates how to use the task queue with Java.
+ */
 package com.google.cloud.taskqueue.samples;
 
 import javax.servlet.http.HttpServlet;
@@ -33,7 +36,15 @@ import com.google.appengine.api.taskqueue.TaskOptions;
  */
 public class DeferSampleServlet extends HttpServlet {
 
+    /**
+     * Number of ms long we will arbitrarily delay.
+     */
+    static final int DELAY_MS = 5000;
+
     //[START defer]
+    /**
+     * A hypothetical expensive operation we want to defer on a background task.
+     */
     public static class ExpensiveOperation implements DeferredTask {
         @Override
         public void run() {
@@ -42,15 +53,20 @@ public class DeferSampleServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Basic demonstration of adding a deferred task.
+     * @param request servlet request
+     * @param resp servlet response
+     */
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse
-            resp) throws IOException {
+    public void doGet(final HttpServletRequest request,
+                      final HttpServletResponse resp) throws IOException {
         // Add the task to the default queue.
         Queue queue = QueueFactory.getDefaultQueue();
 
         // Wait 5 seconds to run for demonstration purposes
         queue.add(TaskOptions.Builder.withPayload(new ExpensiveOperation())
-                .etaMillis(System.currentTimeMillis() + 5000));
+                .etaMillis(System.currentTimeMillis() + DELAY_MS));
 
         resp.setContentType("text/plain");
         resp.getWriter().println("Task is backgrounded on queue!");
