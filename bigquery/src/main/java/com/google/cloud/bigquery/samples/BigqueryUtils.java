@@ -37,7 +37,7 @@ import java.util.NoSuchElementException;
 /**
  * Helper functions for the other classes.
  */
-public final class BigqueryUtils {
+public class BigqueryUtils {
 
   /**
    * Private contructor to prevent creation of this class, which is just all
