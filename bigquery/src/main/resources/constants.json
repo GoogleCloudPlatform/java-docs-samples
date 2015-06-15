@@ -1,9 +1,9 @@
 {
-    "projectId": "bigquery-devrel-samples",
-    "datasetId": "test_dataset",
-    "currentTableId": "test_table",
-    "newTableId": "test_table2",
-    "cloudStorageInputURI": "gs://bigquery-devrel-samples-bucket/data.csv",
-    "cloudStorageOutputURI": "gs://bigquery-devrel-samples-bucket/output.csv",
+    "projectId": "cloud-samples-tests",
+    "datasetId": "test_dataset_java",
+    "currentTableId": "test_table_java",
+    "newTableId": "test_table_java_2",
+    "cloudStorageInputURI": "gs://cloud-samples-tests/data.csv",
+    "cloudStorageOutputURI": "gs://cloud-samples-tests/output.csv",
     "query": "SELECT corpus FROM publicdata:samples.shakespeare GROUP BY corpus;"
 }
