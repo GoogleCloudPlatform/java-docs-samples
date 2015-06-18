@@ -26,15 +26,17 @@ import com.google.api.client.util.Preconditions;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Collections;
 import java.net.URLEncoder;
+import java.util.Collections;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import java.security.GeneralSecurityException;
 
 /**
  * Sample code used in the Cloud Storage Java documentation.
@@ -49,43 +51,53 @@ public final class StorageSample {
   private static final String STORAGE_SCOPE =
       "https://www.googleapis.com/auth/devstorage.read_write";
 
-  /** Global instance of the HTTP transport. */
-  private static HttpTransport httpTransport;
+  /**
+   * Fetches the listing of the given bucket.
+   *
+   * @param bucketName the name of the bucket to list.
+   *
+   * @return the raw XML containing the listing of the bucket.
+   * @throws IOException if there's an error communicating with Cloud Storage.
+   * @throws GeneralSecurityException for errors creating https connection.
+   */
+  public static String listBucket(final String bucketName)
+      throws IOException, GeneralSecurityException {
+    //[START snippet]
+    // Build an account credential.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault()
+        .createScoped(Collections.singleton(STORAGE_SCOPE));
+
+    // Set up and execute a Google Cloud Storage request.
+    String uri = "https://storage.googleapis.com/"
+        + URLEncoder.encode(bucketName, "UTF-8");
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(
+        credential);
+    GenericUrl url = new GenericUrl(uri);
+
+    HttpRequest request = requestFactory.buildGetRequest(url);
+    HttpResponse response = request.execute();
+    String content = response.parseAsString();
+    //[END snippet]
+
+    return content;
+  }
 
   /**
-   * A command-line handler to display the bucket passed in as an argument.
+   * Prints out the contents of the given xml, in a more readable form.
    *
-   * @param args the array of command-line arguments.
+   * @param bucketName the name of the bucket you're listing.
+   * @param content the raw XML string.
    */
-  public static void main(final String[] args) {
+  private static void prettyPrintXml(
+      final String bucketName, final String content) {
+    // Instantiate transformer input.
+    Source xmlInput = new StreamSource(new StringReader(content));
+    StreamResult xmlOutput = new StreamResult(new StringWriter());
+
+    // Configure transformer.
     try {
-      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-      // Check for valid setup.
-      Preconditions.checkArgument(args.length == 1,
-          "Please pass in the Google Cloud Storage bucket name to display");
-      String bucketName = args[0];
-
-      //[START snippet]
-      // Build an account credential.
-      GoogleCredential credential = GoogleCredential.getApplicationDefault()
-          .createScoped(Collections.singleton(STORAGE_SCOPE));
-
-      // Set up and execute a Google Cloud Storage request.
-      String uri = "https://storage.googleapis.com/"
-          + URLEncoder.encode(bucketName, "UTF-8");
-      HttpRequestFactory requestFactory = httpTransport.createRequestFactory(
-          credential);
-      GenericUrl url = new GenericUrl(uri);
-      HttpRequest request = requestFactory.buildGetRequest(url);
-      HttpResponse response = request.execute();
-      String content = response.parseAsString();
-     //[END snippet]
-
-      // Instantiate transformer input.
-      Source xmlInput = new StreamSource(new StringReader(content));
-      StreamResult xmlOutput = new StreamResult(new StringWriter());
-
-      // Configure transformer.
       Transformer transformer = TransformerFactory.newInstance()
           .newTransformer(); // An identity transformer
       transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "testing.dtd");
@@ -98,6 +110,27 @@ public final class StorageSample {
       // Pretty print the output XML.
       System.out.println("\nBucket listing for " + bucketName + ":\n");
       System.out.println(xmlOutput.getWriter().toString());
+    } catch (TransformerException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * A command-line handler to display the bucket passed in as an argument.
+   *
+   * @param args the array of command-line arguments.
+   */
+  public static void main(final String[] args) {
+    try {
+      // Check for valid setup.
+      Preconditions.checkArgument(
+          args.length == 1,
+          "Please pass in the Google Cloud Storage bucket name to display");
+      String bucketName = args[0];
+
+      String content = listBucket(bucketName);
+
+      prettyPrintXml(bucketName, content);
       System.exit(0);
 
     } catch (IOException e) {
