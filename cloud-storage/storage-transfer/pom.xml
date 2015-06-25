@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.google.storagetransfer.samples</groupId>
+  <artifactId>transfersample</artifactId>
+  <version>0.1</version>
+  <packaging>jar</packaging>
+
+  <name>transfersample</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-storage</artifactId>
+      <version>v1-rev35-1.20.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.storagetransfer.samples</groupId>
+      <artifactId>libstoragetransfer</artifactId>
+      <version>1</version>
+    </dependency>
+  </dependencies>
+
+</project>
