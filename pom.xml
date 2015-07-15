@@ -12,6 +12,8 @@
         <appengine.version>1.9.19</appengine.version>
         <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.http.version>1.19.0</project.http.version>
+        <project.oauth.version>1.19.0</project.oauth.version>
     </properties>
 
     <prerequisites>
@@ -24,6 +26,7 @@
         <module>bigquery</module>
         <module>cloud-storage/xml-api/cmdline-sample</module>
         <module>cloud-storage/xml-api/serviceaccount-appengine-sample</module>
+        <module>monitoring</module>
     </modules>
 
     <build>
