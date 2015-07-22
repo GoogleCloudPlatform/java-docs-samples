@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// [START all]
 package com.google.cloud.storage.storagetransfer.samples;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -77,3 +77,4 @@ public final class TransferClientCreator {
         .setApplicationName("storagetransfer-sample").build();
   }
 }
+//[END all]
