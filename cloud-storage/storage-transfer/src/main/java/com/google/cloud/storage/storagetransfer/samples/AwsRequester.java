@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 /**
  * Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
- *
  */
 public final class AwsRequester {
 
@@ -41,6 +40,10 @@ public final class AwsRequester {
   private static final String AWS_ACCESS_KEY_ID = "YOUR_ACCESS_KEY_ID";
   private static final String AWS_SECRET_ACCESS_KEY = "YOUR_SECRET_ACCESS_KEY";
   private static final String GCS_SINK_NAME = "YOUR_SINK_BUCKET";
+
+  /**
+   * Specify times below using US Pacific Time Zone.
+   */
   private static final String START_DATE = "YYYY-MM-DD";
   private static final String START_TIME = "HH:MM:SS";
 

@@ -31,8 +31,7 @@ import java.util.logging.Logger;
 
 /**
  * Creates a daily transfer from a standard Cloud Storage bucket to a Cloud Storage Nearline
- * bucket for files untouched for 30 days.
- *
+ * bucket for files untouched for 30 days. 
  */
 public final class NearlineRequester {
 
@@ -40,6 +39,10 @@ public final class NearlineRequester {
   private static final String PROJECT_ID = "YOUR_PROJECT_ID";
   private static final String GCS_SOURCE_NAME = "YOUR_SOURCE_BUCKET";
   private static final String NEARLINE_SINK_NAME = "YOUR_SINK_BUCKET";
+
+  /**
+   * Specify times below using US Pacific Time Zone.
+   */
   private static final String START_DATE = "YYYY-MM-DD";
   private static final String START_TIME = "HH:MM:SS";
 
