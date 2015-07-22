@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// [START all]
 package com.google.cloud.storage.storagetransfer.samples;
 
 import com.google.api.services.storagetransfer.Storagetransfer;
@@ -71,3 +71,4 @@ public final class RequestChecker {
     }
   }
 }
+//[END all]
