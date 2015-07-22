@@ -26,29 +26,37 @@
         <module>bigquery</module>
         <module>cloud-storage/xml-api/cmdline-sample</module>
         <module>cloud-storage/xml-api/serviceaccount-appengine-sample</module>
+        <module>cloud-storage/storage-transfer</module>
         <module>monitoring</module>
     </modules>
 
     <build>
         <plugins>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-checkstyle-plugin</artifactId>
-              <version>2.15</version>
-               <configuration>
-                    <configLocation>checkstyle-checker.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                     <failOnViolation>true</failOnViolation>
-                </configuration>
-              <executions>
-              <execution>
-                  <goals>
-                   <goal>check</goal>
-                  </goals>
-                  </execution>
-               </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.15</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>6.8.1</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>google-checks.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failOnViolation>true</failOnViolation>
+                    </configuration>
+                <executions>
+                <execution>
+                    <goals>
+                    <goal>check</goal>
+                    </goals>
+                    </execution>
+                </executions>
              </plugin>
-            <plugin>
+             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>3.1.0</version>
@@ -102,13 +110,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12-beta-1</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <artifactId>mockito-core</artifactId>
+            <version>2.0.28-beta</version>
             <scope>test</scope>
         </dependency>
         <dependency>
