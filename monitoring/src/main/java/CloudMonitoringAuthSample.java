@@ -80,12 +80,13 @@ public final class CloudMonitoringAuthSample {
    * @throws Exception if something goes wrong.
    */
   public static void main(final String[] args) throws Exception {
-    if (args.length != 2) {
-      System.err.println(String.format("Usage: %s <project-name>", args[0]));
+    if (args.length != 1) {
+      System.err.println(String.format("Usage: %s <project-name>",
+            CloudMonitoringAuthSample.class.getSimpleName()));
       return;
     }
 
-    String project = args[1];
+    String project = args[0];
 
     // Create an authorized API client
     CloudMonitoring cloudmonitoring = authenticate();

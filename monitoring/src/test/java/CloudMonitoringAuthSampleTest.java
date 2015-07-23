@@ -48,13 +48,13 @@ public class CloudMonitoringAuthSampleTest {
 
   @Test
   public void testUsage() throws Exception {
-    CloudMonitoringAuthSample.main(new String[] { "command-name" });
-    assertEquals("Usage: command-name <project-name>\n", stderr.toString());
+    CloudMonitoringAuthSample.main(new String[] { });
+    assertEquals("Usage: CloudMonitoringAuthSample <project-name>\n", stderr.toString());
   }
 
   @Test
   public void testListTimeSeries() throws Exception {
-    CloudMonitoringAuthSample.main(new String[] { "", "cloud-samples-tests" });
+    CloudMonitoringAuthSample.main(new String[] { "cloud-samples-tests" });
     String out = stdout.toString();
     assertThat(out, containsPattern("Timeseries.list raw response:"));
     assertThat(out, containsPattern("\\{\\s*\"kind\" *: *\"cloudmonitoring#listTimeseriesResponse\","));
