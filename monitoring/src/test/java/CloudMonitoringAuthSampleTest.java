@@ -33,6 +33,8 @@ public class CloudMonitoringAuthSampleTest {
       new ByteArrayOutputStream();
   private final ByteArrayOutputStream stderr =
       new ByteArrayOutputStream();
+  private static final PrintStream REAL_OUT = System.out;
+  private static final PrintStream REAL_ERR = System.err;
 
   @Before
   public void setUp() {
@@ -42,8 +44,8 @@ public class CloudMonitoringAuthSampleTest {
 
   @After
   public void tearDown() {
-    System.setOut(null);
-    System.setErr(null);
+    System.setOut(this.REAL_OUT);
+    System.setErr(this.REAL_ERR);
   }
 
   @Test
