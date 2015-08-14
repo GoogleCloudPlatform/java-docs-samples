@@ -16,6 +16,7 @@
 
 package com.google.cloud.bigquery.samples;
 
+// [START imports]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -23,6 +24,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.BigqueryScopes;
+// [END imports]
 
 import java.io.IOException;
 import java.util.Collection;
@@ -67,21 +69,27 @@ public final class BigqueryServiceFactory {
 
   /**
    * Creates an authorized client to Google Bigquery.
+   *
    * @return The BigQuery Service
    * @throws IOException Thrown if there is an error connecting
    */
   // [START get_service]
   private static Bigquery createAuthorizedClient() throws IOException {
-    Collection<String> bigqueryScopes = BigqueryScopes.all();
+    // Create the credential
     HttpTransport transport = new NetHttpTransport();
     JsonFactory jsonFactory = new JacksonFactory();
-    GoogleCredential credential =  GoogleCredential.getApplicationDefault(
-            transport, jsonFactory);
+    GoogleCredential credential =  GoogleCredential.getApplicationDefault(transport, jsonFactory);
+
+    // Depending on the environment that provides the default credentials (eg Compute Engine, App
+    // Engine), the credentials may require us to specify the scopes we need explicitly.
+    // Check for this case, and inject the Bigquery scope if required.
     if (credential.createScopedRequired()) {
+      Collection<String> bigqueryScopes = BigqueryScopes.all();
       credential = credential.createScoped(bigqueryScopes);
     }
+
     return new Bigquery.Builder(transport, jsonFactory, credential)
-            .setApplicationName("BigQuery Samples").build();
+        .setApplicationName("BigQuery Samples").build();
   }
   // [END get_service]
 
