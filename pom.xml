@@ -28,6 +28,7 @@
         <module>cloud-storage/xml-api/serviceaccount-appengine-sample</module>
         <module>cloud-storage/storage-transfer</module>
         <module>monitoring</module>
+        <module>logging</module>
     </modules>
 
     <build>
