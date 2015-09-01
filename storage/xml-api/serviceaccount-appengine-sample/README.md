@@ -4,7 +4,7 @@ Using the Service Account App Engine Sample
 Browse Online
 -------------
 
-The main code file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/serviceaccount-appengine-sample/src/main/java/StorageServiceAccountSample.java). 
+The main code file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/storage/xml-api/serviceaccount-appengine-sample/src/main/java/StorageServiceAccountSample.java).
 
 Add Your App Engine Service Account Name to the Project Team
 ------------------------------------------------------------
@@ -22,10 +22,10 @@ https://help.github.com/articles/set-up-git).
 
     cd [someDirectory]
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-    cd java-docs-samples/cloud-storage/xml-api/serviceaccount-appengine-sample
+    cd java-docs-samples/storage/xml-api/serviceaccount-appengine-sample
     mvn clean package
 
-To enable logging of HTTP requests and responses (highly recommended when 
+To enable logging of HTTP requests and responses (highly recommended when
 developing), please take a look at logging.properties.
 
 Running and Deploying Your Application from the Command Line
@@ -45,7 +45,7 @@ If this is the first time you are deploying your application to appspot.com, you
 If you've done the above, you can deploy at any time:
 
     mvn appengine:update
-    
+
 If this is the first time you have run "update" on the project, a browser window will open prompting you to log in. Log in with the same Google account the app is registered with.
 
 Set Up a Project in Eclipse

@@ -6,7 +6,7 @@ Using the Command Line Sample
 Browse Online
 --------------
 
-The main file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/cloud-storage/xml-api/cmdline-sample/src/main/java/StorageSample.java).
+The main file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/storage/xml-api/cmdline-sample/src/main/java/StorageSample.java).
 
 
 Setup
@@ -31,7 +31,7 @@ Command-line Instructions
     * You may need to set your `JAVA_HOME`.
 
 ```bash
-cd java-docs-samples/cloud-storage/xml-api/cmdline-sample
+cd java-docs-samples/storage/xml-api/cmdline-sample
 # Compile and run
 mvn compile install
 mvn -q exec:java -Dexec.args="your-bucket-name"
@@ -55,7 +55,7 @@ Eclipse Instructions
         * check on "Download Artifact Sources"
         * check on "Download Artifact JavaDoc"
 
-* Create a new project using `cloud-storage/xml-api/cmdline-sample`
+* Create a new project using `storage/xml-api/cmdline-sample`
 
     * Create a new Java Project.
     * Choose the **Location** of the project to be the location of `cmdline-sample`

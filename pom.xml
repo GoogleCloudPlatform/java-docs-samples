@@ -24,9 +24,9 @@
         <module>taskqueue/deferred</module>
         <module>unittests</module>
         <module>bigquery</module>
-        <module>cloud-storage/xml-api/cmdline-sample</module>
-        <module>cloud-storage/xml-api/serviceaccount-appengine-sample</module>
-        <module>cloud-storage/storage-transfer</module>
+        <module>storage/xml-api/cmdline-sample</module>
+        <module>storage/xml-api/serviceaccount-appengine-sample</module>
+        <module>storage/storage-transfer</module>
         <module>monitoring</module>
     </modules>
 
