@@ -52,6 +52,7 @@ public class StorageSample {
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String TEST_FILENAME = "json-test.txt";
 
+  // [START get_service]
   private static Storage storageService;
 
   /**
@@ -66,6 +67,7 @@ public class StorageSample {
     }
     return storageService;
   }
+  // [END get_service]
 
   // [START list_bucket]
   /**
