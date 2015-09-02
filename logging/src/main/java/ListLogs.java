@@ -13,21 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-// [START all]
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+// [START imports]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.Strings;
 import com.google.api.services.logging.Logging;
+import com.google.api.services.logging.LoggingScopes;
 import com.google.api.services.logging.model.ListLogsResponse;
 import com.google.api.services.logging.model.Log;
+
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.List;
+// [END imports]
 
 /**
  * Cloud Logging Java API sample that lists the logs available to a project.
@@ -37,36 +39,68 @@ import com.google.api.services.logging.model.Log;
 public class ListLogs {
 
   private static final List<String> LOGGING_SCOPES = Collections.singletonList(
-      "https://www.googleapis.com/auth/logging.read");
-  
+      LoggingScopes.LOGGING_READ);
+
   private static final String APPLICATION_NAME = "ListLogs sample";
 
-  /** Returns an authorized Cloud Logging API service client. */
-  public static Logging getLoggingService() throws GeneralSecurityException,
-      IOException {
-    GoogleCredential credential = GoogleCredential.getApplicationDefault()
-        .createScoped(LOGGING_SCOPES);
-    Logging service = new Logging.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),
-        JacksonFactory.getDefaultInstance(),
-        credential).setApplicationName(APPLICATION_NAME).build();
+  /**
+   * Returns an authorized Cloud Logging API service client that is usable
+   * on Google App Engine, Google Compute Engine, workstations with the Google Cloud SDK,
+   * and other computers if you install service account private credentials.
+   * See https://cloud.google.com/logging/docs/api/tasks.
+   */
+  // [START auth]
+  public static Logging getLoggingService() throws IOException { 
+    HttpTransport transport = new NetHttpTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(LOGGING_SCOPES);
+    }
+    Logging service = new Logging.Builder(transport, jsonFactory, credential)
+        .setApplicationName(APPLICATION_NAME).build();
     return service;
   }
+  // [END auth]
 
-  /** Extract simple log names from URL-encoded resource names. */
-  public static List<String> getSimpleLogNames(List<Log> logs,
-      String projectId) throws UnsupportedEncodingException {
-    final int RESOURCE_PREFIX_LENGTH = ("/projects/" + projectId + "/logs/")
-        .length();
-    List<String> logNames = new ArrayList<String>();
-    for (Log log: logs) {
-      logNames.add(URLDecoder.decode(log.getName(), "utf-8").substring(
-          RESOURCE_PREFIX_LENGTH));
-    }
-    return logNames;
+  /**
+   * Lists the names of the logs visible to a project, which may require fetching multiple
+   * pages of results from the Cloud Logging API. This method converts log resource names
+   * ("/projects/PROJECTID/logs/SERVICENAME%2FLOGNAME") to simple log names ("SERVICENAME/LOGNAME").
+   * 
+   * @param service The logging service client returned by getLoggingService.
+   * @param projectId The project whose logs are to be listed.
+   * @throws IOException If the Cloud Logging API fails because, for example, the project ID
+   *     doesn't exist or authorization fails.
+   *     See https://cloud.google.com//logging/docs/api/tasks/#java_sample_code.
+   */
+  // [START listlogs]
+  private static void listLogs(Logging service, String projectId) throws IOException {
+    final int pageSize = 3;
+    final int resourcePrefixLength = ("/projects/" + projectId + "/logs/").length();
+    String nextPageToken = "";
+
+    do {
+      ListLogsResponse response = service.projects().logs().list(projectId)
+          .setPageToken(nextPageToken).setPageSize(pageSize).execute();
+      if (response.isEmpty()) break;
+      for (Log log: response.getLogs()) {
+        System.out.println(URLDecoder.decode(
+            log.getName().substring(resourcePrefixLength), "utf-8"));
+      }
+      nextPageToken = response.getNextPageToken();
+    } while (!Strings.isNullOrEmpty(nextPageToken));
+    System.out.println("Done.");
   }
+  // [END listlogs]
 
-  public static void main(String[] args) throws Exception {
+  /**
+   * Demonstrates the Cloud Logging API by listing the logs in a project.
+   * @param args The project ID.
+   * @throws IOException if a Cloud Logging API call fails because, say, the project ID is wrong
+   *     or authorization fails.
+   */
+  public static void main(String[] args) throws IOException {
     if (args.length != 1) {
       System.err.println(String.format("Usage: %s <project-name>",
             ListLogs.class.getSimpleName()));
@@ -75,12 +109,7 @@ public class ListLogs {
 
     String projectId = args[0];
     Logging service = getLoggingService();
-    ListLogsResponse response = service.projects().logs().list(projectId)
-        .execute();
-    System.out.println("RAW: " + response.toPrettyString());
-    System.out.println("SIMPLE: " +
-        getSimpleLogNames(response.getLogs(), projectId));
-
+    listLogs(service, projectId);
   }
 }
 // [END all]
