@@ -109,7 +109,7 @@ public class StorageSample {
     Storage client = getService();
 
     Storage.Buckets.Get bucketRequest = client.buckets().get(bucketName);
-    // Fetch the full set of the bucket's properties (eg include the ACLs in the response)
+    // Fetch the full set of the bucket's properties (e.g. include the ACLs in the response)
     bucketRequest.setProjection("full");
     return bucketRequest.execute();
   }
