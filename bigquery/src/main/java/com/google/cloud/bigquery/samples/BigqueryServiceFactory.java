@@ -80,7 +80,7 @@ public final class BigqueryServiceFactory {
     JsonFactory jsonFactory = new JacksonFactory();
     GoogleCredential credential =  GoogleCredential.getApplicationDefault(transport, jsonFactory);
 
-    // Depending on the environment that provides the default credentials (eg Compute Engine, App
+    // Depending on the environment that provides the default credentials (e.g. Compute Engine, App
     // Engine), the credentials may require us to specify the scopes we need explicitly.
     // Check for this case, and inject the Bigquery scope if required.
     if (credential.createScopedRequired()) {
