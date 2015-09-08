@@ -83,7 +83,9 @@ public class ListLogs {
     do {
       ListLogsResponse response = service.projects().logs().list(projectId)
           .setPageToken(nextPageToken).setPageSize(pageSize).execute();
-      if (response.isEmpty()) break;
+      if (response.isEmpty()) {
+        break;
+      }
       for (Log log: response.getLogs()) {
         System.out.println(URLDecoder.decode(
             log.getName().substring(resourcePrefixLength), "utf-8"));

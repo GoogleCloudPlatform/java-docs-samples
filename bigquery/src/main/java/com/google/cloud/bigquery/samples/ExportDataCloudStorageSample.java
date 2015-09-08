@@ -27,13 +27,12 @@ import java.util.Scanner;
  * Sample of how to Export Cloud Data.
  */
 public class ExportDataCloudStorageSample  {
-
-    /**
-     * Protected constructor since this is a collection of static functions.
-     */
-    protected ExportDataCloudStorageSample() {
-        super();
-    }
+  /**
+   * Protected constructor since this is a collection of static functions.
+   */
+  protected ExportDataCloudStorageSample() {
+    super();
+  }
 
   /**
    * This program can be run to demonstrate running a Bigquery query from the
@@ -43,8 +42,8 @@ public class ExportDataCloudStorageSample  {
    * @throws InterruptedException Should never be thrown.
    */
   // [START main]
-  public static void main(final String[] args) throws IOException,
-          InterruptedException {
+  public static void main(final String[] args)
+      throws IOException, InterruptedException {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
@@ -53,15 +52,14 @@ public class ExportDataCloudStorageSample  {
     System.out.println("Enter your table id: ");
     String tableId = scanner.nextLine();
     System.out.println("Enter the Google Cloud Storage Path to which you'd "
-            + "like to export: ");
+        + "like to export: ");
     String cloudStoragePath = scanner.nextLine();
     System.out.println("Enter how often to check if your job is  complete "
-            + "(milliseconds): ");
+        + "(milliseconds): ");
     long interval = scanner.nextLong();
     scanner.close();
 
     run(cloudStoragePath, projectId, datasetId, tableId, interval);
-
   }
   // [END main]
 
@@ -120,16 +118,12 @@ public class ExportDataCloudStorageSample  {
       final TableReference table) throws IOException {
 
     JobConfigurationExtract extract = new JobConfigurationExtract()
-    .setSourceTable(table)
-    .setDestinationUri(cloudStoragePath);
+        .setSourceTable(table)
+        .setDestinationUri(cloudStoragePath);
 
     return bigquery.jobs().insert(table.getProjectId(),
         new Job().setConfiguration(new JobConfiguration().setExtract(extract)))
         .execute();
   }
   // [END extract_job]
-
-
-
-
 }

@@ -12,6 +12,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+
 package com.google.cloud.bigquery.samples;
 
 import com.google.api.services.bigquery.Bigquery;
@@ -31,24 +32,23 @@ import java.util.Scanner;
 /**
  * Cli tool to load data from a CSV into Bigquery.
  */
-public class LoadDataCSVSample {
+public class LoadDataCsvSample {
 
-    /**
-     * Protected constructor since this is a collection of static methods.
-     */
-    protected LoadDataCSVSample() {
+  /**
+   * Protected constructor since this is a collection of static methods.
+   */
+  protected LoadDataCsvSample() {
+  }
 
-    }
-
-    /**
-     * Cli tool to load data from a CSV into Bigquery.
-      * @param args Command line args, should be empty
-     * @throws IOException IOException
-     * @throws InterruptedException InterruptedException
-     */
+  /**
+   * Cli tool to load data from a CSV into Bigquery.
+   * @param args Command line args, should be empty
+   * @throws IOException IOException
+   * @throws InterruptedException InterruptedException
+   */
   // [START main]
-  public static void main(final String[] args) throws IOException,
-          InterruptedException {
+  public static void main(final String[] args)
+      throws IOException, InterruptedException {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
@@ -57,14 +57,14 @@ public class LoadDataCSVSample {
     System.out.println("Enter your table id: ");
     String tableId = scanner.nextLine();
     System.out.println("Enter the Google Cloud Storage Path to the data "
-            + "you'd like to load: ");
+        + "you'd like to load: ");
     String cloudStoragePath = scanner.nextLine();
     System.out.println("Enter the filepath to your schema: ");
     String sourceSchemaPath = scanner.nextLine();
 
 
     System.out.println("Enter how often to check if your job is complete "
-            + "(milliseconds): ");
+        + "(milliseconds): ");
     long interval = scanner.nextLong();
     scanner.close();
 
@@ -74,21 +74,20 @@ public class LoadDataCSVSample {
         tableId,
         new FileReader(new File(sourceSchemaPath)),
         interval);
-
   }
   // [END main]
 
-    /**
-     * Run the bigquery ClI.
-     * @param cloudStoragePath The bucket we are using
-     * @param projectId Project id
-     * @param datasetId datasetid
-     * @param tableId tableid
-     * @param schemaSource Source of the schema
-     * @param interval interval to wait between polling in milliseconds
-     * @throws IOException Thrown if there is an error connecting to Bigquery.
-     * @throws InterruptedException Should never be thrown
-     */
+  /**
+   * Run the bigquery ClI.
+   * @param cloudStoragePath The bucket we are using
+   * @param projectId Project id
+   * @param datasetId datasetid
+   * @param tableId tableid
+   * @param schemaSource Source of the schema
+   * @param interval interval to wait between polling in milliseconds
+   * @throws IOException Thrown if there is an error connecting to Bigquery.
+   * @throws InterruptedException Should never be thrown
+   */
   // [START run]
   public static void run(
       final String cloudStoragePath,
@@ -121,15 +120,15 @@ public class LoadDataCSVSample {
   }
   // [END run]
 
-    /**
-     * A job that extracts data from a table.
-     * @param bigquery Bigquery service to use
-     * @param cloudStoragePath Cloud storage bucket we are inserting into
-     * @param table Table to extract from
-     * @param schema The schema of the table we are loading into
-     * @return The job to extract data from the table
-     * @throws IOException Thrown if error connceting to Bigtable
-     */
+  /**
+   * A job that extracts data from a table.
+   * @param bigquery Bigquery service to use
+   * @param cloudStoragePath Cloud storage bucket we are inserting into
+   * @param table Table to extract from
+   * @param schema The schema of the table we are loading into
+   * @return The job to extract data from the table
+   * @throws IOException Thrown if error connceting to Bigtable
+   */
   // [START load_job]
   public static Job loadJob(
       final Bigquery bigquery,
@@ -138,15 +137,13 @@ public class LoadDataCSVSample {
       final TableSchema schema) throws IOException {
 
     JobConfigurationLoad load = new JobConfigurationLoad()
-    .setDestinationTable(table)
-    .setSchema(schema)
-    .setSourceUris(Collections.singletonList(cloudStoragePath));
+        .setDestinationTable(table)
+        .setSchema(schema)
+        .setSourceUris(Collections.singletonList(cloudStoragePath));
 
     return bigquery.jobs().insert(table.getProjectId(),
         new Job().setConfiguration(new JobConfiguration().setLoad(load)))
         .execute();
   }
   // [END load_job]
-
-
 }

@@ -19,15 +19,15 @@
  */
 package com.google.cloud.taskqueue.samples;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+
+import java.io.IOException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This small servlet demonstrates how to use the DeferredTask
@@ -36,41 +36,41 @@ import com.google.appengine.api.taskqueue.TaskOptions;
  */
 public class DeferSampleServlet extends HttpServlet {
 
-    /**
-     * Number of ms long we will arbitrarily delay.
-     */
-    static final int DELAY_MS = 5000;
+  /**
+   * Number of ms long we will arbitrarily delay.
+   */
+  static final int DELAY_MS = 5000;
 
-    //[START defer]
-    /**
-     * A hypothetical expensive operation we want to defer on a background task.
-     */
-    public static class ExpensiveOperation implements DeferredTask {
-        @Override
-        public void run() {
-            System.out.println("Doing an expensive operation...");
-            // expensive operation to be backgrounded goes here
-        }
-    }
-
-    /**
-     * Basic demonstration of adding a deferred task.
-     * @param request servlet request
-     * @param resp servlet response
-     */
+  //[START defer]
+  /**
+   * A hypothetical expensive operation we want to defer on a background task.
+   */
+  public static class ExpensiveOperation implements DeferredTask {
     @Override
-    public void doGet(final HttpServletRequest request,
-                      final HttpServletResponse resp) throws IOException {
-        // Add the task to the default queue.
-        Queue queue = QueueFactory.getDefaultQueue();
-
-        // Wait 5 seconds to run for demonstration purposes
-        queue.add(TaskOptions.Builder.withPayload(new ExpensiveOperation())
-                .etaMillis(System.currentTimeMillis() + DELAY_MS));
-
-        resp.setContentType("text/plain");
-        resp.getWriter().println("Task is backgrounded on queue!");
+    public void run() {
+      System.out.println("Doing an expensive operation...");
+      // expensive operation to be backgrounded goes here
     }
-    //[END defer]
+  }
+
+  /**
+   * Basic demonstration of adding a deferred task.
+   * @param request servlet request
+   * @param resp servlet response
+   */
+  @Override
+  public void doGet(final HttpServletRequest request,
+      final HttpServletResponse resp) throws IOException {
+    // Add the task to the default queue.
+    Queue queue = QueueFactory.getDefaultQueue();
+
+    // Wait 5 seconds to run for demonstration purposes
+    queue.add(TaskOptions.Builder.withPayload(new ExpensiveOperation())
+        .etaMillis(System.currentTimeMillis() + DELAY_MS));
+
+    resp.setContentType("text/plain");
+    resp.getWriter().println("Task is backgrounded on queue!");
+  }
+  //[END defer]
 
 }

@@ -33,17 +33,16 @@ import java.util.Scanner;
  * Example of authorizing with BigQuery and reading from a public dataset.
  */
 public class AsyncQuerySample extends BigqueryUtils {
-
-
   // [START main]
   /**
+   * Prompts for all the parameters required to make a query.
+   *
    * @param args Command line args
    * @throws IOException IOException
    * @throws InterruptedException InterruptedException
    */
   public static void main(final String[] args)
       throws IOException, InterruptedException {
-
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
@@ -52,20 +51,20 @@ public class AsyncQuerySample extends BigqueryUtils {
     System.out.println("Run query in batch mode? [true|false] ");
     boolean batch = Boolean.valueOf(scanner.nextLine());
     System.out.println("Enter how often to check if your job is complete "
-            + "(milliseconds): ");
+        + "(milliseconds): ");
     long waitTime = scanner.nextLong();
     scanner.close();
     Iterator<GetQueryResultsResponse> pages = run(projectId, queryString,
-            batch, waitTime);
+        batch, waitTime);
     while (pages.hasNext()) {
       printRows(pages.next().getRows(), System.out);
     }
-
   }
   // [END main]
-  // [START run]
 
+  // [START run]
   /**
+   * Run the query.
    *
    * @param projectId Get this from Google Developers console
    * @param queryString Query we want to run against BigQuery
@@ -75,7 +74,7 @@ public class AsyncQuerySample extends BigqueryUtils {
    * @throws IOException Thrown if there's an IOException
    * @throws InterruptedException Thrown if there's an Interrupted Exception
    */
-   public static Iterator<GetQueryResultsResponse> run(final String projectId,
+  public static Iterator<GetQueryResultsResponse> run(final String projectId,
       final String queryString,
       final boolean batch,
       final long waitTime)
@@ -94,7 +93,7 @@ public class AsyncQuerySample extends BigqueryUtils {
     GetQueryResults resultsRequest = bigquery.jobs().getQueryResults(
         projectId, query.getJobReference().getJobId());
 
-     return getPages(resultsRequest);
+    return getPages(resultsRequest);
   }
   // [END run]
 
@@ -115,7 +114,7 @@ public class AsyncQuerySample extends BigqueryUtils {
       final boolean batch) throws IOException {
 
     JobConfigurationQuery queryConfig = new JobConfigurationQuery()
-          .setQuery(querySql);
+        .setQuery(querySql);
 
     if (batch) {
       queryConfig.setPriority("BATCH");

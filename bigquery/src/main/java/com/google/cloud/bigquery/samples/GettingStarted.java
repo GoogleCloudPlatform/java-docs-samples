@@ -11,11 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-// [START all]
+
 package com.google.cloud.bigquery.samples;
 
-
-
+// [START all]
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -144,7 +143,7 @@ public class GettingStarted {
    */
   public static void main(String[] args) throws IOException {
     Scanner sc;
-    if(args.length == 0) {
+    if (args.length == 0) {
       // Prompt the user to enter the id of the project to run the queries under
       System.out.print("Enter the project ID: ");
       sc = new Scanner(System.in);
