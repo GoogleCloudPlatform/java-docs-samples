@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
+// [START all]
 package com.google.cloud.bigquery.samples;
 
 
@@ -164,3 +164,4 @@ public class GettingStarted {
   }
 
 }
+// [END all]
