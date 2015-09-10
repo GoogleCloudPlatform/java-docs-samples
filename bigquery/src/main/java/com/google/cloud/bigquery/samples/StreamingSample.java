@@ -33,21 +33,21 @@ import java.util.Scanner;
 /**
  * Example of Bigquery Streaming.
  */
-public class StreamingSample  {
+public class StreamingSample {
 
-    /**
-     * Empty constructor since this is just a collection of static methods.
-     */
-    protected StreamingSample() {
+  /**
+   * Empty constructor since this is just a collection of static methods.
+   */
+  protected StreamingSample() {
+  }
 
-    }
 
-
-    /**
-     * Command line that demonstrates Bigquery streaming.
-     * @param args Command line args, should be empty
-     * @throws IOException IOexception
-     */
+  /**
+   * Command line that demonstrates Bigquery streaming.
+   *
+   * @param args Command line args, should be empty
+   * @throws IOException IOexception
+   */
   // [START main]
   public static void main(final String[] args) throws IOException {
     final Scanner scanner = new Scanner(System.in);
@@ -62,24 +62,25 @@ public class StreamingSample  {
     System.out.println("Enter JSON to stream to BigQuery: \n"
         + "Press End-of-stream (CTRL-D) to stop");
 
-    JsonReader fromCLI = new JsonReader(new InputStreamReader(System.in));
+    JsonReader fromCli = new JsonReader(new InputStreamReader(System.in));
 
     Iterator<TableDataInsertAllResponse> responses = run(projectId,
         datasetId,
         tableId,
-        fromCLI);
+        fromCli);
 
     while (responses.hasNext()) {
       System.out.println(responses.next());
     }
 
-    fromCLI.close();
+    fromCli.close();
   }
   // [END main]
 
 
   /**
    * Run the bigquery ClI.
+   *
    * @param projectId Project id
    * @param datasetId datasetid
    * @param tableId tableid
@@ -101,10 +102,11 @@ public class StreamingSample  {
 
     return new Iterator<TableDataInsertAllResponse>() {
 
-        /**
-         * Get the next row in the stream
-         * @return True if there is another row in the stream
-         */
+      /**
+       * Check whether there is another row to stream.
+       *
+       * @return True if there is another row in the stream
+       */
       public boolean hasNext() {
         try {
           return rows.hasNext();
@@ -114,10 +116,11 @@ public class StreamingSample  {
         return false;
       }
 
-        /**
-         *
-         * @return Next page of data
-         */
+      /**
+       * Insert the next row, and return the response.
+       *
+       * @return Next page of data
+       */
       public TableDataInsertAllResponse next() {
         try {
           Map<String, Object> rowData = gson.<Map<String, Object>>fromJson(
@@ -143,19 +146,20 @@ public class StreamingSample  {
     };
 
   }
-// [END run]
+  // [END run]
 
   /**
+   * Stream the given row into the given bigquery table.
    *
    * @param bigquery The bigquery service
    * @param projectId project id from Google Developers console
-   * @param datasetId  id of teh dataset
-   * @param tableId if the table we're streaming
-   * @param row Id of the row we're inserting
+   * @param datasetId id of the dataset
+   * @param tableId id of the table we're streaming
+   * @param row the row we're inserting
    * @return Response from the insert
    * @throws IOException ioexception
    */
-// [START streamRow]
+  // [START streamRow]
   public static TableDataInsertAllResponse streamRow(final Bigquery bigquery,
       final String projectId,
       final String datasetId,
@@ -167,7 +171,7 @@ public class StreamingSample  {
         datasetId,
         tableId,
         new TableDataInsertAllRequest().setRows(
-                Collections.singletonList(row))).execute();
+            Collections.singletonList(row))).execute();
   }
-// [END streamRow]
+  // [END streamRow]
 }

@@ -48,6 +48,7 @@
                         <configLocation>google-checks.xml</configLocation>
                         <consoleOutput>true</consoleOutput>
                         <failOnViolation>true</failOnViolation>
+                        <failsOnError>true</failsOnError>
                     </configuration>
                 <executions>
                 <execution>

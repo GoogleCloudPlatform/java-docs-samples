@@ -29,69 +29,72 @@ import java.util.Scanner;
 public class SyncQuerySample {
 
 
-    /**
-     * Protected because this is a collection of static methods.
-     */
-    protected SyncQuerySample() {
+  /**
+   * Protected because this is a collection of static methods.
+   */
+  protected SyncQuerySample() {
 
-    }
+  }
 
   //[START main]
- /**
-  * @param args args
-  * @throws IOException ioexceptino
-  */
- public static void main(final String[] args)
-     throws IOException {
-   Scanner scanner = new Scanner(System.in);
-   System.out.println("Enter your project id: ");
-   String projectId = scanner.nextLine();
-   System.out.println("Enter your query string: ");
-   String queryString = scanner.nextLine();
-   System.out.println("Enter how long to wait for the query to complete"
-           + " (in milliseconds):\n "
-           + "(if longer than 10 seconds, use an asynchronous query)");
-   long waitTime = scanner.nextLong();
-   scanner.close();
-   Iterator<GetQueryResultsResponse> pages = run(projectId, queryString,
-           waitTime);
-   while (pages.hasNext()) {
-     BigqueryUtils.printRows(pages.next().getRows(), System.out);
-   }
- }
- // [END main]
+  /**
+   * Prompts the user for the required parameters to perform a query.
+   *
+   * @param args args
+   * @throws IOException ioexceptino
+   */
+  public static void main(final String[] args)
+      throws IOException {
+    Scanner scanner = new Scanner(System.in);
+    System.out.println("Enter your project id: ");
+    String projectId = scanner.nextLine();
+    System.out.println("Enter your query string: ");
+    String queryString = scanner.nextLine();
+    System.out.println("Enter how long to wait for the query to complete"
+        + " (in milliseconds):\n "
+        + "(if longer than 10 seconds, use an asynchronous query)");
+    long waitTime = scanner.nextLong();
+    scanner.close();
+    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString,
+        waitTime);
+    while (pages.hasNext()) {
+      BigqueryUtils.printRows(pages.next().getRows(), System.out);
+    }
+  }
+  // [END main]
 
 
-    /**
-     *
-      * @param projectId project id from developer console
-     * @param queryString query to run
-     * @param waitTime Timeout in milliseconds before we abort
-     * @return Iterator that pages through the results of the query
-     * @throws IOException ioexception
-     */
- // [START run]
- public static Iterator<GetQueryResultsResponse> run(final String projectId,
-     final String queryString,
-     final long waitTime) throws IOException {
-   Bigquery bigquery = BigqueryServiceFactory.getService();
-   //Wait until query is done with 10 second timeout, at most 5 retries on error
-   QueryResponse query = bigquery.jobs().query(
-       projectId,
-       new QueryRequest().setTimeoutMs(waitTime).setQuery(queryString))
-           .execute();
+  /**
+   * Perform the given query using the synchronous api.
+   *
+   * @param projectId project id from developer console
+   * @param queryString query to run
+   * @param waitTime Timeout in milliseconds before we abort
+   * @return Iterator that pages through the results of the query
+   * @throws IOException ioexception
+   */
+  // [START run]
+  public static Iterator<GetQueryResultsResponse> run(final String projectId,
+      final String queryString,
+      final long waitTime) throws IOException {
+    Bigquery bigquery = BigqueryServiceFactory.getService();
+    //Wait until query is done with 10 second timeout, at most 5 retries on error
+    QueryResponse query = bigquery.jobs().query(
+        projectId,
+        new QueryRequest().setTimeoutMs(waitTime).setQuery(queryString))
+        .execute();
 
-   //Make a request to get the results of the query
-   //(timeout is zero since job should be complete)
+    //Make a request to get the results of the query
+    //(timeout is zero since job should be complete)
 
-   GetQueryResults getRequest = bigquery.jobs().getQueryResults(
-       query.getJobReference().getProjectId(),
-       query.getJobReference().getJobId());
+    GetQueryResults getRequest = bigquery.jobs().getQueryResults(
+        query.getJobReference().getProjectId(),
+        query.getJobReference().getJobId());
 
 
-   return BigqueryUtils.getPages(getRequest);
- }
- // [END run]
+    return BigqueryUtils.getPages(getRequest);
+  }
+  // [END run]
 
 
 }

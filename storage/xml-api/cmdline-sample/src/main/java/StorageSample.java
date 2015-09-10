@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 import javax.xml.transform.OutputKeys;
@@ -36,7 +37,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.security.GeneralSecurityException;
 
 /**
  * Sample code used in the Cloud Storage Java documentation.
@@ -134,7 +134,7 @@ public final class StorageSample {
       System.exit(0);
 
     } catch (IOException e) {
-        System.err.println(e.getMessage());
+      System.err.println(e.getMessage());
     } catch (Throwable t) {
       t.printStackTrace();
     }

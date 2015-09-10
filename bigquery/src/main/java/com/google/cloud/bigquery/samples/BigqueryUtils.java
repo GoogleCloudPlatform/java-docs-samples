@@ -12,6 +12,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+
 package com.google.cloud.bigquery.samples;
 
 import com.google.api.client.json.GenericJson;
@@ -44,7 +45,6 @@ public class BigqueryUtils {
    * static helper methods.
    */
   protected BigqueryUtils() {
-
   }
 
   /**
@@ -53,12 +53,11 @@ public class BigqueryUtils {
    * @param out Output stream we want to print to
    */
   // [START print_rows]
-  public static void printRows(final List<TableRow> rows, final PrintStream
-          out) {
+  public static void printRows(final List<TableRow> rows, final PrintStream out) {
     for (TableRow row : rows) {
       for (TableCell field : row.getF()) {
         out.printf("%-50s", field.getV());
-       }
+      }
       out.println();
     }
   }
@@ -73,14 +72,13 @@ public class BigqueryUtils {
    * @throws InterruptedException InterruptedException
    */
   // [START poll_job]
-  public static Job pollJob(final Bigquery.Jobs.Get request, final long
-          interval)
+  public static Job pollJob(final Bigquery.Jobs.Get request, final long interval)
       throws IOException, InterruptedException {
     Job job = request.execute();
     while (!job.getStatus().getState().equals("DONE")) {
       System.out.println("Job is "
-    + job.getStatus().getState()
-    + " waiting " + interval + " milliseconds...");
+          + job.getStatus().getState()
+          + " waiting " + interval + " milliseconds...");
       Thread.sleep(interval);
       job = request.execute();
     }
@@ -97,7 +95,7 @@ public class BigqueryUtils {
    */
   // [START paging]
   public static <T extends GenericJson> Iterator<T> getPages(
-          final BigqueryRequest<T> requestTemplate) {
+      final BigqueryRequest<T> requestTemplate) {
 
     /**
      * An iterator class that pages through a Bigquery request.
@@ -168,8 +166,8 @@ public class BigqueryUtils {
     TableSchema sourceSchema = new TableSchema();
 
     List<TableFieldSchema> fields = (new Gson())
-            .<List<TableFieldSchema>>fromJson(schemaSource,
-        (new ArrayList<TableFieldSchema>()).getClass());
+        .<List<TableFieldSchema>>fromJson(schemaSource,
+            (new ArrayList<TableFieldSchema>()).getClass());
 
     sourceSchema.setFields(fields);
 
@@ -186,8 +184,7 @@ public class BigqueryUtils {
    * @throws IOException Thrown if there is a network error connecting to
    *                     Bigquery.
    */
-  public static void listDatasets(final Bigquery bigquery, final String
-          projectId)
+  public static void listDatasets(final Bigquery bigquery, final String projectId)
       throws IOException {
     Datasets.List datasetRequest = bigquery.datasets().list(projectId);
     DatasetList datasetList = datasetRequest.execute();
@@ -201,5 +198,4 @@ public class BigqueryUtils {
     }
   }
   // [END list_datasets]
-
 }
