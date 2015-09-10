@@ -130,8 +130,7 @@ public class GettingStarted {
     }
     String projectId = sc.nextLine();
 
-    // Create a new Bigquery client authorized via OAuth 2.0 protocol
-    // dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
+    // Create a new Bigquery client authorized via Application Default Credentials.
     Bigquery bigquery = createAuthorizedClient();
 
     List<TableRow> rows = executeQuery("SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words "
