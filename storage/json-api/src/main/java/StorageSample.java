@@ -20,6 +20,7 @@ import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
+import com.google.api.services.storage.StorageScopes;
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import com.google.api.services.storage.model.Objects;
@@ -61,6 +62,12 @@ public class StorageSample {
   private static Storage getService() throws IOException, GeneralSecurityException {
     if (null == storageService) {
       GoogleCredential credential = GoogleCredential.getApplicationDefault();
+      // Depending on the environment that provides the default credentials (e.g. Compute Engine,
+      // App Engine), the credentials may require us to specify the scopes we need explicitly.
+      // Check for this case, and inject the Bigquery scope if required.
+      if (credential.createScopedRequired()) {
+        credential = credential.createScoped(StorageScopes.all());
+      }
       HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
       storageService = new Storage.Builder(httpTransport, JSON_FACTORY, credential)
           .setApplicationName(APPLICATION_NAME).build();
