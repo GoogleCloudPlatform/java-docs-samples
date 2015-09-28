@@ -64,7 +64,7 @@ public class StorageSample {
       GoogleCredential credential = GoogleCredential.getApplicationDefault();
       // Depending on the environment that provides the default credentials (e.g. Compute Engine,
       // App Engine), the credentials may require us to specify the scopes we need explicitly.
-      // Check for this case, and inject the Bigquery scope if required.
+      // Check for this case, and inject the Cloud Storage scope if required.
       if (credential.createScopedRequired()) {
         credential = credential.createScoped(StorageScopes.all());
       }
