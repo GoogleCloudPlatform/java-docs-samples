@@ -19,13 +19,13 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <groupId>com.example.appengine.gettingstartedjava</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>helloworld</artifactId>
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -34,14 +34,6 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.3</version>
@@ -53,11 +45,8 @@ Copyright 2015 Google Inc. All Rights Reserved.
       </plugin>
       <plugin>
         <groupId>com.google.appengine</groupId>
-        <artifactId>gcloud-maven-plugin</artifactId>
-        <version>2.0.9.84.v20151031</version>
-        <configuration>
-          <set_default>true</set_default>
-        </configuration>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>1.9.28</version>
       </plugin>
     </plugins>
   </build>
