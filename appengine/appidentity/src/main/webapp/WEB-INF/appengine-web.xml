@@ -3,4 +3,5 @@
   <application>YOUR-PROJECT-ID</application>
   <version>YOUR-VERSION-ID</version>
   <threadsafe>true</threadsafe>
+  <vm>true</vm>
 </appengine-web-app>
