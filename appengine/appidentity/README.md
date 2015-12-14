@@ -10,18 +10,16 @@ To run this sample locally:
 
 ## Deploying
 In the following command, replace YOUR-PROJECT-ID with your
-[Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber)
-and YOUR-VERSION with a suitable version identifier.
+[Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber).
 
-    $ mvn gcloud:deploy -Dversion=YOUR-VERSION -Dgcloud_project=YOUR-PROJECT-ID
+    $ mvn gcloud:deploy -Dgcloud_project=YOUR-PROJECT-ID
 
 ## Setup
 To save your project settings so that you don't need to enter the
-`-Dgcloud_project=YOUR-CLOUD-PROJECT-ID` or `-Dversion=YOUR-VERSION-NAME`
-parameters, you can make the following changes:
+`-Dgcloud_project=YOUR-CLOUD-PROJECT-ID` parameters, you can:
 
-1. Update the <application> tag in src/main/webapp/WEB-INF/appengine-web.xml with your project name
-1. Update the <version> tag in src/main/webapp/WEB-INF/appengine-web.xml with your version name
+1. Update the <application> tag in src/main/webapp/WEB-INF/appengine-web.xml
+   with your project name.
 
 You will now be able to run
 
