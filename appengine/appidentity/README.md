@@ -12,11 +12,11 @@ To run this sample locally:
 In the following command, replace YOUR-PROJECT-ID with your
 [Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber).
 
-    $ mvn gcloud:deploy -Dgcloud_project=YOUR-PROJECT-ID
+    $ mvn gcloud:deploy -Dgcloud.gcloud_project=YOUR-PROJECT-ID
 
 ## Setup
 To save your project settings so that you don't need to enter the
-`-Dgcloud_project=YOUR-CLOUD-PROJECT-ID` parameters, you can:
+`-Dgcloud.gcloud_project=YOUR-CLOUD-PROJECT-ID` parameters, you can:
 
 1. Update the <application> tag in src/main/webapp/WEB-INF/appengine-web.xml
    with your project name.
@@ -25,4 +25,4 @@ You will now be able to run
 
     $ mvn gcloud:deploy
 
-without the need for any additional paramters.
+without the need for any additional parameters.
