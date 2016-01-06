@@ -32,6 +32,7 @@
         <module>storage/storage-transfer</module>
         <module>monitoring</module>
         <module>logging</module>
+        <module>managedvms/sparkjava</module>
     </modules>
 
     <build>
