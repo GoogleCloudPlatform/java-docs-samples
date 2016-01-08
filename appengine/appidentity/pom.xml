@@ -34,11 +34,21 @@ Copyright 2015 Google Inc. All Rights Reserved.
       <version>${appengine.target.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.5</version>
       <type>jar</type>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20151123</version>
     </dependency>
 
     <!-- Test Dependencies -->
