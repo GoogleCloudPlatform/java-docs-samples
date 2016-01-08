@@ -38,10 +38,12 @@ public class UrlShortenerServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     PrintWriter w = resp.getWriter();
     w.println("<!DOCTYPE html>");
-    w.println("<form method='post'>");
-    w.println("<label for='longUrl'>URL:</label>");
-    w.println("<input id='longUrl' name='longUrl' type='text'>");
-    w.println("<input type='submit' value='Shorten'>");
+    w.println("<meta charset=\"utf-8\">");
+    w.println("<title>Asserting Identity to Google APIs - App Engine App Identity Example</title>");
+    w.println("<form method=\"post\">");
+    w.println("<label for=\"longUrl\">URL:</label>");
+    w.println("<input id=\"longUrl\" name=\"longUrl\" type=\"text\">");
+    w.println("<input type=\"submit\" value=\"Shorten\">");
     w.println("</form>");
   }
 
