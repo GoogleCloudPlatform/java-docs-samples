@@ -23,6 +23,7 @@
     </prerequisites>
 
     <modules>
+        <module>appengine/appidentity</module>
         <module>taskqueue/deferred</module>
         <module>unittests</module>
         <module>bigquery</module>
@@ -31,6 +32,7 @@
         <module>storage/storage-transfer</module>
         <module>monitoring</module>
         <module>logging</module>
+        <module>managedvms/sparkjava</module>
     </modules>
 
     <build>
