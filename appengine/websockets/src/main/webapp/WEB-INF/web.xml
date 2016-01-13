@@ -1,0 +1,10 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+  <servlet>
+    <servlet-name>websockets</servlet-name>
+    <servlet-class>com.example.managedvms.websockets.WebsocketServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>websockets</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>
