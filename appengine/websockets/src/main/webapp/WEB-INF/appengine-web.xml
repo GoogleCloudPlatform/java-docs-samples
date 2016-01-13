@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+  <sessions-enabled>true</sessions-enabled>
+  <threadsafe>true</threadsafe>
+  <vm>true</vm>
+  <!-- TODO remove beta-settings -->
+  <beta-settings>
+    <setting name="java_quickstart" value="true" />
+  </beta-settings>
+  <network>
+    <forwarded-port>65080</forwarded-port>
+    <instance-tag>websocket</instance-tag>
+  </network>
+</appengine-web-app>
