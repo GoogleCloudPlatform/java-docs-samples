@@ -1,0 +1,62 @@
+<html>
+ <head>
+  <style type='text/css'>
+    body {font-family:Arial, Helvetica, sans-serif}
+    iframe {border: 0px}
+    table, tr, td {border: 0px}
+    th {font-variant: small-caps}
+    tfoot { font-style: italic }
+    span.red {color: #ff0000}
+    span.green {color: #00ff00}
+  </style>
+</head>
+<body>
+<h1>Blocking vs Asynchronous REST</h1>
+<p>
+This demo calls the <a href="https://developers.google.com/maps/web-services">Google Maps WebService API</a>
+to find places matching each of the search criteria passed on the query
+string.
+</p>
+<p>The rest API is called both synchronously and asynchronously for comparison. The time the request thread is held by the servlet is 
+displayed in <span class="red">red</span> for both. 
+<p>
+Using a combination of the asynchronous servlet API and an asynchronous http client, the server is able to release the 
+request thread back to the thread pool (shown in <span class="green">green</span>) while waiting for the response from the Google service. The thread can be reused to handle other 
+requests during the wait, which greatly reduces the number of threads required and server resources.
+</p>
+
+<table width='100%'>
+
+<tr>
+<th colspan="2" align="left">Synchronous</th>
+</tr>
+<tr>
+<td>
+  <iframe id="f1" width='100%' height='175px' src="testSerial?loc=Sydney+Opera+House&lat=-33.857197&long=151.215140&items=cafe&radius=500"></iframe>
+</td>
+<td>
+  <iframe id="f3" width='100%' height='175px' src="testSerial?loc=Rome+Coloseum&lat=41.890210&long=12.492231&radius=1000&items=atm,parking,taxi_stand"></iframe>
+</td>
+</tr>
+<tr><td colspan="2"><hr/></td></tr>
+<tr>
+<th colspan="2" align="left">Asynchronous</th>
+</tr>
+<tr>
+<td>
+  <iframe id="f2" width='100%' height='175px' src="testAsync?loc=Sydney+Opera+House&lat=-33.857197&long=151.215140&items=cafe&radius=500"/></iframe>
+</td>
+<td>
+  <iframe id="f4" width='100%' height='175px' src="testAsync?loc=Rome+Coloseum&lat=41.890210&long=12.492231&radius=1000&items=atm,parking,taxi_stand"/></iframe>
+</td>
+</tr>
+ <tfoot>
+  <tr>
+    <td  colspan="2" align="center">Effects of Synchronous Vs Asynchronous processing</td>
+  </tr>
+</tfoot>
+</table>
+
+
+</body>
+</html>
