@@ -18,7 +18,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.ajax.JSON;
 
 /**
- * Servlet implementation class SerialRestServlet
+ * SerialRestServlet
+ * 
+ *  May be configured with init parameters:
+ * <dl>
+ * <dt>appid</dt>
+ * <dd>The Google app key to use</dd>
+ * </dl>
  */
 public class SerialRestServlet extends AbstractRestServlet
 {   
@@ -58,7 +64,6 @@ public class SerialRestServlet extends AbstractRestServlet
         
 
         // Generate the response
-        //String thumbs=generateThumbs(results);
         String thumbs = generateResults(results);
         
         response.setContentType("text/html");
