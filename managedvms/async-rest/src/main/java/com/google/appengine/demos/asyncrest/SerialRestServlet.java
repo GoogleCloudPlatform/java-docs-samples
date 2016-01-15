@@ -84,10 +84,13 @@ public class SerialRestServlet extends AbstractRestServlet
         out.print("Thread held (<span class='red'>red</span>): "+ms(total)+"ms<br/>");
         
         out.println("<img border='0px' src='asyncrest/red.png'   height='20px' width='"+width(total)+"px'>");
-        
+
         out.println("<br/>");
-        out.print("First 5 results:<br/>");
-        out.println(thumbs);
+        out.print("First 5 results of "+results.size()+":<br/>");
+        if ("".equals(thumbs))
+            out.print("<i>No results. Ensure "+APPKEY+" property is set correctly.</i>");
+        else
+            out.println(thumbs);
         out.println("</small>");
         out.println("</body></html>");
         out.close();
