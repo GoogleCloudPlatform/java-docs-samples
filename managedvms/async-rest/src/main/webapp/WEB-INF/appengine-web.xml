@@ -4,4 +4,7 @@
 	<precompilation-enabled>false</precompilation-enabled>
 	<threadsafe>true</threadsafe>
 	<sessions-enabled>false</sessions-enabled>
+        <system-properties>
+            <property name="com.google.appengine.demos.asyncrest.appKey" value="${places.appkey}" />
+        </system-properties>
 </appengine-web-app>

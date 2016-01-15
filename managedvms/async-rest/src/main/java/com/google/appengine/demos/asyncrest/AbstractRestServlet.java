@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 public class AbstractRestServlet extends HttpServlet {
     protected final static int MAX_RESULTS = 5;
 
-    protected final static String GOOGLE_API_KEY = "AIzaSyABCgUB4wc290F9LcIigNXurT6yNV92yfY";
-
     protected final static String STYLE = "<style type='text/css'>" 
             + "  img.thumb:hover {height:50px}"
 	    + "  img.thumb {vertical-align:text-top}" 
@@ -30,7 +28,7 @@ public class AbstractRestServlet extends HttpServlet {
 	    + "  span.green {color: #00ff00}"
 	    + "  iframe {border: 0px}" + "</style>";
 
-    protected final static String APPID_PARAM = "appid";
+    protected final static String APPKEY = "com.google.appengine.demos.asyncrest.appKey";
     protected final static String LOC_PARAM = "loc";
     protected final static String ITEMS_PARAM = "items";
     protected final static String LATITUDE_PARAM = "lat";
@@ -40,10 +38,10 @@ public class AbstractRestServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
-	if (servletConfig.getInitParameter(APPID_PARAM) == null)
-	    key = GOOGLE_API_KEY;
-	else
-	    key = servletConfig.getInitParameter(APPID_PARAM);
+      //first try the servlet context init-param
+      key = servletConfig.getInitParameter(APPKEY);
+      if (key == null)
+	key = System.getProperty(APPKEY);
     }
 
     public static String sanitize(String s) {

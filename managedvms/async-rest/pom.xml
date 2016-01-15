@@ -7,6 +7,7 @@
   <name>Example Async Rest Webapp</name>
   <properties>
     <jetty.version>9.3.5.v20151012</jetty.version>
+    <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
   </properties>
   <build>
     <plugins>
@@ -22,12 +23,23 @@
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
+        <configuration>
+         <systemProperties>
+          <systemProperty> 
+            <name>com.google.appengine.demos.asyncrest.appKey</name>
+            <value>${places.appkey}</value>
+          </systemProperty> 
+         </systemProperties>
+        </configuration>
        </plugin>
        <plugin>
          <groupId>com.google.appengine</groupId>
          <artifactId>gcloud-maven-plugin</artifactId>
          <version>2.0.9.90.v20151210</version>
          <configuration>
+            <gcloud_directory>/usr/local/java/gcloud-sdk/google-cloud-sdk</gcloud_directory>
+            <verbosity>debug</verbosity>
+            <log_level>debug</log_level>
         </configuration>
       </plugin>
     </plugins>

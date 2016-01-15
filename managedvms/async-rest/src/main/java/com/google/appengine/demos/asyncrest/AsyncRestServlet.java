@@ -54,6 +54,12 @@ public class AsyncRestServlet extends AbstractRestServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
+
+	if (key == null) {
+	    response.sendError(500, APPKEY + " not set");
+	    return;
+	}
+
 	Long start = System.nanoTime();
 
 	// Do we have results yet?

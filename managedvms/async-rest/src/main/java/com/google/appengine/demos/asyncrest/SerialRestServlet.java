@@ -30,6 +30,10 @@ public class SerialRestServlet extends AbstractRestServlet
 {   
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+	if (key == null) {
+	    response.sendError(500, APPKEY + " not set");
+	    return;
+	}
         long start = System.nanoTime();
         
         String loc = sanitize(request.getParameter(LOC_PARAM));
