@@ -46,7 +46,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>1.9.28</version>
+        <version>1.9.31</version>
       </plugin>
     </plugins>
   </build>
