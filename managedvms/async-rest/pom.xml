@@ -8,6 +8,8 @@
   <properties>
     <jetty.version>9.3.5.v20151012</jetty.version>
     <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
+    <jetty.version>9.3.7.RC1</jetty.version>
+    <docker.label.prefix>async-</docker.label.prefix>
   </properties>
   <build>
     <plugins>
@@ -41,6 +43,49 @@
             <verbosity>debug</verbosity>
             <log_level>debug</log_level>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.3.2</version>
+        <executions>
+          <execution>
+            <id>build-docker-image</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+	      <baseImage>jetty9:${docker.label.prefix}${jetty.version}</baseImage>
+              <forceTags>true</forceTags>
+              <imageName>jetty9-async-rest</imageName>
+              <imageTags>
+                <imageTag>${docker.label.prefix}${project.version}</imageTag>
+              </imageTags>
+	      <resources>
+		 <resource>
+		   <targetPath>/var/lib/jetty/webapps</targetPath>
+		   <directory>${project.build.directory}</directory>
+		   <include>${project.build.finalName}.war</include>
+		 </resource>
+	      </resources>
+            </configuration>
+          </execution>
+	  <execution>
+	    <id>clean-docker</id>
+	    <phase>clean</phase>
+	    <goals>
+	      <goal>removeImage</goal>
+	    </goals>
+	    <configuration>
+	      <imageName>jetty9-async-rest</imageName>
+	      <imageTags>
+	        <imageTag>${docker.label.prefix}${project.version}</imageTag>
+	      </imageTags> 
+	    </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
