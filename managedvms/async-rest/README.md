@@ -19,7 +19,7 @@ First, complete the following steps:
 
    
 
-## Provding your Google Places API key ##
+## Providing your Google Places API key ##
 
 You will need to edit the pom.xml file and replace YOUR_PLACES_APP_KEY with the value of your key:
 
