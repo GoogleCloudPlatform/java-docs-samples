@@ -56,6 +56,7 @@ public class MailgunServlet extends HttpServlet {
     }
   }
 
+  // [START simple]
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
@@ -69,7 +70,9 @@ public class MailgunServlet extends HttpServlet {
     return webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class,
         formData);
   }
+  // [END simple]
 
+  // [START complex]
   private ClientResponse sendComplexMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
@@ -86,5 +89,6 @@ public class MailgunServlet extends HttpServlet {
     return webResource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
         .post(ClientResponse.class, formData);
   }
+  // [END complex]
 }
 // [END example]
