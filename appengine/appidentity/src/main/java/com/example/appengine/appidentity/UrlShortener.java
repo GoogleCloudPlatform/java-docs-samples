@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.appidentity;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
@@ -41,8 +42,8 @@ class UrlShortener {
   public String createShortUrl(String longUrl) throws Exception {
     ArrayList<String> scopes = new ArrayList<String>();
     scopes.add("https://www.googleapis.com/auth/urlshortener");
-    AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
-    AppIdentityService.GetAccessTokenResult accessToken = appIdentity.getAccessToken(scopes);
+    final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
+    final AppIdentityService.GetAccessTokenResult accessToken = appIdentity.getAccessToken(scopes);
     // The token asserts the identity reported by appIdentity.getServiceAccountName()
     JSONObject request = new JSONObject();
     request.put("longUrl", longUrl);
@@ -61,7 +62,7 @@ class UrlShortener {
     if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
       // Note: Should check the content-encoding.
       //       Any JSON parser can be used; this one is used for illustrative purposes.
-      JSONTokener response_tokens = new JSONTokener(connection.getInputStream());
+      JSONTokener responseTokens = new JSONTokener(connection.getInputStream());
       JSONObject response = new JSONObject(response_tokens);
       return (String) response.get("id");
     } else {
