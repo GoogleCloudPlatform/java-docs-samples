@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.appidentity;
 
 import com.google.appengine.api.users.UserService;
@@ -36,15 +37,16 @@ public class UrlShortenerServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PrintWriter w = resp.getWriter();
-    w.println("<!DOCTYPE html>");
-    w.println("<meta charset=\"utf-8\">");
-    w.println("<title>Asserting Identity to Google APIs - App Engine App Identity Example</title>");
-    w.println("<form method=\"post\">");
-    w.println("<label for=\"longUrl\">URL:</label>");
-    w.println("<input id=\"longUrl\" name=\"longUrl\" type=\"text\">");
-    w.println("<input type=\"submit\" value=\"Shorten\">");
-    w.println("</form>");
+    PrintWriter writer = resp.getWriter();
+    writer.println("<!DOCTYPE html>");
+    writer.println("<meta charset=\"utf-8\">");
+    writer.println(
+        "<title>Asserting Identity to Google APIs - App Engine App Identity Example</title>");
+    writer.println("<form method=\"post\">");
+    writer.println("<label for=\"longUrl\">URL:</label>");
+    writer.println("<input id=\"longUrl\" name=\"longUrl\" type=\"text\">");
+    writer.println("<input type=\"submit\" value=\"Shorten\">");
+    writer.println("</form>");
   }
 
   @Override
@@ -57,19 +59,19 @@ public class UrlShortenerServlet extends HttpServlet {
     }
 
     String shortUrl;
-    PrintWriter w = resp.getWriter();
+    PrintWriter writer = resp.getWriter();
     try {
       shortUrl = shortener.createShortUrl(longUrl);
     } catch (Exception e) {
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      w.println("error shortening URL: " + longUrl);
+      writer.println("error shortening URL: " + longUrl);
       e.printStackTrace(w);
       return;
     }
 
-    w.print("long URL: ");
-    w.println(longUrl);
-    w.print("short URL: ");
-    w.println(shortUrl);
+    writer.print("long URL: ");
+    writer.println(longUrl);
+    writer.print("short URL: ");
+    writer.println(shortUrl);
   }
 }
