@@ -6,6 +6,6 @@ env:
 before_install:
   - openssl aes-256-cbc -K $encrypted_99d8b304f94b_key -iv $encrypted_99d8b304f94b_iv -in service-account.json.enc -out service-account.json -d
 
-script: mvn test
+script: mvn verify
 after_success:
   - mvn clean cobertura:cobertura coveralls:report

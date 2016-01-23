@@ -5,7 +5,7 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.managedvms</groupId>
-  <artifactId>extendingruntime</artifactId>
+  <artifactId>appengine-extendingruntime</artifactId>
   <properties>
     <writeable.directory></writeable.directory>
     <gcloud.sdk.directory></gcloud.sdk.directory>
@@ -57,6 +57,20 @@
             jetty.port={port}
           </custom_entrypoint>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <configLocation>../../google-checks.xml</configLocation>
+          <consoleOutput>true</consoleOutput>
+          <failOnViolation>true</failOnViolation>
+          <failsOnError>true</failsOnError>
+        </configuration>
+        <executions>
+          <execution><goals><goal>check</goal></goals></execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

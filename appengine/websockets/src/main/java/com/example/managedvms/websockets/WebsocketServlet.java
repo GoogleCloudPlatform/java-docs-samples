@@ -57,6 +57,9 @@ public class WebsocketServlet extends HttpServlet {
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 
+  /**
+   * Returns the static IP address of the compute node this servlet is running on.
+   */
   public static String getExternalIp() {
     try {
       URL url = new URL(METADATA_NETWORK_INTERFACE_URL);
