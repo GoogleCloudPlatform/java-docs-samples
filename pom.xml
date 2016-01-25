@@ -23,24 +23,24 @@
     </prerequisites>
 
     <modules>
-        <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
-        <module>appengine/cloudsql</module>
-        <module>appengine/cloudstorage</module>
-        <module>appengine/datastore</module>
-        <module>appengine/disk</module>
-        <module>appengine/extending-runtime</module>
         <module>appengine/helloworld</module>
-        <module>appengine/helloworld-mvm</module>
-        <module>appengine/mailgun</module>
-        <module>appengine/memcache</module>
-        <module>appengine/sendgrid</module>
-        <module>appengine/static-files</module>
-        <module>appengine/twilio</module>
-        <module>appengine/websockets</module>
+        <module>managed_vms/analytics</module>
+        <module>managed_vms/cloudsql</module>
+        <module>managed_vms/cloudstorage</module>
+        <module>managed_vms/datastore</module>
+        <module>managed_vms/disk</module>
+        <module>managed_vms/extending-runtime</module>
+        <module>managed_vms/helloworld</module>
+        <module>managed_vms/mailgun</module>
+        <module>managed_vms/memcache</module>
+        <module>managed_vms/sendgrid</module>
+        <module>managed_vms/static-files</module>
+        <module>managed_vms/twilio</module>
+        <module>managed_vms/websockets</module>
+        <module>managedvms/sparkjava</module>
         <module>bigquery</module>
         <module>logging</module>
-        <module>managedvms/sparkjava</module>
         <module>monitoring</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
