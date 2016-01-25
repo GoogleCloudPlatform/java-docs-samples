@@ -43,7 +43,7 @@ public class ReceiveSmsServlet extends HttpServlet {
     TwiMLResponse twiml = new TwiMLResponse();
     Message sms = new Message(message);
     try {
-        twiml.append(sms);
+      twiml.append(sms);
     } catch (TwiMLException e) {
       throw new ServletException("Twilio error", e);
     }

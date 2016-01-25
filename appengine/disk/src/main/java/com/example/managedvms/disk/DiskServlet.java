@@ -46,7 +46,7 @@ public class DiskServlet extends HttpServlet {
     StringBuffer sb = new StringBuffer();
     List<String> strings = Files.readAllLines(tmpFile, StandardCharsets.US_ASCII);
     for (String s : strings) {
-      sb.append(s+"\n");
+      sb.append(s + "\n");
     }
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");

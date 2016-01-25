@@ -20,7 +20,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>helloworld</artifactId>
+  <artifactId>appengine-helloworld</artifactId>
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -47,6 +47,20 @@ Copyright 2015 Google Inc. All Rights Reserved.
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>1.9.31</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <configLocation>../../google-checks.xml</configLocation>
+          <consoleOutput>true</consoleOutput>
+          <failOnViolation>true</failOnViolation>
+          <failsOnError>true</failsOnError>
+        </configuration>
+        <executions>
+          <execution><goals><goal>check</goal></goals></execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

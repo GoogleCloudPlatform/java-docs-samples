@@ -23,16 +23,31 @@
     </prerequisites>
 
     <modules>
+        <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
-        <module>taskqueue/deferred</module>
-        <module>unittests</module>
+        <module>appengine/cloudsql</module>
+        <module>appengine/cloudstorage</module>
+        <module>appengine/datastore</module>
+        <module>appengine/disk</module>
+        <module>appengine/extending-runtime</module>
+        <module>appengine/helloworld</module>
+        <module>appengine/helloworld-mvm</module>
+        <module>appengine/mailgun</module>
+        <module>appengine/memcache</module>
+        <module>appengine/sendgrid</module>
+        <module>appengine/static-files</module>
+        <module>appengine/twilio</module>
+        <module>appengine/websockets</module>
         <module>bigquery</module>
-        <module>storage/xml-api/cmdline-sample</module>
-        <module>storage/xml-api/serviceaccount-appengine-sample</module>
-        <module>storage/storage-transfer</module>
-        <module>monitoring</module>
         <module>logging</module>
         <module>managedvms/sparkjava</module>
+        <module>monitoring</module>
+        <module>storage/json-api</module>
+        <module>storage/storage-transfer</module>
+        <module>storage/xml-api/cmdline-sample</module>
+        <module>storage/xml-api/serviceaccount-appengine-sample</module>
+        <module>taskqueue/deferred</module>
+        <module>unittests</module>
     </modules>
 
     <build>
@@ -40,26 +55,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.15</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>6.8.1</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <configLocation>google-checks.xml</configLocation>
-                        <consoleOutput>true</consoleOutput>
-                        <failOnViolation>true</failOnViolation>
-                        <failsOnError>true</failsOnError>
-                    </configuration>
+                <version>2.17</version>
+                <configuration>
+                    <configLocation>google-checks.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failOnViolation>true</failOnViolation>
+                    <failsOnError>true</failsOnError>
+                </configuration>
                 <executions>
-                <execution>
-                    <goals>
-                    <goal>check</goal>
-                    </goals>
-                    </execution>
+                    <execution><goals><goal>check</goal></goals></execution>
                 </executions>
              </plugin>
              <plugin>
