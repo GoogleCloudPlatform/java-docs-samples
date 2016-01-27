@@ -84,9 +84,6 @@
         <configuration>
         </configuration>
       </plugin>
-      <!--
-           The SparkJava demo currently (2016-01-22) fails the Google Style
-           checks. We can uncomment this block when it is fixed.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -101,7 +98,6 @@
           <execution><goals><goal>check</goal></goals></execution>
         </executions>
       </plugin>
-      -->
     </plugins>
   </build>
 </project>
