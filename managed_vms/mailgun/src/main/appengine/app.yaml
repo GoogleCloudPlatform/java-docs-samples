@@ -1,0 +1,12 @@
+runtime: java
+vm: true
+runtime_config:
+  jdk: openjdk8
+  server: jetty9
+
+# [START env_variables]
+env_variables:
+  MAILGUN_DOMAIN_NAME: YOUR-MAILGUN-DOMAIN-NAME
+  MAILGUN_API_KEY: YOUR-MAILGUN-API-KEY
+# [END env_variables]
+

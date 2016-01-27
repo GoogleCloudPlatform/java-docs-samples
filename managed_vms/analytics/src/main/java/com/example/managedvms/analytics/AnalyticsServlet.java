@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "analytics", value = "/*")
+@WebServlet(name = "analytics", value = "")
 public class AnalyticsServlet extends HttpServlet {
 
   @Override

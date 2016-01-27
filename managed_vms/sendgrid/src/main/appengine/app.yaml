@@ -1,0 +1,12 @@
+runtime: java
+vm: true
+runtime_config:
+  jdk: openjdk8
+  server: jetty9
+
+# [START env_variables]
+env_variables:
+  SENDGRID_API_KEY: YOUR-SENDGRID-API-KEY
+  SENDGRID_SENDER: YOUR-SENDGRID-SENDER
+# [END env_variables]
+

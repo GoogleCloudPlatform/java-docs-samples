@@ -37,7 +37,6 @@
         <module>managed_vms/sendgrid</module>
         <module>managed_vms/static-files</module>
         <module>managed_vms/twilio</module>
-        <module>managed_vms/websockets</module>
         <module>managedvms/sparkjava</module>
         <module>bigquery</module>
         <module>logging</module>

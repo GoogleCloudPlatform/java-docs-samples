@@ -1,0 +1,6 @@
+runtime: custom
+vm: true
+runtime_config:
+  jdk: openjdk8
+  server: jetty9
+

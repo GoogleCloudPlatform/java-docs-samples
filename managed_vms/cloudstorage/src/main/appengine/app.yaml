@@ -1,0 +1,10 @@
+runtime: java
+vm: true
+runtime_config:
+  jdk: openjdk8
+  server: jetty9
+
+# [START env_variables]
+env_variables:
+  BUCKET_NAME: YOUR-BUCKET-NAME
+# [END env_variables]

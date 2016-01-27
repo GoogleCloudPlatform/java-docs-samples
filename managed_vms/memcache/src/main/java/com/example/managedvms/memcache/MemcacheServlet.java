@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "memcache", value = "/*")
+@WebServlet(name = "memcache", value = "")
 public class MemcacheServlet extends HttpServlet {
 
   @Override

@@ -38,17 +38,13 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "datastore", value = "/*")
+@WebServlet(name = "datastore", value = "")
 public class DatastoreServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    Datastore datastore = DatastoreOptions
-        .builder()
-        .projectId(System.getenv("PROJECT_ID"))
-        .build()
-        .service();
+    Datastore datastore = DatastoreOptions.defaultInstance().service();
     KeyFactory keyFactory = datastore.newKeyFactory().kind("visit");
     IncompleteKey key = keyFactory.kind("visit").newKey();
     // Record a visit to the datastore, storing the IP and timestamp.

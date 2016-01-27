@@ -16,15 +16,14 @@
 
 package com.example.managedvms.cloudstorage;
 
-import com.google.common.io.ByteStreams;
+import com.google.gcloud.storage.Acl;
 import com.google.gcloud.storage.BlobInfo;
-import com.google.gcloud.storage.BlobWriteChannel;
 import com.google.gcloud.storage.Storage;
 import com.google.gcloud.storage.StorageOptions;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.Channels;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -53,11 +52,13 @@ public class UploadServlet extends HttpServlet {
       ServletException {
     final Part filePart = req.getPart("file");
     final String fileName = filePart.getSubmittedFileName();
-    BlobInfo blobInfo = BlobInfo.builder(BUCKET_NAME, fileName).build();
-    InputStream filecontent = filePart.getInputStream();
-    BlobWriteChannel blobWriter = storage.writer(blobInfo);
-    ByteStreams.copy(filecontent, Channels.newOutputStream(blobWriter));
-    blobWriter.close();
+    List<Acl> acls = new ArrayList<>();
+    acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+    // the inputstream is closed by default, so we don't need to close it here
+    BlobInfo blobInfo =
+        storage.create(
+            BlobInfo.builder(BUCKET_NAME, fileName).acl(acls).build(),
+            filePart.getInputStream());
     blobInfo = storage.get(BUCKET_NAME, fileName);
     resp.getWriter().print(blobInfo.mediaLink());
   }
