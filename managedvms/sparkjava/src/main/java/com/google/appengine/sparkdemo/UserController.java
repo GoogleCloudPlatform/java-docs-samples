@@ -30,6 +30,9 @@ import spark.Spark;
 
 public class UserController {
 
+  /**
+   * Creates a controller that maps requests to gcloud-java functions.
+   */
   public UserController(final UserService userService) {
     Spark.staticFileLocation("/public");
 
@@ -48,13 +51,13 @@ public class UserController {
     delete("/api/users/:id", (req, res) -> userService.deleteUser(req.params(":id")), json());
 
     after((req, res) -> {
-          res.type("application/json");
-        });
+      res.type("application/json");
+    });
 
-    exception(IllegalArgumentException.class, (e, req, res) -> {
-          res.status(400);
-          res.body(toJson(new ResponseError(e)));
-        });
+    exception(IllegalArgumentException.class, (error, req, res) -> {
+      res.status(400);
+      res.body(toJson(new ResponseError(error)));
+    });
   }
 
   private static String toJson(Object object) {

@@ -38,6 +38,9 @@ public class UserService {
     this.datastore = datastore;
   }
 
+  /**
+   * Return a list of all users.
+   */
   public List<User> getAllUsers() {
     Query<Entity> query =
         Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + KINDNAME).build();
@@ -51,6 +54,9 @@ public class UserService {
     return users;
   }
 
+  /**
+   * Create a new user and add it to Cloud Datastore.
+   */
   public User createUser(String name, String email) {
     failIfInvalid(name, email);
     User user = new User(name, email);
@@ -65,6 +71,9 @@ public class UserService {
     return user;
   }
 
+  /**
+   * Delete a user from Cloud Datastore.
+   */
   public String deleteUser(String id) {
     KeyFactory keyFactory = datastore.newKeyFactory().kind(KINDNAME);
     Key key = keyFactory.newKey(id);
@@ -72,6 +81,9 @@ public class UserService {
     return "ok";
   }
 
+  /**
+   * Updates a user in Cloud Datastore.
+   */
   public User updateUser(String id, String name, String email) {
     failIfInvalid(name, email);
     KeyFactory keyFactory = datastore.newKeyFactory().kind(KINDNAME);
