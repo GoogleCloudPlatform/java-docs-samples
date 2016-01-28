@@ -3,12 +3,25 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
-  <servlet>
-    <servlet-name>hello</servlet-name>
-    <servlet-class>com.example.appengine.helloworld.HelloServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>hello</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>
+  <!-- turn security on by default -->
+  <security-constraint>
+      <web-resource-collection>
+          <web-resource-name>profile</web-resource-name>
+          <url-pattern>/profile/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+          <role-name>*</role-name>
+      </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+      <web-resource-collection>
+          <web-resource-name>admin</web-resource-name>
+          <url-pattern>/admin/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+          <role-name>admin</role-name>
+      </auth-constraint>
+  </security-constraint>
+
 </web-app>
