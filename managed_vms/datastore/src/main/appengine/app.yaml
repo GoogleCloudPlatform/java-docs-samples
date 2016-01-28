@@ -1,6 +1,3 @@
 runtime: java
 vm: true
-runtime_config:
-  jdk: openjdk8
-  server: jetty9
 
