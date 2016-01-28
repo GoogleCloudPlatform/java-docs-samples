@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "cloudsql", value = "/*")
+@WebServlet(name = "cloudsql", value = "")
 public class CloudSqlServlet extends HttpServlet {
 
   @Override

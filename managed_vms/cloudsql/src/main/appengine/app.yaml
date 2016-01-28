@@ -1,0 +1,7 @@
+runtime: java
+vm: true
+
+# [START env_variables]
+env_variables:
+  SQL_DATABASE_URL: jdbc:mysql://HOST-IP:3306/YOUR-DB-NAME?user=USERNAME&password=PASSWORD
+# [END env_variables]

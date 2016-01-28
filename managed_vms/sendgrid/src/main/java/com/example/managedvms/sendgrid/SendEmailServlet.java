@@ -37,7 +37,7 @@ public class SendEmailServlet extends HttpServlet {
       ServletException {
     final String SENDGRID_API_KEY = System.getenv("SENDGRID_API_KEY");
     final String SENDGRID_SENDER = System.getenv("SENDGRID_SENDER");
-    final String TO_EMAIL = (String) req.getParameter("to");
+    final String TO_EMAIL = req.getParameter("to");
     if (TO_EMAIL == null) {
       resp.getWriter().print("Please provide an email address in the \"to\" query string"
           + " parameter.");

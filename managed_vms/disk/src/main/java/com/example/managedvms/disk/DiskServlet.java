@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "disk", value = "/*")
+@WebServlet(name = "disk", value = "")
 public class DiskServlet extends HttpServlet {
 
   @Override
