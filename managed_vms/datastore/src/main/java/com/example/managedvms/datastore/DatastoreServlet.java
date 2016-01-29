@@ -29,6 +29,9 @@ import com.google.gcloud.datastore.StructuredQuery;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,17 +47,29 @@ public class DatastoreServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
+    // store only the first two octets of a users ip address
+    String userIp = req.getRemoteAddr();
+    InetAddress address = InetAddress.getByName(userIp);
+    if (address instanceof Inet6Address) {
+      userIp = userIp.substring(0, userIp.indexOf(":", 2)) + ":*:*:*:*:*:*";
+    } else if (address instanceof Inet4Address) {
+      userIp = userIp.substring(0, userIp.indexOf(".", 2)) + ".*.*";
+    }
+
     Datastore datastore = DatastoreOptions.defaultInstance().service();
     KeyFactory keyFactory = datastore.newKeyFactory().kind("visit");
     IncompleteKey key = keyFactory.kind("visit").newKey();
+
     // Record a visit to the datastore, storing the IP and timestamp.
     FullEntity<IncompleteKey> curVisit = FullEntity.builder(key)
-        .set("user_ip", req.getRemoteAddr()).set("timestamp", DateTime.now()).build();
+        .set("user_ip", userIp).set("timestamp", DateTime.now()).build();
     datastore.add(curVisit);
+
     // Retrieve the last 10 visits from the datastore, ordered by timestamp.
     Query<Entity> query = Query.entityQueryBuilder().kind("visit")
         .orderBy(StructuredQuery.OrderBy.desc("timestamp")).limit(10).build();
     QueryResults<Entity> results = datastore.run(query);
+
     resp.setContentType("text/plain");
     PrintWriter out = resp.getWriter();
     out.print("Last 10 visits:\n");

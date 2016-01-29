@@ -14,7 +14,7 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->  
+    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.gcloud</groupId>
       <artifactId>gcloud-java-datastore</artifactId>
@@ -62,7 +62,11 @@
           <failsOnError>true</failsOnError>
         </configuration>
         <executions>
-          <execution><goals><goal>check</goal></goals></execution>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>
