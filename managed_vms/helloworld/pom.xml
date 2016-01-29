@@ -8,6 +8,7 @@
   <groupId>com.example.managedvms</groupId>
   <artifactId>managedvms-helloworld-mvm</artifactId>
 
+  <!-- [START dependencies] -->
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -17,6 +18,7 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  <!-- [END dependencies] -->
 
   <build>
     <!-- for hot reload of the web application -->
