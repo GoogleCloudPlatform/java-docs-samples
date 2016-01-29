@@ -16,6 +16,8 @@
 
 package com.example.managedvms.cloudsql;
 
+import org.jasypt.util.text.BasicTextEncryptor;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -40,27 +42,33 @@ public class CloudSqlServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
+    // encrypt user ip using PBEWithMD5AndDES
+    BasicTextEncryptor encryptor = new BasicTextEncryptor();
+    encryptor.setPassword(Double.toString(10000 * Math.random()));
+    String userIp = encryptor.encrypt(req.getRemoteAddr());
+
     final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id INT NOT NULL "
         + "AUTO_INCREMENT, user_ip VARCHAR(46) NOT NULL, timestamp DATETIME NOT NULL, "
         + "PRIMARY KEY (visit_id) )";
     final String createVisitSql = "INSERT INTO visits (user_ip, timestamp) VALUES (?, ?)";
     final String selectSql = "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC "
         + "LIMIT 10";
+
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");
     String url = System.getenv("SQL_DATABASE_URL");
     try (Connection conn = DriverManager.getConnection(url);
         PreparedStatement statementCreateVisit = conn.prepareStatement(createVisitSql)) {
       conn.createStatement().executeUpdate(createTableSql);
-      statementCreateVisit.setString(1, req.getRemoteAddr());
+      statementCreateVisit.setString(1, userIp);
       statementCreateVisit.setTimestamp(2, new Timestamp(new Date().getTime()));
       statementCreateVisit.executeUpdate();
       try (ResultSet rs = conn.prepareStatement(selectSql).executeQuery()) {
         out.print("Last 10 visits:\n");
         while (rs.next()) {
-          String userIp = rs.getString("user_ip");
+          String savedIp = rs.getString("user_ip");
           String timeStamp = rs.getString("timestamp");
-          out.print("Time: " + timeStamp + " Addr: " + userIp + "\n");
+          out.print("Time: " + timeStamp + " Addr: " + savedIp + "\n");
         }
       }
     } catch (SQLException e) {

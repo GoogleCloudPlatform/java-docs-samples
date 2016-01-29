@@ -52,6 +52,8 @@ public class UploadServlet extends HttpServlet {
       ServletException {
     final Part filePart = req.getPart("file");
     final String fileName = filePart.getSubmittedFileName();
+
+    // Modify access list to allow all users with link to read file
     List<Acl> acls = new ArrayList<>();
     acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
     // the inputstream is closed by default, so we don't need to close it here
@@ -60,6 +62,8 @@ public class UploadServlet extends HttpServlet {
             BlobInfo.builder(BUCKET_NAME, fileName).acl(acls).build(),
             filePart.getInputStream());
     blobInfo = storage.get(BUCKET_NAME, fileName);
+
+    // return the public download link
     resp.getWriter().print(blobInfo.mediaLink());
   }
 }

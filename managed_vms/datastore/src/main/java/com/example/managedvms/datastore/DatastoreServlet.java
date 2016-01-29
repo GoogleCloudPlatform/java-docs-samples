@@ -27,6 +27,8 @@ import com.google.gcloud.datastore.Query;
 import com.google.gcloud.datastore.QueryResults;
 import com.google.gcloud.datastore.StructuredQuery;
 
+import org.jasypt.util.text.BasicTextEncryptor;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -44,17 +46,25 @@ public class DatastoreServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
+    // encrypt user ip using PBEWithMD5AndDES
+    BasicTextEncryptor encryptor = new BasicTextEncryptor();
+    encryptor.setPassword(Double.toString(10000*Math.random()));
+    String userIp = encryptor.encrypt(req.getRemoteAddr());
+
     Datastore datastore = DatastoreOptions.defaultInstance().service();
     KeyFactory keyFactory = datastore.newKeyFactory().kind("visit");
     IncompleteKey key = keyFactory.kind("visit").newKey();
+
     // Record a visit to the datastore, storing the IP and timestamp.
     FullEntity<IncompleteKey> curVisit = FullEntity.builder(key)
-        .set("user_ip", req.getRemoteAddr()).set("timestamp", DateTime.now()).build();
+        .set("user_ip", userIp).set("timestamp", DateTime.now()).build();
     datastore.add(curVisit);
+
     // Retrieve the last 10 visits from the datastore, ordered by timestamp.
     Query<Entity> query = Query.entityQueryBuilder().kind("visit")
         .orderBy(StructuredQuery.OrderBy.desc("timestamp")).limit(10).build();
     QueryResults<Entity> results = datastore.run(query);
+
     resp.setContentType("text/plain");
     PrintWriter out = resp.getWriter();
     out.print("Last 10 visits:\n");
