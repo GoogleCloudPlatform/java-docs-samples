@@ -6,9 +6,8 @@
   <packaging>war</packaging>
   <name>Example Async Rest Webapp</name>
   <properties>
-    <jetty.version>9.3.5.v20151012</jetty.version>
     <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
-    <jetty.version>9.3.7.RC1</jetty.version>
+    <jetty.version>9.3.7.v20160115</jetty.version>
     <docker.label.prefix>async-</docker.label.prefix>
   </properties>
   <build>
