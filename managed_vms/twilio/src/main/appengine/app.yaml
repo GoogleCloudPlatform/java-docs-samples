@@ -1,0 +1,15 @@
+runtime: java
+vm: true
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+# [START env_variables]
+env_variables:
+  TWILIO_ACCOUNT_SID: YOUR-TWILIO-ACCOUNT-SID
+  TWILIO_AUTH_TOKEN: YOUR-TWILIO-AUTH-TOKEN
+  TWILIO_NUMBER: YOUR-TWILIO-NUMBER
+# [END env_variables]
+

@@ -1,0 +1,12 @@
+runtime: java
+vm: true
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+# [START env_variables]
+env_variables:
+  BUCKET_NAME: YOUR-BUCKET-NAME
+# [END env_variables]

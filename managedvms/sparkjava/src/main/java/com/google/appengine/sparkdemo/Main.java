@@ -22,6 +22,9 @@ import com.google.gcloud.datastore.DatastoreOptions;
 
 public class Main {
 
+  /**
+   * Starts the webapp on localhost:8080.
+   */
   public static void main(String[] args) {
     port(8080);
     UserController userController =

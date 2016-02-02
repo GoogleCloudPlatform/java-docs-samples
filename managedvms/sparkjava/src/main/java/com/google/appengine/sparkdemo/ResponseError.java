@@ -24,7 +24,7 @@ public class ResponseError {
     this.message = String.format(message, (Object) args);
   }
 
-  public ResponseError(Exception e) {
-    this.message = e.getMessage();
+  public ResponseError(Exception ex) {
+    this.message = ex.getMessage();
   }
 }

@@ -1,0 +1,14 @@
+runtime: java
+vm: true
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+# [START env_variables]
+env_variables:
+  SENDGRID_API_KEY: YOUR-SENDGRID-API-KEY
+  SENDGRID_SENDER: YOUR-SENDGRID-SENDER
+# [END env_variables]
+

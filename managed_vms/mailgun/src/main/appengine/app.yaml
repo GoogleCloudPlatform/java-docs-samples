@@ -1,0 +1,14 @@
+runtime: java
+vm: true
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+# [START env_variables]
+env_variables:
+  MAILGUN_DOMAIN_NAME: YOUR-MAILGUN-DOMAIN-NAME
+  MAILGUN_API_KEY: YOUR-MAILGUN-API-KEY
+# [END env_variables]
+

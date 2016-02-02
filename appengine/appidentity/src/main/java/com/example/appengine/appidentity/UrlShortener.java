@@ -63,7 +63,7 @@ class UrlShortener {
       // Note: Should check the content-encoding.
       //       Any JSON parser can be used; this one is used for illustrative purposes.
       JSONTokener responseTokens = new JSONTokener(connection.getInputStream());
-      JSONObject response = new JSONObject(response_tokens);
+      JSONObject response = new JSONObject(responseTokens);
       return (String) response.get("id");
     } else {
       try (InputStream s = connection.getErrorStream();

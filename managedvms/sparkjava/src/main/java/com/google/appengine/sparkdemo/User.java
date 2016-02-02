@@ -24,10 +24,16 @@ public class User {
   private String name;
   private String email;
 
+  /**
+   * Construct a user given a name and email. An ID is auto-generated for the user.
+   */
   public User(String name, String email) {
     this(UUID.randomUUID().toString(), name, email);
   }
 
+  /**
+   * Construct a user given an ID, name, and email.
+   */
   public User(String id, String name, String email) {
     this.id = id;
     this.email = email;
