@@ -26,5 +26,14 @@
                 <url-pattern>/testAsync</url-pattern>
         </servlet-mapping>
 
+        <servlet>
+                <display-name>DumpServlet</display-name>
+                <servlet-name>DumpServlet</servlet-name>
+                <servlet-class>com.google.appengine.demos.DumpServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>DumpServlet</servlet-name>
+                <url-pattern>/dump/*</url-pattern>
+        </servlet-mapping>
 
 </web-app>

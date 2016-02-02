@@ -10,6 +10,7 @@ import java.util.Queue;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ public class AbstractRestServlet extends HttpServlet {
 	    + "  iframe {border: 0px}" + "</style>";
 
     protected final static String APPKEY = "com.google.appengine.demos.asyncrest.appKey";
+    protected final static String APPKEY_ENV = "PLACES_APPKEY";
     protected final static String LOC_PARAM = "loc";
     protected final static String ITEMS_PARAM = "items";
     protected final static String LATITUDE_PARAM = "lat";
@@ -39,9 +41,20 @@ public class AbstractRestServlet extends HttpServlet {
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
       //first try the servlet context init-param
+      String source="InitParameter";
       key = servletConfig.getInitParameter(APPKEY);
-      if (key == null)
+      if (key==null || key.startsWith("${")) {
+        source="System Property";
 	key = System.getProperty(APPKEY);
+      }
+      if (key == null || key.startsWith("${")) {
+        source="Environment Variable";
+        key = System.getenv(APPKEY_ENV);
+      }
+      if (key == null)
+        throw new UnavailableException("Places App Key not set");
+      if (key.startsWith("${"))
+        throw new UnavailableException("Places App Key not expanded from "+source);
     }
 
     public static String sanitize(String s) {
