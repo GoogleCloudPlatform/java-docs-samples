@@ -44,6 +44,8 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+
+<!-- START assembly -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -65,6 +67,9 @@
           </archive>
         </configuration>
       </plugin>
+<!-- END assembly -->
+
+<!-- START exec -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -77,6 +82,7 @@
           </arguments>
         </configuration>
       </plugin>
+<!-- END exec -->
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>gcloud-maven-plugin</artifactId>
