@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" 
+   version="3.1">
+
+	<display-name>Async REST Webservice Example</display-name>
+        <servlet>
+                <display-name>SerialRestServlet</display-name>
+                <servlet-name>SerialRestServlet</servlet-name>
+                <servlet-class>com.google.appengine.demos.asyncrest.SerialRestServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>SerialRestServlet</servlet-name>
+                <url-pattern>/testSerial</url-pattern>
+        </servlet-mapping>
+
+        <servlet>
+                <display-name>AsyncRestServlet</display-name>
+                <servlet-name>AsyncRestServlet</servlet-name>
+                <servlet-class>com.google.appengine.demos.asyncrest.AsyncRestServlet</servlet-class>
+                <async-supported>true</async-supported>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>AsyncRestServlet</servlet-name>
+                <url-pattern>/testAsync</url-pattern>
+        </servlet-mapping>
+
+        <servlet>
+                <display-name>DumpServlet</display-name>
+                <servlet-name>DumpServlet</servlet-name>
+                <servlet-class>com.google.appengine.demos.DumpServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>DumpServlet</servlet-name>
+                <url-pattern>/dump/*</url-pattern>
+        </servlet-mapping>
+
+</web-app>
