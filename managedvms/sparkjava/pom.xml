@@ -35,7 +35,7 @@
   </dependencies>
   <build>
     <plugins>
-<!-- //[START maven]-->
+<!-- // [START maven]-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -45,8 +45,8 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-<!-- //[END maven]-->
-<!-- //[START assembly] -->
+<!-- // [END maven]-->
+<!-- // [START assembly] -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -68,9 +68,9 @@
           </archive>
         </configuration>
       </plugin>
-<!-- //[END assembly] -->
+<!-- // [END assembly] -->
 
-<!-- //[START exec] -->
+<!-- // [START exec] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -83,7 +83,7 @@
           </arguments>
         </configuration>
       </plugin>
-<!-- //[END exec] -->
+<!-- // [END exec] -->
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>gcloud-maven-plugin</artifactId>
