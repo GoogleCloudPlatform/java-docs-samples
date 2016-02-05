@@ -28,6 +28,7 @@ import org.eclipse.jetty.util.ajax.JSON;
  */
 public class SerialRestServlet extends AbstractRestServlet {
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     if (key == null) {
       response.sendError(500, APPKEY + " not set");
@@ -96,6 +97,7 @@ public class SerialRestServlet extends AbstractRestServlet {
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
    * response)
    */
+  @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     doGet(request, response);
   }
