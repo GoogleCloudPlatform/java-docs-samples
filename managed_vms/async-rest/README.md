@@ -3,7 +3,7 @@
 
 This web app demonstrates using asynchronous servlet techniques to reduce server resources.
 
-The code for this tutorial is here: [https://github.com/GoogleCloudPlatform/java-docs-samples/managedvms/async-rest](https://github.com/GoogleCloudPlatform/java-docs-samples/managedvms/async-rest).
+The code for this tutorial is here: [https://github.com/GoogleCloudPlatform/java-docs-samples/managed_vms/async-rest](https://github.com/GoogleCloudPlatform/java-docs-samples/managed_vms/async-rest).
 
 
 ## Initial Setup ##
@@ -38,7 +38,9 @@ Go to  http://localhost:8080 to see the webapp.
 
 ## Running locally using Docker ##
 
-The project also builds a docker image based on the jetty9 image for [Google Container Engine](https://cloud.google.com/container-engine/). The WAR file is installed in the webapps directory and the resulting image can be run locally with:
+The project also  can build a docker image based on the jetty9 image for [Google Container Engine](https://cloud.google.com/container-engine/). 
+First uncomment the maven plugin section for docker-maven-plugin in the pom.xml.
+The WAR file is installed in the webapps directory and the resulting image can be run locally with:
 
     docker run --rm -it -p 8080:8080 jetty9-async-rest --exec -Dcom.google.appengine.demos.asyncrest.appKey=YOUR_PLACES_APP_KEY
 
