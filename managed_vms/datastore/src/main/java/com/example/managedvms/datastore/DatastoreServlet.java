@@ -51,9 +51,11 @@ public class DatastoreServlet extends HttpServlet {
     String userIp = req.getRemoteAddr();
     InetAddress address = InetAddress.getByName(userIp);
     if (address instanceof Inet6Address) {
-      userIp = userIp.substring(0, userIp.indexOf(":", 2)) + ":*:*:*:*:*:*";
+      // nest indexOf calls to find the second occurrence of a character in a string
+      // an alternative is to use Apache Commons Lang: StringUtils.ordinalIndexOf()
+      userIp = userIp.substring(0, userIp.indexOf(":", userIp.indexOf(":") + 1)) + ":*:*:*:*:*:*";
     } else if (address instanceof Inet4Address) {
-      userIp = userIp.substring(0, userIp.indexOf(".", 2)) + ".*.*";
+      userIp = userIp.substring(0, userIp.indexOf(".", userIp.indexOf(".") + 1)) + ".*.*";
     }
 
     Datastore datastore = DatastoreOptions.defaultInstance().service();
