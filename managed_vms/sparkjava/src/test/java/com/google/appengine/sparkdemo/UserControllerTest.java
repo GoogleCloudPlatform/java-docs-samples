@@ -34,6 +34,7 @@ import spark.utils.IOUtils;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 public class UserControllerTest {
 
@@ -43,7 +44,7 @@ public class UserControllerTest {
 
   @BeforeClass
   public static void beforeClass() {
-    Main.main(null);
+    Main.main(new String[] {"kind=DemoUser" + UUID.randomUUID().toString().replaceAll("-", "")});
     Spark.awaitInitialization();
   }
 
