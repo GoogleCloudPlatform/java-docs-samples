@@ -18,6 +18,9 @@ package com.example.managedvms.disk;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,9 +43,22 @@ public class DiskServlet extends HttpServlet {
     String instanceId =
         System.getenv().containsKey("GAE_MODULE_INSTANCE")
             ? System.getenv("GAE_MODULE_INSTANCE") : "1";
-    String userId = req.getRemoteAddr() + "\n";
+    // store only the first two octets of a users ip address
+    String userIp = req.getRemoteAddr();
+    InetAddress address = InetAddress.getByName(userIp);
+    if (address instanceof Inet6Address) {
+      // nest indexOf calls to find the second occurrence of a character in a string
+      // an alternative is to use Apache Commons Lang: StringUtils.ordinalIndexOf()
+      userIp = userIp.substring(0, userIp.indexOf(":", userIp.indexOf(":") + 1)) + ":*:*:*:*:*:*";
+    } else if (address instanceof Inet4Address) {
+      userIp = userIp.substring(0, userIp.indexOf(".", userIp.indexOf(".") + 1)) + ".*.*";
+    }
     Path tmpFile = Paths.get("/tmp/seen.txt");
-    Files.write(tmpFile, userId.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    Files.write(
+        tmpFile,
+        (userIp + "\n").getBytes(),
+        StandardOpenOption.CREATE,
+        StandardOpenOption.APPEND);
     StringBuffer sb = new StringBuffer();
     List<String> strings = Files.readAllLines(tmpFile, StandardCharsets.US_ASCII);
     for (String s : strings) {
