@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.gcloud.datastore.Datastore;
 import com.google.gcloud.datastore.Entity;
-import com.google.gcloud.datastore.FullEntity;
 import com.google.gcloud.datastore.Key;
 import com.google.gcloud.datastore.KeyFactory;
 import com.google.gcloud.datastore.Query;
@@ -31,11 +30,20 @@ import java.util.List;
 
 public class UserService {
 
-  private static final String KINDNAME = "DEMO_USER";
-  private Datastore datastore;
+  private final Datastore datastore;
+  private final KeyFactory keyFactory;
+  private final String kind;
 
-  public UserService(Datastore datastore) {
+  /**
+   * Constructor for UserService.
+   *
+   * @param datastore gcloud-java Datastore service object to execute requests
+   * @param kind the kind for the Datastore entities in this demo
+   */
+  public UserService(Datastore datastore, String kind) {
     this.datastore = datastore;
+    this.keyFactory = datastore.newKeyFactory().kind(kind);
+    this.kind = kind;
   }
 
   /**
@@ -43,7 +51,7 @@ public class UserService {
    */
   public List<User> getAllUsers() {
     Query<Entity> query =
-        Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + KINDNAME).build();
+        Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
     QueryResults<Entity> results = datastore.run(query);
     List<User> users = new ArrayList<>();
     while (results.hasNext()) {
@@ -60,9 +68,8 @@ public class UserService {
   public User createUser(String name, String email) {
     failIfInvalid(name, email);
     User user = new User(name, email);
-    KeyFactory keyFactory = datastore.newKeyFactory().kind(KINDNAME);
     Key key = keyFactory.newKey(user.getId());
-    FullEntity entity = Entity.builder(key)
+    Entity entity = Entity.builder(key)
         .set("id", user.getId())
         .set("name", name)
         .set("email", email)
@@ -75,7 +82,6 @@ public class UserService {
    * Delete a user from Cloud Datastore.
    */
   public String deleteUser(String id) {
-    KeyFactory keyFactory = datastore.newKeyFactory().kind(KINDNAME);
     Key key = keyFactory.newKey(id);
     datastore.delete(key);
     return "ok";
@@ -86,7 +92,6 @@ public class UserService {
    */
   public User updateUser(String id, String name, String email) {
     failIfInvalid(name, email);
-    KeyFactory keyFactory = datastore.newKeyFactory().kind(KINDNAME);
     Key key = keyFactory.newKey(id);
     Entity entity = datastore.get(key);
     if (entity == null) {

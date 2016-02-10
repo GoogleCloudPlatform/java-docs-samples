@@ -47,7 +47,8 @@ public class UserServiceTest {
   private static final String USER_NAME = "myName";
   private static final String USER_EMAIL = "my@email.com";
   private static final User USER = new User(USER_ID, USER_NAME, USER_EMAIL);
-  private static final Key USER_KEY = Key.builder(PROJECT_ID, "DEMO_USER", USER_ID).build();
+  private static final String KIND = "DemoUser";
+  private static final Key USER_KEY = Key.builder(PROJECT_ID, KIND, USER_ID).build();
   private static final Entity USER_RECORD = Entity.builder(USER_KEY)
       .set("id", USER_ID)
       .set("name", USER_NAME)
@@ -67,7 +68,7 @@ public class UserServiceTest {
         .host("http://localhost:" + PORT)
         .build()
         .service();
-    userService = new UserService(datastore);
+    userService = new UserService(datastore, KIND);
   }
 
   @Before
