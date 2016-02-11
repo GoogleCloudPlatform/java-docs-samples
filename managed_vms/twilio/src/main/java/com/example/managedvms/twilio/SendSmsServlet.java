@@ -42,22 +42,21 @@ public class SendSmsServlet extends HttpServlet {
   @Override
   public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    final String TWILIO_ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
-    final String TWILIO_AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
-    final String TWILIO_NUMBER = System.getenv("TWILIO_NUMBER");
-    final String TO_NUMBER = (String) req.getParameter("to");
-    if (TO_NUMBER == null) {
-      resp.getWriter().print("Please provide the number to message in the \"to\" query string"
-          + " parameter.");
+    final String twilioAccountSid = System.getenv("TWILIO_ACCOUNT_SID");
+    final String twilioAuthToken = System.getenv("TWILIO_AUTH_TOKEN");
+    final String twilioNumber = System.getenv("TWILIO_NUMBER");
+    final String toNumber = (String) req.getParameter("to");
+    if (toNumber == null) {
+      resp.getWriter()
+          .print("Please provide the number to message in the \"to\" query string parameter.");
       return;
     }
-    TwilioRestClient client = new TwilioRestClient(TWILIO_ACCOUNT_SID,
-        TWILIO_AUTH_TOKEN);
+    TwilioRestClient client = new TwilioRestClient(twilioAccountSid, twilioAuthToken);
     Account account = client.getAccount();
     MessageFactory messageFactory = account.getMessageFactory();
     List<NameValuePair> params = new ArrayList<NameValuePair>();
-    params.add(new BasicNameValuePair("To", TO_NUMBER));
-    params.add(new BasicNameValuePair("From", TWILIO_NUMBER));
+    params.add(new BasicNameValuePair("To", toNumber));
+    params.add(new BasicNameValuePair("From", twilioNumber));
     params.add(new BasicNameValuePair("Body", "Hello from Twilio!"));
     try {
       Message sms = messageFactory.create(params);

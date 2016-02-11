@@ -35,19 +35,19 @@ public class SendEmailServlet extends HttpServlet {
   @Override
   public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    final String SENDGRID_API_KEY = System.getenv("SENDGRID_API_KEY");
-    final String SENDGRID_SENDER = System.getenv("SENDGRID_SENDER");
-    final String TO_EMAIL = req.getParameter("to");
-    if (TO_EMAIL == null) {
-      resp.getWriter().print("Please provide an email address in the \"to\" query string"
-          + " parameter.");
+    final String sendgridApiKey = System.getenv("SENDGRID_API_KEY");
+    final String sendgridSender = System.getenv("SENDGRID_SENDER");
+    final String toEmail = req.getParameter("to");
+    if (toEmail == null) {
+      resp.getWriter()
+          .print("Please provide an email address in the \"to\" query string parameter.");
       return;
     }
 
-    SendGrid sendgrid = new SendGrid(SENDGRID_API_KEY);
+    SendGrid sendgrid = new SendGrid(sendgridApiKey);
     SendGrid.Email email = new SendGrid.Email();
-    email.addTo(TO_EMAIL);
-    email.setFrom(SENDGRID_SENDER);
+    email.addTo(toEmail);
+    email.setFrom(sendgridSender);
     email.setSubject("This is a test email");
     email.setText("Example text body.");
 
@@ -58,8 +58,7 @@ public class SendEmailServlet extends HttpServlet {
         return;
       }
       resp.getWriter().print("Email sent.");
-    }
-    catch (SendGridException e) {
+    } catch (SendGridException e) {
       throw new ServletException("SendGrid error", e);
     }
   }
