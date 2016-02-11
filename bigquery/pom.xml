@@ -24,7 +24,7 @@
     <dependency>
         <groupId>com.google.apis</groupId>
         <artifactId>google-api-services-bigquery</artifactId>
-        <version>v2-rev158-1.19.0</version>
+        <version>v2-rev265-1.21.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.oauth-client</groupId>
@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.3.1</version>
+      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -59,8 +59,8 @@
   </dependencies>
 
   <properties>
-    <project.http.version>1.19.0</project.http.version>
-    <project.oauth.version>1.19.0</project.oauth.version>
+    <project.http.version>1.21.0</project.http.version>
+    <project.oauth.version>1.21.0</project.oauth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
