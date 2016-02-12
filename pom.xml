@@ -40,6 +40,7 @@
         <module>managed_vms/async-rest</module>
         <module>managed_vms/sparkjava</module>
         <module>bigquery</module>
+        <module>datastore</module>
         <module>logging</module>
         <module>monitoring</module>
         <module>storage/json-api</module>
