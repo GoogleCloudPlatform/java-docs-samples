@@ -11,4 +11,4 @@ This directory contains sample code used in Google Cloud Datastore documentation
 
 2. Compile the program by typing `mvn clean compile` in command line.
 
-3. Run the program by typing `mvn exec:java` in command line.
+3. Run the program by typing `mvn exec:java` in command line. In addition to listing tasks via this command line interface, you can view tasks you create in the [Google Cloud Developer's Console](https://console.cloud.google.com/).
