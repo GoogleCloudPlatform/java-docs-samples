@@ -89,9 +89,7 @@ public class UserService {
    */
   public String deleteUser(String id) {
     Key key = keyFactory.newKey(id);
-    if (datastore.get(key) != null) {
-      datastore.delete(key);
-    }
+    datastore.delete(key);
     return "ok";
   }
 
