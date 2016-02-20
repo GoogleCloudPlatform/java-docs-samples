@@ -22,8 +22,10 @@ import com.google.gcloud.datastore.Datastore;
 import com.google.gcloud.datastore.Entity;
 import com.google.gcloud.datastore.Key;
 import com.google.gcloud.datastore.KeyFactory;
+import com.google.gcloud.datastore.PathElement;
 import com.google.gcloud.datastore.Query;
 import com.google.gcloud.datastore.QueryResults;
+import com.google.gcloud.datastore.StructuredQuery.PropertyFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,8 @@ public class UserService {
    */
   public UserService(Datastore datastore, String kind) {
     this.datastore = datastore;
-    this.keyFactory = datastore.newKeyFactory().kind(kind);
+    this.keyFactory =
+        datastore.newKeyFactory().ancestors(PathElement.of("SparkJavaDemo", "default")).kind(kind);
     this.kind = kind;
   }
 
@@ -50,8 +53,11 @@ public class UserService {
    * Return a list of all users.
    */
   public List<User> getAllUsers() {
-    Query<Entity> query =
-        Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
+    Query<Entity> query = Query.entityQueryBuilder()
+        .kind(kind)
+        .filter(PropertyFilter.hasAncestor(
+            datastore.newKeyFactory().kind("SparkJavaDemo").newKey("default")))
+        .build();
     QueryResults<Entity> results = datastore.run(query);
     List<User> users = new ArrayList<>();
     while (results.hasNext()) {
@@ -83,7 +89,9 @@ public class UserService {
    */
   public String deleteUser(String id) {
     Key key = keyFactory.newKey(id);
-    datastore.delete(key);
+    if (datastore.get(key) != null) {
+      datastore.delete(key);
+    }
     return "ok";
   }
 
