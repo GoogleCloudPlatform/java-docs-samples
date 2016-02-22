@@ -104,7 +104,7 @@ public class Concepts {
   @BeforeClass
   public static void beforeClass() throws IOException, InterruptedException {
     if (!LocalGcdHelper.isActive(PROJECT_ID, PORT)) {
-      gcdHelper = LocalGcdHelper.start(PROJECT_ID, PORT);
+      gcdHelper = LocalGcdHelper.start(PROJECT_ID, PORT, 1.0);
     }
   }
 
@@ -232,8 +232,8 @@ public class Concepts {
   public void testArrayValue() {
     // [START array_value]
     Entity task = Entity.builder(taskKey)
-        .set("tags", StringValue.of("fun"), StringValue.of("programming"))
-        .set("collaborators", StringValue.of("alice"), StringValue.of("bob"))
+        .set("tags", "fun", "programming")
+        .set("collaborators", "alice", "bob")
         .build();
     // [END array_value]
     assertValidEntity(task);
@@ -374,7 +374,7 @@ public class Concepts {
         .set("created", includedDate)
         .set("percent_complete", 10.0)
         .set("description", StringValue.builder("Learn Cloud Datastore").indexed(false).build())
-        .set("tag", StringValue.of("fun"), StringValue.of("l"), StringValue.of("programming"))
+        .set("tag", "fun", "l", "programming")
         .build());
   }
 
@@ -748,9 +748,8 @@ public class Concepts {
   public void testExplodingProperties() {
     // [START exploding_properties]
     Entity task = Entity.builder(taskKey)
-        .set("tags", StringValue.of("fun"), StringValue.of("programming"), StringValue.of("learn"))
-        .set("collaborators", StringValue.of("alice"), StringValue.of("bob"),
-            StringValue.of("charlie"))
+        .set("tags", "fun", "programming", "learn")
+        .set("collaborators", "alice", "bob", "charlie")
         .set("created", DateTime.now())
         .build();
     // [END exploding_properties]
@@ -912,12 +911,12 @@ public class Concepts {
     setUpQueryTests();
     // [START property_run_query]
     Query<Key> query = Query.keyQueryBuilder().kind("__property__").build();
-    QueryResults<Key> results = datastore.run(query);
+    QueryResults<Key> keys = datastore.run(query);
     Map<String, Collection<String>> propertiesByKind = new HashMap<>();
-    while (results.hasNext()) {
-      Key property = results.next();
-      String kind = property.ancestors().get(property.ancestors().size() - 1).name();
-      String propertyName = property.name();
+    while (keys.hasNext()) {
+      Key key = keys.next();
+      String kind = key.parent().name();
+      String propertyName = key.name();
       Collection<String> properties = propertiesByKind.get(kind);
       if (properties == null) {
         properties = new HashSet<>();
@@ -943,10 +942,9 @@ public class Concepts {
     QueryResults<Entity> results = datastore.run(query);
     Map<String, Collection<String>> representationsByProperty = new HashMap<>();
     while (results.hasNext()) {
-      Entity property = results.next();
-      String propertyName = property.key().name();
-      List<StringValue> representations =
-          (List<StringValue>) property.getList("property_representation");
+      Entity result = results.next();
+      String propertyName = result.key().name();
+      List<StringValue> representations = result.getList("property_representation");
       Collection<String> currentRepresentations = representationsByProperty.get(propertyName);
       if (currentRepresentations == null) {
         currentRepresentations = new HashSet<>();
@@ -973,20 +971,20 @@ public class Concepts {
   public void testPropertyFilteringRunQuery() {
     setUpQueryTests();
     // [START property_filtering_run_query]
-    Key key = datastore.newKeyFactory()
+    Key startKey = datastore.newKeyFactory()
         .kind("__property__")
         .ancestors(PathElement.of("__kind__", "Task"))
         .newKey("priority");
     Query<Key> query = Query.keyQueryBuilder()
         .kind("__property__")
-        .filter(PropertyFilter.ge("__key__", key))
+        .filter(PropertyFilter.ge("__key__", startKey))
         .build();
     Map<String, Collection<String>> propertiesByKind = new HashMap<>();
-    QueryResults<Key> results = datastore.run(query);
-    while (results.hasNext()) {
-      Key property = results.next();
-      String kind = property.ancestors().get(property.ancestors().size() - 1).name();
-      String propertyName = property.name();
+    QueryResults<Key> keys = datastore.run(query);
+    while (keys.hasNext()) {
+      Key key = keys.next();
+      String kind = key.parent().name();
+      String propertyName = key.name();
       Collection<String> properties = propertiesByKind.get(kind);
       if (properties == null) {
         properties = new HashSet<String>();
