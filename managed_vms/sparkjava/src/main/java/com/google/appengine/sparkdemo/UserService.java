@@ -63,6 +63,16 @@ public class UserService {
   }
 
   /**
+   * Return the user with the given id.
+   */
+  User getUser(String id) {
+    Entity entity = datastore.get(keyFactory.newKey(id));
+    return entity == null
+        ? null
+        : new User(entity.getString("id"), entity.getString("name"), entity.getString("email"));
+  }
+
+  /**
    * Create a new user and add it to Cloud Datastore.
    */
   public User createUser(String name, String email) {
