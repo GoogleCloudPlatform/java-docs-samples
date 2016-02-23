@@ -120,12 +120,20 @@ public class HelloWorld {
   }
 
   public static void main(String[] args) {
-    if (args.length < 3) {
-      System.err.println("Usage: HelloWorld <projectId> <zone> <clusterId>");
-      System.exit(1);
-    }
+    // Consult system properties to get project/zone/cluster
+    String projectId = requiredProperty("bigtable.projectID");
+    String zone = requiredProperty("bigtable.zone");
+    String clusterId = requiredProperty("bigtable.clusterID");
 
-    doHelloWorld(args[0], args[1], args[2]);
+    doHelloWorld(projectId, zone, clusterId);
+  }
+
+  private static String requiredProperty(String prop) {
+    String value = System.getProperty(prop);
+    if (value == null) {
+      throw new IllegalArgumentException("Missing required system property: " + prop);
+    }
+    return value;
   }
 
 }
