@@ -26,10 +26,9 @@ import com.google.gcloud.datastore.Datastore;
 import com.google.gcloud.datastore.DatastoreOptions;
 import com.google.gcloud.datastore.Entity;
 import com.google.gcloud.datastore.Key;
-import com.google.gcloud.datastore.PathElement;
 import com.google.gcloud.datastore.Query;
 import com.google.gcloud.datastore.QueryResults;
-import com.google.gcloud.datastore.StructuredQuery.PropertyFilter;
+import com.google.gcloud.datastore.StructuredQuery;
 import com.google.gcloud.datastore.testing.LocalGcdHelper;
 
 import org.junit.AfterClass;
@@ -49,9 +48,7 @@ public class UserServiceTest {
   private static final String USER_EMAIL = "my@email.com";
   private static final User USER = new User(USER_ID, USER_NAME, USER_EMAIL);
   private static final String KIND = "DemoUser";
-  private static final Key USER_KEY = Key.builder(PROJECT_ID, KIND, USER_ID)
-      .ancestors(PathElement.of("SparkJavaDemo", "default"))
-      .build();
+  private static final Key USER_KEY = Key.builder(PROJECT_ID, KIND, USER_ID).build();
   private static final Entity USER_RECORD = Entity.builder(USER_KEY)
       .set("id", USER_ID)
       .set("name", USER_NAME)
@@ -64,7 +61,7 @@ public class UserServiceTest {
   @BeforeClass
   public static void beforeClass() throws IOException, InterruptedException {
     if (!LocalGcdHelper.isActive(PROJECT_ID, PORT)) {
-      gcdHelper = LocalGcdHelper.start(PROJECT_ID, PORT, 0.0);
+      gcdHelper = LocalGcdHelper.start(PROJECT_ID, PORT, 1.0);
     }
     datastore = DatastoreOptions.builder()
         .projectId(PROJECT_ID)
@@ -76,11 +73,7 @@ public class UserServiceTest {
 
   @Before
   public void setUp() {
-    Query<Key> query = Query.keyQueryBuilder()
-        .filter(PropertyFilter.hasAncestor(
-            datastore.newKeyFactory().kind("SparkJavaDemo").newKey("default")))
-        .kind(KIND)
-        .build();
+    StructuredQuery<Key> query = Query.keyQueryBuilder().build();
     QueryResults<Key> result = datastore.run(query);
     datastore.delete(Iterators.toArray(result, Key.class));
     datastore.add(USER_RECORD);

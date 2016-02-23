@@ -36,7 +36,9 @@ public class UserController {
   public UserController(final UserService userService) {
     Spark.staticFileLocation("/public");
 
-    get("/api/users", (req, res) -> userService.getAllUsers(), UserController::toJson);
+    get("/api/users", (req, res) -> userService.getAllUsers(), json());
+
+    get("/api/users/:id", (req, res) -> userService.getUser(req.params(":id")), json());
 
     post("/api/users",
         (req, res) -> userService.createUser(req.queryParams("name"), req.queryParams("email")),

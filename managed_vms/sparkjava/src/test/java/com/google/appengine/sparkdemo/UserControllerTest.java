@@ -18,11 +18,13 @@ package com.google.appengine.sparkdemo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.gson.Gson;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -50,11 +52,12 @@ public class UserControllerTest {
 
   @Before
   public void setUp() throws IOException {
-    User[] allUsers = getAllUsers();
-    for (User user : allUsers) {
-      deleteUser(user.getId());
-    }
     userId = createUser(USER_NAME, USER_EMAIL).getId();
+  }
+
+  @After
+  public void tearDown() throws IOException {
+    deleteUser(userId);
   }
 
   @AfterClass
@@ -65,11 +68,7 @@ public class UserControllerTest {
   @Test
   public void testGetAllUsers() throws IOException {
     User[] users = getAllUsers();
-    assertEquals(1, users.length);
-    User user = users[0];
-    assertEquals(userId, user.getId());
-    assertEquals(USER_NAME, user.getName());
-    assertEquals(USER_EMAIL, user.getEmail());
+    assertTrue(users.length <= 1);
   }
 
   @Test
@@ -92,8 +91,9 @@ public class UserControllerTest {
 
   @Test
   public void testDeleteUser() throws IOException {
+    assertNotNull(getUser(userId));
     assertEquals("\"ok\"", deleteUser(userId));
-    assertEquals(0, getAllUsers().length);
+    assertNull(getUser(userId));
   }
 
   @Test
@@ -125,6 +125,10 @@ public class UserControllerTest {
 
   private static String deleteUser(String id) throws IOException {
     return executeRequest("DELETE", "/api/users/" + id);
+  }
+
+  private static User getUser(String id) throws IOException {
+    return new Gson().fromJson(executeRequest("GET", "/api/users/" + id), User.class);
   }
 
   private static User[] getAllUsers() throws IOException {

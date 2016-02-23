@@ -22,10 +22,8 @@ import com.google.gcloud.datastore.Datastore;
 import com.google.gcloud.datastore.Entity;
 import com.google.gcloud.datastore.Key;
 import com.google.gcloud.datastore.KeyFactory;
-import com.google.gcloud.datastore.PathElement;
 import com.google.gcloud.datastore.Query;
 import com.google.gcloud.datastore.QueryResults;
-import com.google.gcloud.datastore.StructuredQuery.PropertyFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +42,7 @@ public class UserService {
    */
   public UserService(Datastore datastore, String kind) {
     this.datastore = datastore;
-    this.keyFactory =
-        datastore.newKeyFactory().ancestors(PathElement.of("SparkJavaDemo", "default")).kind(kind);
+    this.keyFactory = datastore.newKeyFactory().kind(kind);
     this.kind = kind;
   }
 
@@ -53,11 +50,8 @@ public class UserService {
    * Return a list of all users.
    */
   public List<User> getAllUsers() {
-    Query<Entity> query = Query.entityQueryBuilder()
-        .kind(kind)
-        .filter(PropertyFilter.hasAncestor(
-            datastore.newKeyFactory().kind("SparkJavaDemo").newKey("default")))
-        .build();
+    Query<Entity> query =
+        Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
     QueryResults<Entity> results = datastore.run(query);
     List<User> users = new ArrayList<>();
     while (results.hasNext()) {
@@ -66,6 +60,16 @@ public class UserService {
           new User(result.getString("id"), result.getString("name"), result.getString("email")));
     }
     return users;
+  }
+
+  /**
+   * Return the user with the given id.
+   */
+  User getUser(String id) {
+    Entity entity = datastore.get(keyFactory.newKey(id));
+    return entity == null
+        ? null
+        : new User(entity.getString("id"), entity.getString("name"), entity.getString("email"));
   }
 
   /**
