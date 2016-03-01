@@ -25,7 +25,11 @@
     <modules>
         <module>appengine/appidentity</module>
         <module>appengine/helloworld</module>
+        <module>bigquery</module>
+        <module>datastore</module>
+        <module>logging</module>
         <module>managed_vms/analytics</module>
+        <module>managed_vms/async-rest</module>
         <module>managed_vms/cloudsql</module>
         <module>managed_vms/cloudstorage</module>
         <module>managed_vms/datastore</module>
@@ -35,13 +39,9 @@
         <module>managed_vms/mailgun</module>
         <module>managed_vms/memcache</module>
         <module>managed_vms/sendgrid</module>
+        <module>managed_vms/sparkjava</module>
         <module>managed_vms/static-files</module>
         <module>managed_vms/twilio</module>
-        <module>managed_vms/async-rest</module>
-        <module>managed_vms/sparkjava</module>
-        <module>bigquery</module>
-        <module>datastore</module>
-        <module>logging</module>
         <module>monitoring</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
