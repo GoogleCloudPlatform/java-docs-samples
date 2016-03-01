@@ -30,7 +30,6 @@
         <module>logging</module>
         <module>managed_vms/analytics</module>
         <module>managed_vms/async-rest</module>
-        <module>managed_vms/cloudsql</module>
         <module>managed_vms/cloudstorage</module>
         <module>managed_vms/datastore</module>
         <module>managed_vms/disk</module>
