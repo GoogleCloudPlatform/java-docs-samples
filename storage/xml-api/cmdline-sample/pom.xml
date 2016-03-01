@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-
   <parent>
     <artifactId>doc-samples</artifactId>
     <groupId>com.google.cloud</groupId>
@@ -8,28 +7,13 @@
     <relativePath>../../..</relativePath>
   </parent>
 
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.apis-samples</groupId>
-  <artifactId>storage-cmd-line-sample</artifactId>
+  <artifactId>storage-xml-cmdline-sample</artifactId>
   <version>1</version>
   <name>Example for the Google Cloud Storage XML API using Application Default Credentials.</name>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-          <configLocation>../../../google-checks.xml</configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failOnViolation>true</failOnViolation>
-          <failsOnError>true</failsOnError>
-        </configuration>
-        <executions>
-          <execution><goals><goal>check</goal></goals></execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>

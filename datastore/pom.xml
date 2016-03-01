@@ -6,6 +6,14 @@
   <groupId>com.google.datastore.snippets</groupId>
   <artifactId>datastore-snippets</artifactId>
   <version>1.0</version>
+
+  <parent>
+    <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
   <packaging>jar</packaging>
   <name>Google Cloud Datastore Snippets</name>
   <description>
@@ -21,6 +29,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
+      <!-- JUnit is used in the Concepts class, which is in the main not test
+           directory, so we must override test scope inherited from the parent
+           pom. -->
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -46,20 +58,6 @@
         </configuration>
       </plugin>
 <!-- // [END exec] -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-          <configLocation>../google-checks.xml</configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failOnViolation>true</failOnViolation>
-          <failsOnError>true</failsOnError>
-        </configuration>
-        <executions>
-          <execution><goals><goal>check</goal></goals></execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>

@@ -26,7 +26,7 @@
   </parent>
 
   <groupId>com.google.storagetransfer.samples</groupId>
-  <artifactId>transfersample</artifactId>
+  <artifactId>storage-transfersample</artifactId>
   <version>0.1</version>
   <packaging>jar</packaging>
 
@@ -69,20 +69,6 @@
           <source>1.7</source>
           <target>1.7</target>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
-        <configuration>
-          <configLocation>../../google-checks.xml</configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failOnViolation>true</failOnViolation>
-          <failsOnError>true</failsOnError>
-        </configuration>
-        <executions>
-          <execution><goals><goal>check</goal></goals></execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
