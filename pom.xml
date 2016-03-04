@@ -24,13 +24,7 @@ limitations under the License.
   <packaging>pom</packaging>
 
   <properties>
-    <appengine.app.version>1</appengine.app.version>
-    <appengine.version>1.9.19</appengine.version>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.http.version>1.19.0</project.http.version>
-    <project.oauth.version>1.19.0</project.oauth.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
