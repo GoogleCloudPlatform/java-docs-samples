@@ -68,6 +68,7 @@ limitations under the License.
         <configuration>
           <configLocation>google-checks.xml</configLocation>
           <consoleOutput>true</consoleOutput>
+          <excludes>**/AutoValue_*</excludes>
           <failOnViolation>true</failOnViolation>
           <failsOnError>true</failsOnError>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
