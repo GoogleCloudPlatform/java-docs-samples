@@ -3,7 +3,7 @@
     "datasetId": "test_dataset_java",
     "currentTableId": "test_table_java",
     "newTableId": "test_table_java_2",
-    "cloudStorageInputURI": "gs://cloud-samples-tests/data.csv",
-    "cloudStorageOutputURI": "gs://cloud-samples-tests/output.csv",
+    "cloudStorageInputUri": "gs://cloud-samples-tests/data.csv",
+    "cloudStorageOutputUri": "gs://cloud-samples-tests/output.csv",
     "query": "SELECT corpus FROM publicdata:samples.shakespeare GROUP BY corpus;"
 }
