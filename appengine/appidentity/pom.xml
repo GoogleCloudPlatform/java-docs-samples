@@ -92,7 +92,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.27</version>
+      <version>0.28</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
