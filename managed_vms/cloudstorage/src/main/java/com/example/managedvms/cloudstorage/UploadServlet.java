@@ -17,6 +17,7 @@
 package com.example.managedvms.cloudstorage;
 
 import com.google.gcloud.storage.Acl;
+import com.google.gcloud.storage.Blob;
 import com.google.gcloud.storage.BlobInfo;
 import com.google.gcloud.storage.Storage;
 import com.google.gcloud.storage.StorageOptions;
@@ -57,14 +58,13 @@ public class UploadServlet extends HttpServlet {
     List<Acl> acls = new ArrayList<>();
     acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
     // the inputstream is closed by default, so we don't need to close it here
-    BlobInfo blobInfo =
+    Blob blob =
         storage.create(
             BlobInfo.builder(BUCKET_NAME, fileName).acl(acls).build(),
             filePart.getInputStream());
-    blobInfo = storage.get(BUCKET_NAME, fileName);
 
     // return the public download link
-    resp.getWriter().print(blobInfo.mediaLink());
+    resp.getWriter().print(blob.mediaLink());
   }
 }
 // [END example]
