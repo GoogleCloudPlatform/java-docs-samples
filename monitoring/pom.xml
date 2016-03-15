@@ -49,6 +49,12 @@
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.28</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

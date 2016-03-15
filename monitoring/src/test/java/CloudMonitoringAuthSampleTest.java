@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import static com.jcabi.matchers.RegexMatchers.*;
-import static org.junit.Assert.*;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +22,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.regex.Pattern;
 
 /**
  * Tests the Cloud Monitoring auth sample.
@@ -51,15 +49,19 @@ public class CloudMonitoringAuthSampleTest {
   @Test
   public void testUsage() throws Exception {
     CloudMonitoringAuthSample.main(new String[] { });
-    assertEquals("Usage: CloudMonitoringAuthSample <project-name>\n", stderr.toString());
+    assertThat(stderr.toString())
+        .named("stderr")
+        .isEqualTo("Usage: CloudMonitoringAuthSample <project-name>\n");
   }
 
   @Test
   public void testListTimeSeries() throws Exception {
     CloudMonitoringAuthSample.main(new String[] { "cloud-samples-tests" });
     String out = stdout.toString();
-    assertThat(out, containsPattern("Timeseries.list raw response:"));
-    assertThat(out, containsPattern("\\{\\s*\"kind\" *: *\"cloudmonitoring#listTimeseriesResponse\","));
-    assertThat(out, containsPattern(".*oldest.*"));
+    assertThat(out).named("stdout").contains("Timeseries.list raw response:");
+    assertThat(out)
+        .named("stdout")
+        .containsMatch("\\{\\s*\"kind\" *: *\"cloudmonitoring#listTimeseriesResponse\",");
+    assertThat(out).named("stdout").containsMatch(".*oldest.*");
   }
 }
