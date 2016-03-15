@@ -12,6 +12,12 @@
   <artifactId>storage-json-sample</artifactId>
   <version>1</version>
   <name>Sample accessing the Google Cloud Storage JSON API using OAuth 2.0.</name>
+
+  <properties>
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -43,6 +49,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.28</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
