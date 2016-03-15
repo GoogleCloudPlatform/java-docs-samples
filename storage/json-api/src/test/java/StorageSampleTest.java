@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,16 @@
 
 // [START all]
 
-import static org.junit.Assert.*;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
 
 import org.junit.Test;
 
-import java.util.List;
-import java.util.regex.Pattern;
 import java.io.ByteArrayInputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StorageSampleTest {
   private static final String BUCKET = "cloud-samples-tests";
@@ -34,49 +34,37 @@ public class StorageSampleTest {
   @Test
   public void testListBucket() throws Exception {
     List<StorageObject> listing = StorageSample.listBucket(BUCKET);
-    assertTrue(listing.size() > 0);
+    assertThat(listing).isNotEmpty();
   }
 
   @Test
   public void testGetBucket() throws Exception {
     Bucket bucket = StorageSample.getBucket(BUCKET);
-    assertEquals(bucket.getName(), BUCKET);
-    assertEquals(bucket.getLocation(), "US-CENTRAL1");
+    assertThat(bucket.getName()).named("bucket name").isEqualTo(BUCKET);
+    assertThat(bucket.getLocation()).named("bucket location").isEqualTo("US-CENTRAL1");
   }
 
   @Test
   public void testUploadDelete() throws Exception {
     StorageSample.uploadStream(
         TEST_OBJECT, "text/plain",
-        new ByteArrayInputStream(("This object is uploaded and deleted as part of the "
+        new ByteArrayInputStream(
+            ("This object is uploaded and deleted as part of the "
             + "StorageSampleTest integration test.").getBytes()),
         BUCKET);
 
     try {
       // Verify that the object was created
       List<StorageObject> listing = StorageSample.listBucket(BUCKET);
-      boolean found = false;
-      for (StorageObject so : listing) {
-        if (TEST_OBJECT.equals(so.getName())) {
-          found = true;
-          break;
-        }
-      }
-      assertTrue("Should have uploaded successfully", found);
-
+      List<String> names = listing.stream().map(so -> so.getName()).collect(Collectors.toList());
+      assertThat(names).named("objects found after upload").contains(TEST_OBJECT);
     } finally {
       StorageSample.deleteObject(TEST_OBJECT, BUCKET);
 
       // Verify that the object no longer exists
       List<StorageObject> listing = StorageSample.listBucket(BUCKET);
-      boolean found = false;
-      for (StorageObject so : listing) {
-        if (TEST_OBJECT.equals(so.getName())) {
-          found = true;
-          break;
-        }
-      }
-      assertFalse("Object (" + TEST_OBJECT + ") should have been deleted", found);
+      List<String> names = listing.stream().map(so -> so.getName()).collect(Collectors.toList());
+      assertThat(names).named("objects found after delete").doesNotContain(TEST_OBJECT);
     }
   }
 }
