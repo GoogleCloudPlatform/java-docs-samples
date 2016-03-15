@@ -25,6 +25,7 @@
     <modules>
         <module>appengine/appidentity</module>
         <module>appengine/helloworld</module>
+        <module>appengine/mailgun</module>
         <module>bigquery</module>
         <module>datastore</module>
         <module>logging</module>
