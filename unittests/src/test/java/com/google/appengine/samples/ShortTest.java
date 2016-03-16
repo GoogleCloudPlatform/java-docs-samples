@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.appengine.samples;
 
 // [START ShortTest]
+
+import static org.junit.Assert.assertEquals;
 
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.capabilities.CapabilityStatus;
@@ -26,10 +29,9 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.apphosting.api.ApiProxy;
+
 import org.junit.After;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class ShortTest {
   private LocalServiceTestHelper helper;
@@ -39,12 +41,11 @@ public class ShortTest {
     helper.tearDown();
   }
 
-
   @Test(expected = ApiProxy.CapabilityDisabledException.class)
   public void testDisabledDatastore() {
     Capability testOne = new Capability("datastore_v3");
     CapabilityStatus testStatus = CapabilityStatus.DISABLED;
-    //Initialize
+    // Initialize the test configuration.
     LocalCapabilitiesServiceTestConfig config =
         new LocalCapabilitiesServiceTestConfig().setCapabilityStatus(testOne, testStatus);
     helper = new LocalServiceTestHelper(config);

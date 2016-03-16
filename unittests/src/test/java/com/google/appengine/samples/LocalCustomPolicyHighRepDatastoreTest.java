@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.appengine.samples;
 
 // [START LocalCustomPolicyHighRepDatastoreTest]
 
-import com.google.appengine.api.datastore.*;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static org.junit.Assert.assertEquals;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.dev.HighRepJobPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-import static org.junit.Assert.assertEquals;
 
 public class LocalCustomPolicyHighRepDatastoreTest {
   private static final class CustomHighRepJobPolicy implements HighRepJobPolicy {
@@ -35,13 +41,13 @@ public class LocalCustomPolicyHighRepDatastoreTest {
 
     @Override
     public boolean shouldApplyNewJob(Key entityGroup) {
-      // every other new job fails to apply
+      // Every other new job fails to apply.
       return newJobCounter++ % 2 == 0;
     }
 
     @Override
     public boolean shouldRollForwardExistingJob(Key entityGroup) {
-      // every other existing job fails to apply
+      // Every other existing job fails to apply.
       return existingJobCounter++ % 2 == 0;
     }
   }
@@ -65,10 +71,10 @@ public class LocalCustomPolicyHighRepDatastoreTest {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     ds.put(new Entity("yam")); // applies
     ds.put(new Entity("yam")); // does not apply
-    // first global query only sees the first Entity
+    // First global query only sees the first Entity.
     assertEquals(1, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
-    // second global query sees both Entities because we "groom" (attempt to
-    // apply unapplied jobs) after every query
+    // Second global query sees both Entities because we "groom" (attempt to
+    // apply unapplied jobs) after every query.
     assertEquals(2, ds.prepare(new Query("yam")).countEntities(withLimit(10)));
   }
 }

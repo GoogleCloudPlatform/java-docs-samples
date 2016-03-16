@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@ package com.google.appengine.samples;
 
 // [START MyFirstTest]
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class MyFirstTest {
   @Test

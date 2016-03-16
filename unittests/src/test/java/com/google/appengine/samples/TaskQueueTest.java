@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.appengine.samples;
 
 // [START TaskQueueTest]
+
+import static org.junit.Assert.assertEquals;
 
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -23,11 +26,10 @@ import com.google.appengine.api.taskqueue.dev.LocalTaskQueue;
 import com.google.appengine.api.taskqueue.dev.QueueStateInfo;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class TaskQueueTest {
 
@@ -44,14 +46,13 @@ public class TaskQueueTest {
     helper.tearDown();
   }
 
-
   // Run this test twice to demonstrate we're not leaking state across tests.
   // If we _are_ leaking state across tests we'll get an exception on the
   // second test because there will already be a task with the given name.
   private void doTest() throws InterruptedException {
     QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withTaskName("task29"));
-    // give the task time to execute if tasks are actually enabled (which they
-    // aren't, but that's part of the test)
+    // Give the task time to execute if tasks are actually enabled (which they
+    // aren't, but that's part of the test).
     Thread.sleep(1000);
     LocalTaskQueue ltq = LocalTaskQueueTestConfig.getLocalTaskQueue();
     QueueStateInfo qsi = ltq.getQueueStateInfo().get(QueueFactory.getDefaultQueue().getQueueName());
