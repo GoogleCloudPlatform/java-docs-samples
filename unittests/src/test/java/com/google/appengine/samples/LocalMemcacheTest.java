@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.appengine.samples;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 // [START imports]
+
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 // [END imports]
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 // [START NameAndHelper]
 public class LocalMemcacheTest {
@@ -48,8 +50,7 @@ public class LocalMemcacheTest {
     helper.tearDown();
   }
 
-  // run this test twice to prove we're not leaking any state across tests
-
+  // Run this test twice to prove we're not leaking any state across tests.
   // [START doTest]
   private void doTest() {
     MemcacheService ms = MemcacheServiceFactory.getMemcacheService();
