@@ -63,6 +63,8 @@
                     <consoleOutput>true</consoleOutput>
                     <failOnViolation>true</failOnViolation>
                     <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <suppressionsLocation>suppressions.xml</suppressionsLocation>
                 </configuration>
                 <executions>
                     <execution><goals><goal>check</goal></goals></execution>
