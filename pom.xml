@@ -8,10 +8,17 @@
     <artifactId>doc-samples</artifactId>
     <packaging>pom</packaging>
 
+    <!-- Parent POM defines common plugins and properties. -->
+    <parent>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>shared-configuration</artifactId>
+      <version>1.0.0</version>
+      <relativePath>java-repo-tools</relativePath>
+    </parent>
+
     <properties>
         <appengine.sdk.version>1.9.32</appengine.sdk.version>
         <appengine.app.version>1</appengine.app.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.http.version>1.19.0</project.http.version>
         <project.oauth.version>1.19.0</project.oauth.version>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -50,52 +57,6 @@
         <module>taskqueue/deferred</module>
         <module>unittests</module>
     </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
-                <configuration>
-                    <configLocation>google-checks.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failOnViolation>true</failOnViolation>
-                    <failsOnError>true</failsOnError>
-                </configuration>
-                <executions>
-                    <execution><goals><goal>check</goal></goals></execution>
-                </executions>
-             </plugin>
-             <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <coberturaReports>
-                        <coberturaReport>${basedir}/target/coverage.xml</coberturaReport>
-                    </coberturaReports>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <outputDirectory>${basedir}/target</outputDirectory>
-                    <formats>
-                        <format>xml</format>
-                        <format>html</format>
-                    </formats>
-                    <format>xml</format>
-                    <maxmem>256m</maxmem>
-                    <!-- aggregated reports for multi-module projects -->
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-        </plugins>
-
-    </build>
 
     <dependencyManagement>
         <dependencies>
