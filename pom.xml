@@ -42,7 +42,8 @@
         <module>managed_vms/sparkjava</module>
         <module>managed_vms/static-files</module>
         <module>managed_vms/twilio</module>
-        <module>monitoring</module>
+        <module>monitoring/v2</module>
+        <module>monitoring/v3</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
