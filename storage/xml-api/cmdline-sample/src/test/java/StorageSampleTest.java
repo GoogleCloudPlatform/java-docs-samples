@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,22 +15,19 @@
  */
 
 // [START StorageSampleTest]
-
-import static com.jcabi.matchers.RegexMatchers.*;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
-
-import java.util.regex.Pattern;
 
 public class StorageSampleTest {
   @Test
   public void testListBucket() throws Exception {
     String listing = StorageSample.listBucket("cloud-samples-tests");
-    assertThat(listing, matchesPattern(
-        ".*<ListBucketResult.*"
-        + "<Name>cloud-samples-tests</Name>.*"
-        + "</ListBucketResult>.*"));
+    assertThat(listing)
+        .containsMatch(
+            ".*<ListBucketResult.*"
+            + "<Name>cloud-samples-tests</Name>.*"
+            + "</ListBucketResult>.*");
   }
 }
 

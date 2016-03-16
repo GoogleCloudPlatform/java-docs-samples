@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 
 package com.google.cloud.storage.storagetransfer.samples.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.google.api.services.storagetransfer.Storagetransfer;
@@ -30,8 +31,6 @@ import com.google.cloud.storage.storagetransfer.samples.AwsRequester;
 import com.google.cloud.storage.storagetransfer.samples.TransferClientCreator;
 import com.google.cloud.storage.storagetransfer.samples.TransferJobUtils;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -42,7 +41,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ TransferJobUtils.class, TransferClientCreator.class })
-public class AwsRequesterTest extends TestCase {
+public class AwsRequesterTest {
 
   /**
    * Tests whether AwsRequester executes a request to create a TransferJob.
@@ -52,13 +51,13 @@ public class AwsRequesterTest extends TestCase {
     Date date = TransferJobUtils.createDate("2000-1-1");
     TimeOfDay time = TransferJobUtils.createTimeOfDay("1:1:1");
     TransferJob dummyJob = TransferJob.class
-      .newInstance()
-      .setDescription("DUMMY DESCRIPTION")
-      .setProjectId("DUMMY_PROJECT_ID")
-      .setTransferSpec(TransferSpec.class.newInstance())
-      .setSchedule(
-        Schedule.class.newInstance().setScheduleStartDate(date).setScheduleEndDate(date)
-          .setStartTimeOfDay(time)).setStatus("ENABLED");
+        .newInstance()
+        .setDescription("DUMMY DESCRIPTION")
+        .setProjectId("DUMMY_PROJECT_ID")
+        .setTransferSpec(TransferSpec.class.newInstance())
+        .setSchedule(
+            Schedule.class.newInstance().setScheduleStartDate(date).setScheduleEndDate(date)
+                .setStartTimeOfDay(time)).setStatus("ENABLED");
 
     PowerMockito.mockStatic(TransferClientCreator.class);
     PowerMockito.mockStatic(TransferJobUtils.class);
