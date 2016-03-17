@@ -5,6 +5,7 @@
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <parent>
         <artifactId>doc-samples</artifactId>
         <groupId>com.google.cloud</groupId>
@@ -15,18 +16,12 @@
     <groupId>com.google.appengine.samples</groupId>
     <artifactId>unittests-appengine-local-testing-samples</artifactId>
 
-    <properties>
-        <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.8.4</appengine.target.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.target.version}</version>
+            <version>${appengine.sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -48,19 +43,19 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>${appengine.target.version}</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.target.version}</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-tools-sdk</artifactId>
-            <version>${appengine.target.version}</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -97,7 +92,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.target.version}</version>
+                <version>${appengine.sdk.version}</version>
             </plugin>
         </plugins>
     </build>

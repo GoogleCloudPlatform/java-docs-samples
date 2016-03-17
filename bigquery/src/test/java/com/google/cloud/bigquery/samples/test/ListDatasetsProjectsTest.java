@@ -16,9 +16,7 @@
 
 package com.google.cloud.bigquery.samples.test;
 
-import static com.jcabi.matchers.RegexMatchers.*;
-import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.*;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.bigquery.samples.ListDatasetsProjects;
 
@@ -31,17 +29,19 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.Exception;
 
-/** Unit tests for {@link ListDatasetsProjects}. */
+/**
+ * Unit tests for {@link ListDatasetsProjects}.
+ */
 public class ListDatasetsProjectsTest extends BigquerySampleTest {
+  private static final PrintStream REAL_OUT = System.out;
+  private static final PrintStream REAL_ERR = System.err;
+
+  private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+  private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
 
   public ListDatasetsProjectsTest() throws FileNotFoundException {
     super();
   }
-
-  private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-  private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-  private static final PrintStream REAL_OUT = System.out;
-  private static final PrintStream REAL_ERR = System.err;
 
   @Before
   public void setUp() {
@@ -58,22 +58,22 @@ public class ListDatasetsProjectsTest extends BigquerySampleTest {
   @Test
   public void testUsage() throws Exception {
     ListDatasetsProjects.main(new String[] {});
-    assertEquals("Usage: QuickStart <project-id>\n", stderr.toString());
+    assertThat(stderr.toString()).named("stderr").isEqualTo("Usage: QuickStart <project-id>\n");
   }
 
   @Test
   public void testMain() throws Exception {
     ListDatasetsProjects.main(new String[] { CONSTANTS.getProjectId() });
     String out = stdout.toString();
-    assertThat(out, containsString("Running the asynchronous query"));
-    assertThat(out, containsPattern("George W. Bush, [0-9]+"));
-    assertThat(out, containsPattern("Wikipedia, [0-9]+"));
+    assertThat(out).named("stdout").contains("Running the asynchronous query");
+    assertThat(out).named("stdout").containsMatch("George W. Bush, [0-9]+");
+    assertThat(out).named("stdout").containsMatch("Wikipedia, [0-9]+");
 
-    assertThat(out, containsString("Listing all the Datasets"));
-    assertThat(out, containsString("test_dataset"));
+    assertThat(out).named("stdout").contains("Listing all the Datasets");
+    assertThat(out).named("stdout").contains("test_dataset");
 
-    assertThat(out, containsString("Listing all the Projects"));
-    assertThat(out, containsString("Project list:"));
-    assertThat(out, containsPattern("Bigquery Samples|cloud-samples-tests"));
+    assertThat(out).named("stdout").contains("Listing all the Projects");
+    assertThat(out).named("stdout").contains("Project list:");
+    assertThat(out).named("stdout").containsMatch("Bigquery Samples|cloud-samples-tests");
   }
 }

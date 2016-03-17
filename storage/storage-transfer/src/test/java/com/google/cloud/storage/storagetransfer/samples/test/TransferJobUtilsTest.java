@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,29 +16,29 @@
 
 package com.google.cloud.storage.storagetransfer.samples.test;
 
-import java.util.Random;
-
-import junit.framework.TestCase;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import com.google.api.services.storagetransfer.model.Date;
 import com.google.api.services.storagetransfer.model.TimeOfDay;
 import com.google.cloud.storage.storagetransfer.samples.TransferJobUtils;
 
-public class TransferJobUtilsTest extends TestCase {
-  private Random r = new Random();
+import org.junit.Test;
+
+import java.util.Random;
+
+public class TransferJobUtilsTest {
+  private Random rand = new Random();
 
   /**
    * Tests whether createDate() builds the correct date from a formatted String.
    */
   @Test
   public void testCreateDate() throws Exception {
-    int year = r.nextInt(2000) + 1;
-    int month = r.nextInt(12) + 1;
-    int day = r.nextInt(30) + 1;
-    String dateString = Integer.toString(year) + "-" + Integer.toString(month) + "-"
-      + Integer.toString(day);
+    int year = rand.nextInt(2000) + 1;
+    int month = rand.nextInt(12) + 1;
+    int day = rand.nextInt(30) + 1;
+    String dateString =
+        Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
 
     Date date = TransferJobUtils.createDate(dateString);
 
@@ -50,16 +50,15 @@ public class TransferJobUtilsTest extends TestCase {
    */
   @Test
   public void testCreateTimeOfDay() throws Exception {
-    int hour = r.nextInt(24);
-    int minute = r.nextInt(60);
-    int second = r.nextInt(60);
-    String timeString = Integer.toString(hour) + ":" + Integer.toString(minute) + ":"
-      + Integer.toString(second);
+    int hour = rand.nextInt(24);
+    int minute = rand.nextInt(60);
+    int second = rand.nextInt(60);
+    String timeString =
+        Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
 
     TimeOfDay time = TransferJobUtils.createTimeOfDay(timeString);
 
     assertEquals(time,
-      TimeOfDay.class.newInstance().setHours(hour).setMinutes(minute).setSeconds(second));
-
+        TimeOfDay.class.newInstance().setHours(hour).setMinutes(minute).setSeconds(second));
   }
 }

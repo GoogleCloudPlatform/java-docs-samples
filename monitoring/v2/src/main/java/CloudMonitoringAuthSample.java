@@ -28,6 +28,7 @@ import java.security.GeneralSecurityException;
 /**
  * Simple command-line program to demonstrate connecting to and retrieving data
  * from the Google Cloud Monitoring API using application default credentials.
+ * Please see README.md on instructions to run.
  */
 public final class CloudMonitoringAuthSample {
 
@@ -97,10 +98,6 @@ public final class CloudMonitoringAuthSample {
     System.out.println("Timeseries.list raw response:");
     System.out.println(timeseriesListRequest.execute().toPrettyString());
 
-    // This example only demonstrates completing the OAuth flow and displaying
-    // the raw response from a simple request. See the API client library docs
-    // for applicable methods for working with the returned data, including
-    // getting results and paging through results.
 
   }
 }

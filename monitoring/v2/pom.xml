@@ -9,7 +9,7 @@
     <artifactId>doc-samples</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <relativePath>../..</relativePath>
   </parent>
 
 
@@ -48,6 +48,12 @@
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.28</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

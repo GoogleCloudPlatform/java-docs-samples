@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <appengine.version>1.9.19</appengine.version>
+        <appengine.sdk.version>1.9.32</appengine.sdk.version>
         <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.http.version>1.19.0</project.http.version>
@@ -25,12 +25,12 @@
     <modules>
         <module>appengine/appidentity</module>
         <module>appengine/helloworld</module>
+        <module>appengine/mailgun</module>
         <module>bigquery</module>
         <module>datastore</module>
         <module>logging</module>
         <module>managed_vms/analytics</module>
         <module>managed_vms/async-rest</module>
-        <module>managed_vms/cloudsql</module>
         <module>managed_vms/cloudstorage</module>
         <module>managed_vms/datastore</module>
         <module>managed_vms/disk</module>
@@ -42,7 +42,8 @@
         <module>managed_vms/sparkjava</module>
         <module>managed_vms/static-files</module>
         <module>managed_vms/twilio</module>
-        <module>monitoring</module>
+        <module>monitoring/v2</module>
+        <module>monitoring/v3</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
@@ -103,7 +104,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.version}</version>
+            <version>${appengine.sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -138,13 +139,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>${appengine.version}</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.version}</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

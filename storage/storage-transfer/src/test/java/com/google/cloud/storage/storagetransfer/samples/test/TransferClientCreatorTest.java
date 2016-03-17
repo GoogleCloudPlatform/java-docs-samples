@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,14 @@ package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.util.Utils;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.services.storagetransfer.Storagetransfer.Builder;
+import com.google.cloud.storage.storagetransfer.samples.RetryHttpInitializerWrapper;
+import com.google.cloud.storage.storagetransfer.samples.TransferClientCreator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,32 +36,24 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.util.Utils;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.services.storagetransfer.Storagetransfer.Builder;
-import com.google.cloud.storage.storagetransfer.samples.RetryHttpInitializerWrapper;
-import com.google.cloud.storage.storagetransfer.samples.TransferClientCreator;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ TransferClientCreator.class, Builder.class })
-public class TransferClientCreatorTest extends TestCase {
+public class TransferClientCreatorTest {
 
   private Builder mockBuilder = PowerMockito.mock(Builder.class);
   private GoogleCredential mockCredential = Mockito.mock(GoogleCredential.class);
-  private RetryHttpInitializerWrapper mockInitializer = Mockito
-    .mock(RetryHttpInitializerWrapper.class);
+  private RetryHttpInitializerWrapper mockInitializer =
+      Mockito.mock(RetryHttpInitializerWrapper.class);
   private HttpTransport httpTransport = Utils.getDefaultTransport();
   private JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
 
   @Before
   public void setUp() throws Exception {
     PowerMockito.whenNew(RetryHttpInitializerWrapper.class).withArguments(mockCredential)
-      .thenReturn(mockInitializer);
+        .thenReturn(mockInitializer);
     PowerMockito.mockStatic(Builder.class);
     PowerMockito.whenNew(Builder.class).withArguments(httpTransport, jsonFactory, mockInitializer)
-      .thenReturn(mockBuilder);
+        .thenReturn(mockBuilder);
     when(mockBuilder.setApplicationName(Matchers.anyString())).thenReturn(mockBuilder);
     PowerMockito.mockStatic(GoogleCredential.class);
   }
@@ -67,8 +66,8 @@ public class TransferClientCreatorTest extends TestCase {
   public void testCreateStorageTransferClientScopedRequiredFalse() throws Exception {
     when(mockCredential.createScopedRequired()).thenReturn(false);
 
-    TransferClientCreator.createStorageTransferClient(Utils.getDefaultTransport(),
-      Utils.getDefaultJsonFactory(), mockCredential);
+    TransferClientCreator.createStorageTransferClient(
+        Utils.getDefaultTransport(), Utils.getDefaultJsonFactory(), mockCredential);
 
     verify(mockBuilder).build();
   }
@@ -80,11 +79,11 @@ public class TransferClientCreatorTest extends TestCase {
   @Test
   public void testCreateStorageTransferClientScopedRequiredTrue() throws Exception {
     when(mockCredential.createScopedRequired()).thenReturn(true);
-    when(mockCredential.createScoped(Matchers.anyCollectionOf(String.class))).thenReturn(
-      mockCredential);
+    when(mockCredential.createScoped(Matchers.anyCollectionOf(String.class)))
+        .thenReturn(mockCredential);
 
-    TransferClientCreator.createStorageTransferClient(Utils.getDefaultTransport(),
-      Utils.getDefaultJsonFactory(), mockCredential);
+    TransferClientCreator.createStorageTransferClient(
+        Utils.getDefaultTransport(), Utils.getDefaultJsonFactory(), mockCredential);
 
     verify(mockBuilder).build();
   }

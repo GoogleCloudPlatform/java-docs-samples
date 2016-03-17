@@ -51,8 +51,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.jcabi</groupId>
-      <artifactId>jcabi-matchers</artifactId>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.28</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -5,6 +5,7 @@
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <parent>
         <artifactId>doc-samples</artifactId>
         <groupId>com.google.cloud</groupId>
@@ -14,12 +15,6 @@
 
     <groupId>com.google.cloud.taskqueue.samples</groupId>
     <artifactId>taskqueue-defer-sample</artifactId>
-
-    <properties>
-        <appengine.version>1.9.19</appengine.version>
-        <appengine.app.version>1</appengine.app.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
@@ -103,7 +98,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.9.19</version>
+                <version>${appengine.sdk.version}</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
