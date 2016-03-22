@@ -34,12 +34,21 @@ import com.google.cloud.speech.v1.RecognizeResponse;
 import com.google.cloud.speech.v1.SpeechGrpc;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
+
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,13 +59,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.ParseException;
-
 
 /**
  * Client that sends streaming audio to Speech.Recognize and returns streaming transcript.
@@ -78,7 +80,9 @@ public class RecognizeClient {
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/xapi.zoo");
 
-  /** Construct client connecting to Cloud Speech server at {@code host:port}. */
+  /**
+   * Construct client connecting to Cloud Speech server at {@code host:port}.
+   */
   public RecognizeClient(String host, int port, String file, int samplingRate) throws IOException {
     this.host = host;
     this.port = port;
@@ -109,8 +113,8 @@ public class RecognizeClient {
       }
 
       @Override
-      public void onError(Throwable t) {
-        Status status = Status.fromThrowable(t);
+      public void onError(Throwable error) {
+        Status status = Status.fromThrowable(error);
         logger.log(Level.WARNING, "recognize failed: {0}", status);
         finishLatch.countDown();
       }
@@ -169,7 +173,7 @@ public class RecognizeClient {
 
   public static void main(String[] args) throws Exception {
 
-    String audio_file = "";
+    String audioFile = "";
     String host = "speech.googleapis.com";
     Integer port = 443;
     Integer sampling = 16000;
@@ -201,7 +205,7 @@ public class RecognizeClient {
     try {
       CommandLine line = parser.parse(options, args);
       if (line.hasOption("file")) {
-        audio_file = line.getOptionValue("file");
+        audioFile = line.getOptionValue("file");
       } else {
         System.err.println("An Audio file must be specified (e.g. /foo/baz.raw).");
         System.exit(1);
@@ -233,7 +237,7 @@ public class RecognizeClient {
     }
 
     RecognizeClient client =
-        new RecognizeClient(host, port, audio_file, sampling);
+        new RecognizeClient(host, port, audioFile, sampling);
     try {
       client.recognize();
     } finally {

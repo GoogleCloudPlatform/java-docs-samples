@@ -34,28 +34,30 @@ import com.google.cloud.speech.v1.RecognizeRequest;
 import com.google.cloud.speech.v1.SpeechGrpc;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
+
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.ParseException;
 
 /**
  * Client that sends audio to Speech.NonStreamingRecognize and returns transcript.
@@ -63,10 +65,10 @@ import org.apache.commons.cli.ParseException;
 public class NonStreamingRecognizeClient {
 
   private static final Logger logger =
-        Logger.getLogger(NonStreamingRecognizeClient.class.getName());
+      Logger.getLogger(NonStreamingRecognizeClient.class.getName());
 
-   private static final List<String> OAUTH2_SCOPES =
-             Arrays.asList("https://www.googleapis.com/auth/xapi.zoo");
+  private static final List<String> OAUTH2_SCOPES =
+      Arrays.asList("https://www.googleapis.com/auth/xapi.zoo");
 
   private final String host;
   private final int port;
@@ -76,8 +78,11 @@ public class NonStreamingRecognizeClient {
   private final ManagedChannel channel;
   private final SpeechGrpc.SpeechBlockingStub blockingStub;
 
-  /** Construct client connecting to Cloud Speech server at {@code host:port}. */
-  public NonStreamingRecognizeClient(String host, int port, String file, int samplingRate) throws IOException {
+  /**
+   * Construct client connecting to Cloud Speech server at {@code host:port}.
+   */
+  public NonStreamingRecognizeClient(String host, int port, String file, int samplingRate)
+      throws IOException {
     this.host = host;
     this.port = port;
     this.file = file;
@@ -134,7 +139,7 @@ public class NonStreamingRecognizeClient {
 
   public static void main(String[] args) throws Exception {
 
-    String audio_file = "";
+    String audioFile = "";
     String host = "speech.googleapis.com";
     Integer port = 443;
     Integer sampling = 16000;
@@ -166,7 +171,7 @@ public class NonStreamingRecognizeClient {
     try {
       CommandLine line = parser.parse(options, args);
       if (line.hasOption("file")) {
-        audio_file = line.getOptionValue("file");
+        audioFile = line.getOptionValue("file");
       } else {
         System.err.println("An Audio file path must be specified (e.g. /foo/baz.raw).");
         System.exit(1);
@@ -192,14 +197,13 @@ public class NonStreamingRecognizeClient {
         System.err.println("An Audio sampling rate must be specified.");
         System.exit(1);
       }
-    }
-    catch (ParseException exp) {
+    } catch (ParseException exp) {
       System.err.println("Unexpected exception:" + exp.getMessage());
       System.exit(1);
     }
 
     NonStreamingRecognizeClient client =
-        new NonStreamingRecognizeClient(host, port, audio_file, sampling);
+        new NonStreamingRecognizeClient(host, port, audioFile, sampling);
     try {
       client.recognize();
     } finally {
