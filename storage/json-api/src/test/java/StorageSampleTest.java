@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StorageSampleTest {
-  private static final String BUCKET = "cloud-samples-tests";
+  private static final String BUCKET = "cloud-samples-test";
   private static final String TEST_OBJECT = "storage-sample-test-upload.txt";
 
   @Test
