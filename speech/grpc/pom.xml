@@ -25,21 +25,6 @@
     <url>http://www.google.com</url>
   </organization>
 
-  <developers>
-    <developer>
-      <id>ejonte@google.com</id>
-      <name>Erik Jonte</name>
-      <email>ejonte@google.com</email>
-      <url>http://www.google.com</url>
-      <organization>Google</organization>
-      <organizationUrl>http://www.google.com</organizationUrl>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>-8</timezone>
-    </developer>
-  </developers>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

@@ -69,6 +69,7 @@
         <module>managed_vms/twilio</module>
         <module>monitoring/v2</module>
         <module>monitoring/v3</module>
+        <module>speech/grpc</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
