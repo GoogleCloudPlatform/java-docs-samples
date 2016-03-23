@@ -1,25 +1,11 @@
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.DataStoreFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.StorageScopes;
 import com.google.api.services.storage.model.RewriteResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
 
 /**
  * Demonstrates the use of GCS's CSEK features via the Java API client library
@@ -34,9 +20,6 @@ import java.util.Collections;
  *  <p>Finally, it will rotate that key to a new value.</p>
  **/
 class CustomerSuppliedEncryptionKeysSamples {
-
-  private static final java.io.File DATA_STORE_DIR =
-      new java.io.File(System.getProperty("user.home"), ".store/storage_sample");
 
   // You can (and should) generate your own CSEK Key! Try running this from the command line:
   //    python -c 'import base64; import os; print(base64.encodestring(os.urandom(32)))'
@@ -135,11 +118,11 @@ class CustomerSuppliedEncryptionKeysSamples {
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
     httpHeaders.set("x-goog-encryption-key", base64CSEKey);
     httpHeaders.set("x-goog-encryption-key-sha256", base64CSEKeyHash);
-    
+
     // Since our request includes our private key as a header, it is a good idea to instruct caches
     // and proxies not to store this request.
     httpHeaders.setCacheControl("no-store");
-    
+
     insertObject.setRequestHeaders(httpHeaders);
 
     try {
@@ -189,11 +172,11 @@ class CustomerSuppliedEncryptionKeysSamples {
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
     httpHeaders.set("x-goog-encryption-key", newBase64Key);
     httpHeaders.set("x-goog-encryption-key-sha256", newBase64KeyHash);
-    
+
     // Since our request includes our private key as a header, it is a good idea to instruct caches
     // and proxies not to store this request.
     httpHeaders.setCacheControl("no-store");
-    
+
     rewriteObject.setRequestHeaders(httpHeaders);
 
     try {
@@ -221,95 +204,23 @@ class CustomerSuppliedEncryptionKeysSamples {
       System.exit(1);
     }
     String bucketName = args[0];
-    // CSEK, like the JSON API, may be used only via HTTPS.
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    DataStoreFactory dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Credential credential = authorize(jsonFactory, httpTransport, dataStoreFactory);
-    Storage storage =
-        new Storage.Builder(httpTransport, jsonFactory, credential)
-            .setApplicationName("JavaCSEKApiSample")
-            .build();
-
-    InputStream dataToUpload = new ArbitrarilyLargeInputStream(10000000);
+    
+    Storage storage = StorageFactory.getService();
+    InputStream dataToUpload = new StorageUtils.ArbitrarilyLargeInputStream(10000000);
 
     System.out.format("Uploading object gs://%s/%s using CSEK.\n", bucketName, OBJECT_NAME);
     uploadObject(storage, bucketName, OBJECT_NAME, dataToUpload, CSEK_KEY, CSEK_KEY_HASH);
+    
     System.out.format("Downloading object gs://%s/%s using CSEK.\n", bucketName, OBJECT_NAME);
     InputStream objectData =
         downloadObject(storage, bucketName, OBJECT_NAME, CSEK_KEY, CSEK_KEY_HASH);
-    readStream(objectData);
+    StorageUtils.readStream(objectData);
+    
     System.out.println("Rotating object to use a different CSEK.");
     rotateKey(storage, bucketName, OBJECT_NAME, CSEK_KEY, CSEK_KEY_HASH,
         ANOTHER_CESK_KEY, ANOTHER_CSEK_KEY_HASH);
 
-    System.out.println();
-  }
-
-  private static Credential authorize(
-      JsonFactory jsonFactory, HttpTransport httpTransport, DataStoreFactory dataStoreFactory)
-      throws Exception {
-
-    InputStream clientSecretStream =
-        CustomerSuppliedEncryptionKeysSamples.class
-            .getResourceAsStream("client_secrets.json");
-    if (clientSecretStream == null) {
-      throw new RuntimeException("Could not load secrets");
-    }
-
-    // Load client secrets
-    GoogleClientSecrets clientSecrets =
-        GoogleClientSecrets.load(jsonFactory, new InputStreamReader(clientSecretStream));
-
-    // Set up authorization code flow
-    GoogleAuthorizationCodeFlow flow =
-        new GoogleAuthorizationCodeFlow.Builder(
-                httpTransport,
-                jsonFactory,
-                clientSecrets,
-                Collections.singleton(StorageScopes.DEVSTORAGE_FULL_CONTROL))
-            .setDataStoreFactory(dataStoreFactory)
-            .build();
-
-    // Authorize
-    Credential credential =
-        new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
-
-    return credential;
-  }
-
-  /**
-   * Reads the contents of an InputStream and does nothing with it.
-   */
-  private static void readStream(InputStream is) throws IOException {
-    byte inputBuffer[] = new byte[256];
-    while (is.read(inputBuffer) != -1) {}
-    // The caller is responsible for closing this InputStream.
-    is.close();
-  }
-
-  /**
-   * A helper class to provide input streams of any size.
-   * The input streams will be full of null bytes.
-   */
-  static class ArbitrarilyLargeInputStream extends InputStream {
-
-    private long bytesRead;
-    private final long streamSize;
-
-    public ArbitrarilyLargeInputStream(long streamSizeInBytes) {
-      bytesRead = 0;
-      this.streamSize = streamSizeInBytes;
-    }
-
-    @Override
-    public int read() throws IOException {
-      if (bytesRead >= streamSize) {
-        return -1;
-      }
-      bytesRead++;
-      return 0;
-    }
+    System.out.println("Done");
   }
 
 }
