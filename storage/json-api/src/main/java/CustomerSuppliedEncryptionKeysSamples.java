@@ -69,10 +69,6 @@ class CustomerSuppliedEncryptionKeysSamples {
     httpHeaders.set("x-goog-encryption-key", base64CSEKey);
     httpHeaders.set("x-goog-encryption-key-sha256", base64CSEKeyHash);
 
-    // Since our request includes our private key as a header, it is a good idea to instruct caches
-    // and proxies not to store this request.
-    httpHeaders.setCacheControl("no-store");
-
     getObject.setRequestHeaders(httpHeaders);
 
     try {
@@ -118,10 +114,6 @@ class CustomerSuppliedEncryptionKeysSamples {
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
     httpHeaders.set("x-goog-encryption-key", base64CSEKey);
     httpHeaders.set("x-goog-encryption-key-sha256", base64CSEKeyHash);
-
-    // Since our request includes our private key as a header, it is a good idea to instruct caches
-    // and proxies not to store this request.
-    httpHeaders.setCacheControl("no-store");
 
     insertObject.setRequestHeaders(httpHeaders);
 
@@ -172,10 +164,6 @@ class CustomerSuppliedEncryptionKeysSamples {
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
     httpHeaders.set("x-goog-encryption-key", newBase64Key);
     httpHeaders.set("x-goog-encryption-key-sha256", newBase64KeyHash);
-
-    // Since our request includes our private key as a header, it is a good idea to instruct caches
-    // and proxies not to store this request.
-    httpHeaders.setCacheControl("no-store");
 
     rewriteObject.setRequestHeaders(httpHeaders);
 
