@@ -7,36 +7,27 @@ Google Cloud Storage Service features a REST-based API that allows developers to
 1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/), including the [gcloud tool](https://cloud.google.com/sdk/gcloud/).
 
 1. Setup the gcloud tool.
-    ```
+
     gcloud init
-    ```
 
 1. Clone this repo.
 
-    ```
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-    ```
 
 1. Install [Maven](http://maven.apache.org/).
 
 1. Build this project from this directory:
 
-    ```
     mvn package
-    ```
 
 1. Run one of the sample apps by specifying its class name and a bucket name:
 
-    ```
     mvn exec:java -Dexec.mainClass=StorageSample \
 		-Dexec.args="ABucketName"
-    ```
 
 Note that if it's been a while, you may need to login with gcloud.
 
-    ```
     gcloud auth login
-    ```
 
 ## Products
 - [Google Cloud Storage][2]
