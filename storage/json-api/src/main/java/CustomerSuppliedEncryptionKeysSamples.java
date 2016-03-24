@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.InputStreamContent;
@@ -45,18 +61,19 @@ class CustomerSuppliedEncryptionKeysSamples {
    * @param storage A Storage object, ready for use
    * @param bucketName The name of the destination bucket
    * @param objectName The name of the destination object
-   * @param base64CSEKey An AES256 key, encoded as a base64 string.
-   * @param base64CSEKeyHash The SHA-256 hash of the above key, also encoded as a base64 string.
-   * @throws IOException if there was some error download from GCS.
+   * @param base64CseKey An AES256 key, encoded as a base64 string.
+   * @param base64CseKeyHash The SHA-256 hash of the above key, also encoded as a base64 string.
    *
    * @return An InputStream that contains the decrypted contents of the object.
+   *
+   * @throws IOException if there was some error download from GCS.
    */
   public static InputStream downloadObject(
       Storage storage,
       String bucketName,
       String objectName,
-      String base64CSEKey,
-      String base64CSEKeyHash)
+      String base64CseKey,
+      String base64CseKeyHash)
       throws Exception {
     Storage.Objects.Get getObject = storage.objects().get(bucketName, objectName);
 
@@ -66,8 +83,8 @@ class CustomerSuppliedEncryptionKeysSamples {
     // Now set the CSEK headers
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
-    httpHeaders.set("x-goog-encryption-key", base64CSEKey);
-    httpHeaders.set("x-goog-encryption-key-sha256", base64CSEKeyHash);
+    httpHeaders.set("x-goog-encryption-key", base64CseKey);
+    httpHeaders.set("x-goog-encryption-key-sha256", base64CseKeyHash);
 
     getObject.setRequestHeaders(httpHeaders);
 
@@ -89,8 +106,8 @@ class CustomerSuppliedEncryptionKeysSamples {
    * @param bucketName The name of the destination bucket
    * @param objectName The name of the destination object
    * @param data An InputStream containing the contents of the object to upload
-   * @param base64CSEKey An AES256 key, encoded as a base64 string.
-   * @param base64CSEKeyHash The SHA-256 hash of the above key, also encoded as a base64 string.
+   * @param base64CseKey An AES256 key, encoded as a base64 string.
+   * @param base64CseKeyHash The SHA-256 hash of the above key, also encoded as a base64 string.
    * @throws IOException if there was some error uploading to GCS.
    */
   public static void uploadObject(
@@ -98,8 +115,8 @@ class CustomerSuppliedEncryptionKeysSamples {
       String bucketName,
       String objectName,
       InputStream data,
-      String base64CSEKey,
-      String base64CSEKeyHash)
+      String base64CseKey,
+      String base64CseKeyHash)
       throws IOException {
     InputStreamContent mediaContent = new InputStreamContent("text/plain", data);
     Storage.Objects.Insert insertObject =
@@ -112,8 +129,8 @@ class CustomerSuppliedEncryptionKeysSamples {
     // Now set the CSEK headers
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
-    httpHeaders.set("x-goog-encryption-key", base64CSEKey);
-    httpHeaders.set("x-goog-encryption-key-sha256", base64CSEKeyHash);
+    httpHeaders.set("x-goog-encryption-key", base64CseKey);
+    httpHeaders.set("x-goog-encryption-key-sha256", base64CseKeyHash);
 
     insertObject.setRequestHeaders(httpHeaders);
 
@@ -192,18 +209,18 @@ class CustomerSuppliedEncryptionKeysSamples {
       System.exit(1);
     }
     String bucketName = args[0];
-    
+
     Storage storage = StorageFactory.getService();
     InputStream dataToUpload = new StorageUtils.ArbitrarilyLargeInputStream(10000000);
 
     System.out.format("Uploading object gs://%s/%s using CSEK.\n", bucketName, OBJECT_NAME);
     uploadObject(storage, bucketName, OBJECT_NAME, dataToUpload, CSEK_KEY, CSEK_KEY_HASH);
-    
+
     System.out.format("Downloading object gs://%s/%s using CSEK.\n", bucketName, OBJECT_NAME);
     InputStream objectData =
         downloadObject(storage, bucketName, OBJECT_NAME, CSEK_KEY, CSEK_KEY_HASH);
     StorageUtils.readStream(objectData);
-    
+
     System.out.println("Rotating object to use a different CSEK.");
     rotateKey(storage, bucketName, OBJECT_NAME, CSEK_KEY, CSEK_KEY_HASH,
         ANOTHER_CESK_KEY, ANOTHER_CSEK_KEY_HASH);
