@@ -43,9 +43,14 @@
     </prerequisites>
 
     <modules>
+        <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
         <module>appengine/helloworld</module>
         <module>appengine/mailgun</module>
+        <module>appengine/memcache</module>
+        <module>appengine/sendgrid</module>
+        <module>appengine/static-files</module>
+        <module>appengine/twilio</module>
         <module>bigquery</module>
         <module>datastore</module>
         <module>logging</module>

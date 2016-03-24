@@ -39,7 +39,6 @@ public class AnalyticsServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
     String trackingId = System.getenv("GA_TRACKING_ID");
-//    HttpClient client = HttpClientBuilder.create().build();
     URIBuilder builder = new URIBuilder();
     builder.setScheme("http").setHost("www.google-analytics.com").setPath("/collect")
         .addParameter("v", "1") // API Version.
