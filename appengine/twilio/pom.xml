@@ -18,17 +18,27 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-helloworld</artifactId>
+  <artifactId>appengine-twilio</artifactId>
+
   <parent>
-    <groupId>com.google.cloud</groupId>
     <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
     <relativePath>../..</relativePath>
   </parent>
+
   <dependencies>
+    <!-- [START dependencies] -->
+    <dependency>
+      <groupId>com.twilio.sdk</groupId>
+      <artifactId>twilio-java-sdk</artifactId>
+      <version>6.3.0</version>
+    </dependency>
+    <!-- [END dependencies] -->
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -37,6 +47,12 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
+      <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
+      <plugin>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>${appengine.sdk.version}</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.3</version>
@@ -45,12 +61,6 @@ Copyright 2015 Google Inc. All Rights Reserved.
           <source>1.7</source>
           <target>1.7</target>
         </configuration>
-      </plugin>
-      <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
-      <plugin>
-        <groupId>com.google.appengine</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
       </plugin>
     </plugins>
   </build>
