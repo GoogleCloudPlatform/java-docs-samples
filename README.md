@@ -82,8 +82,7 @@ now-redundant plugin information.
 If you haven't done this before, run
 
 ```
-git remote add java-repo-tools
-git@github.com:GoogleCloudPlatform/java-repo-tools.git
+git remote add java-repo-tools git@github.com:GoogleCloudPlatform/java-repo-tools.git
 git fetch java-repo-tools master
 # Optional, but it makes pushing changes upstream easier.
 git checkout -b java-repo-tools java-repo-tools/master
