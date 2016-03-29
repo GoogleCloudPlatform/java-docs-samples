@@ -1,4 +1,4 @@
-# Cloud Pub/Sub samples for Java
+# Cloud Speech API samples for Java
 
 This directory contains several samples for the [Cloud Speech API](https://cloud.google.com/speech/)
 with Java.
