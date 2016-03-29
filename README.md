@@ -110,8 +110,7 @@ directory.)
 To update the `java-repo-tools` directory, if you haven't done this before, run
 
 ```
-git remote add java-repo-tools
-git@github.com:GoogleCloudPlatform/java-repo-tools.git
+git remote add java-repo-tools git@github.com:GoogleCloudPlatform/java-repo-tools.git
 git fetch java-repo-tools master
 git checkout -b java-repo-tools java-repo-tools/master
 ```
