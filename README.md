@@ -41,6 +41,19 @@ git checkout master
 # Making a new branch ia optional, but recommended to send a pull request to
 # start using java-repo-tools.
 git checkout -b use-java-repo-tools
+```
+
+So that we can pull future updates from the `java-repo-tools` repository, we
+merge histories. This way we won't get unnecessary conflicts when pulling changes
+in.
+
+```
+git merge -s ours --no-commit java-repo-tools/master
+```
+
+Finally, read the `java-repo-tools` into a subtree.
+
+```
 git read-tree --prefix=java-repo-tools/ -u java-repo-tools
 ```
 
