@@ -115,13 +115,7 @@ git fetch java-repo-tools master
 git checkout -b java-repo-tools java-repo-tools/master
 ```
 
-To pull the changes when in this branch run
-
-```
-git pull java-repo-tools master
-```
-
-To pull the changes back from upstream:
+To pull the latest changes from this `java-repo-tools` repository, run:
 
 ```
 git checkout java-repo-tools
