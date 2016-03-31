@@ -20,9 +20,11 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import com.google.api.services.storage.model.Objects;
 import com.google.api.services.storage.model.StorageObject;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,13 +93,16 @@ public class StorageSample {
    *
    * @param name the name of the destination object.
    * @param contentType the MIME type of the data.
-   * @param stream the data - for instance, you can use a FileInputStream to upload a file.
+   * @param file the file to upload.
    * @param bucketName the name of the bucket to create the object in.
    */
-  public static void uploadStream(
-      String name, String contentType, InputStream stream, String bucketName)
+  public static void uploadFile(
+      String name, String contentType, File file, String bucketName)
       throws IOException, GeneralSecurityException {
-    InputStreamContent contentStream = new InputStreamContent(contentType, stream);
+    InputStreamContent contentStream = new InputStreamContent(
+        contentType, new FileInputStream(file));
+    // Setting the length improves upload performance
+    contentStream.setLength(file.length());
     StorageObject objectMetadata = new StorageObject()
         // Set the destination object name
         .setName(name)
@@ -161,11 +166,13 @@ public class StorageSample {
       }
 
 
-      // Upload a stream to the bucket. This could very well be a file.
-      uploadStream(
-          TEST_FILENAME, "text/plain",
-          new ByteArrayInputStream("Test of json storage sample".getBytes()),
-          bucketName);
+      // Create a temp file to upload
+      Path tempPath = Files.createTempFile("StorageSample", "txt");
+      Files.write(tempPath, "Sample file".getBytes());
+      File tempFile = tempPath.toFile();
+      tempFile.deleteOnExit();
+      // Upload it
+      uploadFile(TEST_FILENAME, "text/plain", tempFile, bucketName);
 
       // Now delete the file
       deleteObject(TEST_FILENAME, bucketName);
