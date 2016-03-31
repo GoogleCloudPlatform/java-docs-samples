@@ -9,6 +9,8 @@ write a TimeSeries value to it.
 ## Prerequisites to run locally:
 
     * [Maven 3](https://maven.apache.org)
+    * [GCloud CLI](https://cloud.google.com/sdk/gcloud/)
+    * Create a Cloud project
 
 # Set Up Your Local Dev Environment
 
@@ -17,6 +19,7 @@ Create local credentials by running the following command and following the oaut
     gcloud beta auth application-default login
     
 To run:
+
     * `mvn clean install`
     * `./list_resources_example.sh <YOUR-PROJECT-ID>
     * `./run_custom_metrics.sh <YOUR-PROJECT-ID>    
@@ -57,13 +60,3 @@ to the appropriate project ID that matches the Service Account pointed to by
 `GOOGLE_APPLICATION_CREDENTIALS`, then run:
 
     mvn test -DskipTests=false
-
-## Contributing changes
-
-See [CONTRIBUTING.md](../../CONTRIBUTING.md).
-
-## Licensing
-
-See [LICENSE](../../LICENSE).
-
-
