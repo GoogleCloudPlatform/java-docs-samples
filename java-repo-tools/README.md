@@ -96,15 +96,12 @@ If you haven't done this before, run
 
 ```
 git remote add java-repo-tools git@github.com:GoogleCloudPlatform/java-repo-tools.git
-git fetch java-repo-tools master
-# Optional, but it makes pushing changes upstream easier.
-git checkout -b java-repo-tools java-repo-tools/master
 ```
 
 To detect if you have changes in the directory, run
 
 ```
-git fetch java-repo-tools
+git fetch java-repo-tools master
 git diff-tree -p HEAD:java-repo-tools/ java-repo-tools/master
 ```
 
@@ -124,25 +121,16 @@ To update the `java-repo-tools` directory, if you haven't done this before, run
 
 ```
 git remote add java-repo-tools git@github.com:GoogleCloudPlatform/java-repo-tools.git
-git fetch java-repo-tools master
-git checkout -b java-repo-tools java-repo-tools/master
 ```
 
 To pull the latest changes from this `java-repo-tools` repository, run:
-
-```
-git checkout java-repo-tools
-git pull java-repo-tools master
-```
-
-Pull them into the main code.
 
 ```
 git checkout master
 # Making a new branch is optional, but recommended to send a pull request for
 # update.
 git checkout -b update-java-repo-tools
-git merge --squash -Xsubtree=java-repo-tools/ --no-commit java-repo-tools
+git pull -s subtree java-repo-tools master
 ```
 
 Then you can make any needed changes to make the rest of the repository
@@ -175,6 +163,10 @@ git push java-repo-tools java-repo-tools:name-for-remote-branch
 
 Then, you can send a pull request to the `java-repo-tools` repository.
 
+
+## References
+
+- [GitHub's subtree merge reference](https://help.github.com/articles/about-git-subtree-merges/)
 
 ## Contributing changes
 
