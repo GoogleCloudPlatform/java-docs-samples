@@ -23,7 +23,9 @@ import com.google.api.services.storage.model.StorageObject;
 
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,12 +48,14 @@ public class StorageSampleTest {
 
   @Test
   public void testUploadDelete() throws Exception {
-    StorageSample.uploadStream(
-        TEST_OBJECT, "text/plain",
-        new ByteArrayInputStream(
-            ("This object is uploaded and deleted as part of the "
-            + "StorageSampleTest integration test.").getBytes()),
-        BUCKET);
+    // Create a temp file to upload
+    Path tempPath = Files.createTempFile("StorageSampleTest", "txt");
+    Files.write(tempPath, ("This object is uploaded and deleted as part of the "
+            + "StorageSampleTest integration test.").getBytes());
+    File tempFile = tempPath.toFile();
+    tempFile.deleteOnExit();
+
+    StorageSample.uploadFile(TEST_OBJECT, "text/plain", tempFile, BUCKET);
 
     try {
       // Verify that the object was created
