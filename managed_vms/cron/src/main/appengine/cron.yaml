@@ -1,0 +1,4 @@
+cron:
+ - description: sample cron job
+   url: /cron
+   schedule: every 1 mins
