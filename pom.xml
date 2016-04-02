@@ -47,6 +47,7 @@
         <module>appengine/appidentity</module>
         <module>appengine/helloworld</module>
         <module>appengine/mailgun</module>
+        <module>appengine/mailjet</module>
         <module>appengine/memcache</module>
         <module>appengine/sendgrid</module>
         <module>appengine/static-files</module>
@@ -62,6 +63,7 @@
         <module>managed_vms/extending-runtime</module>
         <module>managed_vms/helloworld</module>
         <module>managed_vms/mailgun</module>
+        <module>managed_vms/mailjet</module>
         <module>managed_vms/memcache</module>
         <module>managed_vms/sendgrid</module>
         <module>managed_vms/sparkjava</module>
