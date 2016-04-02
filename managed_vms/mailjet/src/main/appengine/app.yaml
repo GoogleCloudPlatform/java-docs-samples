@@ -1,0 +1,13 @@
+runtime: java
+vm: true
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+# [START env_variables]
+env_variables:
+  MAILJET_API_KEY: YOUR-MAILJET-API-KEY
+  MAILJET_SECRET_KEY: YOUR-MAILJET-SECRET-KEY
+# [END env_variables]

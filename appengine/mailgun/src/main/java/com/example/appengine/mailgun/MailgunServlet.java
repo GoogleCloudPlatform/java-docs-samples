@@ -27,7 +27,6 @@ import com.sun.jersey.multipart.file.FileDataBodyPart;
 import java.io.File;
 import java.io.IOException;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +34,6 @@ import javax.ws.rs.core.MediaType;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "mailgun", value = "/send/email")
 public class MailgunServlet extends HttpServlet {
 
   private static final String MAILGUN_DOMAIN_NAME = System.getenv("MAILGUN_DOMAIN_NAME");
