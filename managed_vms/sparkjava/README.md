@@ -1,7 +1,6 @@
-gcloud-java example using Managed VMs & SparkJava
-=================================================
+# SparkJava on App Engine Flexible Environment
 
-This app demonstrates how to use [`gcloud-java`'s Datastore client](https://github.com/GoogleCloudPlatform/gcloud-java/tree/master/gcloud-java-datastore#google-cloud-java-client-for-datastore) from within an [App Engine Managed VM](https://cloud.google.com/appengine/docs/java/managed-vms/) project using [SparkJava](http://sparkjava.com/). The app allows you to create and modify a database of "users", which contains their ID, name, and email information. 
+This app demonstrates how to use [`gcloud-java`'s Datastore client](https://github.com/GoogleCloudPlatform/gcloud-java/tree/master/gcloud-java-datastore#google-cloud-java-client-for-datastore) from within an [App Engine flexible environment](https://cloud.google.com/appengine/docs/flexible/java/hello-world) project using [SparkJava](http://sparkjava.com/). The app allows you to create and modify a database of "users", which contains their ID, name, and email information. 
 
 `gcloud-java` is an idiomatic Java client for [Google Cloud Platform](https://cloud.google.com/) services. Read more about the library [here](https://github.com/GoogleCloudPlatform/gcloud-java#google-cloud-java-client).
 
