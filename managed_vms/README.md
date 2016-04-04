@@ -1,10 +1,13 @@
-## Google Managed VMs Java Samples
+# Google App Engine Flexible Environment Java Samples
 
-This is a repository that contains Java code samples for Google Managed VMs
+This is a repository that contains Java code samples for [Google App Engine
+flexible environment][aeflex-docs].
 
-See our other [Google Cloud Platform github
+See our other [Google Cloud Platform GitHub
 repos](https://github.com/GoogleCloudPlatform) for sample applications and
 scaffolding for other frameworks and use cases.
+
+[aeflex-docs]: https://cloud.google.com/appengine/docs/flexible/
 
 ## Run Locally
 1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/), including the [gcloud tool](https://cloud.google.com/sdk/gcloud/), and [gcloud app component](https://cloud.google.com/sdk/gcloud-app).
@@ -17,7 +20,7 @@ scaffolding for other frameworks and use cases.
 1. Clone this repo.
 
    ```
-   git clone https://github.com/GoogleCloudPlatform/<REPO NAME>.git
+   git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
    ```
 
 1. Run this project locally from the command line.
