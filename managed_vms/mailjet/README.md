@@ -1,5 +1,6 @@
 # Mailjet sample for Google Managed VMs
-This sample demonstrates how to use [Mailjet](https://www.mailjet.com/) on Google Managed VMs.
+This sample demonstrates how to use [Mailjet](https://www.mailjet.com/) on Google Managed VMs to
+send emails from a verified sender you own.
 
 ## Setup
 1. Before using, ensure the address you plan to send from has been verified in Mailjet.
