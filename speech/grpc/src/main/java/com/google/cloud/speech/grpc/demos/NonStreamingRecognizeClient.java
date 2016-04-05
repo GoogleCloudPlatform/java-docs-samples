@@ -68,7 +68,7 @@ public class NonStreamingRecognizeClient {
       Logger.getLogger(NonStreamingRecognizeClient.class.getName());
 
   private static final List<String> OAUTH2_SCOPES =
-      Arrays.asList("https://www.googleapis.com/auth/xapi.zoo");
+      Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
   private final String host;
   private final int port;

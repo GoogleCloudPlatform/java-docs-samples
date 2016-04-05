@@ -78,7 +78,7 @@ public class RecognizeClient {
   private final SpeechGrpc.SpeechStub stub;
 
   private static final List<String> OAUTH2_SCOPES =
-      Arrays.asList("https://www.googleapis.com/auth/xapi.zoo");
+      Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
