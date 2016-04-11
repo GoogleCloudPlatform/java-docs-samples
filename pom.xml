@@ -52,6 +52,7 @@
         <module>appengine/sendgrid</module>
         <module>appengine/static-files</module>
         <module>appengine/twilio</module>
+        <module>appengine/urlfetch</module>
         <module>bigquery</module>
         <module>datastore</module>
         <module>logging</module>
