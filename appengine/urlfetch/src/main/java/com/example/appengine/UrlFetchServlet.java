@@ -27,7 +27,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 
-// [START example]
 @SuppressWarnings("serial")
 public class UrlFetchServlet extends HttpServlet {
 
@@ -55,4 +54,3 @@ public class UrlFetchServlet extends HttpServlet {
     out.println("</body></html>");
   }
 }
-// [END example]
