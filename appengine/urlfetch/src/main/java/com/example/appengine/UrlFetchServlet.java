@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,8 @@
 
 package com.example.appengine;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,8 +25,10 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-
-import org.json.JSONObject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 public class UrlFetchServlet extends HttpServlet {
@@ -63,7 +63,7 @@ public class UrlFetchServlet extends HttpServlet {
 
     if (id == null || text == null || id == "" || text == "") {
       req.setAttribute("error", "invalid input");
-      req.getRequestDispatcher("/main.jsp").forward(req,resp);
+      req.getRequestDispatcher("/main.jsp").forward(req, resp);
       return;
     }
 
@@ -85,7 +85,7 @@ public class UrlFetchServlet extends HttpServlet {
 
     int respCode = conn.getResponseCode();  // New items get NOT_FOUND on PUT
     if (respCode == HttpURLConnection.HTTP_OK || respCode == HttpURLConnection.HTTP_NOT_FOUND) {
-      req.setAttribute("error", "" );
+      req.setAttribute("error", "");
       StringBuffer response = new StringBuffer();
       String line;
 
@@ -98,7 +98,7 @@ public class UrlFetchServlet extends HttpServlet {
     } else {
       req.setAttribute("error", conn.getResponseCode() + " " + conn.getResponseMessage());
     }
-  // [END complex]
+    // [END complex]
     req.getRequestDispatcher("/main.jsp").forward(req, resp);
   }
 
