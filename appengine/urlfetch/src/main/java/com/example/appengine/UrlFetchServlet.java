@@ -16,16 +16,19 @@
 
 package com.example.appengine;
 
-import org.json.JSONObject;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class UrlFetchServlet extends HttpServlet {
@@ -71,7 +74,7 @@ public class UrlFetchServlet extends HttpServlet {
         .put("body", text);
 
     // [START complex]
-    URL url = new URL("http://jsonplaceholder.typicode.com/posts/"+id);
+    URL url = new URL("http://jsonplaceholder.typicode.com/posts/" + id);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     conn.setDoOutput(true);
     conn.setRequestMethod("PUT");
@@ -93,7 +96,7 @@ public class UrlFetchServlet extends HttpServlet {
       reader.close();
       req.setAttribute("response", response.toString());
     } else {
-      req.setAttribute("error", conn.getResponseCode()+" "+conn.getResponseMessage());
+      req.setAttribute("error", conn.getResponseCode() + " " + conn.getResponseMessage());
     }
   // [END complex]
     req.getRequestDispatcher("/main.jsp").forward(req, resp);
