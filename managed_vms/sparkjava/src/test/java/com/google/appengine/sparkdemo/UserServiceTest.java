@@ -21,15 +21,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.datastore.StructuredQuery;
+import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.google.common.collect.Iterators;
-import com.google.gcloud.datastore.Datastore;
-import com.google.gcloud.datastore.DatastoreOptions;
-import com.google.gcloud.datastore.Entity;
-import com.google.gcloud.datastore.Key;
-import com.google.gcloud.datastore.Query;
-import com.google.gcloud.datastore.QueryResults;
-import com.google.gcloud.datastore.StructuredQuery;
-import com.google.gcloud.datastore.testing.LocalGcdHelper;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,54 +41,44 @@ import java.util.List;
 
 public class UserServiceTest {
 
-  private static final int PORT = LocalGcdHelper.findAvailablePort(LocalGcdHelper.DEFAULT_PORT);
-  private static final String PROJECT_ID = LocalGcdHelper.DEFAULT_PROJECT_ID;
+  private static final LocalDatastoreHelper HELPER = LocalDatastoreHelper.create(1.0);
+  private static final DatastoreOptions DATASTORE_OPTIONS = HELPER.options();
+  private static final Datastore DATASTORE = DATASTORE_OPTIONS.service();
+  private static final String KIND = "DemoUser";
+  private static final UserService USER_SERVICE = new UserService(DATASTORE, KIND);
   private static final String USER_ID = "myId";
   private static final String USER_NAME = "myName";
   private static final String USER_EMAIL = "my@email.com";
   private static final User USER = new User(USER_ID, USER_NAME, USER_EMAIL);
-  private static final String KIND = "DemoUser";
-  private static final Key USER_KEY = Key.builder(PROJECT_ID, KIND, USER_ID).build();
+  private static final Key USER_KEY =
+      Key.builder(DATASTORE_OPTIONS.projectId(), KIND, USER_ID).build();
   private static final Entity USER_RECORD = Entity.builder(USER_KEY)
       .set("id", USER_ID)
       .set("name", USER_NAME)
       .set("email", USER_EMAIL)
       .build();
-  private static LocalGcdHelper gcdHelper;
-  private static Datastore datastore;
-  private static UserService userService;
 
   @BeforeClass
   public static void beforeClass() throws IOException, InterruptedException {
-    if (!LocalGcdHelper.isActive(PROJECT_ID, PORT)) {
-      gcdHelper = LocalGcdHelper.start(PROJECT_ID, PORT, 1.0);
-    }
-    datastore = DatastoreOptions.builder()
-        .projectId(PROJECT_ID)
-        .host("http://localhost:" + PORT)
-        .build()
-        .service();
-    userService = new UserService(datastore, KIND);
+    HELPER.start();
   }
 
   @Before
   public void setUp() {
     StructuredQuery<Key> query = Query.keyQueryBuilder().build();
-    QueryResults<Key> result = datastore.run(query);
-    datastore.delete(Iterators.toArray(result, Key.class));
-    datastore.add(USER_RECORD);
+    QueryResults<Key> result = DATASTORE.run(query);
+    DATASTORE.delete(Iterators.toArray(result, Key.class));
+    DATASTORE.add(USER_RECORD);
   }
 
   @AfterClass
   public static void afterClass() throws IOException, InterruptedException {
-    if (gcdHelper != null) {
-      gcdHelper.stop();
-    }
+    HELPER.stop();
   }
 
   @Test
   public void testGetAllUsers() {
-    List<User> allUsers = userService.getAllUsers();
+    List<User> allUsers = USER_SERVICE.getAllUsers();
     assertEquals(1, allUsers.size());
     User actualUser = allUsers.get(0);
     assertEquals(USER.getId(), actualUser.getId());
@@ -100,18 +90,18 @@ public class UserServiceTest {
   public void testCreateUser() {
     String name = "myNewName";
     String email = "mynew@email.com";
-    User actualUser = userService.createUser(name, email);
+    User actualUser = USER_SERVICE.createUser(name, email);
     assertEquals(name, actualUser.getName());
     assertEquals(email, actualUser.getEmail());
     assertNotNull(actualUser.getId());
     try {
-      userService.createUser(null, email);
+      USER_SERVICE.createUser(null, email);
       fail("Expected to fail because name is null.");
     } catch (IllegalArgumentException e) {
       assertEquals("Parameter 'name' cannot be empty", e.getMessage());
     }
     try {
-      userService.createUser(name, null);
+      USER_SERVICE.createUser(name, null);
       fail("Expected to fail because email is null.");
     } catch (IllegalArgumentException e) {
       assertEquals("Parameter 'email' cannot be empty", e.getMessage());
@@ -120,27 +110,27 @@ public class UserServiceTest {
 
   @Test
   public void testDeleteUser() {
-    String result = userService.deleteUser(USER_ID);
+    String result = USER_SERVICE.deleteUser(USER_ID);
     assertEquals("ok", result);
-    assertNull(datastore.get(USER_KEY));
+    assertNull(DATASTORE.get(USER_KEY));
   }
 
   @Test
   public void testUpdateUser() {
     String newName = "myNewName";
     String newEmail = "mynew@email.com";
-    User updatedUser = userService.updateUser(USER_ID, newName, newEmail);
+    User updatedUser = USER_SERVICE.updateUser(USER_ID, newName, newEmail);
     assertEquals(USER_ID, updatedUser.getId());
     assertEquals(newName, updatedUser.getName());
     assertEquals(newEmail, updatedUser.getEmail());
     try {
-      userService.updateUser(USER_ID, null, USER_EMAIL);
+      USER_SERVICE.updateUser(USER_ID, null, USER_EMAIL);
       fail("Expected to fail because name is null.");
     } catch (IllegalArgumentException e) {
       assertEquals("Parameter 'name' cannot be empty", e.getMessage());
     }
     try {
-      userService.updateUser(USER_ID, USER_NAME, null);
+      USER_SERVICE.updateUser(USER_ID, USER_NAME, null);
       fail("Expected to fail because email is null.");
     } catch (IllegalArgumentException e) {
       assertEquals("Parameter 'email' cannot be empty", e.getMessage());

@@ -18,12 +18,12 @@ package com.google.appengine.sparkdemo;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.gcloud.datastore.Datastore;
-import com.google.gcloud.datastore.Entity;
-import com.google.gcloud.datastore.Key;
-import com.google.gcloud.datastore.KeyFactory;
-import com.google.gcloud.datastore.Query;
-import com.google.gcloud.datastore.QueryResults;
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.KeyFactory;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.QueryResults;
 
 import java.util.ArrayList;
 import java.util.List;
