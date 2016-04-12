@@ -27,12 +27,6 @@ git remote add java-repo-tools git@github.com:GoogleCloudPlatform/java-repo-tool
 git fetch java-repo-tools master
 ```
 
-To make it easier to push changes back upstream, create a new branch.
-
-```
-git checkout -b java-repo-tools java-repo-tools/master
-```
-
 We can then go back to the `my-java-samples` code and prepare a Pull Request to
 add the `java-repo-tools` code in a subtree.
 
@@ -54,7 +48,7 @@ git merge -s ours --no-commit java-repo-tools/master
 Finally, read the `java-repo-tools` into a subtree.
 
 ```
-git read-tree --prefix=java-repo-tools/ -u java-repo-tools
+git read-tree --prefix=java-repo-tools/ -u java-repo-tools/master
 ```
 
 Now all the content of `java-repo-tools` will be in the `java-repo-tools/`
