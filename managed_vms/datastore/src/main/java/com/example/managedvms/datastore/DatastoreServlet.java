@@ -16,16 +16,16 @@
 
 package com.example.managedvms.datastore;
 
-import com.google.gcloud.datastore.Datastore;
-import com.google.gcloud.datastore.DatastoreOptions;
-import com.google.gcloud.datastore.DateTime;
-import com.google.gcloud.datastore.Entity;
-import com.google.gcloud.datastore.FullEntity;
-import com.google.gcloud.datastore.IncompleteKey;
-import com.google.gcloud.datastore.KeyFactory;
-import com.google.gcloud.datastore.Query;
-import com.google.gcloud.datastore.QueryResults;
-import com.google.gcloud.datastore.StructuredQuery;
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.DateTime;
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.FullEntity;
+import com.google.cloud.datastore.IncompleteKey;
+import com.google.cloud.datastore.KeyFactory;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.datastore.StructuredQuery;
 
 import java.io.IOException;
 import java.io.PrintWriter;

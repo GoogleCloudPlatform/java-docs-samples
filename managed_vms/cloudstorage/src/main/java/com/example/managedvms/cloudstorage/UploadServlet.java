@@ -16,11 +16,11 @@
 
 package com.example.managedvms.cloudstorage;
 
-import com.google.gcloud.storage.Acl;
-import com.google.gcloud.storage.Blob;
-import com.google.gcloud.storage.BlobInfo;
-import com.google.gcloud.storage.Storage;
-import com.google.gcloud.storage.StorageOptions;
+import com.google.cloud.storage.Acl;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;

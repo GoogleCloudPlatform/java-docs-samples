@@ -18,7 +18,7 @@ package com.google.appengine.sparkdemo;
 
 import static spark.Spark.port;
 
-import com.google.gcloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.DatastoreOptions;
 
 public class Main {
 

@@ -36,9 +36,9 @@
       <version>4.12</version>
     </dependency>
     <dependency>
-      <groupId>com.google.gcloud</groupId>
+      <groupId>com.google.cloud</groupId>
       <artifactId>gcloud-java</artifactId>
-      <version>0.1.7</version>
+      <version>0.2.0</version>
     </dependency>
   </dependencies>
   <build>
