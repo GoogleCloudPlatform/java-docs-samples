@@ -54,6 +54,7 @@
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>bigquery</module>
+        <module>compute/cmdline</module>
         <module>datastore</module>
         <module>logging</module>
         <module>managed_vms/analytics</module>
