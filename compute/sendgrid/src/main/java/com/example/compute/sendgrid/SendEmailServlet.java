@@ -22,7 +22,7 @@ import com.sendgrid.SendGridException;
 // [START example]
 public class SendEmailServlet {
   final static String SENDGRID_API_KEY = "YOUR-SENDGRID-API-KEY";
-  final static String SENDGRID_SENDER = "YOUR-SENDGRID-SENDER";
+  final static String SENDGRID_SENDER = "YOUR-SENDGRID-FROM-EMAIL";
   final static String TO_EMAIL = "DESTINATION-EMAIL";
 
   public static void main(String[] args) throws SendGridException {
