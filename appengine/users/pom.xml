@@ -30,11 +30,11 @@ Copyright 2015 Google Inc. All Rights Reserved.
   </parent>
   <dependencies>
    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
-    </dependency>
-    <dependency>
+    <groupId>com.google.appengine</groupId>
+    <artifactId>appengine-maven-plugin</artifactId>
+    <version>${appengine.sdk.version}</version>
+   </dependency>
+   <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>19.0</version>

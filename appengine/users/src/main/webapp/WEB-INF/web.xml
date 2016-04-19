@@ -5,7 +5,7 @@
   version="2.5">
   <servlet>
     <servlet-name>users</servlet-name>
-    <servlet-class>com.example.appengine.users.MyServlet</servlet-class>
+    <servlet-class>com.example.appengine.users.UsersServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>users</servlet-name>

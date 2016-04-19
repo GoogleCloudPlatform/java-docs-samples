@@ -32,17 +32,17 @@ import org.mockito.MockitoAnnotations;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.management.remote.JMXPrincipal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.management.remote.JMXPrincipal;
 
 /**
  * Unit tests for {@link UsersServlet}.
  */
 @RunWith(JUnit4.class)
 public class UsersServletTest {
-   private final String fakeURL = "fakey.fake.fak"; 
-   private final String FAKE_NAME = "Fake"; 
+  private static final String FAKE_URL = "fakey.fake.fak"; 
+  private static final String FAKE_NAME = "Fake"; 
   // Set up a helper so that the ApiProxy returns a valid environment for local testing.
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
@@ -59,14 +59,14 @@ public class UsersServletTest {
 
     //  Set up some fake HTTP requests
     //  If the user isn't logged in, use this request
-    when (mockRequestNotLoggedIn.getRequestURI()).thenReturn(fakeURL);
-    when (mockRequestNotLoggedIn.getUserPrincipal()).thenReturn(null);
+    when(mockRequestNotLoggedIn.getRequestURI()).thenReturn(FAKE_URL);
+    when(mockRequestNotLoggedIn.getUserPrincipal()).thenReturn(null);
 
     //  If the user is logged in, use this request
-    when (mockRequestLoggedIn.getRequestURI()).thenReturn(fakeURL);
+    when(mockRequestLoggedIn.getRequestURI()).thenReturn(FAKE_URL);
     //  Most of the classes that implement Principal have been
     //  deprecated.  JMXPrincipal seems like a safe choice. 
-    when (mockRequestLoggedIn.getUserPrincipal()).thenReturn(new JMXPrincipal(FAKE_NAME));
+    when(mockRequestLoggedIn.getUserPrincipal()).thenReturn(new JMXPrincipal(FAKE_NAME));
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -92,7 +92,8 @@ public class UsersServletTest {
         .named("UsersServlet response")
         .contains("sign in</a>.</p>"); 
   }
- @Test
+
+  @Test
   public void doGet_userLoggedIn_writesResponse() throws Exception {
     servletUnderTest.doGet(mockRequestLoggedIn, mockResponse);
 
