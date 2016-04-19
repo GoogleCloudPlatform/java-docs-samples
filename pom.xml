@@ -53,6 +53,7 @@
         <module>appengine/static-files</module>
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
+        <module>appengine/users</module>
         <module>bigquery</module>
         <module>datastore</module>
         <module>logging</module>
