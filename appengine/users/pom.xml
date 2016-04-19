@@ -95,11 +95,6 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
-        <groupId>com.google.appengine</groupId>
-        <artifactId>gcloud-maven-plugin</artifactId>
-        <version>2.0.9.101.v20160316</version>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.3</version>
         <artifactId>maven-compiler-plugin</artifactId>
