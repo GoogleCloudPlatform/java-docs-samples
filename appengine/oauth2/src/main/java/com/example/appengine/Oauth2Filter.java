@@ -53,7 +53,7 @@ public class Oauth2Filter implements Filter {
 
   // [START oauth2]
   @Override
-  final void doFilter(final ServletRequest servletReq, final ServletResponse servletResp,
+  public void doFilter(final ServletRequest servletReq, final ServletResponse servletResp,
                              final FilterChain chain) throws IOException, ServletException {
     HttpServletResponse resp = (HttpServletResponse) servletResp;
 
