@@ -46,6 +46,7 @@
         <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
         <module>appengine/helloworld</module>
+        <module>appengine/logs</module>
         <module>appengine/mailgun</module>
         <module>appengine/mailjet</module>
         <module>appengine/memcache</module>
