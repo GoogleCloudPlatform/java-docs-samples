@@ -22,9 +22,9 @@ To run the sample, you will need to do the following:
 1. Update packages and install required packages
     sudo apt-get update && sudo apt-get install git-core openjdk-8-jdk maven
 1. Clone the repo
-    git clone https://github.com/shun-fan/test-compute-sendgrid.git
+    git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 1. Configure your SendGrid settings in the java class (SENDGRID_API_KEY, SENDGRID_SENDER, TO_EMAIL)
-    ./sendgrid/src/main/java/com/example/compute/sendgrid/SendEmailServlet.java
+    java-docs-samples/compute/sendgrid/src/main/java/com/example/compute/sendgrid/SendEmailServlet.java
 1. Navigate back to ./sendgrid and use maven to package the class as a jar
     mvn clean package
 1. Switch to the target directory with the jar file and enable execution on that file
