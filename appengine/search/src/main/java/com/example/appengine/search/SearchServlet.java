@@ -26,16 +26,18 @@ import com.google.appengine.api.search.SearchException;
 import com.google.appengine.api.search.StatusCode;
 // [END search_document_import]
 
+//CHECKSTYLE:OFF
 import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.SearchServiceFactory;
 // @formatter:on
+//CHECKSTYLE:ON
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 
 
@@ -69,7 +71,7 @@ public class SearchServlet extends HttpServlet {
     final int maxRetry = 3;
     int attempts = 0;
     int delay = 2;
-    while(true) {
+    while (true) {
       try {
         String queryString = "product: piano AND price < 5000";
         Results<ScoredDocument> results = getIndex().search(queryString);

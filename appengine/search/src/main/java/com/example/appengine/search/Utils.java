@@ -19,8 +19,8 @@ package com.example.appengine.search;
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
-import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.PutException;
+import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.StatusCode;
 // [END index_import]
 
@@ -30,9 +30,9 @@ import com.google.appengine.api.search.StatusCode;
 public class Utils {
   /**
    * Put a given document into an index with the given indexName.
-   * @param indexName
-   * @param document
-   * @throws InterruptedException
+   * @param indexName The name of the index.
+   * @param document A document to add.
+   * @throws InterruptedException When Thread.sleep is interrupted.
    */
   // [START putting_document_with_retry]
   public static void indexADocument(String indexName, Document document)

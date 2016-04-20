@@ -23,17 +23,23 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 // [END document_import]
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-
+/**
+ * A servlet for creating Search API Document.
+ */
 @SuppressWarnings("serial")
 public class DocumentServlet extends HttpServlet {
 
+  /**
+   * Code snippet for creating a Document.
+   * @return Document Created document.
+   */
   public Document createDocument() {
     // [START create_document]
     User currentUser = UserServiceFactory.getUserService().getCurrentUser();
@@ -56,13 +62,11 @@ public class DocumentServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
-    // Just to make sure the method works when deployed/dev_appserver.
-    createDocument();
     PrintWriter out = resp.getWriter();
     Document document = Document.newBuilder()
         .addField(Field.newBuilder().setName("coverLetter").setText("CoverLetter"))
         .addField(Field.newBuilder().setName("resume").setHTML("<html></html>"))
-        .addField(Field.newBuilder().setName("fullName").setAtom("Atom"))
+        .addField(Field.newBuilder().setName("fullName").setAtom("Foo Bar"))
         .addField(Field.newBuilder().setName("submissionDate").setDate(new Date()))
         .build();
     // [START access_document]
