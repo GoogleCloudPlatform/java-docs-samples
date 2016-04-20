@@ -49,6 +49,7 @@
         <module>appengine/mailgun</module>
         <module>appengine/mailjet</module>
         <module>appengine/memcache</module>
+        <module>appengine/oauth2</module>
         <module>appengine/sendgrid</module>
         <module>appengine/static-files</module>
         <module>appengine/twilio</module>
