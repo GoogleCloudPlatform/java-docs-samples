@@ -13,6 +13,8 @@
  */
 package com.example.appengine;
 
+import static com.google.appengine.api.utils.SystemProperty.environment;
+
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.oauth.OAuthService;
 import com.google.appengine.api.oauth.OAuthServiceFactory;
@@ -32,8 +34,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-
-import static com.google.appengine.api.utils.SystemProperty.environment;
 
 /**
  *  Filter to verify that request has a "Authorization: Bearer xxxx" header,
@@ -55,11 +55,12 @@ public class Oauth2Filter implements Filter {
   @Override
   public void doFilter(final ServletRequest servletReq, final ServletResponse servletResp,
                              final FilterChain chain) throws IOException, ServletException {
+    final String scope = "https://www.googleapis.com/auth/userinfo.email";
+    Set<String> allowedClients = new HashSet<>();
+
     HttpServletResponse resp = (HttpServletResponse) servletResp;
 
     OAuthService oauth = OAuthServiceFactory.getOAuthService();
-    final String scope = "https://www.googleapis.com/auth/userinfo.email";
-    Set<String> allowedClients = new HashSet<>();
 
     allowedClients.add("407408718192.apps.googleusercontent.com"); // list of client ids to allow
     allowedClients.add("755878275993-j4k7emq6rlupctce1c28enpcrr50vfo1.apps.googleusercontent.com");
@@ -68,7 +69,7 @@ public class Oauth2Filter implements Filter {
     SystemProperty.Environment.Value env = environment.value();
     if (env == SystemProperty.Environment.Value.Production) { // APIs only work in Production
       try {
-        User user = oauth.getCurrentUser(scope);    // From "Authorization: Bearer" http req header
+        User user = oauth.getCurrentUser(scope);
         String tokenAudience = oauth.getClientId(scope);
 
           // The line below is commented out for privacy.
