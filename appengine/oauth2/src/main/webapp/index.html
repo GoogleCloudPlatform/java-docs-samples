@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-signin-scope" content="profile">
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID_HERE.apps.googleusercontent.com" />
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+    function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var access_token = googleUser.getAuthResponse().access_token;
+
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/hello');
+        xhr.setRequestHeader("Authorization", "Bearer "+access_token);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            document.getElementById('response').innerHTML = xhr.responseText;
+            document.getElementById('me').style = "display:inline;";
+        };
+        xhr.onError = function() {
+            document.getElementById('response').innerHTML = "Error";
+            document.getElementById('me').style = "display:inline;";
+        };
+        xhr.send();
+    }
+    </script>
+</head>
+<body>
+<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+<div id="me" style="display: none;">
+    <h1><span id="response"></span></h1>
+</div>
+</body>
+</html>
