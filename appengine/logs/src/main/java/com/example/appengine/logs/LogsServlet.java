@@ -20,9 +20,10 @@ import com.google.appengine.api.log.LogQuery;
 import com.google.appengine.api.log.LogServiceFactory;
 import com.google.appengine.api.log.RequestLogs;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Calendar;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +34,15 @@ import javax.servlet.http.HttpServletResponse;
 // a time, using a Next link to cycle through to the next 5.
 public class LogsServlet extends HttpServlet {
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) 
          throws IOException {
 
     resp.setContentType("text/html");
     PrintWriter writer = resp.getWriter();
+    writer.println("<!DOCTYPE html>");
+    writer.println("<meta charset=\"utf-8\">");
+    writer.println("<title>App Engine Logs Sample</title>");
+  
     // We use this to break out of our iteration loop, limiting record
     // display to 5 request logs at a time.
     int limit = 5;
@@ -60,38 +65,33 @@ public class LogsServlet extends HttpServlet {
 
     // Display a few properties of each request log.
     for (RequestLogs record : LogServiceFactory.getLogService().fetch(query)) {
-      writer.println("<br />REQUEST LOG <br />");
-      Calendar cal = Calendar.getInstance();
-      cal.setTimeInMillis(record.getStartTimeUsec() / 1000);
-
-      writer.println("IP: " + record.getIp() + "<br />");
-      writer.println("Method: " + record.getMethod() + "<br />");
-      writer.println("Resource " + record.getResource() + "<br />");
-      writer.println(String.format("<br />Date: %s", cal.getTime().toString()));
+      writer.println("<br>REQUEST LOG <br>");
+      DateTime reqTime = new DateTime(record.getStartTimeUsec() / 1000);
+      writer.println("IP: " + record.getIp() + "<br>");
+      writer.println("Method: " + record.getMethod() + "<br>");
+      writer.println("Resource " + record.getResource() + "<br>");
+      writer.println(String.format("<br>Date: %s", reqTime.toString()));
 
       lastOffset = record.getOffset();
 
       // Display all the app logs for each request log.
       for (AppLogLine appLog : record.getAppLogLines()) {
-        writer.println("<br />" + "APPLICATION LOG" + "<br />");
-        Calendar appCal = Calendar.getInstance();
-        appCal.setTimeInMillis(appLog.getTimeUsec() / 1000);
-        writer.println(String.format("<br />Date: %s",
-                            appCal.getTime().toString()));
-        writer.println("<br />Level: " + appLog.getLogLevel() + "<br />");
-        writer.println("Message: " + appLog.getLogMessage() + "<br /> <br />");
-      } //for each log line
+        writer.println("<br>" + "APPLICATION LOG" + "<br>");
+        DateTime appTime = new DateTime(appLog.getTimeUsec() / 1000);
+        writer.println(String.format("<br>Date: %s", appTime.toString()));
+        writer.println("<br>Level: " + appLog.getLogLevel() + "<br>");
+        writer.println("Message: " + appLog.getLogMessage() + "<br> <br>");
+      } 
 
       if (++count >= limit) {
         break;
       }
-    } // for each record
+    } 
 
     // When the user clicks this link, the offset is processed in the
     // GET handler and used to cycle through to the next 5 request logs.
-    writer.println(String.format("<br><a href=\"/?offset=%s\">Next</a>",
-                             lastOffset));
-  }  // end doGet
-} //end class
+    writer.println(String.format("<br><a href=\"/?offset=%s\">Next</a>", lastOffset));
+  }  
+} 
 // [END logs_API_example]
 

@@ -1,9 +1,9 @@
 # Users Authentication sample for Google App Engine
 
-This sample demonstrates how to use the [Logs API][appid] on [Google App
+This sample demonstrates how to use the [Logs API][log-docs] on [Google App
 Engine][ae-docs].
 
-[appid]: https://cloud.google.com/appengine/docs/java/logs/
+[log-docs]: https://cloud.google.com/appengine/docs/java/logs/
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
 ## Running locally 
@@ -16,7 +16,7 @@ This example uses the
 [Maven gcloud plugin](https://cloud.google.com/appengine/docs/java/managed-vms/maven).
 
 In the following command, replace YOUR-PROJECT-ID with your
-[Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber) and SOME-VERSION with the desired version number.
+[Google Cloud Project ID](https://support.google.com/cloud/answer/6158840) and SOME-VERSION with the desired version number.
 
     $ mvn appengine:update -Dappengine.appId=YOUR-PROJECT-ID -Dappengine.version=SOME-VERSION
 
