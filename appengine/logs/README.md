@@ -16,9 +16,6 @@ This example uses the
 [Maven gcloud plugin](https://cloud.google.com/appengine/docs/java/managed-vms/maven).
 
 In the following command, replace YOUR-PROJECT-ID with your
-[Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber).
-
- In the following command, replace YOUR-PROJECT-ID with your
 [Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber) and SOME-VERSION with the desired version number.
 
     $ mvn appengine:update -Dappengine.appId=YOUR-PROJECT-ID -Dappengine.version=SOME-VERSION
