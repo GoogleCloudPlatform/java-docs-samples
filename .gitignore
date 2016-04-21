@@ -30,3 +30,8 @@ service-account.json
 # intellij
 .idea/
 *.iml
+
+# Eclipse files
+.project
+.classpath
+.settings
