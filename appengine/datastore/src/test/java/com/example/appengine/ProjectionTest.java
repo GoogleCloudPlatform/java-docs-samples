@@ -67,6 +67,7 @@ public class ProjectionTest {
     putTestData("some duplicate", 0L);
     putTestData("too big", 1L);
 
+    // [START grouping]
     Query q = new Query("TestKind");
     q.addProjection(new PropertyProjection("A", String.class));
     q.addProjection(new PropertyProjection("B", Long.class));
@@ -74,15 +75,14 @@ public class ProjectionTest {
     q.setFilter(Query.FilterOperator.LESS_THAN.of("B", 1L));
     q.addSort("B", Query.SortDirection.DESCENDING);
     q.addSort("A");
+    // [END grouping]
 
     List<Entity> entities =
         datastore.prepare(q).asList(FetchOptions.Builder.withLimit(5));
     assertThat(entities).hasSize(1);
-    // [START_EXCLUDE silent]
     Entity entity = entities.get(0);
     assertThat((String) entity.getProperty("A")).named("entity.A").isEqualTo("some duplicate");
     assertThat((long) entity.getProperty("B")).named("entity.B").isEqualTo(0L);
-    // [END_EXCLUDE]
   }
 
   private void putTestData(String a, long b) {
