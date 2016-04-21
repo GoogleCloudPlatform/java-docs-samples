@@ -16,6 +16,11 @@
 
 package com.example.appengine;
 
+import com.google.appengine.api.oauth.OAuthRequestException;
+import com.google.appengine.api.oauth.OAuthService;
+import com.google.appengine.api.oauth.OAuthServiceFactory;
+import com.google.appengine.api.users.User;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -30,8 +35,22 @@ public class HelloServlet extends HttpServlet {
   @Override
   public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
       throws IOException {
+
+    resp.setContentType("text/plain");
     PrintWriter out = resp.getWriter();
-    out.print("Hello, world");  // simple hello world response
+
+    final String scope = "https://www.googleapis.com/auth/userinfo.email";
+    OAuthService oauth = OAuthServiceFactory.getOAuthService();
+    User user = null;
+    try {
+      user = oauth.getCurrentUser(scope);
+    } catch (OAuthRequestException e) {
+      getServletContext().log("Oauth error", e);
+      out.print("auth error");
+      return;
+    }
+
+    out.print("Hello world, welcome to Oauth2: " + user.getEmail());
   }
 }
 // [END example]

@@ -1,5 +1,9 @@
 <!--
+<<<<<<< HEAD
+ Copyright 2016 Google Inc. All Rights Reserved.
+=======
 Copyright 2015 Google Inc. All Rights Reserved.
+>>>>>>> master
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,11 +24,6 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-oauth2</artifactId>
 
-  <properties>
-    <appengine.sdk.version>1.9.34</appengine.sdk.version>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
-  </properties>
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>doc-samples</artifactId>
@@ -38,11 +37,18 @@ Copyright 2015 Google Inc. All Rights Reserved.
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>${appengine.sdk.version}</version>
     </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <type>jar</type>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
     </dependency>
   </dependencies>
 

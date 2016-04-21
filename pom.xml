@@ -39,12 +39,13 @@
     </properties>
 
     <prerequisites>
-        <maven>3.1.0</maven>
+        <maven>3.3.9</maven>
     </prerequisites>
 
     <modules>
         <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
+        <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
         <module>appengine/logs</module>
         <module>appengine/mailgun</module>
