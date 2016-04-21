@@ -45,7 +45,7 @@
     <modules>
         <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
-        <module>appengine/guestbook</module>
+        <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
         <module>appengine/logs</module>
         <module>appengine/mailgun</module>

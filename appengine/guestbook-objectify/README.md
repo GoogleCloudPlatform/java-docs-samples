@@ -1,4 +1,4 @@
-# appengine-java-guestbook
+# appengine/guestbook-objectify
 
 An App Engine guestbook using Java, Maven, and Objectify.
 
