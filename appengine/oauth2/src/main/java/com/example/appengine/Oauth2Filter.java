@@ -13,6 +13,8 @@
  */
 package com.example.appengine;
 
+import static com.google.appengine.api.utils.SystemProperty.environment;
+
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.oauth.OAuthService;
 import com.google.appengine.api.oauth.OAuthServiceFactory;
@@ -30,8 +32,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-
-import static com.google.appengine.api.utils.SystemProperty.environment;
 
 /**
  *  Filter to verify that request has a "Authorization: Bearer xxxx" header,

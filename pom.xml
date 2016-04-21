@@ -47,10 +47,12 @@
         <module>appengine/appidentity</module>
         <module>appengine/guestbook</module>
         <module>appengine/helloworld</module>
+        <module>appengine/logs</module>
         <module>appengine/mailgun</module>
         <module>appengine/mailjet</module>
         <module>appengine/memcache</module>
         <module>appengine/oauth2</module>
+        <module>appengine/search</module>
         <module>appengine/sendgrid</module>
         <module>appengine/static-files</module>
         <module>appengine/twilio</module>
