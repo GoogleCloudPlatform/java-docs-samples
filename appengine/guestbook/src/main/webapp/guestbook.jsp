@@ -72,11 +72,11 @@
         for (Greeting greeting : greetings) {
             pageContext.setAttribute("greeting_content", greeting.content);
             String author;
-            if (greeting.author_email == null) {
+            if (greeting.authorEmail == null) {
                 author = "An anonymous person";
             } else {
-                author = greeting.author_email;
-                String author_id = greeting.author_id;
+                author = greeting.authorEmail;
+                String author_id = greeting.authorId;
                 if (user != null && user.getUserId().equals(author_id)) {
                     author += " (You)";
                 }

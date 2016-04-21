@@ -25,7 +25,6 @@ import com.googlecode.objectify.annotation.Parent;
 
 import java.lang.String;
 import java.util.Date;
-import java.util.List;
 
 /**
  * The @Entity tells Objectify about our entity.  We also register it in {@link OfyHelper}
@@ -43,24 +42,24 @@ public class Greeting {
   @Parent Key<Guestbook> theBook;
   @Id public Long id;
 
-  public String author_email;
-  public String author_id;
+  public String authorEmail;
+  public String authorId;
   public String content;
   @Index public Date date;
 
   /**
-   * Simple constructor just sets the date
+   * Simple constructor just sets the date.
    **/
   public Greeting() {
     date = new Date();
   }
 
   /**
-   * A convenience constructor
+   * A convenience constructor.
    **/
   public Greeting(String book, String content) {
     this();
-    if( book != null ) {
+    if ( book != null ) {
       theBook = Key.create(Guestbook.class, book);  // Creating the Ancestor key
     } else {
       theBook = Key.create(Guestbook.class, "default");
@@ -69,12 +68,12 @@ public class Greeting {
   }
 
   /**
-   * Takes all important fields
+   * Takes all important fields.
    **/
   public Greeting(String book, String content, String id, String email) {
     this(book, content);
-    author_email = email;
-    author_id = id;
+    authorEmail = email;
+    authorId = id;
   }
 
 }
