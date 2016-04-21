@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-public class MemcacheServlet extends HttpServlet {
+public class MemcacheBestPracticeServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
