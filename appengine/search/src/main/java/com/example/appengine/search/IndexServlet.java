@@ -23,13 +23,13 @@ import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.SearchServiceFactory;
 
-//CHECKSTYLE:OFF
+// CHECKSTYLE:OFF
 // [START get_document_import]
 import com.google.appengine.api.search.GetRequest;
 import com.google.appengine.api.search.GetResponse;
 // [END get_document_import]
 // @formatter:on
-//CHECKSTYLE:ON
+// CHECKSTYLE:ON
 
 import java.io.IOException;
 import java.io.PrintWriter;

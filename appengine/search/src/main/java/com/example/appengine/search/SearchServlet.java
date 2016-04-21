@@ -26,12 +26,12 @@ import com.google.appengine.api.search.SearchException;
 import com.google.appengine.api.search.StatusCode;
 // [END search_document_import]
 
-//CHECKSTYLE:OFF
+// CHECKSTYLE:OFF
 import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.SearchServiceFactory;
 // @formatter:on
-//CHECKSTYLE:ON
+// CHECKSTYLE:ON
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -73,7 +73,7 @@ public class SearchServlet extends HttpServlet {
     int delay = 2;
     while (true) {
       try {
-        String queryString = "product: piano AND price < 5000";
+        String queryString = "product = piano AND price < 5000";
         Results<ScoredDocument> results = getIndex().search(queryString);
 
         // Iterate over the documents in the results
@@ -99,7 +99,19 @@ public class SearchServlet extends HttpServlet {
       }
       break;
     }
-    // [START search_document]
+    // [END search_document]
+    // We don't test the search result below, but we're fine if it runs without errors.
     out.println("Search performed");
+    Index index = getIndex();
+    // [START simple_search_1]
+    index.search("rose water");
+    // [END simple_search_1]
+    // [START simple_search_2]
+    index.search("1776-07-04");
+    // [END simple_search_2]
+    // [START simple_search_3]
+    // search for documents with pianos that cost less than $5000
+    index.search("product = piano AND price < 5000");
+    // [END simple_search_3]
   }
 }

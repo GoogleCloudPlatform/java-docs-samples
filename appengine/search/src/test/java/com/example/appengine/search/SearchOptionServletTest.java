@@ -31,13 +31,13 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class IndexServletTest {
+public class SearchOptionServletTest {
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
-  private IndexServlet servletUnderTest;
+  private SearchOptionServlet servletUnderTest;
 
   @Before
   public void setUp() throws Exception {
@@ -48,7 +48,7 @@ public class IndexServletTest {
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    servletUnderTest = new IndexServlet();
+    servletUnderTest = new SearchOptionServlet();
   }
 
   @After
@@ -60,7 +60,7 @@ public class IndexServletTest {
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
     assertThat(responseWriter.toString())
-        .named("IndexServlet response")
-        .contains("myField: myValue");
+        .named("SearchOptionServlet response")
+        .contains("documentId=theOnlyCoffeeRoaster");
   }
 }

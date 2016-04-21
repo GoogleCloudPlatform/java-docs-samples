@@ -213,8 +213,11 @@
         <module name="EmptyCatchBlock">
             <property name="exceptionVariableName" value="expected"/>
         </module>
+        <module name="FileContentsHolder"/>
     </module>
 
     <!-- Allow silencing rules with annotations http://stackoverflow.com/a/22556386/101923 -->
     <module name="SuppressWarningsFilter" />
+    <!-- Allow silencing with comment http://stackoverflow.com/questions/4023185 -->
+    <module name="SuppressionCommentFilter" />
 </module>

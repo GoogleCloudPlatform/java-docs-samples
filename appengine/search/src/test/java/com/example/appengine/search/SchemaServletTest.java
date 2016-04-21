@@ -31,13 +31,13 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class IndexServletTest {
+public class SchemaServletTest {
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
-  private IndexServlet servletUnderTest;
+  private SchemaServlet servletUnderTest;
 
   @Before
   public void setUp() throws Exception {
@@ -48,7 +48,7 @@ public class IndexServletTest {
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    servletUnderTest = new IndexServlet();
+    servletUnderTest = new SchemaServlet();
   }
 
   @After
@@ -59,8 +59,18 @@ public class IndexServletTest {
   @Test
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
-    assertThat(responseWriter.toString())
-        .named("IndexServlet response")
-        .contains("myField: myValue");
+    String content = responseWriter.toString();
+    assertThat(content)
+        .named("SchemaServlet response")
+        .contains("schemaIndex:maker:TEXT");
+    assertThat(content)
+        .named("SchemaServlet response")
+        .contains("schemaIndex:price:NUMBER");
+    assertThat(content)
+        .named("SchemaServlet response")
+        .contains("schemaIndex:color:TEXT");
+    assertThat(content)
+        .named("SchemaServlet response")
+        .contains("schemaIndex:model:TEXT");
   }
 }
