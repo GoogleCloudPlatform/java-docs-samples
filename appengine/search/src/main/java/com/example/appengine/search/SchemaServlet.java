@@ -76,6 +76,6 @@ public class SchemaServlet extends HttpServlet {
         }
       }
     }
-    // [START list_schema]
+    // [END list_schema]
   }
 }
