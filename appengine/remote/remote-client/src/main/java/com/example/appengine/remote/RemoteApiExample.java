@@ -26,15 +26,15 @@ import java.io.IOException;
 
 // [START example]
 public class RemoteApiExample {
-  private static final String SERVER_STRING = "YOUR-APP-ID.appspot.com";
 
   public static void main(String[] args) throws IOException {
+    String serverString = args[0];
     RemoteApiOptions options;
-    if (SERVER_STRING.equals("localhost")) {
-      options = new RemoteApiOptions().server(SERVER_STRING,
+    if (serverString.equals("localhost")) {
+      options = new RemoteApiOptions().server(serverString,
         8080).useDevelopmentServerCredential();
     } else {
-      options = new RemoteApiOptions().server(SERVER_STRING,
+      options = new RemoteApiOptions().server(serverString,
         443).useApplicationDefaultCredential();
     }
     RemoteApiInstaller installer = new RemoteApiInstaller();
