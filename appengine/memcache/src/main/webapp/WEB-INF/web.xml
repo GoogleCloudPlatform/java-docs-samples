@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- [START_EXCLUDE] -->
 <!--
-  Copyright 2015 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc. All Rights Reserved.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -18,12 +18,36 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
   <servlet>
-    <servlet-name>memcache</servlet-name>
-    <servlet-class>com.example.appengine.memcache.MemcacheServlet</servlet-class>
+    <servlet-name>memcache-best-practice</servlet-name>
+    <servlet-class>com.example.appengine.memcache.MemcacheBestPracticeServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>memcache</servlet-name>
+    <servlet-name>memcache-best-practice</servlet-name>
     <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>memcache-async</servlet-name>
+    <servlet-class>com.example.appengine.memcache.MemcacheAsyncCacheServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>memcache-async</servlet-name>
+    <url-pattern>/async</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>memcache-sync</servlet-name>
+    <servlet-class>com.example.appengine.memcache.MemcacheSyncCacheServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>memcache-sync</servlet-name>
+    <url-pattern>/sync</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>memcache-concurrent</servlet-name>
+    <servlet-class>com.example.appengine.memcache.MemcacheConcurrentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>memcache-concurrent</servlet-name>
+    <url-pattern>/concurrent</url-pattern>
   </servlet-mapping>
 </web-app>
 
