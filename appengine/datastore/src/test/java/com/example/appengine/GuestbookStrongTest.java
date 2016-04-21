@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.example.time.testing.FakeClock;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -53,7 +52,6 @@ public class GuestbookStrongTest {
       .setEnvEmail("test@example.com")
       .setEnvAuthDomain("gmail.com");
 
-  private DatastoreService datastore;
   private FakeClock clock;
   private GuestbookStrong guestbookUnderTest;
 
