@@ -95,8 +95,8 @@ public class SearchOptionServlet extends HttpServlet {
     } catch (SearchException e) {
       // handle exception...
     }
-    return null;
     // [END search_with_options]
+    return null;
   }
 
   @Override
