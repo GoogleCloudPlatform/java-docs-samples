@@ -53,6 +53,7 @@
         <module>appengine/mailjet</module>
         <module>appengine/memcache</module>
         <module>appengine/oauth2</module>
+        <module>appengine/requests</module>
         <module>appengine/search</module>
         <module>appengine/sendgrid</module>
         <module>appengine/remote/remote-client</module>
