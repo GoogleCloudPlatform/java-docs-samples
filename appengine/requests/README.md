@@ -13,9 +13,9 @@ To run this sample locally:
 
     $ mvn appengine:devserver
 
-To see the results of the RequestsServlet, open localhost:8080 in a WWW browser.
+To see the results of the RequestsServlet, open `localhost:8080` in a WWW browser.
 
-To see the results of the LoggingServlet, open localhost:8080/logs in a WWW browser
+To see the results of the LoggingServlet, open `localhost:8080/logs` in a WWW browser
 and examine the logs to see the actual messages.
 
 ## Deploying
@@ -29,10 +29,10 @@ and SOME-VERSION with a valid version number.
 To save your project settings so that you don't need to enter the
  parameters, you can:
 
-1. Update the <application> tag in src/main/webapp/WEB-INF/appengine-web.xml
+1. Update the `<application>` tag in src/main/webapp/WEB-INF/appengine-web.xml
    with your project name.
 
-2. Update the <version> tag in src/main/webapp/WEB-INF/appengine-web.xml
+2. Update the `<version>` tag in src/main/webapp/WEB-INF/appengine-web.xml
    with a valid version number.
 
 
