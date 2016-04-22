@@ -19,8 +19,6 @@ package com.example.appengine.requests;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,9 +40,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RunWith(JUnit4.class)
 public class LoggingServletTest {
-  // Set up a helper so that the ApiProxy returns a valid environment for local testing.
-  private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
-
   // To capture and restore stderr
   private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
   private static final PrintStream REAL_ERR = System.err;
@@ -60,7 +55,6 @@ public class LoggingServletTest {
     System.setErr(new PrintStream(stderr));
 
     MockitoAnnotations.initMocks(this);
-    helper.setUp();
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -73,8 +67,6 @@ public class LoggingServletTest {
   public void tearDown() {
     //  Restore stderr  
     System.setErr(LoggingServletTest.REAL_ERR);
-
-    helper.tearDown();
   }
 
   @Test
