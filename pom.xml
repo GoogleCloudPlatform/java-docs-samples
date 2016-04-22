@@ -56,6 +56,8 @@
         <module>appengine/requests</module>
         <module>appengine/search</module>
         <module>appengine/sendgrid</module>
+        <module>appengine/remote/remote-client</module>
+        <module>appengine/remote/remote-server</module>
         <module>appengine/static-files</module>
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
