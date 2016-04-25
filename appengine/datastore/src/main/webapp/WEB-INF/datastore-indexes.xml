@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- [START_EXCLUDE] -->
 <!--
   Copyright 2016 Google Inc. All Rights Reserved.
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +11,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [END_EXCLUDE] -->
-<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>YOUR-PROJECT-ID</application>
-  <version>YOUR-VERSION-ID</version>
-  <threadsafe>true</threadsafe>
-</appengine-web-app>
-
+<datastore-indexes autoGenerate="true">
+  <datastore-index kind="Greeting" ancestor="true" source="manual">
+    <property name="date" direction="asc"/>
+    <property name="content" direction="asc"/>
+  </datastore-index>
+  <datastore-index kind="Greeting" ancestor="true" source="manual">
+    <property name="date" direction="desc"/>
+  </datastore-index>
+</datastore-indexes>

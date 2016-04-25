@@ -18,36 +18,22 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
   <servlet>
-    <servlet-name>memcache-best-practice</servlet-name>
-    <servlet-class>com.example.appengine.memcache.MemcacheBestPracticeServlet</servlet-class>
+    <display-name>Remote API Servlet</display-name>
+    <servlet-name>RemoteApiServlet</servlet-name>
+    <servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>memcache-best-practice</servlet-name>
+    <servlet-name>RemoteApiServlet</servlet-name>
+    <url-pattern>/remote_api</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>remote</servlet-name>
+    <servlet-class>com.example.appengine.remote.RemoteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>remote</servlet-name>
     <url-pattern>/</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>memcache-async</servlet-name>
-    <servlet-class>com.example.appengine.memcache.MemcacheAsyncCacheServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>memcache-async</servlet-name>
-    <url-pattern>/async</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>memcache-sync</servlet-name>
-    <servlet-class>com.example.appengine.memcache.MemcacheSyncCacheServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>memcache-sync</servlet-name>
-    <url-pattern>/sync</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>memcache-concurrent</servlet-name>
-    <servlet-class>com.example.appengine.memcache.MemcacheConcurrentServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>memcache-concurrent</servlet-name>
-    <url-pattern>/concurrent</url-pattern>
   </servlet-mapping>
 </web-app>
 

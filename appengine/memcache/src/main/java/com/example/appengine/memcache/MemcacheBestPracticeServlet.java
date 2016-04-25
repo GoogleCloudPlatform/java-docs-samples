@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -31,32 +30,28 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-public class MemcacheServlet extends HttpServlet {
+public class MemcacheBestPracticeServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-    String key = "count";
-    byte[] value;
-    long count = 1;
-    value = (byte[]) syncCache.get(key);
-    if (value == null) {
-      value = BigInteger.valueOf(count).toByteArray();
-      syncCache.put(key, value);
-    } else {
-      // Increment value
-      count = new BigInteger(value).longValue();
-      count++;
-      value = BigInteger.valueOf(count).toByteArray();
-      // Put back in cache
-      syncCache.put(key, value);
+    String path = req.getRequestURI();
+    if (path.startsWith("/favicon.ico")) {
+      return; // ignore the request for favicon.ico
     }
 
-    // Output content
-    resp.setContentType("text/plain");
-    resp.getWriter().print("Value is " + count + "\n");
+    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+    byte[] whoKey = "who".getBytes();
+    byte[] countKey = "count".getBytes();
+
+    byte[] who = (byte[]) syncCache.get(whoKey);
+    String whoString = who == null ? "nobody" : new String(who);
+    resp.getWriter().print("Previously incremented by " + whoString + "\n");
+    syncCache.put(whoKey, "Java".getBytes());
+    Long count = syncCache.increment(countKey, 1L, 0L);
+    resp.getWriter().print("Count incremented by Java = " + count + "\n");
   }
 }
 // [END example]

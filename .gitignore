@@ -26,3 +26,12 @@ dependency-reduced-pom.xml
 buildNumber.properties
 
 service-account.json
+
+# intellij
+.idea/
+*.iml
+
+# Eclipse files
+.project
+.classpath
+.settings
