@@ -13,6 +13,9 @@
  */
 package com.example.guestbook;
 
+import static com.example.guestbook.GuestbookTestUtilities.cleanDatastore;
+import static org.junit.Assert.assertEquals;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,15 +27,12 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.example.guestbook.GuestbookTestUtilities.cleanDatastore;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class GreetingTest {
@@ -79,7 +79,6 @@ public class GreetingTest {
         .setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
     PreparedQuery pq = ds.prepare(query);
     Entity greeting = pq.asSingleEntity();    // Should only be one at this point.
-    System.out.println("e: "+greeting.toString());
     assertEquals(greeting.getProperty("content"), TEST_CONTENT);
   }
 }

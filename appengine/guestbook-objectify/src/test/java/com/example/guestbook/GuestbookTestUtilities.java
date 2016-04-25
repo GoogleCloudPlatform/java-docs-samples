@@ -34,7 +34,7 @@ public class GuestbookTestUtilities {
     List<Entity> entities = pq.asList(FetchOptions.Builder.withDefaults());
     ArrayList<Key> keys = new ArrayList<>(entities.size());
 
-    for(Entity e : entities) {
+    for (Entity e : entities) {
       keys.add(e.getKey());
     }
     ds.delete(keys);

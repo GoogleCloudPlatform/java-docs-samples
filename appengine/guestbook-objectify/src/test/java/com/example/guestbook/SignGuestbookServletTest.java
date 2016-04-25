@@ -16,6 +16,10 @@
 
 package com.example.guestbook;
 
+import static com.example.guestbook.GuestbookTestUtilities.cleanDatastore;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -27,7 +31,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,9 +45,6 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.example.guestbook.GuestbookTestUtilities.cleanDatastore;
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 /**
  * Unit tests for {@link com.example.guestbook.SignGuestbookServlet}.
  */
@@ -64,7 +64,8 @@ public class SignGuestbookServletTest {
 
   @Mock private HttpServletRequest mockRequest;
 
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletResponse mockResponse;
 
   private StringWriter stringWriter;
   private SignGuestbookServlet servletUnderTest;
