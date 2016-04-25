@@ -72,7 +72,7 @@ public class EntitiesTest {
     // [START kind_example]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Entity employee = new Entity("Employee");
+    Entity employee = new Entity("Employee", "asalieri");
     employee.setProperty("firstName", "Antonio");
     employee.setProperty("lastName", "Salieri");
     employee.setProperty("hireDate", new Date());
