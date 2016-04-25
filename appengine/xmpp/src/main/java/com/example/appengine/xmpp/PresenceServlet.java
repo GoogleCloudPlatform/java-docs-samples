@@ -19,7 +19,6 @@ package com.example.appengine.xmpp;
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.servlet.http.*;
-import com.google.appengine.api.xmpp.JID;
 import com.google.appengine.api.xmpp.Presence;
 import com.google.appengine.api.xmpp.PresenceType;
 import com.google.appengine.api.xmpp.XMPPService;
