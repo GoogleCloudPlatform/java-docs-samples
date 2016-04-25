@@ -62,6 +62,7 @@
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>
+        <module>appengine/xmpp</module>
         <module>bigquery</module>
         <module>compute/cmdline</module>
         <module>datastore</module>
