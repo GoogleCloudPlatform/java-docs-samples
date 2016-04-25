@@ -15,12 +15,16 @@
 language: java
 jdk:
   - oraclejdk8
-env:
-  - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/service-account.json GCLOUD_PROJECT=cloud-samples-tests
 before_install:
   - openssl aes-256-cbc -K $encrypted_37a4f399de75_key -iv $encrypted_37a4f399de75_iv -in service-account.json.enc -out service-account.json -d
-
-script: mvn --batch-mode clean verify -DskipTests=false | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+        && export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/service-account.json GCLOUD_PROJECT=cloud-samples-tests
+        || true
+# Skip the install step, since Maven will download the dependencies we need
+# when the test build runs.
+# http://stackoverflow.com/q/31945809/101923
+# https://docs.travis-ci.com/user/customizing-the-build/#Skipping-the-Installation-Step
+install: true
+script: ./travis.sh
 after_success:
   - mvn clean cobertura:cobertura coveralls:report
 branches:
