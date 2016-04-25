@@ -19,7 +19,7 @@
   <threadsafe>true</threadsafe>
   <use-google-connector-j>true</use-google-connector-j>
   <system-properties>
-    <property name="ae-cloudsql.cloudsql-database-url" value="jdbc:google:mysql://YOUR-PROJECT-NAME:YOUR-CLOUDSQL-INSTANCE-NAME/DATABASE-NAME?user=USERNAME&amp;password=PASSWORD" />
+    <property name="ae-cloudsql.cloudsql-database-url" value="jdbc:google:mysql://[INSTANCE_CONNECTION_NAME]/DATABASE-NAME?user=USERNAME&amp;password=PASSWORD" />
     <property name="ae-cloudsql.local-database-url" value="jdbc:mysql://localhost/DATABASE-NAME?user=USERNAME&amp;PASSWORD=password&amp;useSSL=false" />
   </system-properties>
 </appengine-web-app>
