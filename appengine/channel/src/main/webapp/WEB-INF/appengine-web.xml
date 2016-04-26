@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>osv-unikernel</application>
+    <application>YOUR-PROJECTID-HERE</application>
     <version>1</version>
     <threadsafe>true</threadsafe>
 
@@ -28,6 +28,6 @@
     <inbound-services>
       <service>channel_presence</service>
     </inbound-services>
-    <!--[END inbound_service-->
+    <!--[END inbound_service] -->
 
 </appengine-web-app>
