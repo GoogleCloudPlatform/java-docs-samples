@@ -18,11 +18,13 @@
   <version>YOUR-VERSION-ID</version>
   <threadsafe>true</threadsafe>
 
+  <!-- [START handling_incoming_calls] -->
   <inbound-services>
     <service>xmpp_message</service>
     <service>xmpp_presence</service>
     <service>xmpp_subscribe</service>
     <service>xmpp_error</service>
   </inbound-services>
+  <!-- [END handling_incoming_calls] -->
 
 </appengine-web-app>

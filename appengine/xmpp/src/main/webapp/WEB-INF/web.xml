@@ -25,6 +25,7 @@
     <servlet-name>error</servlet-name>
     <url-pattern>/_ah/xmpp/error/</url-pattern>
   </servlet-mapping>
+  <!-- [START messagereceiver] -->
   <servlet>
     <servlet-name>messagereceiver</servlet-name>
     <servlet-class>com.example.appengine.xmpp.MessageReceiverServlet</servlet-class>
@@ -34,6 +35,7 @@
     <url-pattern>/_ah/xmpp/message/chat/</url-pattern>
   </servlet-mapping>
   <servlet>
+  <!-- [END messagereceiver] -->
     <servlet-name>messagesender</servlet-name>
     <servlet-class>com.example.appengine.xmpp.MessageSenderServlet</servlet-class>
   </servlet>
