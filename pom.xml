@@ -53,6 +53,7 @@
         <module>appengine/mailgun</module>
         <module>appengine/mailjet</module>
         <module>appengine/memcache</module>
+        <module>appengine/multitenancy</module>
         <module>appengine/oauth2</module>
         <module>appengine/requests</module>
         <module>appengine/search</module>
