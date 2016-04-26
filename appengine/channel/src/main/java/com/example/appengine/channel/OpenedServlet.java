@@ -20,14 +20,15 @@ import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 
+import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class OpenedServlet extends HttpServlet {
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
     String gameId = req.getParameter("gamekey");
     Objectify ofy = ObjectifyService.ofy();
     try {

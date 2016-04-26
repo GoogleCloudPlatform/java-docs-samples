@@ -97,7 +97,8 @@
     </dependencies>
     <build>
         <!-- for hot reload of the web application -->
-        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+        </outputDirectory>
         <plugins>
             <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
             <plugin>

@@ -23,18 +23,18 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
 public class TicTacToeServlet extends HttpServlet {
-  private String getGameUriWithGameParam(HttpServletRequest req,
-                                         String gameKey) throws IOException {
+  private String getGameUriWithGameParam(HttpServletRequest req, String gameKey)
+      throws IOException {
     try {
       String query;
       if (gameKey == null) {
@@ -43,13 +43,9 @@ public class TicTacToeServlet extends HttpServlet {
         query = "g=" + gameKey;
       }
       URI thisUri = new URI(req.getRequestURL().toString());
-      URI uriWithOptionalGameParam = new URI(thisUri.getScheme(),
-          thisUri.getUserInfo(),
-          thisUri.getHost(),
-          thisUri.getPort(),
-          thisUri.getPath(),
-          query,
-          "");
+      URI uriWithOptionalGameParam =
+          new URI(thisUri.getScheme(), thisUri.getUserInfo(), thisUri.getHost(),
+              thisUri.getPort(), thisUri.getPath(), query, "");
       return uriWithOptionalGameParam.toString();
     } catch (URISyntaxException e) {
       throw new IOException(e.getMessage(), e);
@@ -58,14 +54,15 @@ public class TicTacToeServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
     final UserService userService = UserServiceFactory.getUserService();
     final URI uriWithOptionalGameParam;
     String gameKey = req.getParameter("g");
     if (userService.getCurrentUser() == null) {
-      String thisURL = req.getRequestURL().toString();
-      resp.getWriter().println("<p>Please <a href=\"" +
-          userService.createLoginURL(getGameUriWithGameParam(req, gameKey)) + "\">sign in</a>.</p>");
+      resp.getWriter().println("<p>Please <a href=\""
+          + userService.createLoginURL(getGameUriWithGameParam(req, gameKey))
+          + "\">sign in</a>.</p>");
 
       return;
     }

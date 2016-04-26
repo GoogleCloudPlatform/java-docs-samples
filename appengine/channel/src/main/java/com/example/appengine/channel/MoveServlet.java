@@ -21,14 +21,15 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 
+import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class MoveServlet extends HttpServlet {
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     String gameId = req.getParameter("gamekey");
     int piece = new Integer(req.getParameter("i"));

@@ -23,22 +23,22 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 
+import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class GetTokenServlet extends HttpServlet {
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     String gameId = req.getParameter("gamekey");
     Objectify ofy = ObjectifyService.ofy();
     Game game = ofy.load().type(Game.class).id(gameId).safe();
 
     String currentUserId = userService.getCurrentUser().getUserId();
-    if (currentUserId.equals(game.getUserX()) ||
-        currentUserId.equals(game.getUserO())) {
+    if (currentUserId.equals(game.getUserX()) || currentUserId.equals(game.getUserO())) {
       String channelKey = game.getChannelKey(currentUserId);
       ChannelService channelService = ChannelServiceFactory.getChannelService();
       resp.setContentType("text/plain");

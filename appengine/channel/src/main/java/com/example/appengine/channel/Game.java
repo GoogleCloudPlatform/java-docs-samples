@@ -30,26 +30,16 @@ import java.util.regex.Pattern;
 
 @Entity
 public class Game {
-  static final Pattern[] XWins = {
-      Pattern.compile("XXX......"),
-      Pattern.compile("...XXX..."),
-      Pattern.compile("......XXX"),
-      Pattern.compile("X..X..X.."),
-      Pattern.compile(".X..X..X."),
-      Pattern.compile("..X..X..X"),
-      Pattern.compile("X...X...X"),
-      Pattern.compile("..X.X.X..")
-  };
-  static final Pattern[] OWins = {
-      Pattern.compile("OOO......"),
-      Pattern.compile("...OOO..."),
-      Pattern.compile("......OOO"),
-      Pattern.compile("O..O..O.."),
-      Pattern.compile(".O..O..O."),
-      Pattern.compile("..O..O..O"),
-      Pattern.compile("O...O...O"),
-      Pattern.compile("..O.O.O..")
-  };
+  static final Pattern[] XWins =
+      {Pattern.compile("XXX......"), Pattern.compile("...XXX..."), Pattern.compile("......XXX"),
+          Pattern.compile("X..X..X.."), Pattern.compile(".X..X..X."),
+          Pattern.compile("..X..X..X"), Pattern.compile("X...X...X"),
+          Pattern.compile("..X.X.X..")};
+  static final Pattern[] OWins =
+      {Pattern.compile("OOO......"), Pattern.compile("...OOO..."), Pattern.compile("......OOO"),
+          Pattern.compile("O..O..O.."), Pattern.compile(".O..O..O."),
+          Pattern.compile("..O..O..O"), Pattern.compile("O...O...O"),
+          Pattern.compile("..O.O.O..")};
 
   @Id
   public String id;
