@@ -154,6 +154,7 @@
         return state.userX == state.me ? 'X' : 'O';
       }
 
+      //[START send_message]
       sendMessage = function(path, opt_param) {
         path += '?gamekey=' + state.game_key;
         if (opt_param) {
@@ -163,12 +164,15 @@
         xhr.open('POST', path, true);
         xhr.send();
       };
+      //[END send_message]
 
+      //[START move_in_square]
       moveInSquare = function(id) {
         if (isMyMove() && state.board[id] == ' ') {
           sendMessage('/move', 'i=' + id);
         }
       }
+      //[END move_in_square]
 
       highlightSquare = function(id) {
         if (state.winner != "") {
@@ -205,6 +209,7 @@
       }
 
       openChannel = function() {
+        //[START open_channel]
         var token = '<%= request.getAttribute("token") %>';
         var channel = new goog.appengine.Channel(token);
         var handler = {
@@ -216,6 +221,7 @@
         var socket = channel.open(handler);
         socket.onopen = onOpened;
         socket.onmessage = onMessage;
+        //[END open_channel]
       }
 
       initialize = function() {

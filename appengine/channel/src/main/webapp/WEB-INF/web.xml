@@ -42,6 +42,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>MoveServlet</servlet-name>
         <url-pattern>/move</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ChannelPresenceServlet</servlet-name>
+        <servlet-class>com.example.appengine.channel.ChannelPresenceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChannelPresenceServlet</servlet-name>
+        <url-pattern>/_ah/channel/connected/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChannelPresenceServlet</servlet-name>
+        <url-pattern>/_ah/channel/disconnected/</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>ObjectifyFilter</filter-name>

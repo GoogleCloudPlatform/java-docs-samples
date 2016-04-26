@@ -115,8 +115,9 @@ public class Game {
     return message.toString();
   }
 
+  //[START send_updates]
   public String getChannelKey(String user) {
-    return user + id;
+    return user + "." + id;
   }
 
   private void sendUpdateToUser(String user) {
@@ -131,6 +132,7 @@ public class Game {
     sendUpdateToUser(userX);
     sendUpdateToUser(userO);
   }
+  //[END send_updates]
 
   public void checkWin() {
     final Pattern[] wins;
@@ -152,6 +154,7 @@ public class Game {
     }
   }
 
+  //[START make_move]
   public boolean makeMove(int position, String user) {
     String currentMovePlayer;
     char value;
@@ -175,4 +178,5 @@ public class Game {
 
     return false;
   }
+  //[END make_move]
 }
