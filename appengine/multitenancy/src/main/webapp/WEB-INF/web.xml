@@ -44,6 +44,6 @@
         <filter-name>NamespaceFilter</filter-name>
         <url-pattern>/sign</url-pattern>
     </filter-mapping>
-<!-- [END filter] -->
+<!-- [END nsfilter] -->
 
 </web-app>
