@@ -82,8 +82,14 @@ public class TicTacToeServlet extends HttpServlet {
       gameKey = game.getId();
     }
 
+    //[START channel_service]
     ChannelService channelService = ChannelServiceFactory.getChannelService();
+
+    // The 'Game' object exposes a method which creates a unique string based on the game's key
+    // and the user's id.
     String token = channelService.createChannel(game.getChannelKey(userId));
+
+    //[END channel_service]
 
     ofy.save().entity(game).now();
 

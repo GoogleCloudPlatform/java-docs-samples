@@ -23,5 +23,11 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
+    <!--[START inbound_service]-->
+    <!-- Optional: Enable Inbound Service to get notified when a client connects to or disconnects from a channel -->
+    <inbound-services>
+      <service>channel_presence</service>
+    </inbound-services>
+    <!--[END inbound_service-->
 
 </appengine-web-app>
