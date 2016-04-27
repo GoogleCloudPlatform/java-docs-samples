@@ -24,7 +24,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>guestbook-strong</servlet-name>
-    <url-pattern>/guestbook-strong</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>guestbook</servlet-name>
@@ -35,12 +35,30 @@
     <url-pattern>/guestbook</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>people</servlet-name>
+    <servlet-class>com.example.appengine.ListPeopleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>people</servlet-name>
+    <url-pattern>/people</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>projection</servlet-name>
     <servlet-class>com.example.appengine.ProjectionServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>projection</servlet-name>
     <url-pattern>/projection</url-pattern>
+  </servlet-mapping>
+
+  <!-- Special handler to populate Datastore with default values. -->
+  <servlet>
+    <servlet-name>startup</servlet-name>
+    <servlet-class>com.example.appengine.StartupServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>startup</servlet-name>
+    <url-pattern>/_ah/start</url-pattern>
   </servlet-mapping>
 
   <security-constraint>
