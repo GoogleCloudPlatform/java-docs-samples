@@ -1,2 +1,6 @@
 codecov:
   branch: master
+
+comment:
+  branches:
+  - master
