@@ -1,4 +1,4 @@
-# Pull task Queue sample for Google App Engine
+# Pull Task Queue sample for Google App Engine
 
 This sample demonstrates how to use [pull task queues][appid] on [Google App
 Engine][ae-docs].
