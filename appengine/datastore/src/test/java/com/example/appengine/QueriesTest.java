@@ -17,6 +17,7 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -24,6 +25,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
@@ -779,6 +781,86 @@ public class QueriesTest {
     // When run with the local test runner, the entity "a" *is* matched.  This
     // may be a difference in behavior between the local devserver and Cloud
     // Datastore.
+  }
+
+  private Entity retrievePersonWithLastName(String targetLastName) {
+    // [START single_retrieval_example]
+    Query q =
+        new Query("Person")
+            .setFilter(new FilterPredicate("lastName", FilterOperator.EQUAL, targetLastName));
+
+    PreparedQuery pq = datastore.prepare(q);
+    Entity result = pq.asSingleEntity();
+    // [END single_retrieval_example]
+    return result;
+  }
+
+  @Test
+  public void singleRetrievalExample_singleEntity_returnsEntity() throws Exception {
+    Entity a = new Entity("Person", "a");
+    a.setProperty("lastName", "Johnson");
+    Entity b = new Entity("Person", "b");
+    b.setProperty("lastName", "Smith");
+    datastore.put(ImmutableList.<Entity>of(a, b));
+
+    Entity result = retrievePersonWithLastName("Johnson");
+
+    assertThat(result.getKey()).named("result key").isEqualTo(a.getKey());
+  }
+
+  @Test
+  public void singleRetrievalExample_multitpleEntities_throwsException() throws Exception {
+    Entity a = new Entity("Person", "a");
+    a.setProperty("lastName", "Johnson");
+    Entity b = new Entity("Person", "b");
+    b.setProperty("lastName", "Johnson");
+    datastore.put(ImmutableList.<Entity>of(a, b));
+
+    try {
+      Entity result = retrievePersonWithLastName("Johnson");
+      fail("Expected TooManyResultsException");
+    } catch (TooManyResultsException expected) {
+      // TooManyResultsException does not provide addition details.
+    }
+  }
+
+  // [START query_limit_example]
+  private List<Entity> getTallestPeople() {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query q = new Query("Person").addSort("height", SortDirection.DESCENDING);
+
+    PreparedQuery pq = datastore.prepare(q);
+    return pq.asList(FetchOptions.Builder.withLimit(5));
+  }
+  // [END query_limit_example]
+
+  @Test
+  public void queryLimitExample_returnsLimitedEntities() throws Exception {
+    Entity a = new Entity("Person", "a");
+    a.setProperty("height", 200);
+    Entity b = new Entity("Person", "b");
+    b.setProperty("height", 199);
+    Entity c = new Entity("Person", "c");
+    c.setProperty("height", 201);
+    Entity d = new Entity("Person", "d");
+    d.setProperty("height", 198);
+    Entity e = new Entity("Person", "e");
+    e.setProperty("height", 202);
+    Entity f = new Entity("Person", "f");
+    f.setProperty("height", 197);
+    Entity g = new Entity("Person", "g");
+    g.setProperty("height", 203);
+    Entity h = new Entity("Person", "h");
+    h.setProperty("height", 196);
+    datastore.put(ImmutableList.<Entity>of(a, b, c, d, e, f, g, h));
+
+    List<Entity> results = getTallestPeople();
+
+    assertThat(getKeys(results))
+        .named("result keys")
+        .containsExactly(g.getKey(), e.getKey(), c.getKey(), a.getKey(), b.getKey())
+        .inOrder();
   }
 
   private ImmutableList<Key> getKeys(List<Entity> entities) {
