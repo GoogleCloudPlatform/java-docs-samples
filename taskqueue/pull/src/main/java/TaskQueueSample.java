@@ -172,8 +172,12 @@ public class TaskQueueSample {
    */
   private static void processTask(Task task) {
     byte[] payload = Base64.decodeBase64(task.getPayloadBase64());
-    System.out.println("Payload for the task:");
-    System.out.println(new String(payload));
+    if (payload != null) {
+      System.out.println("Payload for the task:");
+      System.out.println(new String(payload));
+    } else {
+      System.out.println("This task has no payload.");
+    }
   }
   /**
    * Method that sends a delete request for the specified task object to the taskqueue service.
