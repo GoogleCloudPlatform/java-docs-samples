@@ -1,5 +1,4 @@
-/*
- * Copyright 2016 Google Inc. All Rights Reserved.
+/* Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.example.appengine.requests;
+package com.example.appengine.taskqueue.push;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
@@ -29,25 +27,26 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Unit tests for {@link LoggingServlet}.
+ * Unit tests for {@link Worker}.
  */
 @RunWith(JUnit4.class)
-public class LoggingServletTest {
+public class WorkerTest {
+  private static final String FAKE_KEY_VALUE = "KEY"; 
+
   // To capture and restore stderr
   private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
   private static final PrintStream REAL_ERR = System.err;
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
-  private StringWriter responseWriter;
-  private LoggingServlet servletUnderTest;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
+  private Worker servletUnderTest;
 
   @Before
   public void setUp() throws Exception {
@@ -56,30 +55,25 @@ public class LoggingServletTest {
 
     MockitoAnnotations.initMocks(this);
 
-    // Set up a fake HTTP response.
-    responseWriter = new StringWriter();
-    when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
+    when(mockRequest.getParameter("key")).thenReturn(FAKE_KEY_VALUE);
 
-    servletUnderTest = new LoggingServlet();
+    servletUnderTest = new Worker();
   }
 
-  @After 
+  @After
   public void tearDown() {
-    //  Restore stderr  
-    System.setErr(LoggingServletTest.REAL_ERR);
+    //  Restore stderr
+    System.setErr(WorkerTest.REAL_ERR);
   }
 
   @Test
-  public void testListLogs() throws Exception {
-    servletUnderTest.doGet(mockRequest, mockResponse);
+  public void doPost_writesResponse() throws Exception {
+    servletUnderTest.doPost(mockRequest, mockResponse);
 
     String out = stderr.toString();
-    
-    // We expect three log messages to be created
-    // with the following messages.
-    assertThat(out).contains("An informational message.");
-    assertThat(out).contains("A warning message.");
-    assertThat(out).contains("An error message.");
-  }
+    // We expect a log message to be created
+    // with the following message.
+    assertThat(out).contains("Worker is processing " + FAKE_KEY_VALUE);
 
+  }
 }

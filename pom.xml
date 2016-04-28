@@ -61,6 +61,7 @@
         <module>appengine/remote/remote-client</module>
         <module>appengine/remote/remote-server</module>
         <module>appengine/static-files</module>
+        <module>appengine/taskqueue-push</module>
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>

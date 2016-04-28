@@ -19,7 +19,7 @@ Copyright 2016 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-requests</artifactId>
+  <artifactId>taskqueue-push</artifactId>
   <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
   <parent>
     <groupId>com.google.cloud</groupId>
@@ -33,11 +33,6 @@ Copyright 2016 Google Inc. All Rights Reserved.
     <artifactId>appengine-maven-plugin</artifactId>
     <version>${appengine.sdk.version}</version>
    </dependency>
-   <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>19.0</version>
-    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -93,7 +88,7 @@ Copyright 2016 Google Inc. All Rights Reserved.
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <plugin>
+     <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.sdk.version}</version>
