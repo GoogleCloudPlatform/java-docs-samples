@@ -1,0 +1,7 @@
+queue:
+- name: pull-queue
+  mode: pull
+  acl:
+  - user_email: bar@foo.com      # can list, get, lease, delete, and update tasks
+  - writer_email: user@gmail.com # can insert tasks
+  - writer_email: bar@foo.com    # can insert tasks, in addition to rights granted by being a user_email above
