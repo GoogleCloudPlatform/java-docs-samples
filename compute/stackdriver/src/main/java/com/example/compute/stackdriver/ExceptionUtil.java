@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+// [START example]
 public class ExceptionUtil {
     private static FluentLogger ERRORS = FluentLogger.getLogger("myapp");
 
@@ -46,3 +47,4 @@ public class ExceptionUtil {
         ERRORS.log("errors", data);
     }
 }
+// [END example]
