@@ -16,34 +16,39 @@
 
 package com.example.appengine.mail;
 
-// [START mail_handler_servlet]
+// [START bounce_handler_servlet]
+import com.google.appengine.api.mail.BounceNotification;
+import com.google.appengine.api.mail.BounceNotificationParser;
+
 import java.io.IOException;
 import java.util.logging.Logger;
-import java.util.Properties;
-
 import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class MailHandlerServlet extends HttpServlet {
+public class BounceHandlerServlet extends HttpServlet {
 
-  private static final Logger log = Logger.getLogger(MailHandlerServlet.class.getName());
+	private static final Logger log = Logger.getLogger(BounceHandlerServlet.class.getName());
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, null);
     try {
-      MimeMessage message = new MimeMessage(session, req.getInputStream());
-      log.info("Received mail message.");
-    } catch (MessagingException e) {
+      BounceNotification bounce = BounceNotificationParser.parse(req);
+      log.warning("Bounced email notification.");
+      // The following data is available in a BounceNotification object
+      // bounce.getOriginal().getFrom() 
+      // bounce.getOriginal().getTo() 
+      // bounce.getOriginal().getSubject() 
+      // bounce.getOriginal().getText() 
+      // bounce.getNotification().getFrom() 
+      // bounce.getNotification().getTo() 
+      // bounce.getNotification().getSubject() 
+      // bounce.getNotification().getText() 
       // ...
-    }
+    } catch (MessagingException e) {
     // ...
+    }
   }
 }
-// [END mail_handler_servlet]
+// [END bounce_handler_servlet]

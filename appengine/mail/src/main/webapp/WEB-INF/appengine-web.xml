@@ -20,7 +20,10 @@
 
   <!-- [START handle_incoming_mail] -->
   <inbound-services>
+    <!-- Used to handle incoming mail. -->
     <service>mail</service>
+    <!-- Used to handle bounced mail notifications. -->
+    <service>mail_bounce</service>
   </inbound-services>
   <!-- [END handle_incoming_mail] -->
 </appengine-web-app>

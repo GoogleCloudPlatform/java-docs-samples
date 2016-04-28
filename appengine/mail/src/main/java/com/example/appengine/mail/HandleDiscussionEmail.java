@@ -16,34 +16,28 @@
 
 package com.example.appengine.mail;
 
-// [START mail_handler_servlet]
-import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.Properties;
-
-import javax.mail.MessagingException;
-import javax.mail.Session;
+// [START example]
 import javax.mail.internet.MimeMessage;
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
-public class MailHandlerServlet extends HttpServlet {
+public class HandleDiscussionEmail extends MailHandlerBase {
 
-  private static final Logger log = Logger.getLogger(MailHandlerServlet.class.getName());
+	private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
+  public HandleDiscussionEmail() { super("discuss-(.*)@(.*)"); }
 
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, null);
-    try {
-      MimeMessage message = new MimeMessage(session, req.getInputStream());
-      log.info("Received mail message.");
-    } catch (MessagingException e) {
-      // ...
-    }
+  protected boolean processMessage(HttpServletRequest req, HttpServletResponse res)
+    throws ServletException
+  {
+  	log.info("Received e-mail sent to discuss list.");
+    MimeMessage msg = getMessageFromRequest(req);
+    Matcher match = getMatcherFromRequest(req);
     // ...
+    return true;
   }
 }
-// [END mail_handler_servlet]
+// [END example]
