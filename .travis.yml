@@ -15,6 +15,10 @@
 language: java
 jdk:
   - oraclejdk8
+addons:
+  apt:
+    packages:
+    - expect
 before_install:
   - openssl aes-256-cbc -K $encrypted_37a4f399de75_key -iv $encrypted_37a4f399de75_iv -in service-account.json.enc -out service-account.json -d
         && export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/service-account.json GCLOUD_PROJECT=cloud-samples-tests
