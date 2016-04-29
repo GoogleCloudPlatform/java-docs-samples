@@ -24,3 +24,13 @@ if [ -z "$GOOGLE_APPLICATION_CREDENTIALS"]; then
 fi
 mvn --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
+# Run tests using App Engine local devserver.
+devserver_tests=(
+    appengine/datastore/indexes
+    appengine/datastore/indexes-exploding
+    appengine/datastore/indexes-perfect
+)
+for testdir in ${devserver_tests[@]} ; do
+  ./java-repo-tools/test-devserver.sh "${testdir}"
+done
+
