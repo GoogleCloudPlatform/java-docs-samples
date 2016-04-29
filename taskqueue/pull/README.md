@@ -20,7 +20,7 @@ reuse an existing project by clicking on it.
       1. Install [Google Cloud SDK](https://cloud.google.com/sdk/)
       1. Run the following command to authorize the Cloud SDK and configure your project:
       <pre>gcloud init</pre>
-      1. Add your authenticated email account as 'user_email' and 'writer_email' elements to the queue.yaml 
+      1. Add your authenticated email account as '&lt;user-email&gt;' and '&lt;writer-email&gt;' elements to the queue.xml 
       file of the App Engine app that created the pull queue task you're trying to access. For more details, please see 
       [Defining Pull Queues](https://cloud.google.com/appengine/docs/java/taskqueue/overview-pull#Java_Defining_pull_queues).
   * Running the sample on a Google Compute Engine VM using Default Application Credentials:
@@ -29,7 +29,7 @@ reuse an existing project by clicking on it.
         section click "Create credentials" and choose "Service account key".
         1. On the "Create service account key" page, select "Compute Engine default service account" from the "Service Account" drop-down menu. Leave the Key type set to JSON and click the "Create" button.
         1. Once the service account is created, click the "Manage service accounts" link and copy the "Service account ID" of the "Compute Engine default service account".
-        1.  Add the "Service account ID" as 'user_email' and 'writer_email' elements to the queue.yaml file of the 
+        1.  Add the "Service account ID" as '&lt;user-email&gt;' and '&lt;writer-email&gt;' elements to the queue.xml file of the 
         App Engine app that created the pull queue task you're trying to access. For more details, please see 
         [Defining Pull Queues](https://cloud.google.com/appengine/docs/java/taskqueue/overview-pull#Java_Defining_pull_queues). 
 
