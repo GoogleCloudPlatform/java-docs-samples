@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BounceHandlerServlet extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(BounceHandlerServlet.class.getName());
+  private static final Logger log = Logger.getLogger(BounceHandlerServlet.class.getName());
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {

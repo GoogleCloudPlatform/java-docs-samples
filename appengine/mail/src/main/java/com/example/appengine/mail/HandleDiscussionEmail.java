@@ -16,7 +16,6 @@
 
 package com.example.appengine.mail;
 
-// [START example]
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,16 +23,17 @@ import javax.servlet.ServletException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
+// [START example]
 public class HandleDiscussionEmail extends MailHandlerBase {
 
-	private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
+  private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
   public HandleDiscussionEmail() { super("discuss-(.*)@(.*)"); }
 
   @Override
   protected boolean processMessage(HttpServletRequest req, HttpServletResponse res)
     throws ServletException
   {
-  	log.info("Received e-mail sent to discuss list.");
+    log.info("Received e-mail sent to discuss list.");
     MimeMessage msg = getMessageFromRequest(req);
     Matcher match = getMatcherFromRequest(req);
     // ...
