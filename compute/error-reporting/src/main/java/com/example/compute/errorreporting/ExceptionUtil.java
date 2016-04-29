@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.compute.stackdriver;
+package com.example.compute.errorreporting;
 
 import org.fluentd.logger.FluentLogger;
 
