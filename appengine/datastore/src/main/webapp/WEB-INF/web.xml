@@ -50,6 +50,14 @@
     <servlet-name>projection</servlet-name>
     <url-pattern>/projection</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>stats</servlet-name>
+    <servlet-class>com.example.appengine.StatsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>stats</servlet-name>
+    <url-pattern>/stats</url-pattern>
+  </servlet-mapping>
 
   <!-- Special handler to populate Datastore with default values. -->
   <servlet>
@@ -71,6 +79,19 @@
     </user-data-constraint>
     <auth-constraint>
       <role-name>*</role-name> <!-- Require users to login. -->
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>profile</web-resource-name>
+      <url-pattern>/stats</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+    <auth-constraint>
+      <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
 </web-app>
