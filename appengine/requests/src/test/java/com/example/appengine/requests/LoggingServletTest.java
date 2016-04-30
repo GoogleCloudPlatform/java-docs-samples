@@ -80,14 +80,6 @@ public class LoggingServletTest {
     assertThat(out).contains("An informational message.");
     assertThat(out).contains("A warning message.");
     assertThat(out).contains("An error message.");
-
-    // We expect three log messages to be created
-    // with the following severities.
-    // Since there's no guarantee of case, use lowercase
-    String lcOut = out.toLowerCase();
-    assertThat(lcOut).contains("info");
-    assertThat(lcOut).contains("warning");
-    assertThat(lcOut).contains("severe");
   }
 
 }

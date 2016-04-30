@@ -46,9 +46,14 @@
         <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
         <module>appengine/channel</module>
+        <module>appengine/cloudsql</module>
         <module>appengine/datastore</module>
+        <module>appengine/datastore/indexes</module>
+        <module>appengine/datastore/indexes-exploding</module>
+        <module>appengine/datastore/indexes-perfect</module>
         <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
+        <module>appengine/images</module>
         <module>appengine/logs</module>
         <module>appengine/mailgun</module>
         <module>appengine/mailjet</module>
@@ -61,17 +66,20 @@
         <module>appengine/remote/remote-client</module>
         <module>appengine/remote/remote-server</module>
         <module>appengine/static-files</module>
+        <module>appengine/taskqueue-push</module>
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>
         <module>appengine/xmpp</module>
         <module>bigquery</module>
         <module>compute/cmdline</module>
+        <module>compute/sendgrid</module>
         <module>datastore</module>
         <module>logging</module>
         <module>managed_vms/analytics</module>
         <module>managed_vms/async-rest</module>
         <module>managed_vms/cloudstorage</module>
+        <module>managed_vms/cron</module>
         <module>managed_vms/datastore</module>
         <module>managed_vms/disk</module>
         <module>managed_vms/extending-runtime</module>
