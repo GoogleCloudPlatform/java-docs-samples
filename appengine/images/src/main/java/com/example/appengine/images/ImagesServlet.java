@@ -90,7 +90,7 @@ public class ImagesServlet extends HttpServlet {
     //[START rotate]
     // Make an image from a Cloud Storage object, and transform it.
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    BlobKey blobKey = blobstoreService.createGsBlobKey("gs://" + bucket + "/image.jpeg");
+    BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/" + bucket + "/image.jpeg");
     Image blobImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
     Transform rotate = ImagesServiceFactory.makeRotate(90);
     Image rotatedImage = imagesService.applyTransform(rotate, blobImage);
