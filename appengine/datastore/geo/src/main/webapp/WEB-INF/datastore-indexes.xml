@@ -16,7 +16,10 @@
 <!-- The autoGenerate attribute can be true or false. We set it to false to -->
 <!-- allow verification that the index is correct in local tests.           -->
 <datastore-indexes autoGenerate="false">
-  <datastore-index kind="GasStation">
+  <datastore-index kind="GasStation" source="manual">
+    <property name="location" mode="geospatial" />
+  </datastore-index>
+  <datastore-index kind="GasStation" source="manual">
     <property name="brand" />
     <property name="location" mode="geospatial" />
   </datastore-index>
