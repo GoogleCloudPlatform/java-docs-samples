@@ -28,27 +28,20 @@ git fetch java-repo-tools master
 ```
 
 We can then go back to the `my-java-samples` code and prepare a Pull Request to
-add the `java-repo-tools` code in a subtree.
+add the `java-repo-tools` code in a subtree. Making a new branch is optional, but
+recommended so that you can more easily send a pull request to start using
+`java-repo-tools`.
 
 ```
-git checkout master
-# Making a new branch ia optional, but recommended to send a pull request to
-# start using java-repo-tools.
-git checkout -b use-java-repo-tools
+git checkout -b use-java-repo-tools origin/master
 ```
 
-So that we can pull future updates from the `java-repo-tools` repository, we
-merge histories. This way we won't get unnecessary conflicts when pulling changes
-in.
+Finally, read the `java-repo-tools` into a subtree. So that you can pull future
+updates from the `java-repo-tools` repository, this command will merge histories.
+This way prevents unnecessary conflicts when pulling changes in.
 
 ```
-git merge -s ours --no-commit java-repo-tools/master
-```
-
-Finally, read the `java-repo-tools` into a subtree.
-
-```
-git read-tree --prefix=java-repo-tools/ -u java-repo-tools/master
+git subtree add --prefix=java-repo-tools java-repo-tools master
 ```
 
 Now all the content of `java-repo-tools` will be in the `java-repo-tools/`
