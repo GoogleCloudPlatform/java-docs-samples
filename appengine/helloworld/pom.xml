@@ -13,6 +13,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<!-- [START pom] -->
 <project>
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
@@ -55,3 +56,4 @@ Copyright 2015 Google Inc. All Rights Reserved.
     </plugins>
   </build>
 </project>
+<!-- [END pom] -->
