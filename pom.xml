@@ -101,6 +101,10 @@
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
         <module>taskqueue/deferred</module>
         <module>unittests</module>
+        <module>vision/face-detection</module>
+        <module>vision/label</module>
+        <module>vision/landmark-detection</module>
+        <module>vision/text</module>
     </modules>
 
     <dependencyManagement>

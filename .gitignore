@@ -35,3 +35,11 @@ service-account.json
 .project
 .classpath
 .settings
+
+# vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+Session.vim
+.netrwhist
+*~
+tags
