@@ -40,7 +40,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <dependency>
       <groupId>com.google.appengine.tools</groupId>
       <artifactId>appengine-gcs-client</artifactId>
-      <version>RELEASE</version>
+      <version>0.6</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
