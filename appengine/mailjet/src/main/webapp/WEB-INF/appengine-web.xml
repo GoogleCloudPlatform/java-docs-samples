@@ -17,8 +17,10 @@
   <application>YOUR-PROJECT-ID</application>
   <version>YOUR-VERSION-ID</version>
   <threadsafe>true</threadsafe>
+  <!-- [START env_variables] -->
   <env-variables>
     <env-var name="MAILJET_API_KEY" value="YOUR-MAILJET-API-KEY" />
     <env-var name="MAILJET_SECRET_KEY" value="YOUR-MAILJET-SECRET-KEY" />
   </env-variables>
+  <!-- [END env_variables] -->
 </appengine-web-app>
