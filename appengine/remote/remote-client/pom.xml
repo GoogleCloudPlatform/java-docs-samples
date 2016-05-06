@@ -28,12 +28,12 @@
   </parent>
   <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
   <dependencies>
+  <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-remote-api</artifactId>
       <version>${appengine.sdk.version}</version>
     </dependency>
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
