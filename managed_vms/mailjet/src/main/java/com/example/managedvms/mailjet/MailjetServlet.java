@@ -70,4 +70,4 @@ public class MailjetServlet extends HttpServlet {
     }
   }
 }
-// [END mailjet_imports]
+// [END app]
