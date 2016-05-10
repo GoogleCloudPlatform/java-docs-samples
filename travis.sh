@@ -26,6 +26,7 @@ mvn --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Dow
 
 # Run tests using App Engine local devserver.
 devserver_tests=(
+    appengine/helloworld
     appengine/datastore/geo
     appengine/datastore/indexes
     appengine/datastore/indexes-exploding
