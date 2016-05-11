@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+// ServletContextListener that is called whenever your App Engine app starts up.
 public class ServletContextListenerImpl implements ServletContextListener {
 
   private static final Logger log = Logger.getLogger(ServletContextListener.class.getName());

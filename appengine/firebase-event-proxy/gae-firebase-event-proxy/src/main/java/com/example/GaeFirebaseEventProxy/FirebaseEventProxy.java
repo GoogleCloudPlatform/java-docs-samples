@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.GaeFirebaseEventProxy;
 
 import java.io.FileInputStream;
@@ -28,12 +44,14 @@ public class FirebaseEventProxy {
   private String firebaseAuthToken;
 
   public FirebaseEventProxy() {
+    // Store Firebase authentication token as an instance variable.
     this.firebaseAuthToken = this.getFirebaseAuthToken(this.getFirebaseSecret());
   }
 
   public void start() {
     String FIREBASE_LOCATION = "https://gae-fb-proxy.firebaseio.com/";
     Firebase firebase = new Firebase(FIREBASE_LOCATION);
+
     // Authenticate with Firebase
     firebase.authWithCustomToken(this.firebaseAuthToken, new Firebase.AuthResultHandler() {
       @Override
@@ -56,18 +74,22 @@ public class FirebaseEventProxy {
           try {
             // Convert value to JSON using Jackson
             String json = new ObjectMapper().writeValueAsString(snapshot.getValue());
+
             // Replace the URL with the url of your own listener app.
             URL dest = new URL("http://gae-firebase-listener-python.appspot.com/log");
             HttpURLConnection connection = (HttpURLConnection) dest.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
+
             // Rely on X-Appengine-Inbound-Appid to authenticate. Turning off redirects is
             // required to enable.
             connection.setInstanceFollowRedirects(false);
+
             // Fill out header if in dev environment
             if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Production) {
               connection.setRequestProperty("X-Appengine-Inbound-Appid", "dev-instance");
             }
+
             // Put Firebase data into http request
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("&fbSnapshot=");
@@ -119,5 +141,4 @@ public class FirebaseEventProxy {
     TokenGenerator tokenGenerator = new TokenGenerator(firebaseSecret);
     return tokenGenerator.createToken(authPayload);
   }
-
 }
