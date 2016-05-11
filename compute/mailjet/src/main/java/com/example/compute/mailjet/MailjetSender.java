@@ -31,9 +31,9 @@ import org.json.JSONObject;
 public class MailjetSender{
 
   public static void main(String[] args) {
-    final String MAILJET_API_KEY = "YOUR-MAILJET-API-KEY";
-    final String MAILJET_SECRET_KEY = "YOUR-MAILJET-SECRET-KEY";
-    MailjetClient client = new MailjetClient(MAILJET_API_KEY, MAILJET_SECRET_KEY);
+    final String mailjetApiKey = "YOUR-MAILJET-API-KEY";
+    final String mailjetSecretKey = "YOUR-MAILJET-SECRET-KEY";
+    MailjetClient client = new MailjetClient(mailjetApiKey, mailjetSecretKey);
 
     MailjetSender sender = new MailjetSender();
     sender.sendMailjet(args[0], args[1], client);
