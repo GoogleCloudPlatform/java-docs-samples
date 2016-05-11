@@ -74,6 +74,8 @@
         <module>appengine/xmpp</module>
         <module>bigquery</module>
         <module>compute/cmdline</module>
+        <module>compute/error-reporting</module>
+        <module>compute/mailjet</module>
         <module>compute/sendgrid</module>
         <module>datastore</module>
         <module>logging</module>
