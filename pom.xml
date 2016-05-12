@@ -52,6 +52,7 @@
         <module>appengine/datastore/indexes</module>
         <module>appengine/datastore/indexes-exploding</module>
         <module>appengine/datastore/indexes-perfect</module>
+        <module>appengine/firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
         <module>appengine/images</module>
