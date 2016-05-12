@@ -16,7 +16,7 @@
 
 package com.google.cloud.vision.samples.label;
 
-// [BEGIN import_libraries]
+// [START import_libraries]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
