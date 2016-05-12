@@ -29,8 +29,8 @@ import java.util.Collection;
 /**
  * This class manages the details of creating a Storage service, including auth.
  */
+// [START authentication_application_default_credentials]
 public class StorageFactory {
-
   private static Storage instance = null;
 
   public static synchronized Storage getService() throws IOException, GeneralSecurityException {
@@ -45,9 +45,13 @@ public class StorageFactory {
     JsonFactory jsonFactory = new JacksonFactory();
     GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
 
+    // Depending on the environment that provides the default credentials (for
+    // example: Compute Engine, App Engine), the credentials may require us to
+    // specify the scopes we need explicitly.  Check for this case, and inject
+    // the Cloud Storage scope if required.
     if (credential.createScopedRequired()) {
-      Collection<String> bigqueryScopes = StorageScopes.all();
-      credential = credential.createScoped(bigqueryScopes);
+      Collection<String> scopes = StorageScopes.all();
+      credential = credential.createScoped(scopes);
     }
 
     return new Storage.Builder(transport, jsonFactory, credential)
@@ -55,3 +59,4 @@ public class StorageFactory {
         .build();
   }
 }
+// [END authentication_application_default_credentials]
