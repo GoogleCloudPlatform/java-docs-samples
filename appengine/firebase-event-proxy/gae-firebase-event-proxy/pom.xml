@@ -15,8 +15,8 @@
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <groupId>com.example.GaeFirebaseEventProxy</groupId>
-    <artifactId>GaeFirebaseEventProxy</artifactId>
+    <groupId>com.example.gaefirebaseeventproxy</groupId>
+    <artifactId>gaefirebaseeventproxy</artifactId>
 
     <parent>
         <groupId>com.google.cloud</groupId>

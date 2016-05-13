@@ -17,7 +17,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
   <listener>
-    <listener-class>com.example.GaeFirebaseEventProxy.ServletContextListenerImpl</listener-class>
+    <listener-class>com.example.gaefirebaseeventproxy.ServletContextListenerImpl</listener-class>
   </listener>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
