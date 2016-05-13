@@ -6,10 +6,8 @@ Before you can run or deploy the sample, you will need to create a [Cloud SQL in
 ## Running locally
 1. You will need to be running a local instance of MySQL.
 1. Update the connection string in ``appengine-web.xml`` with your local MySQL instance values.
-    
-    `$ mvn clean appengine:devserver`
+<br/>`$ mvn clean appengine:devserver`
 
 ## Deploying
 1. Update the connection string in ``appengine-web.xml`` with your Cloud SQL instance values.
-    
-    `$ mvn clean appengine:update`
+<br/>`$ mvn clean appengine:update`
