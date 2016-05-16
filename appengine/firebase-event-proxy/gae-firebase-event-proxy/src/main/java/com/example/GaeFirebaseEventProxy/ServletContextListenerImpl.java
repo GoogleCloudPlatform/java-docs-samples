@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.GaeFirebaseEventProxy;
+package com.example.gaefirebaseeventproxy;
 
 import java.util.logging.Logger;
 

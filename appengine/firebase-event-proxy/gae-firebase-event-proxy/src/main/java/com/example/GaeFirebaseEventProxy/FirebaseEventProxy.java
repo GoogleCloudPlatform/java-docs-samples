@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.GaeFirebaseEventProxy;
+package com.example.gaefirebaseeventproxy;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.firebase.security.token.TokenGenerator;
+import com.google.appengine.api.utils.SystemProperty;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,16 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.firebase.security.token.TokenGenerator;
-import com.google.appengine.api.utils.SystemProperty;
 
 public class FirebaseEventProxy {
 
@@ -49,8 +49,8 @@ public class FirebaseEventProxy {
   }
 
   public void start() {
-    String FIREBASE_LOCATION = "https://gae-fb-proxy.firebaseio.com/";
-    Firebase firebase = new Firebase(FIREBASE_LOCATION);
+    String firebaseLocation = "https://gae-fb-proxy.firebaseio.com/";
+    Firebase firebase = new Firebase(firebaseLocation);
 
     // Authenticate with Firebase
     firebase.authWithCustomToken(this.firebaseAuthToken, new Firebase.AuthResultHandler() {
