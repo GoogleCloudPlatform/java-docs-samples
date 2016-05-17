@@ -694,15 +694,15 @@ public class QueriesTest {
     // [START surprising_behavior_example_1]
     Query q =
         new Query("Widget")
-            .setFilter(new FilterPredicate("x", FilterOperator.GREATER_THAN, 1))
-            .setFilter(new FilterPredicate("x", FilterOperator.LESS_THAN, 2));
+            .setFilter(
+                CompositeFilterOperator.and(
+                    new FilterPredicate("x", FilterOperator.GREATER_THAN, 1),
+                    new FilterPredicate("x", FilterOperator.LESS_THAN, 2)));
     // [END surprising_behavior_example_1]
 
-    // Note: The documentation describes that the entity "a" will not match
-    // because no value matches all filters.  When run with the local test
-    // runner, the entity "a" *is* matched.  This may be a difference in
-    // behavior between the local devserver and Cloud Datastore, so there
-    // aren't any assertions we can make in this test.
+    // Entity "a" will not match because no individual value matches all filters.
+    List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+    assertThat(results).named("query results").isEmpty();
   }
 
   @Test
@@ -716,21 +716,21 @@ public class QueriesTest {
     c.setProperty("x", ImmutableList.<Long>of(-6L, 2L));
     Entity d = new Entity("Widget", "d");
     d.setProperty("x", ImmutableList.<Long>of(-6L, 4L));
-    datastore.put(ImmutableList.<Entity>of(a, b, c, d));
+    Entity e = new Entity("Widget", "e");
+    e.setProperty("x", ImmutableList.<Long>of(1L, 2L, 3L));
+    datastore.put(ImmutableList.<Entity>of(a, b, c, d, e));
 
     // [START surprising_behavior_example_2]
     Query q =
         new Query("Widget")
-            .setFilter(new FilterPredicate("x", FilterOperator.EQUAL, 1))
-            .setFilter(new FilterPredicate("x", FilterOperator.EQUAL, 2));
+            .setFilter(
+                CompositeFilterOperator.and(
+                    new FilterPredicate("x", FilterOperator.EQUAL, 1),
+                    new FilterPredicate("x", FilterOperator.EQUAL, 2)));
     // [END surprising_behavior_example_2]
 
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(getKeys(results)).named("query result keys").contains(a.getKey());
-
-    // Note: When run in the test server, this matches "c" as expected and does
-    // not match "d" as expected.  For some reason it does *not* match "b".
-    // The behavior of queries on repeated values is definitely surprising.
+    assertThat(getKeys(results)).named("query result keys").containsExactly(a.getKey(), e.getKey());
   }
 
   @Test
@@ -770,17 +770,14 @@ public class QueriesTest {
     // [START surprising_behavior_example_4]
     Query q =
         new Query("Widget")
-            .setFilter(new FilterPredicate("x", FilterOperator.NOT_EQUAL, 1))
-            .setFilter(new FilterPredicate("x", FilterOperator.NOT_EQUAL, 2));
+            .setFilter(
+                CompositeFilterOperator.and(
+                    new FilterPredicate("x", FilterOperator.NOT_EQUAL, 1),
+                    new FilterPredicate("x", FilterOperator.NOT_EQUAL, 2)));
     // [END surprising_behavior_example_4]
 
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(getKeys(results)).named("query result keys").contains(b.getKey());
-
-    // Note: The documentation describes that the entity "a" will not match.
-    // When run with the local test runner, the entity "a" *is* matched.  This
-    // may be a difference in behavior between the local devserver and Cloud
-    // Datastore.
+    assertThat(getKeys(results)).named("query result keys").containsExactly(b.getKey());
   }
 
   private Entity retrievePersonWithLastName(String targetLastName) {
