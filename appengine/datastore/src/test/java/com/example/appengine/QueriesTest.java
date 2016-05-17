@@ -44,7 +44,6 @@ import org.junit.runners.JUnit4;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -685,9 +684,7 @@ public class QueriesTest {
   public void queryRestrictions_surprisingMultipleValuesAllMustMatch_returnsNoEntities()
       throws Exception {
     Entity a = new Entity("Widget", "a");
-    ArrayList<Long> xs = new ArrayList<>();
-    xs.add(1L);
-    xs.add(2L);
+    List<Long> xs = Arrays.asList(1L, 2L);
     a.setProperty("x", xs);
     datastore.put(a);
 
@@ -701,6 +698,8 @@ public class QueriesTest {
     // [END surprising_behavior_example_1]
 
     // Entity "a" will not match because no individual value matches all filters.
+    // See the documentation for more details:
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
     assertThat(results).named("query results").isEmpty();
   }
@@ -729,6 +728,9 @@ public class QueriesTest {
                     new FilterPredicate("x", FilterOperator.EQUAL, 2)));
     // [END surprising_behavior_example_2]
 
+    // Only "a" and "e" have both 1 and 2 in the "x" array-valued property.
+    // See the documentation for more details:
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
     assertThat(getKeys(results)).named("query result keys").containsExactly(a.getKey(), e.getKey());
   }
@@ -752,6 +754,9 @@ public class QueriesTest {
     Query q = new Query("Widget").setFilter(new FilterPredicate("x", FilterOperator.NOT_EQUAL, 1));
     // [END surprising_behavior_example_3]
 
+    // The query matches any entity that has a some value other than 1. Only
+    // entity "e" is not matched.  See the documentation for more details:
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
     assertThat(getKeys(results))
         .named("query result keys")
@@ -776,6 +781,13 @@ public class QueriesTest {
                     new FilterPredicate("x", FilterOperator.NOT_EQUAL, 2)));
     // [END surprising_behavior_example_4]
 
+    // The two NOT_EQUAL filters in the query become like the combination of queries:
+    // x < 1 OR (x > 1 AND x < 2) OR x > 2
+    //
+    // Only "b" has some value which matches the "x > 2" portion of this query.
+    //
+    // See the documentation for more details:
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
     assertThat(getKeys(results)).named("query result keys").containsExactly(b.getKey());
   }
