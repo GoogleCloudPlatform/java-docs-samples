@@ -18,6 +18,7 @@ package com.example.gaefirebaseeventproxy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.appengine.api.utils.SystemProperty;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class FirebaseEventProxy {
   private static final Logger log = Logger.getLogger(FirebaseEventProxy.class.getName());
 
   public FirebaseEventProxy() {
-    String FIREBASE_LOCATION = "https://crackling-torch-392.firebaseio.com";
+    String firebaseLocation = "https://crackling-torch-392.firebaseio.com";
     Map<String, Object> databaseAuthVariableOverride = new HashMap<String, Object>();
     // uid and provider will have to match what you have in your firebase security rules
     databaseAuthVariableOverride.put("uid", "gae-firebase-event-proxy");
@@ -49,7 +49,7 @@ public class FirebaseEventProxy {
     try {
       FirebaseOptions options = new FirebaseOptions.Builder()
           .setServiceAccount(new FileInputStream("gae-firebase-secrets.json"))
-          .setDatabaseUrl(FIREBASE_LOCATION)
+          .setDatabaseUrl(firebaseLocation)
           .setDatabaseAuthVariableOverride(databaseAuthVariableOverride).build();
       FirebaseApp.initializeApp(options);
     } catch (IOException e) {
