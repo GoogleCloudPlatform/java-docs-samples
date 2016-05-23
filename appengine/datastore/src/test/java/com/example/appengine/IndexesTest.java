@@ -30,7 +30,6 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.common.collect.ImmutableList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,14 +89,6 @@ public class IndexesTest {
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
     // [END unindexed_properties_1]
 
-    assertThat(getKeys(results)).named("query result keys").containsExactly(tom.getKey());
-  }
-
-  private ImmutableList<Key> getKeys(List<Entity> entities) {
-    ImmutableList.Builder<Key> keys = ImmutableList.builder();
-    for (Entity entity : entities) {
-      keys.add(entity.getKey());
-    }
-    return keys.build();
+    assertThat(results).named("query results").containsExactly(tom);
   }
 }
