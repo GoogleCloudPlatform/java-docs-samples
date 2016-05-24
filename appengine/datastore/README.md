@@ -10,7 +10,7 @@ from [Google App Engine standard environment][ae-docs].
 ## Running locally
 
 This example uses the
-[Maven gcloud plugin](https://cloud.google.com/appengine/docs/java/managed-vms/maven).
+[App Engine Maven plugin](https://cloud.google.com/appengine/docs/java/tools/maven).
 To run this sample locally:
 
     $ mvn appengine:devserver
