@@ -18,52 +18,49 @@ package com.example.gaefirebaseeventproxy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.firebase.security.token.TokenGenerator;
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 public class FirebaseEventProxy {
 
   private static final Logger log = Logger.getLogger(FirebaseEventProxy.class.getName());
 
-  private String firebaseAuthToken;
-
   public FirebaseEventProxy() {
-    // Store Firebase authentication token as an instance variable.
-    this.firebaseAuthToken = this.getFirebaseAuthToken(this.getFirebaseSecret());
+    String firebaseLocation = "https://crackling-torch-392.firebaseio.com";
+    Map<String, Object> databaseAuthVariableOverride = new HashMap<String, Object>();
+    // uid and provider will have to match what you have in your firebase security rules
+    databaseAuthVariableOverride.put("uid", "gae-firebase-event-proxy");
+    databaseAuthVariableOverride.put("provider", "com.example");
+    try {
+      FirebaseOptions options = new FirebaseOptions.Builder()
+          .setServiceAccount(new FileInputStream("gae-firebase-secrets.json"))
+          .setDatabaseUrl(firebaseLocation)
+          .setDatabaseAuthVariableOverride(databaseAuthVariableOverride).build();
+      FirebaseApp.initializeApp(options);
+    } catch (IOException e) {
+      throw new RuntimeException(
+          "Error reading firebase secrets from file: src/main/webapp/gae-firebase-secrets.json: "
+          + e.getMessage());
+    }
   }
 
   public void start() {
-    String firebaseLocation = "https://gae-fb-proxy.firebaseio.com/";
-    Firebase firebase = new Firebase(firebaseLocation);
-
-    // Authenticate with Firebase
-    firebase.authWithCustomToken(this.firebaseAuthToken, new Firebase.AuthResultHandler() {
-      @Override
-      public void onAuthenticationError(FirebaseError error) {
-        log.severe("Firebase login error: " + error.getMessage());
-      }
-
-      @Override
-      public void onAuthenticated(AuthData auth) {
-        log.info("Firebase login successful");
-      }
-    });
+    DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
 
     // Subscribe to value events. Depending on use case, you may want to subscribe to child events
     // through childEventListener.
@@ -73,7 +70,7 @@ public class FirebaseEventProxy {
         if (snapshot.exists()) {
           try {
             // Convert value to JSON using Jackson
-            String json = new ObjectMapper().writeValueAsString(snapshot.getValue());
+            String json = new ObjectMapper().writeValueAsString(snapshot.getValue(false));
 
             // Replace the URL with the url of your own listener app.
             URL dest = new URL("http://gae-firebase-listener-python.appspot.com/log");
@@ -109,36 +106,9 @@ public class FirebaseEventProxy {
       }
 
       @Override
-      public void onCancelled(FirebaseError error) {
+      public void onCancelled(DatabaseError error) {
         log.severe("Firebase connection cancelled: " + error.getMessage());
       }
     });
-  }
-
-  private String getFirebaseSecret() {
-    Properties props = new Properties();
-    try {
-      // Read from src/main/webapp/firebase-secrets.properties
-      InputStream inputStream = new FileInputStream("firebase-secret.properties");
-      props.load(inputStream);
-      return props.getProperty("firebaseSecret");
-    } catch (java.net.MalformedURLException e) {
-      throw new RuntimeException(
-          "Error reading firebase secrets from file: src/main/webapp/firebase-sercrets.properties: "
-              + e.getMessage());
-    } catch (IOException e) {
-      throw new RuntimeException(
-          "Error reading firebase secrets from file: src/main/webapp/firebase-sercrets.properties: "
-              + e.getMessage());
-    }
-  }
-
-  private String getFirebaseAuthToken(String firebaseSecret) {
-    Map<String, Object> authPayload = new HashMap<String, Object>();
-    // uid and provider will have to match what you have in your firebase security rules
-    authPayload.put("uid", "gae-firebase-event-proxy");
-    authPayload.put("provider", "com.example");
-    TokenGenerator tokenGenerator = new TokenGenerator(firebaseSecret);
-    return tokenGenerator.createToken(authPayload);
   }
 }
