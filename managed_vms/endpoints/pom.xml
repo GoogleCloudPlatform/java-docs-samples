@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.managedvms</groupId>
-  <artifactId>managed-vms-helloworld</artifactId>
+  <artifactId>managed-vms-endpoints</artifactId>
 
   <parent>
     <artifactId>doc-samples</artifactId>
