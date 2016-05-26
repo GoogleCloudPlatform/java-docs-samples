@@ -15,7 +15,6 @@
     <relativePath>../..</relativePath>
   </parent>
 
-  <!-- [START dependencies] -->
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -24,8 +23,14 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
+    <!--  Gson: Java to Json conversion -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.6.2</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
-  <!-- [END dependencies] -->
 
   <build>
     <!-- for hot reload of the web application -->
