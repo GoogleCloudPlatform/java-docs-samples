@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// AudioRequestFactory takes a URI as an input and creates an AudioRequest
-// The factory takes as input files of type local and gs
 
 package com.google.cloud.speech.grpc.demos;
 
@@ -33,6 +31,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/*
+ * AudioRequestFactory takes a URI as an input and creates an AudioRequest. The URI can point to a
+ * local file or a file on google cloud storage.
+ */
 public class AudioRequestFactory {
 
   private static final String FILE = "file";
