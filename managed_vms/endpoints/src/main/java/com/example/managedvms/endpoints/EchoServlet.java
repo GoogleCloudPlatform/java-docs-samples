@@ -31,6 +31,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 
+/**
+ * A servlet that echoes JSON message bodies.
+ */
 @WebServlet("/echo")
 public class EchoServlet extends HttpServlet {
 

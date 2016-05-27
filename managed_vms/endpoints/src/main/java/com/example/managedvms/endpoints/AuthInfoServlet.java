@@ -28,6 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+/**
+ * A servlet that returns authentication information.
+ * See swagger.yaml for authentication mechanisms (e.g. JWT tokens, Google ID token).
+ */
 @WebServlet("/auth/info/*")
 public class AuthInfoServlet extends HttpServlet {
 
