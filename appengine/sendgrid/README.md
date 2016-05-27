@@ -12,7 +12,7 @@ For more information about SendGrid, see their
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 [sample-docs]: https://cloud.google.com/appengine/docs/java/mail/sendgrid
 
-## Setup
+## Setup and deploy
 
 Before you can run or deploy the sample, you will need to do the following:
 
@@ -20,6 +20,7 @@ Before you can run or deploy the sample, you will need to do the following:
    September 2015, Google users start with 25,000 free emails per month.
 1. Configure your SendGrid settings in the environment variables section in
    [`src/main/webapp/WEB-INF/appengine-web.xml`](src/main/webapp/WEB-INF/appengine-web.xml).
+1. Visit /send/email?to=YOUR-EMAIL-ADDRESS
 
 ## Running locally
 
