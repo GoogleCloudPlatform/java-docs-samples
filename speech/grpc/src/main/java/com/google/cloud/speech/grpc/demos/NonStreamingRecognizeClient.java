@@ -32,7 +32,6 @@ import com.google.cloud.speech.v1.InitialRecognizeRequest.AudioEncoding;
 import com.google.cloud.speech.v1.NonStreamingRecognizeResponse;
 import com.google.cloud.speech.v1.RecognizeRequest;
 import com.google.cloud.speech.v1.SpeechGrpc;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
@@ -48,11 +47,8 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.net.URI;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
