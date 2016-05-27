@@ -71,8 +71,4 @@ public class AudioRequestFactory {
         .setContent(ByteString.copyFrom(bytes))
         .build();
   }
-
-  public static void main(String[] args) {
-    
-  }
 }
