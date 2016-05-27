@@ -171,7 +171,7 @@ public class NonStreamingRecognizeClient {
       if (line.hasOption("uri")) {
         audioFile = line.getOptionValue("uri");
       } else {
-        System.err.println("An Audio uri must be specified (e.g. file://foo/baz.raw).");
+        System.err.println("An Audio uri must be specified (e.g. file:///foo/baz.raw).");
         System.exit(1);
       }
 
