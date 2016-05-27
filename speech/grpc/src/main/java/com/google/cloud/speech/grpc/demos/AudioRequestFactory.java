@@ -33,7 +33,7 @@ import java.nio.file.Paths;
 
 /*
  * AudioRequestFactory takes a URI as an input and creates an AudioRequest. The URI can point to a
- * local file or a file on google cloud storage.
+ * local file or a file on Google Cloud Storage.
  */
 public class AudioRequestFactory {
 
