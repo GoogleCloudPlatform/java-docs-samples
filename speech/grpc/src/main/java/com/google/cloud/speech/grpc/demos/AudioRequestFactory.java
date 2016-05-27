@@ -54,7 +54,7 @@ public class AudioRequestFactory {
     } else if (uri.getScheme().equals(GS)) {
       Storage storage = StorageOptions.defaultInstance().service();
       String path = uri.getPath();
-      BlobId blobId = BlobId.of(uri.getHost(), path.substring(1,path.length()));
+      BlobId blobId = BlobId.of(uri.getHost(), path.substring(1, path.length()));
       Blob blob = storage.get(blobId);
       return audioFromBytes(blob.content());
     }
