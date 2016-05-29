@@ -18,14 +18,9 @@
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.cloud.speech.v1.AudioRequest;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import com.google.protobuf.ByteString;
 
 import java.io.IOException;
-
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,8 +32,8 @@ import java.nio.file.Paths;
  */
 public class AudioRequestFactory {
 
-  private static final String FILE = "file";
-  private static final String GS = "gs";
+  private static final String FILE_SCHEME = "file";
+  private static final String GS_SCHEME   = "gs";
 
   /**
    * Takes an input URI of form $scheme:// and converts to audio request.
@@ -48,15 +43,11 @@ public class AudioRequestFactory {
    */
   public static AudioRequest createRequest(URI uri)
       throws IOException {
-    if (uri.getScheme() == null || uri.getScheme().equals(FILE)) {
+    if (uri.getScheme() == null || uri.getScheme().equals(FILE_SCHEME)) {
       Path path = Paths.get(uri);
       return audioFromBytes(Files.readAllBytes(path));
-    } else if (uri.getScheme().equals(GS)) {
-      Storage storage = StorageOptions.defaultInstance().service();
-      String path = uri.getPath();
-      BlobId blobId = BlobId.of(uri.getHost(), path.substring(1, path.length()));
-      Blob blob = storage.get(blobId);
-      return audioFromBytes(blob.content());
+    } else if (uri.getScheme().equals(GS_SCHEME)) {
+      return AudioRequest.newBuilder().setUri(uri.toString()).build();
     }
     throw new RuntimeException("scheme not supported " + uri.getScheme());
   }
