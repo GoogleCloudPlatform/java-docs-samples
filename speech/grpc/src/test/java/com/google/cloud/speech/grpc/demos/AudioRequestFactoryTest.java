@@ -42,7 +42,7 @@ public class AudioRequestFactoryTest {
     int numBytes = audio.getContent().toByteArray().length;
 
     //assert the number of bytes in the audio as 57958
-    assertEquals(numBytes, 57958);
+    assertEquals(57958, numBytes);
   }
 
   @Test
@@ -53,6 +53,6 @@ public class AudioRequestFactoryTest {
     int numBytes = audio.getContent().toByteArray().length;
 
     //assert the number of bytes in the audio as 57958
-    assertEquals(numBytes, 57958);
+    assertEquals(57958, numBytes);
   }
 }
