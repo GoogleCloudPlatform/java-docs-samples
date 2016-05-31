@@ -16,8 +16,9 @@
 
 package com.google.cloud.speech.grpc.demos;
 
-import com.google.cloud.speech.v1.AudioRequest;
 import static org.junit.Assert.assertEquals;
+
+import com.google.cloud.speech.v1.AudioRequest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
