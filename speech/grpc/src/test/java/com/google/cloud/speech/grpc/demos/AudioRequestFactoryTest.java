@@ -17,18 +17,16 @@
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.cloud.speech.v1.AudioRequest;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Unit tests for {@link AudioRequestFactory}.
@@ -38,13 +36,13 @@ public class AudioRequestFactoryTest {
 
   @Test
   public void verifyBytesInSizeFromLocalFile() throws IOException {
-    URI uri = new File("speech/grpc/resources/audio.raw").toURI();
+    URI uri = new File("resources/audio.raw").toURI();
     AudioRequest audio = AudioRequestFactory.createRequest(uri);
 
-    int numBytes = audio.getContent().toByteArray().length();
+    int numBytes = audio.getContent().toByteArray().length;
 
     //assert the number of bytes in the audio as 57958
-    assertSame(numBytes, 57958);
+    assertEquals(numBytes, 57958);
   }
 
   @Test
@@ -52,9 +50,9 @@ public class AudioRequestFactoryTest {
     URI uri = URI.create("gs://cloud-samples-test/speech/audio.raw");
     AudioRequest audio = AudioRequestFactory.createRequest(uri);
 
-    int numBytes = audio.getContent().toByteArray().length();
+    int numBytes = audio.getContent().toByteArray().length;
 
     //assert the number of bytes in the audio as 57958
-    assertSame(numBytes, 57958);
+    assertEquals(numBytes, 57958);
   }
 }
