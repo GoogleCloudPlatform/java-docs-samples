@@ -47,12 +47,17 @@ public class AudioRequestFactoryTest {
 
   @Test
   public void verifyBytesInSizeFromGoogleStorageFile() throws IOException {
-    URI uri = URI.create("gs://cloud-samples-tests/speech/audio.raw");
+    String audioUri = "gs://cloud-samples-tests/speech/audio.raw";
+
+    URI uri = URI.create(audioUri);
     AudioRequest audio = AudioRequestFactory.createRequest(uri);
 
     int numBytes = audio.getContent().toByteArray().length;
 
     //assert the number of bytes in the audio as 57958
-    assertEquals(57958, numBytes);
+    assertEquals(0, numBytes);
+
+    //assert the uri
+    assertEquals(audioUri, audio.getUri());
   }
 }
