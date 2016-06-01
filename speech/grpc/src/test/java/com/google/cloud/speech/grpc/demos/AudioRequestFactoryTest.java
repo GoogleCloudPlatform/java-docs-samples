@@ -54,7 +54,7 @@ public class AudioRequestFactoryTest {
 
     int numBytes = audio.getContent().toByteArray().length;
 
-    //assert the number of bytes in the audio as 57958
+    //assert the number of bytes in the audio as 0
     assertEquals(0, numBytes);
 
     //assert the uri
