@@ -32,7 +32,6 @@ import com.google.cloud.speech.v1.InitialRecognizeRequest.AudioEncoding;
 import com.google.cloud.speech.v1.NonStreamingRecognizeResponse;
 import com.google.cloud.speech.v1.RecognizeRequest;
 import com.google.cloud.speech.v1.SpeechGrpc;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
@@ -49,9 +48,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -72,7 +69,7 @@ public class NonStreamingRecognizeClient {
 
   private final String host;
   private final int port;
-  private final String file;
+  private final URI input;
   private final int samplingRate;
 
   private final ManagedChannel channel;
@@ -81,11 +78,11 @@ public class NonStreamingRecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public NonStreamingRecognizeClient(String host, int port, String file, int samplingRate)
+  public NonStreamingRecognizeClient(String host, int port, URI input, int samplingRate)
       throws IOException {
     this.host = host;
     this.port = port;
-    this.file = file;
+    this.input = input;
     this.samplingRate = samplingRate;
 
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
@@ -99,10 +96,7 @@ public class NonStreamingRecognizeClient {
   }
 
   private AudioRequest createAudioRequest() throws IOException {
-    Path path = Paths.get(file);
-    return AudioRequest.newBuilder()
-        .setContent(ByteString.copyFrom(Files.readAllBytes(path)))
-        .build();
+    return AudioRequestFactory.createRequest(this.input);
   }
 
   public void shutdown() throws InterruptedException {
@@ -115,10 +109,10 @@ public class NonStreamingRecognizeClient {
     try {
       audio = createAudioRequest();
     } catch (IOException e) {
-      logger.log(Level.WARNING, "Failed to read audio file: " + file);
+      logger.log(Level.WARNING, "Failed to read audio uri input: " + input);
       return;
     }
-    logger.info("Sending " + audio.getContent().size() + " bytes from audio file: " + file);
+    logger.info("Sending " + audio.getContent().size() + " bytes from audio uri input: " + input);
     InitialRecognizeRequest initial = InitialRecognizeRequest.newBuilder()
         .setEncoding(AudioEncoding.LINEAR16)
         .setSampleRate(samplingRate)
@@ -147,8 +141,8 @@ public class NonStreamingRecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("file")
-        .withDescription("path to audio file")
+    options.addOption(OptionBuilder.withLongOpt("uri")
+        .withDescription("path to audio uri")
         .hasArg()
         .withArgName("FILE_PATH")
         .create());
@@ -170,10 +164,10 @@ public class NonStreamingRecognizeClient {
 
     try {
       CommandLine line = parser.parse(options, args);
-      if (line.hasOption("file")) {
-        audioFile = line.getOptionValue("file");
+      if (line.hasOption("uri")) {
+        audioFile = line.getOptionValue("uri");
       } else {
-        System.err.println("An Audio file path must be specified (e.g. /foo/baz.raw).");
+        System.err.println("An Audio uri must be specified (e.g. file:///foo/baz.raw).");
         System.exit(1);
       }
 
@@ -203,7 +197,7 @@ public class NonStreamingRecognizeClient {
     }
 
     NonStreamingRecognizeClient client =
-        new NonStreamingRecognizeClient(host, port, audioFile, sampling);
+        new NonStreamingRecognizeClient(host, port, URI.create(audioFile), sampling);
     try {
       client.recognize();
     } finally {
