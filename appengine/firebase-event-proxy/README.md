@@ -32,7 +32,7 @@ mvn appengine:devserver
 ### Python App Engine Listener
 ```
 cd gae-firebase-listener-python
-dev_appserver .
+dev_appserver.py .
 ```
 
 ## Deploying

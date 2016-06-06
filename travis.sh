@@ -36,3 +36,4 @@ for testdir in ${devserver_tests[@]} ; do
   ./java-repo-tools/test-devserver.sh "${testdir}"
 done
 
+appengine/firebase-event-proxy/run_tests.sh

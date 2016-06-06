@@ -73,7 +73,7 @@ public class FirebaseEventProxy {
             String json = new ObjectMapper().writeValueAsString(snapshot.getValue(false));
 
             // Replace the URL with the url of your own listener app.
-            URL dest = new URL("http://gae-firebase-listener-python.appspot.com/log");
+            URL dest = new URL("http://localhost:8080/log");
             HttpURLConnection connection = (HttpURLConnection) dest.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);

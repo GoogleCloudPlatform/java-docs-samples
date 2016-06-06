@@ -29,7 +29,7 @@ class LoggingHandler(webapp2.RequestHandler):
       user = self.request.headers.get('X-Appengine-Inbound-Appid', None)
       if user and user in allowed_users:
           firebaseSnapshot = self.request.params['fbSnapshot']
-          print firebaseSnapshot
+          print "Got data: %s" % firebaseSnapshot
       else:
           print "Got unauthenticated user: %s" % user
 
