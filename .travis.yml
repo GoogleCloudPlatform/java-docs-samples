@@ -14,15 +14,18 @@
 
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 addons:
   apt:
     packages:
     - expect
 before_install:
-  - openssl aes-256-cbc -K $encrypted_37a4f399de75_key -iv $encrypted_37a4f399de75_iv -in service-account.json.enc -out service-account.json -d
-        && export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/service-account.json GCLOUD_PROJECT=cloud-samples-tests
-        || true
+- openssl aes-256-cbc -K $encrypted_d17a6ce39290_key -iv $encrypted_d17a6ce39290_iv
+  -in gae-firebase-secrets.json.enc -out appengine/firebase-event-proxy/gae-firebase-event-proxy/src/main/webapp/gae-firebase-secrets.json
+  -d
+- openssl aes-256-cbc -K $encrypted_37a4f399de75_key -iv $encrypted_37a4f399de75_iv
+  -in service-account.json.enc -out service-account.json -d && export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/service-account.json
+  GCLOUD_PROJECT=cloud-samples-tests || true
 # Skip the install step, since Maven will download the dependencies we need
 # when the test build runs.
 # http://stackoverflow.com/q/31945809/101923
@@ -30,7 +33,7 @@ before_install:
 install: true
 script: ./travis.sh
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
 branches:
   only:
   - master
