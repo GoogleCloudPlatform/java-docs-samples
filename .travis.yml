@@ -22,7 +22,7 @@ addons:
 before_install:
 - openssl aes-256-cbc -K $encrypted_d17a6ce39290_key -iv $encrypted_d17a6ce39290_iv
   -in gae-firebase-secrets.json.enc -out appengine/firebase-event-proxy/gae-firebase-event-proxy/src/main/webapp/gae-firebase-secrets.json
-  -d
+  -d || true
 - openssl aes-256-cbc -K $encrypted_37a4f399de75_key -iv $encrypted_37a4f399de75_iv
   -in service-account.json.enc -out service-account.json -d && export GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/service-account.json
   GCLOUD_PROJECT=cloud-samples-tests || true
