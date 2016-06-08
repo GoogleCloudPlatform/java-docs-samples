@@ -36,6 +36,7 @@
         <project.oauth.version>1.19.0</project.oauth.version>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.plugin.version>2.0.9.111.v20160525</maven.plugin.version>
     </properties>
 
     <prerequisites>
