@@ -75,7 +75,17 @@ public class HelloWorld {
       // Write some rows to the table
       print("Write some greetings to the table");
       for (int i = 0; i < GREETINGS.length; i++) {
-        // Each row has a unique row key
+        // Each row has a unique row key.
+        //
+        // Note: This example uses sequential numeric IDs for simplicity, but
+        // this can result in poor performance in a production application.
+        // Since rows are stored in sorted order by key, sequential keys can
+        // result in poor distribution of operations across nodes.
+        //
+        // For more information about how to design a Bigtable schema for the
+        // best performance, see the documentation:
+        //
+        //     https://cloud.google.com/bigtable/docs/schema-design
         String rowKey = "greeting" + i;
 
         // Put a single row into the table. We could also pass a list of Puts to write a batch.
@@ -88,8 +98,8 @@ public class HelloWorld {
       String rowKey = "greeting0";
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
       String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
-      System.out.println(
-          String.format("Get a single greeting by row key: %s = %s", rowKey, greeting));
+      System.out.println("Get a single greeting by row key");
+      System.out.printf("\t%s = %s\n", rowKey, greeting);
 
       // Now scan across all rows.
       Scan scan = new Scan();
