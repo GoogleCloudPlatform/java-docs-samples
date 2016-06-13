@@ -16,12 +16,8 @@
 # Usage:
 #     test-localhost.sh deployment-type path/to/project -- [maven arguments]
 #
-# This script runs the local appengine:devserver Maven plugin and verifies that
-# a request to http://localhost:8080/ does not return an error code.
-#
-# As an example, this is useful for verifying that datastore-indexes.xml is
-# correct (only if autoGenerate=false and the / handler does all queries used),
-# as an example.
+# This script runs a localhost server Maven plugin and verifies that a request
+# to http://localhost:8080/ does not return an error code.
 
 print_usage () {
   echo "Usage:" >&2
@@ -30,6 +26,7 @@ print_usage () {
   echo "server-type can be any of the following:" >&2
   echo "  appengine" >&2
   echo "  jetty" >&2
+  echo "  spring-boot" >&2
 }
 
 if [[ -z "$1" ]]; then
@@ -45,6 +42,10 @@ case $1 in
   jetty)
     mvn_plugin="jetty:run-exploded"
     server_started_message="Started Jetty Server"
+    ;;
+  spring-boot)
+    mvn_plugin="spring-boot:run"
+    server_started_message="Tomcat started on port(s): 8080 (http)"
     ;;
   *)
     print_usage
