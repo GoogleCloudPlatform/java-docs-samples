@@ -56,19 +56,24 @@ public class HelloWorld {
    */
   private static void doHelloWorld(String projectId, String zone, String clusterId) {
 
+    // [START connecting_to_bigtable]
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
     try (Connection connection = BigtableConfiguration.connect(projectId, zone, clusterId)) {
 
       // The admin API lets us create, manage and delete tables
       Admin admin = connection.getAdmin();
+      // [END connecting_to_bigtable]
 
+      // [START creating_a_table]
       // Create a table with a single column family
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_NAME));
       descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
 
       print("Create table " + descriptor.getNameAsString());
       admin.createTable(descriptor);
+      // [END creating_a_table]
 
+      // [START writing_rows]
       // Retrieve the table we just created so we can do some reads and writes
       Table table = connection.getTable(TableName.valueOf(TABLE_NAME));
 
@@ -93,14 +98,18 @@ public class HelloWorld {
         put.addColumn(COLUMN_FAMILY_NAME, COLUMN_NAME, Bytes.toBytes(GREETINGS[i]));
         table.put(put);
       }
+      // [END writing_rows]
 
+      // [START getting_a_row]
       // Get the first greeting by row key
       String rowKey = "greeting0";
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
       String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
       System.out.println("Get a single greeting by row key");
       System.out.printf("\t%s = %s\n", rowKey, greeting);
+      // [END getting_a_row]
 
+      // [START scanning_all_rows]
       // Now scan across all rows.
       Scan scan = new Scan();
 
@@ -110,11 +119,14 @@ public class HelloWorld {
         byte[] valueBytes = row.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME);
         System.out.println('\t' + Bytes.toString(valueBytes));
       }
+      // [END scanning_all_rows]
 
+      // [START deleting_a_table]
       // Clean up by disabling and then deleting the table
       print("Delete the table");
       admin.disableTable(table.getName());
       admin.deleteTable(table.getName());
+      // [END deleting_a_table]
 
     } catch (IOException e) {
       System.err.println("Exception while running HelloWorld: " + e.getMessage());
