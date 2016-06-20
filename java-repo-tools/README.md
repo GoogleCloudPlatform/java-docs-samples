@@ -27,34 +27,21 @@ git remote add java-repo-tools git@github.com:GoogleCloudPlatform/java-repo-tool
 git fetch java-repo-tools master
 ```
 
-To make it easier to push changes back upstream, create a new branch.
-
-```
-git checkout -b java-repo-tools java-repo-tools/master
-```
-
 We can then go back to the `my-java-samples` code and prepare a Pull Request to
-add the `java-repo-tools` code in a subtree.
+add the `java-repo-tools` code in a subtree. Making a new branch is optional, but
+recommended so that you can more easily send a pull request to start using
+`java-repo-tools`.
 
 ```
-git checkout master
-# Making a new branch ia optional, but recommended to send a pull request to
-# start using java-repo-tools.
-git checkout -b use-java-repo-tools
+git checkout -b use-java-repo-tools origin/master
 ```
 
-So that we can pull future updates from the `java-repo-tools` repository, we
-merge histories. This way we won't get unnecessary conflicts when pulling changes
-in.
+Finally, read the `java-repo-tools` into a subtree. So that you can pull future
+updates from the `java-repo-tools` repository, this command will merge histories.
+This way prevents unnecessary conflicts when pulling changes in.
 
 ```
-git merge -s ours --no-commit java-repo-tools/master
-```
-
-Finally, read the `java-repo-tools` into a subtree.
-
-```
-git read-tree --prefix=java-repo-tools/ -u java-repo-tools
+git subtree add --prefix=java-repo-tools java-repo-tools master
 ```
 
 Now all the content of `java-repo-tools` will be in the `java-repo-tools/`
@@ -143,22 +130,14 @@ Pull Request as you would in the normal flow.
 What if you make changes in your repository and now want to push them upstream?
 
 Assuming you just commited changes in the `java-repo-tools/` directory of your
-`my-main-branch`, to merge the changes into the local `java-repo-tools` branch,
-we need to cherry pick this commit using the subtree strategy. It will ignore
-any changes to file not in the `java-repo-tools/` directory.
+`my-main-branch`, to split the `java-repo-tools` changes into their own branch.
+The first time using the `subtree` command, we may need to use the `--rejoin`
+argument.
 
 ```
-git checkout java-repo-tools
-git cherry-pick -x --strategy=subtree my-main-branch
-```
-
-After you have committed all the changes you want to your `java-repo-tools`
-branch, you can push to the upstream `java-repo-tools` repository with the
-following command. (Replace `name-for-remote-branch` with the name you'd like to
-give the branch on the `java-repo-tools` repository.)
-
-```
-git push java-repo-tools java-repo-tools:name-for-remote-branch
+git subtree split --prefix=java-repo-tools -b ${USER}-push-java-repo-tools
+git checkout ${USER}-push-java-repo-tools
+git push java-repo-tools ${USER}-push-java-repo-tools
 ```
 
 Then, you can send a pull request to the `java-repo-tools` repository.
