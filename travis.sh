@@ -33,6 +33,6 @@ devserver_tests=(
     appengine/datastore/indexes-perfect
 )
 for testdir in ${devserver_tests[@]} ; do
-  ./java-repo-tools/test-devserver.sh "${testdir}"
+  ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
 done
 
