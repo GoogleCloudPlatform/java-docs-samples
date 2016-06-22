@@ -11,13 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-language: java
-jdk:
-- oraclejdk7
-- oraclejdk8
-script: mvn verify
-after_success:
-- bash <(curl -s https://codecov.io/bash)
-branches:
-  only:
+codecov:
+  branch: master
+comment:
+  branches:
   - master
