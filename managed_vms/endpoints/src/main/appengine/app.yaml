@@ -1,4 +1,4 @@
-runtime: java
+runtime: custom
 vm: true
 
 handlers:
