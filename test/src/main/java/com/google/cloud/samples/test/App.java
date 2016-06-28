@@ -20,11 +20,12 @@ package com.google.cloud.samples.test;
  * A hello world app to test the parent pom.xml.
  */
 public class App {
-  public static String greeting() {
+  public String greeting() {
     return "Hello World!";
   }
 
   public static void main(String[] args) {
-    System.out.println(App.greeting());
+    App app = new App();
+    System.out.println(app.greeting());
   }
 }
