@@ -22,12 +22,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 /**
  * Unit tests for {@link App}.
  */
 @RunWith(JUnit4.class)
 public class AppTest {
-  @Test public void greeting_returnsHelloWorld() {
-    assertThat(App.greeting()).named("greeting").isEqualTo("Hello World!");
+  @Test public void main_printsHelloWorld() {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(out));
+
+    App.main(new String[0]);
+
+    String greeting = out.toString();
+    assertThat(greeting).named("greeting").contains("Hello World!");
   }
 }
