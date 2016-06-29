@@ -54,11 +54,11 @@ public class HelloWorld {
   /**
    * Connects to Cloud Bigtable, runs some basic operations and prints the results
    */
-  private static void doHelloWorld(String projectId, String zone, String clusterId) {
+  private static void doHelloWorld(String projectId, String instanceId) {
 
     // [START connecting_to_bigtable]
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
-    try (Connection connection = BigtableConfiguration.connect(projectId, zone, clusterId)) {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
 
       // The admin API lets us create, manage and delete tables
       Admin admin = connection.getAdmin();
@@ -142,12 +142,11 @@ public class HelloWorld {
   }
 
   public static void main(String[] args) {
-    // Consult system properties to get project/zone/cluster
+    // Consult system properties to get project/instance
     String projectId = requiredProperty("bigtable.projectID");
-    String zone = requiredProperty("bigtable.zone");
-    String clusterId = requiredProperty("bigtable.clusterID");
+    String instanceId = requiredProperty("bigtable.instanceID");
 
-    doHelloWorld(projectId, zone, clusterId);
+    doHelloWorld(projectId, instanceId);
   }
 
   private static String requiredProperty(String prop) {
