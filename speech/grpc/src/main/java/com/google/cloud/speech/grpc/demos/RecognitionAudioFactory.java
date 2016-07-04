@@ -20,6 +20,7 @@ package com.google.cloud.speech.grpc.demos;
 import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.protobuf.ByteString;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -43,7 +44,11 @@ public class RecognitionAudioFactory {
    */
   public static RecognitionAudio createRecognitionAudio(URI uri)
       throws IOException {
-    if (uri.getScheme() == null || uri.getScheme().equals(FILE_SCHEME)) {
+    if (uri.getScheme() == null) {
+        uri = new File(uri.toString()).toURI();
+        Path path = Paths.get(uri);
+        return audioFromBytes(Files.readAllBytes(path));
+    } else if (uri.getScheme().equals(FILE_SCHEME)) {
       Path path = Paths.get(uri);
       return audioFromBytes(Files.readAllBytes(path));
     } else if (uri.getScheme().equals(GS_SCHEME)) {
