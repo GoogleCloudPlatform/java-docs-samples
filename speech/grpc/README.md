@@ -78,15 +78,15 @@ or [homebrew](http://brew.sh/)) to convert audio files to raw format.
 You can run the batch client like this:
 
 ```sh
-$ bin/speech-sample-nonstreaming.sh --host=speech.googleapis.com --port=443 \
---file=<audio file path> --sampling=<sample rate>
+$ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
+--uri=<audio file uri> --sampling=<sample rate>
 ```
 
 Try a streaming rate of 16000 and the included sample audio file, as follows:
 
 ```sh
-$ bin/speech-sample-nonstreaming.sh --host=speech.googleapis.com --port=443 \
---file=resources/audio.raw --sampling=16000
+$ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
+--uri=resources/audio.raw --sampling=16000
 ```
 
 ### Run the streaming client
