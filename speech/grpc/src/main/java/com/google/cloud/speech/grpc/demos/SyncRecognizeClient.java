@@ -29,9 +29,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1beta1.SpeechGrpc;
 import com.google.cloud.speech.v1beta1.SyncRecognizeRequest;
 import com.google.cloud.speech.v1beta1.SyncRecognizeResponse;
-import com.google.cloud.speech.v1beta1.SpeechGrpc;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
@@ -114,9 +114,9 @@ public class SyncRecognizeClient {
     }
     logger.info("Sending " + audio.getContent().size() + " bytes from audio uri input: " + input);
     RecognitionConfig config = RecognitionConfig.newBuilder()
-      .setEncoding(AudioEncoding.LINEAR16)
-      .setSampleRate(samplingRate)
-      .build();
+        .setEncoding(AudioEncoding.LINEAR16)
+        .setSampleRate(samplingRate)
+        .build();
     SyncRecognizeRequest request = SyncRecognizeRequest.newBuilder()
         .setConfig(config)
         .setAudio(audio)
