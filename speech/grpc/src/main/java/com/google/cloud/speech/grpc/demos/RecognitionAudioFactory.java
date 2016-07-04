@@ -27,8 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /*
- * RecognitionAudioFactory takes a URI as an input and creates a RecognitionAudio. The URI can point to a
- * local file or a file on Google Cloud Storage.
+ * RecognitionAudioFactory takes a URI as an input and creates a RecognitionAudio. 
+ * The URI can point to a local file or a file on Google Cloud Storage.
  */
 public class RecognitionAudioFactory {
 
