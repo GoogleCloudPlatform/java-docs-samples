@@ -26,12 +26,12 @@
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.speech.v1.AudioRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest.AudioEncoding;
-import com.google.cloud.speech.v1.RecognizeRequest;
-import com.google.cloud.speech.v1.RecognizeResponse;
-import com.google.cloud.speech.v1.SpeechGrpc;
+import com.google.cloud.speech.v1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1beta1.SpeechGrpc;
+import com.google.cloud.speech.v1beta1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1beta1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1beta1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
@@ -63,7 +63,7 @@ import java.util.logging.Logger;
 /**
  * Client that sends streaming audio to Speech.Recognize and returns streaming transcript.
  */
-public class RecognizeClient {
+public class StreamingRecognizeClient {
 
   private final String host;
   private final int port;
@@ -71,7 +71,7 @@ public class RecognizeClient {
   private final int samplingRate;
 
   private static final Logger logger =
-        Logger.getLogger(RecognizeClient.class.getName());
+        Logger.getLogger(StreamingRecognizeClient.class.getName());
 
   private final ManagedChannel channel;
 
@@ -83,7 +83,8 @@ public class RecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public RecognizeClient(String host, int port, String file, int samplingRate) throws IOException {
+  public StreamingRecognizeClient(String host, int port, String file, int samplingRate) 
+      throws IOException {
     this.host = host;
     this.port = port;
     this.file = file;
@@ -106,9 +107,10 @@ public class RecognizeClient {
   /** Send streaming recognize requests to server. */
   public void recognize() throws InterruptedException, IOException {
     final CountDownLatch finishLatch = new CountDownLatch(1);
-    StreamObserver<RecognizeResponse> responseObserver = new StreamObserver<RecognizeResponse>() {
+    StreamObserver<StreamingRecognizeResponse> responseObserver = new 
+        StreamObserver<StreamingRecognizeResponse>() {
       @Override
-      public void onNext(RecognizeResponse response) {
+      public void onNext(StreamingRecognizeResponse response) {
         logger.info("Received response: " +  TextFormat.printToString(response));
       }
 
@@ -126,18 +128,25 @@ public class RecognizeClient {
       }
     };
 
-    StreamObserver<RecognizeRequest> requestObserver = stub.recognize(responseObserver);
+    StreamObserver<StreamingRecognizeRequest> 
+        requestObserver = stub.streamingRecognize(responseObserver);
     try {
-      // Build and send a RecognizeRequest containing the parameters for processing the audio.
-      InitialRecognizeRequest initial = InitialRecognizeRequest.newBuilder()
+      // Build and send a StreamingRecognizeRequest containing the parameters for 
+      // processing the audio.
+      RecognitionConfig config = RecognitionConfig.newBuilder()
           .setEncoding(AudioEncoding.LINEAR16)
           .setSampleRate(samplingRate)
+          .build();
+      StreamingRecognitionConfig streamingConfig = StreamingRecognitionConfig.newBuilder()
+          .setConfig(config)
           .setInterimResults(true)
+          .setSingleUtterance(true)
           .build();
-      RecognizeRequest firstRequest = RecognizeRequest.newBuilder()
-          .setInitialRequest(initial)
+
+      StreamingRecognizeRequest initial = StreamingRecognizeRequest.newBuilder()
+          .setStreamingConfig(streamingConfig)
           .build();
-      requestObserver.onNext(firstRequest);
+      requestObserver.onNext(initial);
 
       // Open audio file. Read and send sequential buffers of audio as additional RecognizeRequests.
       FileInputStream in = new FileInputStream(new File(file));
@@ -147,11 +156,8 @@ public class RecognizeClient {
       int totalBytes = 0;
       while ((bytesRead = in.read(buffer)) != -1) {
         totalBytes += bytesRead;
-        AudioRequest audio = AudioRequest.newBuilder()
-            .setContent(ByteString.copyFrom(buffer, 0, bytesRead))
-            .build();
-        RecognizeRequest request = RecognizeRequest.newBuilder()
-            .setAudioRequest(audio)
+        StreamingRecognizeRequest request = StreamingRecognizeRequest.newBuilder()
+            .setAudioContent(ByteString.copyFrom(buffer, 0, bytesRead))
             .build();
         requestObserver.onNext(request);
         // To simulate real-time audio, sleep after sending each audio buffer.
@@ -236,8 +242,8 @@ public class RecognizeClient {
       System.exit(1);
     }
 
-    RecognizeClient client =
-        new RecognizeClient(host, port, audioFile, sampling);
+    StreamingRecognizeClient client =
+        new StreamingRecognizeClient(host, port, audioFile, sampling);
     try {
       client.recognize();
     } finally {
