@@ -73,9 +73,9 @@ note that the audio file must be in RAW format.  You can use `sox`
 (available, e.g. via [http://sox.sourceforge.net/](http://sox.sourceforge.net/)
 or [homebrew](http://brew.sh/)) to convert audio files to raw format.
 
-### Run the non-streaming client
+### Run the sync client
 
-You can run the batch client like this:
+You can run the sync client like this:
 
 ```sh
 $ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
@@ -86,6 +86,21 @@ Try a streaming rate of 16000 and the included sample audio file, as follows:
 
 ```sh
 $ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
+--uri=resources/audio.raw --sampling=16000
+```
+
+### Run the async client
+
+You can run the async client like this:
+
+```sh
+bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
+--uri=<audio file uri> --sampling=<sample rate>
+```
+
+Try a streaming rate of 16000 and the included sample audio file, as follows:
+```sh
+$ bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
 --uri=resources/audio.raw --sampling=16000
 ```
 
