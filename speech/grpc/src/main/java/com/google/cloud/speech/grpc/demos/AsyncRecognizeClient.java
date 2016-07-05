@@ -26,6 +26,7 @@
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.speech.v1beta1.AsyncRecognizeResponse;
 import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
@@ -160,7 +161,13 @@ public class AsyncRecognizeClient {
       }
     }
 
-    logger.info("Received response: " + status.getResponse());
+    try {
+      AsyncRecognizeResponse asyncRes = status.getResponse().unpack(AsyncRecognizeResponse.class);
+
+      logger.info("Received response: " + asyncRes);
+    } catch(com.google.protobuf.InvalidProtocolBufferException ex) {
+      logger.log(Level.WARNING, "Unpack error, {0}",ex.getMessage());
+    }
   }
 
   public static void main(String[] args) throws Exception {
