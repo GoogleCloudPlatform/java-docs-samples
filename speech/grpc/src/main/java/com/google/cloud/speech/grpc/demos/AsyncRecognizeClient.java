@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-// Client that sends audio to Speech.AsyncRecognize via gRPC and returns transcription.
+// Client that sends audio to Speech.AsyncRecognize via gRPC and returns longrunning operation.
+// The results are received via the google.longrunning.Operations interface.
 //
 // Uses a service account for OAuth2 authentication, which you may obtain at
 // https://console.developers.google.com
@@ -26,14 +27,12 @@
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.speech.v1beta1.AsyncRecognizeRequest;
 import com.google.cloud.speech.v1beta1.AsyncRecognizeResponse;
 import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
 import com.google.cloud.speech.v1beta1.SpeechGrpc;
-import com.google.cloud.speech.v1beta1.AsyncRecognizeRequest;
-import com.google.cloud.speech.v1beta1.AsyncRecognizeResponse;
-import com.google.protobuf.TextFormat;
 
 import com.google.longrunning.GetOperationRequest;
 import com.google.longrunning.Operation;
@@ -79,7 +78,7 @@ public class AsyncRecognizeClient {
 
   private final ManagedChannel channel;
   private final SpeechGrpc.SpeechBlockingStub stub;
-  private final OperationsGrpc.OperationsBlockingStub op;
+  private final OperationsGrpc.OperationsBlockingStub statusStub;
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
@@ -98,7 +97,7 @@ public class AsyncRecognizeClient {
         .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
         .build();
     stub = SpeechGrpc.newBlockingStub(channel);
-    op = OperationsGrpc.newBlockingStub(channel);
+    statusStub = OperationsGrpc.newBlockingStub(channel);
 
     logger.info("Created stub for " + host + ":" + port);
   }
@@ -130,33 +129,36 @@ public class AsyncRecognizeClient {
         .setAudio(audio)
         .build();
 
-    Operation operation, status;
+    Operation operation;
+    Operation status;
     try {
       operation = stub.asyncRecognize(request);
 
       //Print the long running operation handle
       logger.log(Level.INFO, String.format("Operation handle: %s, URI: %s", operation.getName(),
-        input.toString()));
+            input.toString()));
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
     }
 
-    while(true) {
+    while (true) {
       try {
         logger.log(Level.INFO, "Waiting 2s for operation, {0} processing...", operation.getName());
         Thread.sleep(2000);
         GetOperationRequest operationReq = GetOperationRequest.newBuilder()
             .setName(operation.getName())
             .build();
-        status = op.getOperation(
+        status = statusStub.getOperation(
             GetOperationRequest.newBuilder()
                 .setName(operation.getName())
                 .build()
                 );
 
-        if(status.getDone()) break;
-      }catch(Exception ex) {
+        if (status.getDone()) {
+          break;
+        }
+      } catch (Exception ex) {
         logger.log(Level.WARNING, ex.getMessage());
       }
     }
@@ -165,7 +167,7 @@ public class AsyncRecognizeClient {
       AsyncRecognizeResponse asyncRes = status.getResponse().unpack(AsyncRecognizeResponse.class);
 
       logger.info("Received response: " + asyncRes);
-    } catch(com.google.protobuf.InvalidProtocolBufferException ex) {
+    } catch (com.google.protobuf.InvalidProtocolBufferException ex) {
       logger.log(Level.WARNING, "Unpack error, {0}",ex.getMessage());
     }
   }
