@@ -45,9 +45,9 @@ public class RecognitionAudioFactory {
   public static RecognitionAudio createRecognitionAudio(URI uri)
       throws IOException {
     if (uri.getScheme() == null) {
-        uri = new File(uri.toString()).toURI();
-        Path path = Paths.get(uri);
-        return audioFromBytes(Files.readAllBytes(path));
+      uri = new File(uri.toString()).toURI();
+      Path path = Paths.get(uri);
+      return audioFromBytes(Files.readAllBytes(path));
     } else if (uri.getScheme().equals(FILE_SCHEME)) {
       Path path = Paths.get(uri);
       return audioFromBytes(Files.readAllBytes(path));
