@@ -34,7 +34,9 @@ import com.google.cloud.speech.v1beta1.AsyncRecognizeRequest;
 import com.google.cloud.speech.v1beta1.AsyncRecognizeResponse;
 import com.google.protobuf.TextFormat;
 
-import google.longrunning.Operation;
+import com.google.longrunning.GetOperationRequest;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsGrpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
@@ -76,6 +78,7 @@ public class AsyncRecognizeClient {
 
   private final ManagedChannel channel;
   private final SpeechGrpc.SpeechBlockingStub stub;
+  private final OperationsGrpc.OperationsBlockingStub op;
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
@@ -94,6 +97,8 @@ public class AsyncRecognizeClient {
         .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
         .build();
     stub = SpeechGrpc.newBlockingStub(channel);
+    op = OperationsGrpc.newBlockingStub(channel);
+
     logger.info("Created stub for " + host + ":" + port);
   }
 
@@ -124,23 +129,38 @@ public class AsyncRecognizeClient {
         .setAudio(audio)
         .build();
 
-    Operation operation;
+    Operation operation, status;
     try {
       operation = stub.asyncRecognize(request);
 
       //Print the long running operation handle
-      System.out.println(operation);
+      logger.log(Level.INFO, String.format("Operation handle: %s, URI: %s", operation.getName(),
+        input.toString()));
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
     }
 
-    while(operation.hasDone()) {
-        System.out.println(operation);
-        //Sleep for 1 s
-        Thread.sleep(1000);
+    while(true) {
+      try {
+        logger.log(Level.INFO, "Waiting 2s for operation, {0} processing...", operation.getName());
+        Thread.sleep(2000);
+        GetOperationRequest operationReq = GetOperationRequest.newBuilder()
+            .setName(operation.getName())
+            .build();
+        status = op.getOperation(
+            GetOperationRequest.newBuilder()
+                .setName(operation.getName())
+                .build()
+                );
+
+        if(status.getDone()) break;
+      }catch(Exception ex) {
+        logger.log(Level.WARNING, ex.getMessage());
+      }
     }
-    //logger.info("Received response: " +  TextFormat.printToString(response));
+
+    logger.info("Received response: " + status.getResponse());
   }
 
   public static void main(String[] args) throws Exception {
