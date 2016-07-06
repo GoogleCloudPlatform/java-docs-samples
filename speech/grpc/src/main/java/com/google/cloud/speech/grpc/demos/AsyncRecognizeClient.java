@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-// Client sends streaming audio to Speech.Recognize via gRPC and returns streaming transcription.
+// Client that sends audio to Speech.AsyncRecognize via gRPC and returns longrunning operation.
+// The results are received via the google.longrunning.Operations interface.
 //
 // Uses a service account for OAuth2 authentication, which you may obtain at
 // https://console.developers.google.com
@@ -26,21 +27,22 @@
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.speech.v1.AudioRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest.AudioEncoding;
-import com.google.cloud.speech.v1.RecognizeRequest;
-import com.google.cloud.speech.v1.RecognizeResponse;
-import com.google.cloud.speech.v1.SpeechGrpc;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.TextFormat;
+import com.google.cloud.speech.v1beta1.AsyncRecognizeRequest;
+import com.google.cloud.speech.v1beta1.AsyncRecognizeResponse;
+import com.google.cloud.speech.v1beta1.RecognitionAudio;
+import com.google.cloud.speech.v1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1beta1.SpeechGrpc;
+
+import com.google.longrunning.GetOperationRequest;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsGrpc;
 
 import io.grpc.ManagedChannel;
-import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
-import io.grpc.stub.StreamObserver;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -49,44 +51,43 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Client that sends streaming audio to Speech.Recognize and returns streaming transcript.
+ * Client that sends audio to Speech.AsyncRecognize and returns transcript.
  */
-public class RecognizeClient {
-
-  private final String host;
-  private final int port;
-  private final String file;
-  private final int samplingRate;
+public class AsyncRecognizeClient {
 
   private static final Logger logger =
-        Logger.getLogger(RecognizeClient.class.getName());
-
-  private final ManagedChannel channel;
-
-  private final SpeechGrpc.SpeechStub stub;
+      Logger.getLogger(AsyncRecognizeClient.class.getName());
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
+  private final String host;
+  private final int port;
+  private final URI input;
+  private final int samplingRate;
+
+  private final ManagedChannel channel;
+  private final SpeechGrpc.SpeechBlockingStub stub;
+  private final OperationsGrpc.OperationsBlockingStub statusStub;
+
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public RecognizeClient(String host, int port, String file, int samplingRate) throws IOException {
+  public AsyncRecognizeClient(String host, int port, URI input, int samplingRate)
+      throws IOException {
     this.host = host;
     this.port = port;
-    this.file = file;
+    this.input = input;
     this.samplingRate = samplingRate;
 
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
@@ -95,80 +96,80 @@ public class RecognizeClient {
         .negotiationType(NegotiationType.TLS)
         .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
         .build();
-    stub = SpeechGrpc.newStub(channel);
+    stub = SpeechGrpc.newBlockingStub(channel);
+    statusStub = OperationsGrpc.newBlockingStub(channel);
+
     logger.info("Created stub for " + host + ":" + port);
+  }
+
+  private RecognitionAudio createRecognitionAudio() throws IOException {
+    return RecognitionAudioFactory.createRecognitionAudio(this.input);
   }
 
   public void shutdown() throws InterruptedException {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
 
-  /** Send streaming recognize requests to server. */
-  public void recognize() throws InterruptedException, IOException {
-    final CountDownLatch finishLatch = new CountDownLatch(1);
-    StreamObserver<RecognizeResponse> responseObserver = new StreamObserver<RecognizeResponse>() {
-      @Override
-      public void onNext(RecognizeResponse response) {
-        logger.info("Received response: " +  TextFormat.printToString(response));
-      }
-
-      @Override
-      public void onError(Throwable error) {
-        Status status = Status.fromThrowable(error);
-        logger.log(Level.WARNING, "recognize failed: {0}", status);
-        finishLatch.countDown();
-      }
-
-      @Override
-      public void onCompleted() {
-        logger.info("recognize completed.");
-        finishLatch.countDown();
-      }
-    };
-
-    StreamObserver<RecognizeRequest> requestObserver = stub.recognize(responseObserver);
+  /** Send an async-recognize request to server. */
+  public void recognize() {
+    RecognitionAudio audio;
     try {
-      // Build and send a RecognizeRequest containing the parameters for processing the audio.
-      InitialRecognizeRequest initial = InitialRecognizeRequest.newBuilder()
-          .setEncoding(AudioEncoding.LINEAR16)
-          .setSampleRate(samplingRate)
-          .setInterimResults(true)
-          .build();
-      RecognizeRequest firstRequest = RecognizeRequest.newBuilder()
-          .setInitialRequest(initial)
-          .build();
-      requestObserver.onNext(firstRequest);
-
-      // Open audio file. Read and send sequential buffers of audio as additional RecognizeRequests.
-      FileInputStream in = new FileInputStream(new File(file));
-      // For LINEAR16 at 16000 Hz sample rate, 3200 bytes corresponds to 100 milliseconds of audio.
-      byte[] buffer = new byte[3200];
-      int bytesRead;
-      int totalBytes = 0;
-      while ((bytesRead = in.read(buffer)) != -1) {
-        totalBytes += bytesRead;
-        AudioRequest audio = AudioRequest.newBuilder()
-            .setContent(ByteString.copyFrom(buffer, 0, bytesRead))
-            .build();
-        RecognizeRequest request = RecognizeRequest.newBuilder()
-            .setAudioRequest(audio)
-            .build();
-        requestObserver.onNext(request);
-        // To simulate real-time audio, sleep after sending each audio buffer.
-        // For 16000 Hz sample rate, sleep 100 milliseconds.
-        Thread.sleep(samplingRate / 160);
-      }
-      logger.info("Sent " + totalBytes + " bytes from audio file: " + file);
-    } catch (RuntimeException e) {
-      // Cancel RPC.
-      requestObserver.onError(e);
-      throw e;
+      audio = createRecognitionAudio();
+    } catch (IOException e) {
+      logger.log(Level.WARNING, "Failed to read audio uri input: " + input);
+      return;
     }
-    // Mark the end of requests.
-    requestObserver.onCompleted();
+    logger.info("Sending " + audio.getContent().size() + " bytes from audio uri input: " + input);
+    RecognitionConfig config = RecognitionConfig.newBuilder()
+        .setEncoding(AudioEncoding.LINEAR16)
+        .setSampleRate(samplingRate)
+        .build();
+    AsyncRecognizeRequest request = AsyncRecognizeRequest.newBuilder()
+        .setConfig(config)
+        .setAudio(audio)
+        .build();
 
-    // Receiving happens asynchronously.
-    finishLatch.await(1, TimeUnit.MINUTES);
+    Operation operation;
+    Operation status;
+    try {
+      operation = stub.asyncRecognize(request);
+
+      //Print the long running operation handle
+      logger.log(Level.INFO, String.format("Operation handle: %s, URI: %s", operation.getName(),
+            input.toString()));
+    } catch (StatusRuntimeException e) {
+      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+      return;
+    }
+
+    while (true) {
+      try {
+        logger.log(Level.INFO, "Waiting 2s for operation, {0} processing...", operation.getName());
+        Thread.sleep(2000);
+        GetOperationRequest operationReq = GetOperationRequest.newBuilder()
+            .setName(operation.getName())
+            .build();
+        status = statusStub.getOperation(
+            GetOperationRequest.newBuilder()
+                .setName(operation.getName())
+                .build()
+                );
+
+        if (status.getDone()) {
+          break;
+        }
+      } catch (Exception ex) {
+        logger.log(Level.WARNING, ex.getMessage());
+      }
+    }
+
+    try {
+      AsyncRecognizeResponse asyncRes = status.getResponse().unpack(AsyncRecognizeResponse.class);
+
+      logger.info("Received response: " + asyncRes);
+    } catch (com.google.protobuf.InvalidProtocolBufferException ex) {
+      logger.log(Level.WARNING, "Unpack error, {0}",ex.getMessage());
+    }
   }
 
   public static void main(String[] args) throws Exception {
@@ -181,8 +182,8 @@ public class RecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("file")
-        .withDescription("path to audio file")
+    options.addOption(OptionBuilder.withLongOpt("uri")
+        .withDescription("path to audio uri")
         .hasArg()
         .withArgName("FILE_PATH")
         .create());
@@ -204,10 +205,10 @@ public class RecognizeClient {
 
     try {
       CommandLine line = parser.parse(options, args);
-      if (line.hasOption("file")) {
-        audioFile = line.getOptionValue("file");
+      if (line.hasOption("uri")) {
+        audioFile = line.getOptionValue("uri");
       } else {
-        System.err.println("An Audio file must be specified (e.g. /foo/baz.raw).");
+        System.err.println("An Audio uri must be specified (e.g. file:///foo/baz.raw).");
         System.exit(1);
       }
 
@@ -236,8 +237,8 @@ public class RecognizeClient {
       System.exit(1);
     }
 
-    RecognizeClient client =
-        new RecognizeClient(host, port, audioFile, sampling);
+    AsyncRecognizeClient client =
+        new AsyncRecognizeClient(host, port, URI.create(audioFile), sampling);
     try {
       client.recognize();
     } finally {
