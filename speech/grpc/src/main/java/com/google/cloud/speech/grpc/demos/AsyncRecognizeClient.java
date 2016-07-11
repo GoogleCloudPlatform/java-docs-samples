@@ -94,10 +94,9 @@ public class AsyncRecognizeClient {
             .build();
 
     return channel;
+  }
 
-    }
-
-  /** 
+  /**
    * Sends a request to the speech API and returns an Operation handle.
    */
   public void recognize() {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;

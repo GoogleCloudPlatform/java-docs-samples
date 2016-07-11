@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -182,8 +181,7 @@ public class SyncRecognizeClient {
     }
 
     ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
-    SyncRecognizeClient client =
-        new SyncRecognizeClient(channel, URI.create(audioFile), sampling);
+    SyncRecognizeClient client = new SyncRecognizeClient(channel, URI.create(audioFile), sampling);
     try {
       client.recognize();
     } finally {
