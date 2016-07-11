@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.speech.grpc.demos;
+package com.google.cloud.speech;
 
 import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.protobuf.ByteString;
