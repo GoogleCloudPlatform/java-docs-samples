@@ -70,8 +70,6 @@ public class AsyncRecognizeClient {
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
-  private final String host;
-  private final int port;
   private final URI input;
   private final int samplingRate;
 
@@ -82,24 +80,14 @@ public class AsyncRecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public AsyncRecognizeClient(String host, int port, URI input, int samplingRate)
+  public AsyncRecognizeClient(ManagedChannel channel, URI input, int samplingRate)
       throws IOException {
-    this.host = host;
-    this.port = port;
     this.input = input;
     this.samplingRate = samplingRate;
+    this.channel = channel;
 
-    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-    creds = creds.createScoped(OAUTH2_SCOPES);
-    channel =
-        NettyChannelBuilder.forAddress(host, port)
-            .negotiationType(NegotiationType.TLS)
-            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-            .build();
     speechClient = SpeechGrpc.newBlockingStub(channel);
     statusClient = OperationsGrpc.newBlockingStub(channel);
-
-    logger.info("Created speech clientfor " + host + ":" + port);
   }
 
   public void shutdown() throws InterruptedException {
@@ -236,8 +224,16 @@ public class AsyncRecognizeClient {
       System.exit(1);
     }
 
+    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
+    creds = creds.createScoped(OAUTH2_SCOPES);
+    ManagedChannel channel =
+        NettyChannelBuilder.forAddress(host, port)
+            .negotiationType(NegotiationType.TLS)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+
     AsyncRecognizeClient client =
-        new AsyncRecognizeClient(host, port, URI.create(audioFile), sampling);
+        new AsyncRecognizeClient(channel, URI.create(audioFile), sampling);
     try {
       client.recognize();
     } finally {
