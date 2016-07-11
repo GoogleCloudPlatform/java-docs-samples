@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.speech.grpc.demos;
+package com.examples.cloud.speech;
 
 import static org.junit.Assert.assertEquals;
 
