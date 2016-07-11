@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-// Client that sends audio to Speech.AsyncRecognize via gRPC and returns longrunning operation.
-// The results are received via the google.longrunning.Operations interface.
-//
-// Uses a service account for OAuth2 authentication, which you may obtain at
-// https://console.developers.google.com
-// API Manager > Google Cloud Speech API > Enable
-// API Manager > Credentials > Create credentials > Service account key > New service account.
-//
-// Then set environment variable GOOGLE_APPLICATION_CREDENTIALS to the full path of that file.
-
 package com.google.cloud.speech.grpc.demos;
 
 import com.google.auth.oauth2.GoogleCredentials;
