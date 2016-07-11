@@ -8,4 +8,4 @@ This sample demonstrates how to deploy App Engine Cron Service to ping a servlet
     $ mvn gcloud:deploy
 
 ## Deploying cron job
-    $ gcloud preview app deploy cron.yaml
+    $ gcloud app deploy cron.yaml
