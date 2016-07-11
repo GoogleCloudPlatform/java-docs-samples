@@ -102,10 +102,6 @@ public class AsyncRecognizeClient {
     logger.info("Created stub for " + host + ":" + port);
   }
 
-  private RecognitionAudio createRecognitionAudio() throws IOException {
-    return RecognitionAudioFactory.createRecognitionAudio(this.input);
-  }
-
   public void shutdown() throws InterruptedException {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
@@ -114,7 +110,7 @@ public class AsyncRecognizeClient {
   public void recognize() {
     RecognitionAudio audio;
     try {
-      audio = createRecognitionAudio();
+      audio = RecognitionAudioFactory.createRecognitionAudio(this.input);
     } catch (IOException e) {
       logger.log(Level.WARNING, "Failed to read audio uri input: " + input);
       return;
