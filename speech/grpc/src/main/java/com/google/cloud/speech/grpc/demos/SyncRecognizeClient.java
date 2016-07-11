@@ -66,8 +66,6 @@ public class SyncRecognizeClient {
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
-  private final String host;
-  private final int port;
   private final URI input;
   private final int samplingRate;
 
@@ -77,22 +75,13 @@ public class SyncRecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public SyncRecognizeClient(String host, int port, URI input, int samplingRate)
+  public SyncRecognizeClient(ManagedChannel channel, URI input, int samplingRate)
       throws IOException {
-    this.host = host;
-    this.port = port;
     this.input = input;
     this.samplingRate = samplingRate;
+    this.channel = channel;
 
-    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-    creds = creds.createScoped(OAUTH2_SCOPES);
-    channel =
-        NettyChannelBuilder.forAddress(host, port)
-            .negotiationType(NegotiationType.TLS)
-            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-            .build();
     speechClient = SpeechGrpc.newBlockingStub(channel);
-    logger.info("Created speech client for " + host + ":" + port);
   }
 
   private RecognitionAudio createRecognitionAudio() throws IOException {
@@ -200,8 +189,9 @@ public class SyncRecognizeClient {
       System.exit(1);
     }
 
+    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
     SyncRecognizeClient client =
-        new SyncRecognizeClient(host, port, URI.create(audioFile), sampling);
+        new SyncRecognizeClient(channel, URI.create(audioFile), sampling);
     try {
       client.recognize();
     } finally {

@@ -94,6 +94,19 @@ public class AsyncRecognizeClient {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
 
+  public static ManagedChannel createChannel(String host, int port) throws IOException {
+    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
+    creds = creds.createScoped(OAUTH2_SCOPES);
+    ManagedChannel channel =
+        NettyChannelBuilder.forAddress(host, port)
+            .negotiationType(NegotiationType.TLS)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+
+    return channel;
+
+    }
+
   /** 
    * Sends a request to the speech API and returns an Operation handle.
    */
@@ -224,13 +237,7 @@ public class AsyncRecognizeClient {
       System.exit(1);
     }
 
-    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-    creds = creds.createScoped(OAUTH2_SCOPES);
-    ManagedChannel channel =
-        NettyChannelBuilder.forAddress(host, port)
-            .negotiationType(NegotiationType.TLS)
-            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-            .build();
+    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
 
     AsyncRecognizeClient client =
         new AsyncRecognizeClient(channel, URI.create(audioFile), sampling);

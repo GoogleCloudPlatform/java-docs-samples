@@ -65,8 +65,6 @@ import java.util.logging.Logger;
  */
 public class StreamingRecognizeClient {
 
-  private final String host;
-  private final int port;
   private final String file;
   private final int samplingRate;
 
@@ -82,22 +80,13 @@ public class StreamingRecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public StreamingRecognizeClient(String host, int port, String file, int samplingRate)
+  public StreamingRecognizeClient(ManagedChannel channel, String file, int samplingRate)
       throws IOException {
-    this.host = host;
-    this.port = port;
     this.file = file;
     this.samplingRate = samplingRate;
+    this.channel = channel;
 
-    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-    creds = creds.createScoped(OAUTH2_SCOPES);
-    channel =
-        NettyChannelBuilder.forAddress(host, port)
-            .negotiationType(NegotiationType.TLS)
-            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-            .build();
     speechClient = SpeechGrpc.newStub(channel);
-    logger.info("Created speech client for " + host + ":" + port);
   }
 
   public void shutdown() throws InterruptedException {
@@ -248,7 +237,8 @@ public class StreamingRecognizeClient {
       System.exit(1);
     }
 
-    StreamingRecognizeClient client = new StreamingRecognizeClient(host, port, audioFile, sampling);
+    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    StreamingRecognizeClient client = new StreamingRecognizeClient(channel, audioFile, sampling);
     try {
       client.recognize();
     } finally {
