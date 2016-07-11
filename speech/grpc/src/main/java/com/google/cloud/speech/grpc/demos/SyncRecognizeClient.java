@@ -61,8 +61,7 @@ import java.util.logging.Logger;
  */
 public class SyncRecognizeClient {
 
-  private static final Logger logger =
-      Logger.getLogger(SyncRecognizeClient.class.getName());
+  private static final Logger logger = Logger.getLogger(SyncRecognizeClient.class.getName());
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
@@ -73,7 +72,7 @@ public class SyncRecognizeClient {
   private final int samplingRate;
 
   private final ManagedChannel channel;
-  private final SpeechGrpc.SpeechBlockingStub blockingStub;
+  private final SpeechGrpc.SpeechBlockingStub speechClient;
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
@@ -87,12 +86,13 @@ public class SyncRecognizeClient {
 
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
     creds = creds.createScoped(OAUTH2_SCOPES);
-    channel = NettyChannelBuilder.forAddress(host, port)
-        .negotiationType(NegotiationType.TLS)
-        .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-        .build();
-    blockingStub = SpeechGrpc.newBlockingStub(channel);
-    logger.info("Created blockingStub for " + host + ":" + port);
+    channel =
+        NettyChannelBuilder.forAddress(host, port)
+            .negotiationType(NegotiationType.TLS)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+    speechClient = SpeechGrpc.newBlockingStub(channel);
+    logger.info("Created speech client for " + host + ":" + port);
   }
 
   private RecognitionAudio createRecognitionAudio() throws IOException {
@@ -113,23 +113,22 @@ public class SyncRecognizeClient {
       return;
     }
     logger.info("Sending " + audio.getContent().size() + " bytes from audio uri input: " + input);
-    RecognitionConfig config = RecognitionConfig.newBuilder()
-        .setEncoding(AudioEncoding.LINEAR16)
-        .setSampleRate(samplingRate)
-        .build();
-    SyncRecognizeRequest request = SyncRecognizeRequest.newBuilder()
-        .setConfig(config)
-        .setAudio(audio)
-        .build();
+    RecognitionConfig config =
+        RecognitionConfig.newBuilder()
+            .setEncoding(AudioEncoding.LINEAR16)
+            .setSampleRate(samplingRate)
+            .build();
+    SyncRecognizeRequest request =
+        SyncRecognizeRequest.newBuilder().setConfig(config).setAudio(audio).build();
 
     SyncRecognizeResponse response;
     try {
-      response = blockingStub.syncRecognize(request);
+      response = speechClient.syncRecognize(request);
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
     }
-    logger.info("Received response: " +  TextFormat.printToString(response));
+    logger.info("Received response: " + TextFormat.printToString(response));
   }
 
   public static void main(String[] args) throws Exception {
@@ -142,26 +141,30 @@ public class SyncRecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("uri")
-        .withDescription("path to audio uri")
-        .hasArg()
-        .withArgName("FILE_PATH")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("host")
-        .withDescription("endpoint for api, e.g. speech.googleapis.com")
-        .hasArg()
-        .withArgName("ENDPOINT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("port")
-        .withDescription("SSL port, usually 443")
-        .hasArg()
-        .withArgName("PORT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("sampling")
-        .withDescription("Sampling Rate, i.e. 16000")
-        .hasArg()
-        .withArgName("RATE")
-        .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("uri")
+            .withDescription("path to audio uri")
+            .hasArg()
+            .withArgName("FILE_PATH")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("host")
+            .withDescription("endpoint for api, e.g. speech.googleapis.com")
+            .hasArg()
+            .withArgName("ENDPOINT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("port")
+            .withDescription("SSL port, usually 443")
+            .hasArg()
+            .withArgName("PORT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("sampling")
+            .withDescription("Sampling Rate, i.e. 16000")
+            .hasArg()
+            .withArgName("RATE")
+            .create());
 
     try {
       CommandLine line = parser.parse(options, args);

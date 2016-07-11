@@ -65,8 +65,7 @@ import java.util.logging.Logger;
  */
 public class AsyncRecognizeClient {
 
-  private static final Logger logger =
-      Logger.getLogger(AsyncRecognizeClient.class.getName());
+  private static final Logger logger = Logger.getLogger(AsyncRecognizeClient.class.getName());
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
@@ -77,8 +76,8 @@ public class AsyncRecognizeClient {
   private final int samplingRate;
 
   private final ManagedChannel channel;
-  private final SpeechGrpc.SpeechBlockingStub stub;
-  private final OperationsGrpc.OperationsBlockingStub statusStub;
+  private final SpeechGrpc.SpeechBlockingStub speechClient;
+  private final OperationsGrpc.OperationsBlockingStub statusClient;
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
@@ -92,14 +91,15 @@ public class AsyncRecognizeClient {
 
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
     creds = creds.createScoped(OAUTH2_SCOPES);
-    channel = NettyChannelBuilder.forAddress(host, port)
-        .negotiationType(NegotiationType.TLS)
-        .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-        .build();
-    stub = SpeechGrpc.newBlockingStub(channel);
-    statusStub = OperationsGrpc.newBlockingStub(channel);
+    channel =
+        NettyChannelBuilder.forAddress(host, port)
+            .negotiationType(NegotiationType.TLS)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+    speechClient = SpeechGrpc.newBlockingStub(channel);
+    statusClient = OperationsGrpc.newBlockingStub(channel);
 
-    logger.info("Created stub for " + host + ":" + port);
+    logger.info("Created speech clientfor " + host + ":" + port);
   }
 
   public void shutdown() throws InterruptedException {
@@ -116,23 +116,23 @@ public class AsyncRecognizeClient {
       return;
     }
     logger.info("Sending " + audio.getContent().size() + " bytes from audio uri input: " + input);
-    RecognitionConfig config = RecognitionConfig.newBuilder()
-        .setEncoding(AudioEncoding.LINEAR16)
-        .setSampleRate(samplingRate)
-        .build();
-    AsyncRecognizeRequest request = AsyncRecognizeRequest.newBuilder()
-        .setConfig(config)
-        .setAudio(audio)
-        .build();
+    RecognitionConfig config =
+        RecognitionConfig.newBuilder()
+            .setEncoding(AudioEncoding.LINEAR16)
+            .setSampleRate(samplingRate)
+            .build();
+    AsyncRecognizeRequest request =
+        AsyncRecognizeRequest.newBuilder().setConfig(config).setAudio(audio).build();
 
     Operation operation;
     Operation status;
     try {
-      operation = stub.asyncRecognize(request);
+      operation = speechClient.asyncRecognize(request);
 
       //Print the long running operation handle
-      logger.log(Level.INFO, String.format("Operation handle: %s, URI: %s", operation.getName(),
-            input.toString()));
+      logger.log(
+          Level.INFO,
+          String.format("Operation handle: %s, URI: %s", operation.getName(), input.toString()));
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
@@ -142,14 +142,11 @@ public class AsyncRecognizeClient {
       try {
         logger.log(Level.INFO, "Waiting 2s for operation, {0} processing...", operation.getName());
         Thread.sleep(2000);
-        GetOperationRequest operationReq = GetOperationRequest.newBuilder()
-            .setName(operation.getName())
-            .build();
-        status = statusStub.getOperation(
-            GetOperationRequest.newBuilder()
-                .setName(operation.getName())
-                .build()
-                );
+        GetOperationRequest operationReq =
+            GetOperationRequest.newBuilder().setName(operation.getName()).build();
+        status =
+            statusClient.getOperation(
+                GetOperationRequest.newBuilder().setName(operation.getName()).build());
 
         if (status.getDone()) {
           break;
@@ -164,7 +161,7 @@ public class AsyncRecognizeClient {
 
       logger.info("Received response: " + asyncRes);
     } catch (com.google.protobuf.InvalidProtocolBufferException ex) {
-      logger.log(Level.WARNING, "Unpack error, {0}",ex.getMessage());
+      logger.log(Level.WARNING, "Unpack error, {0}", ex.getMessage());
     }
   }
 
@@ -178,26 +175,30 @@ public class AsyncRecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("uri")
-        .withDescription("path to audio uri")
-        .hasArg()
-        .withArgName("FILE_PATH")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("host")
-        .withDescription("endpoint for api, e.g. speech.googleapis.com")
-        .hasArg()
-        .withArgName("ENDPOINT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("port")
-        .withDescription("SSL port, usually 443")
-        .hasArg()
-        .withArgName("PORT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("sampling")
-        .withDescription("Sampling Rate, i.e. 16000")
-        .hasArg()
-        .withArgName("RATE")
-        .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("uri")
+            .withDescription("path to audio uri")
+            .hasArg()
+            .withArgName("FILE_PATH")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("host")
+            .withDescription("endpoint for api, e.g. speech.googleapis.com")
+            .hasArg()
+            .withArgName("ENDPOINT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("port")
+            .withDescription("SSL port, usually 443")
+            .hasArg()
+            .withArgName("PORT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("sampling")
+            .withDescription("Sampling Rate, i.e. 16000")
+            .hasArg()
+            .withArgName("RATE")
+            .create());
 
     try {
       CommandLine line = parser.parse(options, args);

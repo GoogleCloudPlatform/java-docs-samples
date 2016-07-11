@@ -70,12 +70,11 @@ public class StreamingRecognizeClient {
   private final String file;
   private final int samplingRate;
 
-  private static final Logger logger =
-        Logger.getLogger(StreamingRecognizeClient.class.getName());
+  private static final Logger logger = Logger.getLogger(StreamingRecognizeClient.class.getName());
 
   private final ManagedChannel channel;
 
-  private final SpeechGrpc.SpeechStub stub;
+  private final SpeechGrpc.SpeechStub speechClient;
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
@@ -83,7 +82,7 @@ public class StreamingRecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public StreamingRecognizeClient(String host, int port, String file, int samplingRate) 
+  public StreamingRecognizeClient(String host, int port, String file, int samplingRate)
       throws IOException {
     this.host = host;
     this.port = port;
@@ -92,12 +91,13 @@ public class StreamingRecognizeClient {
 
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
     creds = creds.createScoped(OAUTH2_SCOPES);
-    channel = NettyChannelBuilder.forAddress(host, port)
-        .negotiationType(NegotiationType.TLS)
-        .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-        .build();
-    stub = SpeechGrpc.newStub(channel);
-    logger.info("Created stub for " + host + ":" + port);
+    channel =
+        NettyChannelBuilder.forAddress(host, port)
+            .negotiationType(NegotiationType.TLS)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+    speechClient = SpeechGrpc.newStub(channel);
+    logger.info("Created speech client for " + host + ":" + port);
   }
 
   public void shutdown() throws InterruptedException {
@@ -107,45 +107,46 @@ public class StreamingRecognizeClient {
   /** Send streaming recognize requests to server. */
   public void recognize() throws InterruptedException, IOException {
     final CountDownLatch finishLatch = new CountDownLatch(1);
-    StreamObserver<StreamingRecognizeResponse> responseObserver = new 
-        StreamObserver<StreamingRecognizeResponse>() {
-      @Override
-      public void onNext(StreamingRecognizeResponse response) {
-        logger.info("Received response: " +  TextFormat.printToString(response));
-      }
+    StreamObserver<StreamingRecognizeResponse> responseObserver =
+        new StreamObserver<StreamingRecognizeResponse>() {
+          @Override
+          public void onNext(StreamingRecognizeResponse response) {
+            logger.info("Received response: " + TextFormat.printToString(response));
+          }
 
-      @Override
-      public void onError(Throwable error) {
-        Status status = Status.fromThrowable(error);
-        logger.log(Level.WARNING, "recognize failed: {0}", status);
-        finishLatch.countDown();
-      }
+          @Override
+          public void onError(Throwable error) {
+            Status status = Status.fromThrowable(error);
+            logger.log(Level.WARNING, "recognize failed: {0}", status);
+            finishLatch.countDown();
+          }
 
-      @Override
-      public void onCompleted() {
-        logger.info("recognize completed.");
-        finishLatch.countDown();
-      }
-    };
+          @Override
+          public void onCompleted() {
+            logger.info("recognize completed.");
+            finishLatch.countDown();
+          }
+        };
 
-    StreamObserver<StreamingRecognizeRequest> 
-        requestObserver = stub.streamingRecognize(responseObserver);
+    StreamObserver<StreamingRecognizeRequest> requestObserver =
+        speechClient.streamingRecognize(responseObserver);
     try {
-      // Build and send a StreamingRecognizeRequest containing the parameters for 
+      // Build and send a StreamingRecognizeRequest containing the parameters for
       // processing the audio.
-      RecognitionConfig config = RecognitionConfig.newBuilder()
-          .setEncoding(AudioEncoding.LINEAR16)
-          .setSampleRate(samplingRate)
-          .build();
-      StreamingRecognitionConfig streamingConfig = StreamingRecognitionConfig.newBuilder()
-          .setConfig(config)
-          .setInterimResults(true)
-          .setSingleUtterance(true)
-          .build();
+      RecognitionConfig config =
+          RecognitionConfig.newBuilder()
+              .setEncoding(AudioEncoding.LINEAR16)
+              .setSampleRate(samplingRate)
+              .build();
+      StreamingRecognitionConfig streamingConfig =
+          StreamingRecognitionConfig.newBuilder()
+              .setConfig(config)
+              .setInterimResults(true)
+              .setSingleUtterance(true)
+              .build();
 
-      StreamingRecognizeRequest initial = StreamingRecognizeRequest.newBuilder()
-          .setStreamingConfig(streamingConfig)
-          .build();
+      StreamingRecognizeRequest initial =
+          StreamingRecognizeRequest.newBuilder().setStreamingConfig(streamingConfig).build();
       requestObserver.onNext(initial);
 
       // Open audio file. Read and send sequential buffers of audio as additional RecognizeRequests.
@@ -156,9 +157,10 @@ public class StreamingRecognizeClient {
       int totalBytes = 0;
       while ((bytesRead = in.read(buffer)) != -1) {
         totalBytes += bytesRead;
-        StreamingRecognizeRequest request = StreamingRecognizeRequest.newBuilder()
-            .setAudioContent(ByteString.copyFrom(buffer, 0, bytesRead))
-            .build();
+        StreamingRecognizeRequest request =
+            StreamingRecognizeRequest.newBuilder()
+                .setAudioContent(ByteString.copyFrom(buffer, 0, bytesRead))
+                .build();
         requestObserver.onNext(request);
         // To simulate real-time audio, sleep after sending each audio buffer.
         // For 16000 Hz sample rate, sleep 100 milliseconds.
@@ -187,26 +189,30 @@ public class StreamingRecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("file")
-        .withDescription("path to audio file")
-        .hasArg()
-        .withArgName("FILE_PATH")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("host")
-        .withDescription("endpoint for api, e.g. speech.googleapis.com")
-        .hasArg()
-        .withArgName("ENDPOINT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("port")
-        .withDescription("SSL port, usually 443")
-        .hasArg()
-        .withArgName("PORT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("sampling")
-        .withDescription("Sampling Rate, i.e. 16000")
-        .hasArg()
-        .withArgName("RATE")
-        .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("file")
+            .withDescription("path to audio file")
+            .hasArg()
+            .withArgName("FILE_PATH")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("host")
+            .withDescription("endpoint for api, e.g. speech.googleapis.com")
+            .hasArg()
+            .withArgName("ENDPOINT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("port")
+            .withDescription("SSL port, usually 443")
+            .hasArg()
+            .withArgName("PORT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("sampling")
+            .withDescription("Sampling Rate, i.e. 16000")
+            .hasArg()
+            .withArgName("RATE")
+            .create());
 
     try {
       CommandLine line = parser.parse(options, args);
@@ -242,8 +248,7 @@ public class StreamingRecognizeClient {
       System.exit(1);
     }
 
-    StreamingRecognizeClient client =
-        new StreamingRecognizeClient(host, port, audioFile, sampling);
+    StreamingRecognizeClient client = new StreamingRecognizeClient(host, port, audioFile, sampling);
     try {
       client.recognize();
     } finally {
