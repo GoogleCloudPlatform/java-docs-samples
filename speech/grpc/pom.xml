@@ -25,6 +25,14 @@ limitations under the License.
   <url>https://cloud.google.com/speech/</url>
   <inceptionYear>2016</inceptionYear>
 
+  <!-- Parent defines plugins for checkstyle and unit testing. -->
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../../java-repo-tools</relativePath>
+  </parent>
+
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -37,13 +45,6 @@ limitations under the License.
     <name>Google</name>
     <url>http://www.google.com</url>
   </organization>
-
-  <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
-  </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
