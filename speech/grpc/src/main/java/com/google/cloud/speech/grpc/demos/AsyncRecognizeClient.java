@@ -106,7 +106,9 @@ public class AsyncRecognizeClient {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
 
-  /** Send an async-recognize request to server. */
+  /** 
+   * Sends a request to the speech API and returns an Operation handle.
+   */
   public void recognize() {
     RecognitionAudio audio;
     try {
@@ -129,7 +131,7 @@ public class AsyncRecognizeClient {
     try {
       operation = speechClient.asyncRecognize(request);
 
-      //Print the long running operation handle
+      // Print the long running operation handle
       logger.log(
           Level.INFO,
           String.format("Operation handle: %s, URI: %s", operation.getName(), input.toString()));
