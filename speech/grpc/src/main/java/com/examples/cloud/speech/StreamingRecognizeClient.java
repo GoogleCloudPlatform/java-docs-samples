@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.speech;
+package com.examples.cloud.speech;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
