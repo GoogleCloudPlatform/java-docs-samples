@@ -75,14 +75,7 @@ or [homebrew](http://brew.sh/)) to convert audio files to raw format.
 
 ### Run the sync client
 
-You can run the sync client like this:
-
-```sh
-$ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
---uri=<audio file uri> --sampling=<sample rate>
-```
-
-Try a streaming rate of 16000 and the included sample audio file, as follows:
+To use the sync method to transcribe a 16,000Hz sample audio file, run the following:
 
 ```sh
 $ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
@@ -91,14 +84,8 @@ $ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
 
 ### Run the async client
 
-You can run the async client like this:
+To use the async method to transcribe a 16,000Hz sample audio file, run the following:
 
-```sh
-bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
---uri=<audio file uri> --sampling=<sample rate>
-```
-
-Try a streaming rate of 16000 and the included sample audio file, as follows:
 ```sh
 $ bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
 --uri=resources/audio.raw --sampling=16000
@@ -106,7 +93,7 @@ $ bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
 
 ### Run the streaming client
 
-You can run the streaming client as follows:
+To use the streaming method to transcribe a 16,000Hz sample audio file, run the following:
 
 ```sh
 $ bin/speech-sample-streaming.sh --host=speech.googleapis.com --port=443 \
