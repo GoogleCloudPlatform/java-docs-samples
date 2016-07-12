@@ -1,8 +1,8 @@
 # Cloud Speech API gRPC samples for Java
 
 This is a sample repo for accessing the [Google Cloud Speech API](http://cloud.google.com/speech) with
-[gRPC](http://www.grpc.io/) client library.
-
+[gRPC](http://www.grpc.io/) client library. Note that these samples are for `advanced users` and is in
+BETA. Please see [Google Cloud Platform Launch Stages](https://cloud.google.com/terms/launch-stages).
 
 ## Prerequisites
 
