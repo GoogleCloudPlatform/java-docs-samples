@@ -14,32 +14,19 @@
  * limitations under the License.
  */
 
-// Client sends streaming audio to Speech.Recognize via gRPC and returns streaming transcription.
-//
-// Uses a service account for OAuth2 authentication, which you may obtain at
-// https://console.developers.google.com
-// API Manager > Google Cloud Speech API > Enable
-// API Manager > Credentials > Create credentials > Service account key > New service account.
-//
-// Then set environment variable GOOGLE_APPLICATION_CREDENTIALS to the full path of that file.
+package com.examples.cloud.speech;
 
-package com.google.cloud.speech.grpc.demos;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.speech.v1.AudioRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest.AudioEncoding;
-import com.google.cloud.speech.v1.RecognizeRequest;
-import com.google.cloud.speech.v1.RecognizeResponse;
-import com.google.cloud.speech.v1.SpeechGrpc;
+import com.google.cloud.speech.v1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1beta1.SpeechGrpc;
+import com.google.cloud.speech.v1beta1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1beta1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1beta1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
-import io.grpc.auth.ClientAuthInterceptor;
-import io.grpc.netty.NegotiationType;
-import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
 import org.apache.commons.cli.CommandLine;
@@ -55,7 +42,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,19 +49,16 @@ import java.util.logging.Logger;
 /**
  * Client that sends streaming audio to Speech.Recognize and returns streaming transcript.
  */
-public class RecognizeClient {
+public class StreamingRecognizeClient {
 
-  private final String host;
-  private final int port;
   private final String file;
   private final int samplingRate;
 
-  private static final Logger logger =
-        Logger.getLogger(RecognizeClient.class.getName());
+  private static final Logger logger = Logger.getLogger(StreamingRecognizeClient.class.getName());
 
   private final ManagedChannel channel;
 
-  private final SpeechGrpc.SpeechStub stub;
+  private final SpeechGrpc.SpeechStub speechClient;
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
@@ -83,20 +66,13 @@ public class RecognizeClient {
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public RecognizeClient(String host, int port, String file, int samplingRate) throws IOException {
-    this.host = host;
-    this.port = port;
+  public StreamingRecognizeClient(ManagedChannel channel, String file, int samplingRate)
+      throws IOException {
     this.file = file;
     this.samplingRate = samplingRate;
+    this.channel = channel;
 
-    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-    creds = creds.createScoped(OAUTH2_SCOPES);
-    channel = NettyChannelBuilder.forAddress(host, port)
-        .negotiationType(NegotiationType.TLS)
-        .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-        .build();
-    stub = SpeechGrpc.newStub(channel);
-    logger.info("Created stub for " + host + ":" + port);
+    speechClient = SpeechGrpc.newStub(channel);
   }
 
   public void shutdown() throws InterruptedException {
@@ -106,38 +82,47 @@ public class RecognizeClient {
   /** Send streaming recognize requests to server. */
   public void recognize() throws InterruptedException, IOException {
     final CountDownLatch finishLatch = new CountDownLatch(1);
-    StreamObserver<RecognizeResponse> responseObserver = new StreamObserver<RecognizeResponse>() {
-      @Override
-      public void onNext(RecognizeResponse response) {
-        logger.info("Received response: " +  TextFormat.printToString(response));
-      }
+    StreamObserver<StreamingRecognizeResponse> responseObserver =
+        new StreamObserver<StreamingRecognizeResponse>() {
+          @Override
+          public void onNext(StreamingRecognizeResponse response) {
+            logger.info("Received response: " + TextFormat.printToString(response));
+          }
 
-      @Override
-      public void onError(Throwable error) {
-        Status status = Status.fromThrowable(error);
-        logger.log(Level.WARNING, "recognize failed: {0}", status);
-        finishLatch.countDown();
-      }
+          @Override
+          public void onError(Throwable error) {
+            Status status = Status.fromThrowable(error);
+            logger.log(Level.WARNING, "recognize failed: {0}", status);
+            finishLatch.countDown();
+          }
 
-      @Override
-      public void onCompleted() {
-        logger.info("recognize completed.");
-        finishLatch.countDown();
-      }
-    };
+          @Override
+          public void onCompleted() {
+            logger.info("recognize completed.");
+            finishLatch.countDown();
+          }
+        };
 
-    StreamObserver<RecognizeRequest> requestObserver = stub.recognize(responseObserver);
+    StreamObserver<StreamingRecognizeRequest> requestObserver =
+        speechClient.streamingRecognize(responseObserver);
     try {
-      // Build and send a RecognizeRequest containing the parameters for processing the audio.
-      InitialRecognizeRequest initial = InitialRecognizeRequest.newBuilder()
-          .setEncoding(AudioEncoding.LINEAR16)
-          .setSampleRate(samplingRate)
-          .setInterimResults(true)
-          .build();
-      RecognizeRequest firstRequest = RecognizeRequest.newBuilder()
-          .setInitialRequest(initial)
-          .build();
-      requestObserver.onNext(firstRequest);
+      // Build and send a StreamingRecognizeRequest containing the parameters for
+      // processing the audio.
+      RecognitionConfig config =
+          RecognitionConfig.newBuilder()
+              .setEncoding(AudioEncoding.LINEAR16)
+              .setSampleRate(samplingRate)
+              .build();
+      StreamingRecognitionConfig streamingConfig =
+          StreamingRecognitionConfig.newBuilder()
+              .setConfig(config)
+              .setInterimResults(true)
+              .setSingleUtterance(true)
+              .build();
+
+      StreamingRecognizeRequest initial =
+          StreamingRecognizeRequest.newBuilder().setStreamingConfig(streamingConfig).build();
+      requestObserver.onNext(initial);
 
       // Open audio file. Read and send sequential buffers of audio as additional RecognizeRequests.
       FileInputStream in = new FileInputStream(new File(file));
@@ -147,12 +132,10 @@ public class RecognizeClient {
       int totalBytes = 0;
       while ((bytesRead = in.read(buffer)) != -1) {
         totalBytes += bytesRead;
-        AudioRequest audio = AudioRequest.newBuilder()
-            .setContent(ByteString.copyFrom(buffer, 0, bytesRead))
-            .build();
-        RecognizeRequest request = RecognizeRequest.newBuilder()
-            .setAudioRequest(audio)
-            .build();
+        StreamingRecognizeRequest request =
+            StreamingRecognizeRequest.newBuilder()
+                .setAudioContent(ByteString.copyFrom(buffer, 0, bytesRead))
+                .build();
         requestObserver.onNext(request);
         // To simulate real-time audio, sleep after sending each audio buffer.
         // For 16000 Hz sample rate, sleep 100 milliseconds.
@@ -181,26 +164,30 @@ public class RecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("file")
-        .withDescription("path to audio file")
-        .hasArg()
-        .withArgName("FILE_PATH")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("host")
-        .withDescription("endpoint for api, e.g. speech.googleapis.com")
-        .hasArg()
-        .withArgName("ENDPOINT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("port")
-        .withDescription("SSL port, usually 443")
-        .hasArg()
-        .withArgName("PORT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("sampling")
-        .withDescription("Sampling Rate, i.e. 16000")
-        .hasArg()
-        .withArgName("RATE")
-        .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("file")
+            .withDescription("path to audio file")
+            .hasArg()
+            .withArgName("FILE_PATH")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("host")
+            .withDescription("endpoint for api, e.g. speech.googleapis.com")
+            .hasArg()
+            .withArgName("ENDPOINT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("port")
+            .withDescription("SSL port, usually 443")
+            .hasArg()
+            .withArgName("PORT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("sampling")
+            .withDescription("Sampling Rate, i.e. 16000")
+            .hasArg()
+            .withArgName("RATE")
+            .create());
 
     try {
       CommandLine line = parser.parse(options, args);
@@ -236,8 +223,8 @@ public class RecognizeClient {
       System.exit(1);
     }
 
-    RecognizeClient client =
-        new RecognizeClient(host, port, audioFile, sampling);
+    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    StreamingRecognizeClient client = new StreamingRecognizeClient(channel, audioFile, sampling);
     try {
       client.recognize();
     } finally {

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+package com.examples.cloud.speech;
 
-package com.google.cloud.speech.grpc.demos;
-
-import com.google.cloud.speech.v1.AudioRequest;
+import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.protobuf.ByteString;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -27,40 +27,41 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /*
- * AudioRequestFactory takes a URI as an input and creates an AudioRequest. The URI can point to a
- * local file or a file on Google Cloud Storage.
+ * RecognitionAudioFactory takes a URI as an input and creates a RecognitionAudio.
+ * The URI can point to a local file or a file on Google Cloud Storage.
  */
-public class AudioRequestFactory {
+public class RecognitionAudioFactory {
 
   private static final String FILE_SCHEME = "file";
-  private static final String GS_SCHEME   = "gs";
+  private static final String GS_SCHEME = "gs";
 
   /**
    * Takes an input URI of form $scheme:// and converts to audio request.
    *
    * @param uri input uri
-   * @return AudioRequest audio request
+   * @return RecognitionAudio recognition audio
    */
-  public static AudioRequest createRequest(URI uri)
-      throws IOException {
-    if (uri.getScheme() == null || uri.getScheme().equals(FILE_SCHEME)) {
+  public static RecognitionAudio createRecognitionAudio(URI uri) throws IOException {
+    if (uri.getScheme() == null) {
+      uri = new File(uri.toString()).toURI();
+      Path path = Paths.get(uri);
+      return audioFromBytes(Files.readAllBytes(path));
+    } else if (uri.getScheme().equals(FILE_SCHEME)) {
       Path path = Paths.get(uri);
       return audioFromBytes(Files.readAllBytes(path));
     } else if (uri.getScheme().equals(GS_SCHEME)) {
-      return AudioRequest.newBuilder().setUri(uri.toString()).build();
+      return RecognitionAudio.newBuilder().setUri(uri.toString()).build();
     }
     throw new RuntimeException("scheme not supported " + uri.getScheme());
   }
 
   /**
-   * Convert bytes to AudioRequest.
+   * Convert bytes to RecognitionAudio.
    *
    * @param bytes input bytes
-   * @return AudioRequest audio request
+   * @return RecognitionAudio recognition audio
    */
-  private static AudioRequest audioFromBytes(byte[] bytes) {
-    return AudioRequest.newBuilder()
-        .setContent(ByteString.copyFrom(bytes))
-        .build();
+  private static RecognitionAudio audioFromBytes(byte[] bytes) {
+    return RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(bytes)).build();
   }
 }

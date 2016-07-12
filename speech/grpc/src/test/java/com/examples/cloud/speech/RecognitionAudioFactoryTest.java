@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.cloud.speech.grpc.demos;
+package com.examples.cloud.speech;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.cloud.speech.v1.AudioRequest;
+import com.google.cloud.speech.v1beta1.RecognitionAudio;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,15 +29,15 @@ import java.io.IOException;
 import java.net.URI;
 
 /**
- * Unit tests for {@link AudioRequestFactory}.
+ * Unit tests for {@link RecognitionAudioFactory}.
  */
 @RunWith(JUnit4.class)
-public class AudioRequestFactoryTest {
+public class RecognitionAudioFactoryTest {
 
   @Test
   public void verifyBytesInSizeFromLocalFile() throws IOException {
     URI uri = new File("resources/audio.raw").toURI();
-    AudioRequest audio = AudioRequestFactory.createRequest(uri);
+    RecognitionAudio audio = RecognitionAudioFactory.createRecognitionAudio(uri);
 
     int numBytes = audio.getContent().toByteArray().length;
 
@@ -50,7 +50,7 @@ public class AudioRequestFactoryTest {
     String audioUri = "gs://cloud-samples-tests/speech/audio.raw";
 
     URI uri = URI.create(audioUri);
-    AudioRequest audio = AudioRequestFactory.createRequest(uri);
+    RecognitionAudio audio = RecognitionAudioFactory.createRecognitionAudio(uri);
 
     int numBytes = audio.getContent().toByteArray().length;
 

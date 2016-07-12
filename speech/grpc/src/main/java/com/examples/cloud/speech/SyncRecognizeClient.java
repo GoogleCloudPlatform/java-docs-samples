@@ -14,31 +14,18 @@
  * limitations under the License.
  */
 
-// Client that sends audio to Speech.NonStreamingRecognize via gRPC and returns transcription.
-//
-// Uses a service account for OAuth2 authentication, which you may obtain at
-// https://console.developers.google.com
-// API Manager > Google Cloud Speech API > Enable
-// API Manager > Credentials > Create credentials > Service account key > New service account.
-//
-// Then set environment variable GOOGLE_APPLICATION_CREDENTIALS to the full path of that file.
+package com.examples.cloud.speech;
 
-package com.google.cloud.speech.grpc.demos;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.speech.v1.AudioRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest;
-import com.google.cloud.speech.v1.InitialRecognizeRequest.AudioEncoding;
-import com.google.cloud.speech.v1.NonStreamingRecognizeResponse;
-import com.google.cloud.speech.v1.RecognizeRequest;
-import com.google.cloud.speech.v1.SpeechGrpc;
+import com.google.cloud.speech.v1beta1.RecognitionAudio;
+import com.google.cloud.speech.v1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1beta1.SpeechGrpc;
+import com.google.cloud.speech.v1beta1.SyncRecognizeRequest;
+import com.google.cloud.speech.v1beta1.SyncRecognizeResponse;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
-import io.grpc.auth.ClientAuthInterceptor;
-import io.grpc.netty.NegotiationType;
-import io.grpc.netty.NettyChannelBuilder;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -51,52 +38,40 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Client that sends audio to Speech.NonStreamingRecognize and returns transcript.
+ * Client that sends audio to Speech.SyncRecognize and returns transcript.
  */
-public class NonStreamingRecognizeClient {
+public class SyncRecognizeClient {
 
-  private static final Logger logger =
-      Logger.getLogger(NonStreamingRecognizeClient.class.getName());
+  private static final Logger logger = Logger.getLogger(SyncRecognizeClient.class.getName());
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
-  private final String host;
-  private final int port;
   private final URI input;
   private final int samplingRate;
 
   private final ManagedChannel channel;
-  private final SpeechGrpc.SpeechBlockingStub blockingStub;
+  private final SpeechGrpc.SpeechBlockingStub speechClient;
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
    */
-  public NonStreamingRecognizeClient(String host, int port, URI input, int samplingRate)
+  public SyncRecognizeClient(ManagedChannel channel, URI input, int samplingRate)
       throws IOException {
-    this.host = host;
-    this.port = port;
     this.input = input;
     this.samplingRate = samplingRate;
+    this.channel = channel;
 
-    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
-    creds = creds.createScoped(OAUTH2_SCOPES);
-    channel = NettyChannelBuilder.forAddress(host, port)
-        .negotiationType(NegotiationType.TLS)
-        .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
-        .build();
-    blockingStub = SpeechGrpc.newBlockingStub(channel);
-    logger.info("Created blockingStub for " + host + ":" + port);
+    speechClient = SpeechGrpc.newBlockingStub(channel);
   }
 
-  private AudioRequest createAudioRequest() throws IOException {
-    return AudioRequestFactory.createRequest(this.input);
+  private RecognitionAudio createRecognitionAudio() throws IOException {
+    return RecognitionAudioFactory.createRecognitionAudio(this.input);
   }
 
   public void shutdown() throws InterruptedException {
@@ -105,30 +80,30 @@ public class NonStreamingRecognizeClient {
 
   /** Send a non-streaming-recognize request to server. */
   public void recognize() {
-    AudioRequest audio;
+    RecognitionAudio audio;
     try {
-      audio = createAudioRequest();
+      audio = createRecognitionAudio();
     } catch (IOException e) {
       logger.log(Level.WARNING, "Failed to read audio uri input: " + input);
       return;
     }
     logger.info("Sending " + audio.getContent().size() + " bytes from audio uri input: " + input);
-    InitialRecognizeRequest initial = InitialRecognizeRequest.newBuilder()
-        .setEncoding(AudioEncoding.LINEAR16)
-        .setSampleRate(samplingRate)
-        .build();
-    RecognizeRequest request = RecognizeRequest.newBuilder()
-        .setInitialRequest(initial)
-        .setAudioRequest(audio)
-        .build();
-    NonStreamingRecognizeResponse response;
+    RecognitionConfig config =
+        RecognitionConfig.newBuilder()
+            .setEncoding(AudioEncoding.LINEAR16)
+            .setSampleRate(samplingRate)
+            .build();
+    SyncRecognizeRequest request =
+        SyncRecognizeRequest.newBuilder().setConfig(config).setAudio(audio).build();
+
+    SyncRecognizeResponse response;
     try {
-      response = blockingStub.nonStreamingRecognize(request);
+      response = speechClient.syncRecognize(request);
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
     }
-    logger.info("Received response: " +  TextFormat.printToString(response));
+    logger.info("Received response: " + TextFormat.printToString(response));
   }
 
   public static void main(String[] args) throws Exception {
@@ -141,26 +116,30 @@ public class NonStreamingRecognizeClient {
     CommandLineParser parser = new DefaultParser();
 
     Options options = new Options();
-    options.addOption(OptionBuilder.withLongOpt("uri")
-        .withDescription("path to audio uri")
-        .hasArg()
-        .withArgName("FILE_PATH")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("host")
-        .withDescription("endpoint for api, e.g. speech.googleapis.com")
-        .hasArg()
-        .withArgName("ENDPOINT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("port")
-        .withDescription("SSL port, usually 443")
-        .hasArg()
-        .withArgName("PORT")
-        .create());
-    options.addOption(OptionBuilder.withLongOpt("sampling")
-        .withDescription("Sampling Rate, i.e. 16000")
-        .hasArg()
-        .withArgName("RATE")
-        .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("uri")
+            .withDescription("path to audio uri")
+            .hasArg()
+            .withArgName("FILE_PATH")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("host")
+            .withDescription("endpoint for api, e.g. speech.googleapis.com")
+            .hasArg()
+            .withArgName("ENDPOINT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("port")
+            .withDescription("SSL port, usually 443")
+            .hasArg()
+            .withArgName("PORT")
+            .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("sampling")
+            .withDescription("Sampling Rate, i.e. 16000")
+            .hasArg()
+            .withArgName("RATE")
+            .create());
 
     try {
       CommandLine line = parser.parse(options, args);
@@ -196,8 +175,8 @@ public class NonStreamingRecognizeClient {
       System.exit(1);
     }
 
-    NonStreamingRecognizeClient client =
-        new NonStreamingRecognizeClient(host, port, URI.create(audioFile), sampling);
+    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    SyncRecognizeClient client = new SyncRecognizeClient(channel, URI.create(audioFile), sampling);
     try {
       client.recognize();
     } finally {

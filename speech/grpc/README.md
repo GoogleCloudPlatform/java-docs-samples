@@ -1,8 +1,8 @@
 # Cloud Speech API gRPC samples for Java
 
 This is a sample repo for accessing the [Google Cloud Speech API](http://cloud.google.com/speech) with
-[gRPC](http://www.grpc.io/) client library.
-
+[gRPC](http://www.grpc.io/) client library. Note that these samples are for `advanced users` and is in
+BETA. Please see [Google Cloud Platform Launch Stages](https://cloud.google.com/terms/launch-stages).
 
 ## Prerequisites
 
@@ -73,20 +73,35 @@ note that the audio file must be in RAW format.  You can use `sox`
 (available, e.g. via [http://sox.sourceforge.net/](http://sox.sourceforge.net/)
 or [homebrew](http://brew.sh/)) to convert audio files to raw format.
 
-### Run the non-streaming client
+### Run the sync client
 
-You can run the batch client like this:
+You can run the sync client like this:
 
 ```sh
-$ bin/speech-sample-nonstreaming.sh --host=speech.googleapis.com --port=443 \
---file=<audio file path> --sampling=<sample rate>
+$ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
+--uri=<audio file uri> --sampling=<sample rate>
 ```
 
 Try a streaming rate of 16000 and the included sample audio file, as follows:
 
 ```sh
-$ bin/speech-sample-nonstreaming.sh --host=speech.googleapis.com --port=443 \
---file=resources/audio.raw --sampling=16000
+$ bin/speech-sample-sync.sh --host=speech.googleapis.com --port=443 \
+--uri=resources/audio.raw --sampling=16000
+```
+
+### Run the async client
+
+You can run the async client like this:
+
+```sh
+bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
+--uri=<audio file uri> --sampling=<sample rate>
+```
+
+Try a streaming rate of 16000 and the included sample audio file, as follows:
+```sh
+$ bin/speech-sample-async.sh --host=speech.googleapis.com --port=443 \
+--uri=resources/audio.raw --sampling=16000
 ```
 
 ### Run the streaming client
