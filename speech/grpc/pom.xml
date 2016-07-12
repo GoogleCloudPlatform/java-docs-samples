@@ -196,6 +196,7 @@ limitations under the License.
           -->
           <protocArtifact>com.google.protobuf:protoc:3.0.0-beta-2:exe:${os.detected.classifier}</protocArtifact>
           <pluginId>grpc-java</pluginId>
+          <protoSourceRoot>${basedir}/src/main/java/third_party</protoSourceRoot>
           <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.13.2:exe:${os.detected.classifier}</pluginArtifact>
         </configuration>
         <executions>
