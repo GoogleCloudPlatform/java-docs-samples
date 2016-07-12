@@ -25,7 +25,7 @@ Copyright 2016 Google Inc. All Rights Reserved.
     <dependency>
       <groupId>org.fluentd</groupId>
       <artifactId>fluent-logger</artifactId>
-      <version>0.2.7</version>
+      <version>0.3.2</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

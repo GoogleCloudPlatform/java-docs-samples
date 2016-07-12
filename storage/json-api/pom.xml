@@ -39,12 +39,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev65-1.21.0</version>
+      <version>v1-rev78-1.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.oauth-client</groupId>
       <artifactId>google-oauth-client-jetty</artifactId>
-      <version>1.21.0</version>
+      <version>1.22.0</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
