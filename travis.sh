@@ -17,9 +17,10 @@ set -e
 set -x
 # Set pipefail so that `egrep` does not eat the exit code.
 set -o pipefail
+shopt -s globstar
 
 SKIP_TESTS=false
-if [ -z "$GOOGLE_APPLICATION_CREDENTIALS"]; then
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
   SKIP_TESTS=true
 fi
 mvn --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
@@ -32,7 +33,10 @@ devserver_tests=(
     appengine/datastore/indexes-exploding
     appengine/datastore/indexes-perfect
 )
-for testdir in ${devserver_tests[@]} ; do
+for testdir in "${devserver_tests[@]}" ; do
   ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
 done
 
+# Check that all shell scripts in this repo (including this one) pass the
+# Shell Check linter.
+shellcheck ./**/*.sh

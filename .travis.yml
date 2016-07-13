@@ -17,8 +17,13 @@ jdk:
 - oraclejdk8
 addons:
   apt:
+    sources:
+    # Grab shellcheck from the Debian repo.
+    # https://github.com/koalaman/shellcheck/wiki/TravisCI
+    - debian-sid
     packages:
     - expect
+    - shellcheck
 before_install:
 - openssl aes-256-cbc -K $encrypted_d17a6ce39290_key -iv $encrypted_d17a6ce39290_iv
   -in gae-firebase-secrets.json.enc -out appengine/firebase-event-proxy/gae-firebase-event-proxy/src/main/webapp/gae-firebase-secrets.json
