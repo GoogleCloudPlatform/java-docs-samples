@@ -131,12 +131,12 @@ limitations under the License.
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-all</artifactId>
-      <version>0.13.2</version>
+      <version>0.15.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.oauth-client</groupId>
       <artifactId>google-oauth-client</artifactId>
-      <version>1.21.0</version>
+      <version>1.22.0</version>
     </dependency>
     <dependency>
       <!--
@@ -149,7 +149,7 @@ limitations under the License.
       -->
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork14</version>
+      <version>1.1.33.Fork18</version>
       <classifier>${tcnative.classifier}</classifier>
     </dependency>
   </dependencies>
