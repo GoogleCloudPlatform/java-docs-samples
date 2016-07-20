@@ -105,6 +105,7 @@
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
         <module>taskqueue/deferred</module>
+        <module>language/analysis</module>
         <module>unittests</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>
