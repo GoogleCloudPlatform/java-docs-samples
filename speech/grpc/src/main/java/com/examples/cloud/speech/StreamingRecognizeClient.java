@@ -138,8 +138,8 @@ public class StreamingRecognizeClient {
                 .build();
         requestObserver.onNext(request);
         // To simulate real-time audio, sleep after sending each audio buffer.
-        // For 16000 Hz sample rate, sleep 100 milliseconds.
-        Thread.sleep(samplingRate / 160);
+        // Sleep 100ms
+        Thread.sleep(100);
       }
       logger.info("Sent " + totalBytes + " bytes from audio file: " + file);
     } catch (RuntimeException e) {
