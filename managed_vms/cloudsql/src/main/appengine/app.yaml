@@ -22,6 +22,5 @@ handlers:
 
 # [START env_variables]
 env_variables:
-  SQL_REMOTE_URL: jdbc:mysql://google/YOUR-DB-NAME?cloudSqlInstance=YOUR-INSTANCE-NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=USERNAME&password=PASSWORD
-  SQL_LOCAL_URL: jdbc:mysql://localhost/YOUR-DB-NAME?user=YOUR-USERNAME&password=PASSWORD&useSSL=false
+  SQL_URL: jdbc:mysql://google/YOUR-DB-NAME?cloudSqlInstance=YOUR-INSTANCE-NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=USERNAME&password=PASSWORD
 # [END env_variables]
