@@ -24,6 +24,8 @@ Before you can run or deploy the sample, you will need to do the following:
 1. Set the connection string environment variable in src/main/appengine/app.yaml
 
 ## Running locally
+    Export local variables
+    $ export SQL_URL="jdbc:mysql://google/YOUR-DB-NAME?cloudSqlInstance=YOUR-INSTANCE-NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=USERNAME&password=PASSWORD"
     $ mvn clean jetty:run
 
 ## Deploying

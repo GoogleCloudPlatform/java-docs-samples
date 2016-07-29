@@ -65,12 +65,7 @@ public class CloudSqlServlet extends HttpServlet {
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");
     // Detect if running remotely or locally and select correct connection url
-    String url;
-    if (System.getenv().containsKey("GAE_MODULE_INSTANCE")) {
-      url = System.getenv("SQL_REMOTE_URL");
-    } else {
-      url = System.getenv("SQL_LOCAL_URL");
-    }
+    String url = System.getenv("SQL_URL");
 
     try (Connection conn = DriverManager.getConnection(url);
         PreparedStatement statementCreateVisit = conn.prepareStatement(createVisitSql)) {
