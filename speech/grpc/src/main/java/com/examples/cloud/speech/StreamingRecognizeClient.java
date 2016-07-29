@@ -61,6 +61,7 @@ public class StreamingRecognizeClient {
   private final SpeechGrpc.SpeechStub speechClient;
 
   private static final int BUFFER_SIZE = 3200; //buffer size in bytes
+  private static final int LINEAR16_BYTES_PER_SAMPLE = 2; //bytes per sample for LINEAR16
 
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
@@ -140,7 +141,7 @@ public class StreamingRecognizeClient {
                 .build();
         requestObserver.onNext(request);
         // To simulate real-time audio, sleep after sending each audio buffer.
-        Thread.sleep(1000 * BUFFER_SIZE / samplingRate);
+        Thread.sleep((1000 * BUFFER_SIZE) / (LINEAR16_BYTES_PER_SAMPLE * samplingRate));
       }
       logger.info("Sent " + totalBytes + " bytes from audio file: " + file);
     } catch (RuntimeException e) {
