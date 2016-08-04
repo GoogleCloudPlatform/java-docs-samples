@@ -40,7 +40,7 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.WriterAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
 import java.io.Writer;
@@ -52,11 +52,13 @@ import io.grpc.ManagedChannel;
  */
 @RunWith(JUnit4.class)
 public class StreamingRecognizeClientTest {
-  private TestAppender appender;
+  private Writer writer;
+  private WriterAppender appender;
 
   @Before
   public void setUp() {
-    appender = new TestAppender();
+    writer = new StringWriter();
+    appender = new WriterAppender(new SimpleLayout(), writer);
     Logger.getRootLogger().addAppender(appender);
   }
 
@@ -76,7 +78,7 @@ public class StreamingRecognizeClientTest {
     StreamingRecognizeClient client = new StreamingRecognizeClient(channel, path.toString(), 16000);
     
     client.recognize();
-    assertThat(appender.getLog()).contains("transcript: \"how old is the Brooklyn Bridge\"");
+    assertThat(writer.toString()).contains("transcript: \"how old is the Brooklyn Bridge\"");
   }
 
   @Test
@@ -90,36 +92,6 @@ public class StreamingRecognizeClientTest {
     StreamingRecognizeClient client = new StreamingRecognizeClient(channel, path.toString(), 32000);
 
     client.recognize();
-    assertThat(appender.getLog()).contains("transcript: \"how old is the Brooklyn Bridge\"");
-  }
-
-  /**
-   *
-   * TestAppender for JUnit tests to check logger output
-   */
-  class TestAppender extends AppenderSkeleton {
-    private final List<LoggingEvent> loggingEvents = new ArrayList<LoggingEvent>();
- 
-    @Override
-    public boolean requiresLayout() {
-      return false;
-    }
-
-    @Override
-    public void close() {}
-
-    @Override
-    protected void append(final LoggingEvent loggingEvent) {
-      loggingEvents.add(loggingEvent);
-    }
-
-    public String getLog() {
-      StringBuilder builder = new StringBuilder();
-      for(LoggingEvent event : loggingEvents) {
-        builder.append(event.getMessage().toString());
-        builder.append("\n");
-      }
-      return builder.toString();
-    }
+    assertThat(writer.toString()).contains("transcript: \"how old is the Brooklyn Bridge\"");
   }
 }

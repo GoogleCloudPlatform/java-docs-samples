@@ -43,8 +43,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.ConsoleAppender;
+import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
+import java.io.OutputStreamWriter;
+
 
 /**
  * Client that sends streaming audio to Speech.Recognize and returns streaming transcript.
@@ -76,6 +81,10 @@ public class StreamingRecognizeClient {
     this.channel = channel;
 
     speechClient = SpeechGrpc.newStub(channel);
+
+    //Send log4j logs to Console
+    ConsoleAppender appender = new ConsoleAppender(new SimpleLayout(), SYSTEM_OUT);
+    logger.addAppender(appender);
   }
 
   public void shutdown() throws InterruptedException {
@@ -94,8 +103,7 @@ public class StreamingRecognizeClient {
 
           @Override
           public void onError(Throwable error) {
-            Status status = Status.fromThrowable(error);
-            logger.log(Level.WARNING, "recognize failed: {0}", status);
+            logger.log(Level.WARN, "recognize failed: {0}", error);
             finishLatch.countDown();
           }
 
