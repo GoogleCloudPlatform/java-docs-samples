@@ -73,7 +73,7 @@ public class StreamingRecognizeClientTest {
 
   @Test
   public void test32KHzAudio() throws InterruptedException, IOException {
-    URI uri = new File("resources/audio32khz.raw").toURI();
+    URI uri = new File("resources/audio32KHz.raw").toURI();
     Path path = Paths.get(uri);
 
     String host = "speech.googleapis.com";
