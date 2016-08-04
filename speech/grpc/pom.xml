@@ -152,6 +152,17 @@ limitations under the License.
       <version>1.1.33.Fork14</version>
       <classifier>${tcnative.classifier}</classifier>
     </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.28</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
   </dependencies>
   <!-- // [END dependency] -->
 

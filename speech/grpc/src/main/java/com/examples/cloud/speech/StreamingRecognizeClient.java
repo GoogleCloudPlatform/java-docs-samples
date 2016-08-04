@@ -16,6 +16,8 @@
 
 package com.examples.cloud.speech;
 
+import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
+
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
 import com.google.cloud.speech.v1beta1.SpeechGrpc;
@@ -26,7 +28,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
-import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 import org.apache.commons.cli.CommandLine;
@@ -35,6 +36,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,8 +48,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Client that sends streaming audio to Speech.Recognize and returns streaming transcript.
@@ -60,6 +64,9 @@ public class StreamingRecognizeClient {
 
   private final SpeechGrpc.SpeechStub speechClient;
 
+  private static final int BYTES_PER_BUFFER = 3200; //buffer size in bytes
+  private static final int BYTES_PER_SAMPLE = 2; //bytes per sample for LINEAR16
+
   private static final List<String> OAUTH2_SCOPES =
       Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
@@ -73,6 +80,13 @@ public class StreamingRecognizeClient {
     this.channel = channel;
 
     speechClient = SpeechGrpc.newStub(channel);
+
+    //Send log4j logs to Console
+    //If you are going to run this on GCE, you might wish to integrate with gcloud-java logging.
+    //See https://github.com/GoogleCloudPlatform/gcloud-java/blob/master/README.md#stackdriver-logging-alpha
+    
+    ConsoleAppender appender = new ConsoleAppender(new SimpleLayout(), SYSTEM_OUT);
+    logger.addAppender(appender);
   }
 
   public void shutdown() throws InterruptedException {
@@ -91,8 +105,7 @@ public class StreamingRecognizeClient {
 
           @Override
           public void onError(Throwable error) {
-            Status status = Status.fromThrowable(error);
-            logger.log(Level.WARNING, "recognize failed: {0}", status);
+            logger.log(Level.WARN, "recognize failed: {0}", error);
             finishLatch.countDown();
           }
 
@@ -127,9 +140,12 @@ public class StreamingRecognizeClient {
       // Open audio file. Read and send sequential buffers of audio as additional RecognizeRequests.
       FileInputStream in = new FileInputStream(new File(file));
       // For LINEAR16 at 16000 Hz sample rate, 3200 bytes corresponds to 100 milliseconds of audio.
-      byte[] buffer = new byte[3200];
+      byte[] buffer = new byte[BYTES_PER_BUFFER];
       int bytesRead;
       int totalBytes = 0;
+      int samplesPerBuffer = BYTES_PER_BUFFER / BYTES_PER_SAMPLE;
+      int samplesPerMillis = samplingRate / 1000;
+
       while ((bytesRead = in.read(buffer)) != -1) {
         totalBytes += bytesRead;
         StreamingRecognizeRequest request =
@@ -138,8 +154,7 @@ public class StreamingRecognizeClient {
                 .build();
         requestObserver.onNext(request);
         // To simulate real-time audio, sleep after sending each audio buffer.
-        // For 16000 Hz sample rate, sleep 100 milliseconds.
-        Thread.sleep(samplingRate / 160);
+        Thread.sleep(samplesPerBuffer / samplesPerMillis);
       }
       logger.info("Sent " + totalBytes + " bytes from audio file: " + file);
     } catch (RuntimeException e) {
