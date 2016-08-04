@@ -16,6 +16,8 @@
 
 package com.examples.cloud.speech;
 
+import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
+
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
 import com.google.cloud.speech.v1beta1.SpeechGrpc;
@@ -26,7 +28,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
-import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 import org.apache.commons.cli.CommandLine;
@@ -35,6 +36,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,12 +48,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.apache.log4j.ConsoleAppender;
-import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
-import java.io.OutputStreamWriter;
 
 
 /**

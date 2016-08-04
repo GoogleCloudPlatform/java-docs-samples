@@ -18,34 +18,24 @@ package com.examples.cloud.speech;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import io.grpc.ManagedChannel;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.WriterAppender;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.log4j.Layout;
-import org.apache.log4j.WriterAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.AppenderSkeleton;
-import java.io.Writer;
-import java.io.StringWriter;
-import io.grpc.ManagedChannel;
 
 /**
  * Unit tests for {@link StreamingRecognizeClient }.
