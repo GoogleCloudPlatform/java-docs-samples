@@ -43,3 +43,6 @@ Session.vim
 .netrwhist
 *~
 tags
+
+# Gradle
+out/
