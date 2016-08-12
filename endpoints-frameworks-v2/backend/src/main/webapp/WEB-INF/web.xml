@@ -15,6 +15,7 @@
  limitations under the License.
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"  version="2.5">
+    <!-- Use Endpoints Frameworks v2. -->
     <servlet>
         <servlet-name>EndpointsServlet</servlet-name>
         <servlet-class>com.google.api.server.spi.EndpointsServlet</servlet-class>
@@ -31,11 +32,13 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <!-- Add a filter that fetches the service config from service management. -->
     <filter>
         <filter-name>endpoints-api-configuration</filter-name>
         <filter-class>com.google.api.control.ServiceManagementConfigFilter</filter-class>
     </filter>
 
+    <!-- Add a filter that performs Endpoints logging and monitoring. -->
     <filter>
         <filter-name>endpoints-api-controller</filter-name>
         <filter-class>com.google.api.control.extensions.appengine.GoogleAppEngineControlFilter</filter-class>
