@@ -16,7 +16,7 @@
     <dependency>
         <groupId>com.google.apis</groupId>
         <artifactId>google-api-services-logging</artifactId>
-        <version>v1beta3-rev4-1.20.0</version>
+        <version>v2beta1-rev11-1.22.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.oauth-client</groupId>
