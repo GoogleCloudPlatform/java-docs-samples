@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev78-1.22.0</version>
+      <version>v1-rev81-1.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.oauth-client</groupId>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.28</version>
+      <version>0.29</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

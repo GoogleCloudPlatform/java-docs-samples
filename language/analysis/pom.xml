@@ -25,12 +25,12 @@ limitations under the License.
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-language</artifactId>
-      <version>v1beta1-rev1-1.22.0</version>
+      <version>v1beta1-rev5-1.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.21.0</version>
+      <version>1.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -48,7 +48,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.28</version>
+      <version>0.29</version>
     </dependency>
   </dependencies>
   <build>
