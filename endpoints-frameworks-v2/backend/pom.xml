@@ -29,13 +29,7 @@
     </parent>
 
     <properties>
-        <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-
-        <appengine.plugin.version>1.9.40</appengine.plugin.version>
 
         <endpoints.management.version>0.0.18-SNAPSHOT</endpoints.management.version>
     </properties>
@@ -101,7 +95,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.plugin.version}</version>
+                <version>${appengine.sdk.version}</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
