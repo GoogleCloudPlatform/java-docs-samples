@@ -23,7 +23,6 @@ import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
 import com.google.cloud.speech.v1beta1.SpeechGrpc;
-
 import com.google.longrunning.GetOperationRequest;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsGrpc;
@@ -33,7 +32,6 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;

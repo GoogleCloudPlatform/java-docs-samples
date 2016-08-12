@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SRC_DIR=$(cd "$(dirname "$0")/.."; pwd)
+SRC_DIR="$( cd "$( dirname "$0" )/.." && pwd )"
 java -cp "${SRC_DIR}/target/grpc-sample-1.0-jar-with-dependencies.jar" \
     com.examples.cloud.speech.StreamingRecognizeClient "$@"
