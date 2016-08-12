@@ -88,7 +88,7 @@ public class AsyncRecognizeClient {
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
     creds = creds.createScoped(OAUTH2_SCOPES);
     ManagedChannel channel =
-        NettyChannelBuilder.forAddress(host, port)
+        ManagedChannelBuilder.forAddress(host, port)
             .negotiationType(NegotiationType.TLS)
             .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
             .build();
