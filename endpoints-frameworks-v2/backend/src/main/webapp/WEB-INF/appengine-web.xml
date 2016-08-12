@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>your-app-id</application>
+    <application>${endpoints.project.id}</application>
     <version>1</version>
     <threadsafe>true</threadsafe>
     <vm>false</vm>
@@ -29,6 +29,6 @@
     </system-properties>
 
     <env-variables>
-        <env-var name="ENDPOINTS_SERVICE_NAME" value="your-app-id.appspot.com" />
+        <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />
     </env-variables>
 </appengine-web-app>

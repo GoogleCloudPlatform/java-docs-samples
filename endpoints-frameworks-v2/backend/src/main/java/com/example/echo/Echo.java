@@ -62,7 +62,7 @@ public class Echo {
   @ApiMethod(
       httpMethod = ApiMethod.HttpMethod.GET,
       authenticators = {EspAuthenticator.class},
-      audiences = {"488010225785-6nbu9odsh377sl0r7gp1kvsa1l68ss6u.apps.googleusercontent.com"},
+      audiences = {"YOUR_OAUTH_CLIENT_ID"},
       authLevel = AuthLevel.REQUIRED
       )
   public Email getUserEmail(User user) throws UnauthorizedException {
