@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"  version="2.5">
-    <!-- Use Endpoints Frameworks v2. -->
+    <!-- Wrap the backend with Endpoints Frameworks v2. -->
     <servlet>
         <servlet-name>EndpointsServlet</servlet-name>
         <servlet-class>com.google.api.server.spi.EndpointsServlet</servlet-class>
@@ -24,6 +24,7 @@
             <param-value>com.example.echo.Echo</param-value>
         </init-param>
     </servlet>
+    <!-- Route API method requests to the backend. -->
     <servlet-mapping>
         <servlet-name>EndpointsServlet</servlet-name>
         <url-pattern>/_ah/api/*</url-pattern>
