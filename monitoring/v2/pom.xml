@@ -24,7 +24,7 @@
     <dependency>
         <groupId>com.google.apis</groupId>
         <artifactId>google-api-services-cloudmonitoring</artifactId>
-        <version>v2beta2-rev20-1.20.0</version>
+        <version>v2beta2-rev62-1.22.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.oauth-client</groupId>
