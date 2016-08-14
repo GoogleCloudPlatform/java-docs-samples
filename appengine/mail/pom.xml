@@ -44,6 +44,11 @@ Copyright 2016 Google Inc. All Rights Reserved.
       <artifactId>mail</artifactId>
       <version>1.4.7</version>
     </dependency>
+	<dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>gcloud-java</artifactId>
+      <version>0.2.7</version>
+    </dependency>
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->
