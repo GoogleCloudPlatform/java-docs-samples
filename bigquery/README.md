@@ -8,7 +8,7 @@ Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
-	mvn package
+	mvn package -DskipTests
 
 You can then run a given `ClassName` via:
 
