@@ -19,7 +19,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-helloworld</artifactId>
+  <artifactId>appengine-helloworld-newplugins</artifactId>
 
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>

@@ -26,11 +26,15 @@ Use either:
 ## Gradle
 ### Running locally
 
-    $ ./gradlew appengineRun
+    $ gradle appengineRun
+
+If you do not have gradle installed, you can run using `./gradlew appengineRun`.
 
 ### Deploying
 
-    $ ./gradlew appengineDeploy
+    $ gradle appengineDeploy
+
+If you do not have gradle installed, you can deploy using `./gradlew appengineDeploy`.
 
 <!-- 
 ## Intelij Idea

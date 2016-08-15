@@ -21,9 +21,10 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'com.google.cloud.tools.appengine'
 
-dependencies { // Servlet for App Engine Standard
+dependencies { // Servlet for App Engine Standard -- only one of these need to be uncommented.
 //  providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
   providedCompile 'javax.servlet:javax.servlet-api:3.1.0' // if beta-quickstart in appengine-web.xml
+// Add your dependencies here.
 }
 
 task wrapper(type: Wrapper) { // use the gradle wrapper "./gradlew.sh ..."
