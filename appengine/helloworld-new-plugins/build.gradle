@@ -1,0 +1,53 @@
+buildscript {
+  repositories {
+    jcenter() // Bintray's repository - a fast Maven Central mirror & more
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:+'    // latest App Engine Gradle plugin
+  }
+}
+
+repositories {
+  maven { 
+    url 'https://maven-central.storage.googleapis.com'            // Google's mirror of Maven Central
+//     url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Reposiotry
+  }
+  jcenter()
+  mavenCentral()
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'com.google.cloud.tools.appengine'
+
+dependencies { // Servlet for App Engine Standard -- only one of these need to be uncommented.
+//  providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
+  providedCompile 'javax.servlet:javax.servlet-api:3.1.0' // if beta-quickstart in appengine-web.xml
+// Add your dependencies here.
+}
+
+task wrapper(type: Wrapper) { // use the gradle wrapper "./gradlew.sh ..."
+  gradleVersion = '2.14'      // "gradle wrapper --gradle-version 2.14" (to create files and directories)
+}
+
+model {
+  appengine {
+    run {       // dev appserver configuration (standard environments only)
+      jvmFlags = ['-Dappengine.user.timezone=UTC']
+      host = '127.0.0.1'
+      port = 8080
+    }
+
+    deploy {    // deploy configuration
+      promote = true
+      stopPreviousVersion = true
+    }
+  }
+}
+
+group = 'com.example.appengine'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7

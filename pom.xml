@@ -56,6 +56,7 @@
         <module>appengine/firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
+        <module>appengine/helloworld-new-plugins</module>
         <module>appengine/images</module>
         <module>appengine/logs</module>
         <module>appengine/mailgun</module>
