@@ -80,7 +80,7 @@
         <module>compute/mailjet</module>
         <module>compute/sendgrid</module>
         <module>datastore</module>
-        <module>endpoints-frameworks-2.0/backend</module>
+        <module>endpoints-frameworks-v2/backend</module>
         <module>logging</module>
         <module>managed_vms/analytics</module>
         <module>managed_vms/async-rest</module>
