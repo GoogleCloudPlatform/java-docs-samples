@@ -29,6 +29,7 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsGrpc;
 
 import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.NegotiationType;
