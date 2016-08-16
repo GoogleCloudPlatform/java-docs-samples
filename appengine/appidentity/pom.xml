@@ -27,6 +27,10 @@
     <relativePath>../..</relativePath>
   </parent>
 
+  <properties>
+    <gcloud-maven-plugin-version>2.0.9.101.v20160316</gcloud-maven-plugin-version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -96,7 +100,7 @@
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>gcloud-maven-plugin</artifactId>
-        <version>2.0.9.101.v20160316</version>
+        <version>${gcloud-maven-plugin-version}</version>
       </plugin>
     </plugins>
   </build>
