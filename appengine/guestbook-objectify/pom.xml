@@ -8,8 +8,8 @@
     <groupId>com.example.appengine</groupId>
     <artifactId>appengine-guestbook-objectify</artifactId>
     <properties>
-        <objectify.version>5.1.5</objectify.version>
-        <guava.version>18.0</guava.version>
+        <objectify.version>5.1.13</objectify.version>
+        <guava.version>19.0</guava.version>
     </properties>
     <parent>
         <groupId>com.google.cloud</groupId>

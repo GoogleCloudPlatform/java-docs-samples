@@ -59,8 +59,8 @@
   </dependencies>
 
   <properties>
-    <project.http.version>1.21.0</project.http.version>
-    <project.oauth.version>1.21.0</project.oauth.version>
+    <project.http.version>1.22.0</project.http.version>
+    <project.oauth.version>1.22.0</project.oauth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
