@@ -17,31 +17,26 @@
 package com.google.cloud.bigquery.samples.test;
 
 import com.google.cloud.bigquery.samples.ExportDataCloudStorageSample;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
  * Tests for export data Cloud Storage sample.
  */
-public class ExportDataCloudStorageSampleTest extends BigquerySampleTest {
-
-  public ExportDataCloudStorageSampleTest()
-      throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-    super();
-  }
+@RunWith(JUnit4.class)
+public class ExportDataCloudStorageSampleTest {
 
   @Test
   public void testExportData() throws IOException, InterruptedException {
     ExportDataCloudStorageSample.run(
-        CONSTANTS.getCloudStorageOutputUri(),
-        CONSTANTS.getProjectId(),
-        CONSTANTS.getDatasetId(),
-        CONSTANTS.getCurrentTableId(),
+        Constants.CLOUD_STORAGE_OUTPUT_URI,
+        Constants.PROJECT_ID,
+        Constants.DATASET_ID,
+        Constants.CURRENT_TABLE_ID,
         5000L);
   }
 }

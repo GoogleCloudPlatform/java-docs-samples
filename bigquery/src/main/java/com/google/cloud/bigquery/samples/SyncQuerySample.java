@@ -28,13 +28,10 @@ import java.util.Scanner;
  */
 public class SyncQuerySample {
 
-
   /**
    * Protected because this is a collection of static methods.
    */
-  protected SyncQuerySample() {
-
-  }
+  protected SyncQuerySample() {}
 
   //[START main]
   /**
@@ -43,26 +40,24 @@ public class SyncQuerySample {
    * @param args args
    * @throws IOException ioexceptino
    */
-  public static void main(final String[] args)
-      throws IOException {
+  public static void main(final String[] args) throws IOException {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
     System.out.println("Enter your query string: ");
     String queryString = scanner.nextLine();
-    System.out.println("Enter how long to wait for the query to complete"
-        + " (in milliseconds):\n "
-        + "(if longer than 10 seconds, use an asynchronous query)");
+    System.out.println(
+        "Enter how long to wait for the query to complete"
+            + " (in milliseconds):\n "
+            + "(if longer than 10 seconds, use an asynchronous query)");
     long waitTime = scanner.nextLong();
     scanner.close();
-    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString,
-        waitTime);
+    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString, waitTime);
     while (pages.hasNext()) {
-      BigqueryUtils.printRows(pages.next().getRows(), System.out);
+      BigQueryUtils.printRows(pages.next().getRows(), System.out);
     }
   }
   // [END main]
-
 
   /**
    * Perform the given query using the synchronous api.
@@ -74,27 +69,27 @@ public class SyncQuerySample {
    * @throws IOException ioexception
    */
   // [START run]
-  public static Iterator<GetQueryResultsResponse> run(final String projectId,
-      final String queryString,
-      final long waitTime) throws IOException {
-    Bigquery bigquery = BigqueryServiceFactory.getService();
+  public static Iterator<GetQueryResultsResponse> run(
+      final String projectId, final String queryString, final long waitTime) throws IOException {
+    Bigquery bigquery = BigQueryServiceFactory.getService();
     //Wait until query is done with 10 second timeout, at most 5 retries on error
-    QueryResponse query = bigquery.jobs().query(
-        projectId,
-        new QueryRequest().setTimeoutMs(waitTime).setQuery(queryString))
-        .execute();
+    QueryResponse query =
+        bigquery
+            .jobs()
+            .query(projectId, new QueryRequest().setTimeoutMs(waitTime).setQuery(queryString))
+            .execute();
 
     //Make a request to get the results of the query
     //(timeout is zero since job should be complete)
 
-    GetQueryResults getRequest = bigquery.jobs().getQueryResults(
-        query.getJobReference().getProjectId(),
-        query.getJobReference().getJobId());
+    GetQueryResults getRequest =
+        bigquery
+            .jobs()
+            .getQueryResults(
+                query.getJobReference().getProjectId(), query.getJobReference().getJobId());
 
-
-    return BigqueryUtils.getPages(getRequest);
+    return BigQueryUtils.getPages(getRequest);
   }
   // [END run]
-
 
 }

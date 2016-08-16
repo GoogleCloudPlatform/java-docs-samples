@@ -23,25 +23,23 @@ import com.google.cloud.bigquery.samples.ListDatasetsProjects;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.Exception;
 
 /**
  * Unit tests for {@link ListDatasetsProjects}.
  */
-public class ListDatasetsProjectsTest extends BigquerySampleTest {
+@RunWith(JUnit4.class)
+public class ListDatasetsProjectsTest {
   private static final PrintStream REAL_OUT = System.out;
   private static final PrintStream REAL_ERR = System.err;
 
   private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
   private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-
-  public ListDatasetsProjectsTest() throws FileNotFoundException {
-    super();
-  }
 
   @Before
   public void setUp() {
@@ -63,7 +61,7 @@ public class ListDatasetsProjectsTest extends BigquerySampleTest {
 
   @Test
   public void testMain() throws Exception {
-    ListDatasetsProjects.main(new String[] { CONSTANTS.getProjectId() });
+    ListDatasetsProjects.main(new String[] {Constants.PROJECT_ID});
     String out = stdout.toString();
     assertThat(out).named("stdout").contains("Running the asynchronous query");
     assertThat(out).named("stdout").containsMatch("George W. Bush, [0-9]+");

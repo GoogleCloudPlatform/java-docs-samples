@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-
 /**
  * Example of authorizing with Bigquery and reading from a public dataset.
  *
@@ -61,7 +60,8 @@ public class GettingStarted {
     }
 
     return new Bigquery.Builder(transport, jsonFactory, credential)
-        .setApplicationName("Bigquery Samples").build();
+        .setApplicationName("Bigquery Samples")
+        .build();
   }
   // [END build_service]
 
@@ -77,15 +77,16 @@ public class GettingStarted {
    */
   private static List<TableRow> executeQuery(String querySql, Bigquery bigquery, String projectId)
       throws IOException {
-    QueryResponse query = bigquery.jobs().query(
-        projectId,
-        new QueryRequest().setQuery(querySql))
-        .execute();
+    QueryResponse query =
+        bigquery.jobs().query(projectId, new QueryRequest().setQuery(querySql)).execute();
 
     // Execute it
-    GetQueryResultsResponse queryResult = bigquery.jobs().getQueryResults(
-        query.getJobReference().getProjectId(),
-        query.getJobReference().getJobId()).execute();
+    GetQueryResultsResponse queryResult =
+        bigquery
+            .jobs()
+            .getQueryResults(
+                query.getJobReference().getProjectId(), query.getJobReference().getJobId())
+            .execute();
 
     return queryResult.getRows();
   }
@@ -133,11 +134,14 @@ public class GettingStarted {
     // Create a new Bigquery client authorized via Application Default Credentials.
     Bigquery bigquery = createAuthorizedClient();
 
-    List<TableRow> rows = executeQuery("SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words "
-        + "FROM [publicdata:samples.shakespeare]", bigquery, projectId);
+    List<TableRow> rows =
+        executeQuery(
+            "SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words "
+                + "FROM [publicdata:samples.shakespeare]",
+            bigquery,
+            projectId);
 
     printResults(rows);
   }
-
 }
 // [END all]

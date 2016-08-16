@@ -26,7 +26,7 @@ import java.util.Scanner;
 /**
  * Sample of how to Export Cloud Data.
  */
-public class ExportDataCloudStorageSample  {
+public class ExportDataCloudStorageSample {
   /**
    * Protected constructor since this is a collection of static functions.
    */
@@ -42,8 +42,7 @@ public class ExportDataCloudStorageSample  {
    * @throws InterruptedException Should never be thrown.
    */
   // [START main]
-  public static void main(final String[] args)
-      throws IOException, InterruptedException {
+  public static void main(final String[] args) throws IOException, InterruptedException {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
@@ -51,11 +50,9 @@ public class ExportDataCloudStorageSample  {
     String datasetId = scanner.nextLine();
     System.out.println("Enter your table id: ");
     String tableId = scanner.nextLine();
-    System.out.println("Enter the Google Cloud Storage Path to which you'd "
-        + "like to export: ");
+    System.out.println("Enter the Google Cloud Storage Path to which you'd " + "like to export: ");
     String cloudStoragePath = scanner.nextLine();
-    System.out.println("Enter how often to check if your job is  complete "
-        + "(milliseconds): ");
+    System.out.println("Enter how often to check if your job is  complete " + "(milliseconds): ");
     long interval = scanner.nextLong();
     scanner.close();
 
@@ -79,29 +76,32 @@ public class ExportDataCloudStorageSample  {
       final String projectId,
       final String datasetId,
       final String tableId,
-      final long interval) throws IOException, InterruptedException {
+      final long interval)
+      throws IOException, InterruptedException {
 
-    Bigquery bigquery = BigqueryServiceFactory.getService();
+    Bigquery bigquery = BigQueryServiceFactory.getService();
 
-    Job extractJob = extractJob(
-        bigquery,
-        cloudStoragePath,
-        new TableReference()
-        .setProjectId(projectId)
-        .setDatasetId(datasetId)
-        .setTableId(tableId));
+    Job extractJob =
+        extractJob(
+            bigquery,
+            cloudStoragePath,
+            new TableReference()
+                .setProjectId(projectId)
+                .setDatasetId(datasetId)
+                .setTableId(tableId));
 
-    Bigquery.Jobs.Get getJob = bigquery.jobs().get(
-        extractJob.getJobReference().getProjectId(),
-        extractJob.getJobReference().getJobId());
+    Bigquery.Jobs.Get getJob =
+        bigquery
+            .jobs()
+            .get(
+                extractJob.getJobReference().getProjectId(),
+                extractJob.getJobReference().getJobId());
 
-    BigqueryUtils.pollJob(getJob, interval);
+    BigQueryUtils.pollJob(getJob, interval);
 
     System.out.println("Export is Done!");
-
   }
   // [END run]
-
 
   /**
    * A job that extracts data from a table.
@@ -113,16 +113,17 @@ public class ExportDataCloudStorageSample  {
    */
   // [START extract_job]
   public static Job extractJob(
-      final Bigquery bigquery,
-      final String cloudStoragePath,
-      final TableReference table) throws IOException {
+      final Bigquery bigquery, final String cloudStoragePath, final TableReference table)
+      throws IOException {
 
-    JobConfigurationExtract extract = new JobConfigurationExtract()
-        .setSourceTable(table)
-        .setDestinationUri(cloudStoragePath);
+    JobConfigurationExtract extract =
+        new JobConfigurationExtract().setSourceTable(table).setDestinationUri(cloudStoragePath);
 
-    return bigquery.jobs().insert(table.getProjectId(),
-        new Job().setConfiguration(new JobConfiguration().setExtract(extract)))
+    return bigquery
+        .jobs()
+        .insert(
+            table.getProjectId(),
+            new Job().setConfiguration(new JobConfiguration().setExtract(extract)))
         .execute();
   }
   // [END extract_job]

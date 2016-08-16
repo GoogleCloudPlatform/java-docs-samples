@@ -13,9 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package com.google.cloud.bigquery.samples;
-
 
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.Bigquery.Jobs.GetQueryResults;
@@ -28,11 +26,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Scanner;
 
-
 /**
  * Example of authorizing with BigQuery and reading from a public dataset.
  */
-public class AsyncQuerySample extends BigqueryUtils {
+public class AsyncQuerySample {
   // [START main]
   /**
    * Prompts for all the parameters required to make a query.
@@ -41,8 +38,7 @@ public class AsyncQuerySample extends BigqueryUtils {
    * @throws IOException IOException
    * @throws InterruptedException InterruptedException
    */
-  public static void main(final String[] args)
-      throws IOException, InterruptedException {
+  public static void main(final String[] args) throws IOException, InterruptedException {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
@@ -50,14 +46,12 @@ public class AsyncQuerySample extends BigqueryUtils {
     String queryString = scanner.nextLine();
     System.out.println("Run query in batch mode? [true|false] ");
     boolean batch = Boolean.valueOf(scanner.nextLine());
-    System.out.println("Enter how often to check if your job is complete "
-        + "(milliseconds): ");
+    System.out.println("Enter how often to check if your job is complete " + "(milliseconds): ");
     long waitTime = scanner.nextLong();
     scanner.close();
-    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString,
-        batch, waitTime);
+    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString, batch, waitTime);
     while (pages.hasNext()) {
-      printRows(pages.next().getRows(), System.out);
+      BigQueryUtils.printRows(pages.next().getRows(), System.out);
     }
   }
   // [END main]
@@ -70,30 +64,28 @@ public class AsyncQuerySample extends BigqueryUtils {
    * @param queryString Query we want to run against BigQuery
    * @param batch True if you want to batch the queries
    * @param waitTime How long to wait before retries
-   * @return An interator to the result of your pages
+   * @return An iterator to the result of your pages
    * @throws IOException Thrown if there's an IOException
    * @throws InterruptedException Thrown if there's an Interrupted Exception
    */
-  public static Iterator<GetQueryResultsResponse> run(final String projectId,
-      final String queryString,
-      final boolean batch,
-      final long waitTime)
+  public static Iterator<GetQueryResultsResponse> run(
+      final String projectId, final String queryString, final boolean batch, final long waitTime)
       throws IOException, InterruptedException {
 
-    Bigquery bigquery = BigqueryServiceFactory.getService();
+    Bigquery bigquery = BigQueryServiceFactory.getService();
 
     Job query = asyncQuery(bigquery, projectId, queryString, batch);
-    Bigquery.Jobs.Get getRequest = bigquery.jobs().get(
-        projectId, query.getJobReference().getJobId());
+    Bigquery.Jobs.Get getRequest =
+        bigquery.jobs().get(projectId, query.getJobReference().getJobId());
 
-    //Poll every waitTime milliseconds,
-    //retrying at most retries times if there are errors
-    pollJob(getRequest, waitTime);
+    // Poll every waitTime milliseconds,
+    // retrying at most retries times if there are errors
+    BigQueryUtils.pollJob(getRequest, waitTime);
 
-    GetQueryResults resultsRequest = bigquery.jobs().getQueryResults(
-        projectId, query.getJobReference().getJobId());
+    GetQueryResults resultsRequest =
+        bigquery.jobs().getQueryResults(projectId, query.getJobReference().getJobId());
 
-    return getPages(resultsRequest);
+    return BigQueryUtils.getPages(resultsRequest);
   }
   // [END run]
 
@@ -101,27 +93,24 @@ public class AsyncQuerySample extends BigqueryUtils {
   /**
    * Inserts an asynchronous query Job for a particular query.
    *
-   * @param bigquery  an authorized BigQuery client
+   * @param bigquery an authorized BigQuery client
    * @param projectId a String containing the project ID
    * @param querySql  the actual query string
    * @param batch True if you want to run the query as BATCH
    * @return a reference to the inserted query job
    * @throws IOException Thrown if there's a network exception
    */
-  public static Job asyncQuery(final Bigquery bigquery,
-      final String projectId,
-      final String querySql,
-      final boolean batch) throws IOException {
+  public static Job asyncQuery(
+      final Bigquery bigquery, final String projectId, final String querySql, final boolean batch)
+      throws IOException {
 
-    JobConfigurationQuery queryConfig = new JobConfigurationQuery()
-        .setQuery(querySql);
+    JobConfigurationQuery queryConfig = new JobConfigurationQuery().setQuery(querySql);
 
     if (batch) {
       queryConfig.setPriority("BATCH");
     }
 
-    Job job = new Job().setConfiguration(
-        new JobConfiguration().setQuery(queryConfig));
+    Job job = new Job().setConfiguration(new JobConfiguration().setQuery(queryConfig));
 
     return bigquery.jobs().insert(projectId, job).execute();
   }
