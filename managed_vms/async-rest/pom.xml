@@ -30,7 +30,7 @@
 
   <properties>
     <docker.label.prefix>async-</docker.label.prefix>
-    <jetty.version>9.3.7.v20160115</jetty.version>
+    <jetty.version>9.4.0.M1</jetty.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
