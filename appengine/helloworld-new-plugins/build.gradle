@@ -11,7 +11,7 @@ buildscript {
 repositories {
   maven { 
     url 'https://maven-central.storage.googleapis.com'            // Google's mirror of Maven Central
-//     url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Reposiotry
+//     url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Reposiotry (if needed)
   }
   jcenter()
   mavenCentral()
