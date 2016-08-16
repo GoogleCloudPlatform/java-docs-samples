@@ -95,7 +95,9 @@
         <module>managed_vms/mailjet</module>
         <module>managed_vms/memcache</module>
         <module>managed_vms/sendgrid</module>
+<!-- 
         <module>managed_vms/sparkjava</module>
+ -->
         <module>managed_vms/static-files</module>
         <module>managed_vms/twilio</module>
         <module>monitoring/v2</module>
