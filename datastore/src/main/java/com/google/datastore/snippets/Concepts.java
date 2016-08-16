@@ -555,9 +555,9 @@ public class Concepts {
     // [START distinct_query]
     Query<ProjectionEntity> query = Query.projectionEntityQueryBuilder()
         .kind("Task")
-        .projection("type", "priority")
-        .distinctOn("type", "priority")
-        .orderBy(OrderBy.asc("type"), OrderBy.asc("priority"))
+        .projection("category", "priority")
+        .distinctOn("category", "priority")
+        .orderBy(OrderBy.asc("category"), OrderBy.asc("priority"))
         .build();
     // [END distinct_query]
     assertValidQuery(query);
@@ -569,9 +569,9 @@ public class Concepts {
     // [START distinct_on_query]
     Query<ProjectionEntity> query = Query.projectionEntityQueryBuilder()
         .kind("Task")
-        .projection("type", "priority")
-        .distinctOn("type")
-        .orderBy(OrderBy.asc("type"), OrderBy.asc("priority"))
+        .projection("category", "priority")
+        .distinctOn("category")
+        .orderBy(OrderBy.asc("category"), OrderBy.asc("priority"))
         .build();
     // [END distinct_on_query]
     assertValidQuery(query);
