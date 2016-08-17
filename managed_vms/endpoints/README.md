@@ -3,7 +3,7 @@ This sample demonstrates how to use Google Cloud Endpoints on Google App Engine 
 
 ## Edit the Swagger API specification
 
-    Open the src/main/appengine/swagger.yaml file in your favorite editor, and replace the YOUR-PROJECT-ID host line with your actual Google Cloud Platform project Id.
+Open the src/main/appengine/swagger.yaml file in your favorite editor, and replace the YOUR-PROJECT-ID host line with your actual Google Cloud Platform project Id.
 
 ## Running locally
     $ mvn jetty:run
@@ -13,4 +13,4 @@ This sample demonstrates how to use Google Cloud Endpoints on Google App Engine 
 
 ## Calling your API
 
-    Please refer to the Google Cloud Endpoints [documentation](https://cloud.google.com/endpoints/docs/app-engine/) for App Engine Flexible Environment to learn about creating an API Key and calling your API.
+Please refer to the Google Cloud Endpoints [documentation](https://cloud.google.com/endpoints/docs/app-engine/) for App Engine Flexible Environment to learn about creating an API Key and calling your API.
