@@ -38,14 +38,13 @@ import java.util.NoSuchElementException;
 /**
  * Helper functions for the other classes.
  */
-public class BigqueryUtils {
+public class BigQueryUtils {
 
   /**
-   * Private contructor to prevent creation of this class, which is just all
+   * Private constructor to prevent creation of this class, which is just all
    * static helper methods.
    */
-  protected BigqueryUtils() {
-  }
+  private BigQueryUtils() {}
 
   /**
    * Print rows to the output stream in a formatted way.
@@ -76,9 +75,8 @@ public class BigqueryUtils {
       throws IOException, InterruptedException {
     Job job = request.execute();
     while (!job.getStatus().getState().equals("DONE")) {
-      System.out.println("Job is "
-          + job.getStatus().getState()
-          + " waiting " + interval + " milliseconds...");
+      System.out.println(
+          "Job is " + job.getStatus().getState() + " waiting " + interval + " milliseconds...");
       Thread.sleep(interval);
       job = request.execute();
     }
@@ -165,9 +163,10 @@ public class BigqueryUtils {
   public static TableSchema loadSchema(final Reader schemaSource) {
     TableSchema sourceSchema = new TableSchema();
 
-    List<TableFieldSchema> fields = (new Gson())
-        .<List<TableFieldSchema>>fromJson(schemaSource,
-            (new ArrayList<TableFieldSchema>()).getClass());
+    List<TableFieldSchema> fields =
+        (new Gson())
+            .<List<TableFieldSchema>>fromJson(
+                schemaSource, (new ArrayList<TableFieldSchema>()).getClass());
 
     sourceSchema.setFields(fields);
 

@@ -20,32 +20,24 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import com.google.cloud.bigquery.samples.SyncQuerySample;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
 /**
  * Tests for synchronous query sample.
  */
-public class SyncQuerySampleTest extends BigquerySampleTest {
-
-  public SyncQuerySampleTest()
-      throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-    super();
-  }
+@RunWith(JUnit4.class)
+public class SyncQuerySampleTest {
 
   @Test
   public void testSyncQuery() throws IOException {
     Iterator<GetQueryResultsResponse> pages =
-        SyncQuerySample.run(
-            CONSTANTS.getProjectId(),
-            CONSTANTS.getQuery(),
-            10000);
+        SyncQuerySample.run(Constants.PROJECT_ID, Constants.QUERY, 10000);
     while (pages.hasNext()) {
       assertThat(pages.next().getRows()).isNotEmpty();
     }

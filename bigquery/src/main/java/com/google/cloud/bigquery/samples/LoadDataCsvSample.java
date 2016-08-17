@@ -37,8 +37,7 @@ public class LoadDataCsvSample {
   /**
    * Protected constructor since this is a collection of static methods.
    */
-  protected LoadDataCsvSample() {
-  }
+  protected LoadDataCsvSample() {}
 
   /**
    * Cli tool to load data from a CSV into Bigquery.
@@ -47,8 +46,7 @@ public class LoadDataCsvSample {
    * @throws InterruptedException InterruptedException
    */
   // [START main]
-  public static void main(final String[] args)
-      throws IOException, InterruptedException {
+  public static void main(final String[] args) throws IOException, InterruptedException {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter your project id: ");
     String projectId = scanner.nextLine();
@@ -56,19 +54,17 @@ public class LoadDataCsvSample {
     String datasetId = scanner.nextLine();
     System.out.println("Enter your table id: ");
     String tableId = scanner.nextLine();
-    System.out.println("Enter the Google Cloud Storage Path to the data "
-        + "you'd like to load: ");
+    System.out.println("Enter the Google Cloud Storage Path to the data " + "you'd like to load: ");
     String cloudStoragePath = scanner.nextLine();
     System.out.println("Enter the filepath to your schema: ");
     String sourceSchemaPath = scanner.nextLine();
 
-
-    System.out.println("Enter how often to check if your job is complete "
-        + "(milliseconds): ");
+    System.out.println("Enter how often to check if your job is complete " + "(milliseconds): ");
     long interval = scanner.nextLong();
     scanner.close();
 
-    run(cloudStoragePath,
+    run(
+        cloudStoragePath,
         projectId,
         datasetId,
         tableId,
@@ -95,28 +91,29 @@ public class LoadDataCsvSample {
       final String datasetId,
       final String tableId,
       final Reader schemaSource,
-      final long interval) throws IOException, InterruptedException {
+      final long interval)
+      throws IOException, InterruptedException {
 
-    Bigquery bigquery = BigqueryServiceFactory.getService();
+    Bigquery bigquery = BigQueryServiceFactory.getService();
 
+    Job loadJob =
+        loadJob(
+            bigquery,
+            cloudStoragePath,
+            new TableReference()
+                .setProjectId(projectId)
+                .setDatasetId(datasetId)
+                .setTableId(tableId),
+            BigQueryUtils.loadSchema(schemaSource));
 
-    Job loadJob = loadJob(
-        bigquery,
-        cloudStoragePath,
-        new TableReference()
-        .setProjectId(projectId)
-        .setDatasetId(datasetId)
-        .setTableId(tableId),
-        BigqueryUtils.loadSchema(schemaSource));
+    Bigquery.Jobs.Get getJob =
+        bigquery
+            .jobs()
+            .get(loadJob.getJobReference().getProjectId(), loadJob.getJobReference().getJobId());
 
-    Bigquery.Jobs.Get getJob = bigquery.jobs().get(
-        loadJob.getJobReference().getProjectId(),
-        loadJob.getJobReference().getJobId());
-
-    BigqueryUtils.pollJob(getJob, interval);
+    BigQueryUtils.pollJob(getJob, interval);
 
     System.out.println("Load is Done!");
-
   }
   // [END run]
 
@@ -134,15 +131,19 @@ public class LoadDataCsvSample {
       final Bigquery bigquery,
       final String cloudStoragePath,
       final TableReference table,
-      final TableSchema schema) throws IOException {
+      final TableSchema schema)
+      throws IOException {
 
-    JobConfigurationLoad load = new JobConfigurationLoad()
-        .setDestinationTable(table)
-        .setSchema(schema)
-        .setSourceUris(Collections.singletonList(cloudStoragePath));
+    JobConfigurationLoad load =
+        new JobConfigurationLoad()
+            .setDestinationTable(table)
+            .setSchema(schema)
+            .setSourceUris(Collections.singletonList(cloudStoragePath));
 
-    return bigquery.jobs().insert(table.getProjectId(),
-        new Job().setConfiguration(new JobConfiguration().setLoad(load)))
+    return bigquery
+        .jobs()
+        .insert(
+            table.getProjectId(), new Job().setConfiguration(new JobConfiguration().setLoad(load)))
         .execute();
   }
   // [END load_job]

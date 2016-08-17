@@ -30,16 +30,14 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * This class creates our Service to connect to Bigquery including auth.
+ * This class creates our Service to connect to BigQuery including auth.
  */
-public final class BigqueryServiceFactory {
+public final class BigQueryServiceFactory {
 
   /**
    * Private constructor to disable creation of this utility Factory class.
    */
-  private BigqueryServiceFactory() {
-
-  }
+  private BigQueryServiceFactory() {}
 
   /**
    * Singleton service used through the app.
@@ -52,9 +50,9 @@ public final class BigqueryServiceFactory {
   private static Object serviceLock = new Object();
 
   /**
-   * Threadsafe Factory that provides an authorized Bigquery service.
-   * @return The Bigquery service
-   * @throws IOException Thronw if there is an error connecting to Bigquery.
+   * Threadsafe Factory that provides an authorized BigQuery service.
+   * @return The BigQuery service
+   * @throws IOException Throw if there is an error connecting to BigQuery.
    */
   public static Bigquery getService() throws IOException {
     if (service == null) {
@@ -68,7 +66,7 @@ public final class BigqueryServiceFactory {
   }
 
   /**
-   * Creates an authorized client to Google Bigquery.
+   * Creates an authorized client to Google BigQuery.
    *
    * @return The BigQuery Service
    * @throws IOException Thrown if there is an error connecting
@@ -78,18 +76,19 @@ public final class BigqueryServiceFactory {
     // Create the credential
     HttpTransport transport = new NetHttpTransport();
     JsonFactory jsonFactory = new JacksonFactory();
-    GoogleCredential credential =  GoogleCredential.getApplicationDefault(transport, jsonFactory);
+    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
 
     // Depending on the environment that provides the default credentials (e.g. Compute Engine, App
     // Engine), the credentials may require us to specify the scopes we need explicitly.
-    // Check for this case, and inject the Bigquery scope if required.
+    // Check for this case, and inject the BigQuery scope if required.
     if (credential.createScopedRequired()) {
       Collection<String> bigqueryScopes = BigqueryScopes.all();
       credential = credential.createScoped(bigqueryScopes);
     }
 
     return new Bigquery.Builder(transport, jsonFactory, credential)
-        .setApplicationName("BigQuery Samples").build();
+        .setApplicationName("BigQuery Samples")
+        .build();
   }
   // [END get_service]
 

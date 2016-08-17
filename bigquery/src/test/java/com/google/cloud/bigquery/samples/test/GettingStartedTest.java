@@ -23,26 +23,23 @@ import com.google.cloud.bigquery.samples.GettingStarted;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-
 
 /**
  * Test for GettingStarted.java
  */
-public class GettingStartedTest extends BigquerySampleTest {
+@RunWith(JUnit4.class)
+public class GettingStartedTest {
   private static final PrintStream REAL_OUT = System.out;
   private static final PrintStream REAL_ERR = System.err;
 
   private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
   private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-
-  public GettingStartedTest() throws FileNotFoundException {
-    super();
-  }
 
   @Before
   public void setUp() {
@@ -58,7 +55,7 @@ public class GettingStartedTest extends BigquerySampleTest {
 
   @Test
   public void testSyncQuery() throws IOException {
-    GettingStarted.main(new String[] { CONSTANTS.getProjectId() });
+    GettingStarted.main(new String[] {Constants.PROJECT_ID});
     String out = stdout.toString();
     assertThat(out).named("stdout").containsMatch("Query Results:");
     assertThat(out).named("stdout").contains("hamlet");

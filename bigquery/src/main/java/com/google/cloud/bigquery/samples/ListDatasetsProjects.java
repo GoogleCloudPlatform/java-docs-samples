@@ -50,9 +50,10 @@ public class ListDatasetsProjects {
     }
     String projectId = args[0];
 
-    Bigquery bigquery = BigqueryServiceFactory.getService();
-    String query = "SELECT TOP( title, 10) as title, COUNT(*) as revision_count "
-        + "FROM [publicdata:samples.wikipedia] WHERE wp_namespace = 0;";
+    Bigquery bigquery = BigQueryServiceFactory.getService();
+    String query =
+        "SELECT TOP( title, 10) as title, COUNT(*) as revision_count "
+            + "FROM [publicdata:samples.wikipedia] WHERE wp_namespace = 0;";
 
     System.out.println();
     System.out.println("----- Running the asynchronous query and printing it to stdout.");
@@ -120,8 +121,9 @@ public class ListDatasetsProjects {
    * @param query A String containing a BigQuery SQL statement
    * @param out A PrintStream for output, normally System.out
    */
-  static void runQueryRpcAndPrint(Bigquery bigquery, String projectId, String query,
-      PrintStream out) throws IOException, InterruptedException {
+  static void runQueryRpcAndPrint(
+      Bigquery bigquery, String projectId, String query, PrintStream out)
+      throws IOException, InterruptedException {
     QueryRequest queryRequest = new QueryRequest().setQuery(query);
     QueryResponse queryResponse = bigquery.jobs().query(projectId, queryRequest).execute();
     if (queryResponse.getJobComplete()) {
@@ -133,9 +135,12 @@ public class ListDatasetsProjects {
     // This loop polls until results are present, then loops over result pages.
     String pageToken = null;
     while (true) {
-      GetQueryResultsResponse queryResults = bigquery.jobs()
-          .getQueryResults(projectId, queryResponse.getJobReference().getJobId())
-          .setPageToken(pageToken).execute();
+      GetQueryResultsResponse queryResults =
+          bigquery
+              .jobs()
+              .getQueryResults(projectId, queryResponse.getJobReference().getJobId())
+              .setPageToken(pageToken)
+              .execute();
       if (queryResults.getJobComplete()) {
         printRows(queryResults.getRows(), out);
         pageToken = queryResults.getPageToken();
