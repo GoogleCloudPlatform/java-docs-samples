@@ -22,11 +22,14 @@ import com.google.api.services.bigquery.model.QueryResponse;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Scanner;
+
 /**
  * Runs a synchronous query against Bigtable.
  */
 public class SyncQuerySample {
+  private static final String DEFAULT_QUERY =
+      "SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;";
+  private static final long TEN_SECONDS_MILLIS = 10000;
 
   /**
    * Protected because this is a collection of static methods.
@@ -41,18 +44,39 @@ public class SyncQuerySample {
    * @throws IOException ioexceptino
    */
   public static void main(final String[] args) throws IOException {
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Enter your project id: ");
-    String projectId = scanner.nextLine();
-    System.out.println("Enter your query string: ");
-    String queryString = scanner.nextLine();
-    System.out.println(
-        "Enter how long to wait for the query to complete"
-            + " (in milliseconds):\n "
-            + "(if longer than 10 seconds, use an asynchronous query)");
-    long waitTime = scanner.nextLong();
-    scanner.close();
-    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString, waitTime);
+    String projectId = System.getProperty("projectId");
+    if (projectId == null || projectId.isEmpty()) {
+      System.err.println("The projectId property must be set.");
+      System.exit(1);
+    }
+    System.out.printf("projectId: %s\n", projectId);
+
+    String queryString = System.getProperty("query");
+    if (queryString == null || queryString.isEmpty()) {
+      System.out.println("The query property was not set, using default.");
+      queryString = DEFAULT_QUERY;
+    }
+    System.out.printf("query: %s\n", queryString);
+
+    String waitTimeString = System.getProperty("waitTime");
+    if (waitTimeString == null || waitTimeString.isEmpty()) {
+      waitTimeString = "1000";
+    }
+    long waitTime = Long.parseLong(waitTimeString);
+    System.out.printf("waitTime: %d (milliseconds)\n", waitTime);
+    if (waitTime > TEN_SECONDS_MILLIS) {
+      System.out.println(
+          "WARNING: If the query is going to take longer than 10 seconds to complete, use an"
+          + " asynchronous query.");
+    }
+
+    String useLegacySqlString = System.getProperty("useLegacySql");
+    if (useLegacySqlString == null || useLegacySqlString.isEmpty()) {
+      useLegacySqlString = "false";
+    }
+    boolean useLegacySql = Boolean.parseBoolean(useLegacySqlString);
+
+    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString, waitTime, useLegacySql);
     while (pages.hasNext()) {
       BigQueryUtils.printRows(pages.next().getRows(), System.out);
     }
@@ -65,23 +89,33 @@ public class SyncQuerySample {
    * @param projectId project id from developer console
    * @param queryString query to run
    * @param waitTime Timeout in milliseconds before we abort
+   * @param useLegacySql Boolean that is false if using standard SQL syntax.
    * @return Iterator that pages through the results of the query
    * @throws IOException ioexception
    */
   // [START run]
   public static Iterator<GetQueryResultsResponse> run(
-      final String projectId, final String queryString, final long waitTime) throws IOException {
+      final String projectId,
+      final String queryString,
+      final long waitTime,
+      final boolean useLegacySql) throws IOException {
     Bigquery bigquery = BigQueryServiceFactory.getService();
-    //Wait until query is done with 10 second timeout, at most 5 retries on error
+
+    // Wait until query is done with `waitTime` millisecond timeout, at most 5 retries on error.
     QueryResponse query =
         bigquery
             .jobs()
-            .query(projectId, new QueryRequest().setTimeoutMs(waitTime).setQuery(queryString))
+            .query(
+                projectId,
+                new QueryRequest()
+                    .setTimeoutMs(waitTime)
+                    .setQuery(queryString)
+                    // Set the useLegacySql parameter to false to use standard SQL syntax. See:
+                    // https://cloud.google.com/bigquery/sql-reference/enabling-standard-sql
+                    .setUseLegacySql(useLegacySql))
             .execute();
 
-    //Make a request to get the results of the query
-    //(timeout is zero since job should be complete)
-
+    // Make a request to get the results of the query.
     GetQueryResults getRequest =
         bigquery
             .jobs()
