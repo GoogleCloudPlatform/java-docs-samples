@@ -11,7 +11,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// [start gradle]
+// [START gradle]
 buildscript {    // Configuration for building
   repositories {
     jcenter()    // Bintray's repository - a fast Maven Central mirror & more
@@ -43,6 +43,7 @@ dependencies { // Servlet for App Engine Standard -- only one of these need to b
 
 }
 
+// [START model]
 model {
   appengine {  // App Engine tasks configuration
     run {      // local (dev_appserver) configuration (standard environments only)
@@ -55,10 +56,11 @@ model {
     }
   }
 }
+// [END model]
 
 group = 'com.example.appengine'   // Generated output GroupId
 version = '1.0-SNAPSHOT'          // Version in generated output
 
 sourceCompatibility = JavaVersion.VERSION_1_7  // App Engine Standard uses Java 7
 targetCompatibility = JavaVersion.VERSION_1_7  // App Engine Standard uses Java 7
-// [end gradle]
+// [END gradle]
