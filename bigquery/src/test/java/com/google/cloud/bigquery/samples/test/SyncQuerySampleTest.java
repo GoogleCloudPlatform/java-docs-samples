@@ -37,7 +37,20 @@ public class SyncQuerySampleTest {
   @Test
   public void testSyncQuery() throws IOException {
     Iterator<GetQueryResultsResponse> pages =
-        SyncQuerySample.run(Constants.PROJECT_ID, Constants.QUERY, 10000);
+        SyncQuerySample.run(
+            Constants.PROJECT_ID,
+            "SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;",
+            10000,
+            false /* useLegacySql */);
+    while (pages.hasNext()) {
+      assertThat(pages.next().getRows()).isNotEmpty();
+    }
+  }
+
+  @Test
+  public void testSyncQueryLegacySql() throws IOException {
+    Iterator<GetQueryResultsResponse> pages =
+        SyncQuerySample.run(Constants.PROJECT_ID, Constants.QUERY, 10000, true /* useLegacySql */);
     while (pages.hasNext()) {
       assertThat(pages.next().getRows()).isNotEmpty();
     }

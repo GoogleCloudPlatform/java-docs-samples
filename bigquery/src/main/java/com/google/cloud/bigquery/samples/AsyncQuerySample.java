@@ -24,12 +24,14 @@ import com.google.api.services.bigquery.model.JobConfigurationQuery;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Scanner;
 
 /**
  * Example of authorizing with BigQuery and reading from a public dataset.
  */
 public class AsyncQuerySample {
+  private static final String DEFAULT_QUERY =
+      "SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;";
+
   // [START main]
   /**
    * Prompts for all the parameters required to make a query.
@@ -39,17 +41,42 @@ public class AsyncQuerySample {
    * @throws InterruptedException InterruptedException
    */
   public static void main(final String[] args) throws IOException, InterruptedException {
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Enter your project id: ");
-    String projectId = scanner.nextLine();
-    System.out.println("Enter your query string: ");
-    String queryString = scanner.nextLine();
-    System.out.println("Run query in batch mode? [true|false] ");
-    boolean batch = Boolean.valueOf(scanner.nextLine());
-    System.out.println("Enter how often to check if your job is complete " + "(milliseconds): ");
-    long waitTime = scanner.nextLong();
-    scanner.close();
-    Iterator<GetQueryResultsResponse> pages = run(projectId, queryString, batch, waitTime);
+    String projectId = System.getProperty("projectId");
+    if (projectId == null || projectId.isEmpty()) {
+      System.err.println("The projectId property must be set.");
+      System.exit(1);
+    }
+    System.out.printf("projectId: %s\n", projectId);
+
+    String queryString = System.getProperty("query");
+    if (queryString == null || queryString.isEmpty()) {
+      System.out.println("The query property was not set, using default.");
+      queryString = DEFAULT_QUERY;
+    }
+    System.out.printf("query: %s\n", queryString);
+
+    String useBatchString = System.getProperty("useBatchMode");
+    if (useBatchString == null || useBatchString.isEmpty()) {
+      useBatchString = "false";
+    }
+    boolean useBatchMode = Boolean.parseBoolean(useBatchString);
+    System.out.printf("useBatchMode: %b\n", useBatchMode);
+
+    String waitTimeString = System.getProperty("waitTime");
+    if (waitTimeString == null || waitTimeString.isEmpty()) {
+      waitTimeString = "1000";
+    }
+    long waitTime = Long.parseLong(waitTimeString);
+    System.out.printf("waitTime: %d (milliseconds)\n", waitTime);
+
+    String useLegacySqlString = System.getProperty("useLegacySql");
+    if (useLegacySqlString == null || useLegacySqlString.isEmpty()) {
+      useLegacySqlString = "false";
+    }
+    boolean useLegacySql = Boolean.parseBoolean(useLegacySqlString);
+
+    Iterator<GetQueryResultsResponse> pages =
+        run(projectId, queryString, useBatchMode, waitTime, useLegacySql);
     while (pages.hasNext()) {
       BigQueryUtils.printRows(pages.next().getRows(), System.out);
     }
@@ -62,19 +89,24 @@ public class AsyncQuerySample {
    *
    * @param projectId Get this from Google Developers console
    * @param queryString Query we want to run against BigQuery
-   * @param batch True if you want to batch the queries
+   * @param useBatchMode True if you want to batch the queries
    * @param waitTime How long to wait before retries
+   * @param useLegacySql Boolean that is false if using standard SQL syntax.
    * @return An iterator to the result of your pages
    * @throws IOException Thrown if there's an IOException
    * @throws InterruptedException Thrown if there's an Interrupted Exception
    */
   public static Iterator<GetQueryResultsResponse> run(
-      final String projectId, final String queryString, final boolean batch, final long waitTime)
+      final String projectId,
+      final String queryString,
+      final boolean useBatchMode,
+      final long waitTime,
+      final boolean useLegacySql)
       throws IOException, InterruptedException {
 
     Bigquery bigquery = BigQueryServiceFactory.getService();
 
-    Job query = asyncQuery(bigquery, projectId, queryString, batch);
+    Job query = asyncQuery(bigquery, projectId, queryString, useBatchMode, useLegacySql);
     Bigquery.Jobs.Get getRequest =
         bigquery.jobs().get(projectId, query.getJobReference().getJobId());
 
@@ -96,17 +128,27 @@ public class AsyncQuerySample {
    * @param bigquery an authorized BigQuery client
    * @param projectId a String containing the project ID
    * @param querySql  the actual query string
-   * @param batch True if you want to run the query as BATCH
+   * @param useBatchMode True if you want to run the query as BATCH
+   * @param useLegacySql Boolean that is false if using standard SQL syntax.
    * @return a reference to the inserted query job
    * @throws IOException Thrown if there's a network exception
    */
   public static Job asyncQuery(
-      final Bigquery bigquery, final String projectId, final String querySql, final boolean batch)
+      final Bigquery bigquery,
+      final String projectId,
+      final String querySql,
+      final boolean useBatchMode,
+      final boolean useLegacySql)
       throws IOException {
 
-    JobConfigurationQuery queryConfig = new JobConfigurationQuery().setQuery(querySql);
+    JobConfigurationQuery queryConfig =
+        new JobConfigurationQuery()
+            .setQuery(querySql)
+            // Set the useLegacySql parameter to false to use standard SQL syntax. See:
+            // https://cloud.google.com/bigquery/sql-reference/enabling-standard-sql
+            .setUseLegacySql(useLegacySql);
 
-    if (batch) {
+    if (useBatchMode) {
       queryConfig.setPriority("BATCH");
     }
 

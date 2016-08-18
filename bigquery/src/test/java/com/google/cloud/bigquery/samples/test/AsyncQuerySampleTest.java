@@ -38,17 +38,41 @@ public class AsyncQuerySampleTest {
   @Test
   public void testInteractive() throws IOException, InterruptedException {
     Iterator<GetQueryResultsResponse> pages =
-        AsyncQuerySample.run(Constants.PROJECT_ID, Constants.QUERY, false, 5000);
+        AsyncQuerySample.run(
+            Constants.PROJECT_ID,
+            "SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;",
+            false /* useBatchMode */,
+            5000,
+            false /* useLegacySql */);
     while (pages.hasNext()) {
       assertThat(pages.next().getRows()).isNotEmpty();
     }
   }
 
   @Test
-  @Ignore // Batches can take up to 3 hours to run, probably shouldn't use this
+  public void testInteractiveLegacySql() throws IOException, InterruptedException {
+    Iterator<GetQueryResultsResponse> pages =
+        AsyncQuerySample.run(
+            Constants.PROJECT_ID,
+            Constants.QUERY,
+            false /* useBatchMode */,
+            5000,
+            true /* useLegacySql */);
+    while (pages.hasNext()) {
+      assertThat(pages.next().getRows()).isNotEmpty();
+    }
+  }
+
+  @Test
+  @Ignore // Batches can take up to 3 hours to run, don't run during the system tests.
   public void testBatch() throws IOException, InterruptedException {
     Iterator<GetQueryResultsResponse> pages =
-        AsyncQuerySample.run(Constants.PROJECT_ID, Constants.QUERY, true, 5000);
+        AsyncQuerySample.run(
+            Constants.PROJECT_ID,
+            Constants.QUERY,
+            true /* useBatchMode */,
+            5000,
+            true /* useLegacySql */);
     while (pages.hasNext()) {
       assertThat(pages.next().getRows()).isNotEmpty();
     }
