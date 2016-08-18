@@ -25,7 +25,9 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 
+# Secrets
 service-account.json
+secrets.env
 
 # intellij
 .idea/

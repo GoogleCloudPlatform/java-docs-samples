@@ -16,7 +16,7 @@
 
 package com.google.cloud.storage.storagetransfer.samples.test;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.services.storagetransfer.model.Date;
 import com.google.api.services.storagetransfer.model.TimeOfDay;
@@ -34,15 +34,11 @@ public class TransferJobUtilsTest {
    */
   @Test
   public void testCreateDate() throws Exception {
-    int year = rand.nextInt(2000) + 1;
-    int month = rand.nextInt(12) + 1;
-    int day = rand.nextInt(30) + 1;
-    String dateString =
-        Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(day);
+    Date date = TransferJobUtils.createDate("2000-12-30");
+    assertThat(date).isEqualTo(new Date().setYear(2000).setMonth(12).setDay(30));
 
-    Date date = TransferJobUtils.createDate(dateString);
-
-    assertEquals(date, Date.class.newInstance().setYear(year).setMonth(month).setDay(day));
+    date = TransferJobUtils.createDate("2016-09-08");
+    assertThat(date).isEqualTo(new Date().setYear(2016).setMonth(9).setDay(8));
   }
 
   /**
@@ -50,15 +46,10 @@ public class TransferJobUtilsTest {
    */
   @Test
   public void testCreateTimeOfDay() throws Exception {
-    int hour = rand.nextInt(24);
-    int minute = rand.nextInt(60);
-    int second = rand.nextInt(60);
-    String timeString =
-        Integer.toString(hour) + ":" + Integer.toString(minute) + ":" + Integer.toString(second);
+    TimeOfDay time = TransferJobUtils.createTimeOfDay("17:00:42");
+    assertThat(time).isEqualTo(new TimeOfDay().setHours(17).setMinutes(0).setSeconds(42));
 
-    TimeOfDay time = TransferJobUtils.createTimeOfDay(timeString);
-
-    assertEquals(time,
-        TimeOfDay.class.newInstance().setHours(hour).setMinutes(minute).setSeconds(second));
+    time = TransferJobUtils.createTimeOfDay("08:09:08");
+    assertThat(time).isEqualTo(new TimeOfDay().setHours(8).setMinutes(9).setSeconds(8));
   }
 }

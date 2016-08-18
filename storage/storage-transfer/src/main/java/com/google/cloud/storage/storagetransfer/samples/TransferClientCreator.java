@@ -43,8 +43,8 @@ public final class TransferClientCreator {
   public static Storagetransfer createStorageTransferClient() throws IOException {
     HttpTransport httpTransport = Utils.getDefaultTransport();
     JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
-    GoogleCredential credential = GoogleCredential
-        .getApplicationDefault(httpTransport, jsonFactory);
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault(httpTransport, jsonFactory);
     return createStorageTransferClient(httpTransport, jsonFactory, credential);
   }
 
@@ -59,8 +59,8 @@ public final class TransferClientCreator {
    *          a user-supplied Google credential
    * @return a Storage Transfer client
    */
-  public static Storagetransfer createStorageTransferClient(HttpTransport httpTransport,
-      JsonFactory jsonFactory, GoogleCredential credential) {
+  public static Storagetransfer createStorageTransferClient(
+      HttpTransport httpTransport, JsonFactory jsonFactory, GoogleCredential credential) {
     Preconditions.checkNotNull(httpTransport);
     Preconditions.checkNotNull(jsonFactory);
     Preconditions.checkNotNull(credential);
@@ -74,7 +74,8 @@ public final class TransferClientCreator {
     // implementation in the "Retry Handling" section.
     HttpRequestInitializer initializer = new RetryHttpInitializerWrapper(credential);
     return new Storagetransfer.Builder(httpTransport, jsonFactory, initializer)
-        .setApplicationName("storagetransfer-sample").build();
+        .setApplicationName("storagetransfer-sample")
+        .build();
   }
 }
 //[END all]
