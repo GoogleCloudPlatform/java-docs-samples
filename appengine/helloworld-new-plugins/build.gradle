@@ -35,9 +35,8 @@ apply plugin: 'java'                              // standard Java tasks
 apply plugin: 'war'                               // standard Web Archive plugin
 apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
 
-dependencies { // Servlet for App Engine Standard -- only one of these need to be uncommented.
-//  providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
-  providedCompile 'javax.servlet:javax.servlet-api:3.1.0' // if java_quickstart in appengine-web.xml
+dependencies {
+  providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
   compile 'com.google.appengine:appengine:+'
 // Add your dependencies here.
 
@@ -47,7 +46,7 @@ dependencies { // Servlet for App Engine Standard -- only one of these need to b
 model {
   appengine {  // App Engine tasks configuration
     run {      // local (dev_appserver) configuration (standard environments only)
-      port = 8080         // default
+      port = 8080                 // default
     }
 
     deploy {   // deploy configuration
