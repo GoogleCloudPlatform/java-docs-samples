@@ -28,7 +28,7 @@
   </parent>
 
   <properties>
-    <gcloud-maven-plugin-version>2.0.9.101.v20160316</gcloud-maven-plugin-version>
+    <gcloud-maven-plugin-version>2.0.9.121.v20160815</gcloud-maven-plugin-version>
   </properties>
 
   <dependencies>
