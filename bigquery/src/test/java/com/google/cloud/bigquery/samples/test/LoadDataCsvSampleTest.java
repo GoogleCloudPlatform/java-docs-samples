@@ -17,37 +17,30 @@
 package com.google.cloud.bigquery.samples.test;
 
 import com.google.cloud.bigquery.samples.LoadDataCsvSample;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
  * Tests for sample that loads data from CSV.
  */
-public class LoadDataCsvSampleTest extends BigquerySampleTest {
-
-  public LoadDataCsvSampleTest()
-      throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-    super();
-  }
+@RunWith(JUnit4.class)
+public class LoadDataCsvSampleTest {
 
   @Test
   public void testLoadData() throws IOException, InterruptedException {
     InputStreamReader is =
         new InputStreamReader(LoadDataCsvSample.class.getResourceAsStream("/schema.json"));
     LoadDataCsvSample.run(
-        CONSTANTS.getCloudStorageInputUri(),
-        CONSTANTS.getProjectId(),
-        CONSTANTS.getDatasetId(),
-        CONSTANTS.getNewTableId(),
+        Constants.CLOUD_STORAGE_INPUT_URI,
+        Constants.PROJECT_ID,
+        Constants.DATASET_ID,
+        Constants.NEW_TABLE_ID,
         is,
         5000L);
   }
-
-
 }

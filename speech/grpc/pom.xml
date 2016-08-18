@@ -48,6 +48,9 @@ limitations under the License.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <codehaus-versions-maven-plugin-version>2.2</codehaus-versions-maven-plugin-version>
+    <maven-compiler-plugin-version>3.1</maven-compiler-plugin-version>
+    <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
   </properties>
 
   <profiles>
@@ -205,7 +208,7 @@ limitations under the License.
       <plugin>
         <groupId>org.xolstice.maven.plugins</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
-        <version>0.5.0</version>
+        <version>${xolstice-protobuf-maven-plugin-version}</version>
         <configuration>
           <!--
             The version of protoc must match protobuf-java. If you
@@ -230,7 +233,7 @@ limitations under the License.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.1</version>
+        <version>${codehaus-versions-maven-plugin-version}</version>
         <executions>
           <execution>
             <phase>compile</phase>
@@ -242,7 +245,7 @@ limitations under the License.
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>${maven-compiler-plugin-version}</version>
         <configuration>
           <source>${jdk.version}</source>
           <target>${jdk.version}</target>

@@ -1,9 +1,0 @@
-{
-    "projectId": "cloud-samples-tests",
-    "datasetId": "test_dataset_java",
-    "currentTableId": "test_table_java",
-    "newTableId": "test_table_java_2",
-    "cloudStorageInputUri": "gs://cloud-samples-tests/data.csv",
-    "cloudStorageOutputUri": "gs://cloud-samples-tests/output.csv",
-    "query": "SELECT corpus FROM publicdata:samples.shakespeare GROUP BY corpus;"
-}

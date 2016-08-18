@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 
-
 /**
  * Example of Bigquery Streaming.
  */
@@ -38,9 +37,7 @@ public class StreamingSample {
   /**
    * Empty constructor since this is just a collection of static methods.
    */
-  protected StreamingSample() {
-  }
-
+  protected StreamingSample() {}
 
   /**
    * Command line that demonstrates Bigquery streaming.
@@ -59,15 +56,12 @@ public class StreamingSample {
     String tableId = scanner.nextLine();
     scanner.close();
 
-    System.out.println("Enter JSON to stream to BigQuery: \n"
-        + "Press End-of-stream (CTRL-D) to stop");
+    System.out.println(
+        "Enter JSON to stream to BigQuery: \n" + "Press End-of-stream (CTRL-D) to stop");
 
     JsonReader fromCli = new JsonReader(new InputStreamReader(System.in));
 
-    Iterator<TableDataInsertAllResponse> responses = run(projectId,
-        datasetId,
-        tableId,
-        fromCli);
+    Iterator<TableDataInsertAllResponse> responses = run(projectId, datasetId, tableId, fromCli);
 
     while (responses.hasNext()) {
       System.out.println(responses.next());
@@ -76,7 +70,6 @@ public class StreamingSample {
     fromCli.close();
   }
   // [END main]
-
 
   /**
    * Run the bigquery ClI.
@@ -90,13 +83,11 @@ public class StreamingSample {
    * @throws InterruptedException Should never be thrown
    */
   // [START run]
-  public static Iterator<TableDataInsertAllResponse> run(final String projectId,
-      final String datasetId,
-      final String tableId,
-      final JsonReader rows) throws IOException {
+  public static Iterator<TableDataInsertAllResponse> run(
+      final String projectId, final String datasetId, final String tableId, final JsonReader rows)
+      throws IOException {
 
-
-    final Bigquery bigquery = BigqueryServiceFactory.getService();
+    final Bigquery bigquery = BigQueryServiceFactory.getService();
     final Gson gson = new Gson();
     rows.beginArray();
 
@@ -123,10 +114,10 @@ public class StreamingSample {
        */
       public TableDataInsertAllResponse next() {
         try {
-          Map<String, Object> rowData = gson.<Map<String, Object>>fromJson(
-              rows,
-              (new HashMap<String, Object>()).getClass());
-          return streamRow(bigquery,
+          Map<String, Object> rowData =
+              gson.<Map<String, Object>>fromJson(rows, (new HashMap<String, Object>()).getClass());
+          return streamRow(
+              bigquery,
               projectId,
               datasetId,
               tableId,
@@ -142,9 +133,7 @@ public class StreamingSample {
       public void remove() {
         this.next();
       }
-
     };
-
   }
   // [END run]
 
@@ -160,18 +149,22 @@ public class StreamingSample {
    * @throws IOException ioexception
    */
   // [START streamRow]
-  public static TableDataInsertAllResponse streamRow(final Bigquery bigquery,
+  public static TableDataInsertAllResponse streamRow(
+      final Bigquery bigquery,
       final String projectId,
       final String datasetId,
       final String tableId,
-      final TableDataInsertAllRequest.Rows row) throws IOException {
+      final TableDataInsertAllRequest.Rows row)
+      throws IOException {
 
-    return bigquery.tabledata().insertAll(
-        projectId,
-        datasetId,
-        tableId,
-        new TableDataInsertAllRequest().setRows(
-            Collections.singletonList(row))).execute();
+    return bigquery
+        .tabledata()
+        .insertAll(
+            projectId,
+            datasetId,
+            tableId,
+            new TableDataInsertAllRequest().setRows(Collections.singletonList(row)))
+        .execute();
   }
   // [END streamRow]
 }

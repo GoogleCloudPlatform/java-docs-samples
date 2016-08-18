@@ -20,13 +20,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.services.bigquery.model.TableDataInsertAllResponse;
 import com.google.cloud.bigquery.samples.StreamingSample;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
@@ -34,24 +33,18 @@ import java.util.Iterator;
 /**
  * Tests for streaming sample.
  */
-public class StreamingSampleTest extends BigquerySampleTest {
-
-  public StreamingSampleTest() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-    super();
-  }
+@RunWith(JUnit4.class)
+public class StreamingSampleTest {
 
   @Test
   public void testStream() throws IOException {
     JsonReader json =
         new JsonReader(
             new InputStreamReader(
-                BigquerySampleTest.class.getResourceAsStream("/streamrows.json")));
+                StreamingSampleTest.class.getResourceAsStream("/streamrows.json")));
     Iterator<TableDataInsertAllResponse> response =
         StreamingSample.run(
-            CONSTANTS.getProjectId(),
-            CONSTANTS.getDatasetId(),
-            CONSTANTS.getCurrentTableId(),
-            json);
+            Constants.PROJECT_ID, Constants.DATASET_ID, Constants.CURRENT_TABLE_ID, json);
 
     while (response.hasNext()) {
       assertThat(response.next()).isNotEmpty();
