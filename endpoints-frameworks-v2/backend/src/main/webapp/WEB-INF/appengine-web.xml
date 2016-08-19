@@ -20,6 +20,10 @@
     <threadsafe>true</threadsafe>
     <vm>false</vm>
 
+    <basic-scaling>
+        <max-instances>2</max-instances>
+    </basic-scaling>
+
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
