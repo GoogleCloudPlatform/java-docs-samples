@@ -27,29 +27,20 @@ import com.google.api.services.storagetransfer.model.TransferOptions;
 import com.google.api.services.storagetransfer.model.TransferSpec;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.io.PrintStream;
 
 /**
  * Creates a daily transfer from a standard Cloud Storage bucket to a Cloud Storage Nearline
- * bucket for files untouched for 30 days. 
+ * bucket for files untouched for 30 days.
  */
 public final class NearlineRequester {
 
-  private static final String JOB_DESC = "YOUR DESCRIPTION";
-  private static final String PROJECT_ID = "YOUR_PROJECT_ID";
-  private static final String GCS_SOURCE_NAME = "YOUR_SOURCE_BUCKET";
-  private static final String NEARLINE_SINK_NAME = "YOUR_SINK_BUCKET";
-
-  /**
-   * Specify times below using US Pacific Time Zone.
-   */
-  private static final String START_DATE = "YYYY-MM-DD";
-  private static final String START_TIME = "HH:MM:SS";
-
-  private static final Logger LOG = Logger.getLogger(AwsRequester.class.getName());
-
   /**
    * Creates and executes a request for a TransferJob to Cloud Storage Nearline.
+   *
+   * <p>The {@code startDate} and {@code startTime} parameters should be set according to the UTC
+   * Time Zone. See:
+   * https://developers.google.com/resources/api-libraries/documentation/storagetransfer/v1/java/latest/com/google/api/services/storagetransfer/v1/model/Schedule.html#getStartTimeOfDay()
    *
    * @return the response TransferJob if the request is successful
    * @throws InstantiationException
@@ -59,29 +50,56 @@ public final class NearlineRequester {
    * @throws IOException
    *           if the client failed to complete the request
    */
-  public static TransferJob createNearlineTransferJob() throws InstantiationException,
-    IllegalAccessException, IOException {
-    Date date = TransferJobUtils.createDate(START_DATE);
-    TimeOfDay time = TransferJobUtils.createTimeOfDay(START_TIME);
-    TransferJob transferJob = TransferJob.class
-        .newInstance()
-        .setDescription(JOB_DESC)
-        .setProjectId(PROJECT_ID)
-        .setTransferSpec(
-        TransferSpec.class
-          .newInstance()
-          .setGcsDataSource(GcsData.class.newInstance().setBucketName(GCS_SOURCE_NAME))
-          .setGcsDataSink(GcsData.class.newInstance().setBucketName(NEARLINE_SINK_NAME))
-          .setObjectConditions(
-            ObjectConditions.class.newInstance().setMinTimeElapsedSinceLastModification("2592000s"))
-          .setTransferOptions(
-            TransferOptions.class.newInstance().setDeleteObjectsFromSourceAfterTransfer(true)))
-        .setSchedule(Schedule.class.newInstance().setScheduleStartDate(date)
-          .setStartTimeOfDay(time))
-        .setStatus("ENABLED");
+  public static TransferJob createNearlineTransferJob(
+      String projectId,
+      String jobDescription,
+      String gcsSourceBucket,
+      String gcsNearlineSinkBucket,
+      String startDate,
+      String startTime)
+      throws InstantiationException, IllegalAccessException, IOException {
+    Date date = TransferJobUtils.createDate(startDate);
+    TimeOfDay time = TransferJobUtils.createTimeOfDay(startTime);
+    TransferJob transferJob =
+        new TransferJob()
+            .setDescription(jobDescription)
+            .setProjectId(projectId)
+            .setTransferSpec(
+                new TransferSpec()
+                    .setGcsDataSource(new GcsData().setBucketName(gcsSourceBucket))
+                    .setGcsDataSink(new GcsData().setBucketName(gcsNearlineSinkBucket))
+                    .setObjectConditions(
+                        new ObjectConditions()
+                            .setMinTimeElapsedSinceLastModification("2592000s" /* 30 days */))
+                    .setTransferOptions(
+                        new TransferOptions()
+                            .setDeleteObjectsFromSourceAfterTransfer(true)))
+            .setSchedule(
+                new Schedule().setScheduleStartDate(date).setStartTimeOfDay(time))
+            .setStatus("ENABLED");
 
     Storagetransfer client = TransferClientCreator.createStorageTransferClient();
     return client.transferJobs().create(transferJob).execute();
+  }
+
+  public static void run(PrintStream out)
+      throws InstantiationException, IllegalAccessException, IOException {
+    String projectId = TransferJobUtils.getPropertyOrFail("projectId");
+    String jobDescription = TransferJobUtils.getPropertyOrFail("jobDescription");
+    String gcsSourceBucket = TransferJobUtils.getPropertyOrFail("gcsSourceBucket");
+    String gcsNearlineSinkBucket = TransferJobUtils.getPropertyOrFail("gcsNearlineSinkBucket");
+    String startDate = TransferJobUtils.getPropertyOrFail("startDate");
+    String startTime = TransferJobUtils.getPropertyOrFail("startTime");
+
+    TransferJob responseT =
+        createNearlineTransferJob(
+            projectId,
+            jobDescription,
+            gcsSourceBucket,
+            gcsNearlineSinkBucket,
+            startDate,
+            startTime);
+    out.println("Return transferJob: " + responseT.toPrettyString());
   }
 
   /**
@@ -92,8 +110,7 @@ public final class NearlineRequester {
    */
   public static void main(String[] args) {
     try {
-      TransferJob responseT = createNearlineTransferJob();
-      LOG.info("Return transferJob: " + responseT.toPrettyString());
+      run(System.out);
     } catch (Exception e) {
       e.printStackTrace();
     }
