@@ -18,7 +18,6 @@
     <application>${endpoints.project.id}</application>
     <version>1</version>
     <threadsafe>true</threadsafe>
-    <vm>false</vm>
 
     <basic-scaling>
         <max-instances>2</max-instances>
