@@ -1,7 +1,7 @@
-# Google Cloud Endpoints Frameworks & Java
+# App Engine Standard & Google Cloud Endpoints Frameworks & Java
 
 This sample demonstrates how to use Google Cloud Endpoints Frameworks using
-Java.
+Java on App Engine Standard.
 
 ## Adding the project ID to the sample API code
 

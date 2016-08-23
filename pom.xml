@@ -53,6 +53,7 @@
         <module>appengine/datastore/indexes</module>
         <module>appengine/datastore/indexes-exploding</module>
         <module>appengine/datastore/indexes-perfect</module>
+        <module>appengine/endpoints-frameworks-v2/backend</module>
         <module>appengine/firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
@@ -80,7 +81,6 @@
         <module>compute/mailjet</module>
         <module>compute/sendgrid</module>
         <module>datastore</module>
-        <module>endpoints-frameworks-v2/backend</module>
         <module>logging</module>
         <module>managed_vms/analytics</module>
         <module>managed_vms/async-rest</module>
