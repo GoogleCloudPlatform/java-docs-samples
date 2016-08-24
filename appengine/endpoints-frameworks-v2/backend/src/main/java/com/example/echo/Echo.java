@@ -16,12 +16,10 @@
 
 package com.example.echo;
 
-import com.google.api.server.spi.auth.EspAuthenticator;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.config.AuthLevel;
 
 /** The Echo API which Endpoints will be exposing. */
 @Api(
@@ -53,18 +51,13 @@ public class Echo {
    * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
    * 401.
    *
-   * Note that name is not specified. This will default "{class name}.{method name}". For
+   * Note that name is not specified. This will default to "{class name}.{method name}". For
    * example, the default is "echo.getUserEmail".
    *
    * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
-  @ApiMethod(
-      httpMethod = ApiMethod.HttpMethod.GET,
-      authenticators = {EspAuthenticator.class},
-      audiences = {"YOUR_OAUTH_CLIENT_ID"},
-      authLevel = AuthLevel.REQUIRED
-      )
+  @ApiMethod(httpMethod = ApiMethod.HttpMethod.GET)
   public Email getUserEmail(User user) throws UnauthorizedException {
     if (user == null) {
       throw new UnauthorizedException();

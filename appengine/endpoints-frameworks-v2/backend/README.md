@@ -28,11 +28,11 @@ To build the project:
 To generate the required configuration file `swagger.json`:
 
 0. Download and unzip the [Endpoints Framework tools
-package](http://search.maven.org/remotecontent?filepath=com/google/endpoints/endpoints-framework-tools/2.0.0-beta.4/endpoints-framework-tools-2.0.0-beta.4.zip).
+package](http://search.maven.org/remotecontent?filepath=com/google/endpoints/endpoints-framework-tools/2.0.0-beta.7/endpoints-framework-tools-2.0.0-beta.7.zip).
 
 0. Invoke the Endpoints Tool using this command:
 
-         path/to/endpoints-framework-tools-2.0.0-beta.4/bin/endpoints-framework-tools get-swagger-doc \
+         path/to/endpoints-framework-tools-2.0.0-beta.7/bin/endpoints-framework-tools get-swagger-doc \
              -h <PROJECT_ID>.appspot.com \
              -w target/echo-1.0-SNAPSHOT com.example.echo.Echo
 
