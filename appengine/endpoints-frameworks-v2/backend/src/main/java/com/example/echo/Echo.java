@@ -59,7 +59,7 @@ public class Echo {
    * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
- @ApiMethod(
+  @ApiMethod(
       httpMethod = ApiMethod.HttpMethod.GET,
       authenticators = {EspAuthenticator.class},
       audiences = {"YOUR_OAUTH_CLIENT_ID"},
