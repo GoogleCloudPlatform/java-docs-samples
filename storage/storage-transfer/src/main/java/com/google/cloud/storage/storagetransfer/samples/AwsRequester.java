@@ -27,30 +27,18 @@ import com.google.api.services.storagetransfer.model.TransferJob;
 import com.google.api.services.storagetransfer.model.TransferSpec;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.io.PrintStream;
 
 /**
  * Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
  */
 public final class AwsRequester {
-
-  private static final String JOB_DESC = "YOUR DESCRIPTION";
-  private static final String PROJECT_ID = "YOUR_PROJECT_ID";
-  private static final String AWS_SOURCE_NAME = "YOUR SOURCE BUCKET";
-  private static final String AWS_ACCESS_KEY_ID = "YOUR_ACCESS_KEY_ID";
-  private static final String AWS_SECRET_ACCESS_KEY = "YOUR_SECRET_ACCESS_KEY";
-  private static final String GCS_SINK_NAME = "YOUR_SINK_BUCKET";
-
-  /**
-   * Specify times below using US Pacific Time Zone.
-   */
-  private static final String START_DATE = "YYYY-MM-DD";
-  private static final String START_TIME = "HH:MM:SS";
-
-  private static final Logger LOG = Logger.getLogger(AwsRequester.class.getName());
-
   /**
    * Creates and executes a request for a TransferJob from Amazon S3 to Cloud Storage.
+   *
+   * <p>The {@code startDate} and {@code startTime} parameters should be set according to the UTC
+   * Time Zone. See:
+   * https://developers.google.com/resources/api-libraries/documentation/storagetransfer/v1/java/latest/com/google/api/services/storagetransfer/v1/model/Schedule.html#getStartTimeOfDay()
    *
    * @return the response TransferJob if the request is successful
    * @throws InstantiationException
@@ -60,43 +48,73 @@ public final class AwsRequester {
    * @throws IOException
    *           if the client failed to complete the request
    */
-  public static TransferJob createAwsTransferJob() throws InstantiationException,
-    IllegalAccessException, IOException {
-    Date date = TransferJobUtils.createDate(START_DATE);
-    TimeOfDay time = TransferJobUtils.createTimeOfDay(START_TIME);
-    TransferJob transferJob = TransferJob.class
-        .newInstance()
-        .setDescription(JOB_DESC)
-        .setProjectId(PROJECT_ID)
-        .setTransferSpec(
-        TransferSpec.class
-          .newInstance()
-          .setAwsS3DataSource(
-            AwsS3Data.class
-              .newInstance()
-              .setBucketName(AWS_SOURCE_NAME)
-              .setAwsAccessKey(
-                AwsAccessKey.class.newInstance().setAccessKeyId(AWS_ACCESS_KEY_ID)
-                  .setSecretAccessKey(AWS_SECRET_ACCESS_KEY)))
-          .setGcsDataSink(GcsData.class.newInstance().setBucketName(GCS_SINK_NAME)))
-        .setSchedule(
-        Schedule.class.newInstance().setScheduleStartDate(date).setScheduleEndDate(date)
-          .setStartTimeOfDay(time)).setStatus("ENABLED");
+  public static TransferJob createAwsTransferJob(
+      String projectId,
+      String jobDescription,
+      String awsSourceBucket,
+      String gcsSinkBucket,
+      String startDate,
+      String startTime,
+      String awsAccessKeyId,
+      String awsSecretAccessKey)
+      throws InstantiationException, IllegalAccessException, IOException {
+    Date date = TransferJobUtils.createDate(startDate);
+    TimeOfDay time = TransferJobUtils.createTimeOfDay(startTime);
+    TransferJob transferJob =
+        new TransferJob()
+            .setDescription(jobDescription)
+            .setProjectId(projectId)
+            .setTransferSpec(
+                new TransferSpec()
+                    .setAwsS3DataSource(
+                        new AwsS3Data()
+                            .setBucketName(awsSourceBucket)
+                            .setAwsAccessKey(
+                                new AwsAccessKey()
+                                    .setAccessKeyId(awsAccessKeyId)
+                                    .setSecretAccessKey(awsSecretAccessKey)))
+                    .setGcsDataSink(new GcsData().setBucketName(gcsSinkBucket)))
+            .setSchedule(
+                new Schedule()
+                    .setScheduleStartDate(date)
+                    .setScheduleEndDate(date)
+                    .setStartTimeOfDay(time))
+            .setStatus("ENABLED");
 
     Storagetransfer client = TransferClientCreator.createStorageTransferClient();
     return client.transferJobs().create(transferJob).execute();
   }
 
+  public static void run(PrintStream out)
+      throws InstantiationException, IllegalAccessException, IOException {
+    String projectId = TransferJobUtils.getPropertyOrFail("projectId");
+    String jobDescription = TransferJobUtils.getPropertyOrFail("jobDescription");
+    String awsSourceBucket = TransferJobUtils.getPropertyOrFail("awsSourceBucket");
+    String gcsSinkBucket = TransferJobUtils.getPropertyOrFail("gcsSinkBucket");
+    String startDate = TransferJobUtils.getPropertyOrFail("startDate");
+    String startTime = TransferJobUtils.getPropertyOrFail("startTime");
+    String awsAccessKeyId = TransferJobUtils.getEnvOrFail("AWS_ACCESS_KEY_ID");
+    String awsSecretAccessKey = TransferJobUtils.getEnvOrFail("AWS_SECRET_ACCESS_KEY");
+
+    TransferJob responseT =
+        createAwsTransferJob(
+            projectId,
+            jobDescription,
+            awsSourceBucket,
+            gcsSinkBucket,
+            startDate,
+            startTime,
+            awsAccessKeyId,
+            awsSecretAccessKey);
+    out.println("Return transferJob: " + responseT.toPrettyString());
+  }
+
   /**
    * Output the contents of a successfully created TransferJob.
-   *
-   * @param args
-   *          arguments from the command line
    */
   public static void main(String[] args) {
     try {
-      TransferJob responseT = createAwsTransferJob();
-      LOG.info("Return transferJob: " + responseT.toPrettyString());
+      run(System.out);
     } catch (Exception e) {
       e.printStackTrace();
     }

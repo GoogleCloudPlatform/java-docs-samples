@@ -47,9 +47,11 @@ public final class RequestChecker {
    * @throws IOException
    *           if the client failed to complete the request
    */
-  public static ListOperationsResponse checkTransfer(Storagetransfer client,
-      String projectId, String jobName) throws IOException {
-    return client.transferOperations().list("transferOperations")
+  public static ListOperationsResponse checkTransfer(
+      Storagetransfer client, String projectId, String jobName) throws IOException {
+    return client
+        .transferOperations()
+        .list("transferOperations")
         .setFilter("{\"project_id\": \"" + projectId + "\", \"job_names\": [\"" + jobName + "\"] }")
         .execute();
   }
@@ -63,8 +65,7 @@ public final class RequestChecker {
   public static void main(String[] args) {
     try {
       ListOperationsResponse resp =
-          checkTransfer(TransferClientCreator.createStorageTransferClient(),
-          PROJECT_ID, JOB_NAME);
+          checkTransfer(TransferClientCreator.createStorageTransferClient(), PROJECT_ID, JOB_NAME);
       LOG.info("Result of transferOperations/list: " + resp.toPrettyString());
     } catch (Exception e) {
       e.printStackTrace();

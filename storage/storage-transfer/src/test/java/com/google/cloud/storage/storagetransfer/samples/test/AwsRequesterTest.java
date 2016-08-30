@@ -16,62 +16,37 @@
 
 package com.google.cloud.storage.storagetransfer.samples.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.storagetransfer.Storagetransfer;
-import com.google.api.services.storagetransfer.Storagetransfer.TransferJobs;
-import com.google.api.services.storagetransfer.Storagetransfer.TransferJobs.Create;
-import com.google.api.services.storagetransfer.model.Date;
-import com.google.api.services.storagetransfer.model.Schedule;
-import com.google.api.services.storagetransfer.model.TimeOfDay;
-import com.google.api.services.storagetransfer.model.TransferJob;
-import com.google.api.services.storagetransfer.model.TransferSpec;
 import com.google.cloud.storage.storagetransfer.samples.AwsRequester;
-import com.google.cloud.storage.storagetransfer.samples.TransferClientCreator;
-import com.google.cloud.storage.storagetransfer.samples.TransferJobUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.runners.JUnit4;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ TransferJobUtils.class, TransferClientCreator.class })
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+@RunWith(JUnit4.class)
 public class AwsRequesterTest {
 
   /**
    * Tests whether AwsRequester executes a request to create a TransferJob.
    */
   @Test
-  public void testTest() throws Exception {
-    Date date = TransferJobUtils.createDate("2000-1-1");
-    TimeOfDay time = TransferJobUtils.createTimeOfDay("1:1:1");
-    TransferJob dummyJob = TransferJob.class
-        .newInstance()
-        .setDescription("DUMMY DESCRIPTION")
-        .setProjectId("DUMMY_PROJECT_ID")
-        .setTransferSpec(TransferSpec.class.newInstance())
-        .setSchedule(
-            Schedule.class.newInstance().setScheduleStartDate(date).setScheduleEndDate(date)
-                .setStartTimeOfDay(time)).setStatus("ENABLED");
+  public void testRun() throws Exception {
+    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+    PrintStream outStream = new PrintStream(outBytes);
+    System.setProperty("projectId", "cloud-samples-tests");
+    System.setProperty("jobDescription", "Sample transfer job from S3 to GCS.");
+    System.setProperty("awsSourceBucket", "cloud-samples-tests");
+    System.setProperty("gcsSinkBucket", "cloud-samples-tests-storagetransfer");
+    System.setProperty("startDate", "2000-01-01");
+    System.setProperty("startTime", "00:00:00");
 
-    PowerMockito.mockStatic(TransferClientCreator.class);
-    PowerMockito.mockStatic(TransferJobUtils.class);
-    Storagetransfer client = Mockito.mock(Storagetransfer.class);
-    TransferJobs jobs = Mockito.mock(TransferJobs.class);
-    Create create = Mockito.mock(Create.class);
+    AwsRequester.run(outStream);
+    String out = outBytes.toString();
 
-    PowerMockito.when(TransferClientCreator.createStorageTransferClient()).thenReturn(client);
-    when(client.transferJobs()).thenReturn(jobs);
-    when(jobs.create(Matchers.any(TransferJob.class))).thenReturn(create);
-    when(create.execute()).thenReturn(dummyJob);
-
-    TransferJob returnedJob = AwsRequester.createAwsTransferJob();
-
-    assertEquals(returnedJob, dummyJob);
+    assertThat(out).contains("\"description\" : \"Sample transfer job from S3 to GCS.\"");
   }
 }
