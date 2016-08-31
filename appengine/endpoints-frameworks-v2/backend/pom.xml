@@ -32,19 +32,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <endpoints.framework.version>2.0.0-beta.7</endpoints.framework.version>
-        <endpoints.management.version>0.0.20-SNAPSHOT</endpoints.management.version>
+        <endpoints.management.version>1.0.0-beta.7</endpoints.management.version>
 
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
     </properties>
-
-    <!-- TODO(wmwong): Remove this repo before merging. -->
-    <repositories>
-        <repository>
-            <id>internal-endpoints-testing</id>
-            <name>Internal Endpoints Testing</name>
-            <url>http://104.197.230.53:8081/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
