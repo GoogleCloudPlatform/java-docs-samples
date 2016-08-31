@@ -27,8 +27,8 @@ print_usage () {
   echo "  appengine - GAE Standard - Local - GA Plugin" >&2
   echo "  jetty - Flex - Local" >&2
   echo "  spring-boot - local" >&2
-  echo "  new_mvn - local - Standard/Flex" >&2
-  echo "  gradle - local - Standard" >&2
+  echo "  new_mvn - local - Standard / FlexCompat" >&2
+  echo "  gradle - local - Standard / FlexCompat" >&2
   echo "  gradle_jetty - local - Flex" &2
 }
 
@@ -37,31 +37,30 @@ if [[ -z "$1" ]]; then
   print_usage
   exit 1
 fi
-command="mvn --batch-mode clean ${mvn_goal} -DskipTests"
 case $1 in
   appengine)
-    mvn_goal="appengine:devserver"
     server_started_message="localhost:8080"
+    command="mvn --batch-mode clean appengine:devserver -DskipTests"
     ;;
   jetty)
-    mvn_goal="jetty:run-exploded"
     server_started_message="Started Jetty Server"
+    command="mvn --batch-mode clean jetty:run-exploded -DskipTests"
     ;;
   spring-boot)
-    mvn_goal="spring-boot:run"
     server_started_message="Tomcat started on port(s): 8080 (http)"
+    command="mvn --batch-mode clean spring-boot:run -DskipTests"
     ;;
   new_mvn)
-    mvn_goal="appengine:run"
     server_started_message="localhost:8080"
+    command="mvn --batch-mode clean appengine:run -DskipTests"
     ;;
   gradle)
     server_started_message="localhost:8080"
-    command="gradle appengineRun "
+    command="gradle appengineRun"
     ;;
   gradle_jetty)
     server_started_message="localhost:8080"
-    command="gradle jettyRun "
+    command="gradle jettyRun"
     ;;
   *)
     print_usage
