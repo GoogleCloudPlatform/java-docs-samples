@@ -56,14 +56,12 @@ case $1 in
     server_started_message="localhost:8080"
     ;;
   gradle)
-    task="appengineRun"
     server_started_message="localhost:8080"
-    command="gradle clean ${mvn_goal}"
+    command="gradle appengineRun "
     ;;
   gradle_jetty)
-    task="jettyRun"
     server_started_message="localhost:8080"
-    command="gradle clean ${task} "
+    command="gradle jettyRun "
     ;;
   *)
     print_usage
