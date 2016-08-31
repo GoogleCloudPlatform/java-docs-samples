@@ -40,13 +40,13 @@ for testdir in "${devserver_tests[@]}" ; do
   ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
 done
 
-newplugin_std_tests=(
-#    appengine/helloworld-new-plugins
-)
-for testdir in "${newplugin_std_tests[@]}" ; do
-  ./java-repo-tools/scripts/test-localhost.sh standard_mvn "${testdir}"
-  ./java-repo-tools/scripts/test-localhost.sh standard_gradle "${testdir}"
-done
+# newplugin_std_tests=(
+#     appengine/helloworld-new-plugins
+# )
+# for testdir in "${newplugin_std_tests[@]}" ; do
+#   ./java-repo-tools/scripts/test-localhost.sh standard_mvn "${testdir}"
+#   ./java-repo-tools/scripts/test-localhost.sh standard_gradle "${testdir}"
+# done
 
 
 # Check that all shell scripts in this repo (including this one) pass the
