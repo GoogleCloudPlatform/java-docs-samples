@@ -56,7 +56,6 @@ model {
       stopPreviousVersion = true  // default - stop the current version
       promote = true              // default - & make this the current version
     }
-
   }
 }
 // [END model]
