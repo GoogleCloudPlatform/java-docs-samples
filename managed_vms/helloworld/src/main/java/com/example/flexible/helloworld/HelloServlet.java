@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.managedvms.helloworld;
+package com.example.flexible.helloworld;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,7 +32,7 @@ public class HelloServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     PrintWriter out = resp.getWriter();
-    out.println("Hello, world");
+    out.println("Hello, world - App Engine Flexible");
   }
 }
 // [END example]
