@@ -19,6 +19,9 @@ set -x
 set -o pipefail
 shopt -s globstar
 
+add_ppa 'ppa:cwchien/gradle'
+sudo apt-get -qqy install gradle-3.0
+
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
   SKIP_TESTS=true
@@ -36,6 +39,15 @@ devserver_tests=(
 for testdir in "${devserver_tests[@]}" ; do
   ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
 done
+
+newplugin_std_tests=(
+#    appengine/helloworld-new-plugins
+)
+for testdir in "${newplugin_std_tests[@]}" ; do
+  ./java-repo-tools/scripts/test-localhost.sh standard_mvn "${testdir}"
+  ./java-repo-tools/scripts/test-localhost.sh standard_gradle "${testdir}"
+done
+
 
 # Check that all shell scripts in this repo (including this one) pass the
 # Shell Check linter.

@@ -24,9 +24,12 @@ print_usage () {
   echo "  $0 server-type path/to/project [-- maven arguments]" >&2
   echo >&2
   echo "server-type can be any of the following:" >&2
-  echo "  appengine" >&2
-  echo "  jetty" >&2
-  echo "  spring-boot" >&2
+  echo "  appengine - GAE Standard - Local - GA Plugin" >&2
+  echo "  jetty - Flex - Local" >&2
+  echo "  spring-boot - local" >&2
+  echo "  new_mvn - local - Standard/Flex" >&2
+  echo "  gradle - local - Standard" >&2
+  echo "  gradle_jetty - local - Flex" &2
 }
 
 if [[ -z "$1" ]]; then
@@ -34,18 +37,33 @@ if [[ -z "$1" ]]; then
   print_usage
   exit 1
 fi
+command="mvn --batch-mode clean ${mvn_goal} -DskipTests"
 case $1 in
   appengine)
-    mvn_plugin="appengine:devserver"
+    mvn_goal="appengine:devserver"
     server_started_message="localhost:8080"
     ;;
   jetty)
-    mvn_plugin="jetty:run-exploded"
+    mvn_goal="jetty:run-exploded"
     server_started_message="Started Jetty Server"
     ;;
   spring-boot)
-    mvn_plugin="spring-boot:run"
+    mvn_goal="spring-boot:run"
     server_started_message="Tomcat started on port(s): 8080 (http)"
+    ;;
+  new_mvn)
+    mvn_goal="appengine:run"
+    server_started_message="localhost:8080"
+    ;;
+  gradle)
+    task="appengineRun"
+    server_started_message="localhost:8080"
+    command="gradle clean ${mvn_goal}"
+    ;;
+  gradle_jetty)
+    task="jettyRun"
+    server_started_message="localhost:8080"
+    command="gradle clean ${task} "
     ;;
   *)
     print_usage
@@ -60,11 +78,10 @@ if [[ -z "$2" ]]; then
 fi
 code_path=$2
 
-mvn_command="mvn --batch-mode clean ${mvn_plugin} -DskipTests"
 if [[ "$3" == "--" ]]; then
   shift 3
   for mvn_arg in "${@}"; do
-    mvn_command="${mvn_command} ${mvn_arg}"
+    command="${command} ${mvn_arg}"
   done
 elif [[ -n "$3" ]]; then
   echo "Got unexpected third argument" >&2
@@ -78,7 +95,7 @@ set -x
 (
 cd "$code_path"
 expect -c "
-    spawn ${mvn_command}
+    spawn ${command}
     set timeout 600
     expect \"${server_started_message}\"
     "'sleep 10
