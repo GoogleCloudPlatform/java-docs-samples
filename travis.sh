@@ -19,9 +19,6 @@ set -x
 set -o pipefail
 shopt -s globstar
 
-add_ppa 'ppa:cwchien/gradle'
-sudo apt-get -qqy install gradle-3.0
-
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
   SKIP_TESTS=true
