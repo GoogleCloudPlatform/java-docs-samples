@@ -21,9 +21,12 @@ addons:
     # Grab shellcheck from the Debian repo.
     # https://github.com/koalaman/shellcheck/wiki/TravisCI
     - debian-sid
+    # Gradle PPA
+    - sourceline: 'ppa:cwchien/gradle'
     packages:
     - expect
     - shellcheck
+    - gradle-3.0
 before_install:
 - openssl aes-256-cbc -K $encrypted_d17a6ce39290_key -iv $encrypted_d17a6ce39290_iv
   -in gae-firebase-secrets.json.enc -out appengine/firebase-event-proxy/gae-firebase-event-proxy/src/main/webapp/gae-firebase-secrets.json
