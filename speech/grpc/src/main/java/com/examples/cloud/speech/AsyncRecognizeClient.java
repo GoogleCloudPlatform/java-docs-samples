@@ -31,8 +31,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.auth.ClientAuthInterceptor;
-import io.grpc.netty.NegotiationType;
-import io.grpc.netty.NettyChannelBuilder;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -88,7 +86,6 @@ public class AsyncRecognizeClient {
     creds = creds.createScoped(OAUTH2_SCOPES);
     ManagedChannel channel =
         ManagedChannelBuilder.forAddress(host, port)
-            .negotiationType(NegotiationType.TLS)
             .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
             .build();
 
