@@ -33,7 +33,7 @@ import io.grpc.stub.StreamObserver;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.ConsoleAppender;
@@ -180,29 +180,33 @@ public class StreamingRecognizeClient {
 
     Options options = new Options();
     options.addOption(
-        OptionBuilder.withLongOpt("file")
-            .withDescription("path to audio file")
+        Option.builder()
+            .longOpt("file")
+            .desc("path to audio file")
             .hasArg()
-            .withArgName("FILE_PATH")
-            .create());
+            .argName("FILE_PATH")
+            .build());
     options.addOption(
-        OptionBuilder.withLongOpt("host")
-            .withDescription("endpoint for api, e.g. speech.googleapis.com")
+        Option.builder()
+            .longOpt("host")
+            .desc("endpoint for api, e.g. speech.googleapis.com")
             .hasArg()
-            .withArgName("ENDPOINT")
-            .create());
+            .argName("ENDPOINT")
+            .build());
     options.addOption(
-        OptionBuilder.withLongOpt("port")
-            .withDescription("SSL port, usually 443")
+        Option.builder()
+            .longOpt("port")
+            .desc("SSL port, usually 443")
             .hasArg()
-            .withArgName("PORT")
-            .create());
+            .argName("PORT")
+            .build());
     options.addOption(
-        OptionBuilder.withLongOpt("sampling")
-            .withDescription("Sampling Rate, i.e. 16000")
+        Option.builder()
+            .longOpt("sampling")
+            .desc("Sampling Rate, i.e. 16000")
             .hasArg()
-            .withArgName("RATE")
-            .create());
+            .argName("RATE")
+            .build());
 
     try {
       CommandLine line = parser.parse(options, args);

@@ -49,7 +49,8 @@ limitations under the License.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-versions-maven-plugin-version>2.2</codehaus-versions-maven-plugin-version>
-    <maven-compiler-plugin-version>3.1</maven-compiler-plugin-version>
+    <grpc-protobuf-version>1.0.0</grpc-protobuf-version>
+    <maven-compiler-plugin-version>3.5.1</maven-compiler-plugin-version>
     <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
   </properties>
 
@@ -128,6 +129,11 @@ limitations under the License.
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-credentials</artifactId>
+      <version>0.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
       <version>0.4.0</version>
       <exclusions>
@@ -145,29 +151,44 @@ limitations under the License.
       <version>19.0</version>
     </dependency>
     <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-all</artifactId>
-      <version>0.15.0</version>
-    </dependency>
-    <dependency>
-      <!--
-        It is recommended to use OpenSSL: Statically Linked Netty
-        for transport security.  These steps do not use the TLS that
-        comes with JDK (Jetty APLN/NPN), which is not
-        recommended. See
-        https://github.com/grpc/grpc-java/blob/master/SECURITY.md
-        for details.
-      -->
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork20</version>
-      <classifier>${tcnative.classifier}</classifier>
-    </dependency>
-    <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>0.29</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-auth</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>${grpc-protobuf-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <!--
+-        It is recommended to use OpenSSL: Statically Linked Netty
+-        for transport security.  These steps do not use the TLS that
+-        comes with JDK (Jetty APLN/NPN), which is not
+-        recommended. See
+-        https://github.com/grpc/grpc-java/blob/master/SECURITY.md
+-        for details.
+-      -->
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork21</version>
+      <classifier>${tcnative.classifier}</classifier>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -216,10 +237,10 @@ limitations under the License.
             transitively depending on the protobuf-java version that
             grpc depends on.
           -->
-          <protocArtifact>com.google.protobuf:protoc:3.0.0-beta-2:exe:${os.detected.classifier}</protocArtifact>
+          <protocArtifact>com.google.protobuf:protoc:3.0.0:exe:${os.detected.classifier}</protocArtifact>
           <pluginId>grpc-java</pluginId>
           <protoSourceRoot>${basedir}/src/main/java/third_party</protoSourceRoot>
-          <pluginArtifact>io.grpc:protoc-gen-grpc-java:0.13.2:exe:${os.detected.classifier}</pluginArtifact>
+          <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc-protobuf-version}:exe:${os.detected.classifier}</pluginArtifact>
         </configuration>
         <executions>
           <execution>
