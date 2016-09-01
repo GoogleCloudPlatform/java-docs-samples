@@ -28,6 +28,7 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsGrpc;
 
 import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.netty.NegotiationType;
@@ -86,7 +87,7 @@ public class AsyncRecognizeClient {
     GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
     creds = creds.createScoped(OAUTH2_SCOPES);
     ManagedChannel channel =
-        NettyChannelBuilder.forAddress(host, port)
+        ManagedChannelBuilder.forAddress(host, port)
             .negotiationType(NegotiationType.TLS)
             .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
             .build();
