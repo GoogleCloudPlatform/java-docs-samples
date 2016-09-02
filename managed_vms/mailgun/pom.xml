@@ -31,8 +31,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven-war-plugin-version>2.6</maven-war-plugin-version>
-    <gcloud-maven-plugin-version>2.0.9.121.v20160815</gcloud-maven-plugin-version>
-    <jetty-maven-plugin-version>9.4.0.M1</jetty-maven-plugin-version>
+    <gcloud-maven-plugin-version>2.0.9.106.v20160420</gcloud-maven-plugin-version>
+    <jetty-maven-plugin-version>9.3.7.v20160115</jetty-maven-plugin-version>
   </properties>
 
   <dependencies>
@@ -47,17 +47,17 @@
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-core</artifactId>
-      <version>1.19.2</version>
+      <version>1.19.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>1.19.2</version>
+      <version>1.19.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-multipart</artifactId>
-      <version>1.19.2</version>
+      <version>1.19.1</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

@@ -48,7 +48,7 @@ limitations under the License.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
+    <codehaus-versions-maven-plugin-version>2.2</codehaus-versions-maven-plugin-version>
     <grpc-protobuf-version>1.0.0</grpc-protobuf-version>
     <maven-compiler-plugin-version>3.5.1</maven-compiler-plugin-version>
     <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
