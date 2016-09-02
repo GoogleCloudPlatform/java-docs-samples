@@ -27,10 +27,10 @@
   </parent>
 
   <properties>
-    <project.http.version>1.20.0</project.http.version>
+    <project.http.version>1.22.0</project.http.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <codehaus-exec-maven-plugin>1.1</codehaus-exec-maven-plugin>
-    <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
+    <codehaus-exec-maven-plugin>1.5.0</codehaus-exec-maven-plugin>
+    <maven-compiler-plugin-version>3.5.1</maven-compiler-plugin-version>
   </properties>
 
   <build>
