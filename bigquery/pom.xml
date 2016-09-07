@@ -23,7 +23,7 @@
     <dependency>
         <groupId>com.google.apis</groupId>
         <artifactId>google-api-services-bigquery</artifactId>
-        <version>v2-rev319-1.22.0</version>
+        <version>v2-rev320-1.22.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.oauth-client</groupId>

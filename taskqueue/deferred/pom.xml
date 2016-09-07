@@ -31,8 +31,8 @@
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
-        <codehaus-versions-maven-plugin-version>2.2</codehaus-versions-maven-plugin-version>
-        <maven-war-plugin-version>2.6</maven-war-plugin-version>
+        <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
+        <maven-war-plugin-version>3.0.0</maven-war-plugin-version>
     </properties>
 
     <dependencies>

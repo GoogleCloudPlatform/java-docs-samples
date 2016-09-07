@@ -39,7 +39,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-exec-maven-plugin-version>1.1</codehaus-exec-maven-plugin-version>
     <codehaus-findbugs-maven-plugin-version>3.0.4</codehaus-findbugs-maven-plugin-version>
-    <maven-war-plugin-version>2.6</maven-war-plugin-version>
+    <maven-war-plugin-version>3.0.0</maven-war-plugin-version>
   </properties>
 
   <build>
