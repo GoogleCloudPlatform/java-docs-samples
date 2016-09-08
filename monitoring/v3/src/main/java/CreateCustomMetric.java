@@ -285,7 +285,7 @@ public class CreateCustomMetric {
   }
 
   /**
-   * Use the Google Cloud Monitoring API to create a custom metric.
+   * Use the Stackdriver Monitoring API to create a custom metric.
    *
    * @param args The first arg should be the project name you'd like to inspect.
    * @throws Exception if something goes wrong.

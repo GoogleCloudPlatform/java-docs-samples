@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * Cloud Logging Java API sample that lists the logs available to a project.
- * Uses the v1beta3 Cloud Logging API, version 1.20.0 or later.
+ * Uses the v1beta3 Stackdriver Logging API, version 1.20.0 or later.
  * See https://cloud.google.com/logging/docs/api/libraries/.
  */
 public class ListLogs {
@@ -44,7 +44,7 @@ public class ListLogs {
   private static final String APPLICATION_NAME = "ListLogs sample";
 
   /**
-   * Returns an authorized Cloud Logging API service client that is usable
+   * Returns an authorized Stackdriver Logging API service client that is usable
    * on Google App Engine, Google Compute Engine, workstations with the Google Cloud SDK,
    * and other computers if you install service account private credentials.
    * See https://cloud.google.com/logging/docs/api/tasks.
@@ -65,12 +65,12 @@ public class ListLogs {
 
   /**
    * Lists the names of the logs visible to a project, which may require fetching multiple
-   * pages of results from the Cloud Logging API. This method converts log resource names
+   * pages of results from the Stackdriver Logging API. This method converts log resource names
    * ("/projects/PROJECTID/logs/SERVICENAME%2FLOGNAME") to simple log names ("SERVICENAME/LOGNAME").
    * 
    * @param service The logging service client returned by getLoggingService.
    * @param projectId The project whose logs are to be listed.
-   * @throws IOException If the Cloud Logging API fails because, for example, the project ID
+   * @throws IOException If the Stackdriver Logging API fails because, for example, the project ID
    *     doesn't exist or authorization fails.
    *     See https://cloud.google.com//logging/docs/api/tasks/#java_sample_code.
    */
@@ -97,9 +97,9 @@ public class ListLogs {
   // [END listlogs]
 
   /**
-   * Demonstrates the Cloud Logging API by listing the logs in a project.
+   * Demonstrates the Stackdriver Logging API by listing the logs in a project.
    * @param args The project ID.
-   * @throws IOException if a Cloud Logging API call fails because, say, the project ID is wrong
+   * @throws IOException if a Stackdriver Logging API call fails because, say, the project ID is wrong
    *     or authorization fails.
    */
   public static void main(String[] args) throws IOException {
