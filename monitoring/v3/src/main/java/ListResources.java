@@ -37,7 +37,7 @@ import java.util.TimeZone;
 
 /**
  * Simple command-line program to demonstrate connecting to and retrieving data
- * from the Google Cloud Monitoring API v3 using application default credentials.
+ * from the Stackdriver Monitoring API v3 using application default credentials.
  */
 public class ListResources {
 
@@ -180,7 +180,7 @@ public class ListResources {
   }
 
   /**
-   * Query the Google Cloud Monitoring API using a service account and print the
+   * Query the Stackdriver Monitoring API using a service account and print the
    * result to the console.
    *
    * @param args The first arg should be the project name you'd like to inspect.

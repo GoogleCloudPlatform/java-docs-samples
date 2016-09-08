@@ -27,7 +27,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * Simple command-line program to demonstrate connecting to and retrieving data
- * from the Google Cloud Monitoring API using application default credentials.
+ * from the Stackdriver Monitoring API using application default credentials.
  * Please see README.md on instructions to run.
  */
 public final class CloudMonitoringAuthSample {
@@ -74,7 +74,7 @@ public final class CloudMonitoringAuthSample {
   }
 
   /**
-   * Query the Google Cloud Monitoring API using a service account and print the
+   * Query the Stackdriver Monitoring API using a service account and print the
    * result to the console.
    *
    * @param args The first arg should be the project name you'd like to inspect.
