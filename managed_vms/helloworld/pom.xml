@@ -40,7 +40,7 @@
 
   <!-- [START dependencies] -->
   <dependencies>
-  
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -63,8 +63,10 @@
         <version>${appengine.maven.plugin}</version>
         <configuration>
           <!-- deploy configuration -->
+<!--
           <deploy.promote>true</deploy.promote>
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
+ -->
         </configuration>
       </plugin>
 
