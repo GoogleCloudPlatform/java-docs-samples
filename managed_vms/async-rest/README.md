@@ -16,17 +16,19 @@ First, complete the following steps:
 - Install the Cloud SDK `app-engine-java` component.
 - Authenticate wth the gcloud SDK: gcloud auth login.
 - Install [Maven](http://maven.apache.org/download.cgi) if you haven't already.
-
    
 
 ## Providing your Google Places API key ##
 
-You will need to edit the pom.xml file and replace YOUR_PLACES_APP_KEY with the value of your key:
+To run locally, you need to edit the pom.xml file and replace YOUR_PLACES_APP_KEY with the value of your key:
 
     <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
 
-You then have several options of how to run it:
+To deploy to gcloud, you need to edit the src/main/appengine/app.yaml file and replace YOUR_PLACES_APP_KEY with the value of your key:
 
+    PLACES_APPKEY: 'YOUR_PLACES_APP_KEY'
+
+    
 ## Running locally without the AppEngine environment ##
 
 The application does not use any AppEngine specific services, so you can run it simply on your local machine by doing: 
@@ -36,22 +38,11 @@ The application does not use any AppEngine specific services, so you can run it 
 Go to  http://localhost:8080 to see the webapp.
  
 
-## Running locally using Docker ##
-
-The project also  can build a docker image based on the jetty9 image for [Google Container Engine](https://cloud.google.com/container-engine/). 
-First uncomment the maven plugin section for docker-maven-plugin in the pom.xml.
-The WAR file is installed in the webapps directory and the resulting image can be run locally with:
-
-    docker run --rm -it -p 8080:8080 jetty9-async-rest --exec -Dcom.google.appengine.demos.asyncrest.appKey=YOUR_PLACES_APP_KEY
-
-Where you replace YOUR_PLACES_APP_KEY with the key you obtained in the initial setup.
-
-
 ## Deploying to the cloud as an AppEngine ManagedVM ##
 
 To automatically stage and deploy the webapp to your project in the cloud do:  
 
-    mvn gcloud:deploy  
+    mvn appengine:deploy  
 
 See here for more information on the [GCloud Maven Plugin](https://github.com/GoogleCloudPlatform/gcloud-maven-plugin).
 

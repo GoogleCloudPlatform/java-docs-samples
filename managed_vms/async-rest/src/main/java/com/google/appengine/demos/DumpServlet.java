@@ -31,6 +31,10 @@ public class DumpServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+
+    if (Boolean.parseBoolean(request.getParameter("throw")))
+      throw new ServletException("Test Exception");
+
     response.setContentType("text/html");
     response.setStatus(HttpServletResponse.SC_OK);
 
