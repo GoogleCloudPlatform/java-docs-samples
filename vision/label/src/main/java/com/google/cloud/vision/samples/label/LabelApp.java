@@ -129,7 +129,7 @@ public class LabelApp {
         vision.images()
             .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
     // Due to a bug: requests to Vision API containing large images fail when GZipped.
-    // annotate.setDisableGZipContent(true);
+    annotate.setDisableGZipContent(true);
     // [END construct_request]
 
     // [START parse_response]

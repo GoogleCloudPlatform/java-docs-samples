@@ -115,6 +115,8 @@ public class DetectLandmark {
     Vision.Images.Annotate annotate =
         vision.images()
             .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
+    // Due to a bug: requests to Vision API containing large images fail when GZipped.
+    annotate.setDisableGZipContent(true);
 
     BatchAnnotateImagesResponse batchResponse = annotate.execute();
     assert batchResponse.getResponses().size() == 1;
