@@ -1,11 +1,11 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
-// 
+//
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
 //  You may obtain a copy of the License at
-// 
+//
 //        http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,15 +23,15 @@ buildscript {    // Configuration for building
 }
 
 repositories {   // repositories for Jar's you access in your code
-  maven { 
+  maven {
     url 'https://maven-central.storage.googleapis.com'             // Google's mirror of Maven Central
-//   url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Reposiotry (if needed)
+//   url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Repository (if needed)
   }
   jcenter()
   mavenCentral()
 }
 
-apply plugin: 'java'                              // standard Java tasks 
+apply plugin: 'java'                              // standard Java tasks
 apply plugin: 'war'                               // standard Web Archive plugin
 apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
 
@@ -43,16 +43,14 @@ dependencies {
 }
 
 // [START model]
-model {
-  appengine {  // App Engine tasks configuration
-    run {      // local (dev_appserver) configuration (standard environments only)
-      port = 8080                 // default
-    }
+appengine {  // App Engine tasks configuration
+  run {      // local (dev_appserver) configuration (standard environments only)
+    port = 8080                 // default
+  }
 
-    deploy {   // deploy configuration
-      stopPreviousVersion = true  // default - stop the current version
-      promote = true              // default - & make this the current version
-    }
+  deploy {   // deploy configuration
+    stopPreviousVersion = true  // default - stop the current version
+    promote = true              // default - & make this the current version
   }
 }
 // [END model]
@@ -60,6 +58,6 @@ model {
 group = 'com.example.appengine'   // Generated output GroupId
 version = '1.0-SNAPSHOT'          // Version in generated output
 
-sourceCompatibility = JavaVersion.VERSION_1_7  // App Engine Standard uses Java 7
-targetCompatibility = JavaVersion.VERSION_1_7  // App Engine Standard uses Java 7
+sourceCompatibility = 1.7  // App Engine Standard uses Java 7
+targetCompatibility = 1.7  // App Engine Standard uses Java 7
 // [END gradle]
