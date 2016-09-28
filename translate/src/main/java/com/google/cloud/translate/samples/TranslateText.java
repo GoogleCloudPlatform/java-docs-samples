@@ -16,10 +16,21 @@
 
 package com.google.cloud.translate.samples;
 
-import com.google.api.services.translate.Translate;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.Translation;
+import com.google.cloud.translate.testing.RemoteTranslateHelper;
 
 public class TranslateText {
+  private static final Translate TRANSLATE = RemoteTranslateHelper.create().options().service();
+
+  public void detectLanguages() {
+  }
+
+  public void translateText(String sourceText) {
+    Translation translation = TRANSLATE.translate(sourceText);
+    System.out.println(translation.translatedText());
+  }
   public static void main(String[] args) {
-    System.out.println("Translate");    
+    new TranslateText().translateText("Hola"); 
   }
 }
