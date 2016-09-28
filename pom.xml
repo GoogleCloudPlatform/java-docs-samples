@@ -83,24 +83,24 @@
         <module>compute/sendgrid</module>
         <module>datastore</module>
         <module>logging</module>
-        <module>managed_vms/analytics</module>
-        <module>managed_vms/async-rest</module>
-        <module>managed_vms/cloudsql</module>
-        <module>managed_vms/cloudstorage</module>
-        <module>managed_vms/cron</module>
-        <module>managed_vms/datastore</module>
-        <module>managed_vms/disk</module>
-        <module>managed_vms/extending-runtime</module>
-        <module>managed_vms/helloworld</module>
-        <module>managed_vms/mailgun</module>
-        <module>managed_vms/mailjet</module>
-        <module>managed_vms/memcache</module>
-        <module>managed_vms/sendgrid</module>
-<!-- 
-        <module>managed_vms/sparkjava</module>
+        <module>flexible/analytics</module>
+        <module>flexible/async-rest</module>
+        <module>flexible/cloudsql</module>
+        <module>flexible/cloudstorage</module>
+        <module>flexible/cron</module>
+        <module>flexible/datastore</module>
+        <module>flexible/disk</module>
+        <module>flexible/extending-runtime</module>
+        <module>flexible/helloworld</module>
+        <module>flexible/mailgun</module>
+        <module>flexible/mailjet</module>
+        <module>flexible/memcache</module>
+        <module>flexible/sendgrid</module>
+<!--
+        <module>flexible/sparkjava</module>
  -->
-        <module>managed_vms/static-files</module>
-        <module>managed_vms/twilio</module>
+        <module>flexible/static-files</module>
+        <module>flexible/twilio</module>
         <module>monitoring/v2</module>
         <module>monitoring/v3</module>
         <module>speech/grpc</module>
