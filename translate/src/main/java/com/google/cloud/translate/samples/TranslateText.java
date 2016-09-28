@@ -18,7 +18,7 @@ package com.google.cloud.translate.samples;
 
 import com.google.api.services.translate.Translate;
 
-public class Translate {
+public class TranslateText {
   public static void main(String[] args) {
     System.out.println("Translate");    
   }
