@@ -32,7 +32,6 @@ public class TranslateText {
    */
   public static void detectLanguage(String sourceText) {
     List<Detection> detections = TRANSLATE.detect(ImmutableList.of(sourceText));
-    
     System.out.println("Language(s) detected:");
     for(Detection detection : detections) {
       System.out.println("\t"+detection);
