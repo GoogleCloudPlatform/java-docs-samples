@@ -48,6 +48,8 @@ SOURCE_LANG="en"
 TARGET_LANG="fr"
 ```
 
+Translate API Features:
+
  * Languages supported by the API
    ```
    java -cp $JAR_FILE $MAIN_CLASS langsupport
