@@ -22,10 +22,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.List;
-import java.util.Arrays;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Unit tests for {@link Analyze}.
@@ -60,7 +60,7 @@ public class TranslateTextTest {
 
     // Assert
     String got = bout.toString();
-    for(String language : languages) {
+    for (String language : languages) {
       assertThat(got).contains(language);
     }
   }

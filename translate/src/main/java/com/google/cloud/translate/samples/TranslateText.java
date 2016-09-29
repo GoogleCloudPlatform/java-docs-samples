@@ -16,33 +16,33 @@
 
 package com.google.cloud.translate.samples;
 
-import java.util.List;
-import java.io.PrintStream;
-import com.google.common.collect.ImmutableList;
-
 import com.google.cloud.translate.Detection;
+import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translate.TranslateOption;
-import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translation;
 import com.google.cloud.translate.testing.RemoteTranslateHelper;
+import com.google.common.collect.ImmutableList;
+
+import java.io.PrintStream;
+import java.util.List;
 
 public class TranslateText {
   private static final Translate TRANSLATE = RemoteTranslateHelper.create().options().service();
 
   /**
-   * Detect the language of input text
+   * Detect the language of input text.
    */
   public static void detectLanguage(String sourceText, PrintStream out) {
     List<Detection> detections = TRANSLATE.detect(ImmutableList.of(sourceText));
     System.out.println("Language(s) detected:");
-    for(Detection detection : detections) {
+    for (Detection detection : detections) {
       out.printf("\t%s\n", detection);
     }
   }
 
   /**
-   * Translates the source text in any language to english
+   * Translates the source text in any language to english.
    */
   public static void translateText(String sourceText, PrintStream out) {
     Translation translation = TRANSLATE.translate(sourceText);
@@ -51,7 +51,7 @@ public class TranslateText {
   }
 
   /**
-   * Translate the source text from source to target language
+   * Translate the source text from source to target language.
    */
   public static void translateTextWithOptions(
       String sourceText,
@@ -73,7 +73,7 @@ public class TranslateText {
   public static void displaySupportedLanguages(PrintStream out) {
     List<Language> languages = TRANSLATE.listSupportedLanguages();
 
-    for(Language language : languages) {
+    for (Language language : languages) {
       out.printf("Name: %s, Code: %s\n", language.name(), language.code());
     }
   }
@@ -82,21 +82,19 @@ public class TranslateText {
     String command = args[0];
     String text;
 
-    if(command.equals("detect")) {
+    if (command.equals("detect")) {
       text = args[1];
       TranslateText.detectLanguage(text, System.out);
-    }
-    else if(command.equals("translate")) {
+    } else if (command.equals("translate")) {
       text = args[1];
       try {
         String sourceLang = args[2];
         String targetLang = args[3];
         TranslateText.translateTextWithOptions(text, sourceLang, targetLang, System.out);
-      } catch(ArrayIndexOutOfBoundsException ex) {
+      } catch (ArrayIndexOutOfBoundsException ex) {
         TranslateText.translateText(text, System.out);
       }
-    }
-    else if(command.equals("langsupport")) {
+    } else if (command.equals("langsupport")) {
       TranslateText.displaySupportedLanguages(System.out);
     }
   }
