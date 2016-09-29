@@ -48,18 +48,18 @@ SOURCE_LANG="en"
 TARGET_LANG="fr"
 ```
 
-Languages supported by the API
-```
-java -cp $JAR_FILE $MAIN_CLASS langsupport
-```
+ * Languages supported by the API
+   ```
+   java -cp $JAR_FILE $MAIN_CLASS langsupport
+   ```
 
-Detect input text language
-```
-java -cp $JAR_FILE $MAIN_CLASS detect "$INPUT"
-```
+ * Detect input text language
+   ```
+   java -cp $JAR_FILE $MAIN_CLASS detect "$INPUT"
+  ```
 
-Translate input text (with options)
-```
-java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT"
-java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT" $SOURCE_LANG $TARGET_LANG
-```
+ * Translate input text (with options)
+   ```
+   java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT"
+   java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT" $SOURCE_LANG $TARGET_LANG
+   ```
