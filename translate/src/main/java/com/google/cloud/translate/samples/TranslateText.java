@@ -17,6 +17,7 @@
 package com.google.cloud.translate.samples;
 
 import java.util.List;
+import java.io.PrintStream;
 import com.google.common.collect.ImmutableList;
 
 import com.google.cloud.translate.Detection;
@@ -32,43 +33,48 @@ public class TranslateText {
   /**
    * Detect the language of input text
    */
-  public static void detectLanguage(String sourceText) {
+  public static void detectLanguage(String sourceText, PrintStream out) {
     List<Detection> detections = TRANSLATE.detect(ImmutableList.of(sourceText));
     System.out.println("Language(s) detected:");
     for(Detection detection : detections) {
-      System.out.println("\t" + detection);
+      out.printf("\t%s\n", detection);
     }
   }
 
   /**
    * Translates the source text in any language to english
    */
-  public static void translateText(String sourceText) {
+  public static void translateText(String sourceText, PrintStream out) {
     Translation translation = TRANSLATE.translate(sourceText);
-    System.out.println("Source Text:\n\t" + sourceText);
-    System.out.println("Translated Text:\n\t" + translation.translatedText());
+    out.printf("Source Text:\n\t%s\n", sourceText);
+    out.printf("Translated Text:\n\t%s\n", translation.translatedText());
   }
 
   /**
    * Translate the source text from source to target language
    */
-  public static void translateTextWithOptions(String sourceText, String sourceLang, String targetLang) {
+  public static void translateTextWithOptions(
+      String sourceText,
+      String sourceLang,
+      String targetLang,
+      PrintStream out) {
+
     TranslateOption srcLang = TranslateOption.sourceLanguage(sourceLang);
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
 
     Translation translation = TRANSLATE.translate(sourceText, srcLang, tgtLang);
-    System.out.println("Source Text:\n\tLang: " + sourceLang + ", " + sourceText);
-    System.out.println("TranslatedText:\n\tLang: " + targetLang + ", " + translation.translatedText());
+    out.printf("Source Text:\n\tLang: %s, %s\n", sourceLang, sourceText);
+    out.printf("TranslatedText:\n\tLang: %s, %s\n", targetLang, translation.translatedText());
   }
 
   /**
    * Displays a list of supported languages (codes).
    */
-  public static void displaySupportedLanguages() {
+  public static void displaySupportedLanguages(PrintStream out) {
     List<Language> languages = TRANSLATE.listSupportedLanguages();
 
     for(Language language : languages) {
-      System.out.println("Name: " + language.name() + ", Code: " + language.code());
+      out.printf("Name: %s, Code: %s\n", language.name(), language.code());
     }
   }
 
@@ -78,20 +84,20 @@ public class TranslateText {
 
     if(command.equals("detect")) {
       text = args[1];
-      TranslateText.detectLanguage(text);
+      TranslateText.detectLanguage(text, System.out);
     }
     else if(command.equals("translate")) {
       text = args[1];
       try {
         String sourceLang = args[2];
         String targetLang = args[3];
-        TranslateText.translateTextWithOptions(text, sourceLang, targetLang);
+        TranslateText.translateTextWithOptions(text, sourceLang, targetLang, System.out);
       } catch(ArrayIndexOutOfBoundsException ex) {
-        TranslateText.translateText(text);
+        TranslateText.translateText(text, System.out);
       }
     }
     else if(command.equals("langsupport")) {
-      TranslateText.displaySupportedLanguages();
+      TranslateText.displaySupportedLanguages(System.out);
     }
   }
 }
