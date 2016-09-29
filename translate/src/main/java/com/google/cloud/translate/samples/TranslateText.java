@@ -32,6 +32,9 @@ public class TranslateText {
 
   /**
    * Detect the language of input text.
+   *
+   * @param sourceText source text to be detected for language
+   * @param out print stream
    */
   public static void detectLanguage(String sourceText, PrintStream out) {
     List<Detection> detections = TRANSLATE.detect(ImmutableList.of(sourceText));
@@ -43,6 +46,9 @@ public class TranslateText {
 
   /**
    * Translates the source text in any language to english.
+   *
+   * @param sourceText source text to be translated
+   * @param out print stream
    */
   public static void translateText(String sourceText, PrintStream out) {
     Translation translation = TRANSLATE.translate(sourceText);
@@ -52,6 +58,11 @@ public class TranslateText {
 
   /**
    * Translate the source text from source to target language.
+   *
+   * @param sourceText source text to be translated
+   * @param sourceLang source language of the text
+   * @param targetLang target language of translated text
+   * @param out print stream
    */
   public static void translateTextWithOptions(
       String sourceText,
@@ -68,7 +79,9 @@ public class TranslateText {
   }
 
   /**
-   * Displays a list of supported languages (codes).
+   * Displays a list of supported languages and codes.
+   *
+   * @param out print stream
    */
   public static void displaySupportedLanguages(PrintStream out) {
     List<Language> languages = TRANSLATE.listSupportedLanguages();
