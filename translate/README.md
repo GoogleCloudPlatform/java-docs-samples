@@ -35,15 +35,20 @@ $COMMAND takes two values `detect' and `translate'.
 
 ```
 MAIN_CLASS=com.google.cloud.translate.samples.TranslateText
-JAR_FILE=translate-1.0-SNAPSHOT-jar-with-dependencies.jar
-java -cp $JAR_FILE $MAIN_CLASS <detect|translate> <text>
+JAR_FILE=target/translate-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -cp $JAR_FILE $MAIN_CLASS <detect|translate|langsupport> <text>
+<optional_source> <optional_target>
 ```
 
 Example Usage:
 
 ```
 INPUT="A quick brown fox jumped over a lazy dog."
+SOURCE_LANG="en"
+TARGET_LANG="fr"
 
 java -cp $JAR_FILE $MAIN_CLASS detect "$INPUT"
 java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT"
+java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT" $SOURCE_LANG $TARGET_LANG
+java -cp $JAR_FILE $MAIN_CLASS langsupport
 ```
