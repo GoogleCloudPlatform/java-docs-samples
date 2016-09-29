@@ -63,8 +63,8 @@ public class TranslateText {
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
 
     Translation translation = TRANSLATE.translate(sourceText, srcLang, tgtLang);
-    out.printf("Source Text:\n\tLang: %s, %s\n", sourceLang, sourceText);
-    out.printf("TranslatedText:\n\tLang: %s, %s\n", targetLang, translation.translatedText());
+    out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
+    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.translatedText());
   }
 
   /**
