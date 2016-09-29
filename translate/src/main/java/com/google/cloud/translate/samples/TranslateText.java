@@ -16,6 +16,10 @@
 
 package com.google.cloud.translate.samples;
 
+import java.util.List;
+import com.google.common.collect.ImmutableList;
+
+import com.google.cloud.translate.Detection;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translation;
 import com.google.cloud.translate.testing.RemoteTranslateHelper;
@@ -23,14 +27,36 @@ import com.google.cloud.translate.testing.RemoteTranslateHelper;
 public class TranslateText {
   private static final Translate TRANSLATE = RemoteTranslateHelper.create().options().service();
 
-  public void detectLanguages() {
+  /**
+   * Detect the language of input text
+   */
+  public static void detectLanguage(String sourceText) {
+    List<Detection> detections = TRANSLATE.detect(ImmutableList.of(sourceText));
+    
+    System.out.println("Language(s) detected:");
+    for(Detection detection : detections) {
+      System.out.println("\t"+detection);
+    }
   }
 
-  public void translateText(String sourceText) {
+  /**
+   * Translates the source text in any language to english
+   */
+  public static void translateText(String sourceText) {
     Translation translation = TRANSLATE.translate(sourceText);
-    System.out.println(translation.translatedText());
+    System.out.println("Source Text:\n\t"+sourceText);
+    System.out.println("Translated Text:\n\t"+translation.translatedText());
   }
+
   public static void main(String[] args) {
-    new TranslateText().translateText("Hola"); 
+    String command = args[0];
+    String text = args[1];
+
+    if(command.equals("detect")) {
+      TranslateText.detectLanguage(text);
+    }
+    else if(command.equals("translate")) {
+      TranslateText.translateText(text);
+    }
   }
 }
