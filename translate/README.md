@@ -31,13 +31,13 @@ mvn clean compile assembly:single
 ```
 
 We can then run the assembled JAR file with the `java` command. The variable
-$COMMAND takes two values `detect' and `translate'.
+$COMMAND takes two values `detect` and `translate'.
 
 ```
 MAIN_CLASS=com.google.cloud.translate.samples.TranslateText
 JAR_FILE=target/translate-1.0-SNAPSHOT-jar-with-dependencies.jar
 java -cp $JAR_FILE $MAIN_CLASS <detect|translate|langsupport> <text>
-<optional_source> <optional_target>
+    <optional_source> <optional_target>
 ```
 
 Example Usage:
@@ -50,7 +50,7 @@ TARGET_LANG="fr"
 
 Translate API Features:
 
- * Languages supported by the API
+ * List the languages supported by the API
    ```
    java -cp $JAR_FILE $MAIN_CLASS langsupport
    ```
