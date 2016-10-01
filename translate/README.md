@@ -34,9 +34,8 @@ We can then run the assembled JAR file with the `java` command. The variable
 $COMMAND takes two values `detect` and `translate'.
 
 ```
-MAIN_CLASS=com.google.cloud.translate.samples.TranslateText
 JAR_FILE=target/translate-1.0-SNAPSHOT-jar-with-dependencies.jar
-java -cp $JAR_FILE $MAIN_CLASS <detect|translate|langsupport> <text>
+java -jar $JAR_FILE <detect|translate|langsupport> <text>
     <optional_source> <optional_target>
 ```
 
@@ -52,16 +51,16 @@ Translate API Features:
 
  * List the languages supported by the API
    ```
-   java -cp $JAR_FILE $MAIN_CLASS langsupport
+   java -jar $JAR_FILE langsupport
    ```
 
  * Detect input text language
    ```
-   java -cp $JAR_FILE $MAIN_CLASS detect "$INPUT"
+   java -jar $JAR_FILE detect "$INPUT"
   ```
 
  * Translate input text (with options)
    ```
-   java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT"
-   java -cp $JAR_FILE $MAIN_CLASS translate "$INPUT" $SOURCE_LANG $TARGET_LANG
+   java -jar $JAR_FILE translate "$INPUT"
+   java -jar $JAR_FILE translate "$INPUT" $SOURCE_LANG $TARGET_LANG
    ```
