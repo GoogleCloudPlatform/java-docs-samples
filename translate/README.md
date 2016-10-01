@@ -31,7 +31,7 @@ mvn clean compile assembly:single
 ```
 
 We can then run the assembled JAR file with the `java` command. The variable
-$COMMAND takes two values `detect` and `translate'.
+$COMMAND takes three values `langsupport`, `detect` and `translate`.
 
 ```
 JAR_FILE=target/translate-1.0-SNAPSHOT-jar-with-dependencies.jar
