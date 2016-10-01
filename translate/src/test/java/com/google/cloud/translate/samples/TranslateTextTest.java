@@ -75,7 +75,14 @@ public class TranslateTextTest {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("language=en, confidence=0.79742646");
+    assertThat(got).contains("language=en");
+
+    // Assert
+    Double confidence = Double.parseDouble(
+        got.split("confidence=")[1].split("}")[0]
+        );
+    assertThat(confidence).isLessThan(1.0);
+    assertThat(confidence).isGreaterThan(0.7);
   }
 
   @Test public void testGermanLangDetection() throws Exception {
@@ -88,8 +95,14 @@ public class TranslateTextTest {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("language=de, confidence=0.9293963");
+    assertThat(got).contains("language=de");
 
+    // Assert
+    Double confidence = Double.parseDouble(
+        got.split("confidence=")[1].split("}")[0]
+        );
+    assertThat(confidence).isLessThan(1.0);
+    assertThat(confidence).isGreaterThan(0.9);
   }
 
   @Test public void testDefaultIdentityTranslation() throws Exception {
