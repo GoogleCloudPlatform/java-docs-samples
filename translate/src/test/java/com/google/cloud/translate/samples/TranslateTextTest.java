@@ -81,8 +81,7 @@ public class TranslateTextTest {
     Double confidence = Double.parseDouble(
         got.split("confidence=")[1].split("}")[0]
         );
-    assertThat(confidence).isLessThan(1.0);
-    assertThat(confidence).isGreaterThan(0.7);
+    assertThat(confidence).isWithin(0.7).of(1.0);
   }
 
   @Test public void testGermanLangDetection() throws Exception {
@@ -101,8 +100,7 @@ public class TranslateTextTest {
     Double confidence = Double.parseDouble(
         got.split("confidence=")[1].split("}")[0]
         );
-    assertThat(confidence).isLessThan(1.0);
-    assertThat(confidence).isGreaterThan(0.9);
+    assertThat(confidence).isWithin(0.9).of(1.0);
   }
 
   @Test public void testDefaultIdentityTranslation() throws Exception {
