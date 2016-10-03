@@ -16,20 +16,19 @@
 
 package com.google.cloud.translate.samples;
 
+import com.google.cloud.RetryParams;
 import com.google.cloud.translate.Detection;
 import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translate.TranslateOption;
+import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
-import com.google.cloud.translate.testing.RemoteTranslateHelper;
 import com.google.common.collect.ImmutableList;
 
 import java.io.PrintStream;
 import java.util.List;
 
 public class TranslateText {
-  private static final Translate TRANSLATE = RemoteTranslateHelper.create().options().service();
-
   /**
    * Detect the language of input text.
    *
@@ -37,7 +36,8 @@ public class TranslateText {
    * @param out print stream
    */
   public static void detectLanguage(String sourceText, PrintStream out) {
-    List<Detection> detections = TRANSLATE.detect(ImmutableList.of(sourceText));
+    Translate translate = createTranslateService();
+    List<Detection> detections = translate.detect(ImmutableList.of(sourceText));
     System.out.println("Language(s) detected:");
     for (Detection detection : detections) {
       out.printf("\t%s\n", detection);
@@ -51,7 +51,8 @@ public class TranslateText {
    * @param out print stream
    */
   public static void translateText(String sourceText, PrintStream out) {
-    Translation translation = TRANSLATE.translate(sourceText);
+    Translate translate = createTranslateService();
+    Translation translation = translate.translate(sourceText);
     out.printf("Source Text:\n\t%s\n", sourceText);
     out.printf("Translated Text:\n\t%s\n", translation.translatedText());
   }
@@ -70,10 +71,11 @@ public class TranslateText {
       String targetLang,
       PrintStream out) {
 
+    Translate translate = createTranslateService();
     TranslateOption srcLang = TranslateOption.sourceLanguage(sourceLang);
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
 
-    Translation translation = TRANSLATE.translate(sourceText, srcLang, tgtLang);
+    Translation translation = translate.translate(sourceText, srcLang, tgtLang);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
     out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.translatedText());
   }
@@ -84,11 +86,38 @@ public class TranslateText {
    * @param out print stream
    */
   public static void displaySupportedLanguages(PrintStream out) {
-    List<Language> languages = TRANSLATE.listSupportedLanguages();
+    Translate translate = createTranslateService();
+    List<Language> languages = translate.listSupportedLanguages();
 
     for (Language language : languages) {
       out.printf("Name: %s, Code: %s\n", language.name(), language.code());
     }
+  }
+
+  /**
+   * Create Google Translate API Service.
+   *
+   * @return Google Translate Service
+   */
+  public static Translate createTranslateService() {
+    TranslateOptions translateOption = TranslateOptions.builder()
+        .retryParams(retryParams())
+        .connectTimeout(60000)
+        .readTimeout(60000)
+        .build();
+    return translateOption.service();
+  }
+
+  /**
+   * Retry params for the Translate API.
+   */
+  private static RetryParams retryParams() {
+    return RetryParams.builder()
+        .retryMaxAttempts(3)
+        .maxRetryDelayMillis(30000)
+        .totalRetryPeriodMillis(120000)
+        .initialRetryDelayMillis(250)
+        .build();
   }
 
   public static void main(String[] args) {
