@@ -14,31 +14,27 @@
   limitations under the License.
 */
 
-package com.example.bigquery;
+package com.example.storage;
 
-// [START bigquery_quickstart]
+// [START storage_quickstart]
 // Imports the Google Cloud client library
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.Dataset;
-import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
 
 public class QuickstartSample {
   public static void main(String... args) throws Exception {
     // Instantiates a client
-    BigQuery bigquery = BigQueryOptions.defaultInstance().service();
+    Storage storage = StorageOptions.defaultInstance().service();
 
-    // The name for the new dataset
-    String datasetName = "my_new_dataset";
+    // The name for the new bucket
+    String bucketName = "my-new-bucket";
 
-    // Prepares a new dataset
-    Dataset dataset = null;
-    DatasetInfo datasetInfo = DatasetInfo.builder(datasetName).build();
+    // Creates the new bucket
+    Bucket bucket = storage.create(BucketInfo.of(bucketName));
 
-    // Creates the dataset
-    dataset = bigquery.create(datasetInfo);
-
-    System.out.printf("Dataset %s created.%n", dataset.datasetId().dataset());
+    System.out.printf("Bucket %s created.%n", bucket.name());
   }
 }
-// [END bigquery_quickstart]
+// [END storage_quickstart]

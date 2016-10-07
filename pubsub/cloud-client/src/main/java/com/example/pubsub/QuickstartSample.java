@@ -27,10 +27,13 @@ public class QuickstartSample {
   public static void main(String... args) throws Exception {
     // Instantiates a client
     PubSub pubsub = PubSubOptions.defaultInstance().service();
+
     // The name for the new topic
     String topicName = "my-new-topic";
+
     // Creates the new topic
     Topic topic = pubsub.create(TopicInfo.of(topicName));
+
     System.out.printf("Topic %s created.%n", topic.name());
   }
 }
