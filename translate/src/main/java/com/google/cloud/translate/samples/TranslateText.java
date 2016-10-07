@@ -20,6 +20,7 @@ import com.google.cloud.RetryParams;
 import com.google.cloud.translate.Detection;
 import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.Translate.LanguageListOption;
 import com.google.cloud.translate.Translate.TranslateOption;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
@@ -27,6 +28,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Optional;
 
 public class TranslateText {
   /**
@@ -84,10 +86,12 @@ public class TranslateText {
    * Displays a list of supported languages and codes.
    *
    * @param out print stream
+   * @param tgtLang optional target language
    */
-  public static void displaySupportedLanguages(PrintStream out) {
+  public static void displaySupportedLanguages(PrintStream out, Optional<String> tgtLang) {
     Translate translate = createTranslateService();
-    List<Language> languages = translate.listSupportedLanguages();
+    LanguageListOption target = LanguageListOption.targetLanguage(tgtLang.orElse("en"));
+    List<Language> languages = translate.listSupportedLanguages(target);
 
     for (Language language : languages) {
       out.printf("Name: %s, Code: %s\n", language.name(), language.code());
@@ -137,7 +141,12 @@ public class TranslateText {
         TranslateText.translateText(text, System.out);
       }
     } else if (command.equals("langsupport")) {
-      TranslateText.displaySupportedLanguages(System.out);
+      try {
+        String target = args[1];
+        TranslateText.displaySupportedLanguages(System.out, Optional.of(target));
+      } catch (ArrayIndexOutOfBoundsException ex) {
+        TranslateText.displaySupportedLanguages(System.out, Optional.empty());
+      }
     }
   }
 }

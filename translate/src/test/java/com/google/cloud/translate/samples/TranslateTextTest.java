@@ -26,9 +26,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Unit tests for {@link Analyze}.
+ * Unit tests for {@link TranslateText}.
  */
 @RunWith(JUnit4.class)
 public class TranslateTextTest {
@@ -56,7 +57,39 @@ public class TranslateTextTest {
     PrintStream out = new PrintStream(bout);
 
     // Act
-    TranslateText.displaySupportedLanguages(out);
+    TranslateText.displaySupportedLanguages(out, Optional.empty());
+
+    // Assert
+    String got = bout.toString();
+    for (String language : languages) {
+      assertThat(got).contains(language);
+    }
+  }
+
+  @Test public void testSupportedLanguagesTargetFrench() throws Exception {
+    //Supported languages
+    List<String> languages = Arrays.asList(
+        "Afrikaans", "Albanais", "Allemand", "Amharique", "Anglais", "Arabe", "Arménien",
+        "Azéri", "Basque", "Bengali", "Biélorusse", "Birman", "Bosniaque", "Bulgare", "Catalan",
+        "Cebuano", "Chichewa", "Chinois (simplifié)", "Chinois (traditionnel)", "Cingalais",
+        "Coréen", "Corse", "Créole haïtien", "Croate", "Danois", "Espagnol", "Espéranto",
+        "Estonien", "Finnois", "Français", "Frison", "Gaélique (Écosse)", "Galicien",
+        "Gallois", "Géorgien", "Grec", "Gujarati", "Haoussa", "Hawaïen", "Hébreu", "Hindi",
+        "Hmong", "Hongrois", "Igbo", "Indonésien", "Irlandais", "Islandais", "Italien",
+        "Japonais", "Javanais", "Kannada", "Kazakh", "Khmer", "Kirghiz", "Kurde", "Laotien",
+        "Latin", "Letton", "Lituanien", "Luxembourgeois", "Macédonien", "Malaisien", "Malayalam",
+        "Malgache", "Maltais", "Maori", "Marathi", "Mongol", "Néerlandais", "Népalais", "Norvégien",
+        "Ouzbek", "Pachtô", "Panjabi", "Persan", "Polonais", "Portugais", "Roumain", "Russe",
+        "Samoan", "Serbe", "Sesotho", "Shona", "Sindhî", "Slovaque", "Slovène", "Somali",
+        "Soundanais", "Suédois", "Swahili", "Tadjik", "Tagalog", "Tamoul", "Tchèque", "Telugu",
+        "Thaï", "Turc", "Ukrainien", "Urdu", "Vietnamien", "Xhosa", "Yiddish", "Yorouba","Zoulou"); 
+  
+    // Arrange
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bout);
+
+    // Act
+    TranslateText.displaySupportedLanguages(out, Optional.of("fr"));
 
     // Assert
     String got = bout.toString();

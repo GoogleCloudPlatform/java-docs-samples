@@ -54,6 +54,11 @@ Translate API Features:
    java -jar $JAR_FILE langsupport
    ```
 
+ * List the languages supported for given target language
+   ```
+   java -jar $JAR_FILE langsupport $TARGET_LANG
+   ```
+
  * Detect input text language
    ```
    java -jar $JAR_FILE detect "$INPUT"
