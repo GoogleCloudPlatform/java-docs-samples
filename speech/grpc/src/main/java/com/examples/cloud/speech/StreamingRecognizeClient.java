@@ -18,6 +18,7 @@ package com.examples.cloud.speech;
 
 import static org.apache.log4j.ConsoleAppender.SYSTEM_OUT;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
 import com.google.cloud.speech.v1beta1.SpeechGrpc;
@@ -28,6 +29,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.auth.ClientAuthInterceptor;
 import io.grpc.stub.StreamObserver;
 
 import org.apache.commons.cli.CommandLine;
@@ -47,6 +50,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -84,13 +88,24 @@ public class StreamingRecognizeClient {
     //Send log4j logs to Console
     //If you are going to run this on GCE, you might wish to integrate with gcloud-java logging.
     //See https://github.com/GoogleCloudPlatform/gcloud-java/blob/master/README.md#stackdriver-logging-alpha
-    
+
     ConsoleAppender appender = new ConsoleAppender(new SimpleLayout(), SYSTEM_OUT);
     logger.addAppender(appender);
   }
 
   public void shutdown() throws InterruptedException {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+  }
+
+  static ManagedChannel createChannel(String host, int port) throws IOException {
+    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
+    creds = creds.createScoped(OAUTH2_SCOPES);
+    ManagedChannel channel =
+        ManagedChannelBuilder.forAddress(host, port)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+
+    return channel;
   }
 
   /** Send streaming recognize requests to server. */
@@ -242,7 +257,7 @@ public class StreamingRecognizeClient {
       System.exit(1);
     }
 
-    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    ManagedChannel channel = createChannel(host, port);
     StreamingRecognizeClient client = new StreamingRecognizeClient(channel, audioFile, sampling);
     try {
       client.recognize();

@@ -16,6 +16,7 @@
 
 package com.examples.cloud.speech;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.speech.v1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
@@ -25,7 +26,9 @@ import com.google.cloud.speech.v1beta1.SyncRecognizeResponse;
 import com.google.protobuf.TextFormat;
 
 import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import io.grpc.auth.ClientAuthInterceptor;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -38,6 +41,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,14 +53,14 @@ public class SyncRecognizeClient {
 
   private static final Logger logger = Logger.getLogger(SyncRecognizeClient.class.getName());
 
-  private static final List<String> OAUTH2_SCOPES =
-      Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
-
   private final URI input;
   private final int samplingRate;
 
   private final ManagedChannel channel;
   private final SpeechGrpc.SpeechBlockingStub speechClient;
+
+  private static final List<String> OAUTH2_SCOPES =
+      Arrays.asList("https://www.googleapis.com/auth/cloud-platform");
 
   /**
    * Construct client connecting to Cloud Speech server at {@code host:port}.
@@ -76,6 +80,17 @@ public class SyncRecognizeClient {
 
   public void shutdown() throws InterruptedException {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+  }
+
+  static ManagedChannel createChannel(String host, int port) throws IOException {
+    GoogleCredentials creds = GoogleCredentials.getApplicationDefault();
+    creds = creds.createScoped(OAUTH2_SCOPES);
+    ManagedChannel channel =
+        ManagedChannelBuilder.forAddress(host, port)
+            .intercept(new ClientAuthInterceptor(creds, Executors.newSingleThreadExecutor()))
+            .build();
+
+    return channel;
   }
 
   /** Send a non-streaming-recognize request to server. */
@@ -179,7 +194,7 @@ public class SyncRecognizeClient {
       System.exit(1);
     }
 
-    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    ManagedChannel channel = createChannel(host, port);
     SyncRecognizeClient client = new SyncRecognizeClient(channel, URI.create(audioFile), sampling);
     try {
       client.recognize();

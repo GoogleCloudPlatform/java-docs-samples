@@ -64,9 +64,9 @@ public class StreamingRecognizeClientTest {
 
     String host = "speech.googleapis.com";
     int port = 443;
-    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    ManagedChannel channel = StreamingRecognizeClient.createChannel(host, port);
     StreamingRecognizeClient client = new StreamingRecognizeClient(channel, path.toString(), 16000);
-    
+
     client.recognize();
     assertThat(writer.toString()).contains("transcript: \"how old is the Brooklyn Bridge\"");
   }
@@ -78,7 +78,7 @@ public class StreamingRecognizeClientTest {
 
     String host = "speech.googleapis.com";
     int port = 443;
-    ManagedChannel channel = AsyncRecognizeClient.createChannel(host, port);
+    ManagedChannel channel = StreamingRecognizeClient.createChannel(host, port);
     StreamingRecognizeClient client = new StreamingRecognizeClient(channel, path.toString(), 32000);
 
     client.recognize();
