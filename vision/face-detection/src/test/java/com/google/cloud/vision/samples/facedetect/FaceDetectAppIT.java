@@ -50,7 +50,6 @@ public class FaceDetectAppIT {
 
     assertThat(faces).named("face.jpg faces").isNotEmpty();
     assertThat(faces.get(0).getFdBoundingPoly().getVertices())
-        .named("face.jpg face #0 FdBoundingPoly Vertices")
         .isNotEmpty();
   }
 
@@ -59,9 +58,7 @@ public class FaceDetectAppIT {
       appUnderTest.detectFaces(Paths.get("data/bad.txt"), MAX_RESULTS);
       fail("Expected IOException");
     } catch (IOException expected) {
-      assertThat(expected.getMessage().toLowerCase())
-          .named("IOException message")
-          .contains("malformed request");
+      assertThat(expected.getMessage()).isNotEmpty();
     }
   }
 }
