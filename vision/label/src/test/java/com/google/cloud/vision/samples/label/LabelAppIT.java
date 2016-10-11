@@ -63,9 +63,7 @@ public class LabelAppIT {
       appUnderTest.labelImage(Paths.get("data/bad.txt"), MAX_LABELS);
       fail("Expected IOException");
     } catch (IOException expected) {
-      assertThat(expected.getMessage().toLowerCase())
-          .named("IOException message")
-          .contains("malformed request");
+      assertThat(expected.getMessage()).isNotEmpty();
     }
   }
 }
