@@ -22,6 +22,19 @@ libraries.
 [maven-download]: https://maven.apache.org/download.cgi
 [maven-install]: https://maven.apache.org/install.html
 
+## Authentication
+This sample uses API Key for authentication. 
+
+ * Visit the [Google Cloud Console](https://console.cloud.google.com) and navigate to:
+ ```
+  API Manager > Credentials > Create credentials > API Key
+ ```
+ 
+ * Set the environment variable GOOGLE_API_KEY
+ ```
+  export GOOGLE_API_KEY=<YOUR_PROJECT_API_KEY>
+ ```
+ 
 ## Run the sample
 
 To build the sample, we use Maven.
