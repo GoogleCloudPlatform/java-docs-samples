@@ -15,6 +15,11 @@
 language: java
 jdk:
 - oraclejdk8
+git:
+  # Handle git submodules ourselves. We want the samples and tests to work
+  # without a recursive clone. We only use submodules for an additional layer
+  # of localhost testing scripts.
+  submodules: false
 addons:
   apt:
     sources:
