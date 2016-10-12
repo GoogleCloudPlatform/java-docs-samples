@@ -52,7 +52,7 @@ public class HelloWorld {
       { "Hello World!", "Hello Cloud Bigtable!", "Hello HBase!" };
 
   /**
-   * Connects to Cloud Bigtable, runs some basic operations and prints the results
+   * Connects to Cloud Bigtable, runs some basic operations and prints the results.
    */
   private static void doHelloWorld(String projectId, String instanceId) {
 
