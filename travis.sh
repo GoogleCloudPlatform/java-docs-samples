@@ -25,27 +25,34 @@ if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
 fi
 mvn --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
-# Run tests using App Engine local devserver.
-devserver_tests=(
-    appengine/helloworld
-    appengine/datastore/geo
-    appengine/datastore/indexes
-    appengine/datastore/indexes-exploding
-    appengine/datastore/indexes-perfect
-)
-for testdir in "${devserver_tests[@]}" ; do
-  ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
-done
-
-# newplugin_std_tests=(
-#     appengine/helloworld-new-plugins
-# )
-# for testdir in "${newplugin_std_tests[@]}" ; do
-#   ./java-repo-tools/scripts/test-localhost.sh standard_mvn "${testdir}"
-#   ./java-repo-tools/scripts/test-localhost.sh standard_gradle "${testdir}"
-# done
-
-
 # Check that all shell scripts in this repo (including this one) pass the
 # Shell Check linter.
 shellcheck ./**/*.sh
+
+# Run tests using App Engine local devserver.
+test_localhost() {
+  # The testing scripts are stored in a submodule. This allows us to carefully
+  # update the testing scripts, since submodules are tied to a specific commit.
+  git submodule init
+  git submodule update
+
+  devserver_tests=(
+      appengine/helloworld
+      appengine/datastore/geo
+      appengine/datastore/indexes
+      appengine/datastore/indexes-exploding
+      appengine/datastore/indexes-perfect
+  )
+  for testdir in "${devserver_tests[@]}" ; do
+    ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
+  done
+
+  # newplugin_std_tests=(
+  #     appengine/helloworld-new-plugins
+  # )
+  # for testdir in "${newplugin_std_tests[@]}" ; do
+  #   ./java-repo-tools/scripts/test-localhost.sh standard_mvn "${testdir}"
+  #   ./java-repo-tools/scripts/test-localhost.sh standard_gradle "${testdir}"
+  # done
+}
+test_localhost

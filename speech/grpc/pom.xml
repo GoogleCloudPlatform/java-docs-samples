@@ -28,9 +28,9 @@ limitations under the License.
   <!-- Parent defines plugins for checkstyle and unit testing. -->
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>shared-configuration</artifactId>
+    <artifactId>doc-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../../java-repo-tools</relativePath>
+    <relativePath>../..</relativePath>
   </parent>
 
   <licenses>
