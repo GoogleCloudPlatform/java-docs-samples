@@ -16,7 +16,6 @@
 
 package com.example.appengine.firetactoe;
 
-import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -32,19 +31,10 @@ public class OpenedServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
+    // TODO(you): In practice, you should validate the user has permission to post to the given Game
     String gameId = request.getParameter("gameKey");
     Objectify ofy = ObjectifyService.ofy();
-    try {
-      Game game = ofy.load().type(Game.class).id(gameId).safe();
-      if (gameId != null && request.getUserPrincipal() != null) {
-        game.sendUpdateToClients();
-        response.setContentType("text/plain");
-        response.getWriter().println("ok");
-      } else {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      }
-    } catch (NotFoundException e) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    }
+    Game game = ofy.load().type(Game.class).id(gameId).safe();
+    game.sendUpdateToClients();
   }
 }
