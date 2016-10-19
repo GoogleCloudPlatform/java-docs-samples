@@ -28,11 +28,6 @@ Copyright 2016 Google Inc. All Rights Reserved.
     <relativePath>../..</relativePath>
   </parent>
   <dependencies>
-   <dependency>
-    <groupId>com.google.appengine</groupId>
-    <artifactId>appengine-maven-plugin</artifactId>
-    <version>${appengine.sdk.version}</version>
-   </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
