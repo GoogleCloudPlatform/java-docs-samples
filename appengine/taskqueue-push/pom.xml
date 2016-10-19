@@ -45,6 +45,11 @@ Copyright 2016 Google Inc. All Rights Reserved.
       <artifactId>json</artifactId>
       <version>20160810</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>${appengine.sdk.version}</version>
+    </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
