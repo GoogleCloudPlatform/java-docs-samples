@@ -18,22 +18,22 @@ package com.google.appengine.samples;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
 import com.google.api.client.testing.http.MockHttpTransport;
 import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
-
-import java.io.IOException;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpResponse;
+
+import java.io.IOException;
 
 public class LocalUrlFetchTest {
   private final LocalServiceTestHelper helper =
