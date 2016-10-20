@@ -73,7 +73,11 @@ public class TicTacToeServlet extends HttpServlet {
     Game game = null;
     String userId = userService.getCurrentUser().getUserId();
     if (gameKey != null) {
-      game = ofy.load().type(Game.class).id(gameKey).safe();
+      game = ofy.load().type(Game.class).id(gameKey).now();
+      if (null == game) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
       if (game.getUserO() == null && !userId.equals(game.getUserX())) {
         game.setUserO(userId);
       }
@@ -102,6 +106,6 @@ public class TicTacToeServlet extends HttpServlet {
     request.setAttribute("channel_id", game.getChannelKey(userId));
     request.setAttribute("initial_message", new Gson().toJson(game));
     request.setAttribute("game_link", getGameUriWithGameParam(request, gameKey));
-    getServletContext().getRequestDispatcher("/WEB-INF/view/index.jsp").forward(request, response);
+    request.getRequestDispatcher("/WEB-INF/view/index.jsp").forward(request, response);
   }
 }
