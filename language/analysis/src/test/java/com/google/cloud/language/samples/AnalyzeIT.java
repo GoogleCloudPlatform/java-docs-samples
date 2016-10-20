@@ -18,9 +18,9 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.language.v1beta1.model.Entity;
-import com.google.api.services.language.v1beta1.model.Sentiment;
-import com.google.api.services.language.v1beta1.model.Token;
+import com.google.api.services.language.v1.model.Entity;
+import com.google.api.services.language.v1.model.Sentiment;
+import com.google.api.services.language.v1.model.Token;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,10 +59,10 @@ public class AnalyzeIT {
 
   @Test public void analyzeSentiment_returnPositive() throws Exception {
     // Act
-    Sentiment sentiment = 
+    Sentiment sentiment =
         analyzeApp.analyzeSentiment(
             "Tom Cruise is one of the finest actors in hollywood and a great star!");
-    
+
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
     assertThat((double)sentiment.getPolarity()).isGreaterThan(0.0);
@@ -89,7 +89,7 @@ public class AnalyzeIT {
         .collect(Collectors.toList());
 
     // Assert
-    assertThat(got).containsExactly("NOUN", "NOUN", "VERB", 
+    assertThat(got).containsExactly("NOUN", "NOUN", "VERB",
         "VERB", "ADP", "DET", "ADJ", "NOUN").inOrder();
   }
 }

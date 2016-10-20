@@ -22,19 +22,21 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.language.v1beta1.CloudNaturalLanguageAPI;
-import com.google.api.services.language.v1beta1.CloudNaturalLanguageAPIScopes;
-import com.google.api.services.language.v1beta1.model.AnalyzeEntitiesRequest;
-import com.google.api.services.language.v1beta1.model.AnalyzeEntitiesResponse;
-import com.google.api.services.language.v1beta1.model.AnalyzeSentimentRequest;
-import com.google.api.services.language.v1beta1.model.AnalyzeSentimentResponse;
-import com.google.api.services.language.v1beta1.model.AnnotateTextRequest;
-import com.google.api.services.language.v1beta1.model.AnnotateTextResponse;
-import com.google.api.services.language.v1beta1.model.Document;
-import com.google.api.services.language.v1beta1.model.Entity;
-import com.google.api.services.language.v1beta1.model.Features;
-import com.google.api.services.language.v1beta1.model.Sentiment;
-import com.google.api.services.language.v1beta1.model.Token;
+import com.google.api.services.language.v1.CloudNaturalLanguageAPI;
+import com.google.api.services.language.v1.CloudNaturalLanguageAPIScopes;
+import com.google.api.services.language.v1.model.AnalyzeEntitiesRequest;
+import com.google.api.services.language.v1.model.AnalyzeEntitiesResponse;
+import com.google.api.services.language.v1.model.AnalyzeSentimentRequest;
+import com.google.api.services.language.v1.model.AnalyzeSentimentResponse;
+import com.google.api.services.language.v1.model.AnalyzeSyntaxRequest;
+import com.google.api.services.language.v1.model.AnalyzeSyntaxResponse;
+import com.google.api.services.language.v1.model.AnnotateTextRequest;
+import com.google.api.services.language.v1.model.AnnotateTextResponse;
+import com.google.api.services.language.v1.model.Document;
+import com.google.api.services.language.v1.model.Entity;
+import com.google.api.services.language.v1.model.Features;
+import com.google.api.services.language.v1.model.Sentiment;
+import com.google.api.services.language.v1.model.Token;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -136,7 +138,7 @@ public class Analyze {
   /**
    * Connects to the Natural Language API using Application Default Credentials.
    */
-  public static CloudNaturalLanguageAPI getLanguageService() 
+  public static CloudNaturalLanguageAPI getLanguageService()
     throws IOException, GeneralSecurityException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudNaturalLanguageAPIScopes.all());
@@ -195,15 +197,13 @@ public class Analyze {
    * Gets {@link Token}s from the string {@code text}.
    */
   public List<Token> analyzeSyntax(String text) throws IOException {
-    AnnotateTextRequest request =
-        new AnnotateTextRequest()
+    AnalyzeSyntaxRequest request =
+        new AnalyzeSyntaxRequest()
             .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
-            .setFeatures(new Features().setExtractSyntax(true))
             .setEncodingType("UTF16");
-    CloudNaturalLanguageAPI.Documents.AnnotateText analyze =
-        languageApi.documents().annotateText(request);
-
-    AnnotateTextResponse response = analyze.execute();
+    CloudNaturalLanguageAPI.Documents.AnalyzeSyntax analyze =
+        languageApi.documents().analyzeSyntax(request);
+    AnalyzeSyntaxResponse response = analyze.execute();
     return response.getTokens();
   }
 }
