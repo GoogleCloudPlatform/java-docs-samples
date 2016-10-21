@@ -21,6 +21,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <welcome-file-list>
         <welcome-file>index</welcome-file>
     </welcome-file-list>
+    <security-constraint>
+      <web-resource-collection>
+        <web-resource-name>entire-app</web-resource-name>
+        <url-pattern>/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+        <role-name>*</role-name>
+      </auth-constraint>
+    </security-constraint>
     <servlet>
         <servlet-name>TicTacToeServlet</servlet-name>
         <servlet-class>com.example.appengine.firetactoe.TicTacToeServlet</servlet-class>

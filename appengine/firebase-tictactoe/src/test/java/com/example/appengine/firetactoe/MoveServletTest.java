@@ -17,7 +17,6 @@
 package com.example.appengine.firetactoe;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -50,17 +49,15 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.StringBuffer;
 import java.util.HashMap;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Unit tests for {@link TicTacToeServlet}.
+ * Unit tests for {@link MoveServlet}.
  */
 @RunWith(JUnit4.class)
-public class TicTacToeServletTest {
+public class MoveServletTest {
   private static final String USER_EMAIL = "whisky@tangofoxtr.ot";
   private static final String USER_ID = "whiskytangofoxtrot";
   private static final String FIREBASE_DB_URL = "http://firebase.com/dburl";
@@ -81,9 +78,8 @@ public class TicTacToeServletTest {
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   protected Closeable dbSession;
-  @Mock RequestDispatcher requestDispatcher;
 
-  private TicTacToeServlet servletUnderTest;
+  private MoveServlet servletUnderTest;
 
   @BeforeClass
   public static void setUpBeforeClass() {
@@ -101,13 +97,11 @@ public class TicTacToeServletTest {
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
-    // Set up a fake HTTP response.
-    when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://timbre/"));
-    when(mockRequest.getRequestDispatcher("/WEB-INF/view/index.jsp")).thenReturn(requestDispatcher);
-
-    servletUnderTest = new TicTacToeServlet();
+    servletUnderTest = new MoveServlet();
 
     helper.setEnvIsLoggedIn(true);
+    // Make sure there are no firebase requests if we don't expect it
+    FirebaseChannel.getInstance().httpTransport = null;
   }
 
   @After
@@ -117,93 +111,54 @@ public class TicTacToeServletTest {
   }
 
   @Test
-  public void doGet_noGameKey() throws Exception {
-    // Mock out the firebase response. See
-    // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
-
-    servletUnderTest.doGet(mockRequest, mockResponse);
-
-    // Make sure the game object was created for a new game
-    Objectify ofy = ObjectifyService.ofy();
-    Game game = ofy.load().type(Game.class).first().safe();
-    assertThat(game.userX).isEqualTo(USER_ID);
-
-    verify(mockHttpTransport, times(1)).buildRequest(
-        eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
-    verify(requestDispatcher).forward(mockRequest, mockResponse);
-    verify(mockRequest).setAttribute(eq("token"), anyString());
-    verify(mockRequest).setAttribute("game_key", game.id);
-    verify(mockRequest).setAttribute("me", USER_ID);
-    verify(mockRequest).setAttribute("channel_id", USER_ID + game.id);
-    verify(mockRequest).setAttribute(eq("initial_message"), anyString());
-    verify(mockRequest).setAttribute(eq("game_link"), anyString());
-  }
-
-  @Test
-  public void doGet_existingGame() throws Exception {
-    // Mock out the firebase response. See
-    // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
-
+  public void doPost_myTurn_move() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
-    Game game = new Game("some-other-user-id", null, "         ", true);
+    Game game = new Game(USER_ID, "my-opponent", "         ", true);
     ofy.save().entity(game).now();
     String gameKey = game.getId();
 
     when(mockRequest.getParameter("gameKey")).thenReturn(gameKey);
+    when(mockRequest.getParameter("cell")).thenReturn("1");
 
-    servletUnderTest.doGet(mockRequest, mockResponse);
+    // Mock out the firebase response. See
+    // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
+    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
+      @Override
+      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+        return new MockLowLevelHttpRequest() {
+          @Override
+          public LowLevelHttpResponse execute() throws IOException {
+            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+            response.setStatusCode(200);
+            return response;
+          }
+        };
+      }
+    });
+    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
-    // Make sure the game object was updated with the other player
-    game = ofy.load().type(Game.class).first().safe();
-    assertThat(game.userX).isEqualTo("some-other-user-id");
-    assertThat(game.userO).isEqualTo(USER_ID);
+    servletUnderTest.doPost(mockRequest, mockResponse);
+
+    game = ofy.load().type(Game.class).id(gameKey).safe();
+    assertThat(game.board).isEqualTo(" X       ");
 
     verify(mockHttpTransport, times(2)).buildRequest(
         eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
-    verify(requestDispatcher).forward(mockRequest, mockResponse);
-    verify(mockRequest).setAttribute(eq("token"), anyString());
-    verify(mockRequest).setAttribute("game_key", game.id);
-    verify(mockRequest).setAttribute("me", USER_ID);
-    verify(mockRequest).setAttribute("channel_id", USER_ID + gameKey);
-    verify(mockRequest).setAttribute(eq("initial_message"), anyString());
-    verify(mockRequest).setAttribute(eq("game_link"), anyString());
   }
 
-  @Test
-  public void doGet_nonExistentGame() throws Exception {
-    when(mockRequest.getParameter("gameKey")).thenReturn("does-not-exist");
+  public void doPost_notMyTurn_move() throws Exception {
+    // Insert a game
+    Objectify ofy = ObjectifyService.ofy();
+    Game game = new Game(USER_ID, "my-opponent", "         ", false);
+    ofy.save().entity(game).now();
+    String gameKey = game.getId();
 
-    servletUnderTest.doGet(mockRequest, mockResponse);
+    when(mockRequest.getParameter("gameKey")).thenReturn(gameKey);
+    when(mockRequest.getParameter("cell")).thenReturn("1");
 
-    verify(mockResponse).sendError(404);
+    servletUnderTest.doPost(mockRequest, mockResponse);
+
+    verify(mockResponse).sendError(401);
   }
 }

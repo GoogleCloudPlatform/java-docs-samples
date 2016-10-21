@@ -16,7 +16,6 @@
 
 package com.example.appengine.firetactoe;
 
-import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Objectify;
@@ -60,18 +59,12 @@ public class TicTacToeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    final UserService userService = UserServiceFactory.getUserService();
     String gameKey = request.getParameter("gameKey");
-    if (userService.getCurrentUser() == null) {
-      response.getWriter().println("<p>Please <a href=\"" + userService.createLoginURL(
-          getGameUriWithGameParam(request, gameKey)) + "\">sign in</a>.</p>");
-      return;
-    }
 
     // 1. Create or fetch a Game object from the datastore
     Objectify ofy = ObjectifyService.ofy();
     Game game = null;
-    String userId = userService.getCurrentUser().getUserId();
+    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     if (gameKey != null) {
       game = ofy.load().type(Game.class).id(gameKey).now();
       if (null == game) {
