@@ -17,6 +17,7 @@
 package com.example.appengine.firetactoe;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
@@ -171,5 +172,64 @@ public class FirebaseChannel {
     String toSign = String.format("%s.%s", header, payload);
     AppIdentityService.SigningResult result = appIdentity.signForApp(toSign.getBytes());
     return String.format("%s.%s", toSign, base64.encode(result.getSignature()));
+  }
+
+  // The following methods are to illustrate making various calls to Firebase from App Engine
+  // Standard
+
+  public HttpResponse firebasePut(String path, Object object) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    String json = new Gson().toJson(object);
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildPutRequest(
+        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+  }
+
+  public HttpResponse firebasePatch(String path, Object object) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    String json = new Gson().toJson(object);
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildPatchRequest(
+        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+  }
+
+  public HttpResponse firebasePost(String path, Object object) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    String json = new Gson().toJson(object);
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildPostRequest(
+        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+  }
+
+  public HttpResponse firebaseGet(String path) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildGetRequest(url).execute();
+  }
+
+  public HttpResponse firebaseDelete(String path) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildDeleteRequest(url).execute();
   }
 }
