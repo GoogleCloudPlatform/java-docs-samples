@@ -22,6 +22,10 @@ You can then run a given `ClassName` via:
 	    -DpropertyName=propertyValue \
 		-Dexec.args="any arguments to the app"
 
+### Creating a new dataset (using the quickstart sample)
+
+    mvn exec:java -Dexec.mainClass=com.example.bigquery.QuickstartSample
+
 ### Running a synchronous query
 
     mvn exec:java -Dexec.mainClass=com.example.bigquery.SyncQuerySample \

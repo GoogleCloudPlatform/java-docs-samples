@@ -31,7 +31,8 @@ import java.io.PrintStream;
  * Tests for synchronous query sample.
  */
 @RunWith(JUnit4.class)
-public class SyncQuerySampleTest {
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class SyncQuerySampleIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
