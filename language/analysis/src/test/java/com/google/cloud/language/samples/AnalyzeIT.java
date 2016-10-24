@@ -59,10 +59,10 @@ public class AnalyzeIT {
 
   @Test public void analyzeSentiment_returnPositive() throws Exception {
     // Act
-    Sentiment sentiment = 
+    Sentiment sentiment =
         analyzeApp.analyzeSentiment(
             "Tom Cruise is one of the finest actors in hollywood and a great star!");
-    
+
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
     assertThat((double)sentiment.getPolarity()).isGreaterThan(0.0);
@@ -72,7 +72,7 @@ public class AnalyzeIT {
     // Act
     Sentiment sentiment =
         analyzeApp.analyzeSentiment(
-            "John was seriously injured in an accident");
+            "You are an idiot suck face and I hope you choke on your jolly rancher.");
 
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
@@ -89,7 +89,7 @@ public class AnalyzeIT {
         .collect(Collectors.toList());
 
     // Assert
-    assertThat(got).containsExactly("NOUN", "NOUN", "VERB", 
+    assertThat(got).containsExactly("NOUN", "NOUN", "VERB",
         "VERB", "ADP", "DET", "ADJ", "NOUN").inOrder();
   }
 }
