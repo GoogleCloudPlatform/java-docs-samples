@@ -18,7 +18,7 @@ limitations under the License.
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.google.cloud.language.samples</groupId>
-  <artifactId>entities</artifactId>
+  <artifactId>language-entities</artifactId>
 
   <dependencies>
     <!-- [START dependencies] -->
