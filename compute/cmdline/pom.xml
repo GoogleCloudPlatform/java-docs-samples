@@ -89,7 +89,7 @@ limitations under the License.
     </dependency>
   </dependencies>
   <properties>
-    <project.compute.version>v1-rev127-1.22.0</project.compute.version>
+    <project.compute.version>v1-rev128-1.22.0</project.compute.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

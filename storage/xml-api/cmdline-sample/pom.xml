@@ -66,7 +66,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev86-1.22.0</version>
+      <version>v1-rev88-1.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
