@@ -21,6 +21,7 @@ import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.errors.MailjetException;
+import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.resource.Email;
 // [END mailjet_imports]
 
@@ -30,7 +31,7 @@ import org.json.JSONObject;
 // [START app]
 public class MailjetSender{
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws MailjetException, MailjetSocketTimeoutException {
     final String mailjetApiKey = "YOUR-MAILJET-API-KEY";
     final String mailjetSecretKey = "YOUR-MAILJET-SECRET-KEY";
     MailjetClient client = new MailjetClient(mailjetApiKey, mailjetSecretKey);
@@ -39,7 +40,8 @@ public class MailjetSender{
     sender.sendMailjet(args[0], args[1], client);
   }
 
-  public MailjetResponse sendMailjet(String recipient, String sender, MailjetClient client) {
+  public MailjetResponse sendMailjet(String recipient, String sender, MailjetClient client)
+  throws MailjetException, MailjetSocketTimeoutException {
     MailjetRequest email = new MailjetRequest(Email.resource)
         .property(Email.FROMEMAIL, sender)
         .property(Email.FROMNAME, "pandora")
