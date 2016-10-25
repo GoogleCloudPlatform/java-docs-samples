@@ -52,7 +52,7 @@ travis_changed_files_parent() {
   )
 }
 
-git branch
+git branch -r
 exit 1
 travis_changed_files_parent
 common_travis_dir="$(travis_changed_files_parent)"

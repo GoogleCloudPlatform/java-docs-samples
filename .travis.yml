@@ -53,3 +53,4 @@ after_success:
 branches:
   only:
   - master
+  - travis-run-changed
