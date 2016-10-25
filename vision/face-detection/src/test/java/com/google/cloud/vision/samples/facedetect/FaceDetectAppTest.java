@@ -59,7 +59,7 @@ public class FaceDetectAppTest {
     // Assert
     assertThat(img.getRGB(10, 5) & 0x00ff00)
         .named("img face #1 vertex (10, 5) green channel")
-        .isEqualTo(0x00ff00);
+        .isEqualTo(0x0fff00);
     assertThat(img.getRGB(20, 5) & 0x00ff00)
         .named("img face #1 vertex (20, 5) green channel")
         .isEqualTo(0x00ff00);
