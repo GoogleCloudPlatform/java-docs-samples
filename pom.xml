@@ -54,6 +54,7 @@
         <module>appengine/datastore/indexes-perfect</module>
         <module>appengine/endpoints-frameworks-v2/backend</module>
         <module>appengine/firebase-event-proxy/gae-firebase-event-proxy</module>
+        <module>appengine/firebase-tictactoe</module>
         <module>appengine/guestbook-objectify</module>
         <module>appengine/helloworld</module>
         <module>appengine/helloworld-new-plugins</module>
