@@ -104,7 +104,7 @@ public class Game {
     this.moveX = moveX;
   }
 
-  //[START send_updates]
+  // [START send_updates]
   public String getChannelKey(String userId) {
     return userId + id;
   }
@@ -130,7 +130,7 @@ public class Game {
     sendUpdateToUser(userX);
     sendUpdateToUser(userO);
   }
-  //[END send_updates]
+  // [END send_updates]
 
   public void checkWin() {
     final Pattern[] wins;
@@ -152,7 +152,6 @@ public class Game {
     }
   }
 
-  //[START make_move]
   public boolean makeMove(int position, String userId) {
     String currentMovePlayer;
     char value;
@@ -181,5 +180,4 @@ public class Game {
 
     return false;
   }
-  //[END make_move]
 }

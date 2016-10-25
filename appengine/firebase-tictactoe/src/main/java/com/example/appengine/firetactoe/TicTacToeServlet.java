@@ -88,6 +88,7 @@ public class TicTacToeServlet extends HttpServlet {
 
     // 3. Inject a secure token into the client, so it can get game updates
 
+    // [START pass_token]
     // The 'Game' object exposes a method which creates a unique string based on the game's key
     // and the user's id.
     String token = FirebaseChannel.getInstance().createFirebaseToken(game, userId);
@@ -100,5 +101,6 @@ public class TicTacToeServlet extends HttpServlet {
     request.setAttribute("initial_message", new Gson().toJson(game));
     request.setAttribute("game_link", getGameUriWithGameParam(request, gameKey));
     request.getRequestDispatcher("/WEB-INF/view/index.jsp").forward(request, response);
+    // [END pass_token]
   }
 }
