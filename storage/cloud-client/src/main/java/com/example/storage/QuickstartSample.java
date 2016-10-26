@@ -29,7 +29,7 @@ public class QuickstartSample {
     Storage storage = StorageOptions.defaultInstance().service();
 
     // The name for the new bucket
-    String bucketName = "my-new-bucket";
+    String bucketName = args[0];
 
     // Creates the new bucket
     Bucket bucket = storage.create(BucketInfo.of(bucketName));
