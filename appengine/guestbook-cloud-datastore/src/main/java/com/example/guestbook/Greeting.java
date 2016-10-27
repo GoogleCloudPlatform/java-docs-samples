@@ -1,16 +1,14 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -25,6 +23,8 @@ import com.google.cloud.datastore.FullEntity;
 import com.google.cloud.datastore.FullEntity.Builder;
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
+import com.google.common.base.MoreObjects;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -32,7 +32,6 @@ public class Greeting {
   private Guestbook book;
 
   public Key key;
-
   public String authorEmail;
   public String authorId;
   public String content;
@@ -54,11 +53,6 @@ public class Greeting {
     authorId = id;
   }
 
-  /**
-   * Load greeting from Datastore entity
-   *
-   * @param entity
-   */
   public Greeting(Entity entity) {
     key = entity.hasKey() ? entity.key() : null;
     authorEmail = entity.contains("authorEmail") ? entity.getString("authorEmail") : null;
@@ -102,16 +96,28 @@ public class Greeting {
       return false;
     }
     Greeting greeting = (Greeting) o;
-    return Objects.equals(key, greeting.key) &&
-        Objects.equals(authorEmail, greeting.authorEmail) &&
-        Objects.equals(authorId, greeting.authorId) &&
-        Objects.equals(content, greeting.content) &&
-        Objects.equals(date, greeting.date);
+    return Objects.equals(key, greeting.key)
+        && Objects.equals(authorEmail, greeting.authorEmail)
+        && Objects.equals(authorId, greeting.authorId)
+        && Objects.equals(content, greeting.content)
+        && Objects.equals(date, greeting.date);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(key, authorEmail, authorId, content, date);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("key", key)
+        .add("authorEmail", authorEmail)
+        .add("authorId", authorId)
+        .add("content", content)
+        .add("date", date)
+        .add("book", book)
+        .toString();
   }
 }
 //[END all]

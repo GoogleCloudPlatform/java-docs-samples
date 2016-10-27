@@ -19,10 +19,10 @@ Then start the [Cloud Datastore Emulator](https://cloud.google.com/datastore/doc
 Finally, in a new shell, [set the Datastore Emulator environmental variables](https://cloud.google.com/datastore/docs/tools/datastore-emulator#setting_environment_variables)
 and run
 
-    mvn clean appengine:devserver
+    mvn clean appengine:run
 
 ## Deploying
 
 Modify `appengine-web.xml` to reflect your app ID and version, then:
 
-    mvn clean appengine:update
+    mvn clean appengine:deploy
