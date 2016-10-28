@@ -37,7 +37,7 @@ public class UserService {
   /**
    * Constructor for UserService.
    *
-   * @param datastore gcloud-java Datastore service object to execute requests
+   * @param datastore service object to execute requests
    * @param kind the kind for the Datastore entities in this demo
    */
   public UserService(Datastore datastore, String kind) {

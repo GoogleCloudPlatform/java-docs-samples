@@ -31,7 +31,7 @@ import spark.Spark;
 public class UserController {
 
   /**
-   * Creates a controller that maps requests to gcloud-java functions.
+   * Creates a controller that maps requests to actions.
    */
   public UserController(final UserService userService) {
     Spark.staticFileLocation("/public");
