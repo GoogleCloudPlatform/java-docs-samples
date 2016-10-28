@@ -6,7 +6,7 @@ These sample Java applications demonstrate how to access the BigQuery API using
 the [Google Cloud Client Library for Java][google-cloud-java].
 
 [BigQuery]: https://cloud.google.com/bigquery/
-[google-cloud-java]: https://github.com/GoogleCloudPlatform/gcloud-java
+[google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java
 
 ## Quickstart
 
