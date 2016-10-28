@@ -77,12 +77,13 @@
         <module>appengine/users</module>
         <module>appengine/xmpp</module>
         <module>bigquery</module>
+        <module>bigquery/cloud-client</module>
         <module>compute/cmdline</module>
         <module>compute/error-reporting</module>
         <module>compute/mailjet</module>
         <module>compute/sendgrid</module>
         <module>datastore</module>
-        <module>logging</module>
+        <module>datastore/cloud-client</module>
         <module>flexible/analytics</module>
         <module>flexible/async-rest</module>
         <module>flexible/cloudsql</module>
@@ -101,15 +102,20 @@
  -->
         <module>flexible/static-files</module>
         <module>flexible/twilio</module>
+        <module>language/analysis</module>
+        <module>logging</module>
         <module>monitoring/v2</module>
         <module>monitoring/v3</module>
+        <module>pubsub/cloud-client</module>
         <module>speech/grpc</module>
+        <module>storage/cloud-client</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
         <module>taskqueue/deferred</module>
-        <module>language/analysis</module>
+        <module>translate</module>
+        <module>translate/cloud-client</module>
         <module>unittests</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>
@@ -147,7 +153,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.2.8</version>
+            <version>2.2.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>

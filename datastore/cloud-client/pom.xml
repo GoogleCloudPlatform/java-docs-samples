@@ -15,8 +15,8 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.bigquery</groupId>
-  <artifactId>bigquery-google-cloud-samples</artifactId>
+  <groupId>come.example.datastore</groupId>
+  <artifactId>datastore-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent defines config for testing & linting. -->
@@ -36,8 +36,8 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>gcloud-java</artifactId>
-      <version>0.2.8</version>
+      <artifactId>google-cloud-datastore</artifactId>
+      <version>0.4.0</version>
     </dependency>
 
     <!-- Test dependencies -->

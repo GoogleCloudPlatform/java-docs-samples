@@ -25,12 +25,15 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <!-- Parent defines config for testing & linting. -->
   <parent>
+    <artifactId>doc-samples</artifactId>
     <groupId>com.google.cloud</groupId>
-    <artifactId>shared-configuration</artifactId>
     <version>1.0.0</version>
-    <relativePath>../java-repo-tools</relativePath>
+    <relativePath>..</relativePath>
   </parent>
+
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
