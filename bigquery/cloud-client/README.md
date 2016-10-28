@@ -31,3 +31,11 @@ You can then run a given `ClassName` via:
     mvn exec:java -Dexec.mainClass=com.example.bigquery.SyncQuerySample \
         -Dquery='SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;' \
         -DuseLegacySql=false
+
+### Running the simple app example
+
+To run the example from the [simple app example
+documentation](https://cloud.google.com/bigquery/create-simple-app-api):
+
+    mvn exec:java -Dexec.mainClass=com.example.bigquery.SimpleApp
+
