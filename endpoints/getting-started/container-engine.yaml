@@ -38,6 +38,7 @@ spec:
         app: esp-echo
     spec:
       containers:
+      # [START esp]
       - name: esp
         image: b.gcr.io/endpoints/endpoints-runtime:0.3
         args: [
@@ -46,6 +47,7 @@ spec:
           "-s", "SERVICE_NAME",
           "-v", "SERVICE_VERSION",
         ]
+      # [END esp]
         ports:
           - containerPort: 8080
       - name: echo
