@@ -25,13 +25,14 @@
     <version>1.0.0</version>
     <relativePath>../..</relativePath>
   </parent>
+  <properties>
+    <mailjet.version>4.0.5</mailjet.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.mailjet</groupId>
       <artifactId>mailjet-client</artifactId>
-      <version>4.0.4</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/client-3.1.1-jar-with-dependencies.jar</systemPath>
+      <version>${mailjet.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
