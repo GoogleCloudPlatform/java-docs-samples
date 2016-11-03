@@ -1,11 +1,15 @@
 # Google Cloud Endpoints
 This sample demonstrates how to use Google Cloud Endpoints using Java.
 
+## Pre-deployment steps
+
+### Edit and deploy the OpenAPI specification
+
+1. Open the [src/main/appengine/swagger.yaml](src/main/appengine/swagger.yaml) file in your favorite editor, and replace the YOUR-PROJECT-ID `host` line with your actual Google Cloud Platform project id.
+
+2. Deploy the service configuration. For information on how to do this, see the Configuring Endpoints and Deploying the Sample API sections [here](https://cloud.google.com/endpoints/docs/quickstart-container-engine).
+
 ## Deploying to Google App Engine Flexible Environment
-
-### Edit the Swagger API specification
-
-Open the [src/main/appengine/swagger.yaml](src/main/appengine/swagger.yaml) file in your favorite editor, and replace the YOUR-PROJECT-ID `host` line with your actual Google Cloud Platform project Id.
 
 ### Running locally
     $ mvn jetty:run
