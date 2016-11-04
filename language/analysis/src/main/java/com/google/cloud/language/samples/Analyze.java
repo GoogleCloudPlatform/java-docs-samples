@@ -22,8 +22,8 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.language.v1beta1.CloudNaturalLanguageAPI;
-import com.google.api.services.language.v1beta1.CloudNaturalLanguageAPIScopes;
+import com.google.api.services.language.v1beta1.CloudNaturalLanguage;
+import com.google.api.services.language.v1beta1.CloudNaturalLanguageScopes;
 import com.google.api.services.language.v1beta1.model.AnalyzeEntitiesRequest;
 import com.google.api.services.language.v1beta1.model.AnalyzeEntitiesResponse;
 import com.google.api.services.language.v1beta1.model.AnalyzeSentimentRequest;
@@ -136,12 +136,12 @@ public class Analyze {
   /**
    * Connects to the Natural Language API using Application Default Credentials.
    */
-  public static CloudNaturalLanguageAPI getLanguageService() 
+  public static CloudNaturalLanguage getLanguageService()
     throws IOException, GeneralSecurityException {
     GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudNaturalLanguageAPIScopes.all());
+        GoogleCredential.getApplicationDefault().createScoped(CloudNaturalLanguageScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    return new CloudNaturalLanguageAPI.Builder(
+    return new CloudNaturalLanguage.Builder(
         GoogleNetHttpTransport.newTrustedTransport(),
         jsonFactory, new HttpRequestInitializer() {
               @Override
@@ -153,12 +153,12 @@ public class Analyze {
         .build();
   }
 
-  private final CloudNaturalLanguageAPI languageApi;
+  private final CloudNaturalLanguage languageApi;
 
   /**
    * Constructs a {@link Analyze} which connects to the Cloud Natural Language API.
    */
-  public Analyze(CloudNaturalLanguageAPI languageApi) {
+  public Analyze(CloudNaturalLanguage languageApi) {
     this.languageApi = languageApi;
   }
 
@@ -170,7 +170,7 @@ public class Analyze {
         new AnalyzeEntitiesRequest()
             .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
             .setEncodingType("UTF16");
-    CloudNaturalLanguageAPI.Documents.AnalyzeEntities analyze =
+    CloudNaturalLanguage.Documents.AnalyzeEntities analyze =
         languageApi.documents().analyzeEntities(request);
 
     AnalyzeEntitiesResponse response = analyze.execute();
@@ -184,7 +184,7 @@ public class Analyze {
     AnalyzeSentimentRequest request =
         new AnalyzeSentimentRequest()
             .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"));
-    CloudNaturalLanguageAPI.Documents.AnalyzeSentiment analyze =
+    CloudNaturalLanguage.Documents.AnalyzeSentiment analyze =
         languageApi.documents().analyzeSentiment(request);
 
     AnalyzeSentimentResponse response = analyze.execute();
@@ -200,7 +200,7 @@ public class Analyze {
             .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
             .setFeatures(new Features().setExtractSyntax(true))
             .setEncodingType("UTF16");
-    CloudNaturalLanguageAPI.Documents.AnnotateText analyze =
+    CloudNaturalLanguage.Documents.AnnotateText analyze =
         languageApi.documents().annotateText(request);
 
     AnnotateTextResponse response = analyze.execute();
