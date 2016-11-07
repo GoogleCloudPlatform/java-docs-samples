@@ -81,7 +81,6 @@ test_localhost() {
 
   devserver_tests=(
       appengine/helloworld
-      appengine/datastore/geo
       appengine/datastore/indexes
       appengine/datastore/indexes-exploding
       appengine/datastore/indexes-perfect
