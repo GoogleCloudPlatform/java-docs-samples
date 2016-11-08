@@ -20,12 +20,19 @@ limitations under the License.
   <groupId>com.google.cloud.language.samples</groupId>
   <artifactId>entities</artifactId>
 
+  <repositories>
+    <repository>
+      <id>project.local</id>
+      <name>project</name>
+      <url>file://${project.basedir}/repo</url>
+    </repository>
+  </repositories>
   <dependencies>
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-language</artifactId>
-      <version>v1beta1-rev10-1.22.0</version>
+      <version>v1-rev20161006-1.22.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>

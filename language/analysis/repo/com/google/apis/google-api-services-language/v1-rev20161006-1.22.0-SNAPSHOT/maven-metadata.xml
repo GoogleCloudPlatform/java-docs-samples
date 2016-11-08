@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.google.apis</groupId>
+  <artifactId>google-api-services-language</artifactId>
+  <version>v1-rev20161006-1.22.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20161108.212654</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20161108212654</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>v1-rev20161006-1.22.0-20161108.212654-1</value>
+        <updated>20161108212654</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>v1-rev20161006-1.22.0-20161108.212654-1</value>
+        <updated>20161108212654</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
