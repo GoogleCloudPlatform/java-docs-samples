@@ -34,6 +34,7 @@ import com.google.api.services.language.v1.model.AnnotateTextRequest;
 import com.google.api.services.language.v1.model.AnnotateTextResponse;
 import com.google.api.services.language.v1.model.Document;
 import com.google.api.services.language.v1.model.Entity;
+import com.google.api.services.language.v1.model.EntityMention;
 import com.google.api.services.language.v1.model.Features;
 import com.google.api.services.language.v1.model.Sentiment;
 import com.google.api.services.language.v1.model.Token;
@@ -99,6 +100,13 @@ public class Analyze {
       if (entity.getMetadata() != null) {
         for (Map.Entry<String, String> metadata : entity.getMetadata().entrySet()) {
           out.printf("\tMetadata: %s = %s\n", metadata.getKey(), metadata.getValue());
+        }
+      }
+      if (entity.getMentions() != null) {
+        for (EntityMention mention : entity.getMentions()) {
+          for (Map.Entry<String, Object> mentionSetMember : mention.entrySet()) {
+            out.printf("\tMention: %s = %s\n", mentionSetMember.getKey(), mentionSetMember.getValue());
+          }
         }
       }
     }
