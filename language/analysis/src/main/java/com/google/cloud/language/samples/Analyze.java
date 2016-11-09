@@ -114,7 +114,7 @@ public class Analyze {
     }
     out.println("Found sentiment.");
     out.printf("\tMagnitude: %.3f\n", sentiment.getMagnitude());
-    out.printf("\tPolarity: %.3f\n", sentiment.getPolarity());
+    out.printf("\tScore: %.3f\n", sentiment.getScore());
   }
 
   public static void printSyntax(PrintStream out, List<Token> tokens) {

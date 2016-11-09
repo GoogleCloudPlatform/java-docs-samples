@@ -8,8 +8,8 @@
 
   <groupId>com.google.apis</groupId>
   <artifactId>google-api-services-language</artifactId>
-  <version>v1-rev20161006-1.22.0-SNAPSHOT</version>
-  <name>Google Cloud Natural Language API v1-rev20161006-1.22.0-SNAPSHOT</name>
+  <version>v1-rev20161103-1.22.0-SNAPSHOT</version>
+  <name>Google Cloud Natural Language API v1-rev20161103-1.22.0-SNAPSHOT</name>
   <packaging>jar</packaging>
 
   <inceptionYear>2011</inceptionYear>

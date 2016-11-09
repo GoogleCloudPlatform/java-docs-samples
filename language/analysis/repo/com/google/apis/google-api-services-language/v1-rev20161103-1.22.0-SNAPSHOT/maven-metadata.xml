@@ -2,23 +2,23 @@
 <metadata modelVersion="1.1.0">
   <groupId>com.google.apis</groupId>
   <artifactId>google-api-services-language</artifactId>
-  <version>v1-rev20161006-1.22.0-SNAPSHOT</version>
+  <version>v1-rev20161103-1.22.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20161108.215131</timestamp>
+      <timestamp>20161109.022047</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20161108215131</lastUpdated>
+    <lastUpdated>20161109022047</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>v1-rev20161006-1.22.0-20161108.215131-1</value>
-        <updated>20161108215131</updated>
+        <value>v1-rev20161103-1.22.0-20161109.022047-1</value>
+        <updated>20161109022047</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>v1-rev20161006-1.22.0-20161108.215131-1</value>
-        <updated>20161108215131</updated>
+        <value>v1-rev20161103-1.22.0-20161109.022047-1</value>
+        <updated>20161109022047</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
