@@ -48,7 +48,6 @@
         <module>appengine/channel</module>
         <module>appengine/cloudsql</module>
         <module>appengine/datastore</module>
-        <module>appengine/datastore/geo</module>
         <module>appengine/datastore/indexes</module>
         <module>appengine/datastore/indexes-exploding</module>
         <module>appengine/datastore/indexes-perfect</module>
