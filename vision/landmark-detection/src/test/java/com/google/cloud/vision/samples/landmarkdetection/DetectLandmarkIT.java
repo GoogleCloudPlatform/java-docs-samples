@@ -60,7 +60,7 @@ public class DetectLandmarkIT {
       appUnderTest.identifyLandmark(LANDMARK_URI + "/nonexistent.jpg", MAX_RESULTS);
       fail("Expected IOException");
     } catch (IOException expected) {
-      assertThat(expected.getMessage()).named("IOException message").contains("OBJECT_NOT_FOUND");
+      assertThat(expected.getMessage()).named("IOException message").contains("file");
     }
   }
 
