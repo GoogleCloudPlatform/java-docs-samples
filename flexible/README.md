@@ -9,44 +9,50 @@ scaffolding for other frameworks and use cases.
 
 [aeflex-docs]: https://cloud.google.com/appengine/docs/flexible/
 
-## Run Locally
-1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/), including the [gcloud tool](https://cloud.google.com/sdk/gcloud/), and [gcloud app component](https://cloud.google.com/sdk/gcloud-app).
-1. Setup the gcloud tool.
+## Getting the sample code
 
-   ```
-   gcloud init
-   ```
+Get the latest sample code from GitHub using Git or download the repository as a ZIP file.
+([Download](https://github.com/GoogleCloudPlatform/java-docs-samples/archive/master.zip))
 
-1. Clone this repo.
+    git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 
-   ```
-   git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-   ```
 
-1. Run this project locally from the command line.
+## Before you begin
 
-   ```
-   mvn clean jetty:run
-   ```
+1.  Follow the [quickstart for Java in the App Engine flexible
+    environment](https://cloud.google.com/appengine/docs/flexible/java/quickstart) to 
+    set up your environment to deploy the sample applications App Engine.
+    1.  Download and install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/).
+    1.  [Install and configure Apache Maven](http://maven.apache.org/index.html).
+    1.  [Create a new Google Cloud Platform project, or use an existing
+        one](https://console.cloud.google.com/project).
+    1.  [Enable billing for your
+        project](https://support.google.com/cloud/answer/6293499#enable-billing).
+    1. Initialize the Cloud SDK.
 
-1. Visit the application at [http://localhost:8080](http://localhost:8080).
+           gcloud init
 
-## Deploying
+## Deploying to App Engine
 
-1. Use the [Cloud Developer Console](https://console.developer.google.com)  to create a project/app id. (App id and project id are identical)
-1. Setup the gcloud tool.
+To run the application locally, use the Maven Jetty plugin.
 
-   ```
-   gcloud init
-   ```
-1. Use the [Admin Console](https://appengine.google.com) to view data, queues, and other App Engine specific administration tasks.
-1. Use gcloud to deploy your app.
+    mvn clean jetty:run
 
-   ```
-   mvn clean gcloud:deploy
-   ```
+View the app at [localhost:8080](http://localhost:8080).
 
-1. Congratulations!  Your application is now live at your-app-id.appspot.com
+To deploy the app to App Engine, run
+
+    mvn clean appengine:deploy
+
+After the deploy finishes (can take up to 10 minutes), you can view your application at
+`https://YOUR_PROJECT.appspot.com`, where `YOUR_PROJECT` is your Google Cloud project ID. You can
+see the new version deployed on the [App Engine section of the Google Cloud
+Console](https://console.cloud.google.com/appengine/versions).
+
+For a more detailed walkthrough, see the [getting started
+guide for Java in the App Engine flexible
+environment](https://cloud.google.com/java/getting-started/hello-world).
+
 
 ## Contributing changes
 
