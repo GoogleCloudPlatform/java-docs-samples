@@ -16,6 +16,7 @@
 
 package com.example.appengine.firetactoe;
 
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.ByteArrayContent;
@@ -31,6 +32,7 @@ import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -46,16 +48,18 @@ import java.util.Map;
  */
 public class FirebaseChannel {
   private static final String FIREBASE_SNIPPET_PATH = "WEB-INF/view/firebase_config.jspf";
+  static InputStream firebaseConfigStream = null;
   private static final Collection FIREBASE_SCOPES = Arrays.asList(
       "https://www.googleapis.com/auth/firebase.database",
       "https://www.googleapis.com/auth/userinfo.email"
   );
   private static final String IDENTITY_ENDPOINT =
       "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit";
-  static final HttpTransport HTTP_TRANSPORT = new UrlFetchTransport();
 
   private String firebaseDbUrl;
   private GoogleCredential credential;
+  // Keep this a package-private member variable, so that it can be mocked for unit tests
+  HttpTransport httpTransport;
 
   private static FirebaseChannel instance;
 
@@ -79,11 +83,17 @@ public class FirebaseChannel {
    */
   private FirebaseChannel() {
     try {
+      // This variables exist primarily so it can be stubbed out in unit tests.
+      if (null == firebaseConfigStream) {
+        firebaseConfigStream = new FileInputStream(FIREBASE_SNIPPET_PATH);
+      }
+
       String firebaseSnippet = CharStreams.toString(new InputStreamReader(
-          new FileInputStream(FIREBASE_SNIPPET_PATH), StandardCharsets.UTF_8));
+          firebaseConfigStream, StandardCharsets.UTF_8));
       firebaseDbUrl = parseFirebaseUrl(firebaseSnippet);
 
       credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+      httpTransport = UrlFetchTransport.getDefaultInstance();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -109,7 +119,7 @@ public class FirebaseChannel {
   public void sendFirebaseMessage(String channelKey, Game game)
       throws IOException {
     // Make requests auth'ed using Application Default Credentials
-    HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(credential);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
     GenericUrl url = new GenericUrl(
         String.format("%s/channels/%s.json", firebaseDbUrl, channelKey));
     HttpResponse response = null;
@@ -162,5 +172,64 @@ public class FirebaseChannel {
     String toSign = String.format("%s.%s", header, payload);
     AppIdentityService.SigningResult result = appIdentity.signForApp(toSign.getBytes());
     return String.format("%s.%s", toSign, base64.encode(result.getSignature()));
+  }
+
+  // The following methods are to illustrate making various calls to Firebase from App Engine
+  // Standard
+
+  public HttpResponse firebasePut(String path, Object object) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    String json = new Gson().toJson(object);
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildPutRequest(
+        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+  }
+
+  public HttpResponse firebasePatch(String path, Object object) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    String json = new Gson().toJson(object);
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildPatchRequest(
+        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+  }
+
+  public HttpResponse firebasePost(String path, Object object) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    String json = new Gson().toJson(object);
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildPostRequest(
+        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+  }
+
+  public HttpResponse firebaseGet(String path) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildGetRequest(url).execute();
+  }
+
+  public HttpResponse firebaseDelete(String path) throws IOException {
+    // Make requests auth'ed using Application Default Credentials
+    Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
+    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
+
+    GenericUrl url = new GenericUrl(path);
+
+    return requestFactory.buildDeleteRequest(url).execute();
   }
 }

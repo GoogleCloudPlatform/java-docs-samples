@@ -1,0 +1,24 @@
+# Google App Engine Flexible Environment Java Samples
+
+This is a repository that contains Java code samples for [Google App Engine
+flexible environment][aeflex-docs].
+
+See our other [Google Cloud Platform GitHub
+repos](https://github.com/GoogleCloudPlatform) for sample applications and
+scaffolding for other frameworks and use cases.
+
+[aeflex-docs]: https://cloud.google.com/appengine/docs/flexible/
+
+!INCLUDE "../.github/templates/getting-sample-code.mdpp"
+
+!INCLUDE "../.github/templates/appengine-flexible-before-you-begin.mdpp"
+
+!INCLUDE "../.github/templates/appengine-flexible-deploy.mdpp"
+
+## Contributing changes
+
+* See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Licensing
+
+* See [LICENSE](LICENSE)

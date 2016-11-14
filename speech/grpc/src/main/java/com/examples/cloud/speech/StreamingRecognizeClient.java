@@ -85,9 +85,10 @@ public class StreamingRecognizeClient {
 
     speechClient = SpeechGrpc.newStub(channel);
 
-    //Send log4j logs to Console
-    //If you are going to run this on GCE, you might wish to integrate with gcloud-java logging.
-    //See https://github.com/GoogleCloudPlatform/gcloud-java/blob/master/README.md#stackdriver-logging-alpha
+    // Send log4j logs to Console
+    // If you are going to run this on GCE, you might wish to integrate with
+    // google-cloud-java logging.  See:
+    // https://github.com/GoogleCloudPlatform/google-cloud-java/blob/master/README.md#stackdriver-logging-alpha
 
     ConsoleAppender appender = new ConsoleAppender(new SimpleLayout(), SYSTEM_OUT);
     logger.addAppender(appender);

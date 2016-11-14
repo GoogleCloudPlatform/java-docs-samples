@@ -1,0 +1,14 @@
+## Before you begin
+
+1.  Follow the [quickstart for Java in the App Engine flexible
+    environment](https://cloud.google.com/appengine/docs/flexible/java/quickstart) to 
+    set up your environment to deploy the sample applications App Engine.
+    1.  Download and install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/).
+    1.  [Install and configure Apache Maven](http://maven.apache.org/index.html).
+    1.  [Create a new Google Cloud Platform project, or use an existing
+        one](https://console.cloud.google.com/project).
+    1.  [Enable billing for your
+        project](https://support.google.com/cloud/answer/6293499#enable-billing).
+    1. Initialize the Cloud SDK.
+
+           gcloud init

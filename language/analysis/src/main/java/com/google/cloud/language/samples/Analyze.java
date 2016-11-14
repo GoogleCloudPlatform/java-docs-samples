@@ -220,9 +220,16 @@ public class Analyze {
         new AnalyzeSyntaxRequest()
             .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
             .setEncodingType("UTF16");
+<<<<<<< HEAD
     CloudNaturalLanguage.Documents.AnalyzeSyntax analyze =
         languageApi.documents().analyzeSyntax(request);
     AnalyzeSyntaxResponse response = analyze.execute();
+=======
+    CloudNaturalLanguage.Documents.AnnotateText analyze =
+        languageApi.documents().annotateText(request);
+
+    AnnotateTextResponse response = analyze.execute();
+>>>>>>> 4d98005d3073deafb0903bebdd1ad3fb5d247238
     return response.getTokens();
   }
 }

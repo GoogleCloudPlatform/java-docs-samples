@@ -9,7 +9,7 @@
     <artifactId>appengine-guestbook-objectify</artifactId>
     <properties>
         <objectify.version>5.1.13</objectify.version>
-        <guava.version>19.0</guava.version>
+        <guava.version>20.0</guava.version>
     </properties>
     <parent>
         <groupId>com.google.cloud</groupId>

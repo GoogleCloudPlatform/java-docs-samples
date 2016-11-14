@@ -16,7 +16,6 @@
 
 package com.example.appengine.firetactoe;
 
-import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Objectify;
@@ -60,20 +59,18 @@ public class TicTacToeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    final UserService userService = UserServiceFactory.getUserService();
     String gameKey = request.getParameter("gameKey");
-    if (userService.getCurrentUser() == null) {
-      response.getWriter().println("<p>Please <a href=\"" + userService.createLoginURL(
-          getGameUriWithGameParam(request, gameKey)) + "\">sign in</a>.</p>");
-      return;
-    }
 
     // 1. Create or fetch a Game object from the datastore
     Objectify ofy = ObjectifyService.ofy();
     Game game = null;
-    String userId = userService.getCurrentUser().getUserId();
+    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     if (gameKey != null) {
-      game = ofy.load().type(Game.class).id(gameKey).safe();
+      game = ofy.load().type(Game.class).id(gameKey).now();
+      if (null == game) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
       if (game.getUserO() == null && !userId.equals(game.getUserX())) {
         game.setUserO(userId);
       }
@@ -91,6 +88,7 @@ public class TicTacToeServlet extends HttpServlet {
 
     // 3. Inject a secure token into the client, so it can get game updates
 
+    // [START pass_token]
     // The 'Game' object exposes a method which creates a unique string based on the game's key
     // and the user's id.
     String token = FirebaseChannel.getInstance().createFirebaseToken(game, userId);
@@ -102,6 +100,7 @@ public class TicTacToeServlet extends HttpServlet {
     request.setAttribute("channel_id", game.getChannelKey(userId));
     request.setAttribute("initial_message", new Gson().toJson(game));
     request.setAttribute("game_link", getGameUriWithGameParam(request, gameKey));
-    getServletContext().getRequestDispatcher("/WEB-INF/view/index.jsp").forward(request, response);
+    request.getRequestDispatcher("/WEB-INF/view/index.jsp").forward(request, response);
+    // [END pass_token]
   }
 }

@@ -1,0 +1,21 @@
+## Deploying to App Engine
+
+To run the application locally, use the Maven Jetty plugin.
+
+    mvn clean jetty:run-exploded
+
+View the app at [localhost:8080](http://localhost:8080).
+
+To deploy the app to App Engine, run
+
+    mvn clean appengine:deploy
+
+After the deploy finishes (can take up to 10 minutes), you can view your application at
+`https://YOUR_PROJECT.appspot.com`, where `YOUR_PROJECT` is your Google Cloud project ID. You can
+see the new version deployed on the [App Engine section of the Google Cloud
+Console](https://console.cloud.google.com/appengine/versions).
+
+For a more detailed walkthrough, see the [getting started
+guide for Java in the App Engine flexible
+environment](https://cloud.google.com/java/getting-started/hello-world).
+

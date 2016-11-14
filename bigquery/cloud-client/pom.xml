@@ -36,8 +36,8 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>gcloud-java</artifactId>
-      <version>0.2.8</version>
+      <artifactId>google-cloud-bigquery</artifactId>
+      <version>0.5.1</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.29</version>
+      <version>0.30</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

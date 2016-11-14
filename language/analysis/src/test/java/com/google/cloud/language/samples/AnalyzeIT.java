@@ -72,7 +72,7 @@ public class AnalyzeIT {
     // Act
     Sentiment sentiment =
         analyzeApp.analyzeSentiment(
-            "John was seriously injured in an accident");
+            "That was the worst performance I've seen in awhile.");
 
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
