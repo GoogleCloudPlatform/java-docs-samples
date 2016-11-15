@@ -22,4 +22,4 @@ Before you can run or deploy the sample, you will need to do the following:
     $ mvn clean jetty:run
 
 ## Deploying
-    $ mvn clean gcloud:deploy
+    $ mvn clean appengine:deploy

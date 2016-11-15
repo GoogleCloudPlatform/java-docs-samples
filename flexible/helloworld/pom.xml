@@ -33,7 +33,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
-    <jetty-maven-plugin-version>9.3.7.v20160115</jetty-maven-plugin-version>
+    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
@@ -63,17 +63,13 @@
         <version>${appengine.maven.plugin}</version>
         <configuration>
           <!-- deploy configuration -->
-<!--
-          <deploy.promote>true</deploy.promote>
-          <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
- -->
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty-maven-plugin-version}</version>
+        <version>${jetty.maven.plugin}</version>
       </plugin>
 
     </plugins>
