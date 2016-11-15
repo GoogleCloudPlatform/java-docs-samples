@@ -31,11 +31,12 @@
     <properties>
         <appengine.sdk.version>1.9.46</appengine.sdk.version>
         <appengine.app.version>1</appengine.app.version>
+
         <project.http.version>1.19.0</project.http.version>
         <project.oauth.version>1.19.0</project.oauth.version>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.plugin.version>2.0.9.111.v20160525</maven.plugin.version>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <prerequisites>
@@ -74,7 +75,8 @@
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>
-        <module>appengine/xmpp</module>
+
+<!-- Mostly Flexible below -->
         <module>bigquery</module>
         <module>bigquery/cloud-client</module>
         <module>compute/cmdline</module>
@@ -130,12 +132,14 @@
             <artifactId>appengine-api-1.0-sdk</artifactId>
             <version>${appengine.sdk.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+ -->
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>

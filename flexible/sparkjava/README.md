@@ -6,7 +6,7 @@ from within an [App Engine flexible
 environment](https://cloud.google.com/appengine/docs/flexible/java/hello-world)
 project using [SparkJava](http://sparkjava.com/). The app allows you to create
 and modify a database of "users", which contains their ID, name, and email
-information. 
+information.
 
 The Google Cloud client library is an idiomatic Java client for [Google Cloud
 Platform](https://cloud.google.com/) services. Read more about the library
@@ -41,7 +41,7 @@ Deploying
 ---------
 
 If you've enabled billing (step 1 in [Setup](#Setup)), you can deploy the
-application to the web by running `mvn gcloud:deploy` from your command line
+application to the web by running `mvn appengine:deploy` from your command line
 (from the `sparkjava` directory).
 
 How does it work?

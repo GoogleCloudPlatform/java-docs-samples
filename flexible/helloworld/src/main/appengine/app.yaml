@@ -13,7 +13,7 @@
 #  limitations under the License.
 # [START appyaml]
 runtime: java
-vm: true
+env: flex
 
 handlers:
 - url: /.*
