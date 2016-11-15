@@ -75,7 +75,6 @@
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>
-        <module>appengine/xmpp</module>
 
 <!-- Mostly Flexible below -->
         <module>bigquery</module>
