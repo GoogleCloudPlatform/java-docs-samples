@@ -76,7 +76,7 @@ public class AnalyzeIT {
 
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getPolarity()).isLessThan(0.0);
+    assertThat((double)sentiment.getScore()).isLessThan(0.0);
   }
 
   @Test public void analyzeSyntax_partOfSpeech() throws Exception {
