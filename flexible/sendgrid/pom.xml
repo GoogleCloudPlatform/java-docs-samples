@@ -30,9 +30,11 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven-war-plugin-version>3.0.0</maven-war-plugin-version>
-    <gcloud-maven-plugin-version>2.0.9.121.v20160815</gcloud-maven-plugin-version>
-    <jetty-maven-plugin-version>9.3.7.v20160115</jetty-maven-plugin-version>
+
+    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
+    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
+
+    <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
 
   <dependencies>
@@ -56,22 +58,17 @@
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
-        <groupId>com.google.appengine</groupId>
-        <artifactId>gcloud-maven-plugin</artifactId>
-        <version>${gcloud-maven-plugin-version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${maven-war-plugin-version}</version>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>${appengine.maven.plugin}</version>
         <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty-maven-plugin-version}</version>
+        <version>${jetty.maven.plugin}</version>
       </plugin>
     </plugins>
   </build>
