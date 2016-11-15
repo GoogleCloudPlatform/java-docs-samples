@@ -21,6 +21,8 @@ handlers:
   secure: always
 
 # [START env_variables]
+# YOUR-INSTANCE-NAME is ProjectID:Region:DbInstance
+# YOUR-DB-NAME is your DatabaseName
 env_variables:
   SQL_URL: jdbc:mysql://google/YOUR-DB-NAME?cloudSqlInstance=YOUR-INSTANCE-NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=USERNAME&password=PASSWORD
 # [END env_variables]

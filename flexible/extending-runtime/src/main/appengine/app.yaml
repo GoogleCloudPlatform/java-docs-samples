@@ -1,5 +1,5 @@
 runtime: custom
-vm: true
+env: flexible
 
 handlers:
 - url: /.*
