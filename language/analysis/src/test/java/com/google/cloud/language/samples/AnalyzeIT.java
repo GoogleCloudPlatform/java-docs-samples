@@ -18,9 +18,9 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.language.v1beta1.model.Entity;
-import com.google.api.services.language.v1beta1.model.Sentiment;
-import com.google.api.services.language.v1beta1.model.Token;
+import com.google.api.services.language.v1.model.Entity;
+import com.google.api.services.language.v1.model.Sentiment;
+import com.google.api.services.language.v1.model.Token;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class AnalyzeIT {
 
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getPolarity()).isGreaterThan(0.0);
+    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
   }
 
   @Test public void analyzeSentiment_returnNegative() throws Exception {
@@ -76,7 +76,7 @@ public class AnalyzeIT {
 
     // Assert
     assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getPolarity()).isLessThan(0.0);
+    assertThat((double)sentiment.getScore()).isLessThan(0.0);
   }
 
   @Test public void analyzeSyntax_partOfSpeech() throws Exception {
