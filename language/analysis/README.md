@@ -34,7 +34,7 @@ three values `entities`, `sentiment` or `syntax`.
 
 ```
 MAIN_CLASS=com.google.cloud.language.samples.Analyze
-JAR_FILE=target/language-entities-1.0-SNAPSHOT-jar-with-dependencies.jar
+JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
 java -cp $JAR_FILE $MAIN_CLASS <sentiment|entities|syntax> <text>
 ```
 
