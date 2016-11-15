@@ -47,7 +47,7 @@ We can then run the assembled JAR file with the `java` command. The variable
 $COMMAND takes three values `langsupport`, `detect` and `translate`.
 
 ```
-JAR_FILE=target/translate-1.0-SNAPSHOT-jar-with-dependencies.jar
+JAR_FILE=target/translate-1.0-jar-with-dependencies.jar
 java -jar $JAR_FILE <detect|translate|langsupport> <text>
     <optional_source> <optional_target>
 ```
