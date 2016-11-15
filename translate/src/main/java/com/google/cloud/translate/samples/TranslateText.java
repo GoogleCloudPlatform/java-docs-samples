@@ -77,7 +77,7 @@ public class TranslateText {
     TranslateOption srcLang = TranslateOption.sourceLanguage(sourceLang);
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
 
-    //Use translate `model` parameter with `base` and `nmt` options
+    // Use translate `model` parameter with `base` and `nmt` options.
     TranslateOption model = TranslateOption.model("base");
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
