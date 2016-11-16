@@ -26,6 +26,10 @@
     <relativePath>../..</relativePath>
   </parent>
 
+  <properties>
+    <mailjet.version>4.0.5</mailjet.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -50,7 +54,7 @@
     <dependency>
       <groupId>com.mailjet</groupId>
       <artifactId>mailjet-client</artifactId>
-      <version>4.0.5</version>
+      <version>${mailjet.version}</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

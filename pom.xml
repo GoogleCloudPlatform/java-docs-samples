@@ -25,17 +25,18 @@
     <parent>
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <properties>
-        <appengine.sdk.version>1.9.44</appengine.sdk.version>
+        <appengine.sdk.version>1.9.46</appengine.sdk.version>
         <appengine.app.version>1</appengine.app.version>
+
         <project.http.version>1.19.0</project.http.version>
         <project.oauth.version>1.19.0</project.oauth.version>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.plugin.version>2.0.9.111.v20160525</maven.plugin.version>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <prerequisites>
@@ -48,7 +49,6 @@
         <module>appengine/channel</module>
         <module>appengine/cloudsql</module>
         <module>appengine/datastore</module>
-        <module>appengine/datastore/geo</module>
         <module>appengine/datastore/indexes</module>
         <module>appengine/datastore/indexes-exploding</module>
         <module>appengine/datastore/indexes-perfect</module>
@@ -75,7 +75,8 @@
         <module>appengine/twilio</module>
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>
-        <module>appengine/xmpp</module>
+
+<!-- Mostly Flexible below -->
         <module>bigquery</module>
         <module>bigquery/cloud-client</module>
         <module>compute/cmdline</module>
@@ -131,12 +132,14 @@
             <artifactId>appengine-api-1.0-sdk</artifactId>
             <version>${appengine.sdk.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+ -->
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
@@ -153,7 +156,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.2.9</version>
+            <version>2.2.15</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -27,6 +27,7 @@ for realtime notifications when the board changes.
 [sdk]: https://cloud.google.com/sdk
 [creds]: https://console.firebase.google.com/iam-admin/serviceaccounts/project?project=_&consoleReturnUrl=https:%2F%2Fconsole.firebase.google.com%2Fproject%2F_%2Fsettings%2Fgeneral%2F
 [fb-overview]: https://console.firebase.google.com/project/_/overview
+[maven]: https://maven.apache.org
 
 
 ## Run the sample

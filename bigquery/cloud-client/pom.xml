@@ -36,8 +36,8 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>gcloud-java</artifactId>
-      <version>0.2.8</version>
+      <artifactId>google-cloud-bigquery</artifactId>
+      <version>0.5.1</version>
     </dependency>
 
     <!-- Test dependencies -->

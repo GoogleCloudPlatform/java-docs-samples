@@ -21,7 +21,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <artifactId>appengine-images</artifactId>
 
   <properties>
-      <appengine.sdk.version>1.9.44</appengine.sdk.version>
+      <appengine.sdk.version>1.9.46</appengine.sdk.version>
   </properties>
 
   <parent>
@@ -45,7 +45,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <type>jar</type>
+      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

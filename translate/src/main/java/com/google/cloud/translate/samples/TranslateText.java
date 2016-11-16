@@ -61,6 +61,34 @@ public class TranslateText {
 
   /**
    * Translate the source text from source to target language.
+   * Make sure that your project is whitelisted. 
+   *
+   * @param sourceText source text to be translated
+   * @param sourceLang source language of the text
+   * @param targetLang target language of translated text
+   * @param out print stream
+   */
+  public static void translateTextWithOptionsAndModel(
+      String sourceText,
+      String sourceLang,
+      String targetLang,
+      PrintStream out) {
+
+    Translate translate = createTranslateService();
+    TranslateOption srcLang = TranslateOption.sourceLanguage(sourceLang);
+    TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
+
+    // Use translate `model` parameter with `base` and `nmt` options.
+    TranslateOption model = TranslateOption.model("base");
+
+    Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
+    out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
+    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.translatedText());
+  }
+
+
+  /**
+   * Translate the source text from source to target language.
    *
    * @param sourceText source text to be translated
    * @param sourceLang source language of the text
