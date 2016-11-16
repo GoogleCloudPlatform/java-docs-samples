@@ -18,6 +18,7 @@ package com.example.logging;
 
 // [START logging_quickstart]
 // Imports the Google Cloud client library
+
 import com.google.cloud.MonitoredResource;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
@@ -27,9 +28,10 @@ import com.google.cloud.logging.Payload.StringPayload;
 import java.util.Collections;
 
 public class QuickstartSample {
+
   public static void main(String... args) throws Exception {
     // Instantiates a client
-    Logging logging = LoggingOptions.defaultInstance().service();
+    Logging logging = LoggingOptions.getDefaultInstance().getService();
 
     // The name of the log to write to
     String logName = args[0];  // "my-log";
@@ -38,14 +40,14 @@ public class QuickstartSample {
     String text = "Hello, world!";
 
     LogEntry entry = LogEntry.newBuilder(StringPayload.of(text))
-       .setLogName(logName)
-       .setResource(MonitoredResource.builder("global").build())
-       .build();
+        .setLogName(logName)
+        .setResource(MonitoredResource.newBuilder("global").build())
+        .build();
 
-   // Writes the log entry
-   logging.write(Collections.singleton(entry));
+    // Writes the log entry
+    logging.write(Collections.singleton(entry));
 
-   System.out.printf("Logged: %s%n", text);
+    System.out.printf("Logged: %s%n", text);
   }
 }
 // [END logging_quickstart]
