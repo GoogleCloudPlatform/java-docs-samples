@@ -61,7 +61,7 @@ public class TranslateText {
 
   /**
    * Translate the source text from source to target language.
-   * Make sure that your project is whitelisted. 
+   * Make sure that your project is whitelisted.
    *
    * @param sourceText source text to be translated
    * @param sourceLang source language of the text
@@ -83,7 +83,8 @@ public class TranslateText {
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
-    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.getTranslatedText());
+    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
+        translation.getTranslatedText());
   }
 
 
@@ -107,7 +108,8 @@ public class TranslateText {
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
-    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.translatedText());
+    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
+        translation.translatedText());
   }
 
   /**
