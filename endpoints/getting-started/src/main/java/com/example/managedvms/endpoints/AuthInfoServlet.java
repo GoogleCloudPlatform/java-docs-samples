@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package com.example.managedvms.endpoints;
+package com.example.endpoints;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Base64;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 /**
  * A servlet that returns authentication information.
