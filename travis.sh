@@ -74,10 +74,7 @@ shellcheck ./**/*.sh
 
 # Run tests using App Engine local devserver.
 test_localhost() {
-  # The testing scripts are stored in a submodule. This allows us to carefully
-  # update the testing scripts, since submodules are tied to a specific commit.
-  git submodule init
-  git submodule update
+  git clone https://github.com/GoogleCloudPlatform/java-repo-tools.git
 
   devserver_tests=(
       appengine/helloworld
