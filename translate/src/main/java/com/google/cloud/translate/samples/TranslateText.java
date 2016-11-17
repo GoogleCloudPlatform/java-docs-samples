@@ -47,7 +47,7 @@ public class TranslateText {
   }
 
   /**
-   * Translates the source text in any language to english.
+   * Translates the source text in any language to English.
    *
    * @param sourceText source text to be translated
    * @param out print stream
@@ -56,12 +56,12 @@ public class TranslateText {
     Translate translate = createTranslateService();
     Translation translation = translate.translate(sourceText);
     out.printf("Source Text:\n\t%s\n", sourceText);
-    out.printf("Translated Text:\n\t%s\n", translation.translatedText());
+    out.printf("Translated Text:\n\t%s\n", translation.getTranslatedText());
   }
 
   /**
    * Translate the source text from source to target language.
-   * Make sure that your project is whitelisted. 
+   * Make sure that your project is whitelisted.
    *
    * @param sourceText source text to be translated
    * @param sourceLang source language of the text
@@ -83,7 +83,8 @@ public class TranslateText {
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
-    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.translatedText());
+    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
+        translation.getTranslatedText());
   }
 
 
@@ -107,7 +108,8 @@ public class TranslateText {
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
-    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang, translation.translatedText());
+    out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
+        translation.translatedText());
   }
 
   /**
@@ -122,7 +124,7 @@ public class TranslateText {
     List<Language> languages = translate.listSupportedLanguages(target);
 
     for (Language language : languages) {
-      out.printf("Name: %s, Code: %s\n", language.name(), language.code());
+      out.printf("Name: %s, Code: %s\n", language.getName(), language.getCode());
     }
   }
 
@@ -132,23 +134,23 @@ public class TranslateText {
    * @return Google Translate Service
    */
   public static Translate createTranslateService() {
-    TranslateOptions translateOption = TranslateOptions.builder()
-        .retryParams(retryParams())
-        .connectTimeout(60000)
-        .readTimeout(60000)
+    TranslateOptions translateOption = TranslateOptions.newBuilder()
+        .setRetryParams(retryParams())
+        .setConnectTimeout(60000)
+        .setReadTimeout(60000)
         .build();
-    return translateOption.service();
+    return translateOption.getService();
   }
 
   /**
    * Retry params for the Translate API.
    */
   private static RetryParams retryParams() {
-    return RetryParams.builder()
-        .retryMaxAttempts(3)
-        .maxRetryDelayMillis(30000)
-        .totalRetryPeriodMillis(120000)
-        .initialRetryDelayMillis(250)
+    return RetryParams.newBuilder()
+        .setRetryMaxAttempts(3)
+        .setMaxRetryDelayMillis(30000)
+        .setTotalRetryPeriodMillis(120000)
+        .setInitialRetryDelayMillis(250)
         .build();
   }
 
