@@ -36,7 +36,7 @@ import org.apache.commons.cli.ParseException;
  */
 public final class BookstoreServer {
 
-  private static final int defaultPort = 8000;
+  private static final int DEFAULT_PORT = 8000;
 
   public static void main(String[] args) throws Exception {
     Options options = createOptions();
@@ -50,7 +50,7 @@ public final class BookstoreServer {
       return;
     }
 
-    int port = defaultPort;
+    int port = DEFAULT_PORT;
 
     if (line.hasOption("port")) {
       String portOption = line.getOptionValue("port");

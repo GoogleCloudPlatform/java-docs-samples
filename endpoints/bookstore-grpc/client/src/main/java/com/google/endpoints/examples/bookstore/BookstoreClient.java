@@ -28,6 +28,8 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 
+import java.util.logging.Logger;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -41,40 +43,24 @@ import org.apache.commons.cli.ParseException;
  */
 public final class BookstoreClient {
 
-  private static final String defaultBookstore = "localhost:8000";
+  private static final String DEFAULT_ADDRESS = "localhost:8000";
 
   public static void main(String[] args) throws Exception {
     Options options = createOptions();
     CommandLineParser parser = new DefaultParser();
-    CommandLine line;
+    CommandLine params;
     try {
-      line = parser.parse(options, args);
+      params = parser.parse(options, args);
     } catch (ParseException e) {
       System.err.println("Invalid command line: " + e.getMessage());
       printUsage(options);
       return;
     }
 
-    String address = defaultBookstore;
-    String apiKey = null;
-    String authToken = null;
-    String operation = "list";
-
-    if (line.hasOption("bookstore")) {
-      address = line.getOptionValue("bookstore");
-    }
-
-    if (line.hasOption("api_key")) {
-      apiKey = line.getOptionValue("api_key");
-    }
-
-    if (line.hasOption("auth_token")) {
-      authToken = line.getOptionValue("auth_token");
-    }
-
-    if (line.hasOption("operation")) {
-      operation = line.getOptionValue("operation");
-    }
+    String address = params.getOptionValue("bookstore", DEFAULT_ADDRESS);
+    String apiKey = params.getOptionValue("api_key");
+    String authToken = params.getOptionValue("auth_token");
+    String operation = params.getOptionValue("operation", "list");
 
     // Create gRPC stub.
     BookstoreGrpc.BookstoreBlockingStub bookstore = createBookstoreStub(
@@ -89,60 +75,21 @@ public final class BookstoreClient {
     }
   }
 
-  private static final class Interceptor implements ClientInterceptor {
-    private final String apiKey;
-    private final String authToken;
-
-    private static Metadata.Key<String> apiKeyHeader =
-        Metadata.Key.of("x-api-key", Metadata.ASCII_STRING_MARSHALLER);
-    private static Metadata.Key<String> authorizationHeader =
-        Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
-
-    public Interceptor(String apiKey, String authToken) {
-      this.apiKey = apiKey;
-      this.authToken = authToken;
-    }
-
-    @Override
-    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
-        MethodDescriptor<ReqT,RespT> method, CallOptions callOptions, Channel next) {
-      System.out.println("Intercepted " + method.getFullMethodName());
-      ClientCall<ReqT, RespT> call = next.newCall(method, callOptions);
-
-      call = new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(call) {
-        @Override
-        public void start(Listener<RespT> responseListener, Metadata headers) {
-          if (apiKey != null && !apiKey.isEmpty()) {
-            System.out.println("Attaching API Key: " + apiKey);
-            headers.put(apiKeyHeader, apiKey);
-          }
-          if (authToken != null && !authToken.isEmpty()) {
-            System.out.println("Attaching auth token");
-            headers.put(authorizationHeader, "Bearer " + authToken);
-          }
-          super.start(responseListener, headers);
-        }
-      };
-      return call;
-    }
-  }
-
-  static BookstoreGrpc.BookstoreBlockingStub createBookstoreStub(
-      String address, String apiKey, String authToken) {
-    Channel channel = ManagedChannelBuilder.forTarget(address)
-        .usePlaintext(true)
-        .build();
-
-    channel = ClientInterceptors.intercept(channel,  new Interceptor(apiKey, authToken));
-
-    return BookstoreGrpc.newBlockingStub(channel);
-  }
-
+  /**
+   * Lists all shelves in the bookstore.
+   *
+   * @param bookstore a client stub to call Bookstore service.
+   */
   static void listShelves(BookstoreGrpc.BookstoreBlockingStub bookstore) {
     ListShelvesResponse shelves = bookstore.listShelves(Empty.getDefaultInstance());
     System.out.println(shelves);
   }
 
+  /**
+   * Creates a new shelf in the bookstore.
+   *
+   * @param bookstore a client stub to call Bookstore service.
+   */
   static void createShelf(BookstoreGrpc.BookstoreBlockingStub bookstore) {
     CreateShelfRequest.Builder builder = CreateShelfRequest.newBuilder();
     builder.getShelfBuilder().setTheme("Computers");
@@ -150,6 +97,11 @@ public final class BookstoreClient {
     System.out.println(shelf);
   }
 
+  /**
+   * Enumerates all books in the bookstore.
+   *
+   * @param bookstore a client stub to call Bookstore service.
+   */
   static void enumerate(BookstoreGrpc.BookstoreBlockingStub bookstore) {
     System.out.println("Calling listShelves");
     ListShelvesResponse shelves = bookstore.listShelves(Empty.getDefaultInstance());
@@ -183,6 +135,57 @@ public final class BookstoreClient {
         System.out.println(book);
       }
     }
+  }
+
+  private static final class Interceptor implements ClientInterceptor {
+    private final String apiKey;
+    private final String authToken;
+
+    private static Logger LOGGER = Logger.getLogger("InfoLogging");
+
+    private static Metadata.Key<String> API_KEY_HEADER =
+        Metadata.Key.of("x-api-key", Metadata.ASCII_STRING_MARSHALLER);
+    private static Metadata.Key<String> AUTHORIZATION_HEADER =
+        Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
+
+    public Interceptor(String apiKey, String authToken) {
+      this.apiKey = apiKey;
+      this.authToken = authToken;
+    }
+
+    @Override
+    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
+        MethodDescriptor<ReqT,RespT> method, CallOptions callOptions, Channel next) {
+      logger.info("Intercepted " + method.getFullMethodName());
+      ClientCall<ReqT, RespT> call = next.newCall(method, callOptions);
+
+      call = new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(call) {
+        @Override
+        public void start(Listener<RespT> responseListener, Metadata headers) {
+          if (apiKey != null && !apiKey.isEmpty()) {
+            logger.info("Attaching API Key: " + apiKey);
+            headers.put(API_KEY_HEADER, apiKey);
+          }
+          if (authToken != null && !authToken.isEmpty()) {
+            System.out.println("Attaching auth token");
+            headers.put(AUTHORIZATION_HEADER, "Bearer " + authToken);
+          }
+          super.start(responseListener, headers);
+        }
+      };
+      return call;
+    }
+  }
+
+  static BookstoreGrpc.BookstoreBlockingStub createBookstoreStub(
+      String address, String apiKey, String authToken) {
+    Channel channel = ManagedChannelBuilder.forTarget(address)
+        .usePlaintext(true)
+        .build();
+
+    channel = ClientInterceptors.intercept(channel,  new Interceptor(apiKey, authToken));
+
+    return BookstoreGrpc.newBlockingStub(channel);
   }
 
   private static Options createOptions() {
