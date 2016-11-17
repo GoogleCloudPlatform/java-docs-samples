@@ -1,0 +1,17 @@
+apply plugin: 'application'
+
+mainClassName = "com.google.endpoints.examples.bookstore.BookstoreClient"
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
+dependencies {
+  compile project(':api')
+  compile 'commons-cli:commons-cli:1.3'
+}
