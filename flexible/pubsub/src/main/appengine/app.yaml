@@ -1,0 +1,16 @@
+runtime: java
+env: flex
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+# [START env_variables]
+env_variables:
+  PUBSUB_TOPIC: <your-topic-name>
+  # This token is used to verify that requests originate from your
+  # application. It can be any sufficiently random string.
+  PUBSUB_VERIFICATION_TOKEN: <your-verification-token>
+# [END env_variables]
+
