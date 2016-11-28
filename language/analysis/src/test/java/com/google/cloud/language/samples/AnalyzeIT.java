@@ -90,7 +90,7 @@ public class AnalyzeIT {
         .collect(Collectors.toList());
 
     // Assert
-    assertThat(got).containsExactly("NOUN", "NOUN", "VERB",
-        "VERB", "ADP", "DET", "ADJ", "NOUN").inOrder();
+    assertThat(got).containsExactly(Tag.NOUN, Tag.NOUN, Tag.VERB,
+        Tag.VERB, Tag.ADP, Tag.DET, Tag.ADJ, Tag.NOUN).inOrder();
   }
 }
