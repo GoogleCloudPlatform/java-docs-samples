@@ -19,6 +19,7 @@ package com.google.cloud.language.samples;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.language.v1.Entity;
+import com.google.cloud.language.v1.PartOfSpeech.Tag;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Token;
 
@@ -85,7 +86,7 @@ public class AnalyzeIT {
         analyzeApp.analyzeSyntax(
             "President Obama was elected for the second term");
 
-    List<String> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
+    List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
         .collect(Collectors.toList());
 
     // Assert
