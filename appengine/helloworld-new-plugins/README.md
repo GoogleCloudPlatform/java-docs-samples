@@ -18,7 +18,7 @@ Use either:
 ### Running locally
 
     $ mvn appengine:run
-  
+
 ### Deploying
 
     $ mvn appengine:deploy
@@ -36,7 +36,7 @@ If you do not have gradle installed, you can run using `./gradlew appengineRun`.
 
 If you do not have gradle installed, you can deploy using `./gradlew appengineDeploy`.
 
-<!-- 
+<!--
 ## Intelij Idea
 Limitations - Appengine Standard support in the Intellij plugin is only available for the Ultimate Edition of Idea.
 

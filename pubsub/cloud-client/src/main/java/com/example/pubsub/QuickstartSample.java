@@ -26,7 +26,7 @@ import com.google.cloud.pubsub.TopicInfo;
 public class QuickstartSample {
   public static void main(String... args) throws Exception {
     // Instantiates a client
-    PubSub pubsub = PubSubOptions.defaultInstance().service();
+    PubSub pubsub = PubSubOptions.getDefaultInstance().getService();
 
     // The name for the new topic
     String topicName = "my-new-topic";
@@ -34,7 +34,7 @@ public class QuickstartSample {
     // Creates the new topic
     Topic topic = pubsub.create(TopicInfo.of(topicName));
 
-    System.out.printf("Topic %s created.%n", topic.name());
+    System.out.printf("Topic %s created.%n", topic.getName());
   }
 }
 // [END pubsub_quickstart]

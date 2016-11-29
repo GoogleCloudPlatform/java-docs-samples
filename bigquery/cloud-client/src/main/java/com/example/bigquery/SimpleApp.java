@@ -32,46 +32,46 @@ import java.util.List;
 public class SimpleApp {
   public static void main(String... args) throws Exception {
     // [START create_client]
-    BigQuery bigquery = BigQueryOptions.defaultInstance().service();
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
     // [END create_client]
     // [START run_query]
     QueryRequest queryRequest =
         QueryRequest
-            .builder(
+            .newBuilder(
                 "SELECT "
                     + "APPROX_TOP_COUNT(corpus, 10) as title, "
                     + "COUNT(*) as unique_words "
                     + "FROM `publicdata.samples.shakespeare`;")
             // Use standard SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
-            .useLegacySql(false)
+            .setUseLegacySql(false)
             .build();
     QueryResponse response = bigquery.query(queryRequest);
     // [END run_query]
 
     // [START print_results]
-    QueryResult result = response.result();
+    QueryResult result = response.getResult();
 
     while (result != null) {
       Iterator<List<FieldValue>> iter = result.iterateAll();
 
       while (iter.hasNext()) {
         List<FieldValue> row = iter.next();
-        List<FieldValue> titles = row.get(0).repeatedValue();
+        List<FieldValue> titles = row.get(0).getRepeatedValue();
         System.out.println("titles:");
 
         for (FieldValue titleValue : titles) {
-          List<FieldValue> titleRecord = titleValue.recordValue();
-          String title = titleRecord.get(0).stringValue();
-          long uniqueWords = titleRecord.get(1).longValue();
+          List<FieldValue> titleRecord = titleValue.getRecordValue();
+          String title = titleRecord.get(0).getStringValue();
+          long uniqueWords = titleRecord.get(1).getLongValue();
           System.out.printf("\t%s: %d\n", title, uniqueWords);
         }
 
-        long uniqueWords = row.get(1).longValue();
+        long uniqueWords = row.get(1).getLongValue();
         System.out.printf("total unique words: %d\n", uniqueWords);
       }
 
-      result = result.nextPage();
+      result = result.getNextPage();
     }
     // [END print_results]
   }

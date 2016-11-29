@@ -25,7 +25,8 @@ public class Persistence {
 
   public static Datastore getDatastore() {
     if (datastore.get() == null) {
-      datastore.set(DatastoreOptions.builder().projectId("your-project-id-here").build().service());
+      datastore.set(DatastoreOptions.newBuilder().setProjectId("your-project-id-here")
+          .build().getService());
     }
 
     return datastore.get();
@@ -36,7 +37,7 @@ public class Persistence {
   }
 
   public static KeyFactory getKeyFactory(Class<?> c) {
-    return getDatastore().newKeyFactory().kind(c.getSimpleName());
+    return getDatastore().newKeyFactory().setKind(c.getSimpleName());
   }
 }
 //[END all]

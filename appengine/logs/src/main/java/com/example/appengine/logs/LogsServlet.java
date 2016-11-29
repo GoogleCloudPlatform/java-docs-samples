@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 // a time, using a Next link to cycle through to the next 5.
 public class LogsServlet extends HttpServlet {
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) 
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
          throws IOException {
 
     resp.setContentType("text/html");
@@ -42,7 +42,7 @@ public class LogsServlet extends HttpServlet {
     writer.println("<!DOCTYPE html>");
     writer.println("<meta charset=\"utf-8\">");
     writer.println("<title>App Engine Logs Sample</title>");
-  
+
     // We use this to break out of our iteration loop, limiting record
     // display to 5 request logs at a time.
     int limit = 5;
@@ -81,17 +81,17 @@ public class LogsServlet extends HttpServlet {
         writer.println(String.format("<br>Date: %s", appTime.toString()));
         writer.println("<br>Level: " + appLog.getLogLevel() + "<br>");
         writer.println("Message: " + appLog.getLogMessage() + "<br> <br>");
-      } 
+      }
 
       if (++count >= limit) {
         break;
       }
-    } 
+    }
 
     // When the user clicks this link, the offset is processed in the
     // GET handler and used to cycle through to the next 5 request logs.
     writer.println(String.format("<br><a href=\"/?offset=%s\">Next</a>", lastOffset));
-  }  
-} 
+  }
+}
 // [END logs_API_example]
 

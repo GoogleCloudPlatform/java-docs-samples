@@ -58,18 +58,18 @@ public class DatastoreServlet extends HttpServlet {
       userIp = userIp.substring(0, userIp.indexOf(".", userIp.indexOf(".") + 1)) + ".*.*";
     }
 
-    Datastore datastore = DatastoreOptions.defaultInstance().service();
-    KeyFactory keyFactory = datastore.newKeyFactory().kind("visit");
-    IncompleteKey key = keyFactory.kind("visit").newKey();
+    Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+    KeyFactory keyFactory = datastore.newKeyFactory().setKind("visit");
+    IncompleteKey key = keyFactory.setKind("visit").newKey();
 
     // Record a visit to the datastore, storing the IP and timestamp.
-    FullEntity<IncompleteKey> curVisit = FullEntity.builder(key)
+    FullEntity<IncompleteKey> curVisit = FullEntity.newBuilder(key)
         .set("user_ip", userIp).set("timestamp", DateTime.now()).build();
     datastore.add(curVisit);
 
     // Retrieve the last 10 visits from the datastore, ordered by timestamp.
-    Query<Entity> query = Query.entityQueryBuilder().kind("visit")
-        .orderBy(StructuredQuery.OrderBy.desc("timestamp")).limit(10).build();
+    Query<Entity> query = Query.newEntityQueryBuilder().setKind("visit")
+        .setOrderBy(StructuredQuery.OrderBy.desc("timestamp")).setLimit(10).build();
     QueryResults<Entity> results = datastore.run(query);
 
     resp.setContentType("text/plain");

@@ -152,7 +152,7 @@ public class ComputeEngineSample {
     return found;
   }
   // [END list_instances]
-  
+
   // [START create_instances]
   public static Operation startInstance(Compute compute, String instanceName) throws IOException {
     System.out.println("================== Starting New Instance ==================");

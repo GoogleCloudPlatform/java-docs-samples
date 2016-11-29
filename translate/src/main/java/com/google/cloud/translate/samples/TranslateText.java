@@ -109,7 +109,7 @@ public class TranslateText {
     Translation translation = translate.translate(sourceText, srcLang, tgtLang);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
     out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
-        translation.translatedText());
+        translation.getTranslatedText());
   }
 
   /**

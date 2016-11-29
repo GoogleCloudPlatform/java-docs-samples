@@ -29,9 +29,9 @@ These samples are used on the following documentation pages:
      There should be a "Try It" section on that page, otherwise execute it in
      the [APIs
      Explorer](https://developers.google.com/apis-explorer/#p/storagetransfer/v1/storagetransfer.googleServiceAccounts.get).
-   
+
      It should output an email address like:
-    
+
      ```
      storage-transfer-1234567890@partnercontent.gserviceaccount.com
      ```

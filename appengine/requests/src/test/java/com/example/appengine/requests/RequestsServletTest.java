@@ -52,7 +52,7 @@ public class RequestsServletTest {
 
     servletUnderTest = new RequestsServlet();
   }
- 
+
   @Test
   public void doGet_writesResponse() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);

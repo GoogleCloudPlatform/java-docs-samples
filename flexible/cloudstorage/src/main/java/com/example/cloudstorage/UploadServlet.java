@@ -45,7 +45,7 @@ public class UploadServlet extends HttpServlet {
 
   @Override
   public void init() {
-    storage = StorageOptions.defaultInstance().service();
+    storage = StorageOptions.getDefaultInstance().getService();
   }
 
   @Override
@@ -60,11 +60,11 @@ public class UploadServlet extends HttpServlet {
     // the inputstream is closed by default, so we don't need to close it here
     Blob blob =
         storage.create(
-            BlobInfo.builder(BUCKET_NAME, fileName).acl(acls).build(),
+            BlobInfo.newBuilder(BUCKET_NAME, fileName).setAcl(acls).build(),
             filePart.getInputStream());
 
     // return the public download link
-    resp.getWriter().print(blob.mediaLink());
+    resp.getWriter().print(blob.getMediaLink());
   }
 }
 // [END example]

@@ -63,9 +63,9 @@ public class LoggingServletTest {
     servletUnderTest = new LoggingServlet();
   }
 
-  @After 
+  @After
   public void tearDown() {
-    //  Restore stderr  
+    //  Restore stderr
     System.setErr(LoggingServletTest.REAL_ERR);
   }
 
@@ -74,7 +74,7 @@ public class LoggingServletTest {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     String out = stderr.toString();
-    
+
     // We expect three log messages to be created
     // with the following messages.
     assertThat(out).contains("An informational message.");

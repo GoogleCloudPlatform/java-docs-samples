@@ -39,7 +39,7 @@ public class QuickstartSampleIT {
   private PrintStream out;
 
   private static final void deleteTestTopic() {
-    PubSub pubsub = PubSubOptions.defaultInstance().service();
+    PubSub pubsub = PubSubOptions.getDefaultInstance().getService();
     String topicName = "my-new-topic";
     pubsub.deleteTopic(topicName);
   }
