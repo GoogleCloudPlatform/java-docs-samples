@@ -36,6 +36,7 @@ public class PubSubPublishTest {
 
   @Before
   public void setUp() throws Exception {
+    // Initialize Mockito
     MockitoAnnotations.initMocks(this);
 
     //  Set up some fake HTTP requests

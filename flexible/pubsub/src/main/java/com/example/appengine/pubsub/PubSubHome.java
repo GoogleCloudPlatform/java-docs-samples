@@ -18,6 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "main", value = "/")
 public class PubSubHome extends HttpServlet {
+  private static final String ENTRY_FIELD = "messages";
+
+  private String entryKind = "pushed_message";
+
+  public void setEntryKind(String kind) {
+    entryKind = kind;
+  }
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
@@ -57,7 +65,7 @@ public class PubSubHome extends HttpServlet {
     // Get Message saved in Datastore
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     Query<Entity> query = Query.newEntityQueryBuilder()
-        .setKind("pushed_messages")
+        .setKind(entryKind)
         .setLimit(1)
         .build();
     QueryResults<Entity> results = datastore.run(query);
@@ -67,7 +75,7 @@ public class PubSubHome extends HttpServlet {
     Gson gson = new Gson();
     if (results.hasNext()) {
       Entity entity = results.next();
-      messageList = gson.fromJson(entity.getString("messages"),
+      messageList = gson.fromJson(entity.getString(ENTRY_FIELD),
           messageList.getClass());
     }
 

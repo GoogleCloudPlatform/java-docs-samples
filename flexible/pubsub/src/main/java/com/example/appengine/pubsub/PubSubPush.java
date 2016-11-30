@@ -26,10 +26,18 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PubSubPush", value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
+  private static final String KEY = "message_list";
+  private static final String FIELD = "messages";
+
   private long maxTimeout = 5000L; // 5 seconds
+  private String entryKind = "pushed_messages";
 
   public void setTimeoutMilliSeconds(long timeout) {
     maxTimeout = timeout;
+  }
+
+  public void setEntryKind(String kind) {
+    entryKind = kind;
   }
 
   @Override
@@ -106,19 +114,19 @@ public class PubSubPush extends HttpServlet {
     boolean messagesFound = true;
 
     try {
-      // Create a keyfactory for entries of kind pushed_messages
+      // Create a keyfactory for entries of KIND
       KeyFactory keyFactory = datastoreService.newKeyFactory()
-          .setKind("pushed_messages");
+          .setKind(entryKind);
 
-      // Lookup message_list
-      Key key = keyFactory.newKey("message_list");
+      // Lookup KEY
+      Key key = keyFactory.newKey(KEY);
       Entity entity = transaction.get(key);
 
       // Entity doesn't exist so let's create it!
       if (entity == null) {
         LinkedList<String> messages = new LinkedList<>();
         entity = Entity.newBuilder(key)
-            .set("messages", gson.toJson(messages))
+            .set(FIELD, gson.toJson(messages))
             .build();
         transaction.put(entity);
         transaction.commit();
@@ -151,18 +159,18 @@ public class PubSubPush extends HttpServlet {
     try {
       // Lookup pushed_messages
       KeyFactory keyFactory = datastoreService.newKeyFactory()
-          .setKind("pushed_messages");
-      Key key = keyFactory.newKey("message_list");
+          .setKind(entryKind);
+      Key key = keyFactory.newKey(KEY);
       Entity entity = transaction.get(key);
 
       // Parse JSON into an LinkedList
-      LinkedList<String> messages = gson.fromJson(entity.getString("messages"),
+      LinkedList<String> messages = gson.fromJson(entity.getString(FIELD),
           new TypeToken<LinkedList<String>>(){}.getType());
 
       // Add new message and save updated entry
       messages.add(message);
       entity = Entity.newBuilder(entity)
-          .set("messages", gson.toJson(messages))
+          .set(FIELD, gson.toJson(messages))
           .build();
       transaction.update(entity);
       transaction.commit();

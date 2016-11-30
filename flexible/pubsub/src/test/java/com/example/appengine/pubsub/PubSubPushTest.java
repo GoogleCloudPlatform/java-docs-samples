@@ -33,16 +33,20 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class PubSubPushTest {
   private static final String FAKE_URL = "fakeurl.google";
-  private static final String KIND = "pushed_messages";
-  private static final String KEY = "message_list";
-  private static final String FIELD = "messages";
+  private static final String ENTRY_KEY = "message_list";
+  private static final String ENTRY_FIELD = "messages";
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private PubSubPush servletUnderTest;
+  private String entryKind;
 
   @Before
   public void setUp() throws Exception {
+    // Get environment variables
+    entryKind = System.getenv("DATASTORE_TEST_ENTRY_KIND");
+
+    // Initialize Mockito
     MockitoAnnotations.initMocks(this);
 
     // Set up some fake HTTP requests
@@ -58,6 +62,7 @@ public class PubSubPushTest {
     // Create an instance of the PubSubHome servlet
     servletUnderTest = new PubSubPush();
     servletUnderTest.setTimeoutMilliSeconds(30000);
+    servletUnderTest.setEntryKind(entryKind);
   }
 
   @After
@@ -108,21 +113,22 @@ public class PubSubPushTest {
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
     // Clear all message
-    Key pushedMessages = datastore.newKeyFactory().setKind(KIND).newKey(KEY);
+    Key pushedMessages = datastore.newKeyFactory().setKind(entryKind)
+        .newKey(ENTRY_KEY);
     datastore.delete(pushedMessages);
   }
 
   private LinkedList<String> getMessages() {
     Gson gson = new Gson();
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    Query<Entity> query = Query.newEntityQueryBuilder().setKind(KIND)
+    Query<Entity> query = Query.newEntityQueryBuilder().setKind(entryKind)
         .setLimit(1).build();
 
     Iterator<Entity> entities = datastore.run(query);
     LinkedList<String> messages = new LinkedList<>();
     if (entities.hasNext()) {
       Entity entity = entities.next();
-      messages = gson.fromJson(entity.getString("messages"),
+      messages = gson.fromJson(entity.getString(ENTRY_FIELD),
           messages.getClass());
     }
 

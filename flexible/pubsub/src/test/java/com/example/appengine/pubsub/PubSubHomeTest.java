@@ -27,16 +27,20 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class PubSubHomeTest {
   private static final String FAKE_URL = "fakeurl.google";
-  private static final String KIND = "pushed_messages";
-  private static final String KEY = "message_list";
-  private static final String FIELD = "messages";
+  private static final String ENTRY_KEY = "message_list";
+  private static final String ENTRY_FIELD = "messages";
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private PubSubHome servletUnderTest;
+  private String entryKind;
 
   @Before
   public void setUp() throws Exception {
+    // Get environment variables
+    entryKind = System.getenv("DATASTORE_TEST_ENTRY_KIND");
+
+    // Initialize Mockito
     MockitoAnnotations.initMocks(this);
 
     //  Set up some fake HTTP requests
@@ -48,6 +52,7 @@ public class PubSubHomeTest {
 
     // Create an instance of the PubSubHome servlet
     servletUnderTest = new PubSubHome();
+    servletUnderTest.setEntryKind(entryKind);
   }
 
   @After
@@ -106,18 +111,20 @@ public class PubSubHomeTest {
         .getService();
 
     // Clear all message
-    Key pushedMessages = datastore.newKeyFactory().setKind(KIND).newKey(KEY);
+    Key pushedMessages = datastore.newKeyFactory().setKind(entryKind).newKey(
+        ENTRY_KEY);
     datastore.delete(pushedMessages);
   }
 
   private void addMessages(LinkedList<String> messageList) {
     Gson gson = new Gson();
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    Key messages = datastore.newKeyFactory().setKind(KIND).newKey(KEY);
+    Key messages = datastore.newKeyFactory().setKind(entryKind).newKey(
+        ENTRY_KEY);
 
     // Create an entry with a list of messages
     Entity entity = Entity.newBuilder(messages)
-        .set(FIELD, gson.toJson(messageList))
+        .set(ENTRY_FIELD, gson.toJson(messageList))
         .build();
 
     datastore.put(entity);
