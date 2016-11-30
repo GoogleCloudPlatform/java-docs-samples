@@ -69,6 +69,8 @@ public class AnalyzeTest {
     // Arrange
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
+
+    // Mock natural-language entities based on actual data.
     ImmutableList<Entity> entities =
         ImmutableList.of(
             Entity.newBuilder().setName("Larry Page")
@@ -88,10 +90,10 @@ public class AnalyzeTest {
                 .build(),
             Entity.newBuilder().setName("something").build());
 
-    // Act
+    // Act on sample code with mock data.
     Analyze.printEntities(out, entities);
 
-    // Assert
+    // Assert output from sample matches expected output.
     String got = bout.toString();
     assertThat(got).contains("Found 3 entities.");
     assertThat(got).contains("Larry Page");

@@ -18,6 +18,7 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.language.spi.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Entity;
 import com.google.cloud.language.v1.PartOfSpeech.Tag;
 import com.google.cloud.language.v1.Sentiment;
@@ -41,7 +42,7 @@ public class AnalyzeIT {
   private Analyze analyzeApp;
 
   @Before public void setup() throws Exception {
-    analyzeApp = new Analyze(Analyze.createLanguageService());
+    analyzeApp = new Analyze(LanguageServiceClient.create());
   }
 
   @Test public void analyzeEntities_withEntities_returnsLarryPage() throws Exception {

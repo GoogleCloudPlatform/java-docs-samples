@@ -57,7 +57,7 @@ public class Analyze {
     String command = args[0];
     String text = args[1];
 
-    Analyze app = new Analyze(createLanguageService());
+    Analyze app = new Analyze(LanguageServiceClient.create());
 
     if (command.equals("entities")) {
       printEntities(System.out, app.analyzeEntities(text));
@@ -140,12 +140,6 @@ public class Analyze {
     }
   }
 
-  /**
-   * Connects to the Natural Language API using Application Default Credentials.
-   */
-  public static LanguageServiceClient createLanguageService() throws IOException{
-	  return LanguageServiceClient.create();
-  }
 
   private final LanguageServiceClient languageApi;
 
@@ -160,10 +154,11 @@ public class Analyze {
    * Gets {@link Entity}s from the string {@code text}.
    */
   public List<Entity> analyzeEntities(String text) throws IOException {
-    AnalyzeEntitiesRequest request =
-        AnalyzeEntitiesRequest.newBuilder()
-            .setDocument(Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT))
-            .setEncodingType(EncodingType.UTF16).build();
+    Document doc = Document.newBuilder()
+        .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
     AnalyzeEntitiesResponse response = languageApi.analyzeEntities(request);
     return response.getEntitiesList();
   }
@@ -172,8 +167,9 @@ public class Analyze {
    * Gets {@link Sentiment} from the string {@code text}.
    */
   public Sentiment analyzeSentiment(String text) throws IOException {
-    AnalyzeSentimentResponse response = languageApi.analyzeSentiment(
-        Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build());
+    Document doc = Document.newBuilder()
+        .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
     return response.getDocumentSentiment();
   }
 
@@ -181,9 +177,11 @@ public class Analyze {
    * Gets {@link Token}s from the string {@code text}.
    */
   public List<Token> analyzeSyntax(String text) throws IOException {
+    Document doc = Document.newBuilder()
+        .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
-            .setDocument(Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build())
-            .setEncodingType(EncodingType.UTF16).build();
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
     AnalyzeSyntaxResponse response = languageApi.analyzeSyntax(request);
     return response.getTokensList();
   }
