@@ -1,36 +1,23 @@
-package com.example.managedvms.pubsub;
+package com.example.appengine.pubsub;
 
-import com.google.cloud.datastore.BlobValue;
+import static java.lang.Thread.sleep;
+
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.DateTime;
 import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.FullEntity;
-import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.Transaction;
-import com.google.cloud.datastore.Value;
-import com.google.cloud.datastore.ValueBuilder;
-import com.google.cloud.pubsub.Message;
-import com.google.cloud.pubsub.PubSub;
-import com.google.cloud.pubsub.PubSubOptions;
-import com.google.cloud.pubsub.Topic;
-import com.google.cloud.pubsub.TopicInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
-import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -46,20 +33,12 @@ public class PubSubPush extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     // Initialize
     datastoreService = DatastoreOptions.getDefaultInstance().getService();
-
-    // Prepare message list if it's empty
-    while (true) {
-      if (createMessageList()) {
-        break;
-      }
-    }
   }
 
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     final String apiToken = System.getenv("PUBSUB_VERIFICATION_TOKEN");
-    final String topicName = System.getenv("PUBSUB_TOPIC");
 
     try {
       // message = JSON.parse request.body.read
@@ -71,7 +50,8 @@ public class PubSubPush extends HttpServlet {
         return;
       }
 
-      Map<String, Map<String, String>> responseBody = new Gson().fromJson(jsonReader, Map.class);
+      Map<String, Map<String, String>> responseBody = new Gson()
+          .fromJson(jsonReader, Map.class);
       final String data = responseBody.get("message").get("data");
 
       // Ugly...
@@ -86,16 +66,57 @@ public class PubSubPush extends HttpServlet {
     }
   }
 
+
+
+  public void saveMessage(String message) {
+    new Thread(new Runnable() {
+      private final long maxSleepTime = 30000; // 30 seconds
+
+      @Override
+      public void run() {
+        try {
+          // set starting sleepTime
+          long sleepTime = 1000;
+          // Prepare message list if it's empty
+          while (sleepTime < maxSleepTime) {
+            if (createMessageList()) {
+              break;
+            }
+            sleep(sleepTime);
+            // Exponential backoff
+            sleepTime *= 2;
+          }
+
+          // reset starting sleepTime
+          sleepTime = 1000;
+          // Attempt to save message
+          while (sleepTime < maxSleepTime) {
+            if (trySaveMessage(message)) {
+              break;
+            }
+            sleep(sleepTime);
+          }
+        } catch (InterruptedException ie) {
+          System.err.println(ie);
+        }
+      }
+    }).start();
+  }
+
   private boolean createMessageList() {
     // Start a new transaction
     Transaction transaction = datastoreService.newTransaction();
 
-    // Create a Gson object to serialize messages ArrayList as a JSON string
+    // Create a Gson object to serialize messages LinkedList as a JSON string
     Gson gson = new Gson();
+
+    // Transaction flag
+    boolean messagesFound = false;
 
     try {
       // Create a keyfactory for entries of kind pushed_messages
-      KeyFactory keyFactory = datastoreService.newKeyFactory().setKind("pushed_messages");
+      KeyFactory keyFactory = datastoreService.newKeyFactory()
+          .setKind("pushed_messages");
 
       // Lookup message_list
       Key key = keyFactory.newKey("message_list");
@@ -103,53 +124,48 @@ public class PubSubPush extends HttpServlet {
 
       // Entity doesn't exist so let's create it!
       if (entity == null) {
-        ArrayList<String> messages = new ArrayList<>();
+        LinkedList<String> messages = new LinkedList<>();
         entity = Entity.newBuilder(key)
             .set("messages", gson.toJson(messages))
             .build();
         transaction.put(entity);
         transaction.commit();
       } else {
-        return true;
+        transaction.rollback();
       }
-    } catch (Exception err) {
-      System.err.println(""+err);
+      messagesFound = true;
     } finally {
       if (transaction.isActive()) {
-        transaction.rollback();
         // we don't have an entry yet transaction failed
-        return false;
+        transaction.rollback();
+        messagesFound = false;
       }
     }
     // we have an entry to work with
-    return true;
-  }
-
-  private void saveMessage(String message) {
-    // Attempt to save message
-    while (true) {
-      if (trySaveMessage(message)) {
-        break;
-      }
-    }
+    return messagesFound;
   }
 
   private boolean trySaveMessage(String message) {
     // Start a new transaction
     Transaction transaction = datastoreService.newTransaction();
 
-    // Create a Gson object to parse and serialize an ArrayList
+    // Create a Gson object to parse and serialize an LinkedList
     Gson gson = new Gson();
+
+    // Transaction flag
+    boolean messagesSaved = false;
 
     try {
       // Lookup pushed_messages
-      KeyFactory keyFactory = datastoreService.newKeyFactory().setKind("pushed_messages");
+      KeyFactory keyFactory = datastoreService.newKeyFactory()
+          .setKind("pushed_messages");
       Key key = keyFactory.newKey("message_list");
       Entity entity = transaction.get(key);
 
-      // Parse JSON into an ArrayList
-      ArrayList<String> messages = null;
-      messages = gson.fromJson(entity.getString("messages"), messages.getClass());
+      // Parse JSON into an LinkedList
+      LinkedList<String> messages = gson.fromJson(entity.getString("messages"),
+          new TypeToken<LinkedList<String>>() {
+          }.getType());
 
       // Add new message and save updated entry
       messages.add(message);
@@ -158,15 +174,15 @@ public class PubSubPush extends HttpServlet {
           .build();
       transaction.update(entity);
       transaction.commit();
+      messagesSaved = true;
     } finally {
       if (transaction.isActive()) {
         transaction.rollback();
-        // didn't work out try again
-        return false;
+        messagesSaved = false;
       }
     }
     // It saved the new entry!
-    return true;
+    return messagesSaved;
   }
 }
 

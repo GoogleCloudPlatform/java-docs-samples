@@ -1,9 +1,10 @@
-package com.example.managedvms.pubsub;
+package com.example.appengine.pubsub;
 
 import com.google.cloud.pubsub.Message;
 import com.google.cloud.pubsub.PubSub;
 import com.google.cloud.pubsub.PubSubOptions;
 import com.google.cloud.pubsub.Topic;
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,7 @@ public class PubSubPublish extends HttpServlet {
 
     // Create a PubSub Service and get Topic
     PubSub pubsub = PubSubOptions.getDefaultInstance().getService();
-    Topic topic   = pubsub.getTopic(topicName);
+    Topic topic = pubsub.getTopic(topicName);
 
     // Publish Message
     topic.publish(Message.of(payload));

@@ -1,17 +1,15 @@
-package com.example.managedvms.pubsub;
+package com.example.appengine.pubsub;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
-import com.google.cloud.datastore.StructuredQuery;
 import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,10 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "main", value = "/")
-public class PubSubHome extends HttpServlet{
+public class PubSubHome extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws IOException, ServletException {
+      throws IOException, ServletException {
     // Prepare to present list
     resp.setContentType("text/html");
     PrintWriter out = resp.getWriter();
@@ -35,12 +33,12 @@ public class PubSubHome extends HttpServlet{
         + "<body>");
 
     // Get Messages
-    ArrayList<String> messageList = getMessages();
+    LinkedList<String> messageList = getMessages();
 
     // Display received messages
     out.println("Received Messages:<br />");
     for (String message : messageList) {
-        out.printf("%s<br />\n", message);
+      out.printf("%s<br />\n", message);
     }
 
     // Add Form to publish a new message
@@ -55,7 +53,7 @@ public class PubSubHome extends HttpServlet{
         + "</html>");
   }
 
-  private ArrayList<String> getMessages() {
+  private LinkedList<String> getMessages() {
     // Get Message saved in Datastore
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     Query<Entity> query = Query.newEntityQueryBuilder()
@@ -64,8 +62,8 @@ public class PubSubHome extends HttpServlet{
         .build();
     QueryResults<Entity> results = datastore.run(query);
 
-    // Convert stored JSON into ArrayList<String>
-    ArrayList<String> messageList = new ArrayList<>();
+    // Convert stored JSON into LinkedList<String>
+    LinkedList<String> messageList = new LinkedList<>();
     Gson gson = new Gson();
     if (results.hasNext()) {
       Entity entity = results.next();
