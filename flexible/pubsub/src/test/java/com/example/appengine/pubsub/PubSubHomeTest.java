@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class PubSubHomeTest {
   private static final String FAKE_URL = "fakeurl.google";
   private static final String KIND = "pushed_messages";
@@ -147,5 +148,4 @@ public class PubSubHomeTest {
 
     return html;
   }
-
 }
