@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.Map;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,12 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PubSubPush", value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
-  private Datastore datastoreService = null;
+  private long maxTimeout = 5000L; // 5 seconds
 
-  @Override
-  public void init(ServletConfig config) throws ServletException {
-    // Initialize
-    datastoreService = DatastoreOptions.getDefaultInstance().getService();
+  public void setTimeoutMilliSeconds(long timeout) {
+    maxTimeout = timeout;
   }
 
   @Override
@@ -50,68 +47,63 @@ public class PubSubPush extends HttpServlet {
         return;
       }
 
-      Map<String, Map<String, String>> responseBody = new Gson()
+      Map<String, Map<String, String>> requestBody = new Gson()
           .fromJson(jsonReader, Map.class);
-      final String data = responseBody.get("message").get("data");
+      final String requestData = requestBody.get("message").get("data");
 
       // Ugly...
-      byte[] interm = Base64.getDecoder().decode(data);
-      String payload = new String(interm, StandardCharsets.UTF_8);
+      byte[] decodedData = Base64.getDecoder().decode(requestData);
+      String stringData = new String(decodedData, StandardCharsets.UTF_8);
 
       // Save payload to be displayed later
-      saveMessage(payload);
+      saveMessage(stringData);
     } catch (JsonParseException error) {
       resp.getWriter().print(error.toString());
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
   }
 
-
-
   public void saveMessage(String message) {
-    new Thread(new Runnable() {
-      private final long maxSleepTime = 30000; // 30 seconds
-
-      @Override
-      public void run() {
-        try {
-          // set starting sleepTime
-          long sleepTime = 1000;
-          // Prepare message list if it's empty
-          while (sleepTime < maxSleepTime) {
-            if (createMessageList()) {
-              break;
-            }
-            sleep(sleepTime);
-            // Exponential backoff
-            sleepTime *= 2;
-          }
-
-          // reset starting sleepTime
-          sleepTime = 1000;
-          // Attempt to save message
-          while (sleepTime < maxSleepTime) {
-            if (trySaveMessage(message)) {
-              break;
-            }
-            sleep(sleepTime);
-          }
-        } catch (InterruptedException ie) {
-          System.err.println(ie);
+    try {
+      // set starting sleepTime
+      long timeout = 1000;
+      // Prepare message list if it's empty
+      while (timeout < maxTimeout) {
+        if (createMessageList()) {
+          break;
         }
+        sleep(timeout);
+        // Exponential backoff
+        timeout *= 2;
       }
-    }).start();
+
+      // reset starting sleepTime
+      timeout = 1000;
+
+      // Attempt to save message
+      while (timeout < maxTimeout) {
+        if (trySaveMessage(message)) {
+          break;
+        }
+        sleep(timeout);
+        timeout *= 2;
+      }
+    } catch (InterruptedException ie) {
+      System.err.println(ie);
+    }
   }
 
   private boolean createMessageList() {
     // Start a new transaction
+    Datastore datastoreService = DatastoreOptions.getDefaultInstance()
+        .getService();
     Transaction transaction = datastoreService.newTransaction();
 
     // Create a Gson object to serialize messages LinkedList as a JSON string
     Gson gson = new Gson();
 
-    // Transaction flag
-    boolean messagesFound = false;
+    // Transaction flag (assume it worked)
+    boolean messagesFound = true;
 
     try {
       // Create a keyfactory for entries of kind pushed_messages
@@ -133,7 +125,6 @@ public class PubSubPush extends HttpServlet {
       } else {
         transaction.rollback();
       }
-      messagesFound = true;
     } finally {
       if (transaction.isActive()) {
         // we don't have an entry yet transaction failed
@@ -147,13 +138,15 @@ public class PubSubPush extends HttpServlet {
 
   private boolean trySaveMessage(String message) {
     // Start a new transaction
+    Datastore datastoreService = DatastoreOptions.getDefaultInstance()
+        .getService();
     Transaction transaction = datastoreService.newTransaction();
 
     // Create a Gson object to parse and serialize an LinkedList
     Gson gson = new Gson();
 
-    // Transaction flag
-    boolean messagesSaved = false;
+    // Transaction flag (assume it worked)
+    boolean messagesSaved = true;
 
     try {
       // Lookup pushed_messages
@@ -164,8 +157,7 @@ public class PubSubPush extends HttpServlet {
 
       // Parse JSON into an LinkedList
       LinkedList<String> messages = gson.fromJson(entity.getString("messages"),
-          new TypeToken<LinkedList<String>>() {
-          }.getType());
+          new TypeToken<LinkedList<String>>(){}.getType());
 
       // Add new message and save updated entry
       messages.add(message);
@@ -174,7 +166,6 @@ public class PubSubPush extends HttpServlet {
           .build();
       transaction.update(entity);
       transaction.commit();
-      messagesSaved = true;
     } finally {
       if (transaction.isActive()) {
         transaction.rollback();
