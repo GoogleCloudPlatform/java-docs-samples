@@ -54,7 +54,7 @@ public class PubSubHomeTest {
   }
 
   @Test
-  public void doGet_OneMessage_IT() throws Exception {
+  public void doGet_OneMessageIT() throws Exception {
     LinkedList<String> messageList = new LinkedList<>();
     messageList.add("Hello, World!");
 
@@ -77,7 +77,7 @@ public class PubSubHomeTest {
   }
 
   @Test
-  public void doGet_MultipleMessages_IT() throws Exception {
+  public void doGet_MultipleMessagesIT() throws Exception {
     LinkedList<String> messageList = new LinkedList<>();
     messageList.add("Hello, World!");
     messageList.add("Hello, World!");
