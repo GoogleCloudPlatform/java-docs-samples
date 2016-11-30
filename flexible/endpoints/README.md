@@ -1,9 +1,9 @@
 # Google Cloud Endpoints on App Engine flexible environment
 This sample demonstrates how to use Google Cloud Endpoints on Google App Engine Flexible Environment using Java.
 
-## Edit the Swagger API specification
+## Edit the Open API specification
 
-Open the [src/main/appengine/swagger.yaml](src/main/appengine/swagger.yaml) file in your favorite editor, and replace the YOUR-PROJECT-ID `host` line with your actual Google Cloud Platform project Id.
+Open the [src/main/appengine/openapi.yaml](src/main/appengine/openapi.yaml) file in your favorite editor, and replace the YOUR-PROJECT-ID `host` line with your actual Google Cloud Platform project Id.
 
 ## Running locally
     $ mvn jetty:run
