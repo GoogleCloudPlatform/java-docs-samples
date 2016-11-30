@@ -61,7 +61,7 @@ public class ImagesServlet extends HttpServlet {
     FileChannel fileChannel = fileInputStream.getChannel();
     ByteBuffer byteBuffer = ByteBuffer.allocate((int)fileChannel.size());
     fileChannel.read(byteBuffer);
-    
+
     byte[] imageBytes = byteBuffer.array();
 
     // Write the original image to Cloud Storage
@@ -103,7 +103,7 @@ public class ImagesServlet extends HttpServlet {
     //[END rotate]
 
     // Output some simple HTML to display the images we wrote to Cloud Storage
-    // in the browser. 
+    // in the browser.
     PrintWriter out = resp.getWriter();
     out.println("<html><body>\n");
     out.println("<img src='//storage.cloud.google.com/" + bucket

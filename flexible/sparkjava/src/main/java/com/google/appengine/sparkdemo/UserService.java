@@ -42,7 +42,7 @@ public class UserService {
    */
   public UserService(Datastore datastore, String kind) {
     this.datastore = datastore;
-    this.keyFactory = datastore.newKeyFactory().kind(kind);
+    this.keyFactory = datastore.newKeyFactory().setKind(kind);
     this.kind = kind;
   }
 
@@ -51,7 +51,7 @@ public class UserService {
    */
   public List<User> getAllUsers() {
     Query<Entity> query =
-        Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
+        Query.newGqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
     QueryResults<Entity> results = datastore.run(query);
     List<User> users = new ArrayList<>();
     while (results.hasNext()) {
@@ -79,7 +79,7 @@ public class UserService {
     failIfInvalid(name, email);
     User user = new User(name, email);
     Key key = keyFactory.newKey(user.getId());
-    Entity entity = Entity.builder(key)
+    Entity entity = Entity.newBuilder(key)
         .set("id", user.getId())
         .set("name", name)
         .set("email", email)
@@ -107,7 +107,7 @@ public class UserService {
     if (entity == null) {
       throw new IllegalArgumentException("No user with id '" + id + "' found");
     } else {
-      entity = Entity.builder(entity)
+      entity = Entity.newBuilder(entity)
           .set("id", id)
           .set("name", name)
           .set("email", email)

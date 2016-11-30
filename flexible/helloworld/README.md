@@ -13,7 +13,7 @@ Use either:
 ### Running locally
 
     $ mvn clean jetty:run-exploded
-  
+
 ### Deploying
 
     $ mvn appengine:deploy

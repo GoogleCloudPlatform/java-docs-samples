@@ -16,7 +16,7 @@ First, complete the following steps:
 - Install the Cloud SDK `app-engine-java` component.
 - Authenticate wth the gcloud SDK: gcloud auth login.
 - Install [Maven](http://maven.apache.org/download.cgi) if you haven't already.
-   
+
 
 ## Providing your Google Places API key ##
 
@@ -28,21 +28,21 @@ To deploy to gcloud, you need to edit the src/main/appengine/app.yaml file and r
 
     PLACES_APPKEY: 'YOUR_PLACES_APP_KEY'
 
-    
+
 ## Running locally without the AppEngine environment ##
 
-The application does not use any AppEngine specific services, so you can run it simply on your local machine by doing: 
+The application does not use any AppEngine specific services, so you can run it simply on your local machine by doing:
 
-     mvn jetty:run 
+     mvn jetty:run
 
 Go to  http://localhost:8080 to see the webapp.
- 
+
 
 ## Deploying to the cloud as an AppEngine ManagedVM ##
 
-To automatically stage and deploy the webapp to your project in the cloud do:  
+To automatically stage and deploy the webapp to your project in the cloud do:
 
-    mvn appengine:deploy  
+    mvn appengine:deploy
 
 See here for more information on the [GCloud Maven Plugin](https://github.com/GoogleCloudPlatform/gcloud-maven-plugin).
 

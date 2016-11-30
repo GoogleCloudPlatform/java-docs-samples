@@ -18,7 +18,7 @@ public class TestUtils {
   public static void startDatastore() {
     try {
       datastore.start();
-      Persistence.setDatastore(datastore.options().service());
+      Persistence.setDatastore(datastore.getOptions().getService());
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
@@ -35,7 +35,8 @@ public class TestUtils {
 
   public static void wipeDatastore() {
     Datastore datastore = getDatastore();
-    QueryResults<Key> guestbooks = datastore.run(Query.keyQueryBuilder().kind("Greeting").build());
+    QueryResults<Key> guestbooks = datastore.run(Query.newKeyQueryBuilder().setKind("Greeting")
+        .build());
     ArrayList<Key> keys = Lists.newArrayList(guestbooks);
 
     if (!keys.isEmpty()) {

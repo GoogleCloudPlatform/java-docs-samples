@@ -42,8 +42,8 @@ import java.util.List;
 public class UserServiceTest {
 
   private static final LocalDatastoreHelper HELPER = LocalDatastoreHelper.create(1.0);
-  private static final DatastoreOptions DATASTORE_OPTIONS = HELPER.options();
-  private static final Datastore DATASTORE = DATASTORE_OPTIONS.service();
+  private static final DatastoreOptions DATASTORE_OPTIONS = HELPER.getOptions();
+  private static final Datastore DATASTORE = DATASTORE_OPTIONS.getService();
   private static final String KIND = "DemoUser";
   private static final UserService USER_SERVICE = new UserService(DATASTORE, KIND);
   private static final String USER_ID = "myId";
@@ -51,8 +51,8 @@ public class UserServiceTest {
   private static final String USER_EMAIL = "my@email.com";
   private static final User USER = new User(USER_ID, USER_NAME, USER_EMAIL);
   private static final Key USER_KEY =
-      Key.builder(DATASTORE_OPTIONS.projectId(), KIND, USER_ID).build();
-  private static final Entity USER_RECORD = Entity.builder(USER_KEY)
+      Key.newBuilder(DATASTORE_OPTIONS.getProjectId(), KIND, USER_ID).build();
+  private static final Entity USER_RECORD = Entity.newBuilder(USER_KEY)
       .set("id", USER_ID)
       .set("name", USER_NAME)
       .set("email", USER_EMAIL)
@@ -65,7 +65,7 @@ public class UserServiceTest {
 
   @Before
   public void setUp() {
-    StructuredQuery<Key> query = Query.keyQueryBuilder().build();
+    StructuredQuery<Key> query = Query.newKeyQueryBuilder().build();
     QueryResults<Key> result = DATASTORE.run(query);
     DATASTORE.delete(Iterators.toArray(result, Key.class));
     DATASTORE.add(USER_RECORD);
