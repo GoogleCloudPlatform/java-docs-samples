@@ -16,9 +16,11 @@ import com.google.gson.stream.JsonReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PubSubPush", value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
+  private static final int MAX_ELEMENTS = 10;
   private static final String KEY = "message_list";
   private static final String FIELD = "messages";
 
@@ -57,10 +60,11 @@ public class PubSubPush extends HttpServlet {
       }
 
       Map<String, Map<String, String>> requestBody = new Gson()
-          .fromJson(jsonReader, Map.class);
+          .fromJson(jsonReader, new TypeToken<HashMap<String, HashMap<String,
+              String>>>(){}.getType());
       final String requestData = requestBody.get("message").get("data");
 
-      // Ugly...
+      // Decode data into String
       byte[] decodedData = Base64.getDecoder().decode(requestData);
       String stringData = new String(decodedData, StandardCharsets.UTF_8);
 
@@ -76,18 +80,6 @@ public class PubSubPush extends HttpServlet {
     try {
       // set starting sleepTime
       long timeout = 1000;
-      // Prepare message list if it's empty
-      while (timeout < maxTimeout) {
-        if (createMessageList()) {
-          break;
-        }
-        sleep(timeout);
-        // Exponential backoff
-        timeout *= 2;
-      }
-
-      // reset starting sleepTime
-      timeout = 1000;
 
       // Attempt to save message
       while (timeout < maxTimeout) {
@@ -102,7 +94,7 @@ public class PubSubPush extends HttpServlet {
     }
   }
 
-  private boolean createMessageList() {
+  private boolean trySaveMessage(String message) {
     // Start a new transaction
     Datastore datastoreService = DatastoreOptions.getDefaultInstance()
         .getService();
@@ -112,7 +104,7 @@ public class PubSubPush extends HttpServlet {
     Gson gson = new Gson();
 
     // Transaction flag (assume it worked)
-    boolean messagesFound = true;
+    boolean messagesSaved = true;
 
     try {
       // Create a keyfactory for entries of KIND
@@ -126,62 +118,43 @@ public class PubSubPush extends HttpServlet {
       // Entity doesn't exist so let's create it!
       if (entity == null) {
         List<String> messages = new LinkedList<>();
+        messages.add(message);
+
+        // Create update entity
         entity = Entity.newBuilder(key)
             .set(FIELD, gson.toJson(messages))
             .build();
-        transaction.put(entity);
-        transaction.commit();
-      } else {
-        transaction.rollback();
+
+      } else { // It does exist
+        // Parse JSON into an LinkedList
+        List<String> messages = gson.fromJson(entity.getString(FIELD),
+            new TypeToken<LinkedList<String>>(){}.getType());
+
+        // Add message to head of list
+        messages.add(0,message);
+
+        // End index
+        int endIndex = Math.min(messages.size(), MAX_ELEMENTS);
+
+        // subList out at most MAX_ELEMENTS messages
+        messages = messages.subList(0, endIndex);
+
+        // Update entity
+        entity = Entity.newBuilder(entity)
+            .set(FIELD, gson.toJson(messages))
+            .build();
       }
+      // Save and commit update
+      transaction.put(entity);
+      transaction.commit();
     } finally {
       if (transaction.isActive()) {
         // we don't have an entry yet transaction failed
         transaction.rollback();
-        messagesFound = false;
-      }
-    }
-    // we have an entry to work with
-    return messagesFound;
-  }
-
-  private boolean trySaveMessage(String message) {
-    // Start a new transaction
-    Datastore datastoreService = DatastoreOptions.getDefaultInstance()
-        .getService();
-    Transaction transaction = datastoreService.newTransaction();
-
-    // Create a Gson object to parse and serialize an LinkedList
-    Gson gson = new Gson();
-
-    // Transaction flag (assume it worked)
-    boolean messagesSaved = true;
-
-    try {
-      // Lookup pushed_messages
-      KeyFactory keyFactory = datastoreService.newKeyFactory()
-          .setKind(entryKind);
-      Key key = keyFactory.newKey(KEY);
-      Entity entity = transaction.get(key);
-
-      // Parse JSON into an LinkedList
-      List<String> messages = gson.fromJson(entity.getString(FIELD),
-          new TypeToken<LinkedList<String>>(){}.getType());
-
-      // Add new message and save updated entry
-      messages.add(message);
-      entity = Entity.newBuilder(entity)
-          .set(FIELD, gson.toJson(messages))
-          .build();
-      transaction.update(entity);
-      transaction.commit();
-    } finally {
-      if (transaction.isActive()) {
-        transaction.rollback();
         messagesSaved = false;
       }
     }
-    // It saved the new entry!
+    // we have an entry to work with
     return messagesSaved;
   }
 }
