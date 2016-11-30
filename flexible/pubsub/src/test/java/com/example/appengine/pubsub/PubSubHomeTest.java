@@ -65,7 +65,7 @@ public class PubSubHomeTest {
     // Add messages to local Datastore
     addMessages(messageList);
 
-    // Insert messageList..
+    // Do GET
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     // We expect our hello world response.
@@ -78,7 +78,7 @@ public class PubSubHomeTest {
   }
 
   @Test
-  public void doGet_MultipleMessagesIT() throws Exception {
+  public void doGetMultipleMessagesIT() throws Exception {
     LinkedList<String> messageList = new LinkedList<>();
     messageList.add("Hello, World!");
     messageList.add("Hello, World!");
