@@ -9,7 +9,6 @@ import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.Query;
 import com.google.gson.Gson;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,9 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,10 +66,6 @@ public class PubSubPushTest {
     servletUnderTest.setEntryKind(entryKind);
   }
 
-  @After
-  public void tearDown() throws Exception {
-  }
-
   @Test
   public void doPostSingleMessageIT() throws Exception {
     // Clear all messages
@@ -80,14 +77,14 @@ public class PubSubPushTest {
     when(mockRequest.getReader()).thenReturn(mockReader);
 
     // Expected output
-    final LinkedList<String> expectedMessageList = new LinkedList<>();
-    expectedMessageList.push(message);
+    final List<String> expectedMessageList = new LinkedList<>();
+    expectedMessageList.add(message);
 
     // Do POST
     servletUnderTest.doPost(mockRequest, mockResponse);
 
     // Test that Message exists in Datastore
-    LinkedList<String> messages = getMessages();
+    List<String> messages = getMessages();
     assertThat(messages).isEqualTo(expectedMessageList);
 
     // Clean up
@@ -118,14 +115,14 @@ public class PubSubPushTest {
     datastore.delete(pushedMessages);
   }
 
-  private LinkedList<String> getMessages() {
+  private List<String> getMessages() {
     Gson gson = new Gson();
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     Query<Entity> query = Query.newEntityQueryBuilder().setKind(entryKind)
         .setLimit(1).build();
 
     Iterator<Entity> entities = datastore.run(query);
-    LinkedList<String> messages = new LinkedList<>();
+    List<String> messages = new LinkedList<>();
     if (entities.hasNext()) {
       Entity entity = entities.next();
       messages = gson.fromJson(entity.getString(ENTRY_FIELD),

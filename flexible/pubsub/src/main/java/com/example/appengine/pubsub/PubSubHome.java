@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,7 +42,7 @@ public class PubSubHome extends HttpServlet {
         + "<body>");
 
     // Get Messages
-    LinkedList<String> messageList = getMessages();
+    List<String> messageList = getMessages();
 
     // Display received messages
     out.println("Received Messages:<br />");
@@ -61,7 +62,7 @@ public class PubSubHome extends HttpServlet {
         + "</html>");
   }
 
-  private LinkedList<String> getMessages() {
+  private List<String> getMessages() {
     // Get Message saved in Datastore
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     Query<Entity> query = Query.newEntityQueryBuilder()
@@ -70,8 +71,8 @@ public class PubSubHome extends HttpServlet {
         .build();
     QueryResults<Entity> results = datastore.run(query);
 
-    // Convert stored JSON into LinkedList<String>
-    LinkedList<String> messageList = new LinkedList<>();
+    // Convert stored JSON into List<String>
+    List<String> messageList = new LinkedList<>();
     Gson gson = new Gson();
     if (results.hasNext()) {
       Entity entity = results.next();

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -124,7 +125,7 @@ public class PubSubPush extends HttpServlet {
 
       // Entity doesn't exist so let's create it!
       if (entity == null) {
-        LinkedList<String> messages = new LinkedList<>();
+        List<String> messages = new LinkedList<>();
         entity = Entity.newBuilder(key)
             .set(FIELD, gson.toJson(messages))
             .build();
@@ -164,7 +165,7 @@ public class PubSubPush extends HttpServlet {
       Entity entity = transaction.get(key);
 
       // Parse JSON into an LinkedList
-      LinkedList<String> messages = gson.fromJson(entity.getString(FIELD),
+      List<String> messages = gson.fromJson(entity.getString(FIELD),
           new TypeToken<LinkedList<String>>(){}.getType());
 
       // Add new message and save updated entry

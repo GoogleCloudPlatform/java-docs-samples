@@ -7,8 +7,8 @@ import com.google.cloud.pubsub.PubSub;
 import com.google.cloud.pubsub.PubSubOptions;
 import com.google.cloud.pubsub.ReceivedMessage;
 import com.google.cloud.pubsub.SubscriptionInfo;
-import com.google.cloud.pubsub.Topic;
 import com.google.cloud.pubsub.TopicInfo;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,9 @@ public class PubSubPublishTest {
     // Create a Topic with pull subscription
     pubsub = PubSubOptions.getDefaultInstance().getService();
     TopicInfo topicInfo = TopicInfo.newBuilder(topicName).build();
-    Topic topic = pubsub.create(topicInfo);
+    pubsub.create(topicInfo);
+
+    // Pull subscription
     SubscriptionInfo subscriptionInfo = SubscriptionInfo.newBuilder(
         topicName, subscriptionName).build();
     pubsub.create(subscriptionInfo);
@@ -56,7 +58,7 @@ public class PubSubPublishTest {
 
   @After
   public void tearDown() throws Exception {
-    // Delete Topic
+    // Delete Topic and Subscription
     pubsub.deleteSubscription(subscriptionName);
     pubsub.deleteTopic(topicName);
   }
@@ -73,8 +75,6 @@ public class PubSubPublishTest {
     servletUnderTest.doPost(mockRequest, mockResponse);
 
     // Pull using subscription to verify publish
-    SubscriptionInfo subscrptionInfo = SubscriptionInfo.of(topicName,
-        subscriptionName);
     Iterator<ReceivedMessage> messages = pubsub.pull(subscriptionName, 1);
 
     // Check message payload is dummyPayload

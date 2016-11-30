@@ -8,7 +8,6 @@ import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import com.google.gson.Gson;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,13 +55,9 @@ public class PubSubHomeTest {
     servletUnderTest.setEntryKind(entryKind);
   }
 
-  @After
-  public void tearDown() throws Exception {
-  }
-
   @Test
   public void doGet_OneMessageIT() throws Exception {
-    LinkedList<String> messageList = new LinkedList<>();
+    List<String> messageList = new LinkedList<>();
     messageList.add("Hello, World!");
 
     // clear Message list
@@ -84,7 +80,7 @@ public class PubSubHomeTest {
 
   @Test
   public void doGetMultipleMessagesIT() throws Exception {
-    LinkedList<String> messageList = new LinkedList<>();
+    List<String> messageList = new LinkedList<>();
     messageList.add("Hello, World!");
     messageList.add("Hello, World!");
 
@@ -116,7 +112,7 @@ public class PubSubHomeTest {
     datastore.delete(pushedMessages);
   }
 
-  private void addMessages(LinkedList<String> messageList) {
+  private void addMessages(List<String> messageList) {
     Gson gson = new Gson();
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     Key messages = datastore.newKeyFactory().setKind(entryKind).newKey(
@@ -130,7 +126,7 @@ public class PubSubHomeTest {
     datastore.put(entity);
   }
 
-  private String generateHtmlWithMessageList(LinkedList<String> messageList) {
+  private String generateHtmlWithMessageList(List<String> messageList) {
     String html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
         + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
         + "<html>\n"
