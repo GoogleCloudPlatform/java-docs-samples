@@ -41,7 +41,7 @@ public class QuickstartSampleIT {
   private PrintStream out;
 
   private static final void deleteMyNewDataset() {
-    BigQuery bigquery = BigQueryOptions.defaultInstance().service();
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
     String datasetName = "my_new_dataset";
     DatasetId datasetId = DatasetId.of(datasetName);
     DatasetDeleteOption deleteContents = DatasetDeleteOption.deleteContents();

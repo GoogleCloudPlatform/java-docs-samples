@@ -18,7 +18,7 @@ This sample demonstrates how to use [Stackdriver](https://cloud.google.com/error
 1. Restart the logging agent
 
     `sudo service google-fluentd restart`
-    
+
 1. Clone the repo
 
     `git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git`

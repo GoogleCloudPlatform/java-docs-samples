@@ -26,11 +26,7 @@ import com.google.cloud.translate.Translation;
 public class QuickstartSample {
   public static void main(String... args) throws Exception {
     // Instantiates a client
-    Translate translate =
-        TranslateOptions.builder()
-            .apiKey(args[0])  // .apiKey("YOUR_API_KEY")
-            .build()
-            .service();
+    Translate translate = TranslateOptions.getDefaultInstance().getService();
 
     // The text to translate
     String text = "Hello, world!";
@@ -44,7 +40,7 @@ public class QuickstartSample {
 
 
     System.out.printf("Text: %s%n", text);
-    System.out.printf("Translation: %s%n", translation.translatedText());
+    System.out.printf("Translation: %s%n", translation.getTranslatedText());
   }
 }
 // [END translate_quickstart]

@@ -84,27 +84,27 @@ public class SyncQuerySample {
       final long waitTime,
       final boolean useLegacySql) throws IOException {
     BigQuery bigquery =
-        new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.defaultInstance());
+        new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
 
     QueryRequest queryRequest =
-        QueryRequest.builder(queryString)
-            .maxWaitTime(waitTime)
+        QueryRequest.newBuilder(queryString)
+            .setMaxWaitTime(waitTime)
             // Use standard SQL syntax or legacy SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
-            .useLegacySql(useLegacySql)
+            .setUseLegacySql(useLegacySql)
             .build();
     QueryResponse response = bigquery.query(queryRequest);
 
     if (response.hasErrors()) {
       throw new RuntimeException(
           response
-              .executionErrors()
+              .getExecutionErrors()
               .stream()
-              .<String>map(err -> err.message())
+              .<String>map(err -> err.getMessage())
               .collect(Collectors.joining("\n")));
     }
 
-    QueryResult result = response.result();
+    QueryResult result = response.getResult();
     Iterator<List<FieldValue>> iter = result.iterateAll();
     while (iter.hasNext()) {
       List<FieldValue> row = iter.next();
