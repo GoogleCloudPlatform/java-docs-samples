@@ -59,12 +59,18 @@ public class Analyze {
 
     Analyze app = new Analyze(LanguageServiceClient.create());
 
-    if (command.equals("entities")) {
-      printEntities(System.out, app.analyzeEntities(text));
-    } else if (command.equals("sentiment")) {
-      printSentiment(System.out, app.analyzeSentiment(text));
-    } else if (command.equals("syntax")) {
-      printSyntax(System.out, app.analyzeSyntax(text));
+    if (command.equals("entities-text")) {
+      printEntities(System.out, app.analyzeEntitiesText(text));
+    } else if (command.equals("entities-file")) {
+      printEntities(System.out, app.analyzeEntitiesFile(text));    	    
+    } else if (command.equals("sentiment-text")) {
+      printSentiment(System.out, app.analyzeSentimentText(text));
+    } else if (command.equals("sentiment-file")) {
+        printSentiment(System.out, app.analyzeSentimentFile(text));
+    } else if (command.equals("syntax-text")) {
+      printSyntax(System.out, app.analyzeSyntaxText(text));
+    } else if (command.equals("syntax-file")) {
+        printSyntax(System.out, app.analyzeSyntaxFile(text));
     }
   }
 
@@ -153,9 +159,22 @@ public class Analyze {
   /**
    * Gets {@link Entity}s from the string {@code text}.
    */
-  public List<Entity> analyzeEntities(String text) throws IOException {
+  public List<Entity> analyzeEntitiesText(String text) throws IOException {
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
+    AnalyzeEntitiesResponse response = languageApi.analyzeEntities(request);
+    return response.getEntitiesList();
+  }
+  
+  /**
+   * Gets {@link Entity}s from the string representing the GCS {@code path}.
+   */
+  public List<Entity> analyzeEntitiesFile(String path) throws IOException {
+    Document doc = Document.newBuilder()
+        .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
         .setDocument(doc)
         .setEncodingType(EncodingType.UTF16).build();
@@ -166,7 +185,7 @@ public class Analyze {
   /**
    * Gets {@link Sentiment} from the string {@code text}.
    */
-  public Sentiment analyzeSentiment(String text) throws IOException {
+  public Sentiment analyzeSentimentText(String text) throws IOException {
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
@@ -174,11 +193,34 @@ public class Analyze {
   }
 
   /**
+   * Gets {@link Sentiment} from the string representing the GCS {@code path}.
+   */
+  public Sentiment analyzeSentimentFile(String path) throws IOException {
+    Document doc = Document.newBuilder()
+        .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
+    return response.getDocumentSentiment();
+  }
+
+  /**
    * Gets {@link Token}s from the string {@code text}.
    */
-  public List<Token> analyzeSyntax(String text) throws IOException {
+  public List<Token> analyzeSyntaxText(String text) throws IOException {
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
+    AnalyzeSyntaxResponse response = languageApi.analyzeSyntax(request);
+    return response.getTokensList();
+  }
+  
+  /**
+   * Gets {@link Token}s from the string representing the GCS {@code path}.
+   */
+  public List<Token> analyzeSyntaxFile(String path) throws IOException {
+    Document doc = Document.newBuilder()
+        .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
         .setDocument(doc)
         .setEncodingType(EncodingType.UTF16).build();
