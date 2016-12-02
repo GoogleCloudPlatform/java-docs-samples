@@ -16,8 +16,8 @@
 // [START all]
 package com.google.cloud.storage.storagetransfer.samples;
 
-import com.google.api.services.storagetransfer.model.Date;
-import com.google.api.services.storagetransfer.model.TimeOfDay;
+import com.google.api.services.storagetransfer.v1.model.Date;
+import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 
 /**
  * Utility methods for creating TransferJobs.

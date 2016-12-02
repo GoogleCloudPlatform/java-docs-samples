@@ -21,8 +21,8 @@ import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.services.storagetransfer.Storagetransfer;
-import com.google.api.services.storagetransfer.StoragetransferScopes;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
 import com.google.common.base.Preconditions;
 
 import java.io.IOException;
