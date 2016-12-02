@@ -121,7 +121,7 @@ public class AnalyzeIT {
 
       // Assert
       assertThat((double)sentiment.getMagnitude()).isGreaterThan(1.0);
-      assertThat((double)sentiment.getScore()).isWithin(0.0);
+      assertThat((double)sentiment.getScore()).isWithin(0.1);
     }
 
   @Test public void analyzeSyntax_partOfSpeech() throws Exception {

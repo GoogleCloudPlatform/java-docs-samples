@@ -59,18 +59,24 @@ public class Analyze {
 
     Analyze app = new Analyze(LanguageServiceClient.create());
 
-    if (command.equals("entities-text")) {
-      printEntities(System.out, app.analyzeEntitiesText(text));
-    } else if (command.equals("entities-file")) {
-      printEntities(System.out, app.analyzeEntitiesFile(text));
-    } else if (command.equals("sentiment-text")) {
-      printSentiment(System.out, app.analyzeSentimentText(text));
-    } else if (command.equals("sentiment-file")) {
+    if (command.equals("entities")) {
+      if (text.startsWith("gs://")) {
+        printEntities(System.out, app.analyzeEntitiesFile(text));
+      } else {
+        printEntities(System.out, app.analyzeEntitiesText(text));
+      }
+    } else if (command.equals("sentiment")) {
+      if (text.startsWith("gs://")) {
         printSentiment(System.out, app.analyzeSentimentFile(text));
-    } else if (command.equals("syntax-text")) {
-      printSyntax(System.out, app.analyzeSyntaxText(text));
-    } else if (command.equals("syntax-file")) {
+      } else {
+        printSentiment(System.out, app.analyzeSentimentText(text));
+      }
+    } else if (command.equals("syntax")) {
+      if (text.startsWith("gs://")) {
         printSyntax(System.out, app.analyzeSyntaxFile(text));
+      } else {
+        printSyntax(System.out, app.analyzeSyntaxText(text));
+      }
     }
   }
 
@@ -117,6 +123,9 @@ public class Analyze {
     out.printf("\tScore: %.3f\n", sentiment.getScore());
   }
 
+  /**
+   * Prints the Syntax for the {@code tokens}.
+   */
   public static void printSyntax(PrintStream out, List<Token> tokens) {
     if (tokens == null || tokens.size() == 0) {
       out.println("No syntax found");
@@ -170,7 +179,7 @@ public class Analyze {
   }
 
   /**
-   * Gets {@link Entity}s from the string representing the GCS {@code path}.
+   * Gets {@link Entity}s from the contents of the object at the given GCS {@code path}.
    */
   public List<Entity> analyzeEntitiesFile(String path) throws IOException {
     Document doc = Document.newBuilder()
@@ -193,7 +202,7 @@ public class Analyze {
   }
 
   /**
-   * Gets {@link Sentiment} from the string representing the GCS {@code path}.
+   * Gets {@link Sentiment} from the contents of the object at the given GCS {@code path}.
    */
   public Sentiment analyzeSentimentFile(String path) throws IOException {
     Document doc = Document.newBuilder()
@@ -216,7 +225,7 @@ public class Analyze {
   }
 
   /**
-   * Gets {@link Token}s from the string representing the GCS {@code path}.
+   * Gets {@link Token}s from the contents of the object at the given GCS {@code path}.
    */
   public List<Token> analyzeSyntaxFile(String path) throws IOException {
     Document doc = Document.newBuilder()

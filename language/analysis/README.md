@@ -30,13 +30,12 @@ mvn clean compile assembly:single
 ```
 
 We can then run the assembled JAR file with the `java` command. The variable $COMMAND takes
-six values `entities-text`, `entities-file`, `sentiment-text`, `sentiment-file`,
-`syntax-text`, or `syntax-file`.
+three values `entities`, `sentiment`, or `syntax`.
 
 ```
 MAIN_CLASS=com.google.cloud.language.samples.Analyze
 JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
-java -cp $JAR_FILE $MAIN_CLASS <sentiment-text|sentiment-file|entities-text|entities-file|syntax-text|syntax-file> <text|path>
+java -cp $JAR_FILE $MAIN_CLASS <sentiment|entities|syntax> <text|path>
 ```
 
 Example usage:
@@ -47,11 +46,10 @@ QUOTE="Larry Page, Google's co-founder, once described the 'perfect search
     back exactly what you want.' Since he spoke those words Google has grown to
     offer products beyond search, but the spirit of what he said remains."
 
-java -cp $JAR_FILE $MAIN_CLASS entities-text "$QUOTE"
-java -cp $JAR_FILE $MAIN_CLASS entities-file "gs://bucket/file.txt"
-java -cp $JAR_FILE $MAIN_CLASS sentiment-text "$QUOTE"
-java -cp $JAR_FILE $MAIN_CLASS sentiment-file "gs://bucket/file.txt"
-java -cp $JAR_FILE $MAIN_CLASS syntax-text "$QUOTE"
-java -cp $JAR_FILE $MAIN_CLASS syntax-file "gs://bucket/file.txt"
+java -cp $JAR_FILE $MAIN_CLASS entities "$QUOTE"
+java -cp $JAR_FILE $MAIN_CLASS entities "gs://bucket/file.txt"
+java -cp $JAR_FILE $MAIN_CLASS sentiment "$QUOTE"
+java -cp $JAR_FILE $MAIN_CLASS sentiment "gs://bucket/file.txt"
+java -cp $JAR_FILE $MAIN_CLASS syntax "$QUOTE"
+java -cp $JAR_FILE $MAIN_CLASS syntax "gs://bucket/file.txt"
 ```
-
