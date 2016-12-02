@@ -54,7 +54,7 @@ public class Greeting {
   }
 
   public Greeting(Entity entity) {
-    key = entity.hasKey() ? entity.key() : null;
+    key = entity.hasKey() ? entity.getKey() : null;
     authorEmail = entity.contains("authorEmail") ? entity.getString("authorEmail") : null;
     authorId = entity.contains("authorId") ? entity.getString("authorId") : null;
     date = entity.contains("date") ? entity.getDateTime("date").toDate() : null;
@@ -66,7 +66,7 @@ public class Greeting {
       key = getDatastore().allocateId(makeIncompleteKey()); // Give this greeting a unique ID
     }
 
-    Builder<Key> builder = FullEntity.builder(key);
+    Builder<Key> builder = FullEntity.newBuilder(key);
 
     if (authorEmail != null) {
       builder.set("authorEmail", authorEmail);
@@ -84,7 +84,7 @@ public class Greeting {
 
   private IncompleteKey makeIncompleteKey() {
     // The book is our ancestor key.
-    return Key.builder(book.getKey(), "Greeting").build();
+    return Key.newBuilder(book.getKey(), "Greeting").build();
   }
 
   @Override

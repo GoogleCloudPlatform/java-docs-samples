@@ -19,9 +19,9 @@ package com.google.cloud.storage.storagetransfer.samples.test;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.services.storagetransfer.Storagetransfer;
-import com.google.api.services.storagetransfer.Storagetransfer.TransferOperations;
-import com.google.api.services.storagetransfer.Storagetransfer.TransferOperations.List;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations;
+import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.List;
 import com.google.cloud.storage.storagetransfer.samples.RequestChecker;
 
 import org.junit.Test;

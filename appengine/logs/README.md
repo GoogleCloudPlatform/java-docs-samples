@@ -6,12 +6,12 @@ Engine][ae-docs].
 [log-docs]: https://cloud.google.com/appengine/docs/java/logs/
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
-## Running locally 
+## Running locally
 
 The Logs API only generates output for deployed apps, so this program should not be run locally.
 
 ## Deploying
- 
+
 This example uses the
 [Maven gcloud plugin](https://cloud.google.com/appengine/docs/java/managed-vms/maven).
 

@@ -62,7 +62,7 @@ public class Analyze {
     if (command.equals("entities-text")) {
       printEntities(System.out, app.analyzeEntitiesText(text));
     } else if (command.equals("entities-file")) {
-      printEntities(System.out, app.analyzeEntitiesFile(text));    	    
+      printEntities(System.out, app.analyzeEntitiesFile(text));
     } else if (command.equals("sentiment-text")) {
       printSentiment(System.out, app.analyzeSentimentText(text));
     } else if (command.equals("sentiment-file")) {
@@ -168,7 +168,7 @@ public class Analyze {
     AnalyzeEntitiesResponse response = languageApi.analyzeEntities(request);
     return response.getEntitiesList();
   }
-  
+
   /**
    * Gets {@link Entity}s from the string representing the GCS {@code path}.
    */
@@ -214,7 +214,7 @@ public class Analyze {
     AnalyzeSyntaxResponse response = languageApi.analyzeSyntax(request);
     return response.getTokensList();
   }
-  
+
   /**
    * Gets {@link Token}s from the string representing the GCS {@code path}.
    */

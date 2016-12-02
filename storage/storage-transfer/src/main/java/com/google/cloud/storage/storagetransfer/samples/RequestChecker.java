@@ -16,8 +16,8 @@
 // [START all]
 package com.google.cloud.storage.storagetransfer.samples;
 
-import com.google.api.services.storagetransfer.Storagetransfer;
-import com.google.api.services.storagetransfer.model.ListOperationsResponse;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.model.ListOperationsResponse;
 
 import java.io.IOException;
 import java.util.logging.Logger;

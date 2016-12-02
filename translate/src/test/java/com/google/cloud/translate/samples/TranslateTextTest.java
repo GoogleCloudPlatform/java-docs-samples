@@ -82,8 +82,8 @@ public class TranslateTextTest {
         "Ouzbek", "Pachtô", "Panjabi", "Persan", "Polonais", "Portugais", "Roumain", "Russe",
         "Samoan", "Serbe", "Sesotho", "Shona", "Sindhî", "Slovaque", "Slovène", "Somali",
         "Soundanais", "Suédois", "Swahili", "Tadjik", "Tagalog", "Tamoul", "Tchèque", "Telugu",
-        "Thaï", "Turc", "Ukrainien", "Urdu", "Vietnamien", "Xhosa", "Yiddish", "Yorouba","Zoulou"); 
-  
+        "Thaï", "Turc", "Ukrainien", "Urdu", "Vietnamien", "Xhosa", "Yiddish", "Yorouba","Zoulou");
+
     // Arrange
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);

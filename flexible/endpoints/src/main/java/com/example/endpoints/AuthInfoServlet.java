@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * A servlet that returns authentication information.
- * See swagger.yaml for authentication mechanisms (e.g. JWT tokens, Google ID token).
+ * See openapi.yaml for authentication mechanisms (e.g. JWT tokens, Google ID token).
  */
 @WebServlet("/auth/info/*")
 public class AuthInfoServlet extends HttpServlet {

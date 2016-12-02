@@ -52,11 +52,11 @@ public class Guestbook {
   public List<Greeting> getGreetings() {
     // This query requires the index defined in index.yaml to work because of the orderBy on date.
     EntityQuery query =
-        Query.entityQueryBuilder()
-            .kind("Greeting")
-            .filter(hasAncestor(key))
-            .orderBy(desc("date"))
-            .limit(5)
+        Query.newEntityQueryBuilder()
+            .setKind("Greeting")
+            .setFilter(hasAncestor(key))
+            .setOrderBy(desc("date"))
+            .setLimit(5)
             .build();
 
     QueryResults<Entity> results = getDatastore().run(query);

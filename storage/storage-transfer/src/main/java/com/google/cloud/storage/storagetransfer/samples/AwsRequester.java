@@ -16,15 +16,15 @@
 // [START all]
 package com.google.cloud.storage.storagetransfer.samples;
 
-import com.google.api.services.storagetransfer.Storagetransfer;
-import com.google.api.services.storagetransfer.model.AwsAccessKey;
-import com.google.api.services.storagetransfer.model.AwsS3Data;
-import com.google.api.services.storagetransfer.model.Date;
-import com.google.api.services.storagetransfer.model.GcsData;
-import com.google.api.services.storagetransfer.model.Schedule;
-import com.google.api.services.storagetransfer.model.TimeOfDay;
-import com.google.api.services.storagetransfer.model.TransferJob;
-import com.google.api.services.storagetransfer.model.TransferSpec;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.model.AwsAccessKey;
+import com.google.api.services.storagetransfer.v1.model.AwsS3Data;
+import com.google.api.services.storagetransfer.v1.model.Date;
+import com.google.api.services.storagetransfer.v1.model.GcsData;
+import com.google.api.services.storagetransfer.v1.model.Schedule;
+import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
+import com.google.api.services.storagetransfer.v1.model.TransferJob;
+import com.google.api.services.storagetransfer.v1.model.TransferSpec;
 
 import java.io.IOException;
 import java.io.PrintStream;

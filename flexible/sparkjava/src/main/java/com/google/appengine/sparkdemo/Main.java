@@ -35,7 +35,7 @@ public class Main {
         }
       }
     }
-    UserController userController =
-        new UserController(new UserService(DatastoreOptions.defaultInstance().service(), kind));
+    UserController userController = new UserController(new UserService(
+        DatastoreOptions.getDefaultInstance().getService(), kind));
   }
 }

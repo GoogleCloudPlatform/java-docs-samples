@@ -41,7 +41,7 @@ public class QuickstartSampleIT {
   private PrintStream out;
 
   private static final void deleteBucket(String bucketName) {
-    Storage storage = StorageOptions.defaultInstance().service();
+    Storage storage = StorageOptions.getDefaultInstance().getService();
     storage.delete(bucketName);
   }
 

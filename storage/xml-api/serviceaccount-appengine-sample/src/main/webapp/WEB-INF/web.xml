@@ -19,5 +19,5 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <extension>xsl</extension>
     <mime-type>text/xsl</mime-type>
   </mime-mapping>
-  
+
 </web-app>
