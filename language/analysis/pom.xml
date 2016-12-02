@@ -23,14 +23,9 @@ limitations under the License.
   <dependencies>
     <!-- [START dependencies] -->
     <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-language</artifactId>
-      <version>v1-rev1-1.22.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>1.22.0</version>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-language</artifactId>
+      <version>0.7.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

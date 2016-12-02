@@ -16,28 +16,21 @@
 
 package com.google.cloud.language.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.language.v1.CloudNaturalLanguage;
-import com.google.api.services.language.v1.CloudNaturalLanguageScopes;
-import com.google.api.services.language.v1.model.AnalyzeEntitiesRequest;
-import com.google.api.services.language.v1.model.AnalyzeEntitiesResponse;
-import com.google.api.services.language.v1.model.AnalyzeSentimentRequest;
-import com.google.api.services.language.v1.model.AnalyzeSentimentResponse;
-import com.google.api.services.language.v1.model.AnalyzeSyntaxRequest;
-import com.google.api.services.language.v1.model.AnalyzeSyntaxResponse;
-import com.google.api.services.language.v1.model.AnnotateTextRequest;
-import com.google.api.services.language.v1.model.AnnotateTextResponse;
-import com.google.api.services.language.v1.model.Document;
-import com.google.api.services.language.v1.model.Entity;
-import com.google.api.services.language.v1.model.EntityMention;
-import com.google.api.services.language.v1.model.Features;
-import com.google.api.services.language.v1.model.Sentiment;
-import com.google.api.services.language.v1.model.Token;
+import com.google.cloud.language.spi.v1.LanguageServiceClient;
+
+import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
+import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
+import com.google.cloud.language.v1.AnalyzeSentimentResponse;
+import com.google.cloud.language.v1.AnalyzeSyntaxRequest;
+import com.google.cloud.language.v1.AnalyzeSyntaxResponse;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.Document.Type;
+import com.google.cloud.language.v1.EncodingType;
+import com.google.cloud.language.v1.Entity;
+import com.google.cloud.language.v1.EntityMention;
+import com.google.cloud.language.v1.Sentiment;
+import com.google.cloud.language.v1.Token;
+import com.google.protobuf.Descriptors;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -49,16 +42,7 @@ import java.util.Map;
  * A sample application that uses the Natural Language API to perform
  * entity, sentiment and syntax analysis.
  */
-@SuppressWarnings("serial")
 public class Analyze {
-  /**
-   * Be sure to specify the name of your application. If the application name is {@code null} or
-   * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
-   */
-  private static final String APPLICATION_NAME = "Google-LanguagAPISample/1.0";
-
-  private static final int MAX_RESULTS = 4;
-
   /**
    * Detects entities,sentiment and syntax in a document using the Natural Language API.
    */
@@ -73,7 +57,7 @@ public class Analyze {
     String command = args[0];
     String text = args[1];
 
-    Analyze app = new Analyze(getLanguageService());
+    Analyze app = new Analyze(LanguageServiceClient.create());
 
     if (command.equals("entities")) {
       printEntities(System.out, app.analyzeEntities(text));
@@ -97,15 +81,17 @@ public class Analyze {
       out.printf("%s\n", entity.getName());
       out.printf("\tSalience: %.3f\n", entity.getSalience());
       out.printf("\tType: %s\n", entity.getType());
-      if (entity.getMetadata() != null) {
-        for (Map.Entry<String, String> metadata : entity.getMetadata().entrySet()) {
+      if (entity.getMetadataMap() != null) {
+        for (Map.Entry<String, String> metadata : entity.getMetadataMap().entrySet()) {
           out.printf("\tMetadata: %s = %s\n", metadata.getKey(), metadata.getValue());
         }
       }
-      if (entity.getMentions() != null) {
-        for (EntityMention mention : entity.getMentions()) {
-          for (Map.Entry<String, Object> mentionSetMember : mention.entrySet()) {
-            out.printf("\tMention: %s = %s\n", mentionSetMember.getKey(), mentionSetMember.getValue());
+      if (entity.getMentionsList() != null) {
+        for (EntityMention mention : entity.getMentionsList()) {
+          for (Map.Entry<Descriptors.FieldDescriptor, Object> mentionSetMember :
+              mention.getAllFields().entrySet()) {
+            out.printf("\tMention: %s = %s\n", mentionSetMember.getKey(),
+                mentionSetMember.getValue());
           }
         }
       }
@@ -154,32 +140,13 @@ public class Analyze {
     }
   }
 
-  /**
-   * Connects to the Natural Language API using Application Default Credentials.
-   */
-  public static CloudNaturalLanguage getLanguageService()
-    throws IOException, GeneralSecurityException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudNaturalLanguageScopes.all());
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    return new CloudNaturalLanguage.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),
-        jsonFactory, new HttpRequestInitializer() {
-              @Override
-              public void initialize(HttpRequest request) throws IOException {
-                credential.initialize(request);
-              }
-            })
-        .setApplicationName(APPLICATION_NAME)
-        .build();
-  }
 
-  private final CloudNaturalLanguage languageApi;
+  private final LanguageServiceClient languageApi;
 
   /**
    * Constructs a {@link Analyze} which connects to the Cloud Natural Language API.
    */
-  public Analyze(CloudNaturalLanguage languageApi) {
+  public Analyze(LanguageServiceClient languageApi) {
     this.languageApi = languageApi;
   }
 
@@ -187,28 +154,22 @@ public class Analyze {
    * Gets {@link Entity}s from the string {@code text}.
    */
   public List<Entity> analyzeEntities(String text) throws IOException {
-    AnalyzeEntitiesRequest request =
-        new AnalyzeEntitiesRequest()
-            .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
-            .setEncodingType("UTF16");
-    CloudNaturalLanguage.Documents.AnalyzeEntities analyze =
-        languageApi.documents().analyzeEntities(request);
-
-    AnalyzeEntitiesResponse response = analyze.execute();
-    return response.getEntities();
+    Document doc = Document.newBuilder()
+        .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
+    AnalyzeEntitiesResponse response = languageApi.analyzeEntities(request);
+    return response.getEntitiesList();
   }
 
   /**
    * Gets {@link Sentiment} from the string {@code text}.
    */
   public Sentiment analyzeSentiment(String text) throws IOException {
-    AnalyzeSentimentRequest request =
-        new AnalyzeSentimentRequest()
-            .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"));
-    CloudNaturalLanguage.Documents.AnalyzeSentiment analyze =
-        languageApi.documents().analyzeSentiment(request);
-
-    AnalyzeSentimentResponse response = analyze.execute();
+    Document doc = Document.newBuilder()
+        .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
     return response.getDocumentSentiment();
   }
 
@@ -216,13 +177,12 @@ public class Analyze {
    * Gets {@link Token}s from the string {@code text}.
    */
   public List<Token> analyzeSyntax(String text) throws IOException {
-    AnalyzeSyntaxRequest request =
-        new AnalyzeSyntaxRequest()
-            .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
-            .setEncodingType("UTF16");
-    CloudNaturalLanguage.Documents.AnalyzeSyntax analyze =
-        languageApi.documents().analyzeSyntax(request);
-    AnalyzeSyntaxResponse response = analyze.execute();
-    return response.getTokens();
+    Document doc = Document.newBuilder()
+        .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
+    AnalyzeSyntaxResponse response = languageApi.analyzeSyntax(request);
+    return response.getTokensList();
   }
 }

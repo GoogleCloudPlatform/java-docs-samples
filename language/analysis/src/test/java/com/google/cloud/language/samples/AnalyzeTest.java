@@ -18,7 +18,9 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.language.v1.model.Entity;
+import com.google.cloud.language.v1.Entity;
+import com.google.cloud.language.v1.Entity.Builder;
+import com.google.cloud.language.v1.Entity.Type;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -67,20 +69,31 @@ public class AnalyzeTest {
     // Arrange
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
+
+    // Mock natural-language entities based on actual data.
     ImmutableList<Entity> entities =
         ImmutableList.of(
-            new Entity().setName("Larry Page").setSalience(0.426f).setType("PERSON").setMetadata(
-                ImmutableMap.<String, String>builder()
-                    .put("knowledge_graph_mid", "/m/0gjpq")
-                    .put("wikipedia_url", "http://en.wikipedia.org/wiki/index.html?curid=60903")
-                    .build()),
-            new Entity().setName("search engine").setSalience(0.188f).setType("CONSUMER_GOOD"),
-            new Entity().setName("something"));
+            Entity.newBuilder().setName("Larry Page")
+                .setSalience(0.426f)
+                .setType(Type.PERSON)
+                .putAllMetadata(
+                    ImmutableMap.<String, String>builder()
+                        .put("knowledge_graph_mid", "/m/0gjpq")
+                        .put("wikipedia_url",
+                            "http://en.wikipedia.org/wiki/index.html?curid=60903")
+                        .build())
+                .build(),
+            Entity.newBuilder()
+                .setName("search engine")
+                .setSalience(0.188f)
+                .setType(Type.CONSUMER_GOOD)
+                .build(),
+            Entity.newBuilder().setName("something").build());
 
-    // Act
+    // Act on sample code with mock data.
     Analyze.printEntities(out, entities);
 
-    // Assert
+    // Assert output from sample matches expected output.
     String got = bout.toString();
     assertThat(got).contains("Found 3 entities.");
     assertThat(got).contains("Larry Page");

@@ -18,9 +18,11 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.language.v1.model.Entity;
-import com.google.api.services.language.v1.model.Sentiment;
-import com.google.api.services.language.v1.model.Token;
+import com.google.cloud.language.spi.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Entity;
+import com.google.cloud.language.v1.PartOfSpeech.Tag;
+import com.google.cloud.language.v1.Sentiment;
+import com.google.cloud.language.v1.Token;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +42,7 @@ public class AnalyzeIT {
   private Analyze analyzeApp;
 
   @Before public void setup() throws Exception {
-    analyzeApp = new Analyze(Analyze.getLanguageService());
+    analyzeApp = new Analyze(LanguageServiceClient.create());
   }
 
   @Test public void analyzeEntities_withEntities_returnsLarryPage() throws Exception {
@@ -85,11 +87,11 @@ public class AnalyzeIT {
         analyzeApp.analyzeSyntax(
             "President Obama was elected for the second term");
 
-    List<String> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
+    List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
         .collect(Collectors.toList());
 
     // Assert
-    assertThat(got).containsExactly("NOUN", "NOUN", "VERB",
-        "VERB", "ADP", "DET", "ADJ", "NOUN").inOrder();
+    assertThat(got).containsExactly(Tag.NOUN, Tag.NOUN, Tag.VERB,
+        Tag.VERB, Tag.ADP, Tag.DET, Tag.ADJ, Tag.NOUN).inOrder();
   }
 }
