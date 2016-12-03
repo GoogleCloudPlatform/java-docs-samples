@@ -13,12 +13,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
+<!-- [START project] -->
 <project>
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-pubsub</artifactId>
+  <groupId>com.example.flexible</groupId>
+  <artifactId>flexible-pubsub</artifactId>
 
   <parent>
     <artifactId>doc-samples</artifactId>
@@ -31,16 +32,11 @@
     <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
+    <failOnMissingWebXml>false</failOnMissingWebXml>
     <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.38</version>
-    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -63,12 +59,6 @@
     <!-- [END dependencies] -->
 
     <!-- Test Dependencies -->
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-testing</artifactId>
-      <version>1.9.38</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
@@ -109,6 +99,9 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
+        <configuration>
+          <!-- deploy configuration -->
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
@@ -118,3 +111,4 @@
     </plugins>
   </build>
 </project>
+<!-- [END project] -->
