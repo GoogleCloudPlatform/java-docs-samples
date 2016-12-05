@@ -48,7 +48,7 @@ public class AnalyzeIT {
   @Test public void analyzeEntities_withEntities_returnsLarryPage() throws Exception {
     // Act
     List<Entity> entities =
-        analyzeApp.analyzeEntities(
+        analyzeApp.analyzeEntitiesText(
             "Larry Page, Google's co-founder, once described the 'perfect search engine' as"
             + " something that 'understands exactly what you mean and gives you back exactly what"
             + " you want.' Since he spoke those words Google has grown to offer products beyond"
@@ -59,10 +59,20 @@ public class AnalyzeIT {
     assertThat(got).named("entity names").contains("Larry Page");
   }
 
-  @Test public void analyzeSentiment_returnPositive() throws Exception {
+  @Test public void analyzeEntities_withEntitiesFile_containsGod() throws Exception {
+      // Act
+      List<Entity> entities =
+          analyzeApp.analyzeEntitiesFile("gs://cloud-samples-tests/natural-language/gettysburg.txt");
+      List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
+
+      // Assert
+      assertThat(got).named("entity names").contains("God");
+    }
+
+  @Test public void analyzeSentimentText_returnPositive() throws Exception {
     // Act
     Sentiment sentiment =
-        analyzeApp.analyzeSentiment(
+        analyzeApp.analyzeSentimentText(
             "Tom Cruise is one of the finest actors in hollywood and a great star!");
 
     // Assert
@@ -70,10 +80,21 @@ public class AnalyzeIT {
     assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
   }
 
+  @Test public void analyzeSentimentFile_returnPositiveFile() throws Exception {
+      // Act
+      Sentiment sentiment =
+          analyzeApp.analyzeSentimentFile("gs://cloud-samples-tests/natural-language/"
+                  + "sentiment/bladerunner-pos.txt");
+
+      // Assert
+      assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
+      assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+    }
+
   @Test public void analyzeSentiment_returnNegative() throws Exception {
     // Act
     Sentiment sentiment =
-        analyzeApp.analyzeSentiment(
+        analyzeApp.analyzeSentimentText(
             "That was the worst performance I've seen in awhile.");
 
     // Assert
@@ -81,10 +102,32 @@ public class AnalyzeIT {
     assertThat((double)sentiment.getScore()).isLessThan(0.0);
   }
 
+  @Test public void analyzeSentiment_returnNegativeFile() throws Exception {
+      // Act
+      Sentiment sentiment =
+          analyzeApp.analyzeSentimentFile("gs://cloud-samples-tests/natural-language/"
+                  + "sentiment/bladerunner-neg.txt");
+
+      // Assert
+      assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
+      assertThat((double)sentiment.getScore()).isLessThan(0.0);
+    }
+
+  @Test public void analyzeSentiment_returnNeutralFile() throws Exception {
+      // Act
+      Sentiment sentiment =
+          analyzeApp.analyzeSentimentFile("gs://cloud-samples-tests/natural-language/"
+                  + "sentiment/bladerunner-neutral.txt");
+
+      // Assert
+      assertThat((double)sentiment.getMagnitude()).isGreaterThan(1.0);
+      assertThat((double)sentiment.getScore()).isWithin(0.1);
+    }
+
   @Test public void analyzeSyntax_partOfSpeech() throws Exception {
     // Act
     List<Token> token =
-        analyzeApp.analyzeSyntax(
+        analyzeApp.analyzeSyntaxText(
             "President Obama was elected for the second term");
 
     List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
@@ -94,4 +137,20 @@ public class AnalyzeIT {
     assertThat(got).containsExactly(Tag.NOUN, Tag.NOUN, Tag.VERB,
         Tag.VERB, Tag.ADP, Tag.DET, Tag.ADJ, Tag.NOUN).inOrder();
   }
+
+  @Test public void analyzeSyntax_partOfSpeechFile() throws Exception {
+      // Act
+      List<Token> token =
+          analyzeApp.analyzeSyntaxFile("gs://cloud-samples-tests/natural-language/"
+                  + "sentiment/bladerunner-neutral.txt");
+
+      List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
+          .collect(Collectors.toList());
+
+      // Assert
+      assertThat(got).containsExactly(Tag.PRON, Tag.CONJ, Tag.VERB, Tag.CONJ, Tag.VERB,
+          Tag.DET, Tag.NOUN, Tag.PUNCT, Tag.NOUN, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.CONJ,
+          Tag.ADV, Tag.PRON, Tag.VERB, Tag.VERB, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.DET,
+          Tag.NOUN, Tag.VERB, Tag.ADV, Tag.ADJ,Tag.PUNCT).inOrder();
+    }
 }
