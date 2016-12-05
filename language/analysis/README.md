@@ -32,24 +32,37 @@ mvn clean compile assembly:single
 We can then run the assembled JAR file with the `java` command. The variable $COMMAND takes
 three values `entities`, `sentiment`, or `syntax`.
 
-```
-MAIN_CLASS=com.google.cloud.language.samples.Analyze
-JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
-java -cp $JAR_FILE $MAIN_CLASS <sentiment|entities|syntax> <text|path>
-```
-
-Example usage:
+Basic usage:
 
 ```
-QUOTE="Larry Page, Google's co-founder, once described the 'perfect search
-    engine' as something that 'understands exactly what you mean and gives you
-    back exactly what you want.' Since he spoke those words Google has grown to
-    offer products beyond search, but the spirit of what he said remains."
+function run_nl {
+  local MAIN_CLASS=com.google.cloud.language.samples.Analyze
+  local JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
+  java -cp ${JAR_FILE} ${MAIN_CLASS} $1 "$2"
+}
+run_nl entities "The quick fox jumped over the lazy dog."
+run_nl sentiment "The quick fox jumped over the lazy dog."
+run_nl syntax "The quick fox jumped over the lazy dog."
+```
 
-java -cp $JAR_FILE $MAIN_CLASS entities "$QUOTE"
-java -cp $JAR_FILE $MAIN_CLASS entities "gs://bucket/file.txt"
-java -cp $JAR_FILE $MAIN_CLASS sentiment "$QUOTE"
-java -cp $JAR_FILE $MAIN_CLASS sentiment "gs://bucket/file.txt"
-java -cp $JAR_FILE $MAIN_CLASS syntax "$QUOTE"
-java -cp $JAR_FILE $MAIN_CLASS syntax "gs://bucket/file.txt"
+Additional examples:
+```
+function run_nl_all {
+  local MAIN_CLASS=com.google.cloud.language.samples.Analyze
+  local JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
+  local QUOTE="Larry Page, Google's co-founder, once described the 'perfect search
+      engine' as something that 'understands exactly what you mean and gives you
+      back exactly what you want.' Since he spoke those words Google has grown to
+      offer products beyond search, but the spirit of what he said remains."
+  local GS_PATH="gs://bucket/file"
+
+  java -cp ${JAR_FILE} ${MAIN_CLASS} entities "${QUOTE}"
+  java -cp ${JAR_FILE} ${MAIN_CLASS} entities "${GS_PATH}"
+  java -cp ${JAR_FILE} ${MAIN_CLASS} sentiment "${QUOTE}"
+  java -cp ${JAR_FILE} ${MAIN_CLASS} sentiment "${GS_PATH}"
+  java -cp ${JAR_FILE} ${MAIN_CLASS} syntax "${QUOTE}"
+  java -cp ${JAR_FILE} ${MAIN_CLASS} syntax "${GS_PATH}"
+}
+
+run_nl_all
 ```
