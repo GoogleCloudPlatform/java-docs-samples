@@ -60,11 +60,23 @@ public class Analyze {
     Analyze app = new Analyze(LanguageServiceClient.create());
 
     if (command.equals("entities")) {
-      printEntities(System.out, app.analyzeEntities(text));
+      if (text.startsWith("gs://")) {
+        printEntities(System.out, app.analyzeEntitiesFile(text));
+      } else {
+        printEntities(System.out, app.analyzeEntitiesText(text));
+      }
     } else if (command.equals("sentiment")) {
-      printSentiment(System.out, app.analyzeSentiment(text));
+      if (text.startsWith("gs://")) {
+        printSentiment(System.out, app.analyzeSentimentFile(text));
+      } else {
+        printSentiment(System.out, app.analyzeSentimentText(text));
+      }
     } else if (command.equals("syntax")) {
-      printSyntax(System.out, app.analyzeSyntax(text));
+      if (text.startsWith("gs://")) {
+        printSyntax(System.out, app.analyzeSyntaxFile(text));
+      } else {
+        printSyntax(System.out, app.analyzeSyntaxText(text));
+      }
     }
   }
 
@@ -111,6 +123,9 @@ public class Analyze {
     out.printf("\tScore: %.3f\n", sentiment.getScore());
   }
 
+  /**
+   * Prints the Syntax for the {@code tokens}.
+   */
   public static void printSyntax(PrintStream out, List<Token> tokens) {
     if (tokens == null || tokens.size() == 0) {
       out.println("No syntax found");
@@ -153,7 +168,7 @@ public class Analyze {
   /**
    * Gets {@link Entity}s from the string {@code text}.
    */
-  public List<Entity> analyzeEntities(String text) throws IOException {
+  public List<Entity> analyzeEntitiesText(String text) throws IOException {
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
@@ -164,9 +179,22 @@ public class Analyze {
   }
 
   /**
+   * Gets {@link Entity}s from the contents of the object at the given GCS {@code path}.
+   */
+  public List<Entity> analyzeEntitiesFile(String path) throws IOException {
+    Document doc = Document.newBuilder()
+        .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
+    AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
+    AnalyzeEntitiesResponse response = languageApi.analyzeEntities(request);
+    return response.getEntitiesList();
+  }
+
+  /**
    * Gets {@link Sentiment} from the string {@code text}.
    */
-  public Sentiment analyzeSentiment(String text) throws IOException {
+  public Sentiment analyzeSentimentText(String text) throws IOException {
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
@@ -174,11 +202,34 @@ public class Analyze {
   }
 
   /**
+   * Gets {@link Sentiment} from the contents of the object at the given GCS {@code path}.
+   */
+  public Sentiment analyzeSentimentFile(String path) throws IOException {
+    Document doc = Document.newBuilder()
+        .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
+    return response.getDocumentSentiment();
+  }
+
+  /**
    * Gets {@link Token}s from the string {@code text}.
    */
-  public List<Token> analyzeSyntax(String text) throws IOException {
+  public List<Token> analyzeSyntaxText(String text) throws IOException {
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
+    AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
+        .setDocument(doc)
+        .setEncodingType(EncodingType.UTF16).build();
+    AnalyzeSyntaxResponse response = languageApi.analyzeSyntax(request);
+    return response.getTokensList();
+  }
+
+  /**
+   * Gets {@link Token}s from the contents of the object at the given GCS {@code path}.
+   */
+  public List<Token> analyzeSyntaxFile(String path) throws IOException {
+    Document doc = Document.newBuilder()
+        .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
         .setDocument(doc)
         .setEncodingType(EncodingType.UTF16).build();
