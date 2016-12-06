@@ -35,33 +35,52 @@ three values `entities`, `sentiment`, or `syntax`.
 Basic usage:
 
 ```
-function run_nl {
-  local MAIN_CLASS=com.google.cloud.language.samples.Analyze
-  local JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
-  java -cp ${JAR_FILE} ${MAIN_CLASS} $1 "$2"
+#######################################
+# Performs a language operation on the given text or GCS object.
+# Globals:
+#   None
+# Arguments:
+#   $1 The operation to perform, either entities, sentiment, or syntax.
+#   $2 The text or GCS object to operate on.
+# Returns:
+#   None
+#######################################
+function run_nl() {
+  local main_class=com.google.cloud.language.samples.Analyze
+  local jar_file=target/language-entities-1.0-jar-with-dependencies.jar
+  java -cp ${jar_file} ${main_class} $1 "$2"
 }
-run_nl entities "The quick fox jumped over the lazy dog."
-run_nl sentiment "The quick fox jumped over the lazy dog."
-run_nl syntax "The quick fox jumped over the lazy dog."
+run_nl entities "The quick brown fox jumped over the lazy dog."
+run_nl sentiment "The quick brown fox jumped over the lazy dog."
+run_nl syntax "The quick brown fox jumped over the lazy dog."
 ```
 
 Additional examples:
 ```
-function run_nl_all {
-  local MAIN_CLASS=com.google.cloud.language.samples.Analyze
-  local JAR_FILE=target/language-entities-1.0-jar-with-dependencies.jar
-  local QUOTE="Larry Page, Google's co-founder, once described the 'perfect search
+#######################################
+# Exercises the sample code on various example text and GCS objects.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+function run_nl_all() {
+  local main_class=com.google.cloud.language.samples.Analyze
+  local jar_file=target/language-entities-1.0-jar-with-dependencies.jar
+  local quote="Larry Page, Google's co-founder, once described the 'perfect search
       engine' as something that 'understands exactly what you mean and gives you
       back exactly what you want.' Since he spoke those words Google has grown to
       offer products beyond search, but the spirit of what he said remains."
-  local GS_PATH="gs://bucket/file"
+  local gs_path="gs://bucket/file"
 
-  java -cp ${JAR_FILE} ${MAIN_CLASS} entities "${QUOTE}"
-  java -cp ${JAR_FILE} ${MAIN_CLASS} entities "${GS_PATH}"
-  java -cp ${JAR_FILE} ${MAIN_CLASS} sentiment "${QUOTE}"
-  java -cp ${JAR_FILE} ${MAIN_CLASS} sentiment "${GS_PATH}"
-  java -cp ${JAR_FILE} ${MAIN_CLASS} syntax "${QUOTE}"
-  java -cp ${JAR_FILE} ${MAIN_CLASS} syntax "${GS_PATH}"
+  java -cp ${jar_file} ${main_class} entities "${quote}"
+  java -cp ${jar_file} ${main_class} entities "${gs_path}"
+  java -cp ${jar_file} ${main_class} sentiment "${quote}"
+  java -cp ${jar_file} ${main_class} sentiment "${gs_path}"
+  java -cp ${jar_file} ${main_class} syntax "${quote}"
+  java -cp ${jar_file} ${main_class} syntax "${gs_path}"
 }
 
 run_nl_all
