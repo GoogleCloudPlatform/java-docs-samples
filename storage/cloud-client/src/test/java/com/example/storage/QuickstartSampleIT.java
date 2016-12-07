@@ -67,4 +67,3 @@ public class QuickstartSampleIT {
     assertThat(got).contains(String.format("Bucket %s created.", bucketName));
   }
 }
-// [END datastore_quickstart]
