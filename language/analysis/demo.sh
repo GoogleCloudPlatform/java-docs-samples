@@ -31,7 +31,7 @@
 function run_nl() {
   local main_class=com.google.cloud.language.samples.Analyze
   local jar_file=target/language-entities-1.0-jar-with-dependencies.jar
-  java -cp ${jar_file} ${main_class} $1 "$2"
+  java -cp ${jar_file} ${main_class} "$1" "$2"
 }
 
 #######################################
