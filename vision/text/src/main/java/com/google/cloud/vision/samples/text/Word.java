@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,65 @@
 
 package com.google.cloud.vision.samples.text;
 
-import com.google.auto.value.AutoValue;
-
 import java.nio.file.Path;
 
 /**
  * A data object for mapping words to file paths.
  */
-@AutoValue
-abstract class Word {
+public class Word {
+  private Path pth;
+  private String wrd;
 
   public static Builder builder() {
-    return new AutoValue_Word.Builder();
+    return new Builder();
   }
 
-  public abstract Path path();
+  public Path path() {
+    return this.pth;
+  }
 
-  public abstract String word();
+  public String word() {
+    return this.wrd;
+  }
 
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder path(Path path);
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
+    }
+    if (!(other instanceof Word)) {
+      return false;
+    }
+    Word otherWord = (Word) other;
+    return this.path().equals(otherWord.path()) && this.word().equals(otherWord.word());
+  }
 
-    public abstract Builder word(String word);
+  @Override
+  public int hashCode() {
+    return this.word().hashCode() ^ this.path().hashCode();
+  }
 
-    public abstract Word build();
+  public static class Builder {
+    private Path pth;
+    private String wrd;
+
+    Builder() {}
+
+    public Builder path(Path path) {
+      this.pth = path;
+      return this;
+    }
+
+    public Builder word(String word) {
+      this.wrd = word;
+      return this;
+    }
+
+    public Word build() {
+      Word out = new Word();
+      out.pth = this.pth;
+      out.wrd = this.wrd;
+      return out;
+    }
   }
 }

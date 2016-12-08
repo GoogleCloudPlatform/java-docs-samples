@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.google.cloud.vision.samples.text;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Status;
-import com.google.auto.value.AutoValue;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -28,28 +27,58 @@ import javax.annotation.Nullable;
 /**
  * A data object for mapping text to file paths.
  */
-@AutoValue
-abstract class ImageText {
+public class ImageText {
+  private Path pth;
+  private List<EntityAnnotation> ts;
+  private Status err;
 
   public static Builder builder() {
-    return new AutoValue_ImageText.Builder();
+    return new Builder();
   }
 
-  public abstract Path path();
+  private ImageText() {}
 
-  public abstract List<EntityAnnotation> textAnnotations();
+  public Path path() {
+    return this.pth;
+  }
+
+  public List<EntityAnnotation> textAnnotations() {
+    return this.ts;
+  }
 
   @Nullable
-  public abstract Status error();
+  public Status error() {
+    return this.err;
+  }
 
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder path(Path path);
+  public static class Builder {
+    private Path pth;
+    private List<EntityAnnotation> ts;
+    private Status err;
 
-    public abstract Builder textAnnotations(List<EntityAnnotation> ts);
+    Builder() {}
 
-    public abstract Builder error(@Nullable Status err);
+    public Builder path(Path path) {
+      this.pth = path;
+      return this;
+    }
 
-    public abstract ImageText build();
+    public Builder textAnnotations(List<EntityAnnotation> ts) {
+      this.ts = ts;
+      return this;
+    }
+
+    public Builder error(@Nullable Status err) {
+      this.err = err;
+      return this;
+    }
+
+    public ImageText build() {
+      ImageText out = new ImageText();
+      out.pth = this.pth;
+      out.ts = this.ts;
+      out.err = this.err;
+      return out;
+    }
   }
 }
