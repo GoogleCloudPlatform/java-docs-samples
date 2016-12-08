@@ -32,56 +32,49 @@ mvn clean compile assembly:single
 We can then run the assembled JAR file with the `java` command. The variable $COMMAND takes
 three values `entities`, `sentiment`, or `syntax`.
 
-Basic usage:
+## Basic usage:
 
 ```
-#######################################
-# Performs a language operation on the given text or GCS object.
-# Globals:
-#   None
-# Arguments:
-#   $1 The operation to perform, either entities, sentiment, or syntax.
-#   $2 The text or GCS object to operate on.
-# Returns:
-#   None
-#######################################
-function run_nl() {
-  local main_class=com.google.cloud.language.samples.Analyze
-  local jar_file=target/language-entities-1.0-jar-with-dependencies.jar
-  java -cp ${jar_file} ${main_class} $1 "$2"
-}
-run_nl entities "The quick brown fox jumped over the lazy dog."
-run_nl sentiment "The quick brown fox jumped over the lazy dog."
-run_nl syntax "The quick brown fox jumped over the lazy dog."
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+    com.google.cloud.language.samples.Analyze \
+    <entities | sentiment | syntax> \
+    <text | GCS path>
 ```
 
-Additional examples:
+### Usage Examples
+Analyze entities
 ```
-#######################################
-# Exercises the sample code on various example text and GCS objects.
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
-#######################################
-function run_nl_all() {
-  local main_class=com.google.cloud.language.samples.Analyze
-  local jar_file=target/language-entities-1.0-jar-with-dependencies.jar
-  local quote="Larry Page, Google's co-founder, once described the 'perfect search
-      engine' as something that 'understands exactly what you mean and gives you
-      back exactly what you want.' Since he spoke those words Google has grown to
-      offer products beyond search, but the spirit of what he said remains."
-  local gs_path="gs://bucket/file"
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+    com.google.cloud.language.samples.Analyze \
+    entities \
+    "The quick brown fox jumped over the lazy dog."
+```
 
-  java -cp ${jar_file} ${main_class} entities "${quote}"
-  java -cp ${jar_file} ${main_class} entities "${gs_path}"
-  java -cp ${jar_file} ${main_class} sentiment "${quote}"
-  java -cp ${jar_file} ${main_class} sentiment "${gs_path}"
-  java -cp ${jar_file} ${main_class} syntax "${quote}"
-  java -cp ${jar_file} ${main_class} syntax "${gs_path}"
-}
+Analyze sentiment
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+    com.google.cloud.language.samples.Analyze \
+    sentiment \
+    "The quick brown fox jumped over the lazy dog."
+```
 
-run_nl_all
+Analyze syntax
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+    com.google.cloud.language.samples.Analyze \
+    syntax \
+    "The quick brown fox jumped over the lazy dog."
+```
+
+Included with the sample are `demo.sh` and `demo.bat` which show additional
+examples of usage.
+
+Run demo from *nix or OSX
+```
+demo.sh
+```
+
+Run demo from Windows
+```
+demo
 ```
