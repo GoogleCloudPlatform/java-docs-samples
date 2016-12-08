@@ -14,13 +14,10 @@
   limitations under the License.
 */
 
-package com.example.datastore;
+package com.example.language;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.Key;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,18 +36,8 @@ public class QuickstartSampleIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  private static final void deleteTestEntity() {
-    Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    String kind = "Task";
-    String name = "sampletask1";
-    Key taskKey = datastore.newKeyFactory().setKind(kind).newKey(name);
-    datastore.delete(taskKey);
-  }
-
   @Before
   public void setUp() {
-    deleteTestEntity();
-
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -59,13 +46,16 @@ public class QuickstartSampleIT {
   @After
   public void tearDown() {
     System.setOut(null);
-    deleteTestEntity();
   }
 
   @Test
   public void testQuickstart() throws Exception {
+    // Act
     QuickstartSample.main();
+
+    // Assert
     String got = bout.toString();
-    assertThat(got).contains("Saved sampletask1: Buy milk");
+    assertThat(got).contains("Text: Hello, world!");
+    assertThat(got).contains("Sentiment: ");
   }
 }
