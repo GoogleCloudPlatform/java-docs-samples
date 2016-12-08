@@ -2,7 +2,7 @@
 
 [Google Translate API][translate] provides a simple programmatic interface for translating an
 arbitrary string into any supported language.
-These sample Java applications demonstrate how to access the Cloud Storage API using
+These sample Java applications demonstrate how to access the Google Translate API using
 the [Google Cloud Client Library for Java][google-cloud-java].
 
 [translate]: https://cloud.google.com/translate/
@@ -24,5 +24,4 @@ You can then run a given `ClassName` via:
 
 ### Translate a string (using the quickstart sample)
 
-    mvn exec:java -Dexec.mainClass=com.example.translate.QuickstartSample \
-        -Dexec.args="YOUR_API_KEY"
+    mvn exec:java -Dexec.mainClass=com.example.translate.QuickstartSample
