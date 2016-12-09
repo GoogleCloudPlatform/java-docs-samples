@@ -129,7 +129,8 @@ public class Echo {
   @ApiMethod(
       httpMethod = ApiMethod.HttpMethod.GET,
       authenticators = {EspAuthenticator.class},
-      audiences = {"YOUR_OAUTH_CLIENT_ID"}
+      audiences = {"YOUR_OAUTH_CLIENT_ID"},
+      clientIds = {"YOUR_OAUTH_CLIENT_ID"}
       )
   public Email getUserEmail(User user) throws UnauthorizedException {
     if (user == null) {
