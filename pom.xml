@@ -104,6 +104,7 @@
         <module>flexible/static-files</module>
         <module>flexible/twilio</module>
         <module>language/analysis</module>
+        <module>language/cloud-client</module>
         <module>logging</module>
         <module>logging/cloud-client</module>
         <module>monitoring/v2</module>
