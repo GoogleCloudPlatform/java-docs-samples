@@ -24,7 +24,6 @@ import com.google.api.server.spi.config.ApiIssuer;
 import com.google.api.server.spi.config.ApiIssuerAudience;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.config.AuthLevel;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.UnauthorizedException;
