@@ -33,7 +33,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven-assembly-plugin-version>2.6</maven-assembly-plugin-version>
+    <maven-assembly-plugin-version>3.0.0</maven-assembly-plugin-version>
   </properties>
 
   <dependencies>
