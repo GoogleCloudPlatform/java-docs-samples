@@ -66,4 +66,3 @@ public class QuickstartSampleIT {
     assertThat(got).contains("Topic my-new-topic created.");
   }
 }
-// [END datastore_quickstart]
