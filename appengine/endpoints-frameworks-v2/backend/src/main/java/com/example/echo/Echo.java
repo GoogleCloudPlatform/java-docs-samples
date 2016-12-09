@@ -43,7 +43,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
     issuers = {
       @ApiIssuer(
         name = "firebase",
-        issuer = "https://securetoken.google.com/tangd-customer",
+        issuer = "https://securetoken.google.com/YOUR-PROJECT-ID",
         jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
     }
     // [END_EXCLUDE]
@@ -157,7 +157,7 @@ public class Echo {
       path = "firebase_user",
       httpMethod = ApiMethod.HttpMethod.GET,
       authenticators = {EspAuthenticator.class},
-      issuerAudiences = {@ApiIssuerAudience(name = "firebase", audiences = {"tangd-customer"})}
+      issuerAudiences = {@ApiIssuerAudience(name = "firebase", audiences = {"YOUR-PROJECT-ID"})}
       )
   public Email getUserEmailFirebase(User user) throws UnauthorizedException {
     if (user == null) {
