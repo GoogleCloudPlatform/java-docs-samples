@@ -15,8 +15,8 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.pubsub</groupId>
-  <artifactId>pubsub-google-cloud-samples</artifactId>
+  <groupId>com.example.language</groupId>
+  <artifactId>language-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent defines config for testing & linting. -->
@@ -36,7 +36,7 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-pubsub</artifactId>
+      <artifactId>google-cloud-language</artifactId>
       <version>0.8.0</version>
     </dependency>
 

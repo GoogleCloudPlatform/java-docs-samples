@@ -15,6 +15,10 @@ To add the project ID:
 0. For `<endpoints.project.id>`, replace the value `YOUR_PROJECT_ID` with
 your project ID.
 
+0. Edit the file `src/main/java/com/example/echo/Echo.java`.
+
+0. Replace the value `YOUR-PROJECT-ID` with your project ID.
+
 0. Save your changes.
 
 ## Building the sample project
