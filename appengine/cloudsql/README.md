@@ -13,13 +13,17 @@ Developers Console](https://console.developers.google.com/sql/instances). Altern
 
 ## Deploying
 
-`$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME="instanceConnectionName" -Duser=root
--Dpassword=myPassword -Ddatabase=myDatabase`
+```bash
+$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME="instanceConnectionName" -Duser=root
+-Dpassword=myPassword -Ddatabase=myDatabase
+```
 
 Or you can update the properties in `pom.xml` and
 
 ## Running locally
 1. You will need to be running a local instance of MySQL.
 
-`$ mvn clean appengine:run -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase`
+```bash
+$ mvn clean appengine:run -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
+```
 
