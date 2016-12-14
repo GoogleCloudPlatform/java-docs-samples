@@ -62,6 +62,7 @@ public class CloudSqlServlet extends HttpServlet {
     final String createVisitSql = "INSERT INTO visits (user_ip, timestamp) VALUES (?, ?)";
     final String selectSql = "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC "
         + "LIMIT 10";
+
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");
     String url;
