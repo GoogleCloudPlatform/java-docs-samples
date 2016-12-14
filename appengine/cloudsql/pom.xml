@@ -27,12 +27,13 @@
     <relativePath>../..</relativePath>
   </parent>
 
-<-- [START properties] -->
+<!-- [START properties] -->
   <properties>
-    <!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
-         or gcloud sql instances describe <instance>
-         project:region:instance for Cloud SQL v2 or
-         project:instance        for Cloud SQL v1 -->
+<!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
+     or gcloud sql instances describe <instance>
+     project:region:instance for Cloud SQL v2 or
+     project:instance        for Cloud SQL v1
+-->
     <INSTANCE_CONNECTION_NAME></INSTANCE_CONNECTION_NAME>
     <user>root</user>
     <password></password>
