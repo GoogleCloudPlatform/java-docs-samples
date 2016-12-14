@@ -5,7 +5,7 @@ This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/sql/) o
 Before you can run or deploy the sample, you will need to create a [Cloud SQL instance)](https://cloud.google.com/sql/docs/create-instance)
 
 1. Create a new user and database for the application. The easiest way to do this is via the [Google
-Developers Console](https://console.developers.google.com/sql/instances). Alternatively, you can use MySQL tools such as the command line client or workbench.
+Developers Console](https://console.cloud.google.com/sql/instances). Alternatively, you can use MySQL tools such as the command line client or workbench.
 2. Change the root password (under Access Control) and / or create a new user / password.
 3. Create a Database (under Databases) (or use MySQL with `gcloud sql connect <instance> --user=root`)
 4. Note the **Instance connection name** under Overview > properties
@@ -18,10 +18,9 @@ $ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME="instanceConnectionName"
 -Dpassword=myPassword -Ddatabase=myDatabase
 ```
 
-Or you can update the properties in `pom.xml` and
+Or you can update the properties in `pom.xml`
 
 ## Running locally
-1. You will need to be running a local instance of MySQL.
 
 ```bash
 $ mvn clean appengine:run -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase

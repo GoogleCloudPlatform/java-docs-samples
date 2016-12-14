@@ -66,6 +66,11 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.40</version>  <!-- v5.x.x is Java 7, v6.x.x is Java 8 -->
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>mysql-socket-factory</artifactId>
+      <version>1.0.2</version>
+    </dependency>
     <!-- [END dependencies] -->
   </dependencies>
   <build>
