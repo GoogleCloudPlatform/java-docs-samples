@@ -31,13 +31,13 @@
   <properties>
 <!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
      or gcloud sql instances describe <instance>
-     project:region:instance for Cloud SQL v2 or
-     project:instance        for Cloud SQL v1
+     project:region:instance for Cloud SQL 2nd Generation or
+     project:instance        for Cloud SQL 1st Generation
 -->
     <INSTANCE_CONNECTION_NAME></INSTANCE_CONNECTION_NAME>
     <user>root</user>
-    <password></password>
-    <database></database>
+    <password>myPassword</password>
+    <database>sqldemo</database>
 
 <!-- [START_EXCLUDE] -->
     <appengine.maven.plugin>1.0.0</appengine.maven.plugin>

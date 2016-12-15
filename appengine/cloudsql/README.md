@@ -9,12 +9,12 @@ Developers Console](https://console.cloud.google.com/sql/instances). Alternative
 2. Change the root password (under Access Control) and / or create a new user / password.
 3. Create a Database (under Databases) (or use MySQL with `gcloud sql connect <instance> --user=root`)
 4. Note the **Instance connection name** under Overview > properties
-(It will look like project:instance for v1 or project:region:zone for v2)
+(It will look like project:instance for 1st Generation or project:region:zone for 2nd Generation)
 
 ## Deploying
 
 ```bash
-$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME="instanceConnectionName" -Duser=root
+$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root
 -Dpassword=myPassword -Ddatabase=myDatabase
 ```
 
@@ -23,6 +23,7 @@ Or you can update the properties in `pom.xml`
 ## Running locally
 
 ```bash
-$ mvn clean appengine:run -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
+$ mvn clean appengine:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
 ```
-
+Note - you must use a local mysql instance for the 1st Generation instance and change the local Url
+in `src/main/webapp/WEB-INF/appengine-web.xml` to use your local server.
