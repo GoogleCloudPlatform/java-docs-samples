@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -27,7 +27,17 @@
     <relativePath>../..</relativePath>
   </parent>
 
+<!-- [START properties] -->
   <properties>
+<!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
+     or `gcloud sql instances describe <instance> | grep connectionName`
+     project:region:instance for Cloud SQL 2nd Generation
+-->
+    <INSTANCE_CONNECTION_NAME></INSTANCE_CONNECTION_NAME>
+    <user>root</user>
+    <password></password>
+    <database>sqldemo</database>
+<!-- [START_EXCLUDE] -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
@@ -35,7 +45,10 @@
     <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
+<!-- [END_EXCLUDE] -->
+    <sqlURL>jdbc:mysql://google/${database}?cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}&amp;useSSL=false</sqlURL>
   </properties>
+<!-- [END properties] -->
 
   <dependencies>
     <dependency>
@@ -46,23 +59,51 @@
       <scope>provided</scope>
     </dependency>
     <!-- [START dependencies] -->
+    <dependency>                        <!-- http://dev.mysql.com/doc/connector-j/en/ -->
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>6.0.5</version>
+    </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
-      <artifactId>mysql-socket-factory</artifactId>
+      <artifactId>mysql-socket-factory-connector-j-6</artifactId>
       <version>1.0.2</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
+
+<!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/appengine</directory>
+              <filtering>true</filtering>
+              <targetPath></targetPath>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+ -->
+
+
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
-        <configuration>
-        </configuration>
       </plugin>
 
       <plugin>

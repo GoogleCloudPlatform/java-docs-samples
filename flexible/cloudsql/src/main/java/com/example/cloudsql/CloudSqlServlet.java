@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet(name = "cloudsql", value = "")
 public class CloudSqlServlet extends HttpServlet {
+  String url;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
@@ -64,8 +66,6 @@ public class CloudSqlServlet extends HttpServlet {
         + "LIMIT 10";
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");
-    // Detect if running remotely or locally and select correct connection url
-    String url = System.getenv("SQL_URL");
 
     try (Connection conn = DriverManager.getConnection(url);
         PreparedStatement statementCreateVisit = conn.prepareStatement(createVisitSql)) {
@@ -84,6 +84,18 @@ public class CloudSqlServlet extends HttpServlet {
       }
     } catch (SQLException e) {
       throw new ServletException("SQL error", e);
+    }
+  }
+
+  @Override
+  public void init() {
+    try {
+      Properties properties = new Properties();
+      properties.load(
+          getServletContext().getResourceAsStream("/WEB-INF/classes/config.properties"));
+      url = properties.getProperty("sqlUrl");
+    } catch (IOException e) {
+      log("no property", e);  // Servlet Init should never fail.
     }
   }
 }

@@ -1,4 +1,4 @@
-# Copyright 2016 Google Inc. All Rights Reserved.
+# Copyright 2016 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
 # limitations under the License.
 
 runtime: java
-vm: true
+env: flex
 
 handlers:
 - url: /.*
   script: this field is required, but ignored
   secure: always
 
-# [START env_variables]
-# YOUR-INSTANCE-NAME is ProjectID:Region:DbInstance
-# YOUR-DB-NAME is your DatabaseName
-env_variables:
-  SQL_URL: jdbc:mysql://google/YOUR-DB-NAME?cloudSqlInstance=YOUR-INSTANCE-NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=USERNAME&password=PASSWORD
-# [END env_variables]
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 2
