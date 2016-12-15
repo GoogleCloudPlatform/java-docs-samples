@@ -1,32 +1,29 @@
-# Cloud SQL sample for Google Managed VMs
-This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/sql/) on Google Managed VMs.
+# Cloud SQL sample for Google App Engine Flexible
+This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/sql/) on Google App Engine
+Flexible.
 
 ## Setup
-Before you can run or deploy the sample, you will need to do the following:
+Before you can run or deploy the sample, you will need to create a [Cloud SQL instance)](https://cloud.google.com/sql/docs/create-instance)
 
-1. Create a [Second Generation Cloud SQL](https://cloud.google.com/sql/docs/create-instance) instance. You can do this from the [Cloud Console](https://console.developers.google.com) or via the [Cloud SDK](https://cloud.google.com/sdk). To create it via the SDK use the following command:
-
-        $ gcloud sql instances create YOUR_INSTANCE_NAME \
-            --activation-policy=ALWAYS \
-            --tier=db-n1-standard-1
-
-1. Set the root password on your Cloud SQL instance:
-
-        $ gcloud sql instances set-root-password YOUR_INSTANCE_NAME --password YOUR_INSTANCE_ROOT_PASSWORD
-
-1. Use the MySQL command line tools (or a management tool of your choice) to create a [new user](https://cloud.google.com/sql/docs/create-user) and [database](https://cloud.google.com/sql/docs/create-database) for your application:
-
-    $ mysql -h [IP Address of database] -u root -p
-    mysql> create database YOUR_DATABASE;
-    mysql> create user 'YOUR_USER'@'%' identified by 'PASSWORD';
-    mysql> grant all on YOUR_DATABASE.* to 'YOUR_USER'@'%';
-
-1. Set the connection string environment variable in src/main/appengine/app.yaml
-
-## Running locally
-    Export local variables
-    $ export SQL_URL="jdbc:mysql://google/YOUR-DB-NAME?cloudSqlInstance=YOUR-INSTANCE-NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=USERNAME&password=PASSWORD"
-    $ mvn clean jetty:run
+1. Create a new user and database for the application. The easiest way to do this is via the [Google
+Developers Console](https://console.cloud.google.com/sql/instances). Alternatively, you can use
+MySQL tools such as the command line client or workbench.
+2. Change the root password (under Access Control) and / or create a new user / password.
+3. Create a Database (under Databases) (or use MySQL with `gcloud sql connect <instance> --user=root`)
+4. Note the **Instance connection name** under Overview > Properties
+(It will look like project:region:zone for 2nd Generation)
 
 ## Deploying
-    $ mvn clean appengine:deploy
+
+```bash
+$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root
+-Dpassword=myPassword -Ddatabase=myDatabase
+```
+
+Or you can update the properties in `pom.xml`
+
+## Running locally
+
+```bash
+$ mvn clean jetty:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
+```
