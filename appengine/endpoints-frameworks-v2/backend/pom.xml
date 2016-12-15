@@ -37,6 +37,7 @@
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
+        <appengine.maven.plugin.version>1.0.0</appengine.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -141,20 +142,9 @@
             </plugin>
 
             <plugin>
-                <groupId>com.google.appengine</groupId>
+                <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.sdk.version}</version>
-                <configuration>
-                    <enableJarClasses>false</enableJarClasses>
-                    <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
-                    <!-- address>0.0.0.0</address>
-                    <port>8080</port -->
-                    <!-- Comment in the below snippet to enable local debugging with a remove debugger
-                         like those included with Eclipse or IntelliJ -->
-                    <!-- jvmFlags>
-                      <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
-                    </jvmFlags -->
-                </configuration>
+                <version>${appengine.maven.plugin.version}</version>
             </plugin>
         </plugins>
     </build>
