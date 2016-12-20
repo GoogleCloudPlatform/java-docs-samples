@@ -25,11 +25,11 @@
   <groupId>com.google.apis-samples</groupId>
   <artifactId>storage-json-sample</artifactId>
   <version>1</version>
-  <name>Sample accessing the Google Cloud Storage JSON API using OAuth 2.0.</name>
+  <name>storage-json-api</name>
 
   <properties>
-      <maven.compiler.target>1.8</maven.compiler.target>
-      <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <build>
@@ -40,6 +40,17 @@
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
       <version>v1-rev92-1.22.0</version>
+      <exclusions>
+        <exclusion> <!-- exclude an old version of Guava -->
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.oauth-client</groupId>
@@ -55,7 +66,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.30</version>
+      <version>0.31</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

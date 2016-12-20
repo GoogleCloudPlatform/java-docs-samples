@@ -22,19 +22,30 @@
 
   <dependencies>
     <dependency>
-        <groupId>com.google.apis</groupId>
-        <artifactId>google-api-services-cloudmonitoring</artifactId>
-        <version>v2beta2-rev64-1.22.0</version>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-cloudmonitoring</artifactId>
+      <version>v2beta2-rev64-1.22.0</version>
+      <exclusions>
+        <exclusion> <!-- exclude an old version of Guava -->
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-        <groupId>com.google.oauth-client</groupId>
-        <artifactId>google-oauth-client</artifactId>
-        <version>${project.oauth.version}</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
     </dependency>
     <dependency>
-        <groupId>com.google.http-client</groupId>
-        <artifactId>google-http-client-jackson2</artifactId>
-        <version>${project.http.version}</version>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>${project.oauth.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-jackson2</artifactId>
+      <version>${project.http.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.oauth-client</groupId>
@@ -52,7 +63,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.30</version>
+      <version>0.31</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
