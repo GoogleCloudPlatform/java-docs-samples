@@ -39,6 +39,11 @@
       <artifactId>google-cloud-bigquery</artifactId>
       <version>0.8.0-beta</version>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.9.7</version>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
