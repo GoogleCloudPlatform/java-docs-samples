@@ -29,7 +29,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,16 +43,32 @@ public class QueryParametersSample {
   private static void printUsage() {
     System.err.println("Usage:");
     System.err.printf(
-        "mvn exec:java -Dexec.mainClass=%s -Dexec.args=%s\n",
+        "\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
         QueryParametersSample.class.getCanonicalName(),
-        "sample");
-    System.err.println("sample values: named|array|struct|timestamp");
-    System.err.println("Usage for sample=named:");
-    System.err.println("\tnamed corpus minWordCount");
+        "${sample}");
+    System.err.println();
+    System.err.println("${sample} can be one of: named, array, timestamp");
+    System.err.println();
+    System.err.println("Usage for ${sample}=named:");
+    System.err.printf(
+        "\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
+        QueryParametersSample.class.getCanonicalName(),
+        "named ${corpus} ${minWordCount}");
+    System.err.println();
     System.err.println("Usage for sample=array:");
-    System.err.println("\tarray gender states...");
-    System.err.println("\tgender=M|F");
-    System.err.println("\tstates=Upper-case 2-letter code for U.S. state, e.g. CA.");
+    System.err.printf(
+        "\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
+        QueryParametersSample.class.getCanonicalName(),
+        "array ${gender} ${states...}");
+    System.err.println();
+    System.err.println("\twhere ${gender} can be on of: M, F");
+    System.err.println(
+        "\tand ${states} is any upper-case 2-letter code for U.S. a state, e.g. CA.");
+    System.err.println();
+    System.err.printf(
+        "\t\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
+        QueryParametersSample.class.getCanonicalName(),
+        "array F MD WA");
   }
 
   /**
@@ -82,10 +98,7 @@ public class QueryParametersSample {
           System.exit(ERROR_CODE);
         }
         String gender = args[1];
-        ArrayList<String> states = new ArrayList<>();
-        for (int i = 2; i < args.length; i++) {
-          states.add(args[i]);
-        }
+        String[] states = Arrays.copyOfRange(args, 2, args.length);
         runArray(gender, states);
         break;
       case "timestamp":
@@ -162,7 +175,7 @@ public class QueryParametersSample {
    * Query the baby names database to find the most popular names for a gender in a list of states.
    */
   // [START bigquery_query_params_arrays]
-  private static void runArray(String gender, List<String> states)
+  private static void runArray(String gender, String[] states)
       throws InterruptedException {
     BigQuery bigquery =
         new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
@@ -179,9 +192,7 @@ public class QueryParametersSample {
             .addNamedParameter("gender", QueryParameterValue.string(gender))
             .addNamedParameter(
                 "states",
-                QueryParameterValue.array(
-                    states.toArray(new String[]{}),
-                    String.class))
+                QueryParameterValue.array(states, String.class))
             // Standard SQL syntax is required for parameterized queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
