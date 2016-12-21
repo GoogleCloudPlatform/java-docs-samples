@@ -231,8 +231,6 @@ public class QueryParametersSample {
     BigQuery bigquery =
         new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
 
-    // Timestamps are expected to be in the format YYYY-MM-DD HH:MM:SS.DDDDDD time_zone
-    // See: https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#timestamp-type
     DateTime timestamp = new DateTime(2016, 12, 7, 8, 0, 0, DateTimeZone.UTC);
 
     String queryString = "SELECT TIMESTAMP_ADD(@ts_value, INTERVAL 1 HOUR);";
