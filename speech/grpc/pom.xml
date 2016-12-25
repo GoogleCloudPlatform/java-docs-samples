@@ -49,7 +49,7 @@ limitations under the License.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
-    <grpc-protobuf-version>1.0.2</grpc-protobuf-version>
+    <grpc-protobuf-version>1.0.3</grpc-protobuf-version>
     <maven-compiler-plugin-version>3.6.0</maven-compiler-plugin-version>
     <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
   </properties>
@@ -159,12 +159,12 @@ limitations under the License.
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-auth</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
@@ -174,7 +174,7 @@ limitations under the License.
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <!--
@@ -187,7 +187,7 @@ limitations under the License.
 -      -->
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork24</version>
+      <version>1.1.33.Fork25</version>
       <classifier>${tcnative.classifier}</classifier>
     </dependency>
     <dependency>
