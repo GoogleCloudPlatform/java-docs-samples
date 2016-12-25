@@ -27,9 +27,9 @@ To build the project:
 
     mvn clean package
 
-## Generating the swagger.json file
+## Generating the openapi.json file
 
-To generate the required configuration file `swagger.json`:
+To generate the required configuration file `openapi.json`:
 
     mvn exec:java -DGetSwaggerDoc
 
@@ -39,7 +39,7 @@ To deploy the sample API:
 
 0. Invoke the `gcloud` command to deploy the API configuration file:
 
-         gcloud beta service-management deploy swagger.json
+         gcloud service-management deploy openapi.json
 
 0. Deploy the API implementation code by invoking:
 
