@@ -2,6 +2,8 @@
 
 This directory contains [Cloud Vision API](https://cloud.google.com/vision/) Java samples.
 
+For Android samples, check out the [mobile samples](https://cloud.google.com/vision/docs/samples#mobile_platform_examples) for the Cloud Vision API. ([Source code for Android sample](https://github.com/GoogleCloudPlatform/cloud-vision/tree/master/android))
+
 ## Prerequisites
 
 ### Download Maven
