@@ -17,24 +17,26 @@
 package com.examples.cloud.speech;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.when;
 
 import io.grpc.ManagedChannel;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.WriterAppender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.PrintStream;
+import javax.sound.sampled.TargetDataLine;
 
 
 /**
@@ -42,46 +44,100 @@ import java.nio.file.Paths;
  */
 @RunWith(JUnit4.class)
 public class StreamingRecognizeClientTest {
-  private Writer writer;
-  private WriterAppender appender;
+  private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+  private static final PrintStream REAL_OUT = System.out;
+
+  @Mock private TargetDataLine mockDataLine;
 
   @Before
   public void setUp() {
-    writer = new StringWriter();
-    appender = new WriterAppender(new SimpleLayout(), writer);
-    Logger.getRootLogger().addAppender(appender);
+    MockitoAnnotations.initMocks(this);
+    System.setOut(new PrintStream(stdout));
   }
 
   @After
   public void tearDown() {
-    Logger.getRootLogger().removeAppender(appender);
+    System.setOut(REAL_OUT);
   }
 
   @Test
   public void test16KHzAudio() throws InterruptedException, IOException {
-    URI uri = new File("resources/audio.raw").toURI();
-    Path path = Paths.get(uri);
-
     String host = "speech.googleapis.com";
     int port = 443;
     ManagedChannel channel = StreamingRecognizeClient.createChannel(host, port);
-    StreamingRecognizeClient client = new StreamingRecognizeClient(channel, path.toString(), 16000);
+
+    final FileInputStream in = new FileInputStream("resources/audio.raw");
+
+    final int samplingRate = 16000;
+    final StreamingRecognizeClient client = new StreamingRecognizeClient(channel, samplingRate);
+
+    // When audio data is requested from the mock, get it from the file
+    when(mockDataLine.read(any(byte[].class), anyInt(), anyInt())).thenAnswer(new Answer() {
+      public Object answer(InvocationOnMock invocation) {
+        Object[] args = invocation.getArguments();
+        byte[] buffer = (byte[])args[0];
+        int offset = (int)args[1];
+        int len = (int)args[2];
+        assertThat(buffer.length).isEqualTo(len);
+
+        try {
+          // Sleep, to simulate realtime
+          int samplesPerBuffer = client.bytesPerBuffer / StreamingRecognizeClient.BYTES_PER_SAMPLE;
+          int samplesPerMillis = samplingRate / 1000;
+          Thread.sleep(samplesPerBuffer / samplesPerMillis);
+
+          // Provide the audio bytes from the file
+          return in.read(buffer, offset, len);
+
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+    client.mockDataLine = mockDataLine;
 
     client.recognize();
-    assertThat(writer.toString()).contains("transcript: \"how old is the Brooklyn Bridge\"");
+
+    assertThat(stdout.toString()).contains("how old is the Brooklyn Bridge");
   }
 
   @Test
   public void test32KHzAudio() throws InterruptedException, IOException {
-    URI uri = new File("resources/audio32KHz.raw").toURI();
-    Path path = Paths.get(uri);
-
     String host = "speech.googleapis.com";
     int port = 443;
     ManagedChannel channel = StreamingRecognizeClient.createChannel(host, port);
-    StreamingRecognizeClient client = new StreamingRecognizeClient(channel, path.toString(), 32000);
+
+    final FileInputStream in = new FileInputStream("resources/audio32KHz.raw");
+
+    final int samplingRate = 32000;
+    final StreamingRecognizeClient client = new StreamingRecognizeClient(channel, samplingRate);
+
+    // When audio data is requested from the mock, get it from the file
+    when(mockDataLine.read(any(byte[].class), anyInt(), anyInt())).thenAnswer(new Answer() {
+      public Object answer(InvocationOnMock invocation) {
+        Object[] args = invocation.getArguments();
+        byte[] buffer = (byte[])args[0];
+        int offset = (int)args[1];
+        int len = (int)args[2];
+        assertThat(buffer.length).isEqualTo(len);
+
+        try {
+          // Sleep, to simulate realtime
+          int samplesPerBuffer = client.bytesPerBuffer / StreamingRecognizeClient.BYTES_PER_SAMPLE;
+          int samplesPerMillis = samplingRate / 1000;
+          Thread.sleep(samplesPerBuffer / samplesPerMillis);
+
+          // Provide the audio bytes from the file
+          return in.read(buffer, offset, len);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+    client.mockDataLine = mockDataLine;
 
     client.recognize();
-    assertThat(writer.toString()).contains("transcript: \"how old is the Brooklyn Bridge\"");
+
+    assertThat(stdout.toString()).contains("how old is the Brooklyn Bridge");
   }
 }
