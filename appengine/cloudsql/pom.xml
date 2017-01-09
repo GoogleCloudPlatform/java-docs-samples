@@ -58,7 +58,15 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>${appengine.sdk.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client-appengine</artifactId>
+      <version>1.21.0</version>
+    </dependency>
+
 
     <!-- [START dependencies] -->
     <dependency> <!-- ONLY USED LOCALY -->
@@ -93,18 +101,18 @@
         </configuration>
       </plugin>
 
+<!--
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
       </plugin>
-<!--
+ -->
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.sdk.version}</version>
       </plugin>
- -->
     </plugins>
   </build>
 </project>
