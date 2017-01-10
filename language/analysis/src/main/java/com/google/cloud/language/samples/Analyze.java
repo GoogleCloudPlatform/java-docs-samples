@@ -235,7 +235,6 @@ public class Analyze {
   public List<Token> analyzeSyntaxFile(String path) throws IOException {
     // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
-    Document doc = Document.newBuilder()
         .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
         .setDocument(doc)
