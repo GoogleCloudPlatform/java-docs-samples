@@ -10,8 +10,6 @@ for entity recognition.
 This sample requires you to have
 [Java8](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html).
 
-**Note** The Natural Language client is not supported by App Engine Standard.
-
 ## Download Maven
 
 This sample uses the [Apache Maven][maven] build system. Before getting started, be
