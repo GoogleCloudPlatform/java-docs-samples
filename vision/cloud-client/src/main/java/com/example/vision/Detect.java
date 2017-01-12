@@ -55,14 +55,21 @@ public class Detect{
    * Detects entities,sentiment and syntax in a document using the Natural Language API.
    */
   public static void main(String[] args) throws IOException{
+    argsHelper(args, System.out);
+  }
+  
+  /**
+   * Helper that handles the input passed to the program.
+   */
+  public static void argsHelper(String[] args, PrintStream out) throws IOException{
     if (args.length < 1) {
-      System.err.println("Usage:");
-      System.err.printf(
+      out.println("Usage:");
+      out.printf(
           "\tjava %s \"<command>\" \"<path-to-image>\"\n" +
           "Commands:\n\tall-local | faces | labels | landmarks | logos | text | safe-search | properties\n" +
           "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage resource (gs://...)\n",
           Detect.class.getCanonicalName());
-      System.exit(1);
+      return;
     }
     String command = args[0];
     String path = args.length > 1 ? args[1] : "";

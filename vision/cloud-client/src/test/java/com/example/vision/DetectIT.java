@@ -57,7 +57,7 @@ public class DetectIT {
   public void testDetectEmptyArgs() throws Exception {
     // Act
     String[] args = {};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
@@ -68,20 +68,20 @@ public class DetectIT {
   public void testFaces() throws Exception {
     // Act
     String[] args = {"faces", "./resources/face_no_surprise.jpg"};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
     assertThat(got).contains("anger: POSSIBLE");
     assertThat(got).contains("joy: POSSIBLE");
-    assertThat(got).contains("surprise: UNLIKELY2");
+    assertThat(got).contains("surprise: UNLIKELY");
   }
   
   @Test
   public void testLabels() throws Exception {
     // Act
     String[] args = {"labels", "./resources/wakeupcat.jpg"};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
@@ -92,7 +92,7 @@ public class DetectIT {
   public void testLandmarks() throws Exception {
     // Act
     String[] args = {"landmarks", "./resources/landmark.jpg"};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
@@ -103,7 +103,7 @@ public class DetectIT {
   public void testLogos() throws Exception {
     // Act
     String[] args = {"logos", "./resources/logos.png"};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
@@ -113,8 +113,8 @@ public class DetectIT {
   @Test
   public void testText() throws Exception {
     // Act
-    String[] args = {"logos", "./resources/text.jpg"};
-    Detect.main(args);
+    String[] args = {"text", "./resources/text.jpg"};
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
@@ -125,7 +125,7 @@ public class DetectIT {
   public void testSafeSearch() throws Exception {
     // Act
     String[] args = {"safe-search", "./resources/wakeupcat.jpg"};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
@@ -136,7 +136,7 @@ public class DetectIT {
   public void testProperties() throws Exception {
     // Act
     String[] args = {"properties", "./resources/landmark.jpg"};
-    Detect.main(args);
+    Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
