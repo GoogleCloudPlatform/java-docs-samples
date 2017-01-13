@@ -1,6 +1,6 @@
 # Image Feature Detection Sample
 
-[Google Cloud Vision API][language] provides feature detection for images.
+[Google Cloud Vision API][vision] provides feature detection for images.
 This API is part of the larger collection of Cloud Machine Learning APIs.
 
 This sample Java application demonstrates how to access the Cloud Vision API
