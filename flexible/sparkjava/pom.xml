@@ -19,6 +19,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
+    <app.stage.artifact>${project.build.directory}/spark-1.0-jar-with-dependencies.jar</app.stage.artifact>
   </properties>
 
   <dependencies>
@@ -44,8 +45,8 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud</artifactId>
-      <version>0.4.0</version>
+      <artifactId>google-cloud-datastore</artifactId>
+      <version>0.8.1-beta</version>
     </dependency>
   </dependencies>
   <build>
@@ -83,7 +84,7 @@
           <mainClass>com.google.appengine.sparkdemo.Main</mainClass>
           <arguments>
             <argument>-jar</argument>
-            <argument>target/spark-1.0-jar-with-dependencies.jar</argument>
+            <argument>${app.stage.stagingDirectory}/spark-1.0-jar-with-dependencies.jar</argument>
           </arguments>
         </configuration>
       </plugin>
