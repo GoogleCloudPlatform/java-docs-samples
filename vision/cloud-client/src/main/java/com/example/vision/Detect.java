@@ -67,8 +67,6 @@ public class Detect{
     String command = args[0];
     String path = args.length > 1 ? args[1] : "";
 
-    Detect app = new Detect(ImageAnnotatorClient.create());
-
     if (command.equals("all-local")) {
       detectFaces("resources/face_no_surprise.jpg", System.out);
       detectLabels("resources/wakeupcat.jpg", System.out);
@@ -159,6 +157,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
         out.printf("anger: %s\njoy: %s\nsurprise: %s\nposition: %s",
             annotation.getAngerLikelihood(),
@@ -197,6 +196,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
         annotation.getAllFields().forEach((k, v)->out.printf("%s : %s\n", k, v.toString()));
       }
@@ -230,6 +230,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       for (EntityAnnotation annotation : res.getLandmarkAnnotationsList()) {
         LocationInfo info = annotation.getLocationsList().listIterator().next();
         out.printf("Landmark: %s\n %s\n", annotation.getDescription(), info.getLatLng());
@@ -265,6 +266,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       for (EntityAnnotation annotation : res.getLogoAnnotationsList()) {
         out.println(annotation.getDescription());
       }
@@ -299,6 +301,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
         out.printf("Text: %s\n", annotation.getDescription());
         out.printf("Position : %s\n", annotation.getBoundingPoly());
@@ -334,6 +337,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       DominantColorsAnnotation colors = res.getImagePropertiesAnnotation().getDominantColors();
       for (ColorInfo color : colors.getColorsList()) {
         out.printf("fraction: %f\nr: %f, g: %f, b: %f\n",
@@ -373,6 +377,7 @@ public class Detect{
         return;
       }
 
+      // For full list of available annotations, see http://g.co/cloud/vision/docs
       SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
       out.printf("adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\n",
           annotation.getAdult(),
