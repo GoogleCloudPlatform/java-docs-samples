@@ -15,13 +15,17 @@ Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
-   mvn clean compile assembly:single
+```
+mvn clean compile assembly:single
+```
 
 You can then run a given `ClassName` via:
 
-   mvn exec:java -Dexec.mainClass=com.example.vision.ClassName \
-      -DpropertyName=propertyValue \
-      -Dexec.args="arg1 'arg 2' arg3"
+```
+mvn exec:java -Dexec.mainClass=com.example.vision.ClassName \
+    -DpropertyName=propertyValue \
+    -Dexec.args="arg1 'arg 2' arg3"
+```
 
 ### Analyze an image
 
@@ -32,5 +36,5 @@ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
 ```
 java -cp target/vision-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
     com.example.vision.Detect \
-    syntax "./resources/logos.png"
+    logos "./resources/logos.png"
 ```

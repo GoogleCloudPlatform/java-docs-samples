@@ -18,13 +18,12 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.vision.spi.v1.ImageAnnotatorClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import com.google.cloud.vision.spi.v1.ImageAnnotatorClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class DetectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private Detect app;
-  
+
   @Before
   public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
@@ -61,9 +60,10 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("all-local | faces | labels | landmarks | logos | text | safe-search | properties");
+    assertThat(got).contains("all-local | faces | labels | landmarks |"
+        + " logos | text | safe-search | properties");
   }
-  
+
   @Test
   public void testFaces() throws Exception {
     // Act
@@ -76,7 +76,7 @@ public class DetectIT {
     assertThat(got).contains("joy: POSSIBLE");
     assertThat(got).contains("surprise: UNLIKELY");
   }
-  
+
   @Test
   public void testLabels() throws Exception {
     // Act
@@ -87,7 +87,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("whiskers");
   }
-  
+
   @Test
   public void testLandmarks() throws Exception {
     // Act
@@ -98,7 +98,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("Palace of Fine Arts");
   }
-  
+
   @Test
   public void testLogos() throws Exception {
     // Act
@@ -109,7 +109,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("Google");
   }
-  
+
   @Test
   public void testText() throws Exception {
     // Act
@@ -120,7 +120,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("37%");
   }
-  
+
   @Test
   public void testSafeSearch() throws Exception {
     // Act
@@ -131,7 +131,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("adult: VERY_UNLIKELY");
   }
-  
+
   @Test
   public void testProperties() throws Exception {
     // Act

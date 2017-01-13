@@ -19,31 +19,20 @@ package com.example.vision;
 // [START vision_quickstart]
 // Imports the Google Cloud client library
 import com.google.cloud.vision.spi.v1.ImageAnnotatorClient;
-import com.google.cloud.vision.spi.v1.ImageAnnotatorSettings;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
-import com.google.cloud.vision.v1.Image;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Feature.Type;
-import com.google.cloud.vision.v1.AnnotateImageResponse;
+import com.google.cloud.vision.v1.Image;
+import com.google.protobuf.ByteString;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.joda.time.Duration;
 
 public class QuickstartSample {
   public static void main(String... args) throws Exception {
@@ -73,18 +62,13 @@ public class QuickstartSample {
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
     for (AnnotateImageResponse res : responses) {
-      if (res.hasError()) System.out.printf("Error: %s\n", res.getError().getMessage());
+      if (res.hasError()) {
+        System.out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-        Map<FieldDescriptor, Object> fields = annotation.getAllFields();
-        Iterator<Entry<FieldDescriptor, Object>> iter = fields.entrySet().iterator();
-        while (iter.hasNext()) {
-            Entry<FieldDescriptor, Object> entry = iter.next();
-            System.out.append(entry.getKey().getJsonName());
-            System.out.append(" : ").append('"');
-            System.out.append(entry.getValue().toString());
-            System.out.append("\"\n");
-        }
+        annotation.getAllFields().forEach((k, v)->System.out.printf("%s : %s\n", k, v.toString()));
       }
     }
   }

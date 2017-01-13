@@ -18,14 +18,8 @@ package com.example.vision;
 
 
 import com.google.cloud.vision.spi.v1.ImageAnnotatorClient;
-import com.google.cloud.vision.spi.v1.ImageAnnotatorSettings;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
-import com.google.cloud.vision.v1.Image;
-import com.google.cloud.vision.v1.ImageSource;
-import com.google.cloud.vision.v1.LocationInfo;
-import com.google.cloud.vision.v1.SafeSearchAnnotation;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.ColorInfo;
 import com.google.cloud.vision.v1.DominantColorsAnnotation;
@@ -33,41 +27,40 @@ import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.FaceAnnotation;
 import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Feature.Type;
-import com.google.cloud.vision.v1.AnnotateImageResponse;
+import com.google.cloud.vision.v1.Image;
+import com.google.cloud.vision.v1.LocationInfo;
+import com.google.cloud.vision.v1.SafeSearchAnnotation;
+import com.google.protobuf.ByteString;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.joda.time.Duration;
-
 
 public class Detect{
 
   /**
    * Detects entities,sentiment and syntax in a document using the Natural Language API.
+   * @throws IOException on Input/Output errors.
    */
-  public static void main(String[] args) throws IOException{
+  public static void main(String[] args) throws IOException {
     argsHelper(args, System.out);
   }
-  
+
   /**
    * Helper that handles the input passed to the program.
+   * @throws IOException on Input/Output errors.
    */
-  public static void argsHelper(String[] args, PrintStream out) throws IOException{
+  public static void argsHelper(String[] args, PrintStream out) throws IOException {
     if (args.length < 1) {
       out.println("Usage:");
       out.printf(
-          "\tjava %s \"<command>\" \"<path-to-image>\"\n" +
-          "Commands:\n\tall-local | faces | labels | landmarks | logos | text | safe-search | properties\n" +
-          "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage resource (gs://...)\n",
+          "\tjava %s \"<command>\" \"<path-to-image>\"\n"
+          + "Commands:\n"
+          + "\tall-local | faces | labels | landmarks | logos | text | safe-search | properties\n"
+          + "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
+          + "resource (gs://...)\n",
           Detect.class.getCanonicalName());
       return;
     }
@@ -139,39 +132,17 @@ public class Detect{
   }
 
   /**
-   * Helper for getting byte array given input stream.
-   * @param is Input stream to get bytes for.
-   * @return Byte array for the input stream contents.
-   * @throws IOException
-   */
-  static public byte[] toByteArray(InputStream is) throws IOException {
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-    int nRead;
-    byte[] data = new byte[16384];
-
-    while ((nRead = is.read(data, 0, data.length)) != -1) {
-      buffer.write(data, 0, nRead);
-    }
-
-    buffer.flush();
-
-    return buffer.toByteArray();
-  }
-  
-  /**
    * Detects faces in the specified image.
    * @param filePath The path to the file to perform face detection on.
    * @param out A {@link PrintStream} to write detected features to.
-   * @throws IOException 
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectFaces(String filePath, PrintStream out) throws IOException {
+  public static void detectFaces(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.FACE_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -182,31 +153,34 @@ public class Detect{
     BatchAnnotateImagesResponse response = visionApi.batchAnnotateImages(requests);
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
-    for (AnnotateImageResponse res : responses) {      
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+    for (AnnotateImageResponse res : responses) {
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
-        out.printf("anger: %s\njoy: %s\nsurprise: %s\n",
+        out.printf("anger: %s\njoy: %s\nsurprise: %s\nposition: %s",
             annotation.getAngerLikelihood(),
             annotation.getJoyLikelihood(),
-            annotation.getSurpriseLikelihood());
+            annotation.getSurpriseLikelihood(),
+            annotation.getBoundingPoly());
       }
     }
   }
-  
+
   /**
    * Detects labels in the specified image.
    * @param filePath The path to the file to perform label detection on.
    * @param out A {@link PrintStream} to write detected labels to.
-   * @throws IOException 
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectLabels(String filePath, PrintStream out) throws IOException {
+  public static void detectLabels(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -218,35 +192,28 @@ public class Detect{
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
     for (AnnotateImageResponse res : responses) {
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-        Map<FieldDescriptor, Object> fields = annotation.getAllFields();
-        Iterator<Entry<FieldDescriptor, Object>> iter = fields.entrySet().iterator();
-        while (iter.hasNext()) {
-            Entry<FieldDescriptor, Object> entry = iter.next();
-            out.append(entry.getKey().getJsonName());
-            out.append(" : ").append('"');
-            out.append(entry.getValue().toString());
-            out.append("\"\n");
-        }
+        annotation.getAllFields().forEach((k, v)->out.printf("%s : %s\n", k, v.toString()));
       }
     }
   }
-  
+
   /**
    * Detects landmarks in the specified image.
    * @param filePath The path to the file to perform landmark detection on.
    * @param out A {@link PrintStream} to write detected landmarks to.
-   * @throws IOException 
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectLandmarks(String filePath, PrintStream out) throws IOException {
+  public static void detectLandmarks(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.LANDMARK_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -257,8 +224,11 @@ public class Detect{
     BatchAnnotateImagesResponse response = visionApi.batchAnnotateImages(requests);
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
-    for (AnnotateImageResponse res : responses) {      
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+    for (AnnotateImageResponse res : responses) {
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       for (EntityAnnotation annotation : res.getLandmarkAnnotationsList()) {
         LocationInfo info = annotation.getLocationsList().listIterator().next();
@@ -266,20 +236,19 @@ public class Detect{
       }
     }
   }
-  
+
   /**
    * Detects logos in the specified image.
    * @param filePath The path to the file to perform logo detection on.
    * @param out A {@link PrintStream} to write detected logos to.
-   * @throws IOException 
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectLogos(String filePath, PrintStream out) throws IOException {
+  public static void detectLogos(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.LOGO_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -290,28 +259,30 @@ public class Detect{
     BatchAnnotateImagesResponse response = visionApi.batchAnnotateImages(requests);
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
-    for (AnnotateImageResponse res : responses) {      
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+    for (AnnotateImageResponse res : responses) {
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       for (EntityAnnotation annotation : res.getLogoAnnotationsList()) {
         out.println(annotation.getDescription());
       }
     }
   }
-  
+
   /**
    * Detects text in the specified image.
    * @param filePath The path to the file to detect text in.
    * @param out A {@link PrintStream} to write the detected text to.
-   * @throws IOException 
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectText(String filePath, PrintStream out) throws IOException {
+  public static void detectText(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.TEXT_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -323,27 +294,30 @@ public class Detect{
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
     for (AnnotateImageResponse res : responses) {
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
         out.printf("Text: %s\n", annotation.getDescription());
+        out.printf("Position : %s\n", annotation.getBoundingPoly());
       }
     }
   }
-  
+
   /**
    * Detects image properties such as color frequency from the specified image.
    * @param filePath The path to the file to detect properties.
-   * @param out A {@link PrintStream} to write 
-   * @throws IOException 
+   * @param out A {@link PrintStream} to write
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectProperties(String filePath, PrintStream out) throws IOException {
+  public static void detectProperties(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.IMAGE_PROPERTIES).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -354,33 +328,35 @@ public class Detect{
     BatchAnnotateImagesResponse response = visionApi.batchAnnotateImages(requests);
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
-    for (AnnotateImageResponse res : responses) {      
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+    for (AnnotateImageResponse res : responses) {
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       DominantColorsAnnotation colors = res.getImagePropertiesAnnotation().getDominantColors();
       for (ColorInfo color : colors.getColorsList()) {
-        out.printf("fraction: %f\nr: %f, g: %f, b: %f\n", 
+        out.printf("fraction: %f\nr: %f, g: %f, b: %f\n",
             color.getPixelFraction(),
-            color.getColor().getRed(), 
-            color.getColor().getRed(), 
-            color.getColor().getRed());
+            color.getColor().getRed(),
+            color.getColor().getGreen(),
+            color.getColor().getBlue());
       }
     }
   }
-  
+
   /**
    * Detects whether the specified image has features you would want to moderate.
    * @param filePath The path to the file used for safe search detection.
    * @param out A {@link PrintStream} to write the results to.
-   * @throws IOException 
+   * @throws IOException on Input/Output errors.
    */
-  static public void detectSafeSearch(String filePath, PrintStream out) throws IOException {
+  public static void detectSafeSearch(String filePath, PrintStream out) throws IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    FileInputStream file = new FileInputStream(filePath);
-    ByteString imgBytes = ByteString.copyFrom(toByteArray(file));
-    
-    Image img = Image.newBuilder().setContent(imgBytes).build();    
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feat)
@@ -391,8 +367,11 @@ public class Detect{
     BatchAnnotateImagesResponse response = visionApi.batchAnnotateImages(requests);
     List<AnnotateImageResponse> responses = response.getResponsesList();
 
-    for (AnnotateImageResponse res : responses) {      
-      if (res.hasError()) out.printf("Error: %s\n", res.getError().getMessage());
+    for (AnnotateImageResponse res : responses) {
+      if (res.hasError()) {
+        out.printf("Error: %s\n", res.getError().getMessage());
+        return;
+      }
 
       SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
       out.printf("adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\n",
