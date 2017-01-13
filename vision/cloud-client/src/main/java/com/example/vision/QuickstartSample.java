@@ -50,15 +50,16 @@ public class QuickstartSample {
     // Instantiates a client
     ImageAnnotatorClient vision = ImageAnnotatorClient.create();
 
-    // The name of the image file to annotate
+    // The path to the image file to annotate
     String fileName = "./resources/wakeupcat.jpg";
 
-    List<AnnotateImageRequest> requests = new ArrayList<>();
-
+    // Reads the image file into memory
     Path path = Paths.get(fileName);
     byte[] data = Files.readAllBytes(path);
     ByteString imgBytes = ByteString.copyFrom(data);
 
+    // Builds the image annotation request
+    List<AnnotateImageRequest> requests = new ArrayList<>();
     Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.LABEL_DETECTION).build();
     AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
