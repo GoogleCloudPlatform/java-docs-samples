@@ -38,7 +38,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Detect{
+public class Detect {
 
   /**
    * Detects entities,sentiment and syntax in a document using the Natural Language API.
@@ -67,55 +67,56 @@ public class Detect{
     String command = args[0];
     String path = args.length > 1 ? args[1] : "";
 
+    Detect app = new Detect(ImageAnnotatorClient.create());
     if (command.equals("all-local")) {
-      detectFaces("resources/face_no_surprise.jpg", System.out);
-      detectLabels("resources/wakeupcat.jpg", System.out);
-      detectLandmarks("resources/landmark.jpg", System.out);
-      detectLogos("resources/logos.png", System.out);
-      detectText("resources/text.jpg", System.out);
-      detectProperties("resources/landmark.jpg", System.out);
-      detectSafeSearch("resources/wakeupcat.jpg", System.out);
+      detectFaces("resources/face_no_surprise.jpg", out);
+      detectLabels("resources/wakeupcat.jpg", out);
+      detectLandmarks("resources/landmark.jpg", out);
+      detectLogos("resources/logos.png", out);
+      detectText("resources/text.jpg", out);
+      detectProperties("resources/landmark.jpg", out);
+      detectSafeSearch("resources/wakeupcat.jpg", out);
     } else if (command.equals("faces")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectFaces(path, System.out);
+        detectFaces(path, out);
       }
     } else if (command.equals("labels")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectLabels(path, System.out);
+        detectLabels(path, out);
       }
     } else if (command.equals("landmarks")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectLandmarks(path, System.out);
+        detectLandmarks(path, out);
       }
     } else if (command.equals("logos")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectLogos(path, System.out);
+        detectLogos(path, out);
       }
     } else if (command.equals("text")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectText(path, System.out);
+        detectText(path, out);
       }
     } else if (command.equals("properties")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectProperties(path, System.out);
+        detectProperties(path, out);
       }
     } else if (command.equals("safe-search")) {
       if (path.startsWith("gs://")) {
         // TODO: See https://goo.gl/uWgYhQ
       } else {
-        detectSafeSearch(path, System.out);
+        detectSafeSearch(path, out);
       }
     }
   }
