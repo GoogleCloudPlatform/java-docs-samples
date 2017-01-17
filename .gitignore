@@ -48,3 +48,6 @@ tags
 
 # Gradle
 out/
+
+# OSX
+.DS_Store
