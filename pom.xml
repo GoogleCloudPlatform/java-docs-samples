@@ -118,6 +118,7 @@
         <module>translate</module>
         <module>translate/cloud-client</module>
         <module>unittests</module>
+        <module>vision/cloud-client</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>
         <module>vision/landmark-detection</module>
