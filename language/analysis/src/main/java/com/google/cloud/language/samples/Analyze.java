@@ -169,6 +169,7 @@ public class Analyze {
    * Gets {@link Entity}s from the string {@code text}.
    */
   public List<Entity> analyzeEntitiesText(String text) throws IOException {
+    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
@@ -182,6 +183,7 @@ public class Analyze {
    * Gets {@link Entity}s from the contents of the object at the given GCS {@code path}.
    */
   public List<Entity> analyzeEntitiesFile(String path) throws IOException {
+    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
         .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
@@ -195,6 +197,7 @@ public class Analyze {
    * Gets {@link Sentiment} from the string {@code text}.
    */
   public Sentiment analyzeSentimentText(String text) throws IOException {
+    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
@@ -205,6 +208,7 @@ public class Analyze {
    * Gets {@link Sentiment} from the contents of the object at the given GCS {@code path}.
    */
   public Sentiment analyzeSentimentFile(String path) throws IOException {
+    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
         .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
@@ -215,6 +219,7 @@ public class Analyze {
    * Gets {@link Token}s from the string {@code text}.
    */
   public List<Token> analyzeSyntaxText(String text) throws IOException {
+    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
         .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
@@ -228,6 +233,7 @@ public class Analyze {
    * Gets {@link Token}s from the contents of the object at the given GCS {@code path}.
    */
   public List<Token> analyzeSyntaxFile(String path) throws IOException {
+    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
         .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
