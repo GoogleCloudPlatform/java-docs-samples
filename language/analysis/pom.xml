@@ -30,7 +30,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>21.0</version>
     </dependency>
     <!-- [END dependencies] -->
 

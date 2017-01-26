@@ -37,7 +37,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>21.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
