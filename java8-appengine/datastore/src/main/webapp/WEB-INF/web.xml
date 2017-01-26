@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2016 Google Inc. All Rights Reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+  <servlet>
+    <servlet-name>guestbook-strong</servlet-name>
+    <servlet-class>com.example.appengine.GuestbookStrongServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guestbook-strong</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>guestbook</servlet-name>
+    <servlet-class>com.example.appengine.GuestbookServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>guestbook</servlet-name>
+    <url-pattern>/guestbook</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>people</servlet-name>
+    <servlet-class>com.example.appengine.ListPeopleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>people</servlet-name>
+    <url-pattern>/people</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>projection</servlet-name>
+    <servlet-class>com.example.appengine.ProjectionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>projection</servlet-name>
+    <url-pattern>/projection</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>stats</servlet-name>
+    <servlet-class>com.example.appengine.StatsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>stats</servlet-name>
+    <url-pattern>/stats</url-pattern>
+  </servlet-mapping>
+
+  <!-- Special handler to populate Datastore with default values. -->
+  <servlet>
+    <servlet-name>startup</servlet-name>
+    <servlet-class>com.example.appengine.StartupServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>startup</servlet-name>
+    <url-pattern>/_ah/start</url-pattern>
+  </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>profile</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee> <!-- Require HTTPS. -->
+    </user-data-constraint>
+    <auth-constraint>
+      <role-name>*</role-name> <!-- Require users to login. -->
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>profile</web-resource-name>
+      <url-pattern>/stats</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+</web-app>

@@ -1,0 +1,79 @@
+<!--
+Copyright 2015 Google Inc. All Rights Reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<!-- [START pom] -->
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <groupId>com.example.appengine</groupId>
+  <artifactId>appengine-helloworld-newplugins</artifactId>
+
+<!-- [START compiler] -->
+  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+  </properties>
+<!-- [END compiler] -->
+
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>doc-samples</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../..</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!-- for hot reload of the web application -->
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    <plugins>
+
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>0.1.2</version>
+        <configuration>
+          <!-- dev appserver configuration (standard environment only) -->
+          <!--
+          <devserver.host>127.0.0.1</devserver.port>
+          <devserver.port>8080</devserver.port>
+          -->
+          <!-- staging configuration (standard/flex-compat environment only) -->
+          <!--
+          <stage.enableJarSplitting>true</stage.enableJarSplitting>
+          -->
+          <!-- staging configuration (flexible environment only) -->
+          <!--
+          <stage.artifact>target/some-customer-artifact.jar</stage.artifact>
+          -->
+          <!-- deploy configuration -->
+          <deploy.promote>true</deploy.promote>
+          <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+<!-- [END pom] -->

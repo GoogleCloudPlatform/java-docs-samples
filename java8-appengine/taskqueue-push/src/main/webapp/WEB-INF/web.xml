@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright 2016 Google Inc. All Rights Reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+    <servlet>
+        <servlet-name>enqueue</servlet-name>
+        <servlet-class>com.example.appengine.taskqueue.push.Enqueue</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>worker</servlet-name>
+        <servlet-class>com.example.appengine.taskqueue.push.Worker</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>enqueue</servlet-name>
+        <url-pattern>/enqueue</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>worker</servlet-name>
+        <url-pattern>/worker</url-pattern>
+    </servlet-mapping>
+</web-app>
