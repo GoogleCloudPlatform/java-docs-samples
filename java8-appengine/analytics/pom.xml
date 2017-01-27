@@ -59,7 +59,7 @@
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.sdk.version}</version>
+        <version>${appengine.sdk.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
