@@ -36,6 +36,6 @@ curl -X GET \
 # Test multiply Endpoint (This is a greeting.)
 curl -X POST \
   -H "Content-Type: application/json" \
-  --data "{'message':'This is a greeting.'}" \
+  --data "{'message':'This is a greeting from instance ${GOOGLE_PROJECT_ID}'}." \
   "https://${GOOGLE_PROJECT_ID}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
-  grep "This is a greeting."
+  grep "This is a greeting from instance ${GOOGLE_PROJECT_ID}."
