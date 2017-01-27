@@ -15,6 +15,7 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <application>YOUR-PROJECT-ID</application>
   <version>YOUR-VERSION-ID</version>
+  <runtime>java8</runtime>
   <threadsafe>true</threadsafe>
   <env-variables>
     <env-var name="TWILIO_ACCOUNT_SID" value="YOUR-TWILIO-ACCOUNT-SID" />

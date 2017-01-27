@@ -8,9 +8,11 @@ import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.google.common.collect.Lists;
+import org.joda.time.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 public class TestUtils {
   static LocalDatastoreHelper datastore = LocalDatastoreHelper.create();
@@ -26,9 +28,9 @@ public class TestUtils {
 
   public static void stopDatastore() {
     try {
-      datastore.stop();
+      datastore.stop(Duration.millis(10000));
       Persistence.setDatastore(null);
-    } catch (IOException | InterruptedException e) {
+    } catch (IOException | InterruptedException | TimeoutException e) {
       throw new RuntimeException(e);
     }
   }

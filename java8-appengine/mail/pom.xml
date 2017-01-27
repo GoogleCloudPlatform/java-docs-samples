@@ -18,7 +18,7 @@ Copyright 2016 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-mail</artifactId>
+  <artifactId>appengine-mail-java8</artifactId>
 
   <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
   <parent>
@@ -31,7 +31,8 @@ Copyright 2016 Google Inc. All Rights Reserved.
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -54,8 +55,8 @@ Copyright 2016 Google Inc. All Rights Reserved.
         <version>3.3</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->

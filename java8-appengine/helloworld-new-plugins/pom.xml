@@ -19,12 +19,12 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-helloworld-newplugins</artifactId>
+  <artifactId>appengine-helloworld-java8-newplugins</artifactId>
 
 <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+  <properties> 
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 <!-- [END compiler] -->
 
@@ -38,8 +38,8 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>

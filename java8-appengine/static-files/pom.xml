@@ -18,7 +18,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-staticfiles</artifactId>
+  <artifactId>appengine-staticfiles-java8</artifactId>
 
   <parent>
     <artifactId>doc-samples</artifactId>
@@ -51,8 +51,8 @@ Copyright 2015 Google Inc. All Rights Reserved.
         <version>3.3</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
     </plugins>

@@ -18,7 +18,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-memcache</artifactId>
+  <artifactId>appengine-memcache-java8</artifactId>
 
   <parent>
     <artifactId>doc-samples</artifactId>
@@ -30,8 +30,8 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -64,8 +64,8 @@ Copyright 2015 Google Inc. All Rights Reserved.
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
     </plugins>
