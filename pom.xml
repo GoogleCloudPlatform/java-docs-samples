@@ -79,6 +79,7 @@
 <!-- Mostly Flexible below -->
         <module>bigquery</module>
         <module>bigquery/cloud-client</module>
+        <module>bigquery/rest</module>
         <module>compute/cmdline</module>
         <module>compute/error-reporting</module>
         <module>compute/mailjet</module>
