@@ -23,8 +23,6 @@ limitations under the License.
     <artifactId>helloendpoints</artifactId>
 
     <properties>
-        <app.id>helloendpoints</app.id>
-        <app.version>1</app.version>
         <!-- Uncomment to use Endpoints Frameworks v1.0 -->
         <!--
         <appengine.endpoints.version>1.9.48</appengine.endpoints.version>
@@ -35,11 +33,6 @@ limitations under the License.
         <endpoints.framework.version>2.0.0-beta.12</endpoints.framework.version>
         <javax.inject.version>1</javax.inject.version>
         <jdo.api.version>3.0.1</jdo.api.version>
-        <maven.compiler.version>3.5.1</maven.compiler.version>
-        <maven.compiler.source.version>1.7</maven.compiler.source.version>
-        <maven.compiler.target.version>1.7</maven.compiler.target.version>
-        <maven.resources.version>3.0.2</maven.resources.version>
-        <maven.war.version>2.4</maven.war.version>
         <mojo.versions.maven.version>2.1</mojo.versions.maven.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <servlet.api.version>2.5</servlet.api.version>
@@ -88,28 +81,6 @@ limitations under the License.
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resources.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                          <outputDirectory>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/webapp/WEB-INF</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.maven.version}</version>
@@ -147,32 +118,6 @@ limitations under the License.
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <version>${maven.compiler.version}</version>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                  <source>${maven.compiler.source.version}</source>
-                  <target>${maven.compiler.target.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven.war.version}</version>
-                <configuration>
-                    <webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>
-                    <webResources>
-                        <resource>
-                            <directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>
-                            <includes>
-                                <include>WEB-INF/*.discovery</include>
-                                <include>WEB-INF/*.api</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
             </plugin>
         </plugins>
     </build>
