@@ -11,19 +11,31 @@ Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
-	mvn clean package -DskipTests
+    mvn clean package -DskipTests
 
 You can then run a given `ClassName` via:
 
-	mvn exec:java -Dexec.mainClass=com.example.bigquery.ClassName \
-		-Dexec.args="any arguments to the app"
+    mvn exec:java -Dexec.mainClass=com.example.bigquery.ClassName \
+      -Dexec.args="any arguments to the app"
 
 ### Labeling a dataset
 
 [Label a dataset](https://cloud.google.com/bigquery/docs/labeling-datasets).
 
-	mvn exec:java -Dexec.mainClass=com.example.bigquery.LabelsSample \
-		-Dexec.args="project-id dataset-id label-key label-value"
+    mvn exec:java -Dexec.mainClass=com.example.bigquery.LabelsSample \
+      -Dexec.args="project-id dataset-id label-key label-value"
+
+## Testing
+
+To run the tests for this sample, first set the `GOOGLE_CLOUD_PROJECT`
+environment variable. The project should have a dataset named `test_dataset`
+with a table named `test_table`.
+
+    export GOOGLE_CLOUD_PROJECT=my-project
+
+Then run the tests with Maven.
+
+    mvn clean verify
 
 ## Products
 - [Google BigQuery][2]

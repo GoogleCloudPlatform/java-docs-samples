@@ -17,7 +17,6 @@
 package com.example.bigquery;
 
 public class Constants {
-  public static final String PROJECT_ID = "cloud-samples-tests";
-  public static final String DATASET_ID = "test_dataset_java";
-  public static final String TABLE_ID = "test_table_java";
+  public static final String DATASET_ID = "test_dataset";
+  public static final String TABLE_ID = "test_table";
 }

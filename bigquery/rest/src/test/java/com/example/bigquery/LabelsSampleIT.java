@@ -33,9 +33,11 @@ import java.io.PrintStream;
 public class LabelsSampleIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private String projectId;
 
   @Before
   public void setUp() {
+    projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -49,7 +51,7 @@ public class LabelsSampleIT {
   @Test
   public void testLabelDataset() throws Exception {
     LabelsSample.main(
-        new String[] {Constants.PROJECT_ID, Constants.DATASET_ID, "environment", "test"});
+        new String[] {projectId, Constants.DATASET_ID, "environment", "test"});
     String got = bout.toString();
     assertThat(got).contains("Updated label \"environment\" with value \"test\"");
   }
@@ -58,7 +60,7 @@ public class LabelsSampleIT {
   public void testLabelTable() throws Exception {
     LabelsSample.main(
         new String[] {
-            Constants.PROJECT_ID,
+            projectId,
             Constants.DATASET_ID,
             Constants.TABLE_ID,
             "data-owner",
