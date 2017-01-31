@@ -21,24 +21,24 @@ set -xe
 function TestEndpoints () {
   # Test getGreeting Endpoint (hello world!)
   curl -X GET \
-    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
+    "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
     grep "hello version-${2}"
 
   # Test getGreeting Endpoint (goodbye world!)
   curl -X GET \
-    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
+    "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
     grep "goodbye world!"
 
   # Test listGreeting Endpoint (hello world! and goodbye world!)
   curl -X GET \
-    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting" | \
+    "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting" | \
     grep "hello world!\|goodbye world!"
 
   # Test multiply Endpoint (This is a greeting.)
   curl -X POST \
     -H "Content-Type: application/json" \
     --data "{'message':'This is a greeting from instance ${2}'}." \
-    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
+    "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
     grep "This is a greeting from instance ${2}."
 }
 
@@ -47,7 +47,6 @@ function TestEndpoints () {
 sed -i'.bak' -e "s/hello world!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
 
 # Test with Maven
-# Attempt to clean and deploy generated archetype
 mvn clean appengine:deploy \
     -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
     -DskipTests=true
@@ -55,14 +54,10 @@ mvn clean appengine:deploy \
 # End-2-End tests
 TestEndpoints $GOOGLE_PROJECT_ID $GOOGLE_VERSION_ID
 
-# Clean and redploy using Gradle
+# Clean
 mvn clean
 
 # Test with Gradle
-# Delete Version $GOOGLE_VERSION_ID to test Gradle
-gcloud -q app services set-traffic default --splits 1=1
-gcloud -q app versions delete ${GOOGLE_VERSION_ID}
-
 # Update build.gradle
 sed -i'.bak' -e "s/deploy {/deploy {\n version='${GOOGLE_VERSION_ID}'/g" build.gradle
 
@@ -75,3 +70,5 @@ gradle appengineDeploy
 # End-2-End tests
 TestEndpoints $GOOGLE_PROJECT_ID "gradle-${GOOGLE_VERSION_ID}"
 
+# Clean
+gradle clean
