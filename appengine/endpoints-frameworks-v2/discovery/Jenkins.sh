@@ -22,7 +22,7 @@ function TestEndpoints () {
   # Test getGreeting Endpoint (hello world!)
   curl -X GET \
     "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
-    grep "hello version-${1}"
+    grep "hello version-${2}"
 
   # Test getGreeting Endpoint (goodbye world!)
   curl -X GET \
