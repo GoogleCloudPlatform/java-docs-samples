@@ -66,6 +66,12 @@ gcloud -q app versions delete ${GOOGLE_VERSION_ID}
 # Update build.gradle
 sed -i'.bak' -e "s/deploy {/deploy {\n version='${GOOGLE_VERSION_ID}'/g" build.gradle
 
+# Modify Greetings.java for Gradle
+sed -i'.bak' -e "s/hello version-${GOOGLE_VERSION_ID}!/hello version-gradle-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
+
 # Deploy Gradle
 gradle appengineDeploy
+
+# End-2-End tests
+TestEndpoints $GOOGLE_PROJECT_ID "gradle-${GOOGLE_VERSION_ID}"
 
