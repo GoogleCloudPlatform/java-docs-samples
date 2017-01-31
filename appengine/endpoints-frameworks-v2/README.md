@@ -9,8 +9,8 @@ Frameworks][1] project to the new [Cloud Endpoints Frameworks for App Engine][8]
 using a discovery document development process.
 
 The new Google Cloud Endpoints Frameworks for App Engine provides
-[additional functionality][3] using OpenAPI which is a paid service. It's
-recommended that you migrate projects using the prior version of [Cloud Endpoints Frameworks][1].
+[additional functionality][3] using OpenAPI which may require payment.
+It's recommended that you migrate projects using the prior version of [Cloud Endpoints Frameworks][1].
 
 
 [1]: https://cloud.google.com/appengine/docs/java/endpoints/
