@@ -97,6 +97,5 @@ To use the streaming method to transcribe a 16,000Hz sample audio file, run the 
 
 ```sh
 $ bin/speech-sample-streaming.sh --host=speech.googleapis.com --port=443 \
---file=resources/audio.raw --sampling=16000
+--sampling=16000
 ```
-
