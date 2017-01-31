@@ -18,24 +18,54 @@
 set -xe
 
 # Jenkins Test Script
-# Test getGreeting Endpoint (hello world!)
-curl -X GET \
-  "https://${GOOGLE_PROJECT_ID}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
-  grep "hello world!"
+function TestEndpoints () {
+  # Test getGreeting Endpoint (hello world!)
+  curl -X GET \
+    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
+    grep "hello version-${1}"
 
-# Test getGreeting Endpoint (goodbye world!)
-curl -X GET \
-  "https://${GOOGLE_PROJECT_ID}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
-  grep "goodbye world!"
+  # Test getGreeting Endpoint (goodbye world!)
+  curl -X GET \
+    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
+    grep "goodbye world!"
 
-# Test listGreeting Endpoint (hello world! and goodbye world!)
-curl -X GET \
-  "https://${GOOGLE_PROJECT_ID}.appspot.com/_ah/api/helloworld/v1/hellogreeting" | \
-  grep "hello world!\|goodbye world!"
+  # Test listGreeting Endpoint (hello world! and goodbye world!)
+  curl -X GET \
+    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting" | \
+    grep "hello world!\|goodbye world!"
 
-# Test multiply Endpoint (This is a greeting.)
-curl -X POST \
-  -H "Content-Type: application/json" \
-  --data "{'message':'This is a greeting from instance ${GOOGLE_VERSION_ID}'}." \
-  "https://${GOOGLE_PROJECT_ID}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
-  grep "This is a greeting from instance ${GOOGLE_VERSION_ID}."
+  # Test multiply Endpoint (This is a greeting.)
+  curl -X POST \
+    -H "Content-Type: application/json" \
+    --data "{'message':'This is a greeting from instance ${2}'}." \
+    "https://${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
+    grep "This is a greeting from instance ${2}."
+}
+
+# Jenkins provides values for GOOGLE_PROJECT_ID and GOOGLE_VERSION_ID
+# Update Greetings.java
+sed -i'.bak' -e "s/hello world!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
+
+# Test with Maven
+# Attempt to clean and deploy generated archetype
+mvn clean appengine:deploy \
+    -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
+    -DskipTests=true
+
+# End-2-End tests
+TestEndpoints $GOOGLE_PROJECT_ID $GOOGLE_VERSION_ID
+
+# Clean and redploy using Gradle
+mvn clean
+
+# Test with Gradle
+# Delete Version $GOOGLE_VERSION_ID to test Gradle
+gcloud -q app services set-traffic default --splits 1=1
+gcloud -q app versions delete ${GOOGLE_VERSION_ID}
+
+# Update build.gradle
+sed -i'.bak' -e "s/deploy {/deploy {\n version='${GOOGLE_VERSION_ID}'/g" build.gradle
+
+# Deploy Gradle
+gradle appengineDeploy
+
