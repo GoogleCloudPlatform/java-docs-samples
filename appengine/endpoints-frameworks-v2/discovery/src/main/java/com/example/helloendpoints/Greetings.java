@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
- //[START begin]
+//[START begin]
 package com.example.helloendpoints;
 
 import com.google.api.server.spi.config.Api;
@@ -26,7 +26,8 @@ import java.util.ArrayList;
 
 import javax.inject.Named;
 //[END begin]
- //[START api_def]
+
+//[START api_def]
 
 /**
  * Defines v1 of a helloworld API, which provides simple "greeting" methods.
@@ -46,6 +47,7 @@ public class Greetings {
     greetings.add(new HelloGreeting("goodbye world!"));
   }
 //[END api_def]
+
 //[START getgreetings]
 
   public HelloGreeting getGreeting(@Named("id") Integer id) throws NotFoundException {
@@ -60,6 +62,7 @@ public class Greetings {
     return greetings;
   }
 //[END getgreetings]
+
 //[START multiplygreetings]
 
   @ApiMethod(name = "greetings.multiply", httpMethod = "post")
@@ -73,7 +76,8 @@ public class Greetings {
     return response;
   }
 //[END multiplygreetings]
-//[START auth] 
+
+//[START auth]
 
   @ApiMethod(name = "greetings.authed", path = "hellogreeting/authed")
   public HelloGreeting authedGreeting(User user) {
