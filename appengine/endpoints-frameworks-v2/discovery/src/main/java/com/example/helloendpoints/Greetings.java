@@ -36,7 +36,7 @@ import javax.inject.Named;
     scopes = {Constants.EMAIL_SCOPE},
     clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
     audiences = {Constants.ANDROID_AUDIENCE}
-)
+    )
 public class Greetings {
 
   public static ArrayList<HelloGreeting> greetings = new ArrayList<HelloGreeting>();

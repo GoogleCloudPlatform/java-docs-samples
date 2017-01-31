@@ -22,6 +22,13 @@ limitations under the License.
     <groupId>com.example.helloendpoints</groupId>
     <artifactId>helloendpoints</artifactId>
 
+    <parent>
+        <artifactId>doc-samples</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <version>1.0.0</version>
+        <relativePath>../../..</relativePath>
+    </parent>
+
     <properties>
         <!-- Uncomment to use Endpoints Frameworks v1.0 -->
         <!--
@@ -29,10 +36,9 @@ limitations under the License.
         -->
         <!-- End of Endpoints Frameworks v1.0 -->
         <appengine.maven.version>1.0.0</appengine.maven.version>
-        <endpoints.framework.maven.version>1.0.0-beta2</endpoints.framework.maven.version>
+        <endpoints.maven.plugin.version>1.0.0-beta2</endpoints.maven.plugin.version>
         <endpoints.framework.version>2.0.0-beta.12</endpoints.framework.version>
         <javax.inject.version>1</javax.inject.version>
-        <jdo.api.version>3.0.1</jdo.api.version>
         <mojo.versions.maven.version>2.1</mojo.versions.maven.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <servlet.api.version>2.5</servlet.api.version>
@@ -69,11 +75,6 @@ limitations under the License.
             <artifactId>javax.inject</artifactId>
             <version>${javax.inject.version}</version>
         </dependency>
-        <dependency>
-            <groupId>javax.jdo</groupId>
-            <artifactId>jdo-api</artifactId>
-            <version>${jdo.api.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -91,7 +92,7 @@ limitations under the License.
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
-                <version>${endpoints.framework.maven.version}</version>
+                <version>${endpoints.maven.plugin.version}</version>
                 <configuration>
                     <webappDir>src/main/webapp</webappDir>
                     <discoveryDocDir>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF</discoveryDocDir>

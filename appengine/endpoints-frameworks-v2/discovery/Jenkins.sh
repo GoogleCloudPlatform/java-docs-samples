@@ -48,8 +48,7 @@ sed -i'.bak' -e "s/hello world!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/
 
 # Test with Maven
 mvn clean appengine:deploy \
-    -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
-    -DskipTests=true
+    -Dapp.deploy.version="${GOOGLE_VERSION_ID}"
 
 # End-2-End tests
 TestEndpoints $GOOGLE_PROJECT_ID $GOOGLE_VERSION_ID

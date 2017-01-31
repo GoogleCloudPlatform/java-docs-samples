@@ -20,7 +20,7 @@ public class HelloGreeting {
 
   public String message;
 
-  public HelloGreeting() {};
+  public HelloGreeting() {}
 
   public HelloGreeting(String message) {
     this.message = message;
