@@ -15,7 +15,7 @@ limitations under the License.
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloud.translate.samples</groupId>
+  <groupId>com.example.cloud.translate.samples</groupId>
   <artifactId>translate</artifactId>
   <version>1.0</version>
   <name>translate</name>
@@ -59,7 +59,7 @@ limitations under the License.
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.google.cloud.translate.samples.TranslateText</mainClass>
+              <mainClass>com.example.cloud.translate.samples.TranslateText</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

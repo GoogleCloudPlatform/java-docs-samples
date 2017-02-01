@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.samples;
+package com.example.cloud.translate.samples;
 
 import com.google.cloud.RetryParams;
 import com.google.cloud.translate.Detection;
