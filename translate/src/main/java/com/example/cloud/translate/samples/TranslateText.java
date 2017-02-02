@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.samples;
+package com.example.cloud.translate.samples;
 
 import com.google.cloud.RetryParams;
 import com.google.cloud.translate.Detection;
@@ -79,7 +79,7 @@ public class TranslateText {
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
 
     // Use translate `model` parameter with `base` and `nmt` options.
-    TranslateOption model = TranslateOption.model("base");
+    TranslateOption model = TranslateOption.model("nmt");
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);

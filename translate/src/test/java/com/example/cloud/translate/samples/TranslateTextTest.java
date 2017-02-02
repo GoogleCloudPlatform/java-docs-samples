@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.samples;
+package com.example.cloud.translate.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
