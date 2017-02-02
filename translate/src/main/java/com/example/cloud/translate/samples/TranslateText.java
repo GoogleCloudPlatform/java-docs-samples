@@ -79,7 +79,7 @@ public class TranslateText {
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
 
     // Use translate `model` parameter with `base` and `nmt` options.
-    TranslateOption model = TranslateOption.model("base");
+    TranslateOption model = TranslateOption.model("nmt");
 
     Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
     out.printf("Source Text:\n\tLang: %s, Text: %s\n", sourceLang, sourceText);
