@@ -44,6 +44,7 @@
     </prerequisites>
 
     <modules>
+        <!-- App Engine Standard -->
         <module>appengine/analytics</module>
         <module>appengine/appidentity</module>
         <module>appengine/channel</module>
@@ -76,16 +77,7 @@
         <module>appengine/urlfetch</module>
         <module>appengine/users</module>
 
-<!-- Mostly Flexible below -->
-        <module>bigquery</module>
-        <module>bigquery/cloud-client</module>
-        <module>bigquery/rest</module>
-        <module>compute/cmdline</module>
-        <module>compute/error-reporting</module>
-        <module>compute/mailjet</module>
-        <module>compute/sendgrid</module>
-        <module>datastore</module>
-        <module>datastore/cloud-client</module>
+        <!-- App Engine Flexible -->
         <module>flexible/analytics</module>
         <module>flexible/async-rest</module>
         <module>flexible/cloudsql</module>
@@ -102,6 +94,17 @@
         <module>flexible/sparkjava</module>
         <module>flexible/static-files</module>
         <module>flexible/twilio</module>
+
+        <module>bigquery</module>
+        <module>bigquery/cloud-client</module>
+        <module>bigquery/rest</module>
+        <module>compute/cmdline</module>
+        <module>compute/error-reporting</module>
+        <module>compute/mailjet</module>
+        <module>compute/sendgrid</module>
+        <module>datastore</module>
+        <module>datastore/cloud-client</module>
+        <module>kms</module>
         <module>language/analysis</module>
         <module>language/cloud-client</module>
         <module>logging</module>
