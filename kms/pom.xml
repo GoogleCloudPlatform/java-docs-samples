@@ -17,6 +17,17 @@
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudkms</artifactId>
       <version>v1beta1-rev51-1.18.0-rc</version>
+      <exclusions>
+        <exclusion> <!-- exclude an old version of Guava -->
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
