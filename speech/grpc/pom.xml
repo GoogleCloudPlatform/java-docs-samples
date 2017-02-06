@@ -56,21 +56,6 @@ limitations under the License.
 
   <profiles>
     <profile>
-      <id>staged</id>
-      <repositories>
-        <repository>
-          <id>snapshots-repo</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
-    </profile>
-    <profile>
       <id>jdk7</id>
       <activation>
         <jdk>1.7</jdk>
@@ -88,34 +73,15 @@ limitations under the License.
         <jdk.version>1.8</jdk.version>
       </properties>
     </profile>
-    <profile>
-      <id>fedora</id>
-      <activation>
-        <property>
-          <name>os.detected.classifier</name>
-          <value>os.detected.release.fedora</value>
-        </property>
-      </activation>
-      <properties>
-        <tcnative.classifier>${os.detected.classifier}-fedora</tcnative.classifier>
-      </properties>
-    </profile>
-    <profile>
-      <id>non-fedora</id>
-      <activation>
-        <property>
-          <name>os.detected.classifier</name>
-          <value>!os.detected.release.fedora</value>
-        </property>
-      </activation>
-      <properties>
-        <tcnative.classifier>${os.detected.classifier}</tcnative.classifier>
-      </properties>
-    </profile>
   </profiles>
 
   <!-- // [START dependency] -->
   <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-speech</artifactId>
+      <version>0.8.1-alpha</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -183,20 +149,6 @@ limitations under the License.
       <version>1.0.3</version>
     </dependency>
     <dependency>
-      <!--
--        It is recommended to use OpenSSL: Statically Linked Netty
--        for transport security.  These steps do not use the TLS that
--        comes with JDK (Jetty APLN/NPN), which is not
--        recommended. See
--        https://github.com/grpc/grpc-java/blob/master/SECURITY.md
--        for details.
--      -->
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork25</version>
-      <classifier>${tcnative.classifier}</classifier>
-    </dependency>
-    <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
@@ -216,60 +168,11 @@ limitations under the License.
       <name>Central Repository</name>
       <url>https://repo.maven.apache.org/maven2</url>
     </pluginRepository>
-    <pluginRepository>
-      <id>protoc-plugin</id>
-      <url>https://dl.bintray.com/sergei-ivanov/maven/</url>
-    </pluginRepository>
   </pluginRepositories>
   <!-- // [START os-maven-plugin] -->
   <build>
-    <extensions>
-      <extension>
-        <groupId>kr.motd.maven</groupId>
-        <artifactId>os-maven-plugin</artifactId>
-        <version>1.4.1.Final</version>
-      </extension>
-    </extensions>
     <!-- // [END os-maven-plugin] -->
     <plugins>
-      <plugin>
-        <groupId>org.xolstice.maven.plugins</groupId>
-        <artifactId>protobuf-maven-plugin</artifactId>
-        <version>${xolstice-protobuf-maven-plugin-version}</version>
-        <configuration>
-          <!--
-            The version of protoc must match protobuf-java. If you
-            don't depend on protobuf-java directly, you will be
-            transitively depending on the protobuf-java version that
-            grpc depends on.
-          -->
-          <protocArtifact>com.google.protobuf:protoc:3.0.0:exe:${os.detected.classifier}</protocArtifact>
-          <pluginId>grpc-java</pluginId>
-          <protoSourceRoot>${basedir}/src/main/java/third_party</protoSourceRoot>
-          <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc-protobuf-version}:exe:${os.detected.classifier}</pluginArtifact>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>compile-custom</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>${codehaus-versions-maven-plugin-version}</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>display-dependency-updates</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin-version}</version>
