@@ -80,7 +80,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.8.1-alpha</version>
+      <version>0.8.3-alpha</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
