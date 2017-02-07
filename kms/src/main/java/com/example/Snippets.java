@@ -454,7 +454,6 @@ public class Snippets {
   }
   // [END kms_remove_member_from_keyring_policy]
 
-  // [START kms_quickstart]
   /**
    * Prints all the keyrings in the given project.
    */
@@ -484,7 +483,6 @@ public class Snippets {
       System.out.println("No keyrings defined.");
     }
   }
-  // [END kms_quickstart]
 
   /**
    * Prints all the keys in the given key ring.
