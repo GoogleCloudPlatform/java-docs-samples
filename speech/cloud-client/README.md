@@ -24,3 +24,15 @@ You can then run a given `ClassName` via:
 ### Transcribe a local audio file (using the quickstart sample)
 
     mvn exec:java -Dexec.mainClass=com.example.speech.QuickstartSample
+
+### Transcribe a local audio file (using the recognize sample)
+```
+    mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
+    -Dexec.args="syncrecognize ./resources/audio.raw"
+```
+
+### Transcribe a remote audio file (using the recognize sample)
+```
+    mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
+    -Dexec.args="syncrecognize 'gs://cloud-samples-tests/speech/brooklyn.flac'"
+```
