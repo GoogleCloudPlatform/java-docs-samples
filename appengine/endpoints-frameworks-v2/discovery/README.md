@@ -99,7 +99,7 @@ provided [here][9].
 ## Known issues
 
 There's a [bug][13] where `<version>1</version>` is required in the
-[appengine-web.xml](discovery/src/main/webapp/WEB-INF/appengine-web.xml) to run
+[appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml) to run
 this sample locally. This will become optional in the near future.
 
 
