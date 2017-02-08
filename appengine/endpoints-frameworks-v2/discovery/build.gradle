@@ -24,9 +24,6 @@ buildscript {    // Configuration for building
 }
 
 repositories {   // repositories for Jar's you access in your code
-  maven {
-    url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Repository (if needed)
-  }
   mavenCentral()
   jcenter()
 }
