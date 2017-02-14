@@ -26,7 +26,7 @@ config_version: 3
 #
 # Name of the service configuration.
 #
-name: hellogrpc.endpoints.jeffs-test-deploy-1.cloud.goog
+name: hellogrpc.endpoints.MY_PROJECT_ID.cloud.goog
 
 #
 # API title to appear in the user interface (Google Cloud Console).
