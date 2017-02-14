@@ -37,6 +37,10 @@
 
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+
+        <spanner.test.instance>default-instance</spanner.test.instance>
+        <spanner.sample.database>mysample</spanner.sample.database>
+        <spanner.quickstart.database>quickstart-db</spanner.quickstart.database>
     </properties>
 
     <prerequisites>
@@ -112,6 +116,7 @@
         <module>monitoring/v2</module>
         <module>monitoring/v3</module>
         <module>pubsub/cloud-client</module>
+        <module>spanner/cloud-client</module>
         <module>speech/grpc</module>
         <module>storage/cloud-client</module>
         <module>storage/json-api</module>
