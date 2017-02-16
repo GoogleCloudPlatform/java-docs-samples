@@ -64,7 +64,7 @@ common_travis_dir="$(travis_changed_files_parent)"
 
 [ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
 
-mvn --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+./mvnw --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_travis_dir" ] || popd
 
