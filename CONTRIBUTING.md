@@ -1,5 +1,11 @@
 # How to become a contributor and submit your own code
 
+* [Contributor License Agreements](#Contributor-License-Agreements)
+* [Contributing a Patch](#Contributing-a-Patch)
+* [Build Tools](#build-tools)
+* [Integration Testing](#testing)
+* [Style](#Style)
+
 ## Contributor License Agreements
 
 We'd love to accept your sample apps and patches! Before we can take them, we
@@ -31,6 +37,35 @@ accept your pull requests.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. Submit a pull request.
 
+## Build Tools
+
+All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
+
+## Testing
+
+All samples must have Integration Tests (ie. They need to run against a real service) that run with
+`mvn verify` & `gradle build test`.  If we need to enable an API, let us know.
+
+Your `build.gradle` should have the following section:
+
+```groovy
+
+test {
+  useJUnit()
+  testLogging.showStandardStreams = true
+  beforeTest { descriptor ->
+     logger.lifecycle("test: " + descriptor + "  Running")
+  }
+
+  onOutput { descriptor, event ->
+     logger.lifecycle("test: " + descriptor + ": " + event.message )
+  }
+  afterTest { descriptor, result ->
+    logger.lifecycle("test: " + descriptor + ": " + result )
+  }
+}
+```
+
 ## Style
 
 Samples in this repository follow the [Google Java Style Guide][java-style].
@@ -47,7 +82,7 @@ tool or IntelliJ plugin.
 
 ### Running the Linter
 
-To run the checkstyle plugin on an existing sample, run
+To run the checkstyle & ErrorProne plugins on an existing sample, run
 
 ```shell
 mvn clean verify -DskipTests
@@ -73,3 +108,5 @@ uses the common Checkstyle configuration.
 ```
 
 This is just used for testing. The sample should build without a parent defined.
+
+
