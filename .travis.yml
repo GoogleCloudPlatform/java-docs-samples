@@ -44,6 +44,8 @@ before_install:
   || true
 # Cross project - GOOGLE_APPLICATION_CREDENTIALS uses cloud-docs-tests, but BQ uses G_C_P (argh!)
 - export GOOGLE_CLOUD_PROJECT=java-docs-samples-tests
+# Give Maven a bit more memory
+- export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx2g'
 # Skip the install step, since Maven will download the dependencies we need
 # when the test build runs.
 # http://stackoverflow.com/q/31945809/101923
