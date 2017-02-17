@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+sudo: true
 language: java
 jdk:
 - oraclejdk8
@@ -55,3 +56,5 @@ after_success:
 branches:
   only:
   - master
+  - java8-master
+
