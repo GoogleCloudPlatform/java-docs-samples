@@ -95,6 +95,18 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.19.1</version>
+        <configuration>
+          <systemPropertyVariables>
+            <spanner.test.instance>${spanner.test.instance}</spanner.test.instance>
+            <spanner.sample.database>${spanner.sample.database}</spanner.sample.database>
+            <spanner.quickstart.database>${spanner.quickstart.database}</spanner.quickstart.database>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

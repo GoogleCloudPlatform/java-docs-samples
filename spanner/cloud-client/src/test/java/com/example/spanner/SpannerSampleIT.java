@@ -39,16 +39,18 @@ import java.io.PrintStream;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
-  String instanceId = System.getProperty("spanner.test.instance");
-  String databaseId = System.getProperty("spanner.sample.database");
+  private final String instanceId = System.getProperty("spanner.test.instance");
+  private final String databaseId = System.getProperty("spanner.sample.database");
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
 
   private String runSample(String command) throws Exception {
+    PrintStream stdOut = System.out;
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
     SpannerSample.main(new String[]{command, instanceId, databaseId});
+    System.setOut(stdOut);
     return bout.toString();
   }
 

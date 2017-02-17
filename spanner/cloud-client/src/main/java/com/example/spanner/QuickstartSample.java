@@ -40,7 +40,7 @@ public class QuickstartSample {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
 
-    // Name of your database. Eg: projects/my-project/instances/instanceId/databases/databaseId
+    // Name of your instance & database.
     String instanceId = args[0];
     String databaseId = args[1];
     try {

@@ -37,6 +37,7 @@ public class QuickstartSampleIT {
   // This database needs to exist for test to pass.
   private String dbId = System.getProperty("spanner.quickstart.database");
   private ByteArrayOutputStream bout;
+  private PrintStream stdOut = System.out;
   private PrintStream out;
 
   @Before
@@ -48,7 +49,7 @@ public class QuickstartSampleIT {
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(stdOut);
   }
 
   @Test
