@@ -54,18 +54,21 @@ Creating a one-time transfer from Amazon S3 to Google Cloud Storage.
   1. Set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.
 1. In AwsRequester.java, fill in the user-provided constants.
 1. Compile the package with
-   ```bash
-   mvn compile
-   ```
+
+```bash
+mvn compile
+```
+
 1. Run the transfer job with
-   ```bash
-   mvn exec:java \
-       -Dexec.mainClass="com.google.cloud.storage.storagetransfer.samples.AwsRequester" \
-       -DprojectId=your-google-cloud-project-id \
-       -DjobDescription="Sample transfer job from S3 to GCS." \
-       -DawsSourceBucket=your-s3-bucket-name \
-       -DgcsSinkBucket=your-gcs-bucket-name
-   ```
+
+```bash
+mvn exec:java \
+   -Dexec.mainClass="com.google.cloud.storage.storagetransfer.samples.AwsRequester" \
+   -DprojectId=your-google-cloud-project-id \
+   -DjobDescription="Sample transfer job from S3 to GCS." \
+   -DawsSourceBucket=your-s3-bucket-name \
+   -DgcsSinkBucket=your-gcs-bucket-name
+```
   1. Note the job ID in the returned Transfer Job.
 
 ## Transfer data from a standard Cloud Storage bucket to a Cloud Storage Nearline bucket

@@ -52,28 +52,10 @@ limitations under the License.
     <grpc-protobuf-version>1.0.3</grpc-protobuf-version>
     <maven-compiler-plugin-version>3.6.0</maven-compiler-plugin-version>
     <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
-  </properties>
 
-  <profiles>
-    <profile>
-      <id>jdk7</id>
-      <activation>
-        <jdk>1.7</jdk>
-      </activation>
-      <properties>
-        <jdk.version>1.7</jdk.version>
-      </properties>
-    </profile>
-    <profile>
-      <id>jdk8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <properties>
-        <jdk.version>1.8</jdk.version>
-      </properties>
-    </profile>
-  </profiles>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
 
   <!-- // [START dependency] -->
   <dependencies>
@@ -156,34 +138,10 @@ limitations under the License.
   </dependencies>
   <!-- // [END dependency] -->
 
-  <pluginRepositories>
-    <pluginRepository>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </pluginRepository>
-  </pluginRepositories>
   <!-- // [START os-maven-plugin] -->
   <build>
     <!-- // [END os-maven-plugin] -->
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin-version}</version>
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>false</showDeprecation>
-          <compilerArgument>-Xlint:-options</compilerArgument>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
