@@ -1,5 +1,5 @@
 /*
-  Copyright 2016, Google, Inc.
+  Copyright 2017, Google, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,8 +18,9 @@ package com.example.pubsub;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.pubsub.PubSub;
-import com.google.cloud.pubsub.PubSubOptions;
+import com.google.cloud.pubsub.spi.v1.PublisherClient;
+import com.google.pubsub.v1.TopicName;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -35,34 +37,44 @@ import java.io.PrintStream;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartSampleIT {
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private String projectId;
 
-  private static final void deleteTestTopic() {
-    PubSub pubsub = PubSubOptions.getDefaultInstance().getService();
-    String topicName = "my-new-topic";
-    pubsub.deleteTopic(topicName);
+  private void deleteTestTopic(String projectId) throws Exception {
+    try (PublisherClient publisherClient = PublisherClient.create()) {
+      publisherClient.deleteTopic(TopicName.create(projectId, "my-new-topic"));
+    } catch (IOException e) {
+      System.err.println("Error deleting topic " + e.getMessage());
+    }
   }
 
   @Before
   public void setUp() {
-    deleteTestTopic();
-
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
+    projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+    assertThat(projectId).isNotNull();
+    try {
+      deleteTestTopic(projectId);
+    } catch (Exception e) {
+      //empty catch block
+    }
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws Exception {
     System.setOut(null);
-    deleteTestTopic();
+    deleteTestTopic(projectId);
   }
 
   @Test
   public void testQuickstart() throws Exception {
-    QuickstartSample.main();
+    QuickstartSample.main(projectId);
     String got = bout.toString();
-    assertThat(got).contains("Topic my-new-topic created.");
+    assertThat(got).contains("my-new-topic created.");
+    assertThat(got).contains("published with message ID");
   }
 }
