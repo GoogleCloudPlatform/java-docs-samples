@@ -19,9 +19,7 @@ Build your project with:
 ## Testing
 
 To run the tests for this sample, first set the `GOOGLE_CLOUD_PROJECT`
-environment variable. The project should have a dataset named `test_dataset`
-with a table named `test_table`.
-
+environment variable.
     export GOOGLE_CLOUD_PROJECT=my-project
 
 Then run the tests with Maven.
