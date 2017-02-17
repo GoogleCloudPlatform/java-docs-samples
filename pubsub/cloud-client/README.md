@@ -20,6 +20,7 @@ Build your project with:
 
 To run the tests for this sample, first set the `GOOGLE_CLOUD_PROJECT`
 environment variable.
+
     export GOOGLE_CLOUD_PROJECT=my-project
 
 Then run the tests with Maven.
