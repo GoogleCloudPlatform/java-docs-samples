@@ -24,6 +24,10 @@ if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
   SKIP_TESTS=true
 fi
 
+echo "***** REMOVE ME ******"
+grep project_id $GOOGLE_APPLICATION_CREDENTIALS
+echo "***** REMOVE ME ******"
+
 # Finds the closest parent dir that encompasses all changed files, and has a
 # pom.xml
 travis_changed_files_parent() {
@@ -64,7 +68,8 @@ common_travis_dir="$(travis_changed_files_parent)"
 
 [ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
 
-./mvnw --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+echo "***** REVERT THIS LINE - SKIP A PROJECT *****"
+./mvnw  -pl '!spanner-google-cloud-samples' --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_travis_dir" ] || popd
 
