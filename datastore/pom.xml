@@ -31,11 +31,17 @@
   <description>
     Example snippets for Datastore concepts and getting started documentation.
   </description>
+
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>0.8.1-beta</version>
+      <version>0.9.2-beta</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -49,15 +55,7 @@
   <build>
     <plugins>
 <!-- // [START maven]-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
+
 <!-- // [END maven]-->
 <!-- // [START exec] -->
       <plugin>

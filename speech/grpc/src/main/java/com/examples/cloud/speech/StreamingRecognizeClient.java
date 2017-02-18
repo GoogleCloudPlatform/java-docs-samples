@@ -124,7 +124,7 @@ public class StreamingRecognizeClient {
     DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
     if (!AudioSystem.isLineSupported(info)) {
       throw new RuntimeException(String.format(
-            "Device doesn't support LINEAR16 mono raw audio format at {}Hz", samplingRate));
+            "Device doesn't support LINEAR16 mono raw audio format at {%d}Hz", samplingRate));
     }
     try {
       TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);

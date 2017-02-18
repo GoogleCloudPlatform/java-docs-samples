@@ -15,12 +15,17 @@ Install [Maven](http://maven.apache.org/).
 Build your project with:
 
 	mvn clean package -DskipTests
-	
-You can then run a given `ClassName` via:
 
-	mvn exec:java -Dexec.mainClass=com.example.pubsub.ClassName \
-	    -DpropertyName=propertyValue \
-		-Dexec.args="any arguments to the app"
+## Testing
+
+To run the tests for this sample, first set the `GOOGLE_CLOUD_PROJECT`
+environment variable.
+
+    export GOOGLE_CLOUD_PROJECT=my-project
+
+Then run the tests with Maven.
+
+    mvn clean verify
 
 ### Creating a new topic (using the quickstart sample)
 

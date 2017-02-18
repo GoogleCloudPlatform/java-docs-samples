@@ -20,6 +20,11 @@
     </repository>
   </repositories>
 
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.google.apis</groupId>
@@ -67,20 +72,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-      <sourceDirectory>src/main/java</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
-        <configuration>
-          <source>5</source>
-          <target>5</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
