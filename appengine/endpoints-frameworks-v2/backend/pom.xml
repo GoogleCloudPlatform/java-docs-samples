@@ -31,8 +31,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <endpoints.framework.version>2.0.1</endpoints.framework.version>
-        <endpoints.management.version>1.0.1</endpoints.management.version>
+        <endpoints.framework.version>2.0.3</endpoints.framework.version>
+        <endpoints.management.version>1.0.2</endpoints.management.version>
 
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -50,17 +50,12 @@
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-framework</artifactId>
+            <artifactId>endpoints-framework-all</artifactId>
             <version>${endpoints.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-management-control-appengine</artifactId>
-            <version>${endpoints.management.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-framework-auth</artifactId>
+            <artifactId>endpoints-management-control-appengine-all</artifactId>
             <version>${endpoints.management.version}</version>
         </dependency>
     </dependencies>
