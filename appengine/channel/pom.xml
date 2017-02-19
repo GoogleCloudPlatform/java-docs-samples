@@ -26,7 +26,7 @@
         <relativePath>../..</relativePath>
     </parent>
     <properties>
-        <objectify.version>5.1.14</objectify.version>
+        <objectify.version>5.1.15</objectify.version>
     </properties>
     <!-- [START set_versions] -->
     <prerequisites>

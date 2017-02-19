@@ -21,7 +21,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <artifactId>appengine-images</artifactId>
 
   <properties>
-      <appengine.sdk.version>1.9.48</appengine.sdk.version>
+      <appengine.sdk.version>1.9.49</appengine.sdk.version>
   </properties>
 
   <parent>
