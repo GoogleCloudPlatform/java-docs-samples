@@ -66,7 +66,7 @@ common_travis_dir="$(travis_changed_files_parent)"
 [ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
 
 # Give Maven a bit more memory
-export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx600m -Xms300m'
+export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
 "${TRAVIS_BUILD_DIR}"/mvnw  --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_travis_dir" ] || popd
