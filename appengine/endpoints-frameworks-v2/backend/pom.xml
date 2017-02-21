@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-framework-all</artifactId>
+            <artifactId>endpoints-framework</artifactId>
             <version>${endpoints.framework.version}</version>
         </dependency>
         <dependency>
