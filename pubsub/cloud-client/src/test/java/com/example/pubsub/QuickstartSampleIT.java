@@ -75,6 +75,5 @@ public class QuickstartSampleIT {
     QuickstartSample.main(projectId);
     String got = bout.toString();
     assertThat(got).contains("my-new-topic created.");
-    assertThat(got).contains("published with message ID");
   }
 }
