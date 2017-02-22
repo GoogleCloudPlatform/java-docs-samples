@@ -2,7 +2,7 @@
 
 These samples demonstrate the use of the [Google Cloud Natural Language API][NL-Docs].
 
-[NL-Docs]: https://cloud.google.com/language/docs/
+[NL-Docs]: https://cloud.google.com/natural-language/docs/
 
 ## Prerequisites
 
