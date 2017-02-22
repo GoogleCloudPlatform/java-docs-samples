@@ -23,7 +23,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-bigquery</artifactId>
-      <version>v2-rev330-1.22.0</version>
+      <version>v2-rev334-1.22.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
