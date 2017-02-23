@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright 2016 Google Inc. All Rights Reserved.
+Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ Copyright 2016 Google Inc. All Rights Reserved.
     <artifactId>taskqueue</artifactId>
 
     <parent>
-      <artifactId>doc-samples</artifactId>
+      <artifactId>appengine-doc-samples</artifactId>
       <groupId>com.google.cloud</groupId>
       <version>1.0.0</version>
-      <relativePath>../../..</relativePath>
+      <relativePath>../..</relativePath>
     </parent>
     <dependencies>
         <!-- Compile/runtime dependencies -->

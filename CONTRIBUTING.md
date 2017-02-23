@@ -2,6 +2,7 @@
 
 * [Contributor License Agreements](#Contributor-License-Agreements)
 * [Contributing a Patch](#Contributing-a-Patch)
+* [Contributing a new sample](#Contributing-a-new-sample)
 * [Build Tools](#build-tools)
 * [Integration Testing](#testing)
 * [Style](#Style)
@@ -37,6 +38,17 @@ accept your pull requests.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. Submit a pull request.
 
+## Contributing a new sample
+
+1. App Engine Standard samples all go into `/appengine` (java 7) or `/java8-appengine` (Java 8) (if your contributing a group of samples,
+please put the App Engine Standard sample into `/appengine` and provide a link in both `README.md`'s for
+the project for the additional sample.
+
+1. App Engine Flexible samples all go into `/flexible`
+
+1. Technology samples go into the project root.
+
+
 ## Build Tools
 
 All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
@@ -65,6 +77,10 @@ test {
   }
 }
 ```
+
+### Keys and Secrets
+
+Please contact a Java DPE for instructions before adding to Travis.
 
 ## Style
 

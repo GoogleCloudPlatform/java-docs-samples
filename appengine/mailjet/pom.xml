@@ -1,5 +1,5 @@
 <!--
- Copyright 2015 Google Inc. All Rights Reserved.
+ Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@
   <artifactId>appengine-mailjet</artifactId>
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-doc-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <properties>
     <mailjet.version>4.0.5</mailjet.version>
