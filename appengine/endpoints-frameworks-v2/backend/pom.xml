@@ -1,5 +1,5 @@
 <!--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@
     <artifactId>echo</artifactId>
 
     <parent>
-        <artifactId>doc-samples</artifactId>
+        <artifactId>appengine-doc-samples</artifactId>
         <groupId>com.google.cloud</groupId>
         <version>1.0.0</version>
-        <relativePath>../../..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <properties>
@@ -106,21 +106,6 @@
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>display-dependency-updates</goal>
-                            <goal>display-plugin-updates</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
