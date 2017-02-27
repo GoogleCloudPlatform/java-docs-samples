@@ -35,9 +35,9 @@ limitations under the License.
         <appengine.endpoints.version>1.9.48</appengine.endpoints.version>
         -->
         <!-- End of Endpoints Frameworks v1.0 -->
-        <appengine.maven.version>1.0.0</appengine.maven.version>
+        <appengine.maven.version>1.2.0</appengine.maven.version>
         <endpoints.maven.plugin.version>1.0.0-beta2</endpoints.maven.plugin.version>
-        <endpoints.framework.version>2.0.0-beta.12</endpoints.framework.version>
+        <endpoints.framework.version>2.0.3</endpoints.framework.version>
         <javax.inject.version>1</javax.inject.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -95,18 +95,6 @@ limitations under the License.
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
                 <version>${endpoints.maven.plugin.version}</version>
-                <configuration>
-                    <webappDir>src/main/webapp</webappDir>
-                    <discoveryDocDir>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF</discoveryDocDir>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>discoveryDocs</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

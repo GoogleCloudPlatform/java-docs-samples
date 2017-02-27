@@ -96,12 +96,6 @@ provided [here][9].
 
     `gradle appengineDeploy`
 
-## Known issues
-
-There's a [bug][13] where `<version>1</version>` is required in the
-[appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml) to run
-this sample locally. This will become optional in the near future.
-
 
 [1]: https://cloud.google.com/appengine/docs/java/
 [2]: http://java.com/en/
@@ -115,4 +109,4 @@ this sample locally. This will become optional in the near future.
 [10]: https://github.com/GoogleCloudPlatform/endpoints-framework-maven-plugin
 [11]: https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin
 [12]: https://cloud.google.com/endpoints/docs/authenticating-users-frameworks
-[13]: https://github.com/cloudendpoints/endpoints-java/issues/43
+

@@ -3,10 +3,10 @@
 This directory contains Google Cloud Endpoints Frameworks for App Engine for
 App Engine Standard samples. The [`backend/`](backend/) directory contains the
 sample code for the [quickstart][4] for Cloud Endpoints Frameworks on App Engine
-using an OpenAPI development process. The [`discovery/`](discovery/) directory
-contains the sample code for [migrated][2] prior version of [Cloud Endpoints
-Frameworks][1] project to the new [Cloud Endpoints Frameworks for App Engine][8]
-using a discovery document development process.
+using an OpenAPI development process. The [`migration-example/`](migration-example/) directory
+contains the sample code for a [migrated][2] version of the [Cloud Endpoints
+Frameworks][1] sample project to the new [Cloud Endpoints Frameworks for App Engine][8]
+development process.
 
 The new Google Cloud Endpoints Frameworks for App Engine provides
 [additional functionality][3] using OpenAPI which may require payment.
