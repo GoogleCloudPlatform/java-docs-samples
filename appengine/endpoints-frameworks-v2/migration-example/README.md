@@ -1,11 +1,10 @@
 # Hello World Google Cloud Endpoints for App Engine with a discovery document
 
 This sample provides an example of a [migration][7] from the prior version of
-[Google Cloud Endpoints Frameworks][3] to new [Google Cloud Endpoints Frameworks for App Engine][8]
-while still using a discovery document. This sample contains comments of how to 
-use the prior Endpoints Frameworks as well. For clarity, the prior Endpoints
-Frameworks and the new Endpoints Frameworks are denoted as Endpoints Frameworks v1.0
-and Endpoints Frameworks v2.0 respectively.
+[Google Cloud Endpoints Frameworks][3] to new [Google Cloud Endpoints Frameworks for App Engine][8].
+This sample contains comments of how to use the prior Endpoints Frameworks as well.
+For clarity, the prior Endpoints Frameworks and the new Endpoints Frameworks are
+denoted as Endpoints Frameworks v1.0 and Endpoints Frameworks v2.0 respectively.
 
 Google Cloud Endpoints Frameworks v2.0 provides new functionality which may
 require payment and uses an OpenAPI specification instead of the discovery document.
@@ -46,7 +45,7 @@ provided [here][9].
     - You can read more about different user authentication supported [here][12].
 
 
-1. [Optional]: Use Cloud Endpoints Frameworks v2.0 Maven and Gradle discovery and
+1. [Optional]: Use Cloud Endpoints Frameworks v2.0 Maven and Gradle
    client library generation plugins with Cloud Endpoints Frameworks v1.0.
 
     - Uncomment `Endpoints Frameworks v1.0` sections and comment
