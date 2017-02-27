@@ -37,7 +37,7 @@ provided [here][9].
 1. [Optional]: User Authenticating with Google Accounts in other Applications Types
 
     - Inside [Constants.java](src/main/java/com/example/helloendpoints/Constants.java) you will find placeholders for Android
-      and iOS applications using Google Accounts client IDs registered in the
+      applications using Google Accounts client IDs registered in the
       [Credentials on Developers Console for OAuth 2.0 client IDs][6].
 
     - These client IDs are used when defining annotation for this sample API found in [Greetings.java](src/main/java/com/example/helloendpoints/Greetings.java).
