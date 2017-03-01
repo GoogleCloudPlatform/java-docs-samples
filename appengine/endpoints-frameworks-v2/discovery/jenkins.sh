@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2017 Google Inc.
 #
@@ -48,7 +48,8 @@ sed -i'.bak' -e "s/hello world!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/
 
 # Test with Maven
 mvn clean appengine:deploy \
-    -Dapp.deploy.version="${GOOGLE_VERSION_ID}"
+    -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
+    -Dapp.deploy.promote=false
 
 # End-2-End tests
 TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}"
@@ -57,17 +58,16 @@ TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}"
 mvn clean
 
 # Test with Gradle
-# Update build.gradle
-sed -i'.bak' -e "s/deploy {/deploy {\n version='${GOOGLE_VERSION_ID}'/g" build.gradle
-
 # Modify Greetings.java for Gradle
-sed -i'.bak' -e "s/hello version-${GOOGLE_VERSION_ID}!/hello version-gradle-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
+sed -i'.bak' -e "s/hello version-${GOOGLE_VERSION_ID}!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
 
 # Deploy Gradle
-gradle appengineDeploy
+gradle -Pappengine.deploy.promote=false \
+  -Pappengine.deploy.version="${GOOGLE_VERSION_ID}" \
+  appengineDeploy
 
 # End-2-End tests
-TestEndpoints "${GOOGLE_PROJECT_ID}" "gradle-${GOOGLE_VERSION_ID}"
+TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}"
 
 # Clean
 gradle clean
