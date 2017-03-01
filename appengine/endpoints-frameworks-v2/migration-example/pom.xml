@@ -30,14 +30,6 @@ limitations under the License.
     </parent>
 
     <properties>
-        <!-- Uncomment to use Endpoints Frameworks v1.0 -->
-        <!--
-        <appengine.endpoints.version>1.9.48</appengine.endpoints.version>
-        -->
-        <!-- End of Endpoints Frameworks v1.0 -->
-        <appengine.maven.version>1.2.0</appengine.maven.version>
-        <endpoints.maven.plugin.version>1.0.0-beta3</endpoints.maven.plugin.version>
-        <endpoints.framework.version>2.0.3</endpoints.framework.version>
         <javax.inject.version>1</javax.inject.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -53,18 +45,24 @@ limitations under the License.
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <!-- Uncomment to use Endpoints Frameworks v1.0 -->
-        <!--<dependency>
+        <!--
+        [START appengine-endpoints]
+        <dependency>
               <groupId>com.google.appengine</groupId>
               <artifactId>appengine-endpoints</artifactId>
-              <version>${appengine.endpoints.version}</version>
-        </dependency>-->
+              <version>1.9.48</version>
+        </dependency>
+        [END appengine-endpoints]
+        -->
         <!-- End of Endpoints Frameworks v1.0 -->
         <!-- Endpoints Frameworks v2.0 -->
+        <!-- [START endpoints-frameworks] -->
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework</artifactId>
-            <version>${endpoints.framework.version}</version>
+            <version>2.0.3</version>
         </dependency>
+        <!-- [END endpoints-frameworks] -->
         <!-- End of Endpoints Frameworks v2.0 -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -83,19 +81,23 @@ limitations under the License.
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
+            <!-- [START appengine-plugin] -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.maven.version}</version>
+                <version>1.2.0</version>
                 <configuration>
                     <!-- deploy configuration -->
                 </configuration>
             </plugin>
+            <!-- [END appegine-plugin] -->
+            <!-- [START endpoints-frameworks-plugin -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
-                <version>${endpoints.maven.plugin.version}</version>
+                <version>1.0.0-beta3</version>
             </plugin>
+            <!-- [END endpoints-frameworks-plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
