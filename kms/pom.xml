@@ -16,7 +16,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudkms</artifactId>
-      <version>v1beta1-rev51-1.18.0-rc</version>
+      <version>v1beta1-rev411-1.22.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.32</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
