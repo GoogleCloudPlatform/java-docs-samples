@@ -63,7 +63,7 @@ limitations under the License.
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.0.Beta6</version>
+      <version>2.0.0.Beta7</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
