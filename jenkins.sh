@@ -40,7 +40,7 @@ trap handle_error ERR
 shellcheck ./**/*.sh
 
 # Find all jenkins.sh's and run them.
-find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read path; do
+find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read -r path; do
   dir="${path%/jenkins.sh}"
   app_version="jenkins-${dir//[^a-z]/}"
   (
