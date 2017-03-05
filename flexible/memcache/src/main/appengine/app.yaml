@@ -4,10 +4,8 @@ env: flex
 handlers:
 - url: /.*
   script: this field is required, but ignored
-  secure: always
 
 # [START config]
 beta_settings:
     use_memcache_proxy: true
 # [END config]
-
