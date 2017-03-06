@@ -42,7 +42,9 @@ shellcheck ./**/*.sh
 # Find all jenkins.sh's and run them.
 find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read -r path; do
   dir="${path%/jenkins.sh}"
-  app_version="jenkins-${dir//[^a-z]/}"
+  # Use just the first letter of each subdir in version name
+  # shellcheck disable=SC2001
+  app_version="jenkins-$(echo "${dir#./}" | sed 's#\([a-z]\)[^/]*/#\1-#g')"
   (
   pushd "${dir}"
   # Need different app versions because flex can't deploy over an existing
