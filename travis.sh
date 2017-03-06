@@ -19,6 +19,7 @@ set -x
 set -o pipefail
 shopt -s globstar
 
+
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
   SKIP_TESTS=true
@@ -64,7 +65,9 @@ common_travis_dir="$(travis_changed_files_parent)"
 
 [ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
 
-mvn --batch-mode clean verify -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+# Give Maven a bit more memory
+export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
+"${TRAVIS_BUILD_DIR}"/mvnw  --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_travis_dir" ] || popd
 

@@ -1,5 +1,5 @@
 <!--
-Copyright 2016 Google Inc. All Rights Reserved.
+Copyright 2016 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -49,31 +49,13 @@ limitations under the License.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
-    <grpc-protobuf-version>1.0.3</grpc-protobuf-version>
+    <grpc-protobuf-version>1.1.2</grpc-protobuf-version>
     <maven-compiler-plugin-version>3.6.0</maven-compiler-plugin-version>
     <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
-  </properties>
 
-  <profiles>
-    <profile>
-      <id>jdk7</id>
-      <activation>
-        <jdk>1.7</jdk>
-      </activation>
-      <properties>
-        <jdk.version>1.7</jdk.version>
-      </properties>
-    </profile>
-    <profile>
-      <id>jdk8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <properties>
-        <jdk.version>1.8</jdk.version>
-      </properties>
-    </profile>
-  </profiles>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
 
   <!-- // [START dependency] -->
   <dependencies>
@@ -119,7 +101,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.32</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -131,12 +113,12 @@ limitations under the License.
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-auth</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
@@ -146,7 +128,7 @@ limitations under the License.
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -156,34 +138,10 @@ limitations under the License.
   </dependencies>
   <!-- // [END dependency] -->
 
-  <pluginRepositories>
-    <pluginRepository>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </pluginRepository>
-  </pluginRepositories>
   <!-- // [START os-maven-plugin] -->
   <build>
     <!-- // [END os-maven-plugin] -->
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin-version}</version>
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>false</showDeprecation>
-          <compilerArgument>-Xlint:-options</compilerArgument>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>

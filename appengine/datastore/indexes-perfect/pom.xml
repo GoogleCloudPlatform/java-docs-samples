@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@
 
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-doc-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../../..</relativePath>
+    <relativePath>../..</relativePath>
   </parent>
 
   <dependencies>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.32</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

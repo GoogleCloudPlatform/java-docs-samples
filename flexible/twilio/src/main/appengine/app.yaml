@@ -4,7 +4,6 @@ env: flex
 handlers:
 - url: /.*
   script: this field is required, but ignored
-  secure: always
 
 # [START env_variables]
 env_variables:
@@ -12,4 +11,3 @@ env_variables:
   TWILIO_AUTH_TOKEN: YOUR-TWILIO-AUTH-TOKEN
   TWILIO_NUMBER: YOUR-TWILIO-NUMBER
 # [END env_variables]
-
