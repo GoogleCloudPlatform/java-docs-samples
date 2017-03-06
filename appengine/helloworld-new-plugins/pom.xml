@@ -57,7 +57,7 @@ Copyright 2015 Google Inc.
         <configuration>
           <!-- dev appserver configuration (standard environment only) -->
           <!--
-          <devserver.host>127.0.0.1</devserver.port>
+          <devserver.host>127.0.0.1</devserver.host>
           <devserver.port>8080</devserver.port>
           -->
           <!-- staging configuration (standard/flex-compat environment only) -->
