@@ -19,6 +19,7 @@ shopt -s globstar
 
 app_version=""
 
+# shellcheck disable=SC2120
 delete_app_version() {
   if [ -n "${app_version}" ] || [ $# -gt 0 ]; then
     yes | gcloud --project="${GOOGLE_PROJECT_ID}" \
@@ -29,7 +30,7 @@ handle_error() {
   errcode=$? # Remember the error code so we can exit with it after cleanup
 
   # Clean up
-  delete_app_version
+  delete_app_version # shellcheck disable=SC2119
 
   exit ${errcode}
 }
@@ -39,7 +40,7 @@ trap handle_error ERR
 shellcheck ./**/*.sh
 
 # Find all jenkins.sh's and run them.
-find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read path; do
+find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read -r path; do
   dir="${path%/jenkins.sh}"
   app_version="jenkins-${dir//[^a-z]/}"
   (
