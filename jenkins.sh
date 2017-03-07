@@ -16,25 +16,24 @@
 
 set -xe
 shopt -s globstar
+# We spin up some subprocesses. Don't kill them on hangup
+trap '' HUP
 
 app_version=""
 
 # shellcheck disable=SC2120
 delete_app_version() {
-  if [ -n "${app_version}" ] || [ $# -gt 0 ]; then
-    yes | gcloud --project="${GOOGLE_PROJECT_ID}" \
-      app versions delete "${1-${app_version}}"
-  fi
+  yes | gcloud --project="${GOOGLE_PROJECT_ID}" \
+    app versions delete "${1}"
 }
 handle_error() {
   errcode=$? # Remember the error code so we can exit with it after cleanup
 
   # Clean up
-  delete_app_version # shellcheck disable=SC2119
+  delete_app_version "$@"
 
   exit ${errcode}
 }
-trap handle_error ERR
 
 # First, style-check the shell scripts
 shellcheck ./**/*.sh
@@ -45,16 +44,21 @@ find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read -r path; do
   # Use just the first letter of each subdir in version name
   # shellcheck disable=SC2001
   app_version="jenkins-$(echo "${dir#./}" | sed 's#\([a-z]\)[^/]*/#\1-#g')"
+
+  trap 'handle_error $app_version' ERR
   (
+  # If there's an error, clean up
+
   pushd "${dir}"
   # Need different app versions because flex can't deploy over an existing
   # version
   GOOGLE_VERSION_ID="${app_version}" /bin/bash ./jenkins.sh
-  echo "Return code: $?"
 
   # Clean up the app version in the background
-  nohup delete_app_version "${app_version}" &
+  delete_app_version "${app_version}" &
   )
+  # Clear the trap
+  trap - ERR
 done
 
 wait
