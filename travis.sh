@@ -19,6 +19,9 @@ set -x
 set -o pipefail
 shopt -s globstar
 
+echo "*******************************************************************"
+env
+echo "*******************************************************************"
 
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
