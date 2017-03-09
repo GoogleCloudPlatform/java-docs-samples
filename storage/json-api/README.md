@@ -36,7 +36,7 @@ Google Cloud Storage Service features a REST-based API that allows developers to
 Note that if it's been a while, you may need to login with gcloud.
 
    ```
-   gcloud auth login
+   gcloud auth application-default login
    ```
 
 ## Products
