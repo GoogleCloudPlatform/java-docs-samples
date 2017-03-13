@@ -90,7 +90,7 @@ limitations under the License.
                     <!-- deploy configuration -->
                 </configuration>
             </plugin>
-            <!-- [END appegine-plugin] -->
+            <!-- [END appengine-plugin] -->
             <!-- [START endpoints-frameworks-plugin] -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
