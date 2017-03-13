@@ -65,9 +65,13 @@ provided [here][9].
 
     `mvn clean compile`
 
-1. Run the application locally at [localhost:8080][5] by using:
+1. Run the application locally at [http://localhost:8080][5] by using:
 
     `mvn appengine:run`
+
+1. Explore local server's API explorer by browsing to:
+
+    [http://localhost:8080/_ah/api/explorer][13]
 
 1. Generate the client library located at `target/client-libs/helloworld-v1-java.zip`
    by using:
@@ -84,9 +88,13 @@ provided [here][9].
 
     `gradle clean compileJava`
 
-1. Run the application locally at [localhost:8080][5] by using:
+1. Run the application locally at [http://localhost:8080][5] by using:
 
     `gradle appengineRun`
+
+1. Explore local server's API explorer by browsing to:
+
+    [http://localhost:8080/_ah/api/explorer][13]
 
 1. Generate the client library located at `build/endpointsClientLibs/helloworld-v1-java.zip`
    by using:
@@ -102,7 +110,7 @@ provided [here][9].
 [2]: http://java.com/en/
 [3]: https://cloud.google.com/appengine/docs/java/endpoints/
 [4]: https://cloud.google.com/appengine/docs/java/tools/maven
-[5]: https://localhost:8080/
+[5]: http://localhost:8080/
 [6]: https://console.developers.google.com/project/_/apiui/credential
 [7]: https://cloud.google.com/appengine/docs/java/endpoints/migrating
 [8]: https://cloud.google.com/endpoints/docs/frameworks/java/about-cloud-endpoints-frameworks
@@ -110,4 +118,4 @@ provided [here][9].
 [10]: https://github.com/GoogleCloudPlatform/endpoints-framework-maven-plugin
 [11]: https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin
 [12]: https://cloud.google.com/endpoints/docs/authenticating-users-frameworks
-
+[13]: http://localhost:8080/_ah/api/explorer
