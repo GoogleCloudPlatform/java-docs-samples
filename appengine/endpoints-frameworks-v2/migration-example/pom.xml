@@ -91,13 +91,13 @@ limitations under the License.
                 </configuration>
             </plugin>
             <!-- [END appegine-plugin] -->
-            <!-- [START endpoints-frameworks-plugin -->
+            <!-- [START endpoints-frameworks-plugin] -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
                 <version>1.0.0-beta3</version>
             </plugin>
-            <!-- [END endpoints-frameworks-plugin -->
+            <!-- [END endpoints-frameworks-plugin] -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
