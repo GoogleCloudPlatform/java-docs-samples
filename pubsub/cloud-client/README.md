@@ -12,16 +12,16 @@ the [Google Cloud Client Library for Java][google-cloud-java].
 
 #### Setup
 - Install [Maven](http://maven.apache.org/) <p>
-- Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run the following CLI commands :
+- Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run :
 
 
-      gcloud auth application-default login
       gcloud config set project [YOUR PROJECT ID]
+
 
 - Build your project with:
 
 
-	   mvn clean package -DskipTests
+	  mvn clean package -DskipTests
 
 #### Testing
 
