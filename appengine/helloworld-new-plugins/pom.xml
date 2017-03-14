@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Google Inc. All Rights Reserved.
+Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ Copyright 2015 Google Inc. All Rights Reserved.
 
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-doc-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <dependencies>
@@ -57,16 +57,12 @@ Copyright 2015 Google Inc. All Rights Reserved.
         <configuration>
           <!-- dev appserver configuration (standard environment only) -->
           <!--
-          <devserver.host>127.0.0.1</devserver.port>
+          <devserver.host>127.0.0.1</devserver.host>
           <devserver.port>8080</devserver.port>
           -->
           <!-- staging configuration (standard/flex-compat environment only) -->
           <!--
           <stage.enableJarSplitting>true</stage.enableJarSplitting>
-          -->
-          <!-- staging configuration (flexible environment only) -->
-          <!--
-          <stage.artifact>target/some-customer-artifact.jar</stage.artifact>
           -->
           <!-- deploy configuration -->
           <deploy.promote>true</deploy.promote>

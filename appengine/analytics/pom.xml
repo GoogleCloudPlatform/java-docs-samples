@@ -1,5 +1,5 @@
 <!--
- Copyright 2015 Google Inc. All Rights Reserved.
+ Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@
   <artifactId>appengine-analytics</artifactId>
 
   <parent>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-doc-samples</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
 
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.2</version>
+      <version>4.5.3</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

@@ -1,0 +1,140 @@
+<!--
+ Copyright 2016 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <version>1.0.0</version>
+
+    <groupId>com.google.cloud</groupId>
+    <artifactId>appengine-doc-samples</artifactId>
+    <packaging>pom</packaging>
+
+    <!-- Parent POM defines common plugins and properties. -->
+    <parent>
+        <artifactId>doc-samples</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <version>1.0.0</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <properties>
+        <appengine.sdk.version>1.9.50</appengine.sdk.version>
+        <appengine.app.version>1</appengine.app.version>
+
+        <project.http.version>1.19.0</project.http.version>
+        <project.oauth.version>1.19.0</project.oauth.version>
+
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+    </properties>
+
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
+
+    <modules>
+        <!-- App Engine Standard -->
+        <module>analytics</module>
+        <module>appidentity</module>
+        <module>channel</module>
+        <module>cloudsql</module>
+        <module>datastore</module>
+        <module>datastore/indexes</module>
+        <module>datastore/indexes-exploding</module>
+        <module>datastore/indexes-perfect</module>
+        <module>endpoints-frameworks-v2/backend</module>
+        <module>firebase-event-proxy/gae-firebase-event-proxy</module>
+        <module>firebase-tictactoe</module>
+        <module>guestbook-objectify</module>
+        <module>helloworld</module>
+        <module>helloworld-new-plugins</module>
+        <module>images</module>
+        <module>logs</module>
+        <module>mailgun</module>
+        <module>mailjet</module>
+        <module>memcache</module>
+        <module>multitenancy</module>
+        <module>oauth2</module>
+        <module>requests</module>
+        <module>search</module>
+        <module>sendgrid</module>
+        <module>remote/remote-client</module>
+        <module>remote/remote-server</module>
+        <module>static-files</module>
+        <module>taskqueue-push</module>
+        <module>twilio</module>
+        <module>urlfetch</module>
+        <module>users</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+        <!-- Compile/runtime dependencies -->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${appengine.sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.7.14</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-matchers</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-testing</artifactId>
+            <version>${appengine.sdk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-stubs</artifactId>
+            <version>${appengine.sdk.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins> <!-- DISABLE ErrorProne - until we move to Java 8 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration combine.self="override" />
+      </plugin>
+    </plugins>
+  </build>
+</project>
