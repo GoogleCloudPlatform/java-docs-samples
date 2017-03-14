@@ -96,6 +96,9 @@ limitations under the License.
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
                 <version>1.0.0-beta3</version>
+                <configuration>
+                    <!-- plugin configuration -->
+                </configuration>
             </plugin>
             <!-- [END endpoints-frameworks-plugin] -->
             <plugin>
