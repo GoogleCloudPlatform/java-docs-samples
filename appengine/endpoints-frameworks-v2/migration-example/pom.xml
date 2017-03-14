@@ -85,7 +85,7 @@ limitations under the License.
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.2.0</version>
+                <version>1.2.1</version>
                 <configuration>
                     <!-- deploy configuration -->
                 </configuration>
