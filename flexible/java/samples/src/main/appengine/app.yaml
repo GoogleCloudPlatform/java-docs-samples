@@ -1,0 +1,31 @@
+runtime: java
+env: flex
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+
+use_memcache_proxy: true
+
+# [START env_variables]
+env_variables:
+  # [START sendgrid]
+  SENDGRID_API_KEY: YOUR-SENDGRID-API-KEY
+  SENDGRID_SENDER: YOUR-SENDGRID-SENDER
+  # [END sendgrid]
+
+  # [START twilio]
+  TWILIO_ACCOUNT_SID: YOUR-TWILIO-ACCOUNT-SID
+  TWILIO_AUTH_TOKEN: YOUR-TWILIO-AUTH-TOKEN
+  TWILIO_NUMBER: YOUR-TWILIO-NUMBER
+  # [END twilio]
+
+  # [START analytics]
+  GA_TRACKING_ID: YOUR-GA-TRACKING-ID
+  # [END analytics]
+
+  # [START upload]
+  BUCKET_NAME: YOUR-BUCKET-NAME
+  #[END upload]
+
+# [END env_variables]
