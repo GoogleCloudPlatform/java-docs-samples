@@ -19,6 +19,7 @@ package com.example.pubsub;
 // [START pubsub_quickstart]
 // Imports the Google Cloud client library
 
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.spi.v1.PublisherClient;
 import com.google.pubsub.v1.TopicName;
 
@@ -26,9 +27,14 @@ public class QuickstartSample {
 
   public static void main(String... args) throws Exception {
 
+    // Your Google Cloud Platform project ID
+    String projectId = ServiceOptions.getDefaultProjectId();
+
+    // Your topic ID
+    String topicId = "my-new-topic";
+
     // Create a new topic
-    String projectId = args[0];
-    TopicName topic = TopicName.create(projectId, "my-new-topic");
+    TopicName topic = TopicName.create(projectId, topicId);
     try (PublisherClient publisherClient = PublisherClient.create()) {
       publisherClient.createTopic(topic);
     }

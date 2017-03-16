@@ -14,7 +14,7 @@ First, complete the following steps:
 - Obtain an app key for the Google Places WebService API.
 - Download and install [the Beta build of the Google Cloud SDK](https://developers.google.com/cloud/sdk/#Quick_Start).
 - Install the Cloud SDK `app-engine-java` component.
-- Authenticate wth the gcloud SDK: gcloud auth login.
+- Authenticate wth the gcloud SDK: gcloud auth application-default login.
 - Install [Maven](http://maven.apache.org/download.cgi) if you haven't already.
 
 

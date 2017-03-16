@@ -18,6 +18,7 @@ package com.example.pubsub;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.spi.v1.PublisherClient;
 import com.google.pubsub.v1.TopicName;
 
@@ -40,11 +41,11 @@ public class QuickstartSampleIT {
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private String projectId;
 
-  private void deleteTestTopic(String projectId) throws Exception {
+  private void deleteTestTopic() throws Exception {
     try (PublisherClient publisherClient = PublisherClient.create()) {
-      publisherClient.deleteTopic(TopicName.create(projectId, "my-new-topic"));
+      publisherClient.deleteTopic(
+          TopicName.create(ServiceOptions.getDefaultProjectId(), "my-new-topic"));
     } catch (IOException e) {
       System.err.println("Error deleting topic " + e.getMessage());
     }
@@ -55,10 +56,8 @@ public class QuickstartSampleIT {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-    assertThat(projectId).isNotNull();
     try {
-      deleteTestTopic(projectId);
+      deleteTestTopic();
     } catch (Exception e) {
       //empty catch block
     }
@@ -67,12 +66,12 @@ public class QuickstartSampleIT {
   @After
   public void tearDown() throws Exception {
     System.setOut(null);
-    deleteTestTopic(projectId);
+    deleteTestTopic();
   }
 
   @Test
   public void testQuickstart() throws Exception {
-    QuickstartSample.main(projectId);
+    QuickstartSample.main();
     String got = bout.toString();
     assertThat(got).contains("my-new-topic created.");
   }

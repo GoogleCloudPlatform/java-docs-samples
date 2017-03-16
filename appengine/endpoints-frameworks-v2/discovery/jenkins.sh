@@ -22,16 +22,19 @@ function TestEndpoints () {
   # Test getGreeting Endpoint (hello world!)
   curl -X GET \
     "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
+    tee "$ERROR_OUTPUT_DIR/response.json" | \
     grep "hello version-${2}"
 
   # Test getGreeting Endpoint (goodbye world!)
   curl -X GET \
     "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
+    tee "$ERROR_OUTPUT_DIR/response.json" | \
     grep "goodbye world!"
 
   # Test listGreeting Endpoint (hello world! and goodbye world!)
   curl -X GET \
     "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting" | \
+    tee "$ERROR_OUTPUT_DIR/response.json" | \
     grep "hello world!\|goodbye world!"
 
   # Test multiply Endpoint (This is a greeting.)
@@ -39,6 +42,7 @@ function TestEndpoints () {
     -H "Content-Type: application/json" \
     --data "{'message':'This is a greeting from instance ${2}'}." \
     "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/1" | \
+    tee "$ERROR_OUTPUT_DIR/response.json" | \
     grep "This is a greeting from instance ${2}."
 }
 
