@@ -26,7 +26,7 @@ You can then run a given `ClassName` via:
 	    -DpropertyName=propertyValue \
 		-Dexec.args="arg1 'arg 2' arg3"
 
-### Analyze a string for sentiment (using the quickstart sample)
+### Write a time series to a metric (using the quickstart sample)
 
     mvn exec:java -Dexec.mainClass=com.example.monitoring.QuickstartSample \
         -DprojectId=YOUR_PROJECT_ID
