@@ -24,7 +24,7 @@
     <artifactId>appengine-multitenancy</artifactId>
 
     <properties>
-        <objectify.version>5.1.15</objectify.version>
+        <objectify.version>5.1.16</objectify.version>
         <guava.version>20.0</guava.version>
     </properties>
     <parent>
