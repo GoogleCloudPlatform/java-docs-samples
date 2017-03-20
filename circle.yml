@@ -1,0 +1,16 @@
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    chromedriver_path: /usr/local/bin/chromedriver
+dependencies:
+  pre:
+    - sudo mkdir /opt/webdriver/
+    - curl -LO https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz
+      && sudo tar -zxf geckodriver-*.tar.gz -C /opt/webdriver/
+    - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe"
+    - sudo apt-get update
+    - sudo apt-get install -t trusty-backports shellcheck
+test:
+  override:
+    - bash ./travis.sh
