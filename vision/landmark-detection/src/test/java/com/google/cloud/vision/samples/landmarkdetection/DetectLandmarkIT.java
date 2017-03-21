@@ -36,9 +36,11 @@ import java.util.List;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DetectLandmarkIT {
   private static final int MAX_RESULTS = 3;
-  private static final String LANDMARK_URI = "gs://cloud-samples-tests/vision/water.jpg";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
+  private static final String LANDMARK_URI = "gs://" + BUCKET + "/vision/water.jpg";
   private static final String PRIVATE_LANDMARK_URI =
-      "gs://cloud-samples-tests/vision/water-private.jpg";
+      "gs://" + BUCKET + "/vision/water-private.jpg";
 
   private DetectLandmark appUnderTest;
 

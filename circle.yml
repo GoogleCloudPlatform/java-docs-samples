@@ -11,6 +11,7 @@ dependencies:
     - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe"
     - sudo apt-get update
     - sudo apt-get install -t trusty-backports shellcheck
+    - sudo apt-get install expect
 test:
   override:
     - bash ./travis.sh

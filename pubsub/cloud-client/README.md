@@ -8,6 +8,9 @@ the [Google Cloud Client Library for Java][google-cloud-java].
 [pubsub]: https://cloud.google.com/pubsub/
 [google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java
 
+For more samples, see the samples in
+[google-cloud-java](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-examples/src/main/java/com/google/cloud/examples/pubsub).
+
 ## Quickstart
 
 #### Setup

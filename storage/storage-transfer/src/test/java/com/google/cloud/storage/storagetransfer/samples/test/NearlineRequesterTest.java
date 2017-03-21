@@ -30,6 +30,8 @@ import java.io.PrintStream;
 @RunWith(JUnit4.class)
 public class NearlineRequesterTest {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   /**
    * Tests whether NearlineRequester executes a request to create a TransferJob.
    */
@@ -38,10 +40,10 @@ public class NearlineRequesterTest {
 
     ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
     PrintStream outStream = new PrintStream(outBytes);
-    System.setProperty("projectId", "cloud-samples-tests");
+    System.setProperty("projectId", PROJECT_ID);
     System.setProperty("jobDescription", "Sample transfer job from GCS to GCS Nearline.");
-    System.setProperty("gcsSourceBucket", "cloud-samples-tests-storagetransfer-source");
-    System.setProperty("gcsNearlineSinkBucket", "cloud-storage-samples-tests-storagetransfer-sink");
+    System.setProperty("gcsSourceBucket", PROJECT_ID + "-storagetransfer-source");
+    System.setProperty("gcsNearlineSinkBucket", PROJECT_ID + "-storagetransfer-sink");
     System.setProperty("startDate", "2000-01-01");
     System.setProperty("startTime", "00:00:00");
 
