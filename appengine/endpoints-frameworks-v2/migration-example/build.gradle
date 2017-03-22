@@ -71,6 +71,15 @@ appengine {  // App Engine tasks configuration
   }
 }
 
+/* START endpoints-server]
+endpointsServer {
+  // Endpoints Framework Plugin server-side configuration
+}
+
+endpointsClient {
+  // Endpoints Framework Plugin client-side configuration
+}
+[END endpoints-server] */
 
 group   = 'com.example.helloendpoints' // Generated output GroupId
 version = '1'                          // Version in generated output
