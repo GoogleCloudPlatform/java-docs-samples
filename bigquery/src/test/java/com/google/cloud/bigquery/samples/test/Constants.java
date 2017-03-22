@@ -17,12 +17,13 @@
 package com.google.cloud.bigquery.samples.test;
 
 public class Constants {
-  public static final String PROJECT_ID = "cloud-samples-tests";
+  public static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  public static final String BUCKET = PROJECT_ID;
   public static final String DATASET_ID = "test_dataset_java";
   public static final String CURRENT_TABLE_ID = "test_table_java";
   public static final String NEW_TABLE_ID = "test_table_java_2";
-  public static final String CLOUD_STORAGE_INPUT_URI = "gs://cloud-samples-tests/data.csv";
-  public static final String CLOUD_STORAGE_OUTPUT_URI = "gs://cloud-samples-tests/output.csv";
+  public static final String CLOUD_STORAGE_INPUT_URI = "gs://" + BUCKET + "/data.csv";
+  public static final String CLOUD_STORAGE_OUTPUT_URI = "gs://" + BUCKET + "/output.csv";
   public static final String QUERY =
       "SELECT corpus FROM publicdata:samples.shakespeare GROUP BY corpus;";
 }
