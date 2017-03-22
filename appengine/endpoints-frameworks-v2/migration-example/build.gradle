@@ -71,7 +71,7 @@ appengine {  // App Engine tasks configuration
   }
 }
 
-/* START endpoints-server]
+/* [START endpoints-server]
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
 }
