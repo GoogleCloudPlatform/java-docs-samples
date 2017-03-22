@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START buildscript]
 buildscript {    // Configuration for building
   repositories {
     mavenCentral()
     jcenter()    // Bintray's repository - a fast Maven Central mirror & more
   }
   dependencies {
+    // App Engine Gradle plugin
     classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.1.0'
+
+    // Endpoints Frameworks Gradle plugin
     classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta6'
   }
 }
+// [END buildscript]
 
 repositories {   // repositories for Jar's you access in your code
   mavenCentral()
@@ -30,8 +35,14 @@ repositories {   // repositories for Jar's you access in your code
 
 apply plugin: 'java'                              // standard Java tasks
 apply plugin: 'war'                               // standard Web Archive plugin
+
+// [START apply_appengine]
 apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
+// [END apply_appengine]
+
+// [START apply_endpoints-framework-server]
 apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
+// [END apply_endpoints-framework-server]
 
 dependencies {
   providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
@@ -43,7 +54,9 @@ dependencies {
   // End of Endpoints Frameworks v1.0
 
   // Endpoints Frameworks v2.0
+  // [START endpoints-tools]
   compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.0.4'
+  // [END endpoints-tools]
   // End of Endpoints Frameworks v2.0
 }
 
@@ -57,6 +70,7 @@ appengine {  // App Engine tasks configuration
     }
   }
 }
+
 
 group   = 'com.example.helloendpoints' // Generated output GroupId
 version = '1'                          // Version in generated output
