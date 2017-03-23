@@ -77,12 +77,6 @@ endpointsServer {
 }
 [END endpoints-server] */
 
-/* [START endpoints-client]
-endpointsClient {
-  // Endpoints Framework Plugin client-side configuration
-}
-[END endpoints-client] */
-
 group   = 'com.example.helloendpoints' // Generated output GroupId
 version = '1'                          // Version in generated output
 
