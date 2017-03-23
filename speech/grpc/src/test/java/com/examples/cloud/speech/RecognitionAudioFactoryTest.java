@@ -33,6 +33,8 @@ import java.net.URI;
  */
 @RunWith(JUnit4.class)
 public class RecognitionAudioFactoryTest {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
 
   @Test
   public void verifyBytesInSizeFromLocalFile() throws IOException {
@@ -47,7 +49,7 @@ public class RecognitionAudioFactoryTest {
 
   @Test
   public void verifyBytesInSizeFromGoogleStorageFile() throws IOException {
-    String audioUri = "gs://cloud-samples-tests/speech/audio.raw";
+    String audioUri = "gs://" + BUCKET + "/speech/audio.raw";
 
     URI uri = URI.create(audioUri);
     RecognitionAudio audio = RecognitionAudioFactory.createRecognitionAudio(uri);

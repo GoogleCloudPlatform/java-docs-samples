@@ -33,6 +33,7 @@ public class CloudMonitoringAuthSampleTest {
       new ByteArrayOutputStream();
   private static final PrintStream REAL_OUT = System.out;
   private static final PrintStream REAL_ERR = System.err;
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   @Before
   public void setUp() {
@@ -56,7 +57,7 @@ public class CloudMonitoringAuthSampleTest {
 
   @Test
   public void testListTimeSeries() throws Exception {
-    CloudMonitoringAuthSample.main(new String[] { "cloud-samples-tests" });
+    CloudMonitoringAuthSample.main(new String[] { PROJECT_ID });
     String out = stdout.toString();
     assertThat(out).named("stdout").contains("Timeseries.list raw response:");
     assertThat(out)

@@ -20,13 +20,15 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.Test;
 
 public class StorageSampleTest {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   @Test
   public void testListBucket() throws Exception {
-    String listing = StorageSample.listBucket("cloud-samples-tests");
+    String listing = StorageSample.listBucket(PROJECT_ID);
     assertThat(listing)
         .containsMatch(
             ".*<ListBucketResult.*"
-            + "<Name>cloud-samples-tests</Name>.*"
+            + "<Name>" + PROJECT_ID + "</Name>.*"
             + "</ListBucketResult>.*");
   }
 }

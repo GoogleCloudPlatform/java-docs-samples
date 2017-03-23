@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AnalyzeIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
 
   private Analyze analyzeApp;
 
@@ -62,7 +64,7 @@ public class AnalyzeIT {
   @Test public void analyzeEntities_withEntitiesFile_containsGod() throws Exception {
       // Act
       List<Entity> entities =
-          analyzeApp.analyzeEntitiesFile("gs://cloud-samples-tests/natural-language/gettysburg.txt");
+          analyzeApp.analyzeEntitiesFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
       List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
 
       // Assert
@@ -83,7 +85,7 @@ public class AnalyzeIT {
   @Test public void analyzeSentimentFile_returnPositiveFile() throws Exception {
       // Act
       Sentiment sentiment =
-          analyzeApp.analyzeSentimentFile("gs://cloud-samples-tests/natural-language/"
+          analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
                   + "sentiment/bladerunner-pos.txt");
 
       // Assert
@@ -105,7 +107,7 @@ public class AnalyzeIT {
   @Test public void analyzeSentiment_returnNegativeFile() throws Exception {
       // Act
       Sentiment sentiment =
-          analyzeApp.analyzeSentimentFile("gs://cloud-samples-tests/natural-language/"
+          analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
                   + "sentiment/bladerunner-neg.txt");
 
       // Assert
@@ -116,7 +118,7 @@ public class AnalyzeIT {
   @Test public void analyzeSentiment_returnNeutralFile() throws Exception {
       // Act
       Sentiment sentiment =
-          analyzeApp.analyzeSentimentFile("gs://cloud-samples-tests/natural-language/"
+          analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
                   + "sentiment/bladerunner-neutral.txt");
 
       // Assert
@@ -141,7 +143,7 @@ public class AnalyzeIT {
   @Test public void analyzeSyntax_partOfSpeechFile() throws Exception {
       // Act
       List<Token> token =
-          analyzeApp.analyzeSyntaxFile("gs://cloud-samples-tests/natural-language/"
+          analyzeApp.analyzeSyntaxFile("gs://" + BUCKET + "/natural-language/"
                   + "sentiment/bladerunner-neutral.txt");
 
       List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())

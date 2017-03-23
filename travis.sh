@@ -20,6 +20,14 @@ set -o pipefail
 shopt -s globstar
 
 
+# Setup GCP application default credentials
+if [[ $GCLOUD_SERVICE_KEY ]]; then
+  echo "$GCLOUD_SERVICE_KEY" | \
+    base64 --decode --ignore-garbage > "${HOME}/google-cloud-service-key.json"
+  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/google-cloud-service-key.json"
+fi
+
+
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
   SKIP_TESTS=true
@@ -28,15 +36,16 @@ fi
 # Finds the closest parent dir that encompasses all changed files, and has a
 # pom.xml
 travis_changed_files_parent() {
-  [ -z "$TRAVIS_PULL_REQUEST" ] && return 0  # If we're not in a PR, forget it
+  # If we're not in a PR, forget it
+  [ -z "${TRAVIS_PULL_REQUEST-CI_PULL_REQUEST}" ] && return 0
 
   (
     set +e
 
-    changed="$(git diff --name-only "$TRAVIS_COMMIT" "$TRAVIS_BRANCH")"
+    changed="$(git diff --name-only "${TRAVIS_COMMIT-CIRCLE_SHA1}" "${TRAVIS_BRANCH-CIRCLE_BRANCH}")"
     if [ $? -ne 0 ]; then
       # Fall back to git head
-      changed="$(git diff --name-only "$(git rev-parse HEAD)" "$TRAVIS_BRANCH")"
+      changed="$(git diff --name-only "$(git rev-parse HEAD)" "${TRAVIS_BRANCH-CIRCLE_BRANCH}")"
       [ $? -ne 0 ] && return 0  # Give up. Just run everything.
     fi
 
@@ -67,7 +76,8 @@ common_travis_dir="$(travis_changed_files_parent)"
 
 # Give Maven a bit more memory
 export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
-"${TRAVIS_BUILD_DIR}"/mvnw  --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+"${TRAVIS_BUILD_DIR-$HOME/$CIRCLE_PROJECT_REPONAME}"/mvnw --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | \
+  egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_travis_dir" ] || popd
 
