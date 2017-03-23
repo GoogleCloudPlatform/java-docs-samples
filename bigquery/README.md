@@ -1,11 +1,25 @@
-# Getting Started with BigQuery and the Google Java API Client library
+# Getting Started with BigQuery
 
-Google's BigQuery Service features a REST-based API that allows developers to create applications to run ad-hoc queries
-on massive datasets. These sample Java applications demonstrate how to access the BigQuery API using the Google Java API
-Client Libraries.
+Google's BigQuery Service features a REST-based API that allows developers to
+create applications to run ad-hoc queries on massive datasets. These sample
+Java applications demonstrate how to access the BigQuery API.
 
-For more information, read the [Getting Started with BigQuery and the Google Java API Client
-library][1] codelab.
+## API Libraries
+
+We provide samples for multiple methods of accessing the APIs in case you need
+lower-level access, but the `cloud-client` samples are idiomatic and show the
+recommended way to access the API.
+
+- cloud-client (Preferred Option)
+  - This uses [Google Cloud Client
+    Libraries](http://googlecloudplatform.github.io/google-cloud-java/), and
+    the idiomatic and
+    [recommended](https://cloud.google.com/bigquery/docs/reference/libraries)
+    way to interact with BigQuery.
+- rest
+  - This uses BigQuery's RESTful API directly. Not recommended.
+- src
+  - This uses [Google API Client Libraries](https://developers.google.com/api-client-library/java/). Not recommended.
 
 ## Quickstart
 
@@ -26,11 +40,6 @@ You can then run a given `ClassName` via:
 ## Language
 - [Java][3]
 
-## Dependencies
-- [Google APIs Client Library for Java][4]
-
-[1]: https://cloud.google.com/bigquery/bigquery-api-quickstart
-[2]: https://developers.google.com/bigquery
+[2]: https://cloud.google.com/bigquery
 [3]: https://java.com
-[4]: http://code.google.com/p/google-api-java-client/
 

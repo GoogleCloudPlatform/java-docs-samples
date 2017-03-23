@@ -31,13 +31,14 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <pubsub.version>0.9.4-alpha</pubsub.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>0.9.4-alpha</version>
+      <version>${pubsub.version}</version>
     </dependency>
 
     <!-- Test dependencies -->

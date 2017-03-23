@@ -30,6 +30,8 @@ import java.io.PrintStream;
 @RunWith(JUnit4.class)
 public class AwsRequesterTest {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   /**
    * Tests whether AwsRequester executes a request to create a TransferJob.
    */
@@ -37,10 +39,10 @@ public class AwsRequesterTest {
   public void testRun() throws Exception {
     ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
     PrintStream outStream = new PrintStream(outBytes);
-    System.setProperty("projectId", "cloud-samples-tests");
+    System.setProperty("projectId", PROJECT_ID);
     System.setProperty("jobDescription", "Sample transfer job from S3 to GCS.");
     System.setProperty("awsSourceBucket", "cloud-samples-tests");
-    System.setProperty("gcsSinkBucket", "cloud-samples-tests-storagetransfer");
+    System.setProperty("gcsSinkBucket", PROJECT_ID + "-storagetransfer");
     System.setProperty("startDate", "2000-01-01");
     System.setProperty("startTime", "00:00:00");
 

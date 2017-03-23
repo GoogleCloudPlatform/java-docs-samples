@@ -34,5 +34,5 @@ You can then run a given `ClassName` via:
 ### Transcribe a remote audio file (using the recognize sample)
 ```
     mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
-    -Dexec.args="syncrecognize 'gs://cloud-samples-tests/speech/brooklyn.flac'"
+    -Dexec.args="syncrecognize 'gs://java-docs-samples-tests/speech/brooklyn.flac'"
 ```
