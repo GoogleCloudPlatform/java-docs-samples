@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -43,7 +42,7 @@ public class SyncQuerySampleIT {
   }
 
   @Test
-  public void testSyncQuery() throws IOException {
+  public void testSyncQuery() throws Exception {
     SyncQuerySample.run(
         out,
         "SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;",
@@ -55,7 +54,7 @@ public class SyncQuerySampleIT {
   }
 
   @Test
-  public void testSyncQueryLegacySql() throws IOException {
+  public void testSyncQueryLegacySql() throws Exception {
     SyncQuerySample.run(
         out,
         "SELECT corpus FROM [publicdata:samples.shakespeare] GROUP BY corpus;",

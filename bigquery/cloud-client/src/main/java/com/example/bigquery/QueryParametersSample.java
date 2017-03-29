@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A sample that demonstrates use of query parameters.
@@ -150,12 +149,11 @@ public class QueryParametersSample {
     }
 
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
     QueryResult result = response.getResult();
@@ -208,12 +206,11 @@ public class QueryParametersSample {
     }
 
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
     QueryResult result = response.getResult();
@@ -256,12 +253,11 @@ public class QueryParametersSample {
     }
 
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
     QueryResult result = response.getResult();
