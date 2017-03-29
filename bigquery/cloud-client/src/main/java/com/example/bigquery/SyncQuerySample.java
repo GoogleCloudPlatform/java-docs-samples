@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Runs a synchronous query against BigQuery.
@@ -40,7 +39,7 @@ public class SyncQuerySample {
   /**
    * Prompts the user for the required parameters to perform a query.
    */
-  public static void main(final String[] args) throws IOException {
+  public static void main(final String[] args) throws IOException, InterruptedException {
     String queryString = System.getProperty("query");
     if (queryString == null || queryString.isEmpty()) {
       System.out.println("The query property was not set, using default.");
@@ -82,7 +81,7 @@ public class SyncQuerySample {
       final PrintStream out,
       final String queryString,
       final long waitTime,
-      final boolean useLegacySql) throws IOException {
+      final boolean useLegacySql) throws IOException, InterruptedException {
     BigQuery bigquery =
         new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
 
@@ -95,20 +94,28 @@ public class SyncQuerySample {
             .build();
     QueryResponse response = bigquery.query(queryRequest);
 
+    // Wait for the job to finish (if the query takes more than 10 seconds to complete).
+    while (!response.jobCompleted()) {
+      Thread.sleep(1000);
+      response = bigquery.getQueryResults(response.getJobId());
+    }
+
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
     QueryResult result = response.getResult();
     Iterator<List<FieldValue>> iter = result.iterateAll();
     while (iter.hasNext()) {
       List<FieldValue> row = iter.next();
-      out.println(row.stream().map(val -> val.toString()).collect(Collectors.joining(",")));
+      for (FieldValue val : row) {
+        out.printf("%s,", val.toString());
+      }
+      out.printf("\n");
     }
   }
   // [END run]
