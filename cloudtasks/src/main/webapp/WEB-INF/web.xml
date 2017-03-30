@@ -1,0 +1,21 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.1">
+
+    <servlet>
+        <servlet-name>Index</servlet-name>
+        <servlet-class>com.example.cloud.tasks.appenginequeues.servlets.IndexServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Payload</servlet-name>
+        <servlet-class>com.example.cloud.tasks.appenginequeues.servlets.PayloadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Payload</servlet-name>
+        <url-pattern>/payload/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Index</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+</web-app>

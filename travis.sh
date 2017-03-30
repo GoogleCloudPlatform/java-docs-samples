@@ -74,6 +74,15 @@ common_travis_dir="$(travis_changed_files_parent)"
 
 [ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
 
+# Setup environment for Task tests
+export LOCATION_ID=us-central1
+export PULL_QUEUE_ID=my-pull-queue
+export APPENGINE_QUEUE_ID=my-appengine-queue
+cd cloudtasks/cloud-tasks-client
+mvn install
+cd ../..
+
+
 # Give Maven a bit more memory
 #export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
 export MAVEN_OPTS='-Xmx800m -Xms400m'

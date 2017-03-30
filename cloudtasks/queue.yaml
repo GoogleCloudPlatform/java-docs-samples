@@ -1,0 +1,7 @@
+queue:
+- name: my-pull-queue
+  mode: pull
+
+- name: my-appengine-queue
+  target: tasks-test
+  rate: 1/s

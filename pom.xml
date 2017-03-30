@@ -45,8 +45,11 @@
     </prerequisites>
 
     <modules>
+        <module>cloudtasks/cloud-tasks-client</module>
+
         <!-- App Engine Standard -->
         <module>appengine</module>
+        <module>cloudtasks</module>
 
         <!-- App Engine Flexible -->
         <module>flexible/analytics</module>
