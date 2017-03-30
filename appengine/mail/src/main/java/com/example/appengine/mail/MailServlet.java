@@ -68,6 +68,7 @@ public class MailServlet extends HttpServlet {
       msg.addRecipient(Message.RecipientType.TO,
                        new InternetAddress("user@example.com", "Mr. User"));
       msg.setSubject("Your Example.com account has been activated");
+      msg.setText("This is a test");
       Transport.send(msg);
     } catch (AddressException e) {
       // ...
