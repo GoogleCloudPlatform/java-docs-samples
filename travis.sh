@@ -78,6 +78,9 @@ common_travis_dir="$(travis_changed_files_parent)"
 export LOCATION_ID=us-central1
 export PULL_QUEUE_ID=my-pull-queue
 export APPENGINE_QUEUE_ID=my-appengine-queue
+cd cloudtasks/cloud-tasks-client
+mvn install
+cd ../..
 
 
 # Give Maven a bit more memory
