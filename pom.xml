@@ -45,7 +45,7 @@
     </prerequisites>
 
     <modules>
-        <module>cloudtasks/cloud-tasks-client</module>
+        <module>cloudtasks/cloud-client</module>
 
         <!-- App Engine Standard -->
         <module>appengine</module>
