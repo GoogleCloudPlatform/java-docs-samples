@@ -31,7 +31,7 @@
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
-        <appengine.sdk.version>1.9.50</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
+        <appengine.sdk.version>1.9.51</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
         <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
         <maven-war-plugin-version>3.0.0</maven-war-plugin-version>
     </properties>
@@ -46,7 +46,7 @@
         <dependency>
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
-          <version>2.5</version>
+          <version>3.0-alpha-1</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.7.19</version>
+            <version>2.7.21</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>

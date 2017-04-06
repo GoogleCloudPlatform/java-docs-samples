@@ -29,7 +29,7 @@
   <properties>
     <project.http.version>1.22.0</project.http.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <codehaus-exec-maven-plugin>1.5.0</codehaus-exec-maven-plugin>
+    <codehaus-exec-maven-plugin>1.6.0</codehaus-exec-maven-plugin>
     <maven-compiler-plugin-version>3.6.1</maven-compiler-plugin-version>
   </properties>
 
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev99-1.22.0</version>
+      <version>v1-rev104-1.22.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>

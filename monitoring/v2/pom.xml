@@ -44,7 +44,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudmonitoring</artifactId>
-      <version>v2beta2-rev67-1.22.0</version>
+      <version>v2beta2-rev70-1.22.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
