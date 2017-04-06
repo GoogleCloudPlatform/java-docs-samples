@@ -44,17 +44,17 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-datastore</artifactId>
-      <version>0.6.0</version>
-    </dependency>
 
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>0.6.0</version>
+      <version>0.11.1-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-datastore</artifactId>
+      <version>0.11.1-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 

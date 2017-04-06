@@ -9,31 +9,33 @@ git clone https://github.com/GoogleCloudPlatform/java-docs-samples
 cd java-docs-samples/flexible/pubsub
 ```
 
-## Create a topic and subscription
+## Setup
 
-Create a topic and subscription, which includes specifying the
-endpoint to which the Pub/Sub server should send requests:
+Make sure `gcloud` is installed and authenticated.
 
+Create a topic
 ```
 gcloud beta pubsub topics create <your-topic-name>
+```
+
+(Optional) Create a  subscription, which includes specifying the endpoint to which the Pub/Sub server should send requests.
+This is automatically done if the subscription by name : `<your-subscription-name>` does not exist.
+```
 gcloud beta pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
   --push-endpoint \
-  https://<your-project-id>.appspot.com/pubsub/push?token=<your-token> \
+  https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
   --ack-deadline 30
 ```
-
 ## Run
 
-Make sure `gcloud` is installed and authenticated. Set the following
-environment variables and run using shown Maven command. You can then
+Set the following environment variables and run using shown Maven command. You can then
 direct your browser to  `http://localhost:8080/`
 
 ```
-export PUBSUB_VERIFICATION_TOKEN=<your-token>
 export PUBSUB_TOPIC=<your-topic-name>
-export GOOGLE_CLOUD_PROJECT=<your-project-id>
-
+export PUBSUB_VERIFICATION_TOKEN=<your-verification-token>
+export PUBSUB_SUBSCRIPTION_ID=<your-subscription-id>
 mvn jetty:run
 ```
 
@@ -41,32 +43,18 @@ mvn jetty:run
 ### Send fake subscription push messages with:
 
 ```
-curl -i --data @sample_message.json
+curl -H "Content-Type: application/json" -i --data @sample_message.json
 "localhost:8080/pubsub/push?token=<your-token>"
 ```
 
 ## Deploy
 
-Put topic and token in `app.yaml`, then:
+Update the environment variables `PUBSUB_TOPIC`, `PUBSUB_VERIFICATION_TOKEN` and `PUBSUB_SUBSCRIPTION_ID` in `app.yaml`,
+then:
 
 ```
 mvn appengine:deploy
 ```
 
-## Test
-Tests use a live service and will create necessary topic and 
-subscription for tests. 
-
-Set the following environment variables before running tests.
-```
-export PUBSUB_VERIFICATION_TOKEN=<your-token>
-export PUBSUB_TOPIC=<your-test-topic-name>
-export PUBSUB_SUBSCRIPTION=<your-test-topic-subscription-name>
-export DATASTORE_TEST_ENTRY_KIND=<your-test-entry-id>
-export GOOGLE_CLOUD_PROJECT=<your-project-id>
-```
-
-Run tests in terminal using Maven
-```
-mvn verify
-```
+The home page of this application provides a form to publish messages and also provides a view of the most recent messages
+received over the push endpoint and persisted in storage.
