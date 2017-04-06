@@ -19,7 +19,7 @@ package com.example.pubsub;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsub.spi.v1.PublisherClient;
+import com.google.cloud.pubsub.spi.v1.TopicAdminClient;
 import com.google.pubsub.v1.TopicName;
 
 import org.junit.After;
@@ -43,8 +43,8 @@ public class QuickstartSampleIT {
   private PrintStream out;
 
   private void deleteTestTopic() throws Exception {
-    try (PublisherClient publisherClient = PublisherClient.create()) {
-      publisherClient.deleteTopic(
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(
           TopicName.create(ServiceOptions.getDefaultProjectId(), "my-new-topic"));
     } catch (IOException e) {
       System.err.println("Error deleting topic " + e.getMessage());
