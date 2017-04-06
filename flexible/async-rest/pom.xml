@@ -31,7 +31,7 @@
   <properties>
     <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
 
-    <appengine.maven.plugin>1.2.0</appengine.maven.plugin>
+    <appengine.maven.plugin>1.2.1</appengine.maven.plugin>
     <jetty.version>9.3.8.v20160314</jetty.version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
