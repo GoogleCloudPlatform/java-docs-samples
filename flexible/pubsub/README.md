@@ -18,8 +18,7 @@ Create a topic
 gcloud beta pubsub topics create <your-topic-name>
 ```
 
-(Optional) Create a  subscription, which includes specifying the endpoint to which the Pub/Sub server should send requests.
-This is automatically done if the subscription by name : `<your-subscription-name>` does not exist.
+Create a  subscription, which includes specifying the endpoint to which the Pub/Sub server should send requests.
 ```
 gcloud beta pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
