@@ -31,7 +31,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>1.2.0</appengine.maven.plugin>
+    <appengine.maven.plugin>1.2.1</appengine.maven.plugin>
     <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>0.10.0-beta</version>
+      <version>0.11.2-beta</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

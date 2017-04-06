@@ -34,7 +34,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <version>3.0-alpha-1</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
