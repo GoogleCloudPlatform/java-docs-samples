@@ -16,15 +16,22 @@
 
 package com.example.speech;
 
+import com.google.api.gax.core.ApiStreamObserver;
 import com.google.api.gax.grpc.OperationFuture;
-import com.google.cloud.speech.spi.v1beta1.SpeechClient;
-import com.google.cloud.speech.v1beta1.AsyncRecognizeResponse;
-import com.google.cloud.speech.v1beta1.RecognitionAudio;
-import com.google.cloud.speech.v1beta1.RecognitionConfig;
-import com.google.cloud.speech.v1beta1.RecognitionConfig.AudioEncoding;
-import com.google.cloud.speech.v1beta1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1beta1.SpeechRecognitionResult;
-import com.google.cloud.speech.v1beta1.SyncRecognizeResponse;
+import com.google.api.gax.grpc.StreamingCallable;
+import com.google.cloud.speech.spi.v1.SpeechClient;
+import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
+import com.google.cloud.speech.v1.RecognitionAudio;
+import com.google.cloud.speech.v1.RecognitionConfig;
+import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1.RecognizeResponse;
+import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1.SpeechRecognitionResult;
+import com.google.cloud.speech.v1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1.StreamingRecognitionResult;
+import com.google.cloud.speech.v1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1.StreamingRecognizeResponse;
+import com.google.common.util.concurrent.SettableFuture;
 import com.google.protobuf.ByteString;
 
 import java.io.IOException;
@@ -40,7 +47,7 @@ public class Recognize {
       System.out.printf(
           "\tjava %s \"<command>\" \"<path-to-image>\"\n"
           + "Commands:\n"
-          + "\tsyncrecognize | asyncrecognize\n"
+          + "\tsyncrecognize | asyncrecognize | streamrecognize\n"
           + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
           + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -62,7 +69,11 @@ public class Recognize {
       } else {
         asyncRecognizeFile(path);
       }
+    } else if (command.equals("streamrecognize")) {
+      streamingRecognizeFile(path);
+      //streamingRecognizeEasy(path);
     }
+
   }
 
   /**
@@ -80,14 +91,15 @@ public class Recognize {
     // Configure request with local raw PCM audio
     RecognitionConfig config = RecognitionConfig.newBuilder()
         .setEncoding(AudioEncoding.LINEAR16)
-        .setSampleRate(16000)
+        .setLanguageCode("en-US")
+        .setSampleRateHertz(16000)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setContent(audioBytes)
         .build();
 
     // Use blocking call to get audio transcript
-    SyncRecognizeResponse response = speech.syncRecognize(config, audio);
+    RecognizeResponse response = speech.recognize(config, audio);
     List<SpeechRecognitionResult> results = response.getResultsList();
 
     for (SpeechRecognitionResult result: results) {
@@ -111,14 +123,15 @@ public class Recognize {
     // Builds the request for remote FLAC file
     RecognitionConfig config = RecognitionConfig.newBuilder()
         .setEncoding(AudioEncoding.FLAC)
-        .setSampleRate(16000)
+        .setLanguageCode("en-US")
+        .setSampleRateHertz(16000)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setUri(gcsUri)
         .build();
 
     // Use blocking call for getting audio transcript
-    SyncRecognizeResponse response = speech.syncRecognize(config, audio);
+    RecognizeResponse response = speech.recognize(config, audio);
     List<SpeechRecognitionResult> results = response.getResultsList();
 
     for (SpeechRecognitionResult result: results) {
@@ -130,6 +143,7 @@ public class Recognize {
     speech.close();
   }
 
+  /*
   /**
    * Performs non-blocking speech recognition on raw PCM audio and prints
    * the transcription.
@@ -147,14 +161,16 @@ public class Recognize {
     // Configure request with local raw PCM audio
     RecognitionConfig config = RecognitionConfig.newBuilder()
         .setEncoding(AudioEncoding.LINEAR16)
-        .setSampleRate(16000)
+        .setLanguageCode("en-US")
+        .setSampleRateHertz(16000)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setContent(audioBytes)
         .build();
 
     // Use non-blocking call for getting file transcription
-    OperationFuture<AsyncRecognizeResponse> response = speech.asyncRecognizeAsync(config, audio);
+    OperationFuture<LongRunningRecognizeResponse> response =
+        speech.longRunningRecognizeAsync(config, audio);
     while (!response.isDone()) {
       System.out.println("Waiting for response...");
       Thread.sleep(200);
@@ -175,23 +191,25 @@ public class Recognize {
    * Performs non-blocking speech recognition on remote FLAC file and prints
    * the transcription.
    *
-   * @param gcsUri the path to the remote FLAC audio file to transcribe.
+   * @param gcsUri the path to the remote LINEAR16 audio file to transcribe.
    */
   public static void asyncRecognizeGcs(String gcsUri) throws Exception, IOException {
     // Instantiates a client with GOOGLE_APPLICATION_CREDENTIALS
     SpeechClient speech = SpeechClient.create();
 
-    // Configure remote file request for FLAC file
+    // Configure remote file request for Linear16
     RecognitionConfig config = RecognitionConfig.newBuilder()
         .setEncoding(AudioEncoding.FLAC)
-        .setSampleRate(16000)
+        .setLanguageCode("en-US")
+        .setSampleRateHertz(16000)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setUri(gcsUri)
         .build();
 
     // Use non-blocking call for getting file transcription
-    OperationFuture<AsyncRecognizeResponse> response = speech.asyncRecognizeAsync(config, audio);
+    OperationFuture<LongRunningRecognizeResponse> response =
+        speech.longRunningRecognizeAsync(config, audio);
     while (!response.isDone()) {
       System.out.println("Waiting for response...");
       Thread.sleep(200);
@@ -207,4 +225,86 @@ public class Recognize {
     }
     speech.close();
   }
+
+  /**
+   * Performs streaming speech recognition on raw PCM audio data.
+   *
+   * @param fileName the path to a PCM audio file to transcribe.
+   */
+  public static void streamingRecognizeFile(String fileName) throws Exception, IOException {
+    Path path = Paths.get(fileName);
+    byte[] data = Files.readAllBytes(path);
+
+    // Instantiates a client with GOOGLE_APPLICATION_CREDENTIALS
+    SpeechClient speech = SpeechClient.create();
+
+    // Configure request with local raw PCM audio
+    RecognitionConfig recConfig = RecognitionConfig.newBuilder()
+        .setEncoding(AudioEncoding.LINEAR16)
+        .setLanguageCode("en-US")
+        .setSampleRateHertz(16000)
+        .build();
+    StreamingRecognitionConfig config = StreamingRecognitionConfig.newBuilder()
+        .setConfig(recConfig)
+        .build();
+
+    class ResponseApiStreamingObserver<T> implements ApiStreamObserver<T> {
+      private final SettableFuture<List<T>> future = SettableFuture.create();
+      private final List<T> messages = new java.util.ArrayList<T>();
+
+      @Override
+      public void onNext(T message) {
+        messages.add(message);
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        future.setException(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        future.set(messages);
+      }
+
+      // Returns the SettableFuture object to get received messages / exceptions.
+      public SettableFuture<List<T>> future() {
+        return future;
+      }
+    }
+
+    ResponseApiStreamingObserver<StreamingRecognizeResponse> responseObserver =
+        new ResponseApiStreamingObserver<StreamingRecognizeResponse>();
+
+    StreamingCallable<StreamingRecognizeRequest,StreamingRecognizeResponse> callable =
+        speech.streamingRecognizeCallable();
+
+    ApiStreamObserver<StreamingRecognizeRequest> requestObserver =
+        callable.bidiStreamingCall(responseObserver);
+
+    // The first request must **only** contain the audio configuration:
+    requestObserver.onNext(StreamingRecognizeRequest.newBuilder()
+        .setStreamingConfig(config)
+        .build());
+
+    // Subsequent requests must **only** contain the audio data.
+    requestObserver.onNext(StreamingRecognizeRequest.newBuilder()
+        .setAudioContent(ByteString.copyFrom(data))
+        .build());
+
+    // Mark transmission as completed after sending the data.
+    requestObserver.onCompleted();
+
+    List<StreamingRecognizeResponse> responses = responseObserver.future().get();
+
+    for (StreamingRecognizeResponse response: responses) {
+      for (StreamingRecognitionResult result: response.getResultsList()) {
+        for (SpeechRecognitionAlternative alternative : result.getAlternativesList()) {
+          System.out.println(alternative.getTranscript());
+        }
+      }
+    }
+    speech.close();
+  }
+
 }
