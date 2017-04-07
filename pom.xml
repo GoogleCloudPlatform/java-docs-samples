@@ -66,7 +66,6 @@
         <module>flexible/static-files</module>
         <module>flexible/twilio</module>
 
-        <module>bigquery</module>
         <module>bigquery/cloud-client</module>
         <module>bigquery/rest</module>
         <module>compute/cmdline</module>
