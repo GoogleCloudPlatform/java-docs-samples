@@ -125,4 +125,14 @@ uses the common Checkstyle configuration.
 
 This is just used for testing. The sample should build without a parent defined.
 
+### Parsing Command-Line Arguments in Samples
+
+Simple command-line samples with only positional arguments should use the
+`args` argument to `main(String... args)` directly. A command-line sample
+which has optional parameters should use the [Apache Commons
+CLI](https://commons.apache.org/proper/commons-cli/index.html) library.
+
+Dataflow samples are an exception to this rule, since Dataflow has [its own
+method for setting custom
+options](https://cloud.google.com/dataflow/pipelines/specifying-exec-params)
 
