@@ -62,7 +62,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.11.2-alpha</version>
+      <version>0.12.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
