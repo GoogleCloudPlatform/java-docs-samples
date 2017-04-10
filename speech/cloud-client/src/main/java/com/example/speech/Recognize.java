@@ -66,12 +66,9 @@ public class Recognize {
     } else if (command.equals("asyncrecognize")) {
       if (path.startsWith("gs://")) {
         asyncRecognizeGcs(path);
-      } else {
-        asyncRecognizeFile(path);
       }
     } else if (command.equals("streamrecognize")) {
       streamingRecognizeFile(path);
-      //streamingRecognizeEasy(path);
     }
 
   }
@@ -133,50 +130,6 @@ public class Recognize {
     // Use blocking call for getting audio transcript
     RecognizeResponse response = speech.recognize(config, audio);
     List<SpeechRecognitionResult> results = response.getResultsList();
-
-    for (SpeechRecognitionResult result: results) {
-      List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-      for (SpeechRecognitionAlternative alternative: alternatives) {
-        System.out.printf("Transcription: %s%n", alternative.getTranscript());
-      }
-    }
-    speech.close();
-  }
-
-  /*
-  /**
-   * Performs non-blocking speech recognition on raw PCM audio and prints
-   * the transcription.
-   *
-   * @param fileName the path to a PCM audio file to transcribe.
-   */
-  public static void asyncRecognizeFile(String fileName) throws Exception, IOException {
-    // Instantiates a client with GOOGLE_APPLICATION_CREDENTIALS
-    SpeechClient speech = SpeechClient.create();
-
-    Path path = Paths.get(fileName);
-    byte[] data = Files.readAllBytes(path);
-    ByteString audioBytes = ByteString.copyFrom(data);
-
-    // Configure request with local raw PCM audio
-    RecognitionConfig config = RecognitionConfig.newBuilder()
-        .setEncoding(AudioEncoding.LINEAR16)
-        .setLanguageCode("en-US")
-        .setSampleRateHertz(16000)
-        .build();
-    RecognitionAudio audio = RecognitionAudio.newBuilder()
-        .setContent(audioBytes)
-        .build();
-
-    // Use non-blocking call for getting file transcription
-    OperationFuture<LongRunningRecognizeResponse> response =
-        speech.longRunningRecognizeAsync(config, audio);
-    while (!response.isDone()) {
-      System.out.println("Waiting for response...");
-      Thread.sleep(200);
-    }
-
-    List<SpeechRecognitionResult> results = response.get().getResultsList();
 
     for (SpeechRecognitionResult result: results) {
       List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
