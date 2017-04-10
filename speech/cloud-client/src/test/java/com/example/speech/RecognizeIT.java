@@ -70,13 +70,6 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testAsyncRecognizeFile() throws Exception {
-    Recognize.asyncRecognizeFile(fileName);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-  }
-
-  @Test
   public void testAsyncRecognizeGcs() throws Exception {
     Recognize.asyncRecognizeGcs(gcsPath);
     String got = bout.toString();
