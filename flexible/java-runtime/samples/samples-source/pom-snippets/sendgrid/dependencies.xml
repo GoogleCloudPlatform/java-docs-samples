@@ -1,0 +1,5 @@
+<dependency>
+    <groupId>com.sendgrid</groupId>
+    <artifactId>sendgrid-java</artifactId>
+    <version>2.2.2</version>
+</dependency>
