@@ -26,11 +26,12 @@ You can then run a given `ClassName` via:
 
     mvn exec:java -Dexec.mainClass=com.example.bigquery.QuickstartSample
 
-### Running a synchronous query
+### Running a query using standard SQL syntax
 
-    mvn exec:java -Dexec.mainClass=com.example.bigquery.SyncQuerySample \
-        -Dquery='SELECT corpus FROM `publicdata.samples.shakespeare` GROUP BY corpus;' \
-        -DuseLegacySql=false
+    mvn exec:java -Dexec.mainClass=com.example.bigquery.QuerySample \
+        -Dexec.args=' \
+            --query="SELECT corpus FROM `bigquery-public-data.samples.shakespeare` GROUP BY corpus;" \
+            --runStandardSqlQuery'
 
 ### Running the simple app example
 

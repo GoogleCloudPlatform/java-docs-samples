@@ -31,9 +31,7 @@ import org.junit.runners.JUnit4;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-/**
- * Tests for quickstart sample.
- */
+/** Tests for quickstart sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartSampleIT {
