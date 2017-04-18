@@ -27,17 +27,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// [START publish]
 @WebServlet(name = "Publish with PubSub", value = "/pubsub/publish")
 public class PubSubPublish extends HttpServlet {
-
-  private Publisher publisher;
-
-  public PubSubPublish() {
-  }
-
-  PubSubPublish(Publisher publisher) {
-    this.publisher = publisher;
-  }
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -57,12 +49,27 @@ public class PubSubPublish extends HttpServlet {
           PubsubMessage.newBuilder().setData(ByteString.copyFromUtf8(payload)).build();
 
       publisher.publish(pubsubMessage);
+      // redirect to home page
       resp.sendRedirect("/");
+      // [END publish]
     } catch (Exception e) {
       resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
+  // ...
+// [END publish]
+
+  private Publisher publisher;
+
+  public PubSubPublish() {
+  }
+
+  PubSubPublish(Publisher publisher) {
+    this.publisher = publisher;
+  }
 }
+
+
 
 

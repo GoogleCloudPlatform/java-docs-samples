@@ -84,3 +84,4 @@ public class MessageRepositoryImpl implements MessageRepository {
     return DatastoreOptions.getDefaultInstance().getService();
   }
 }
+
