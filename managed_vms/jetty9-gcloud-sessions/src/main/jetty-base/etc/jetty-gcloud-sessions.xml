@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+  <!-- ============================================================================================== -->
+  <!-- GCloud configuration.                                                                          -->
+  <!-- This replaces the file in jetty releases < 9.3.8 with a fix to extract the worker name from    -->
+  <!-- the GAE_MODULE_INSTANCE env variable.  This can be removed from jetty-9.3.8 onwards.           -->
+  <!-- ============================================================================================== -->
+  <New id="gconf" class="org.eclipse.jetty.gcloud.session.GCloudConfiguration">
+    <!-- To contact remote gclouddatastore set the following properties in start.ini -->
+    <!-- Either set jetty.gcloudSession.projectId or use system property/env var DATASTORE_DATASET-->
+    <Set name="projectId"><Property name="jetty.gcloudSession.projectId"/></Set>
+    <Set name="p12File"><Property name="jetty.gcloudSession.p12File"/></Set>
+    <Set name="serviceAccount"><Property name="jetty.gcloudSession.serviceAccount"/></Set>
+    <Set name="password"><Property name="jetty.gcloudSession.password"/></Set>
+  </New>
+
+  <!-- ===================================================================== -->
+  <!-- Configure a GCloudSessionIdManager                                    -->
+  <!-- ===================================================================== -->
+  <Set name="sessionIdManager">
+    <New id="idMgr" class="org.eclipse.jetty.gcloud.session.GCloudSessionIdManager">
+      <Arg>
+        <Ref id="Server"/>
+      </Arg>
+      <Set name="workerName"><Property name="jetty.gcloudSession.workerName"><Default>node<Env name="GAE_MODULE_INSTANCE" default="0"/></Default></Property></Set>
+      <Set name="config"><Ref id="gconf"/></Set>
+    </New>
+  </Set>
+
+</Configure>

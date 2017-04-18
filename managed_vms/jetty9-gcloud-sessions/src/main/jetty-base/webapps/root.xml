@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+
+<Configure id="testWebapp" class="org.eclipse.jetty.webapp.WebAppContext">
+
+  <Set name="contextPath">/</Set>
+  <Set name="war"><Property name="jetty.webapps" default="."/>/root.war</Set>
+
+  <Ref id="Server">
+    <Call id="idMgr" name="getSessionIdManager"/>
+  </Ref>
+   
+  <Set name="sessionHandler">
+    <New class="org.eclipse.jetty.server.session.SessionHandler">
+      <Arg>
+	<New id="mgr" class="org.eclipse.jetty.gcloud.session.GCloudSessionManager">
+	  <Set name="sessionIdManager">
+	    <Ref id="idMgr"/>
+	  </Set>
+	  <Set name="scavengeIntervalSec">600</Set>
+	  <Set name="staleIntervalSec">1</Set>
+	</New>
+      </Arg>
+    </New>
+  </Set>
+</Configure>
