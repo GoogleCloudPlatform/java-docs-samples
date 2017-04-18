@@ -21,8 +21,8 @@ handlers:
 
 # [START env_variables]
 env_variables:
-  PUBSUB_TOPIC: test-topic-1
-  PUBSUB_VERIFICATION_TOKEN: verification-token-123234
-  PUBSUB_SUBSCRIPTION_NAME : subscription-name-1
+  PUBSUB_TOPIC: <your-topic-name>
+  PUBSUB_VERIFICATION_TOKEN: <your-verification-token>
+  PUBSUB_SUBSCRIPTION_NAME : <your-subscription-id>
 # [END env_variables]
 # [END appyaml]

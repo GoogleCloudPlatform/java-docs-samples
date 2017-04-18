@@ -18,7 +18,7 @@ Create a topic
 gcloud beta pubsub topics create <your-topic-name>
 ```
 
-Create a  subscription, which includes specifying the endpoint to which the Pub/Sub server should send requests.
+Create a subscription, which includes specifying the endpoint to which the Pub/Sub server should send requests.
 ```
 gcloud beta pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
@@ -29,7 +29,7 @@ gcloud beta pubsub subscriptions create <your-subscription-name> \
 ## Run
 
 Set the following environment variables and run using shown Maven command. You can then
-direct your browser to  `http://localhost:8080/`
+direct your browser to `http://localhost:8080/`
 
 ```
 export PUBSUB_TOPIC=<your-topic-name>

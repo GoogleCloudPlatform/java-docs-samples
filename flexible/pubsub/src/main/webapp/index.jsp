@@ -12,7 +12,7 @@
           <input id="submit"  type="submit" value="Send" />
 </form>
 <h3> Last received messages </h3>
-<%! List<Message> messages = MessageRepository.getInstance().retrieve(10); %>
+<%! List<Message> messages = MessageRepository.retrieve(10); %>
 <table>
   <tr>
   <td>Id</td>

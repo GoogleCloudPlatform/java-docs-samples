@@ -18,22 +18,20 @@ package com.example.flexible.pubsub;
  * persisted in storage.
  */
 public class Message {
-  private String id;
+  private String messageId;
   private String publishTime;
   private String data;
 
-  public Message() {}
-
-  public Message(String id) {
-    this.id = id;
+  public Message(String messageId) {
+    this.messageId = messageId;
   }
 
-  public String getId() {
-    return id;
+  public String getMessageId() {
+    return messageId;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
   }
 
   public String getPublishTime() {
@@ -52,3 +50,4 @@ public class Message {
     this.data = data;
   }
 }
+
