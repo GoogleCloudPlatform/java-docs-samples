@@ -30,7 +30,6 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /** A sample that demonstrates use of query parameters. */
@@ -141,6 +140,7 @@ public class QueryParametersSample {
       response = bigquery.getQueryResults(response.getJobId());
     }
 
+    // Check for errors.
     if (response.hasErrors()) {
       String firstError = "";
       if (response.getExecutionErrors().size() != 0) {
@@ -149,12 +149,14 @@ public class QueryParametersSample {
       throw new RuntimeException(firstError);
     }
 
+    // Print all pages of the results.
     QueryResult result = response.getResult();
-    Iterator<List<FieldValue>> iter = result.iterateAll();
+    while (result != null) {
+      for (List<FieldValue> row : result.iterateAll()) {
+        System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      }
 
-    while (iter.hasNext()) {
-      List<FieldValue> row = iter.next();
-      System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      result = result.getNextPage();
     }
   }
   // [END bigquery_query_params]
@@ -193,6 +195,7 @@ public class QueryParametersSample {
       response = bigquery.getQueryResults(response.getJobId());
     }
 
+    // Check for errors.
     if (response.hasErrors()) {
       String firstError = "";
       if (response.getExecutionErrors().size() != 0) {
@@ -201,12 +204,14 @@ public class QueryParametersSample {
       throw new RuntimeException(firstError);
     }
 
+    // Print all pages of the results.
     QueryResult result = response.getResult();
-    Iterator<List<FieldValue>> iter = result.iterateAll();
+    while (result != null) {
+      for (List<FieldValue> row : result.iterateAll()) {
+        System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      }
 
-    while (iter.hasNext()) {
-      List<FieldValue> row = iter.next();
-      System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      result = result.getNextPage();
     }
   }
   // [END bigquery_query_params_arrays]
@@ -240,6 +245,7 @@ public class QueryParametersSample {
       response = bigquery.getQueryResults(response.getJobId());
     }
 
+    // Check for errors.
     if (response.hasErrors()) {
       String firstError = "";
       if (response.getExecutionErrors().size() != 0) {
@@ -248,19 +254,21 @@ public class QueryParametersSample {
       throw new RuntimeException(firstError);
     }
 
+    // Print all pages of the results.
     QueryResult result = response.getResult();
-    Iterator<List<FieldValue>> iter = result.iterateAll();
-
     DateTimeFormatter formatter = ISODateTimeFormat.dateTimeNoMillis().withZoneUTC();
-    while (iter.hasNext()) {
-      List<FieldValue> row = iter.next();
-      System.out.printf(
-          "%s\n",
-          formatter.print(
-              new DateTime(
-                  // Timestamp values are returned in microseconds since 1970-01-01T00:00:00 UTC,
-                  // but org.joda.time.DateTime constructor accepts times in milliseconds.
-                  row.get(0).getTimestampValue() / 1000, DateTimeZone.UTC)));
+    while (result != null) {
+      for (List<FieldValue> row : result.iterateAll()) {
+        System.out.printf(
+            "%s\n",
+            formatter.print(
+                new DateTime(
+                    // Timestamp values are returned in microseconds since 1970-01-01T00:00:00 UTC,
+                    // but org.joda.time.DateTime constructor accepts times in milliseconds.
+                    row.get(0).getTimestampValue() / 1000, DateTimeZone.UTC)));
+      }
+
+      result = result.getNextPage();
     }
   }
   // [END bigquery_query_params_timestamps]

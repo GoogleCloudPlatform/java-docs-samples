@@ -35,7 +35,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
@@ -144,17 +143,7 @@ public class QuerySample {
 
     // Print all pages of the results.
     while (result != null) {
-      if (response.hasErrors()) {
-        String firstError = "";
-        if (response.getExecutionErrors().size() != 0) {
-          firstError = response.getExecutionErrors().get(0).getMessage();
-        }
-        throw new RuntimeException(firstError);
-      }
-
-      Iterator<List<FieldValue>> iter = result.iterateAll();
-      while (iter.hasNext()) {
-        List<FieldValue> row = iter.next();
+      for (List<FieldValue> row : result.iterateAll()) {
         for (FieldValue val : row) {
           System.out.printf("%s,", val.toString());
         }
