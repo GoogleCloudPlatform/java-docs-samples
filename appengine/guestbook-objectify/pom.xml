@@ -23,7 +23,7 @@
     <groupId>com.example.appengine</groupId>
     <artifactId>appengine-guestbook-objectify</artifactId>
     <properties>
-        <objectify.version>5.1.16</objectify.version>
+        <objectify.version>5.1.17</objectify.version>
         <guava.version>20.0</guava.version>
     </properties>
     <parent>

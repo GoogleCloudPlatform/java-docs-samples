@@ -20,7 +20,7 @@ package com.example.pubsub;
 // Imports the Google Cloud client library
 
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsub.spi.v1.PublisherClient;
+import com.google.cloud.pubsub.spi.v1.TopicAdminClient;
 import com.google.pubsub.v1.TopicName;
 
 public class QuickstartSample {
@@ -35,8 +35,8 @@ public class QuickstartSample {
 
     // Create a new topic
     TopicName topic = TopicName.create(projectId, topicId);
-    try (PublisherClient publisherClient = PublisherClient.create()) {
-      publisherClient.createTopic(topic);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.createTopic(topic);
     }
 
     System.out.printf("Topic %s:%s created.\n", topic.getProject(), topic.getTopic());
