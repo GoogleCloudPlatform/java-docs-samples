@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,8 @@ public class AnalyzeBetaIT {
     assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
   }
 
-  @Test public void analyzeSyntax_entitySyntaxText() throws Exception {
-    List<Entity> entities = analyzeApp.entitySyntaxText("Oranges, grapes, and apples can be " +
+  @Test public void analyzeSyntax_entitySentimentText() throws Exception {
+    List<Entity> entities = analyzeApp.entitySentimentText("Oranges, grapes, and apples can be " +
         "found in the cafeterias located in Mountain View, Seattle, and London.");
 
     List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
@@ -66,9 +66,9 @@ public class AnalyzeBetaIT {
     assertThat(got).named("entity names").contains("Seattle");
   }
 
-  @Test public void analyzeSyntax_entitySyntaxFile() throws Exception {
+  @Test public void analyzeSyntax_entitySentimentFile() throws Exception {
     List<Entity> entities =
-        analyzeApp.entitySyntaxFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
+        analyzeApp.entitySentimentFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
 
     List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
 

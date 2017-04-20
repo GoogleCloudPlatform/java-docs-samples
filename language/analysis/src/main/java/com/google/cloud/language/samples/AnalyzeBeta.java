@@ -64,17 +64,21 @@ public class AnalyzeBeta {
     }
     String command = args[0];
     String text = args[1];
+    String lang = null;
+    if (args.length > 2) {
+      lang = args[2];
+    }
 
     AnalyzeBeta app = new AnalyzeBeta(LanguageServiceClient.create());
 
     if (command.equals("entities-sentiment")) {
       if (text.startsWith("gs://")) {
-        printEntities(System.out, app.entitySyntaxFile(text));
+        printEntities(System.out, app.entitySentimentFile(text));
       } else {
-        printEntities(System.out, app.entitySyntaxText(text));
+        printEntities(System.out, app.entitySentimentText(text));
       }
     } else if (command.equals("sentiment")) {
-      printSentiment(System.out, app.analyzeSentimentText(text, args[2]));
+      printSentiment(System.out, app.analyzeSentimentText(text, lang));
     }
   }
 
@@ -142,7 +146,7 @@ public class AnalyzeBeta {
   /**
    * Gets {@link Entity}s from the string {@code text} with sentiment.
    */
-  public List<Entity> entitySyntaxText(String text) throws IOException {
+  public List<Entity> entitySentimentText(String text) throws IOException {
     // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
             .setContent(text).setType(Type.PLAIN_TEXT).build();
@@ -154,9 +158,10 @@ public class AnalyzeBeta {
   }
 
   /**
-   * Gets {@link Token}s from the contents of the object at the given GCS {@code path}.
+   * Gets {@link Entity}s from the contents of the object at the given GCS {@code path}
+   * with sentiment.
    */
-  public List<Entity> entitySyntaxFile(String path) throws IOException {
+  public List<Entity> entitySentimentFile(String path) throws IOException {
     // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
             .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();

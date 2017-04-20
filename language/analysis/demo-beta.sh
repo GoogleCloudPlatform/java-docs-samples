@@ -3,7 +3,7 @@
 # Demonstrates how to run the AnalyzeBeta sample.
 
 ##########################################################################
-# Copyright 2016 Google Inc. All Rights Reserved.
+# Copyright 2017 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ function run_nl_all() {
       gives you back exactly what you want.' Since he spoke those words Google
       has grown to offer products beyond search, but the spirit of what he said
       remains."
-  local gs_path="gs://<your_bucket>/file.txt"
+  local gs_path="gs://cloud-samples-tests/natural-language/gettysburg.txt"
 
   run_nl entities-sentiment "${quote}"
   run_nl entities-sentiment "${gs_path}"
