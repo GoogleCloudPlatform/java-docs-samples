@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface MessageRepository {
 
-  /** Save message to persistent storage */
+  /** Save message to persistent storage. */
   void save(Message message);
 
   /**

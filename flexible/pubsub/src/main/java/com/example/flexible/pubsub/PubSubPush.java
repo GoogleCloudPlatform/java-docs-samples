@@ -77,7 +77,7 @@ public class PubSubPush extends HttpServlet {
   }
 
   public PubSubPush() {
-    this.messageRepository = new MessageRepositoryImpl();
+    this.messageRepository = MessageRepositoryImpl.getInstance();
   }
 }
 

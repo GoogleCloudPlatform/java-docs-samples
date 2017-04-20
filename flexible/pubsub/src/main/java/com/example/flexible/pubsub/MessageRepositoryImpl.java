@@ -23,11 +23,12 @@ import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /** Storage for Message objects using Cloud Datastore. */
 public class MessageRepositoryImpl implements MessageRepository {
+
+  private static MessageRepositoryImpl instance;
 
   private String messagesKind = "messages";
   private KeyFactory keyFactory = getDatastoreInstance().newKeyFactory().setKind(messagesKind);
@@ -83,5 +84,14 @@ public class MessageRepositoryImpl implements MessageRepository {
   private Datastore getDatastoreInstance() {
     return DatastoreOptions.getDefaultInstance().getService();
   }
+
+  // retrieve a singleton instance
+  public static synchronized  MessageRepositoryImpl getInstance() {
+    if (instance == null) {
+      instance = new MessageRepositoryImpl();
+    }
+    return instance;
+  }
 }
+
 
