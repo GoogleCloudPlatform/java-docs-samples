@@ -68,6 +68,13 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     "The quick brown fox jumped over the lazy dog."
 ```
 
+Analyze sentiment Beta
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.AnalyzeBeta sentiment "Ich habe eine wundervolle Zeit." "DE"
+```
+
+
 Included with the sample are `demo.sh` and `demo.bat` which show additional
 examples of usage.
 
