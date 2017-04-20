@@ -37,8 +37,8 @@
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-speech</artifactId>
-      <version>0.8.1-alpha</version>
+      <artifactId>google-cloud</artifactId>
+      <version>0.11.2-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 

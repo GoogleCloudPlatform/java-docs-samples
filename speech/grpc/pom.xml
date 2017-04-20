@@ -49,7 +49,7 @@ limitations under the License.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
-    <grpc-protobuf-version>1.1.2</grpc-protobuf-version>
+    <grpc-version>1.0.3</grpc-version> <!-- 1.1.2 doesn't work - DO NOT UPGRADE -->
     <maven-compiler-plugin-version>3.6.0</maven-compiler-plugin-version>
     <xolstice-protobuf-maven-plugin-version>0.5.0</xolstice-protobuf-maven-plugin-version>
 
@@ -62,7 +62,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.8.3-alpha</version>
+      <version>0.12.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -78,12 +78,12 @@ limitations under the License.
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-credentials</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1</version>
       <exclusions>
         <!-- Exclude an old version of guava that is being pulled
         in by a transitive dependency of google-api-client -->
@@ -113,22 +113,22 @@ limitations under the License.
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-auth</artifactId>
-      <version>1.1.2</version>
+      <version>${grpc-version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.1.2</version>
+      <version>${grpc-version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>${grpc-protobuf-version}</version>
+      <version>${grpc-version}</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.1.2</version>
+      <version>${grpc-version}</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ public class ListLogsTest {
   private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
   private static final PrintStream REAL_OUT = System.out;
   private static final PrintStream REAL_ERR = System.err;
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   @Before
   public void setUp() {
@@ -53,7 +54,7 @@ public class ListLogsTest {
 
   @Test
   public void testListLogs() throws Exception {
-    ListLogs.main(new String[] {"cloud-samples-tests"});
+    ListLogs.main(new String[] {PROJECT_ID});
     String out = stdout.toString();
     // Don't know what logs the test project will have.
     assertThat(out, containsPattern("Done\\."));

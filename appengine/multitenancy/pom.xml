@@ -24,7 +24,7 @@
     <artifactId>appengine-multitenancy</artifactId>
 
     <properties>
-        <objectify.version>5.1.15</objectify.version>
+        <objectify.version>5.1.17</objectify.version>
         <guava.version>20.0</guava.version>
     </properties>
     <parent>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <version>3.0-alpha-1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <version>2.0.2-beta</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -33,12 +33,15 @@ import java.io.PrintStream;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class RecognizeIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   // The path to the audio file to transcribe
   private String fileName = "./resources/audio.raw";
-  private String gcsPath = "gs://cloud-samples-tests/speech/brooklyn.flac";
+  private String gcsPath = "gs://" + BUCKET + "/speech/brooklyn.flac";
 
   @Before
   public void setUp() {
@@ -58,24 +61,31 @@ public class RecognizeIT {
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
-  
+
   @Test
   public void testRecognizeGcs() throws Exception {
     Recognize.syncRecognizeGcs(gcsPath);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
-  
+
   @Test
   public void testAsyncRecognizeFile() throws Exception {
     Recognize.asyncRecognizeFile(fileName);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
-  
+
   @Test
   public void testAsyncRecognizeGcs() throws Exception {
     Recognize.asyncRecognizeGcs(gcsPath);
+    String got = bout.toString();
+    assertThat(got).contains("how old is the Brooklyn Bridge");
+  }
+
+  @Test
+  public void testStreamRecognize() throws Exception {
+    Recognize.streamingRecognizeFile(fileName);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }

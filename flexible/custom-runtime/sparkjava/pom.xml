@@ -33,7 +33,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
+    <appengine.maven.plugin>1.2.1</appengine.maven.plugin>
     <app.stage.artifact>${project.build.directory}/spark-1.0-jar-with-dependencies.jar</app.stage.artifact>
   </properties>
 
@@ -46,7 +46,7 @@ limitations under the License.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.24</version>
+      <version>1.8.0-alpha0</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -61,7 +61,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>0.9.4-beta</version>
+      <version>0.12.0-beta</version>
     </dependency>
   </dependencies>
   <build>

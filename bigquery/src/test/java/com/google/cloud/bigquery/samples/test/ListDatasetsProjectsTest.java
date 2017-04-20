@@ -35,6 +35,7 @@ import java.lang.Exception;
  */
 @RunWith(JUnit4.class)
 public class ListDatasetsProjectsTest {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final PrintStream REAL_OUT = System.out;
   private static final PrintStream REAL_ERR = System.err;
 
@@ -72,6 +73,6 @@ public class ListDatasetsProjectsTest {
 
     assertThat(out).named("stdout").contains("Listing all the Projects");
     assertThat(out).named("stdout").contains("Project list:");
-    assertThat(out).named("stdout").containsMatch("Bigquery Samples|cloud-samples-tests");
+    assertThat(out).named("stdout").containsMatch("Bigquery Samples|" + PROJECT_ID);
   }
 }

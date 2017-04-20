@@ -18,7 +18,6 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.vision.spi.v1.ImageAnnotatorClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,13 +35,15 @@ public class DetectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private Detect app;
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
 
   @Before
   public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    app = new Detect(ImageAnnotatorClient.create());
+    app = new Detect();
   }
 
   @After
@@ -66,7 +67,7 @@ public class DetectIT {
   @Test
   public void testFacesGcs() throws Exception {
     // Act
-    String[] args = {"faces", "gs://cloud-samples-tests/vision/face_no_surprise.jpg"};
+    String[] args = {"faces", "gs://" + BUCKET + "/vision/face_no_surprise.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -90,7 +91,7 @@ public class DetectIT {
   @Test
   public void testLabelsGcs() throws Exception {
     // Act
-    String[] args = {"labels", "gs://cloud-samples-tests/vision/wakeupcat.jpg"};
+    String[] args = {"labels", "gs://" + BUCKET + "/vision/wakeupcat.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -112,7 +113,7 @@ public class DetectIT {
   @Test
   public void testLandmarksGcs() throws Exception {
     // Act
-    String[] args = {"landmarks", "gs://cloud-samples-tests/vision/landmark.jpg"};
+    String[] args = {"landmarks", "gs://" + BUCKET + "/vision/landmark.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -145,7 +146,7 @@ public class DetectIT {
   @Test
   public void testLogosGcs() throws Exception {
     // Act
-    String[] args = {"logos", "gs://cloud-samples-tests/vision/logos.png"};
+    String[] args = {"logos", "gs://" + BUCKET + "/vision/logos.png"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -167,7 +168,7 @@ public class DetectIT {
   @Test
   public void testTextGcs() throws Exception {
     // Act
-    String[] args = {"text", "gs://cloud-samples-tests/vision/text.jpg"};
+    String[] args = {"text", "gs://" + BUCKET + "/vision/text.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -189,7 +190,7 @@ public class DetectIT {
   @Test
   public void testSafeSearchGcs() throws Exception {
     // Act
-    String[] args = {"safe-search", "gs://cloud-samples-tests/vision/wakeupcat.jpg"};
+    String[] args = {"safe-search", "gs://" + BUCKET + "/vision/wakeupcat.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -214,7 +215,7 @@ public class DetectIT {
   @Test
   public void testPropertiesGcs() throws Exception {
     // Act
-    String[] args = {"properties", "gs://cloud-samples-tests/vision/landmark.jpg"};
+    String[] args = {"properties", "gs://" + BUCKET + "/vision/landmark.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -240,7 +241,7 @@ public class DetectIT {
   @Test
   public void detectWebAnnotationsGcs() throws Exception {
     // Act
-    String[] args = {"web", "gs://cloud-samples-tests/vision/landmark.jpg"};
+    String[] args = {"web", "gs://" + BUCKET + "/vision/landmark.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -265,7 +266,7 @@ public class DetectIT {
   @Test
   public void testCropHintsGcs() throws Exception {
     // Act
-    String[] args = {"crop", "gs://cloud-samples-tests/vision/wakeupcat.jpg"};
+    String[] args = {"crop", "gs://" + BUCKET + "/vision/wakeupcat.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -290,7 +291,7 @@ public class DetectIT {
   @Test
   public void testDocumentTextGcs() throws Exception {
     // Act
-    String[] args = {"fulltext", "gs://cloud-samples-tests/vision/text.jpg"};
+    String[] args = {"fulltext", "gs://" + BUCKET + "/vision/text.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert

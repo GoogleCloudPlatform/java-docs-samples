@@ -16,6 +16,8 @@
 
 package com.example.flexible.base;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -25,30 +27,27 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 class SamplesBuilder {
 
   private final MergeYaml mergeYaml;
   private final String sourcePath;
   private final String destinationPath;
+  private final String basePath;
   private final String[] packageNames;
   private final String appYamlFile = "app.yaml";
   private final String cronYamlFile = "cron.yaml";
 
-  // Pom snippets used to generate pom.xml
-  private final String dependenciesFile = "dependencies.xml";
-  private final String propertiesFile = "properties.xml";
-
-  private SamplesBuilder(String sourcePath, String destinationPath, String[] packageNames)
+  private SamplesBuilder(String basePath, String[] packageNames)
       throws Exception {
     this.mergeYaml = new MergeYaml();
-    this.sourcePath = sourcePath;
-    this.destinationPath = destinationPath;
+    this.basePath = basePath;
+    this.sourcePath = basePath + "/samples-source";
+    this.destinationPath = basePath + "/samples-runner";
     this.packageNames = packageNames;
   }
 
@@ -57,48 +56,74 @@ class SamplesBuilder {
     List<File> cronFiles = new ArrayList<>();
     for (String packageName : packageNames) {
       appEngineFiles.add(
-          new File(sourcePath + "/src/main/appengine/" + packageName + "/" + appYamlFile));
+          new File(sourcePath + "/" + packageName + "/src/main/appengine/" + appYamlFile));
       cronFiles.add(
-          new File(sourcePath + "/src/main/appengine/" + packageName + "/" + cronYamlFile));
+          new File(sourcePath + "/" + packageName + "/src/main/appengine/" + cronYamlFile));
 
     }
     Map<String, Object> mergedResult = new LinkedHashMap<>();
     mergeYaml.merge(mergedResult, appEngineFiles);
-    write(mergedResult, appYamlFile);
+    if (mergedResult.size() > 0) {
+      write(mergedResult, appYamlFile);
+    }
 
     mergedResult.clear();
     mergeYaml.merge(mergedResult, cronFiles);
-    write(mergedResult, cronYamlFile);
+    if (mergedResult.size() > 0) {
+      write(mergedResult, cronYamlFile);
+    }
   }
 
   private List<String> read(String fileName) throws IOException {
     return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
   }
 
-  private List<String> getPomSnippet(String packageName, String fileName) {
-    List<String> pomEntries;
-    try {
-      List<String> snippet = read(sourcePath + "/pom-snippets/" + packageName + "/" + fileName);
-      pomEntries = new ArrayList<>();
-      pomEntries.add("        <!-- [START " + packageName + " ] -->");
-      List<String> formattedSnippet = snippet.stream().map(line -> "        " + line)
-          .collect(Collectors.toList());
-      pomEntries.addAll(formattedSnippet);
-      pomEntries.add("        <!-- [END " + packageName + " ] -->");
-
-    } catch (IOException e) {
-      System.out.println("No " + fileName + " found for package : " + packageName);
-      pomEntries = Collections.emptyList();
+  private List<String> extractBlock(String packageName, List<String> lines, String blockName)
+      throws IllegalArgumentException {
+    boolean inBlock = false;
+    List<String> block = new LinkedList<>();
+    for (String line : lines) {
+      if (inBlock) {
+        if (line.contains("END " + blockName)) {
+          inBlock = false;
+          break;
+        }
+        block.add(line);
+      }
+      if (line.contains("START " + blockName)) {
+        inBlock = true;
+      }
     }
-    return pomEntries;
+
+    if (inBlock) {
+      throw new IllegalArgumentException(blockName + " not closed in " + packageName + " pom.xml");
+    }
+    if (block.size() > 0) {
+      String indent = "    ";
+      block.add(0, indent + "<!-- [START " + packageName + " ] -->");
+      block.add(indent + "<!-- [END " + packageName + " ] -->");
+    }
+    return block;
   }
 
+  private void parsePom(String packageName, List<String> properties, List<String> dependencies)
+      throws IllegalArgumentException, IOException {
+    List<String> pom = read(sourcePath + "/" + packageName + "/pom.xml");
+    properties.addAll(extractBlock(packageName, pom, "properties"));
+    dependencies.addAll(extractBlock(packageName, pom, "dependencies"));
+  }
 
-  private void copyFiles(String path) {
+  private void copyFile(String fileName) throws IOException {
+    FileUtils.copyFile(new File(sourcePath + "/" + fileName),
+        new File(basePath + "/" + fileName));
+  }
+
+  private void copyPackageFiles(String path) {
     for (String packageName : packageNames) {
       try {
-        FileUtils.copyDirectory(new File(sourcePath + path + packageName),
-            new File(destinationPath + path + packageName));
+        FileUtils.copyDirectory(
+            new File(sourcePath  + "/" + packageName + "/" + path + "/" + packageName),
+            new File(basePath + "/" + path + "/" + packageName));
       } catch (IOException e) {
         // ignore if no directory exists
       }
@@ -124,12 +149,14 @@ class SamplesBuilder {
     List<String> pom = read(sourcePath + "/pom-base.xml");
     List<String> dependencies = new ArrayList<>();
     List<String> properties = new ArrayList<>();
+    List<String> sourceDirs = new ArrayList<>();
     for (String packageName : packageNames) {
-      dependencies.addAll(getPomSnippet(packageName, dependenciesFile));
-      properties.addAll(getPomSnippet(packageName, propertiesFile));
+      parsePom(packageName, properties, dependencies);
+      sourceDirs.add("<source> " + sourcePath + "/" + packageName + "/src/main/java" + "</source>");
     }
     addToPom(pom, "properties", properties);
     addToPom(pom, "dependencies", dependencies);
+    addToPom(pom, "source-dirs", sourceDirs);
     write(pom, destinationPath + "/pom.xml");
   }
 
@@ -145,7 +172,9 @@ class SamplesBuilder {
   private void write(Map<String, Object> mergedResult, String outputFileName) {
     String yamlOutput = mergeYaml.getYaml(mergedResult);
     PrintWriter writer = null;
-    File outputFile = new File(destinationPath + "/src/main/appengine/" + outputFileName);
+    File outputFile = new File(
+        basePath + "/src/main/appengine/" + outputFileName);
+    outputFile.getParentFile().mkdirs();
     try {
       writer = new PrintWriter(outputFile, "UTF-8");
       writer.write(yamlOutput);
@@ -158,9 +187,27 @@ class SamplesBuilder {
     }
   }
 
+  private static String[] getAllDirectories(String path) {
+    File[] files = new File(path).listFiles();
+    List<String> fileNamesList =  Arrays.stream(files)
+        .filter(File::isDirectory)
+        .map(File::getName)
+        .collect(Collectors.toList());
+    String[] fileNames = new String[fileNamesList.size()];
+    fileNamesList.toArray(fileNames);
+    return fileNames;
+  }
+
   public static void main(String[] args) throws Exception {
-    SamplesBuilder samplesBuilder = new SamplesBuilder(args[0],
-        args[1], args[2].split(","));
+    System.out.println(args[0]);
+    String baseDir = args[0];
+    String[] packageNames;
+    if (args[1] == null || args[1].equals("all")) {
+      packageNames = getAllDirectories(args[0] + "/samples-source");
+    } else {
+      packageNames = args[1].split(",");
+    }
+    SamplesBuilder samplesBuilder = new SamplesBuilder(baseDir, packageNames);
     System.out.println("Merging app.yaml files");
     samplesBuilder.mergeAndWriteAppYaml();
 
@@ -168,9 +215,9 @@ class SamplesBuilder {
     samplesBuilder.generatePom();
 
     System.out.println("Copying source and webapp files");
-    samplesBuilder.copyFiles("/src/main/webapp/");
-    samplesBuilder.copyFiles("/src/main/java/com/example/flexible/");
-    samplesBuilder.copyFiles("/src/main/resources/");
+    samplesBuilder.copyPackageFiles("src/main/webapp");
+    samplesBuilder.copyPackageFiles("src/main/resources");
+    samplesBuilder.copyFile("index.jsp");
   }
 }
 

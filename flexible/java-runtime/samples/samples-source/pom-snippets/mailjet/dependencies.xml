@@ -1,5 +1,0 @@
-<dependency>
-    <groupId>com.mailjet</groupId>
-    <artifactId>mailjet-client</artifactId>
-    <version>4.0.5 </version>
-</dependency>

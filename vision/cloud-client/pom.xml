@@ -1,5 +1,5 @@
 <!--
-  Copyright 2017 Google Inc. All Rights Reserved.
+  Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>0.9.4-beta</version>
+      <version>0.12.0-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 

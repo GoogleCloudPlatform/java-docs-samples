@@ -29,13 +29,53 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <flexible.samples>
-      analytics,cloudsql,cloudstorage,cron,datastore,disk,mailgun,mailjet,memcache,sendgrid,static,twillio
-    </flexible.samples>
+    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
+    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
+    <flexible.samples>all</flexible.samples>
   </properties>
 
   <modules>
     <module>samples-builder</module>
+    <module>samples-runner</module>
   </modules>
 
+  <build>
+    <!-- for hot reload of the web application -->
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <followSymLinks>false</followSymLinks>
+          <filesets>
+            <fileset>
+              <directory>${basedir}/samples-runner/src</directory>
+            </fileset>
+            <fileset>
+              <directory>${basedir}/src/main/appengine</directory>
+            </fileset>
+            <fileset>
+              <directory>${basedir}/src/main/webapp</directory>
+            </fileset>
+            <fileset>
+              <directory>${basedir}/src/main/resources</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>${appengine.maven.plugin}</version>
+        <configuration>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${jetty.maven.plugin}</version>
+      </plugin>
+    </plugins>
+  </build>
 </project>

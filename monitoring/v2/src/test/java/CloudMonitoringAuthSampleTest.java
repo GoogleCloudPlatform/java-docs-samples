@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ public class CloudMonitoringAuthSampleTest {
       new ByteArrayOutputStream();
   private static final PrintStream REAL_OUT = System.out;
   private static final PrintStream REAL_ERR = System.err;
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   @Before
   public void setUp() {
@@ -56,7 +57,7 @@ public class CloudMonitoringAuthSampleTest {
 
   @Test
   public void testListTimeSeries() throws Exception {
-    CloudMonitoringAuthSample.main(new String[] { "cloud-samples-tests" });
+    CloudMonitoringAuthSample.main(new String[] { PROJECT_ID });
     String out = stdout.toString();
     assertThat(out).named("stdout").contains("Timeseries.list raw response:");
     assertThat(out)

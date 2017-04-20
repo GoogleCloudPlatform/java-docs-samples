@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.17</version>
+      <version>1.18</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -46,26 +46,13 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <mainClass>com.example.flexible.base.SamplesBuilder</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.1.1</version>
         <executions>
           <execution>
             <id>build-samples</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -76,10 +63,7 @@
         <mainClass>com.example.flexible.base.SamplesBuilder</mainClass>
           <arguments>
             <argument>
-                ${project.basedir}/../samples-source
-            </argument>
-            <argument>
-               ${project.basedir}/../samples-runner
+                ${project.basedir}/..
             </argument>
             <argument>
               ${flexible.samples}
@@ -88,12 +72,5 @@
         </configuration>
       </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
   </build>
-
 </project>

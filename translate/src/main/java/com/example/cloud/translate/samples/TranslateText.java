@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.example.cloud.translate.samples;
 
-import com.google.cloud.RetryParams;
 import com.google.cloud.translate.Detection;
 import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
@@ -134,24 +133,7 @@ public class TranslateText {
    * @return Google Translate Service
    */
   public static Translate createTranslateService() {
-    TranslateOptions translateOption = TranslateOptions.newBuilder()
-        .setRetryParams(retryParams())
-        .setConnectTimeout(60000)
-        .setReadTimeout(60000)
-        .build();
-    return translateOption.getService();
-  }
-
-  /**
-   * Retry params for the Translate API.
-   */
-  private static RetryParams retryParams() {
-    return RetryParams.newBuilder()
-        .setRetryMaxAttempts(3)
-        .setMaxRetryDelayMillis(30000)
-        .setTotalRetryPeriodMillis(120000)
-        .setInitialRetryDelayMillis(250)
-        .build();
+    return TranslateOptions.newBuilder().build().getService();
   }
 
   public static void main(String[] args) {

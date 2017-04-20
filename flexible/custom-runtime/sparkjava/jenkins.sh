@@ -21,6 +21,7 @@ set -xe
 function runtests () {
   curl -X GET \
     "https://${2}-dot-${1}.appspot.com/api/users" | \
+    tee "$ERROR_OUTPUT_DIR/response.json" | \
     grep "^\\["
 }
 

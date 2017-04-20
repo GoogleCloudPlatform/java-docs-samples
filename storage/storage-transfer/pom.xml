@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2015 Google Inc. All Rights Reserved.
+  ~ Copyright (c) 2015 Google Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you
   ~ may not use this file except in compliance with the License. You may
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storagetransfer</artifactId>
-      <version>v1-rev8-1.22.0</version>
+      <version>v1-rev11-1.22.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
