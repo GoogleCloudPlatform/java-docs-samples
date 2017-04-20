@@ -44,6 +44,7 @@ public class PubSubPushTest {
     ).when(messageRepository).save(any(Message.class));
 
     HttpServletRequest request = mock(HttpServletRequest.class);
+    assertNotNull(System.getenv("PUBSUB_VERIFICATION_TOKEN"));
     when(request.getParameter("token"))
         .thenReturn(System.getenv("PUBSUB_VERIFICATION_TOKEN"));
 

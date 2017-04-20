@@ -1,32 +1,21 @@
-<%@ page import="com.example.flexible.pubsub.Message" %>
-<%@ page import="com.example.flexible.pubsub.MessageRepositoryImpl" %>
-<%@ page import="java.util.List" %>
-
+<%@ page import="com.example.flexible.pubsub.PubSubHome" %>
 <html>
-<title>An example of using PubSub on App Engine Flex</title>
-<body>
-<h3> Publish a message </h3>
-<form action="pubsub/publish" method="POST">
-          <label for="payload">Message:</label>
-          <input id="payload" type="input" name="payload" />
-          <input id="submit"  type="submit" value="Send" />
-</form>
-<h3> Last received messages </h3>
-<%! List<Message> messages = MessageRepositoryImpl.getInstance().retrieve(10); %>
-<table>
-  <tr>
-  <td>Id</td>
-  <td>Message</td>
-  <td>Publish time</td>
-  </tr>
-  <%
-  for (Message message : messages) {%>
-    <tr>
-    <td><input value=<%=message.getMessageId()%>></td>
-    <td><input value=<%=message.getData()%>></td>
-    <td><input value=<%=message.getPublishTime()%>></td>
-    </tr>
-  <%}%>
-</table>
-</body>
+  <title>An example of using PubSub on App Engine Flex</title>
+  <body>
+    <h3> Publish a message </h3>
+    <form action="pubsub/publish" method="POST">
+      <label for="payload">Message:</label>
+      <input id="payload" type="input" name="payload" />
+      <input id="submit"  type="submit" value="Send" />
+    </form>
+    <h3> Last received messages </h3>
+    <table border="1" cellpadding="10">
+      <tr>
+      <th>Id</th>
+      <th>Data</th>
+      <th>PublishTime</th>
+      </tr>
+      <%= PubSubHome.getReceivedMessages() %>
+    </table>
+  </body>
 </html>

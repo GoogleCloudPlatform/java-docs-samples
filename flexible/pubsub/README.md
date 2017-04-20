@@ -34,7 +34,6 @@ direct your browser to `http://localhost:8080/`
 ```
 export PUBSUB_TOPIC=<your-topic-name>
 export PUBSUB_VERIFICATION_TOKEN=<your-verification-token>
-export PUBSUB_SUBSCRIPTION_ID=<your-subscription-id>
 mvn jetty:run
 ```
 
@@ -48,7 +47,7 @@ curl -H "Content-Type: application/json" -i --data @sample_message.json
 
 ## Deploy
 
-Update the environment variables `PUBSUB_TOPIC`, `PUBSUB_VERIFICATION_TOKEN` and `PUBSUB_SUBSCRIPTION_ID` in `app.yaml`,
+Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` in `app.yaml`,
 then:
 
 ```

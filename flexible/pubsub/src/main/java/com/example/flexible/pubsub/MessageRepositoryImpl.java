@@ -85,6 +85,9 @@ public class MessageRepositoryImpl implements MessageRepository {
     return DatastoreOptions.getDefaultInstance().getService();
   }
 
+  private MessageRepositoryImpl() {
+  }
+
   // retrieve a singleton instance
   public static synchronized  MessageRepositoryImpl getInstance() {
     if (instance == null) {

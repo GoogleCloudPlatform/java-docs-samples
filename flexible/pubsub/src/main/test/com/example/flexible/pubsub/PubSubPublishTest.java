@@ -13,6 +13,7 @@
  */
 package com.example.flexible.pubsub;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,6 +33,7 @@ public class PubSubPublishTest {
 
   @Test
   public void servletPublishesPayloadMessage() throws Exception {
+    assertNotNull(System.getenv("PUBSUB_TOPIC"));
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter("payload")).thenReturn("test-message");
 
