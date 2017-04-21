@@ -21,8 +21,8 @@
   <artifactId>extendingruntime</artifactId>
 
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
+    <groupId>com.example.flexible</groupId>
+    <artifactId>flex-docs-samples</artifactId>
     <version>1.0.0</version>
     <relativePath>../..</relativePath>
   </parent>

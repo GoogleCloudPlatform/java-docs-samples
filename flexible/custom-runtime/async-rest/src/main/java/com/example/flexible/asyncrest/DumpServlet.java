@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.appengine.demos;
+package com.example.flexible.asyncrest;
 
 import java.io.IOException;
 import java.io.PrintWriter;

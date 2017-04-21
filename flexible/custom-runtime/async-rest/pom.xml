@@ -16,14 +16,14 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.appengine.demos</groupId>
+  <groupId>com.example.flexible</groupId>
   <artifactId>async-rest</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
+    <groupId>com.example.flexible</groupId>
+    <artifactId>flex-docs-samples</artifactId>
     <version>1.0.0</version>
     <relativePath>../..</relativePath>
   </parent>

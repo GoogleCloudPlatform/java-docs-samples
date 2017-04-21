@@ -15,10 +15,9 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.flexible</groupId>
+  <artifactId>flex-docs-samples</artifactId>
   <version>1.0.0</version>
-
-  <groupId>com.google.cloud</groupId>
-  <artifactId>flex-doc-samples-pom</artifactId>
   <packaging>pom</packaging>
 
   <!-- Parent POM defines common plugins and properties. -->
