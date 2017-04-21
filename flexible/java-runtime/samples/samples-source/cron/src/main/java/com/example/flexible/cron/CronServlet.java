@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.flexible;
+package com.example.flexible.cron;
 
 import java.io.IOException;
 import java.io.PrintWriter;

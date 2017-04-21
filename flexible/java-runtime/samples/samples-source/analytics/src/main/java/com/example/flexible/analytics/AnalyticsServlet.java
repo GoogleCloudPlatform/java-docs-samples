@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.flexible;
+package com.example.flexible.analytics;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;

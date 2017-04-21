@@ -36,8 +36,8 @@
 
   <modules>
     <module>samples-builder</module>
-    <module>samples-runner</module>
   </modules>
+
 
   <build>
     <!-- for hot reload of the web application -->
@@ -50,7 +50,7 @@
           <followSymLinks>false</followSymLinks>
           <filesets>
             <fileset>
-              <directory>${basedir}/samples-runner/src</directory>
+              <directory>${basedir}/samples-runner</directory>
             </fileset>
             <fileset>
               <directory>${basedir}/src/main/appengine</directory>
@@ -78,4 +78,12 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

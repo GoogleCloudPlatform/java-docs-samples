@@ -48,28 +48,62 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <version>1.2.1</version>
         <executions>
           <execution>
             <id>build-samples</id>
-            <phase>package</phase>
+            <phase>compile</phase>
             <goals>
               <goal>java</goal>
             </goals>
             <inherited>false</inherited>
+            <configuration>
+              <mainClass>com.example.flexible.base.SamplesBuilder</mainClass>
+              <arguments>
+                <argument>
+                  ${project.basedir}/..
+                </argument>
+                <argument>
+                  ${flexible.samples}
+                </argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+          <id>compile-samples</id>
+          <phase>package</phase>
+          <goals>
+            <goal>exec</goal>
+          </goals>
+          <inherited>false</inherited>
+          <configuration>
+            <workingDirectory>${project.parent.basedir}/samples-runner</workingDirectory>
+            <executable>mvn</executable>
+            <arguments>
+              <argument>
+                package
+              </argument>
+            </arguments>
+          </configuration>
+          </execution>
+          <execution>
+            <id>verify-samples</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <workingDirectory>${project.parent.basedir}/samples-runner</workingDirectory>
+              <executable>mvn</executable>
+              <arguments>
+                <argument>
+                  verify
+                </argument>
+              </arguments>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-        <mainClass>com.example.flexible.base.SamplesBuilder</mainClass>
-          <arguments>
-            <argument>
-                ${project.basedir}/..
-            </argument>
-            <argument>
-              ${flexible.samples}
-            </argument>
-          </arguments>
-        </configuration>
       </plugin>
     </plugins>
   </build>

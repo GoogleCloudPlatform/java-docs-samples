@@ -70,7 +70,6 @@ class MergeYaml {
     }
 
     for (String key : yamlContents.keySet()) {
-
       Object yamlValue = yamlContents.get(key);
       if (yamlValue == null) {
         addToMergedResult(mergedResult, key, yamlValue);

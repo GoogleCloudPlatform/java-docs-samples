@@ -16,8 +16,6 @@
 
 package com.example.flexible.base;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -27,10 +25,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class SamplesBuilder {
 
@@ -122,7 +122,7 @@ class SamplesBuilder {
     for (String packageName : packageNames) {
       try {
         FileUtils.copyDirectory(
-            new File(sourcePath  + "/" + packageName + "/" + path + "/" + packageName),
+            new File(sourcePath + "/" + packageName + "/" + path + "/" + packageName),
             new File(basePath + "/" + path + "/" + packageName));
       } catch (IOException e) {
         // ignore if no directory exists
@@ -150,17 +150,23 @@ class SamplesBuilder {
     List<String> dependencies = new ArrayList<>();
     List<String> properties = new ArrayList<>();
     List<String> sourceDirs = new ArrayList<>();
+    List<String> testSourceDirs = new ArrayList<>();
     for (String packageName : packageNames) {
       parsePom(packageName, properties, dependencies);
       sourceDirs.add("<source> " + sourcePath + "/" + packageName + "/src/main/java" + "</source>");
+      testSourceDirs.add(
+          "<source>" + sourcePath + "/" + packageName + "/src/main/test" + "</source>");
     }
     addToPom(pom, "properties", properties);
     addToPom(pom, "dependencies", dependencies);
     addToPom(pom, "source-dirs", sourceDirs);
+    addToPom(pom, "test-source-dirs", testSourceDirs);
     write(pom, destinationPath + "/pom.xml");
   }
 
   private void write(List<String> lines, String fileName) throws Exception {
+    File outputFile = new File(fileName);
+    outputFile.getParentFile().mkdirs();
     PrintWriter pw = new PrintWriter(new PrintWriter(fileName));
     for (String line : lines) {
       pw.write(line);
@@ -189,7 +195,7 @@ class SamplesBuilder {
 
   private static String[] getAllDirectories(String path) {
     File[] files = new File(path).listFiles();
-    List<String> fileNamesList =  Arrays.stream(files)
+    List<String> fileNamesList = Arrays.stream(files)
         .filter(File::isDirectory)
         .map(File::getName)
         .collect(Collectors.toList());
@@ -207,6 +213,7 @@ class SamplesBuilder {
     } else {
       packageNames = args[1].split(",");
     }
+   // FileUtils.forceMkdir(new File(args[0] + "/samples-runner"));
     SamplesBuilder samplesBuilder = new SamplesBuilder(baseDir, packageNames);
     System.out.println("Merging app.yaml files");
     samplesBuilder.mergeAndWriteAppYaml();
