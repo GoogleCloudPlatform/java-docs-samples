@@ -131,9 +131,7 @@ public class AnalyzeBeta {
    * Gets {@link Sentiment} from the string {@code text}.
    */
   public Sentiment analyzeSentimentText(String text, String lang) throws IOException {
-    if (lang == null || lang.length() < 2) {
-      lang = "EN";
-    }
+  // NL autodetects the language
 
     // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
