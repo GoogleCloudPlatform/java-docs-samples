@@ -1,3 +1,17 @@
+# Copyright 2015 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # [START swagger]
 swagger: "2.0"
 info:
@@ -8,64 +22,67 @@ host: "echo-api.endpoints.YOUR-PROJECT-ID.cloud.goog"
 # [END swagger]
 basePath: "/v2"
 consumes:
-- "application/json"
+  - "application/json"
 produces:
-- "application/json"
+  - "application/json"
 schemes:
-- "https"
+  - "https"
 paths:
   "/echo":
     post:
       description: "Echo back a given message."
       operationId: "echo"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Echo"
           schema:
             $ref: "#/definitions/echoMessage"
       parameters:
-      - description: "Message to echo"
-        in: body
-        name: message
-        required: true
-        schema:
-          $ref: "#/definitions/echoMessage"
+        - 
+          description: "Message to echo"
+          in: body
+          name: message
+          required: true
+          schema:
+            $ref: "#/definitions/echoMessage"
   "/auth/info/googlejwt":
     get:
       description: "Returns the requests' authentication information."
       operationId: "auth_info_google_jwt"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Authenication info."
           schema:
             $ref: "#/definitions/authInfoResponse"
       x-security:
-      - google_jwt:
-          audiences:
-          # This must match the "aud" field in the JWT. You can add multiple
-          # audiences to accept JWTs from multiple clients.
-          - "echo.endpoints.sample.google.com"
+        - 
+          google_jwt:
+            audiences:
+              # This must match the "aud" field in the JWT. You can add multiple
+              # audiences to accept JWTs from multiple clients.
+              - "echo.endpoints.sample.google.com"
   "/auth/info/googleidtoken":
     get:
       description: "Returns the requests' authentication information."
       operationId: "authInfoGoogleIdToken"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Authenication info."
           schema:
             $ref: "#/definitions/authInfoResponse"
       x-security:
-      - google_id_token:
-          audiences:
-          # Your OAuth2 client's Client ID must be added here. You can add
-          # multiple client IDs to accept tokens from multiple clients.
-          - "YOUR-CLIENT-ID"
+        - 
+          google_id_token:
+            audiences:
+              # Your OAuth2 client's Client ID must be added here. You can add
+              # multiple client IDs to accept tokens from multiple clients.
+              - "YOUR-CLIENT-ID"
 definitions:
   echoMessage:
     properties:
@@ -79,7 +96,7 @@ definitions:
         type: "string"
 # This section requires all requests to any path to require an API key.
 security:
-- api_key: []
+  - api_key: []
 securityDefinitions:
   # This section configures basic authentication with an API key.
   api_key:
