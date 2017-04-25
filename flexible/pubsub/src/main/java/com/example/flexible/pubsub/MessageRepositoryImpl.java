@@ -96,5 +96,3 @@ public class MessageRepositoryImpl implements MessageRepository {
     return instance;
   }
 }
-
-

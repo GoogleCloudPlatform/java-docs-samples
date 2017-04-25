@@ -27,8 +27,3 @@ public interface MessageRepository {
    */
   List<Message> retrieve(int limit);
 }
-
-
-
-
-

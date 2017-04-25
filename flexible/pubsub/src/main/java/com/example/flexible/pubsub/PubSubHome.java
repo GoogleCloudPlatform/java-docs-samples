@@ -43,6 +43,5 @@ public class PubSubHome {
     return sb.toString();
   }
 
-  private PubSubHome() {
-  }
+  private PubSubHome() { }
 }

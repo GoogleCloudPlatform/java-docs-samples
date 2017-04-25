@@ -11,14 +11,15 @@ cd java-docs-samples/flexible/pubsub
 
 ## Setup
 
-Make sure `gcloud` is installed and authenticated.
+Make sure [`gcloud`](https://cloud.google.com/sdk/docs/) is installed and authenticated.
 
 Create a topic
 ```
 gcloud beta pubsub topics create <your-topic-name>
 ```
 
-Create a subscription, which includes specifying the endpoint to which the Pub/Sub server should send requests.
+Create a push subscription, to send messages to a Google Cloud Project URL
+ such as https://<your-project-id>.appspot.com/push.
 ```
 gcloud beta pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
@@ -47,7 +48,7 @@ curl -H "Content-Type: application/json" -i --data @sample_message.json
 
 ## Deploy
 
-Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` in `app.yaml`,
+Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` in [`app.yaml`](src/main/appengine/app.yaml),
 then:
 
 ```

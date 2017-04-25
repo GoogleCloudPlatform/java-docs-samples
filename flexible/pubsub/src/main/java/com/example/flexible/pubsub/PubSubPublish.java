@@ -56,20 +56,13 @@ public class PubSubPublish extends HttpServlet {
       resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
-
-  // ...
 // [END publish]
 
   private Publisher publisher;
 
-  public PubSubPublish() {
-  }
+  public PubSubPublish() { }
 
   PubSubPublish(Publisher publisher) {
     this.publisher = publisher;
   }
 }
-
-
-
-

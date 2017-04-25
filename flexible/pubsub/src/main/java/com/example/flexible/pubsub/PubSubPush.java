@@ -50,7 +50,6 @@ public class PubSubPush extends HttpServlet {
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
-  // ...
 // [END push]
 
   private Message getMessage(HttpServletRequest request) throws IOException {
@@ -80,4 +79,3 @@ public class PubSubPush extends HttpServlet {
     this.messageRepository = MessageRepositoryImpl.getInstance();
   }
 }
-

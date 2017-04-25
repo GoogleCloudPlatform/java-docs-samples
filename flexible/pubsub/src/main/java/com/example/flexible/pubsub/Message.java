@@ -50,4 +50,3 @@ public class Message {
     this.data = data;
   }
 }
-
