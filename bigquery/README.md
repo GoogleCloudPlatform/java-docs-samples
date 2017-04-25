@@ -18,8 +18,6 @@ recommended way to access the API.
     way to interact with BigQuery.
 - rest
   - This uses BigQuery's RESTful API directly. Not recommended.
-- src
-  - This uses [Google API Client Libraries](https://developers.google.com/api-client-library/java/). Not recommended.
 
 ## Quickstart
 

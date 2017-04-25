@@ -67,7 +67,6 @@
         <module>flexible/static-files</module>
         <module>flexible/twilio</module>
 
-        <module>bigquery</module>
         <module>bigquery/cloud-client</module>
         <module>bigquery/rest</module>
         <module>compute/cmdline</module>
@@ -86,7 +85,7 @@
         <module>monitoring/v3</module>
         <module>pubsub/cloud-client</module>
         <module>spanner/cloud-client</module>
-        <module>speech/grpc</module>
+        <module>speech/cloud-client</module>
         <module>storage/cloud-client</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
