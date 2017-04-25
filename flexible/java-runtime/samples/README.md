@@ -16,7 +16,6 @@ Get the latest sample code from GitHub using Git or download the repository as a
 
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 
-
 ## Before you begin
 
 1.  Follow the [quickstart for Java in the App Engine flexible
@@ -39,8 +38,8 @@ parameter in [pom.xml](pom.xml).
 `flexible.samples` accepts `all`as default, or a string separated list of package names,
  eg. `cloudsql, analytics`
 
-To build and deploy individual samples, navigate to the appropriate package under
- the [samples-source](samples-source) directory.
+To build and deploy individual samples, navigate to the README.md of the package under
+ the [samples-source](samples-source) director
 
 
 To run the application locally, use the Maven Jetty plugin.

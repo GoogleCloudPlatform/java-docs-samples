@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 class MergeYaml {
 
   Yaml yaml;

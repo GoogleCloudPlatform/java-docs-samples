@@ -29,6 +29,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <samples-output.dir>${project.parent.basedir}/samples-runner</samples-output.dir>
   </properties>
 
   <dependencies>
@@ -77,7 +78,7 @@
           </goals>
           <inherited>false</inherited>
           <configuration>
-            <workingDirectory>${project.parent.basedir}/samples-runner</workingDirectory>
+            <workingDirectory>${samples-output.dir}</workingDirectory>
             <executable>mvn</executable>
             <arguments>
               <argument>
@@ -94,7 +95,7 @@
             </goals>
             <inherited>false</inherited>
             <configuration>
-              <workingDirectory>${project.parent.basedir}/samples-runner</workingDirectory>
+              <workingDirectory>${samples-output.dir}</workingDirectory>
               <executable>mvn</executable>
               <arguments>
                 <argument>

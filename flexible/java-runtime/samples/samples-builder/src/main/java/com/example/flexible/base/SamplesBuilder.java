@@ -213,7 +213,6 @@ class SamplesBuilder {
     } else {
       packageNames = args[1].split(",");
     }
-   // FileUtils.forceMkdir(new File(args[0] + "/samples-runner"));
     SamplesBuilder samplesBuilder = new SamplesBuilder(baseDir, packageNames);
     System.out.println("Merging app.yaml files");
     samplesBuilder.mergeAndWriteAppYaml();

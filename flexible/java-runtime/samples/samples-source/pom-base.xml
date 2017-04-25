@@ -21,8 +21,8 @@
   <artifactId>flex-java-runtime-samples</artifactId>
 
   <parent>
+    <groupId>com.example.flexible</groupId>
     <artifactId>flex-java-runtime-samples-pom</artifactId>
-    <groupId>com.example</groupId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>

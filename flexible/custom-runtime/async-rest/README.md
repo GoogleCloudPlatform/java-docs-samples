@@ -45,4 +45,3 @@ To automatically stage and deploy the webapp to your project in the cloud do:
     mvn appengine:deploy
 
 See here for more information on the [GCloud Maven Plugin](https://github.com/GoogleCloudPlatform/gcloud-maven-plugin).
-
