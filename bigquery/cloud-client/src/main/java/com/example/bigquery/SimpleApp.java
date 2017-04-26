@@ -28,7 +28,6 @@ import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryResponse;
 import com.google.cloud.bigquery.QueryResult;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 // [END create_client]
@@ -41,10 +40,10 @@ public class SimpleApp {
     // [START run_query]
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(
-            "SELECT "
-                + "APPROX_TOP_COUNT(corpus, 10) as title, "
-                + "COUNT(*) as unique_words "
-                + "FROM `publicdata.samples.shakespeare`;")
+                "SELECT "
+                    + "APPROX_TOP_COUNT(corpus, 10) as title, "
+                    + "COUNT(*) as unique_words "
+                    + "FROM `publicdata.samples.shakespeare`;")
             // Use standard SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
@@ -73,11 +72,9 @@ public class SimpleApp {
     // [START print_results]
     QueryResult result = response.getResult();
 
+    // Print all pages of the results.
     while (result != null) {
-      Iterator<List<FieldValue>> iter = result.iterateAll();
-
-      while (iter.hasNext()) {
-        List<FieldValue> row = iter.next();
+      for (List<FieldValue> row : result.iterateAll()) {
         List<FieldValue> titles = row.get(0).getRepeatedValue();
         System.out.println("titles:");
 
@@ -98,4 +95,3 @@ public class SimpleApp {
   }
 }
 // [END all]
-

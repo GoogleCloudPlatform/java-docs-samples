@@ -27,9 +27,7 @@ import org.junit.runners.JUnit4;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-/**
- * Tests for simple app sample.
- */
+/** Tests for simple app sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SimpleAppIT {
