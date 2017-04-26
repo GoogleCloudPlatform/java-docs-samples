@@ -46,7 +46,7 @@ class SamplesBuilder {
       throws Exception {
     this.mergeYaml = new MergeYaml();
     this.basePath = basePath;
-    this.sourcePath = basePath + "/samples-source";
+    this.sourcePath = basePath;
     this.destinationPath = basePath + "/samples-runner";
     this.packageNames = packageNames;
   }
@@ -197,6 +197,10 @@ class SamplesBuilder {
     File[] files = new File(path).listFiles();
     List<String> fileNamesList = Arrays.stream(files)
         .filter(File::isDirectory)
+        .filter(x -> !x.getName().equals("samples-runner")
+            && !x.getName().equals("samples-builder")
+            && !x.getName().equals("src")
+            && !x.getName().equals("target"))
         .map(File::getName)
         .collect(Collectors.toList());
     String[] fileNames = new String[fileNamesList.size()];
@@ -209,7 +213,7 @@ class SamplesBuilder {
     String baseDir = args[0];
     String[] packageNames;
     if (args[1] == null || args[1].equals("all")) {
-      packageNames = getAllDirectories(args[0] + "/samples-source");
+      packageNames = getAllDirectories(args[0]);
     } else {
       packageNames = args[1].split(",");
     }
@@ -223,7 +227,6 @@ class SamplesBuilder {
     System.out.println("Copying source and webapp files");
     samplesBuilder.copyPackageFiles("src/main/webapp");
     samplesBuilder.copyPackageFiles("src/main/resources");
-    samplesBuilder.copyFile("index.jsp");
   }
 }
 
