@@ -61,6 +61,7 @@
         <module>flexible/mailgun</module>
         <module>flexible/mailjet</module>
         <module>flexible/memcache</module>
+        <module>flexible/pubsub</module>
         <module>flexible/sendgrid</module>
         <module>flexible/sparkjava</module>
         <module>flexible/static-files</module>
