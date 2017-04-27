@@ -1,7 +1,12 @@
 # Hello World Google Cloud Endpoints for App Engine
 
 This sample provides an example of a [migration][7] from the prior version of
-[Google Cloud Endpoints Frameworks][3] to new [Google Cloud Endpoints Frameworks for App Engine][8].
+[Google Cloud Endpoints Frameworks][3] to new
+[Google Cloud Endpoints Frameworks for App Engine][8] using a
+**Discovery Document**. Additionally, this sample provides an example of using
+the new App Engine Maven and Gradle plugins for deploying your Google App Engine
+Standard applications.
+
 This sample contains comments of how to use the prior Endpoints Frameworks as
 well. For clarity, the prior Endpoints Frameworks and the new Endpoints
 Frameworks are denoted as Endpoints Frameworks v1.0 and Endpoints Frameworks
@@ -22,6 +27,10 @@ process is explained [here][8] and a quickstart is provided [here][9].
 - [Google Cloud Endpoints Frameworks v1.0][3]
 
 ## Build and Deployment Plugins
+- [Google App Engine Maven plugin][14]
+- [Google App Engine Gradle plugin][15]
+
+## Discovery Document and Client Library Generation Plugins
 - [Google Cloud Endpoints Frameworks Maven Plugin][10]
 - [Google Cloud Endpoints Frameworks Gradle Plugin][11]
 
@@ -37,10 +46,12 @@ process is explained [here][8] and a quickstart is provided [here][9].
        have registered in the
        [Credentials on Developers Console for OAuth 2.0 client IDs][6].
 
-1. [Optional]: User Authenticating with Google Accounts in other Applications Types
+1. [Optional]: User Authenticating with Google Accounts in other Applications
+   Types
 
-    - Inside [Constants.java](src/main/java/com/example/helloendpoints/Constants.java) you will find placeholders for Android
-      applications using Google Accounts client IDs registered in the
+    - Inside [Constants.java](src/main/java/com/example/helloendpoints/Constants.java)
+      you will find placeholders for Android applications using Google Accounts
+      client IDs registered in the
       [Credentials on Developers Console for OAuth 2.0 client IDs][6].
 
     - These client IDs are used when defining annotation for this sample API
@@ -77,8 +88,8 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
     [http://localhost:8080/_ah/api/explorer][13]
 
-1. Generate the client library located at `target/client-libs/helloworld-v1-java.zip`
-   by using:
+1. Generate the client library located at
+   `target/client-libs/helloworld-v1-java.zip` by using:
 
     `mvn endpoints-framework:clientLibs`
 
@@ -100,8 +111,8 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
     [http://localhost:8080/_ah/api/explorer][13]
 
-1. Generate the client library located at `build/endpointsClientLibs/helloworld-v1-java.zip`
-   by using:
+1. Generate the client library located at
+   `build/endpointsClientLibs/helloworld-v1-java.zip` by using:
 
     `gradle endpointsClientLibs`
 
@@ -123,3 +134,5 @@ process is explained [here][8] and a quickstart is provided [here][9].
 [11]: https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin
 [12]: https://cloud.google.com/endpoints/docs/authenticating-users-frameworks
 [13]: http://localhost:8080/_ah/api/explorer
+[14]: https://github.com/GoogleCloudPlatform/app-maven-plugin
+[15]: https://github.com/GoogleCloudPlatform/app-gradle-plugin
