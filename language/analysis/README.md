@@ -43,7 +43,8 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     <text | GCS path>
 ```
 
-### Usage Examples
+### Usage Examples (stable)
+
 Analyze entities
 ```
 java -cp target/language-entities-1.0-jar-with-dependencies.jar \
@@ -68,16 +69,6 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     "The quick brown fox jumped over the lazy dog."
 ```
 
-Analyze sentiment with Beta Languages such as German
-```
-java -cp target/language-entities-1.0-jar-with-dependencies.jar \
-  com.google.cloud.language.samples.AnalyzeBeta sentiment "Ich habe eine wundervolle Zeit." "DE"
-```
-Analyze entity sentiment - Beta
-```
-java -cp target/language-entities-1.0-jar-with-dependencies.jar     com.google.cloud.language.samples.AnalyzeBeta  entities-sentiment     "The quick brown fox jumped over the lazy dog."
-```
-
 Included with the sample are `demo.sh` and `demo.bat` which show additional
 examples of usage.
 
@@ -89,4 +80,26 @@ demo.sh
 Run demo from Windows
 ```
 demo
+```
+
+### Usage Examples (beta)
+
+Analyze sentiment beta
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.AnalyzeBeta \
+  sentiment \
+  "Der schnelle braune Fuchs sprang über den faulen Hund."
+```
+
+Analyze entity sentiment Beta
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.AnalyzeBeta entities-sentiment \
+  "There's nothing better than searching for ice cream on Google."
+```
+
+Run beta demo from *nix or OSX
+```
+demo-beta.sh
 ```
