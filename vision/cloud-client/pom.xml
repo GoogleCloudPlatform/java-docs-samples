@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>0.13.0-beta</version>
+      <version>0.17.1-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 

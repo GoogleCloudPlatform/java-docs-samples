@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud</artifactId>
-      <version>0.13.0-alpha</version>
+      <version>0.17.1-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
