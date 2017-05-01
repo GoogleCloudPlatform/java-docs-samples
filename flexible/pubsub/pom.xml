@@ -29,12 +29,26 @@
   </parent>
 
   <properties>
-    <appengine.maven.plugin>1.2.1</appengine.maven.plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
-    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
+
+    <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
+
+    <appengine.maven.plugin>1.3.0</appengine.maven.plugin>
+    <jetty>9.4.4.v20170414</jetty>
   </properties>
+
+<!-- FIXME(lesv) Temporary fix due to Datastore having the wrong version -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+          <version>1.2.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+<!-- end of FIXME -->
 
   <dependencies>
     <dependency>
@@ -71,11 +85,7 @@
       <version>1.9.51</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>9.4.4.v20170414</version>
-    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -86,11 +96,6 @@
       <artifactId>mockito-all</artifactId>
       <version>1.10.19</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>9.4.4.v20170414</version>
     </dependency>
   </dependencies>
   <build>
@@ -108,7 +113,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.maven.plugin}</version>
+        <version>${jetty}</version>
       </plugin>
     </plugins>
   </build>

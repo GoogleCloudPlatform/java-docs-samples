@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>0.17.1-beta</version>
+      <version>0.14.0-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -49,6 +49,7 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
