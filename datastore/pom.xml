@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>0.13.0-beta</version>
+      <version>1.0.0</version>
     </dependency>
 
     <!-- Test dependencies -->
