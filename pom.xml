@@ -49,23 +49,7 @@
         <module>appengine</module>
 
         <!-- App Engine Flexible -->
-        <module>flexible/analytics</module>
-        <module>flexible/async-rest</module>
-        <module>flexible/cloudsql</module>
-        <module>flexible/cloudstorage</module>
-        <module>flexible/cron</module>
-        <module>flexible/datastore</module>
-        <module>flexible/disk</module>
-        <module>flexible/extending-runtime</module>
-        <module>flexible/helloworld</module>
-        <module>flexible/mailgun</module>
-        <module>flexible/mailjet</module>
-        <module>flexible/memcache</module>
-        <module>flexible/pubsub</module>
-        <module>flexible/sendgrid</module>
-        <module>flexible/sparkjava</module>
-        <module>flexible/static-files</module>
-        <module>flexible/twilio</module>
+        <module>flexible</module>
 
         <module>bigquery/cloud-client</module>
         <module>bigquery/rest</module>
@@ -75,6 +59,7 @@
         <module>compute/sendgrid</module>
         <module>datastore</module>
         <module>datastore/cloud-client</module>
+
         <module>kms</module>
         <module>language/analysis</module>
         <module>language/cloud-client</module>
