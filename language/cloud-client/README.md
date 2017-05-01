@@ -17,14 +17,13 @@ Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
-	mvn clean package -DskipTests
-
-You can then run a given `ClassName` via:
-
-	mvn exec:java -Dexec.mainClass=com.example.language.ClassName \
-	    -DpropertyName=propertyValue \
-		-Dexec.args="arg1 'arg 2' arg3"
+```bash
+mvn clean compile assembly:single
+```
 
 ### Analyze a string for sentiment (using the quickstart sample)
 
-    mvn exec:java -Dexec.mainClass=com.example.language.QuickstartSample
+```
+java -cp target/language-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.language.QuickstartSample
+```
