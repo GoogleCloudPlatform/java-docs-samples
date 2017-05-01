@@ -33,12 +33,25 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <!-- FIXME(lesv) - temp to fix an issue w/ GA Datastore -->
+<!--
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+          <version>1.2.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+ -->
+
   <dependencies>
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud</artifactId>
-      <version>0.13.0-alpha</version>
+      <version>0.14.0-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
