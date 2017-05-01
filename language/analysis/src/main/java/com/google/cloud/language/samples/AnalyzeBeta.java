@@ -131,12 +131,18 @@ public class AnalyzeBeta {
    * Gets {@link Sentiment} from the string {@code text}.
    */
   public Sentiment analyzeSentimentText(String text, String lang) throws IOException {
-  // NL autodetects the language
-
-    // Note: This does not work on App Engine standard.
-    Document doc = Document.newBuilder()
-        .setLanguage(lang)
-        .setContent(text).setType(Type.PLAIN_TEXT).build();
+    // NL autodetects the language
+    Document doc;
+    if (lang != null) {
+      doc = Document.newBuilder()
+          .setLanguage(lang)
+          .setContent(text).setType(Type.PLAIN_TEXT)
+          .build();
+    } else {
+      doc = Document.newBuilder()
+          .setContent(text).setType(Type.PLAIN_TEXT)
+          .build();
+    }
     AnalyzeSentimentResponse response = languageApi.analyzeSentiment(doc);
     return response.getDocumentSentiment();
   }
@@ -145,7 +151,6 @@ public class AnalyzeBeta {
    * Gets {@link Entity}s from the string {@code text} with sentiment.
    */
   public List<Entity> entitySentimentText(String text) throws IOException {
-    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
             .setContent(text).setType(Type.PLAIN_TEXT).build();
     AnalyzeEntitySentimentRequest request = AnalyzeEntitySentimentRequest.newBuilder()
@@ -160,7 +165,6 @@ public class AnalyzeBeta {
    * with sentiment.
    */
   public List<Entity> entitySentimentFile(String path) throws IOException {
-    // Note: This does not work on App Engine standard.
     Document doc = Document.newBuilder()
             .setGcsContentUri(path).setType(Type.PLAIN_TEXT).build();
     AnalyzeEntitySentimentRequest request = AnalyzeEntitySentimentRequest.newBuilder()
