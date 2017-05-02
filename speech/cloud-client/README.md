@@ -15,36 +15,33 @@ Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
-  mvn clean package -DskipTests
-
-You can then run a given `ClassName` via:
-
-  mvn exec:java -Dexec.mainClass=com.example.speech.ClassName
+  mvn clean compile assembly:single
 
 ### Transcribe a local audio file (using the quickstart sample)
 
-    mvn exec:java -Dexec.mainClass=com.example.speech.QuickstartSample
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.QuickstartSample
 
 ### Transcribe a local audio file (using the recognize sample)
 ```
-    mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
-    -Dexec.args="syncrecognize ./resources/audio.raw"
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize syncrecognize ./resources/audio.raw
 ```
 
 ### Asynchronously transcribe a local audio file (using the recognize sample)
 ```
-    mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
-    -Dexec.args="asyncrecognize ./resources/audio.raw"
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize asyncrecognize ./resources/audio.raw
 ```
 
 ### Transcribe a remote audio file (using the recognize sample)
 ```
-    mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
-    -Dexec.args="syncrecognize 'gs://cloud-samples-tests/speech/brooklyn.flac'"
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize syncrecognize gs://cloud-samples-tests/speech/brooklyn.flac
 ```
 
 ### Asynchronously transcribe a remote audio file (using the recognize sample)
 ```
-    mvn exec:java -Dexec.mainClass=com.example.speech.Recognize \
-    -Dexec.args="asyncrecognize 'gs://cloud-samples-tests/speech/vr.flac'"
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize asyncrecognize gs://cloud-samples-tests/speech/vr.flac
 ```
