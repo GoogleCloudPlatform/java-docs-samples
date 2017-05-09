@@ -26,6 +26,10 @@
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
         <version>1.0.2</version>
+<!--
+        <relativePath>../java-repo-tools</relativePath>
+ -->
+
     </parent>
 
     <properties>
@@ -39,10 +43,6 @@
         <spanner.sample.database>mysample</spanner.sample.database>
         <spanner.quickstart.database>quickstart-db</spanner.quickstart.database>
     </properties>
-
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
 
     <modules>
         <!-- App Engine Standard -->
@@ -61,6 +61,7 @@
         <module>flexible/mailgun</module>
         <module>flexible/mailjet</module>
         <module>flexible/memcache</module>
+        <module>flexible/pubsub</module>
         <module>flexible/sendgrid</module>
         <module>flexible/sparkjava</module>
         <module>flexible/static-files</module>
