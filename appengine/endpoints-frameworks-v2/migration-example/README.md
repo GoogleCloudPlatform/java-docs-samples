@@ -123,11 +123,11 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
 [1]: https://cloud.google.com/appengine/docs/java/
 [2]: http://java.com/en/
-[3]: https://cloud.google.com/appengine/docs/java/endpoints/
+[3]: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java
 [4]: https://cloud.google.com/appengine/docs/java/tools/maven
 [5]: http://localhost:8080/
 [6]: https://console.developers.google.com/project/_/apiui/credential
-[7]: https://cloud.google.com/appengine/docs/java/endpoints/migrating
+[7]: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating
 [8]: https://cloud.google.com/endpoints/docs/frameworks/java/about-cloud-endpoints-frameworks
 [9]: https://cloud.google.com/endpoints/docs/frameworks/java/quickstart-frameworks-java
 [10]: https://github.com/GoogleCloudPlatform/endpoints-framework-maven-plugin
