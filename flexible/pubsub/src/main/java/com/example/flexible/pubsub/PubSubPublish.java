@@ -51,7 +51,6 @@ public class PubSubPublish extends HttpServlet {
       publisher.publish(pubsubMessage);
       // redirect to home page
       resp.sendRedirect("/");
-      // [END publish]
     } catch (Exception e) {
       resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
