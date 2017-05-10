@@ -55,7 +55,7 @@ dependencies {
 
   // Endpoints Frameworks v2.0
   // [START endpoints-tools]
-  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.0.4'
+  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.0.7'
   // [END endpoints-tools]
   // End of Endpoints Frameworks v2.0
 }
