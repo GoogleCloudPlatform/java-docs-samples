@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START push]
+// [START pubsub_appengine_flex_push]
 @WebServlet(value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
 
@@ -50,7 +50,7 @@ public class PubSubPush extends HttpServlet {
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
-// [END push]
+// [END pubsub_appengine_flex_push]
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));

@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START publish]
+// [START pubsub_appengine_flex_publish]
 @WebServlet(name = "Publish with PubSub", value = "/pubsub/publish")
 public class PubSubPublish extends HttpServlet {
 
@@ -51,12 +51,11 @@ public class PubSubPublish extends HttpServlet {
       publisher.publish(pubsubMessage);
       // redirect to home page
       resp.sendRedirect("/");
-      // [END publish]
     } catch (Exception e) {
       resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
-// [END publish]
+// [END pubsub_appengine_flex_publish]
 
   private Publisher publisher;
 
