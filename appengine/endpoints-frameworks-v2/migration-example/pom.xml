@@ -33,7 +33,7 @@ limitations under the License.
         <javax.inject.version>1</javax.inject.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <mojo.versions.maven.version>2.1</mojo.versions.maven.version>
+        <mojo.versions.maven.version>2.3</mojo.versions.maven.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <servlet.api.version>2.5</servlet.api.version>
     </properties>
