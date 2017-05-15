@@ -1,7 +1,7 @@
-# Image Feature Detection Sample
+# Video Feature Detection Sample
 
 [Google Cloud Video Intelligence API][video] provides feature detection for
-images. This API is part of the larger collection of Cloud Machine Learning
+videos. This API is part of the larger collection of Cloud Machine Learning
 APIs.
 
 This sample Java application demonstrates how to access the Cloud Video API
