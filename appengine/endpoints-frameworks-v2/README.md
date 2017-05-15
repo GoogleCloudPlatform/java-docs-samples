@@ -13,7 +13,7 @@ The new Google Cloud Endpoints Frameworks for App Engine provides
 It's recommended that you migrate projects using the prior version of [Cloud Endpoints Frameworks][1].
 
 
-[1]: https://cloud.google.com/appengine/docs/java/endpoints/
-[2]: https://cloud.google.com/appengine/docs/java/endpoints/migrating
+[1]: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java
+[2]: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating
 [3]: https://cloud.google.com/endpoints/docs/frameworks/java/about-cloud-endpoints-frameworks
 [4]: https://cloud.google.com/endpoints/docs/frameworks/java/quickstart-frameworks-java
