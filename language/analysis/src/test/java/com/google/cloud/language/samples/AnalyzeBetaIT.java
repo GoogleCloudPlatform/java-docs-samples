@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.language.spi.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Entity;
+import com.google.cloud.language.v1beta2.EntityMention;
 import com.google.cloud.language.v1beta2.Sentiment;
 
 import org.junit.Before;
@@ -28,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +66,15 @@ public class AnalyzeBetaIT {
 
     // Assert
     assertThat(got).named("entity names").contains("Seattle");
+  }
+
+  @Test public void analyzeSyntax_entitySentimentTextEncoded() throws Exception {
+    List<Entity> entities = analyzeApp.entitySentimentText("foo→bar");
+
+    List<EntityMention> mentions = entities.listIterator().next().getMentionsList();
+
+    // Assert
+    assertThat(mentions.get(0).getText().getBeginOffset() == 4);
   }
 
   @Test public void analyzeSyntax_entitySentimentFile() throws Exception {
