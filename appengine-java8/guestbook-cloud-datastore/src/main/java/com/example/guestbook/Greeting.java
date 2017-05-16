@@ -24,7 +24,6 @@ import com.google.cloud.datastore.FullEntity.Builder;
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
 import com.google.common.base.MoreObjects;
-
 import java.util.Date;
 import java.util.Objects;
 
@@ -57,7 +56,8 @@ public class Greeting {
     key = entity.hasKey() ? entity.getKey() : null;
     authorEmail = entity.contains("authorEmail") ? entity.getString("authorEmail") : null;
     authorId = entity.contains("authorId") ? entity.getString("authorId") : null;
-    date = entity.contains("date") ? entity.getTimestamp("date").toDate() : null;
+
+    date = entity.contains("date") ? entity.getTimestamp("date").toSqlTimestamp() : null;
     content = entity.contains("content") ? entity.getString("content") : null;
   }
 
@@ -77,7 +77,7 @@ public class Greeting {
     }
 
     builder.set("content", content);
-    builder.set("date", Timestamp.copyFrom(date));
+    builder.set("date", Timestamp.of(date));
 
     getDatastore().put(builder.build());
   }
