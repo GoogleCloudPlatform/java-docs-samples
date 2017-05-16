@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.google.apis</groupId>
+  <artifactId>google-api-services-cloudiot</artifactId>
+  <versioning>
+    <versions>
+      <version>v1beta1-rev20170418-1.22.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20170502215244</lastUpdated>
+  </versioning>
+</metadata>
