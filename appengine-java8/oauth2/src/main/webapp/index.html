@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2016 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="google-signin-scope" content="profile">
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID_HERE.apps.googleusercontent.com" />
+    <title>appengine-oauth2 sample</title>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+    function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var access_token = googleUser.getAuthResponse().access_token;
+
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/hello');
+        xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            document.getElementById('response').innerHTML = xhr.responseText;
+            document.getElementById('me').style = "display:inline;";
+        };
+        xhr.onError = function() {
+            document.getElementById('response').innerHTML = "Error";
+            document.getElementById('me').style = "display:inline;";
+        };
+        xhr.send();
+    }
+    </script>
+</head>
+<body>
+<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+<div id="me" style="display: none;">
+    <h1><span id="response"></span></h1>
+</div>
+</body>
+</html>
