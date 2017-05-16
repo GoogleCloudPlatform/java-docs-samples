@@ -19,7 +19,7 @@ Copyright 2016 Google Inc.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-requests</artifactId>
+  <artifactId>appengine-requests-j8</artifactId>
 
   <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
   <parent>

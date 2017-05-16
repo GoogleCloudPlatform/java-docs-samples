@@ -18,7 +18,7 @@ Copyright 2015 Google Inc.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-staticfiles</artifactId>
+  <artifactId>appengine-staticfiles-j8</artifactId>
 
   <parent>
     <artifactId>appengine-java8-samples</artifactId>
