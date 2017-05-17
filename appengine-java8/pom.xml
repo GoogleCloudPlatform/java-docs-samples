@@ -37,6 +37,7 @@
     <!-- App Engine Standard -->
     <module>analytics</module>
     <module>appidentity</module>
+    <!--<module>bigtable</module>--><!-- TODO(lesv) circle won't be happy yet -->
     <module>cloudsql</module>
 
     <module>datastore</module>
