@@ -138,7 +138,7 @@ public class Analyze {
       out.printf("\tBeginOffset: %d\n", token.getText().getBeginOffset());
       out.printf("Lemma: %s\n", token.getLemma());
       out.printf("PartOfSpeechTag: %s\n", token.getPartOfSpeech().getTag());
-      out.printf("\tAspect: %s\n",token.getPartOfSpeech().getAspect());
+      out.printf("\tAspect: %s\n", token.getPartOfSpeech().getAspect());
       out.printf("\tCase: %s\n", token.getPartOfSpeech().getCase());
       out.printf("\tForm: %s\n", token.getPartOfSpeech().getForm());
       out.printf("\tGender: %s\n",token.getPartOfSpeech().getGender());
