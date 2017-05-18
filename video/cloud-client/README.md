@@ -36,7 +36,7 @@ After you have authorized, you can analyze videos.
 Detect Faces
 ```
 java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.video.Detect faces gs://demomaker/volleyball_court.mp4
+    com.example.video.Detect faces gs://cloudmleap/video/next/volleyball_court.mp4
 ```
 
 Detect Labels
@@ -57,5 +57,5 @@ java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
 Detect Shots
 ```
 java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.video.Detect shots gs://demomaker/gbikes_dinosaur.mp4
+    com.example.video.Detect shots gs://cloudmleap/video/next/gbikes_dinosaur.mp4
 ```
