@@ -19,11 +19,13 @@ buildscript {      // Configuration for building
   }
   dependencies {
     classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.1'
+    classpath 'org.akhikhl.gretty:gretty:+'
   }
 }
 
 apply plugin: 'java'
 apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'  // To get webappcopy
 apply plugin: 'com.google.cloud.tools.appengine'
 
 group = 'com.example.google.cloud.bigtable'
@@ -53,6 +55,26 @@ dependencies {
     testCompile group: 'com.google.truth', name: 'truth', version:'0.30'
     testCompile group: 'junit', name: 'junit', version:'4.12'
     testCompile group: 'org.mockito', name: 'mockito-all', version:'1.10.19'
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+gretty {
+    contextPath = '/'
+    servletContainer = 'jetty9'
+
+    jvmArgs = [ '-DBIGTABLE_PROJECT=' + System.getProperty("bigtable.projectID"),
+          '-DBIGTABLE_INSTANCE=' + System.getProperty("bigtable.instanceID")]
+
+    webappCopy {
+    // Enable filtering on all xml files in WEB-INF
+    filesMatching "**/WEB-INF/*.xml", { FileCopyDetails fileDetails ->
+      logger.lifecycle 'File filtered: {}', fileDetails.path
+      filter (ReplaceTokens, tokens: [
+        'bigtable.projectID' : System.getProperty("bigtable.projectID"),
+        'bigtable.instanceID': System.getProperty("bigtable.instanceID")
+      ])
+    }
+  }
 }
 
 // Always run unit tests
