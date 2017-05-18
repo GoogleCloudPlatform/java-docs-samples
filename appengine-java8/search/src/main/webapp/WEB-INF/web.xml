@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+  <servlet>
+    <servlet-name>document</servlet-name>
+    <servlet-class>com.example.appengine.search.DocumentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>document</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>index</servlet-name>
+    <servlet-class>com.example.appengine.search.IndexServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>index</servlet-name>
+    <url-pattern>/index</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>search</servlet-name>
+    <servlet-class>com.example.appengine.search.SearchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>search</servlet-name>
+    <url-pattern>/search</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>search_option</servlet-name>
+    <servlet-class>com.example.appengine.search.SearchOptionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>search_option</servlet-name>
+    <url-pattern>/search_option</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>delete</servlet-name>
+    <servlet-class>com.example.appengine.search.DeleteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>delete</servlet-name>
+    <url-pattern>/delete</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>schema</servlet-name>
+    <servlet-class>com.example.appengine.search.SchemaServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>schema</servlet-name>
+    <url-pattern>/schema</url-pattern>
+  </servlet-mapping>
+</web-app>
