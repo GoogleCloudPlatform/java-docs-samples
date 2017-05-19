@@ -21,7 +21,7 @@ limitations under the License.
          version="3.1">
 
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>bigtable.jsp</welcome-file>
   </welcome-file-list>
   <context-param>
       <param-name>BIGTABLE_PROJECT</param-name>

@@ -19,11 +19,13 @@ package com.example.appengine.appidentity;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebServlet(name="UrlShortener", description = "AppIdentity: Url Shortener", urlPatterns = "/appidentity/shorten")
 public class UrlShortenerServlet extends HttpServlet {
   private final UrlShortener shortener;
 

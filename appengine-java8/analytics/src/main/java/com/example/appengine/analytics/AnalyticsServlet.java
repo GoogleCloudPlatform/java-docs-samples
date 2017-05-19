@@ -19,6 +19,7 @@ package com.example.appengine.analytics;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 
+import javax.servlet.annotation.WebServlet;
 import org.apache.http.client.utils.URIBuilder;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+@WebServlet(name="analytics", description = "Analytics: Send Analytics Event to Google Analytics", urlPatterns = "/analytics")
 public class AnalyticsServlet extends HttpServlet {
 
   @Override
