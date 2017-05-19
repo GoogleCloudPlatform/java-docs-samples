@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(name="UrlShortener", description = "AppIdentity: Url Shortener", urlPatterns = "/appidentity/shorten")
+@WebServlet(name = "UrlShortener", description = "AppIdentity: Url Shortener",
+    urlPatterns = "/appidentity/shorten")
 public class UrlShortenerServlet extends HttpServlet {
   private final UrlShortener shortener;
 

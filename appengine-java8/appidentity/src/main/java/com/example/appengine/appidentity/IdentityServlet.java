@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(name="appidentity", description = "AppIdentity: Get the Host Name", urlPatterns = "/appidentity/identity")
+@WebServlet(name = "appidentity", description = "AppIdentity: Get the Host Name",
+    urlPatterns = "/appidentity/identity")
 public class IdentityServlet extends HttpServlet {
 
   // [START versioned_hostnames]

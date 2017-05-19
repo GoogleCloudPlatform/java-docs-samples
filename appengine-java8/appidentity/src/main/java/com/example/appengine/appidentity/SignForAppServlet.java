@@ -19,6 +19,7 @@ package com.example.appengine.appidentity;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.appidentity.PublicCertificate;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,13 +35,15 @@ import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(name="signforapp", description = "AppIdentity: Sign 'abcdefg'", urlPatterns = "/appidentity/sign")
+@WebServlet(name = "signforapp", description = "AppIdentity: Sign 'abcdefg'",
+    urlPatterns = "/appidentity/sign")
 public class SignForAppServlet extends HttpServlet {
   private final AppIdentityService appIdentity;
 
@@ -80,9 +83,9 @@ public class SignForAppServlet extends HttpServlet {
 
   private String simulateIdentityAssertion()
       throws CertificateException, UnsupportedEncodingException, NoSuchAlgorithmException,
-             InvalidKeyException, SignatureException {
+      InvalidKeyException, SignatureException {
     // Simulate the sending app.
-    String message = "abcdefg "+ Calendar.getInstance().getTime().toString();
+    String message = "abcdefg " + Calendar.getInstance().getTime().toString();
     byte[] blob = message.getBytes();
     byte[] blobSignature = signBlob(blob);
     byte[] publicCert = getPublicCertificate();

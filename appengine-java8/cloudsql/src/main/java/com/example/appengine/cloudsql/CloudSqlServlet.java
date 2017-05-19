@@ -37,7 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name="CloudSQL", description = "CloudSQL: Write low order IP address to Cloud SQL", urlPatterns = "/cloudsql")
+@WebServlet(name = "CloudSQL", description = "CloudSQL: Write low order IP address to Cloud SQL",
+    urlPatterns = "/cloudsql")
 public class CloudSqlServlet extends HttpServlet {
 
   @Override

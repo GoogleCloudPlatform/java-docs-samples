@@ -14,7 +14,6 @@
 
 package com.example.appengine;
 
-import javax.servlet.annotation.WebServlet;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -24,13 +23,16 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(name="URLFetch", description = "URLFetch: Write low order IP address to Cloud SQL", urlPatterns = "/urlfetch")
+@WebServlet(name = "URLFetch", description = "URLFetch: Write low order IP address to Cloud SQL",
+    urlPatterns = "/urlfetch")
 public class UrlFetchServlet extends HttpServlet {
 
   @Override
