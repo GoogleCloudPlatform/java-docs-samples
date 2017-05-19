@@ -76,8 +76,6 @@
 
     <module>twilio</module>
 
-    <module>unittests</module>
-
     <module>urlfetch</module>
     <module>users</module>
 
