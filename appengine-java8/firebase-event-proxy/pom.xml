@@ -24,7 +24,7 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>appengine-java8-samples</artifactId>
       <version>1.0.0</version>
-      <relativePath>../..</relativePath>
+      <relativePath>..</relativePath>
   </parent>
 
   <properties>
