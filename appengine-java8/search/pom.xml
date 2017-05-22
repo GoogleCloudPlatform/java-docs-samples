@@ -79,8 +79,6 @@ Copyright 2015 Google Inc.
     </dependency>
   </dependencies>
   <build>
-    <!-- for hot reload of the web application -->
-    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>

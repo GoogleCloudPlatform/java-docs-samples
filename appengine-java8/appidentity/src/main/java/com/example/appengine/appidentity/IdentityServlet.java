@@ -20,11 +20,14 @@ import com.google.apphosting.api.ApiProxy;
 
 import java.io.IOException;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "appidentity", description = "AppIdentity: Get the Host Name",
+    urlPatterns = "/appidentity/identity")
 public class IdentityServlet extends HttpServlet {
 
   // [START versioned_hostnames]

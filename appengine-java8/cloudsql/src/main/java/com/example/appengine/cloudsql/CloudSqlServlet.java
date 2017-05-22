@@ -30,12 +30,15 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+@WebServlet(name = "CloudSQL", description = "CloudSQL: Write low order IP address to Cloud SQL",
+    urlPatterns = "/cloudsql")
 public class CloudSqlServlet extends HttpServlet {
 
   @Override

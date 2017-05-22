@@ -27,12 +27,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+@WebServlet(name = "analytics", description = "Analytics: Send Analytics Event to Google Analytics",
+    urlPatterns = "/analytics")
 public class AnalyticsServlet extends HttpServlet {
 
   @Override

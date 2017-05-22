@@ -23,12 +23,16 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "URLFetch", description = "URLFetch: Write low order IP address to Cloud SQL",
+    urlPatterns = "/urlfetch")
 public class UrlFetchServlet extends HttpServlet {
 
   @Override
@@ -49,7 +53,7 @@ public class UrlFetchServlet extends HttpServlet {
     JSONObject jo = new JSONObject(json.toString());
 
     req.setAttribute("joke", jo.getJSONObject("value").getString("joke"));
-    req.getRequestDispatcher("/main.jsp").forward(req, resp);
+    req.getRequestDispatcher("/urlfetchresult.jsp").forward(req, resp);
   }
 
   @Override
@@ -61,12 +65,12 @@ public class UrlFetchServlet extends HttpServlet {
 
     if (id == null || text == null || id == "" || text == "") {
       req.setAttribute("error", "invalid input");
-      req.getRequestDispatcher("/main.jsp").forward(req, resp);
+      req.getRequestDispatcher("/urlfetchresult.jsp").forward(req, resp);
       return;
     }
 
     JSONObject jsonObj = new JSONObject()
-        .put("userId", 33)
+        .put("userId", 1)
         .put("id", id)
         .put("title", text)
         .put("body", text);
@@ -97,7 +101,7 @@ public class UrlFetchServlet extends HttpServlet {
       req.setAttribute("error", conn.getResponseCode() + " " + conn.getResponseMessage());
     }
     // [END complex]
-    req.getRequestDispatcher("/main.jsp").forward(req, resp);
+    req.getRequestDispatcher("/urlfetchresult.jsp").forward(req, resp);
   }
 
 }

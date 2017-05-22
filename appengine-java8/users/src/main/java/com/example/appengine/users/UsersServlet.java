@@ -21,10 +21,13 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@WebServlet(name = "UserAPI", description = "UserAPI: Login / Logout with UserService",
+    urlPatterns = "/userapi")
 public class UsersServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)

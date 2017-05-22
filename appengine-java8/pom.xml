@@ -54,8 +54,6 @@
     <module>guestbook-cloud-datastore</module>
     <module>guestbook-objectify</module>
 
-    <module>helloworld</module>
-
     <module>images</module>
     <module>logs</module>
     <module>mailgun</module>
@@ -77,8 +75,6 @@
     <module>taskqueue/push</module>
 
     <module>twilio</module>
-
-    <module>unittests</module>
 
     <module>urlfetch</module>
     <module>users</module>
