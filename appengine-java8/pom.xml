@@ -1,5 +1,5 @@
 <!--
- Copyright 2016 Google Inc.
+ Copyright 2017 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@
     <module>cloudsql</module>
 
     <module>datastore</module>
-    <module>datastore/indexes</module>
-    <module>datastore/indexes-exploding</module>
-    <module>datastore/indexes-perfect</module>
+    <module>datastore-indexes</module>
+    <module>datastore-indexes-exploding</module>
+    <module>datastore-indexes-perfect</module>
 
-    <module>endpoints-frameworks-v2/backend</module>
+    <module>endpoints-v2-backend</module>
 
-    <module>firebase-event-proxy/gae-firebase-event-proxy</module>
+    <module>firebase-event-proxy</module>
 
     <module>firebase-tictactoe</module>
 
@@ -65,14 +65,14 @@
     <module>search</module>
     <module>sendgrid</module>
 
-    <module>remote/remote-client</module>
-    <module>remote/remote-server</module>
+    <module>remote-client</module>
+    <module>remote-server</module>
 
     <module>static-files</module>
 
-    <module>taskqueue/deferred</module>
-    <module>taskqueue/pull</module>
-    <module>taskqueue/push</module>
+    <module>taskqueues-deferred</module>
+    <module>taskqueues-pull</module>
+    <module>taskqueues-push</module>
 
     <module>twilio</module>
 
