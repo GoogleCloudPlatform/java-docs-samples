@@ -1,5 +1,5 @@
-# Cloud IoT Core NodeJS Samples
-This folder contains NodeJS samples that demonstrate an overview of the
+# Cloud IoT Core Java Samples
+This folder contains Java samples that demonstrate an overview of the
 Google Cloud IoT Core platform.
 
 ## Quickstart

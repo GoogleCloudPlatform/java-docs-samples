@@ -30,6 +30,7 @@ import com.google.api.services.cloudiot.v1beta1.model.ModifyCloudToDeviceConfigR
 import com.google.api.services.cloudiot.v1beta1.model.NotificationConfig;
 import com.google.api.services.cloudiot.v1beta1.model.PublicKeyCredential;
 import com.google.common.io.Files;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;

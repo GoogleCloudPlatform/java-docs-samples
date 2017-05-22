@@ -7,7 +7,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-/** Command line options for the MQTT example */
+/** Command line options for the MQTT example. */
 public class MqttExampleOptions {
   String projectId;
   String registryId;
@@ -20,7 +20,7 @@ public class MqttExampleOptions {
   short mqttBridgePort = 8883;
 
   /** Construct an MqttExampleOptions class from command line flags. */
-  public static MqttExampleOptions fromFlags(String args[]) {
+  public static MqttExampleOptions fromFlags(String[] args) {
     Options options = new Options();
     // Required arguments
     options.addOption(

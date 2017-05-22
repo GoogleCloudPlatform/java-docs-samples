@@ -3,16 +3,17 @@ package com.google.cloud.iot.examples;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
@@ -46,7 +47,7 @@ public class MqttExample {
     return kf.generatePrivate(spec);
   }
 
-  /** Create a Cloud IoT Core JWT for the given project id, signed with the given private key */
+  /** Create a Cloud IoT Core JWT for the given project id, signed with the given private key. */
   private static String createJwt(String projectId, String privateKeyFile, String algorithm)
       throws Exception {
     DateTime now = new DateTime();
@@ -97,9 +98,9 @@ public class MqttExample {
     // connection to your device.
     connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
 
-    // With Google Cloud IoT Core, the username field is ignored, however it must be set for the Paho
-    // client library to send the password field. The password field is used to transmit a JWT to
-    // authorize the device.
+    // With Google Cloud IoT Core, the username field is ignored, however it must be set for the
+    // Paho client library to send the password field. The password field is used to transmit a JWT
+    // to authorize the device.
     connectOptions.setUserName("unused");
     connectOptions.setPassword(
         createJwt(options.projectId, options.privateKeyFile, options.algorithm).toCharArray());

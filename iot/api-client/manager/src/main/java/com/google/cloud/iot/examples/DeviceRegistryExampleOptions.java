@@ -20,7 +20,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-/** Command line options for the Device Manager example */
+/** Command line options for the Device Manager example. */
 public class DeviceRegistryExampleOptions {
   String projectId;
   String pubsubTopic;
@@ -29,7 +29,7 @@ public class DeviceRegistryExampleOptions {
   String cloudRegion = "us-central1";
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
-  public static DeviceRegistryExampleOptions fromFlags(String args[]) {
+  public static DeviceRegistryExampleOptions fromFlags(String[] args) {
     Options options = new Options();
     // Required arguments
     options.addOption(

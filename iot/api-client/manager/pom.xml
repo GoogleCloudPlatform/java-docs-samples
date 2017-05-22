@@ -23,6 +23,14 @@
   <name>cloudiot-manager-demo</name>
   <url>http://maven.apache.org</url>
 
+  <!-- Parent defines config for testing & linting. -->
+  <parent>
+    <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+    <relativePath>../../../</relativePath>
+  </parent>
+
   <!-- Start local repo -->
   <repositories>
     <!-- Use a local directory for the Cloud IoT Core API dependency. -->
