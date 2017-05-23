@@ -11,7 +11,7 @@ Google Cloud IoT Core platform.
 
 3. Add the special account `cloud-iot@system.gserviceaccount.com` to that
 PubSub topic from the [Cloud Developer Console](https://console.cloud.google.com)
-or by using the helper script in the /scripts folder.
+or by using the helper script in the [/scripts](./scripts) folder.
 
 4. Create a registry:
 
@@ -20,7 +20,7 @@ or by using the helper script in the /scripts folder.
         --region=us-central1 \
         --pubsub-topic=projects/my-iot-project/topics/device-events
 
-5. Use the `generate_keys.sh` script to generate your signing keys:
+5. Use the [`generate_keys.sh`](generate_keys.sh) script to generate your signing keys:
 
     ./generate_keys.sh
 
@@ -32,7 +32,7 @@ or by using the helper script in the /scripts folder.
         --registry=my-registry \
         --public-key path=rsa_cert.pem,type=rs256
 
-7. Connect a sample device using the sample app in the `mqtt_example` folder.
+7. Connect a sample device using the sample app in the [`mqtt_example`](./mqtt_example) folder.
 8. Learn how to manage devices programatically with the sample app in the
 `manager` folder.
 

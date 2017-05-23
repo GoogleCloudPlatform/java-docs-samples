@@ -46,20 +46,15 @@ import javax.xml.bind.DatatypeConverter;
  * IoT devices and registries, using both RSA and eliptic curve keys for authentication.
  *
  * <p>To start, follow the instructions on the Developer Guide at cloud.google.com/iot to create a
- * service_account.json file. Also create a Cloud Pub/Sub topic as discussed in the guide. After
- * doing this, you should have service_account.json in your directory. Tell gcloud about this file
- * by setting it in an environment variable:
- *
- * <pre>
- * <code>
- * $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account.json
- * </code>
- * </pre>
+ * service_account.json file and Cloud Pub/Sub topic as discussed in the guide. You will then need
+ * to point to the service_account.json file as described in
+ * https://developers.google.com/identity/protocols/application-default-credentials#howtheywork
  *
  * <p>Before running the example, we have to create private and public keys, as described in
  * cloud.google.com/iot. Since we are interacting with the device manager, we will only use the
- * public keys. The private keys are used to sign JWTs to authenticate devices. See the MQTT client
- * example in the developer guide for an example of this.
+ * public keys. The private keys are used to sign JWTs to authenticate devices. See the
+ * <a href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client/mqtt_example">MQTT client example</a>
+ * for more information.
  *
  * <p>Finally, compile and run the example with:
  *
@@ -76,7 +71,7 @@ import javax.xml.bind.DatatypeConverter;
  * </pre>
  */
 public class DeviceRegistryExample {
-  // CloudIot service for administering Cloud IoT devices, registries and projects.
+  // Service for administering Cloud IoT Core devices, registries and projects.
   private CloudIot service;
   // Path to the project and location: "projects/my-project-id/locations/us-central1"
   private String projectPath;
@@ -255,7 +250,7 @@ public class DeviceRegistryExample {
     ModifyCloudToDeviceConfigRequest request = new ModifyCloudToDeviceConfigRequest();
     DeviceConfigData data = new DeviceConfigData();
     data.setBinaryData(DatatypeConverter.printBase64Binary(configData.getBytes(Charsets.UTF_8)));
-    request.setVersionToUpdate(0L);
+    request.setVersionToUpdate(0L); // 0L indicates update all versions
     request.setData(data);
     DeviceConfig config =
         service

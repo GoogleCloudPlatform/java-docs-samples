@@ -25,8 +25,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
  * <p>To run this example, first create your credentials and register your device as
  * described in the README located in the sample's parent folder.
  *
- * <p>After you have registered your device and generated ompile and run with the
- * corresponding algorithm flag, for example:
+ * <p>After you have registered your device and generated your credentials, compile and
+ * run with the corresponding algorithm flag, for example:
  *
  * <pre>
  *   $ mvn compile

@@ -1,11 +1,18 @@
-# Cloud IoT Core Java Device Management example
+r)# Cloud IoT Core Java Device Management example
 
 This sample app demonstrates device management for Google Cloud IoT Core.
 
 Note that before you can run the sample, you must configure a Google Cloud
-PubSub topic for Cloud IoT as described in the parent README.
+PubSub topic for Cloud IoT as described in [the parent README](../README.md).
 
 ## Setup
+
+Manually install [the provided client library](https://cloud.google.com/iot/resources/java/cloud-iot-core-library.jar)
+for Cloud IoT Core to Maven:
+
+     mvn install:install-file -Dfile=cloud-iot-core-library.jar -DgroupId=com.google.apis \
+    -DartifactId=google-api-services-cloudiot -Dversion=v1beta1-rev20170418-1.22.0-SNAPSHOT \
+    -Dpackaging=jar
 
 Run the following command to install the libraries and build the sample with
 Maven:

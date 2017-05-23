@@ -31,17 +31,6 @@
     <relativePath>../../../</relativePath>
   </parent>
 
-  <!-- Start local repo -->
-  <repositories>
-    <!-- Use a local directory for the Cloud IoT Core API dependency. -->
-    <repository>
-      <id>project.local</id>
-      <name>project</name>
-      <url>file:./repo</url>
-    </repository>
-  </repositories>
-  <!-- End of extra repo -->
-
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
