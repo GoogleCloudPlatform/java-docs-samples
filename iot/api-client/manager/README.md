@@ -1,4 +1,4 @@
-r)# Cloud IoT Core Java Device Management example
+# Cloud IoT Core Java Device Management example
 
 This sample app demonstrates device management for Google Cloud IoT Core.
 
