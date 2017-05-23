@@ -19,17 +19,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-   <servlet>
-      <servlet-name>taskqueue</servlet-name>
-      <servlet-class>com.example.taskqueue.TaskqueueServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-      <servlet-name>taskqueue</servlet-name>
-      <url-pattern>/taskqueue</url-pattern>
-    </servlet-mapping>
-
     <welcome-file-list>
-        <welcome-file>tasks.jsp</welcome-file>
+        <welcome-file>taskqueues-pull.jsp</welcome-file>
     </welcome-file-list>
 </web-app>

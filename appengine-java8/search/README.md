@@ -8,13 +8,19 @@ detailed instructions.
 [search-api-docs]: https://cloud.google.com/appengine/docs/java/search/
 
 ## Setup
-1. Update the `<application>` tag in `src/main/webapp/WEB-INF/appengine-web.xml`
-   with your project name.
-1. Update the `<version>` tag in `src/main/webapp/WEB-INF/appengine-web.xml`
-   with your version name.
+* `gcloud init`
 
 ## Running locally
-    $ mvn appengine:devserver
+    $ mvn appengine:run
 
 ## Deploying
-    $ mvn appengine:update
+    $ mvn appengine:deploy
+    
+## URI's
+
+`/search` | Create a Search API Document
+`/search/index` | Index a document 
+`/search/delete` | Delete a search document
+`/search/option` | Search w/ query options
+`/search/search` | Search for a document
+`/search/schema` | Display the schema of a document

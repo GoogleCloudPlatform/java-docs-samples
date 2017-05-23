@@ -26,14 +26,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Form Handling Servlet -- takes the form submission from /src/main/webapp/tasks.jsp to add and
- * delete tasks.
+ * Form Handling Servlet -- takes the form submission from /src/main/webapp/taskqueues-pull.jsp to
+ * add and delete tasks.
  */
+@WebServlet(name = "TaskPull", description = "TaskQueues: Process some queues",
+    urlPatterns = "/taskqueues/queue")
 public class TaskqueueServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(TaskqueueServlet.class.getName());
   private static final int numberOfTasksToAdd = 100;
@@ -75,7 +78,7 @@ public class TaskqueueServlet extends HttpServlet {
       try {
         message = "Added " + numberOfTasksToAdd + " tasks to the task queue.";
         req.setAttribute("message", message);
-        req.getRequestDispatcher("tasks.jsp").forward(req,resp);
+        req.getRequestDispatcher("taskqueues-pull.jsp").forward(req,resp);
       } catch (ServletException e) {
         throw new ServletException("ServletException error: ", e);
       }
@@ -101,7 +104,7 @@ public class TaskqueueServlet extends HttpServlet {
           message = processTasks(tasks, q);
         }
         req.setAttribute("message", message);
-        req.getRequestDispatcher("tasks.jsp").forward(req,resp);
+        req.getRequestDispatcher("taskqueues-pull.jsp").forward(req,resp);
       } else {
         resp.sendRedirect("/");
       }

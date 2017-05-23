@@ -17,9 +17,9 @@ To run this sample locally:
 
     mvn appengine:run
 
-To see the results of the RequestsServlet, open `localhost:8080` in a WWW browser.
+To see the results of the RequestsServlet, open `localhost:8080/requests` in a WWW browser.
 
-To see the results of the LoggingServlet, open `localhost:8080/logs` in a WWW browser
+To see the results of the LoggingServlet, open `localhost:8080/requests/log` in a browser
 and examine the logs to see the actual messages.
 
 ## Deploying

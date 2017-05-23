@@ -31,13 +31,8 @@
     <url-pattern>/remote_api</url-pattern>
   </servlet-mapping>
   <!-- [END web] -->
-  <servlet>
-    <servlet-name>remote</servlet-name>
-    <servlet-class>com.example.appengine.remote.RemoteServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>remote</servlet-name>
-    <url-pattern>/</url-pattern>
-  </servlet-mapping>
-</web-app>
 
+  <welcome-file-list>
+    <welcome-file>remote</welcome-file>
+  </welcome-file-list>
+</web-app>

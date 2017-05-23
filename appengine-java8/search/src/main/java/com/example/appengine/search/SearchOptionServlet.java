@@ -39,6 +39,8 @@ import com.google.appengine.api.search.ScoredDocument;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +50,8 @@ import javax.servlet.http.HttpServletResponse;
  * Code snippet for searching with query options.
  */
 @SuppressWarnings("serial")
+@WebServlet(name = "searchOption", description = "Search: Get the Host Name",
+    urlPatterns = "/search/option")
 public class SearchOptionServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(SearchOptionServlet.class.getSimpleName());
 

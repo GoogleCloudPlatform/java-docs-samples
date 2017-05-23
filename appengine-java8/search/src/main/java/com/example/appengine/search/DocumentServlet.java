@@ -26,6 +26,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
  * A servlet for creating Search API Document.
  */
 @SuppressWarnings("serial")
+@WebServlet(name = "searchCreate", description = "Search: Create the Search API document.",
+    urlPatterns = "/search")
 public class DocumentServlet extends HttpServlet {
 
   /**

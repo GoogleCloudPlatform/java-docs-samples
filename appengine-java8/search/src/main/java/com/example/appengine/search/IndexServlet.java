@@ -33,6 +33,8 @@ import com.google.appengine.api.search.GetResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +44,8 @@ import javax.servlet.http.HttpServletResponse;
  * Code snippet for getting a document from Index.
  */
 @SuppressWarnings("serial")
+@WebServlet(name = "searchIndex", description = "Search: Index a new document",
+    urlPatterns = "/search/index")
 public class IndexServlet extends HttpServlet {
 
   private static final String INDEX = "testIndex";

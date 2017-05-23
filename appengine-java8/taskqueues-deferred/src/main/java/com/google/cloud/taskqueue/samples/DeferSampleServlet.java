@@ -25,6 +25,8 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 
 import java.io.IOException;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
  * interface to background a task on the AppEngine task queues,
  * without needing to create a separate URL handler.
  */
+@WebServlet(name = "TasksDefer", description = "TaskQueues: Defer a task",
+    urlPatterns = "/taskqueues/defer")
 public class DeferSampleServlet extends HttpServlet {
 
   /**

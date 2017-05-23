@@ -24,12 +24,15 @@ import com.google.appengine.api.users.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+@WebServlet(name = "oauth2", description = "Oauth2: restricted helloWorld",
+    urlPatterns = "/oauth2hello")
 public class HelloServlet extends HttpServlet {
 
   @Override
