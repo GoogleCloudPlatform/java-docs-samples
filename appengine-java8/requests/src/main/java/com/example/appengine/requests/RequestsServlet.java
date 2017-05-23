@@ -16,11 +16,14 @@ package com.example.appengine.requests;
 
 import java.io.IOException;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START simple_request_example]
+@WebServlet(name = "requests", description = "Requests: Trivial request",
+    urlPatterns = "/requests")
 public class RequestsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)

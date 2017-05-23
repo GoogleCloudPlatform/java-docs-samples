@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 
 // Get request logs along with their app log lines and display them 5 at
 // a time, using a Next link to cycle through to the next 5.
+@WebServlet(name = "logs", description = "Logs: Display 5 lines of the request log",
+    urlPatterns = "/logs")
 public class LogsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)

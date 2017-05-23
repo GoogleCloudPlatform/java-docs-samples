@@ -98,6 +98,13 @@ Copyright 2016 Google Inc.
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+
     </plugins>
   </build>
 </project>

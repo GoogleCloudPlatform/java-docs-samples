@@ -26,13 +26,13 @@
 
 <body>
 
-<form action="/taskqueue" method="post">
+<form action="/taskqueues/queue" method="post">
     <div>
         <textarea name="content" placeholder="Enter a task payload" rows="3" cols="60"></textarea></div>
     <div><input type="submit" name="addTask" value="Add Tasks to the Task Queue"/></div>
 </form>
 <br>
-<form action="/taskqueue" method="post">
+<form action="/taskqueues/queue" method="post">
     <div><input type="submit" name="leaseTask" value="Lease, Process, and Delete Tasks"/></div>
 </form>
 <br>

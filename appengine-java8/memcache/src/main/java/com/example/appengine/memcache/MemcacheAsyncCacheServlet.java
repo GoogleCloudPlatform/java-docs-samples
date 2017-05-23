@@ -27,11 +27,14 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "MemcacheAsync", description = "Memcache: Async Access",
+    urlPatterns = "/memcache/async")
 public class MemcacheAsyncCacheServlet extends HttpServlet {
 
   @Override

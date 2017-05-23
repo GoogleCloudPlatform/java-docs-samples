@@ -15,6 +15,7 @@
  */
 
 package com.example.appengine.images;
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -35,12 +36,16 @@ import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+@WebServlet(name = "images",
+    description = "Images: Write an image to a bucket and display it in various sizes",
+    urlPatterns = "/images")
 public class ImagesServlet extends HttpServlet {
   final String bucket = "YOUR-BUCKETNAME-HERE";
 
@@ -59,7 +64,7 @@ public class ImagesServlet extends HttpServlet {
     // Read the image.jpg resource into a ByteBuffer.
     FileInputStream fileInputStream = new FileInputStream(new File("WEB-INF/image.jpg"));
     FileChannel fileChannel = fileInputStream.getChannel();
-    ByteBuffer byteBuffer = ByteBuffer.allocate((int)fileChannel.size());
+    ByteBuffer byteBuffer = ByteBuffer.allocate((int) fileChannel.size());
     fileChannel.read(byteBuffer);
 
     byte[] imageBytes = byteBuffer.array();

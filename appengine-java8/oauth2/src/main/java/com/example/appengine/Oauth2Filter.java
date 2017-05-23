@@ -13,8 +13,6 @@
  */
 package com.example.appengine;
 
-import static com.google.appengine.api.utils.SystemProperty.environment;
-
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.oauth.OAuthService;
 import com.google.appengine.api.oauth.OAuthServiceFactory;
@@ -31,6 +29,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -40,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  *  <p>Note - this is to demonstrate the OAuth2 APIs, as it is possible to lockdown some
  *  of your app's URL's using cloud console by adding service accounts to the project.</p>
  */
+@WebFilter(urlPatterns = "/oauth2hello")
 public class Oauth2Filter implements Filter {
 
   private ServletContext context;
@@ -65,7 +65,7 @@ public class Oauth2Filter implements Filter {
     OAuthService oauth = OAuthServiceFactory.getOAuthService();
 
     // Only check Oauth2 when in production, skip if run in development.
-    SystemProperty.Environment.Value env = environment.value();
+    SystemProperty.Environment.Value env = SystemProperty.environment.value();
     if (env == SystemProperty.Environment.Value.Production) { // APIs only work in Production
       try {
         String tokenAudience = oauth.getClientId(scope);

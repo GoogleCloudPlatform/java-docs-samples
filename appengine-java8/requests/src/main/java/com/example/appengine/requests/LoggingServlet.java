@@ -17,11 +17,14 @@ package com.example.appengine.requests;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START simple_logging_example]
+@WebServlet(name = "RequestLogging", description = "Requests: Logging example",
+    urlPatterns = "/requests/log")
 public class LoggingServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(LoggingServlet.class.getName());
 

@@ -35,12 +35,16 @@ import com.google.appengine.api.search.Schema;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
 @SuppressWarnings("serial")
+@WebServlet(name = "searchSchema", description = "Search: List the schema for a document.",
+    urlPatterns = "/search/schema")
 public class SchemaServlet extends HttpServlet {
 
   private static final String SEARCH_INDEX = "schemaIndex";

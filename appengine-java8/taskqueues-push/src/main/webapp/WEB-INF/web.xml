@@ -20,22 +20,6 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
+        <welcome-file>taskqueue-push.html</welcome-file>
     </welcome-file-list>
-    <servlet>
-        <servlet-name>enqueue</servlet-name>
-        <servlet-class>com.example.appengine.taskqueue.push.Enqueue</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>worker</servlet-name>
-        <servlet-class>com.example.appengine.taskqueue.push.Worker</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>enqueue</servlet-name>
-        <url-pattern>/enqueue</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>worker</servlet-name>
-        <url-pattern>/worker</url-pattern>
-    </servlet-mapping>
 </web-app>

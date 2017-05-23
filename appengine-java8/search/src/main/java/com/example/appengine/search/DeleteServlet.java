@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +47,8 @@ import javax.servlet.http.HttpServletResponse;
  * Code snippet for deleting documents from an Index.
  */
 @SuppressWarnings("serial")
+@WebServlet(name = "searchDelete", description = "Search: Delete a document from the index",
+    urlPatterns = "/search/delete")
 public class DeleteServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(DeleteServlet.class.getSimpleName());
 
