@@ -20,10 +20,10 @@ buildscript {    // Configuration for building
   }
   dependencies {
     // App Engine Gradle plugin
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.0'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.1'
 
     // Endpoints Frameworks Gradle plugin
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta9'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0'
   }
 }
 // [END buildscript]
@@ -71,11 +71,12 @@ appengine {  // App Engine tasks configuration
   }
 }
 
-/* [START endpoints-server]
+// [START endpoints-server]
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
+  hostname = "GOOGLE_CLOUD_PROJECT.appspot.com"
 }
-[END endpoints-server] */
+// [END endpoints-server]
 
 group   = 'com.example.helloendpoints' // Generated output GroupId
 version = '1'                          // Version in generated output
