@@ -35,6 +35,12 @@ process is explained [here][8] and a quickstart is provided [here][9].
 - [Google Cloud Endpoints Frameworks Gradle Plugin][11]
 
 ## Setup
+1. The hostname used in a genearted Discovery document is set by replacing
+   `GOOGLE_CLOUD_PROJECT` with your project id found in the following files.
+
+    - [Maven - pom.xml](pom.xml)
+    - [Gradle - build.gradle](build.gradle)
+
 1. [Optional]: User Authenticating with Google Accounts in Web Clients
 
     1. Update the `WEB_CLIENT_ID` in [Constants.java](src/main/java/com/example/helloendpoints/Constants.java)
@@ -88,6 +94,11 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
     [http://localhost:8080/_ah/api/explorer][13]
 
+1. Generate the discovery document located at
+   `target/discovery-docs/helloworld-v1-rest.discovery` by using:
+
+    `mvn endpoints-framework:discoveryDocs`
+
 1. Generate the client library located at
    `target/client-libs/helloworld-v1-java.zip` by using:
 
@@ -110,6 +121,11 @@ process is explained [here][8] and a quickstart is provided [here][9].
 1. Explore local server's API explorer by browsing to:
 
     [http://localhost:8080/_ah/api/explorer][13]
+
+1. Generate the discovery document located at
+   `build/endpointsDiscoveryDocs/helloworld-v1-rest.discovery` by using:
+
+   `gradle endpointsDiscoveryDocs`
 
 1. Generate the client library located at
    `build/endpointsClientLibs/helloworld-v1-java.zip` by using:
