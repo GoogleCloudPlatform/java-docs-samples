@@ -39,8 +39,8 @@ process is explained [here][8] and a quickstart is provided [here][9].
    defined in either the Maven or Gradle build script. Hostname is used when a
    discovery document is generated.
 
-   - [Maven - pom.xml](pom.xml)
-   - [Gradle - build.gradle](build.gradle)
+   - [Maven - pom.xml](pom.xml#L101)
+   - [Gradle - build.gradle](build.gradle#L77)
 
 1. [Optional]: User Authenticating with Google Accounts in Web Clients
 
