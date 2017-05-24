@@ -39,17 +39,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
  * </pre>
  */
 public class MqttExample {
-  /** Load a PKCS8 encoded keyfile from the given path. */
-  private static PrivateKey loadKeyFile(String filename, String algorithm) throws Exception {
-    byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
-    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-    KeyFactory kf = KeyFactory.getInstance(algorithm);
-    return kf.generatePrivate(spec);
-  }
-
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given private key. */
-  private static String createJwt(String projectId, String privateKeyFile, String algorithm)
-      throws Exception {
+  private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
     DateTime now = new DateTime();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
@@ -60,16 +51,29 @@ public class MqttExample {
             .setExpiration(now.plusMinutes(20).toDate())
             .setAudience(projectId);
 
-    if (algorithm.equals("RS256")) {
-      PrivateKey privateKey = loadKeyFile(privateKeyFile, "RSA");
-      return jwtBuilder.signWith(SignatureAlgorithm.RS256, privateKey).compact();
-    } else if (algorithm.equals("ES256")) {
-      PrivateKey privateKey = loadKeyFile(privateKeyFile, "EC");
-      return jwtBuilder.signWith(SignatureAlgorithm.ES256, privateKey).compact();
-    } else {
-      throw new IllegalArgumentException(
-          "Invalid algorithm " + algorithm + ". Should be one of 'RS256' or 'ES256'.");
-    }
+    byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
+    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+    KeyFactory kf = KeyFactory.getInstance("RSA256");
+
+    return jwtBuilder.signWith(SignatureAlgorithm.RS256, kf.generatePrivate(spec)).compact();
+  }
+
+  private static String createJwtEs(String projectId, String privateKeyFile) throws Exception {
+    DateTime now = new DateTime();
+    // Create a JWT to authenticate this device. The device will be disconnected after the token
+    // expires, and will have to reconnect with a new token. The audience field should always be set
+    // to the GCP project id.
+    JwtBuilder jwtBuilder =
+        Jwts.builder()
+            .setIssuedAt(now.toDate())
+            .setExpiration(now.plusMinutes(20).toDate())
+            .setAudience(projectId);
+
+    byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
+    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+    KeyFactory kf = KeyFactory.getInstance("ES256");
+
+    return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
 
   public static void main(String[] args) throws Exception {
@@ -102,8 +106,17 @@ public class MqttExample {
     // Paho client library to send the password field. The password field is used to transmit a JWT
     // to authorize the device.
     connectOptions.setUserName("unused");
-    connectOptions.setPassword(
-        createJwt(options.projectId, options.privateKeyFile, options.algorithm).toCharArray());
+
+    if (options.algorithm == "RSA256") {
+      connectOptions.setPassword(
+          createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
+    } else if (options.algorithm == "ES256") {
+      connectOptions.setPassword(
+          createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
+    } else {
+      throw new IllegalArgumentException(
+          "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
+    }
 
     // Create a client, and connect to the Google MQTT bridge.
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
