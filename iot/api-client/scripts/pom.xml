@@ -16,7 +16,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.pubsub</groupId>
-  <artifactId>pubsub-google-cloud-samples</artifactId>
+  <artifactId>pubsub-policy-helper</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent defines config for testing & linting. -->

@@ -23,11 +23,11 @@ the sample to configure your topic.
 
 The following code will run the helper script:
 
-    java -cp target/pubsub-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    java -cp target/pubsub-policy-helper-1.0.0-jar-with-dependencies.jar \
         com.example.pubsub.AddCloudIotService <topicName> <projectId>
 
 For example, the following example will configure the `device-events` topic
 for the `my-iot-project` project.
 
-    java -cp target/pubsub-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    java -cp target/pubsub-policy-helper-1.0.0-jar-with-dependencies.jar \
         com.example.pubsub.AddCloudIotService device-events my-iot-project
