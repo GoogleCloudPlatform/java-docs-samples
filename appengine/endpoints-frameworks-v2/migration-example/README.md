@@ -35,11 +35,12 @@ process is explained [here][8] and a quickstart is provided [here][9].
 - [Google Cloud Endpoints Frameworks Gradle Plugin][11]
 
 ## Setup
-1. The hostname used in a genearted Discovery document is set by replacing
-   `GOOGLE_CLOUD_PROJECT` with your project id found in the following files.
+1. Change `GOOGLE_CLOUD_PROJECT` with your project id in the hostname parameter
+   defined in either the Maven or Gradle build script. Hostname is used when a
+   discovery document is generated.
 
-    - [Maven - pom.xml](pom.xml)
-    - [Gradle - build.gradle](build.gradle)
+   - [Maven - pom.xml](pom.xml)
+   - [Gradle - build.gradle](build.gradle)
 
 1. [Optional]: User Authenticating with Google Accounts in Web Clients
 
