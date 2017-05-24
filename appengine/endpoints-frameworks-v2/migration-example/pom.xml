@@ -98,7 +98,7 @@ limitations under the License.
                 <version>1.0.0</version>
                 <configuration>
                     <!-- plugin configuration -->
-                    <hostname>GOOGLE_CLOUD_PROJECT.appspot.com</hostname>
+                    <hostname>YOUR-PROJECT-ID.appspot.com</hostname>
                 </configuration>
             </plugin>
             <!-- [END endpoints-frameworks-plugin] -->

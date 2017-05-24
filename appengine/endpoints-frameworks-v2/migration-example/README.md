@@ -35,7 +35,7 @@ process is explained [here][8] and a quickstart is provided [here][9].
 - [Google Cloud Endpoints Frameworks Gradle Plugin][11]
 
 ## Setup
-1. Change `GOOGLE_CLOUD_PROJECT` with your project id in the hostname parameter
+1. Change `YOUR-PROJECT-ID` with your project id in the hostname parameter
    defined in either the Maven or Gradle build script. Hostname is used when a
    discovery document is generated.
 
