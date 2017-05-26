@@ -48,6 +48,7 @@ dependencies {
   providedCompile group: 'javax.servlet', name: 'servlet-api', version:'2.5'
   compile 'jstl:jstl:1.2'
   compile group: 'javax.inject', name: 'javax.inject', version: '1'
+  compile group: 'com.google.appengine', name: 'appengine-api-1.0-sdk', version: '+'
 
   // Uncomment to use Endpoints Frameworks v1.0 and comment the v2.0 section
   // compile group: 'com.google.appengine', name: 'appengine-endpoints', version: '+'
