@@ -61,6 +61,8 @@ process is explained [here][8] and a quickstart is provided [here][9].
       client IDs registered in the
       [Credentials on Developers Console for OAuth 2.0 client IDs][6].
 
+    - Note: iOS support should work but has not been fully tested.
+
     - These client IDs are used when defining annotation for this sample API
       found in [Greetings.java](src/main/java/com/example/helloendpoints/Greetings.java).
 
@@ -83,13 +85,9 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
 ###  Maven
 
-1. Build a fresh binary by using:
+1. Build and Run the application locally at [http://localhost:8080][5] by using:
 
-    `mvn clean compile`
-
-1. Run the application locally at [http://localhost:8080][5] by using:
-
-    `mvn appengine:run`
+    `mvn clean appengine:run`
 
 1. Explore local server's API explorer by browsing to:
 
@@ -105,19 +103,15 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
     `mvn endpoints-framework:clientLibs`
 
-1. Deploy your application to Google App Engine by using:
+1. Build and Deploy your application to Google App Engine by using:
 
-    `mvn appengine:deploy`
+    `mvn clean appengine:deploy`
 
 ### Gradle
 
-1. Build a fresh binary by using:
+1. Build and Run the application locally at [http://localhost:8080][5] by using:
 
-    `gradle clean compileJava`
-
-1. Run the application locally at [http://localhost:8080][5] by using:
-
-    `gradle appengineRun`
+    `gradle clean appengineRun`
 
 1. Explore local server's API explorer by browsing to:
 
@@ -136,7 +130,6 @@ process is explained [here][8] and a quickstart is provided [here][9].
 1. Deploy your application to Google App Engine by using:
 
     `gradle appengineDeploy`
-
 
 [1]: https://cloud.google.com/appengine/docs/java/
 [2]: http://java.com/en/
