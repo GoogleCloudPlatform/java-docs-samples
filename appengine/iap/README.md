@@ -1,6 +1,6 @@
-# Identity-Aware Proxy sample for Google App Engine
+# Cloud Identity-Aware Proxy sample for Google App Engine
 
-This sample demonstrates how to use the [Identity-Aware Proxy][iap-docs] on [Google App
+This sample demonstrates how to use the [Cloud Identity-Aware Proxy][iap-docs] on [Google App
 Engine][ae-docs].
 
 [iap-docs]: https://cloud.google.com/iap/docs/

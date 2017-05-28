@@ -1,5 +1,6 @@
 # Cloud Identity-Aware Proxy Java Samples
 Cloud Identity-Aware Proxy (Cloud IAP) lets you manage access to applications running in Compute Engine, App Engine standard environment, and Container Engine. Cloud IAP establishes a central authorization layer for applications accessed by HTTPS, enabling you to adopt an application-level access control model instead of relying on network-level firewalls. When you enable Cloud IAP, you must also use signed headers or the App Engine standard environment Users API to secure your app.
+
 ## Setup
 - A Google Cloud project with billing enabled
 - [Create an App engine service account](https://cloud.google.com/docs/authentication#getting_credentials_for_server-centric_flow) and download the credentials file as JSON.
@@ -10,7 +11,6 @@ Cloud Identity-Aware Proxy (Cloud IAP) lets you manage access to applications ru
 ```
 
 ## Description
-
 - [BuildIapRequest.java](src/main/java/com/example/iap/BuildIapRequest.java) demonstrates how to set the
 `Authorization : Bearer` header to authorize access to an IAP protected URL.
 - [VerifyIapRequestHeader.java](src/main/java/com/example/iap/VerifyIapRequestHeader.java) demonstrates how to
