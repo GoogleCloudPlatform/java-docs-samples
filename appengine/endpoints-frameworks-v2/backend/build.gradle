@@ -23,7 +23,7 @@ task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
 }
 
-def projectId = 'endpointstest2'
+def projectId = 'YOUR_PROJECT_ID'
 
 apply plugin: 'java'
 apply plugin: 'war'
