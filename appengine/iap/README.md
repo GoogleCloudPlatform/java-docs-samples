@@ -6,16 +6,26 @@ Engine][ae-docs].
 [iap-docs]: https://cloud.google.com/iap/docs/
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
+## Setup
+
+Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run:
+```
+   gcloud init
+```
+If this is your first time creating an App engine application:
+```
+   gcloud app create
+```
+
 ## Running locally
 
 This application depends on being enabled behind an IAP, so this program should not be run locally.
 
 ## Deploying
 
-- Update [appengine-web.xml](src/main/test/app/src/main/webapp/WEB-INF/appengine-web.xml) with your project-id
 - Deploy the application to the project
   ```
-       mvn clean appengine:update
+       mvn clean appengine:deploy
     ```
 - [Enable](https://cloud.google.com/iap/docs/app-engine-quickstart) Identity-Aware Proxy on the App Engine app.
 - Add the email account you'll be running the test as to the Identity-Aware Proxy access list for the project.

@@ -12,7 +12,6 @@
   limitations under the License.
 -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>YOUR-PROJECT-ID</application>
   <version>alpha-001</version>
   <threadsafe>true</threadsafe>
 </appengine-web-app>
