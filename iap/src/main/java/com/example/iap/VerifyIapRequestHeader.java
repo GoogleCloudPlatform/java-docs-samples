@@ -43,7 +43,7 @@ import java.util.Map;
 
 /** Verify IAP authorization JWT token in incoming request. */
 public class VerifyIapRequestHeader {
-
+  // [START verify_iap_request]
   private static final String PUBLIC_KEY_VERIFICATION_URL =
       "https://www.gstatic.com/iap/verify/public_key";
   private static final String IAP_ISSUER_URL = "https://cloud.google.com/iap";
@@ -159,4 +159,5 @@ public class VerifyIapRequestHeader {
     }
     return null;
   }
+  // [END verify_iap_request]
 }
