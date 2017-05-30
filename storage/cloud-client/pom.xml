@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.storage</groupId>
+  <groupId>com.example.storage</groupId>
   <artifactId>storage-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
