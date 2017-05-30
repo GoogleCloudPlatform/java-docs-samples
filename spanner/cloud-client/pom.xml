@@ -30,7 +30,7 @@ limitations under the License.
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.spanner</groupId>
+  <groupId>com.example.spanner</groupId>
   <artifactId>spanner-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
