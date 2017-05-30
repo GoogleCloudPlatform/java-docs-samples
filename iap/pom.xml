@@ -15,20 +15,17 @@
  limitations under the License.
 -->
 <!-- [START pom] -->
-<project>                               <!-- REQUIRED -->
-
-  <modelVersion>4.0.0</modelVersion>    <!-- REQUIRED -->
-  <packaging>jar</packaging>            <!-- REQUIRED -->
-
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>jar</packaging>
   <groupId>com.example</groupId>
-  <artifactId>iap-samples</artifactId> <!-- Name of your project -->
-  <version>1.0-SNAPSHOT</version>       <!-- xx.xx.xx -SNAPSHOT means development -->
+  <artifactId>iap-samples</artifactId>
+  <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source> <!-- REQUIRED -->
-    <maven.compiler.target>1.8</maven.compiler.target> <!-- REQUIRED -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.maven.plugin>9.4.3.v20170317</jetty.maven.plugin>
   </properties>
 
   <dependencyManagement>
