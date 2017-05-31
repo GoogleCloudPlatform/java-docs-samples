@@ -61,6 +61,7 @@
         <module>guestbook-objectify</module>
         <module>helloworld</module>
         <module>helloworld-new-plugins</module>
+        <module>iap</module>
         <module>images</module>
         <module>logs</module>
         <module>mailgun</module>
