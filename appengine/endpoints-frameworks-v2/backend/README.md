@@ -99,8 +99,10 @@ Note for windows user: Use `gradlew.bat` instead of `./gradlew`
 <details>
  <summary>more details</summary>
  The project contains the standard java and war plugins and in addition to that it contains the following plugins:
- [endpoints-framework-gradle-plugin](https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin) for the endpoint related tasks and
- [appengine-gradle-plugin](https://github.com/GoogleCloudPlatform/app-gradle-plugin) for the appengine standard related tasks.
+ https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin for the endpoint related tasks and
+ https://github.com/GoogleCloudPlatform/app-gradle-plugin for the appengine standard related tasks.
+ 
+ Check the links for details about the available Plugin Goals and Parameters.
 </details>
 
 ### Generating the openapi.json file
