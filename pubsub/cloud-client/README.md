@@ -15,9 +15,10 @@ For more samples, see the samples in
 
 #### Setup
 - Install [Maven](http://maven.apache.org/)
-- Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run :
+- Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and authenticate  :
 ```
   gcloud config set project [YOUR PROJECT ID]
+  gcloud auth application-default login
 ```
 - [Enable](https://console.cloud.google.com/apis/api/pubsub.googleapis.com/overview) Pub/Sub API
 - Build your project with:
@@ -30,16 +31,16 @@ For more samples, see the samples in
   mvn exec:java -Dexec.mainClass=com.example.pubsub.CreateTopicExample -Dexec.args=my-topic-id
 ```
 
-#### Publish messages
-```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args=my-topic-id
-```
-Publishes 10 messages to the topic `my-topic-id`.
-
 #### Create a subscription
 ```
   mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic-id my-subscription-id"
 ```
+
+#### Publish messages
+```
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args=my-topic-id
+```
+Publishes 5 messages to the topic `my-topic-id`.
 
 #### Receive messages
 ```

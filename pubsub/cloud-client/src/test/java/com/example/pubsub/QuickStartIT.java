@@ -72,19 +72,19 @@ public class QuickStartIT {
 
   @Test
   public void testQuickstart() throws Exception {
-    //create a topic
+    // create a topic
     CreateTopicExample.main(topicId);
     String got = bout.toString();
     assertThat(got).contains(topicId + " created.");
-
-    // publish messages
-    List<String> published = PublisherExample.publishMessages(topicId);
-    assertThat(published).hasSize(5);
 
     // create a subscriber
     CreatePullSubscriptionExample.main(topicId, subscriptionId);
     got = bout.toString();
     assertThat(got).contains(subscriptionId + " created.");
+
+    // publish messages
+    List<String> published = PublisherExample.publishMessages(topicId);
+    assertThat(published).hasSize(5);
 
     SubscriberExample subscriberExample = new SubscriberExample(subscriptionId);
     // receive messages
@@ -95,9 +95,9 @@ public class QuickStartIT {
     while ((received = subscriberExample.getReceivedMessages()).size() < 5) {
       Thread.sleep(1000);
     }
+
     assertThat(received).containsAllIn(published);
     subscriberExample.stopSubscriber();
-    subscriberThread.join();
   }
 
   private String formatForTest(String name) {
