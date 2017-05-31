@@ -14,24 +14,41 @@ For more samples, see the samples in
 ## Quickstart
 
 #### Setup
-- Install [Maven](http://maven.apache.org/) <p>
+- Install [Maven](http://maven.apache.org/)
 - Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run :
-
-
-      gcloud config set project [YOUR PROJECT ID]
-
-
+```
+  gcloud config set project [YOUR PROJECT ID]
+```
+- [Enable](https://console.cloud.google.com/apis/api/pubsub.googleapis.com/overview) Pub/Sub API
 - Build your project with:
+```
+  mvn clean package -DskipTests
+```
 
+#### Create a new topic
+```
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreateTopicExample -Dexec.args=my-topic-id
+```
 
-	  mvn clean package -DskipTests
+#### Publish messages
+```
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args=my-topic-id
+```
+Publishes 10 messages to the topic `my-topic-id`.
+
+#### Create a subscription
+```
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic-id my-subscription-id"
+```
+
+#### Receive messages
+```
+   mvn exec:java -Dexec.mainClass=com.example.pubsub.SubscriberExample -Dexec.args=my-subscription-id
+```
+Subscriber will continue to listen on the topic for 5 minutes and print out message id and data as messages are received.
 
 #### Testing
-
-Run the tests with Maven.
-
-    mvn clean verify
-
-#### Creating a new topic (using the quickstart sample)
-
-    mvn exec:java -Dexec.mainClass=com.example.pubsub.QuickstartSample
+Run the test with Maven.
+```
+  mvn clean -Dtest=com.example.pubsub.QuickStartIT verify
+```
