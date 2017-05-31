@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.bigquery</groupId>
+  <groupId>com.example.bigquery</groupId>
   <artifactId>bigquery-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
