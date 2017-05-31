@@ -90,18 +90,16 @@ your project ID.
 
 ### Building the sample project
 
-To build the project on unix-based systems:
+To build the project use:
 
-    ./gradlew build
-
-Note for windows user: Use `gradlew.bat` instead of `./gradlew`
+    gradle build
 
 <details>
  <summary>more details</summary>
  The project contains the standard java and war plugins and in addition to that it contains the following plugins:
  https://github.com/GoogleCloudPlatform/endpoints-framework-gradle-plugin for the endpoint related tasks and
  https://github.com/GoogleCloudPlatform/app-gradle-plugin for the appengine standard related tasks.
- 
+
  Check the links for details about the available Plugin Goals and Parameters.
 </details>
 
@@ -109,7 +107,7 @@ Note for windows user: Use `gradlew.bat` instead of `./gradlew`
 
 To generate the required configuration file `openapi.json`:
 
-    ./gradlew endpointsOpenApiDocs
+    gradle endpointsOpenApiDocs
 
 This results in a file in build/endpointsOpenApiDocs/openapi.json
 
@@ -123,7 +121,7 @@ To deploy the sample API:
 
 0. Deploy the API implementation code by invoking:
 
-         ./gradlew appengineDeploy
+         gradle appengineDeploy
 
     The first time you upload a sample app, you may be prompted to authorize the
     deployment. Follow the prompts: when you are presented with a browser window
