@@ -10,10 +10,6 @@ Cloud Identity-Aware Proxy (Cloud IAP) lets you manage access to applications ru
 ```
    gcloud init
 ```
-  If this is your first time creating an App engine application:
-```
-   gcloud app create
-```
 
 ## Description
 - [BuildIapRequest.java](src/main/java/com/example/iap/BuildIapRequest.java) demonstrates how to set the
@@ -24,10 +20,6 @@ verify the JWT token in an incoming request to an IAP protected resource.
 ## Testing
 - Deploy the [demo app engine application](../appengine/iap/README.md). This application will return the JWT token to an authorized incoming request.
 It will be used to test both the authorization of an incoming request to an IAP protected resource and the JWT token returned from IAP.
-    -  Deploy the application to the project
-    ```
-       mvn clean appengine:deploy
-    ```
 - [Enable](https://cloud.google.com/iap/docs/app-engine-quickstart) Identity-Aware Proxy on the App Engine app.
 - Add the service account email to the Identity-Aware Proxy access list for the project.
 - Set the environment variable `IAP_PROTECTED_URL` to point to `https://your-project-id.appspot.com`
