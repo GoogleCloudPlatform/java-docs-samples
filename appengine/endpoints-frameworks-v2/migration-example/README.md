@@ -39,8 +39,8 @@ process is explained [here][8] and a quickstart is provided [here][9].
    defined in either the Maven or Gradle build script. Hostname is used when a
    discovery document is generated.
 
-   - [Maven - pom.xml](pom.xml#L101)
-   - [Gradle - build.gradle](build.gradle#L77)
+   - Maven - pom.xml
+   - Gradle - build.gradle
 
 1. [Optional]: User Authenticating with Google Accounts in Web Clients
 
@@ -111,7 +111,9 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
 1. Build and Run the application locally at [http://localhost:8080][5] by using:
 
-    `gradle clean appengineRun`
+    `./gradlew clean appengineRun`
+
+   Windows users: Use `gradlew.bat` instead of `./gradlew`
 
 1. Explore local server's API explorer by browsing to:
 
@@ -120,16 +122,16 @@ process is explained [here][8] and a quickstart is provided [here][9].
 1. Generate the discovery document located at
    `build/endpointsDiscoveryDocs/helloworld-v1-rest.discovery` by using:
 
-   `gradle endpointsDiscoveryDocs`
+    `./gradlew endpointsDiscoveryDocs`
 
 1. Generate the client library located at
    `build/endpointsClientLibs/helloworld-v1-java.zip` by using:
 
-    `gradle endpointsClientLibs`
+    `./gradlew endpointsClientLibs`
 
 1. Deploy your application to Google App Engine by using:
 
-    `gradle appengineDeploy`
+    `./gradlew appengineDeploy`
 
 [1]: https://cloud.google.com/appengine/docs/java/
 [2]: http://java.com/en/

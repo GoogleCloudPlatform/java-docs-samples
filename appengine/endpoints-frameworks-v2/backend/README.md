@@ -79,8 +79,8 @@ You will get a 200 response with the following data:
 
 0. Edit the file `build.gradle`.
 
-0. For `def projectId = 'YOUR_PROJECT_ID'`, replace the value `YOUR_PROJECT_ID` with
-your project ID.
+0. For `def projectId = 'YOUR_PROJECT_ID'`, replace the value `YOUR_PROJECT_ID`
+with your project ID.
 
 0. Edit the file `src/main/java/com/example/echo/Echo.java
 
@@ -90,9 +90,11 @@ your project ID.
 
 ### Building the sample project
 
-To build the project use:
+To build the project on unix-based systems:
 
-    gradle build
+    ./gradlew build
+
+Windows users: Use `gradlew.bat` instead of `./gradlew`
 
 <details>
  <summary>more details</summary>
@@ -107,7 +109,7 @@ To build the project use:
 
 To generate the required configuration file `openapi.json`:
 
-    gradle endpointsOpenApiDocs
+    ./gradlew endpointsOpenApiDocs
 
 This results in a file in build/endpointsOpenApiDocs/openapi.json
 
@@ -121,7 +123,7 @@ To deploy the sample API:
 
 0. Deploy the API implementation code by invoking:
 
-         gradle appengineDeploy
+         ./gradlew appengineDeploy
 
     The first time you upload a sample app, you may be prompted to authorize the
     deployment. Follow the prompts: when you are presented with a browser window
