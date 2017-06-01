@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.datastore</groupId>
+  <groupId>com.example.datastore</groupId>
   <artifactId>datastore-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 

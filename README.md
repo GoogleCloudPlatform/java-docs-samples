@@ -19,6 +19,7 @@ Technology Samples:
 * [Bigquery](bigquery)
 * [Datastore](datastore)
 * [Endpoints](endpoints)
+* [Identity-Aware Proxy](iap)
 * [Key Management Service](kms)
 * [Logging](logging)
 * [Monitoring](monitoring)

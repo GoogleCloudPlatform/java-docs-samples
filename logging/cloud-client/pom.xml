@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.logging</groupId>
+  <groupId>com.example.logging</groupId>
   <artifactId>logging-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
