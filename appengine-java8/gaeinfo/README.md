@@ -1,6 +1,6 @@
-# Google App Engine Standard Environment Hello World Sample
+# Google App Engine Information
 
-This sample demonstrates how to deploy an application on Google App Engine.
+This sample displays what's going on in your app. It dumps the environment and lots more.
 
 See the [Google App Engine standard environment documentation][ae-docs] for more
 detailed instructions.
@@ -12,7 +12,7 @@ detailed instructions.
 Use either:
 
 * `gcloud init`
-* `gcloud beta auth application-default login`
+* `gcloud auth application-default login`
 
 ## Maven
 ### Running locally
