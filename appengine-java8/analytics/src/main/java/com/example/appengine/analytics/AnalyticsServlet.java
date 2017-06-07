@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "analytics", description = "Analytics: Send Analytics Event to Google Analytics",
     urlPatterns = "/analytics")
 public class AnalyticsServlet extends HttpServlet {

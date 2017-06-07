@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "appidentity", description = "AppIdentity: Get the Host Name",
     urlPatterns = "/appidentity/identity")
 public class IdentityServlet extends HttpServlet {

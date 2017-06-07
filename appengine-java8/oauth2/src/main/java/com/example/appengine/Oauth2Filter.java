@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  *  <p>Note - this is to demonstrate the OAuth2 APIs, as it is possible to lockdown some
  *  of your app's URL's using cloud console by adding service accounts to the project.</p>
  */
+// With @WebFilter annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebFilter(urlPatterns = "/oauth2hello")
 public class Oauth2Filter implements Filter {
 

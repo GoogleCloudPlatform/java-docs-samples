@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START enqueue]
 // The Enqueue servlet should be mapped to the "/enqueue" URL.
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "TaskEnque", description = "taskqueue: Enqueue a job with a key",
     urlPatterns = "/taskqueues/enqueue")
 public class Enqueue extends HttpServlet {
