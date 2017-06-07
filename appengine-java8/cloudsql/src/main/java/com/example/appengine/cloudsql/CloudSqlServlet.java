@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "CloudSQL", description = "CloudSQL: Write low order IP address to Cloud SQL",
     urlPatterns = "/cloudsql")
 public class CloudSqlServlet extends HttpServlet {

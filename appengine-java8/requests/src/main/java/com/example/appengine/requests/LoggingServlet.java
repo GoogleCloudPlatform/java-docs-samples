@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START simple_logging_example]
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "RequestLogging", description = "Requests: Logging example",
     urlPatterns = "/requests/log")
 public class LoggingServlet extends HttpServlet {
@@ -39,6 +40,6 @@ public class LoggingServlet extends HttpServlet {
     resp.getWriter().println("Check logs for results");
     // [END_EXCLUDE]
   }
-} 
+}
 // [END simple_logging_example]
 

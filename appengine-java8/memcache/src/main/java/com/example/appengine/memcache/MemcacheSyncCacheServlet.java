@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "MemcacheSync", description = "Memcache: Synchronous",
     urlPatterns = "/memcache/sync")
 public class MemcacheSyncCacheServlet extends HttpServlet {

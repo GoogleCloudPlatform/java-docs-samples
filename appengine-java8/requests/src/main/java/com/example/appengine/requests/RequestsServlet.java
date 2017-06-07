@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START simple_request_example]
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "requests", description = "Requests: Trivial request",
     urlPatterns = "/requests")
 public class RequestsServlet extends HttpServlet {
