@@ -32,6 +32,6 @@ It will be used to test both the authorization of an incoming request to an IAP 
 ```
 
 ## References
-[JWT library for Java](https://github.com/jwtk/jjwt)
-[Cloud IAP docs](https://cloud.google.com/iap/docs/)
-[Service account credentials](https://cloud.google.com/docs/authentication#getting_credentials_for_server-centric_flow)
+- [JWT library for Java](https://github.com/jwtk/jjwt)
+- [Cloud IAP docs](https://cloud.google.com/iap/docs/)
+- [Service account credentials](https://cloud.google.com/docs/authentication#getting_credentials_for_server-centric_flow)
