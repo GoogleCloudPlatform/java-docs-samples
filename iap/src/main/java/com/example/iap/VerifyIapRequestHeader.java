@@ -13,12 +13,6 @@
  */
 package com.example.iap;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.ECDSAKeyProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.GenericUrl;
@@ -28,13 +22,20 @@ import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.PemReader;
 import com.google.api.client.util.PemReader.Section;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwsHeader;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SigningKeyResolver;
+import io.jsonwebtoken.impl.DefaultClaims;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -43,21 +44,32 @@ import java.util.Map;
 
 /** Verify IAP authorization JWT token in incoming request. */
 public class VerifyIapRequestHeader {
+
   // [START verify_iap_request]
   private static final String PUBLIC_KEY_VERIFICATION_URL =
       "https://www.gstatic.com/iap/verify/public_key";
   private static final String IAP_ISSUER_URL = "https://cloud.google.com/iap";
 
-  private final Map<String, ECPublicKey> keyCache = new HashMap<>();
+  private final Map<String, Key> keyCache = new HashMap<>();
   private final ObjectMapper mapper = new ObjectMapper();
   private final TypeReference<HashMap<String, String>> typeRef =
       new TypeReference<HashMap<String, String>>() {};
 
-  private ECDSAKeyProvider keyProvider =
-      new ECDSAKeyProvider() {
+  private SigningKeyResolver resolver =
+      new SigningKeyResolver() {
         @Override
-        public ECPublicKey getPublicKeyById(String kid) {
-          ECPublicKey key = keyCache.get(kid);
+        public Key resolveSigningKey(JwsHeader header, Claims claims) {
+          return resolveSigningKey(header);
+        }
+
+        @Override
+        public Key resolveSigningKey(JwsHeader header, String payload) {
+          return resolveSigningKey(header);
+        }
+
+        private Key resolveSigningKey(JwsHeader header) {
+          String keyId = header.getKeyId();
+          Key key = keyCache.get(keyId);
           if (key != null) {
             return key;
           }
@@ -72,32 +84,19 @@ public class VerifyIapRequestHeader {
             }
             Map<String, String> keys = mapper.readValue(response.parseAsString(), typeRef);
             for (Map.Entry<String, String> keyData : keys.entrySet()) {
-              if (!keyData.getKey().equals(kid)) {
+              if (!keyData.getKey().equals(keyId)) {
                 continue;
               }
               key = getKey(keyData.getValue());
               if (key != null) {
-                keyCache.putIfAbsent(kid, key);
+                keyCache.putIfAbsent(keyId, key);
               }
             }
 
           } catch (IOException e) {
             // ignore exception
           }
-
           return key;
-        }
-
-        @Override
-        public ECPrivateKey getPrivateKey() {
-          // ignore : only required for signing requests
-          return null;
-        }
-
-        @Override
-        public String getPrivateKeyId() {
-          // ignore : only required for signing requests
-          return null;
         }
       };
 
@@ -108,7 +107,7 @@ public class VerifyIapRequestHeader {
     return (url.getProtocol() + "://" + url.getHost() + path).trim();
   }
 
-  DecodedJWT verifyJWTToken(HttpRequest request) throws Exception {
+  Jwt verifyJWTToken(HttpRequest request) throws Exception {
     // Check for iap jwt header in incoming request
     String jwtToken =
         request.getHeaders().getFirstHeaderStringValue("x-goog-authenticated-user-jwt");
@@ -119,24 +118,25 @@ public class VerifyIapRequestHeader {
     return verifyJWTToken(jwtToken, baseUrl);
   }
 
-  DecodedJWT verifyJWTToken(String jwtToken, String baseUrl) throws Exception {
-    Algorithm algorithm = Algorithm.ECDSA256(keyProvider);
-
-    // Time constraints are automatically checked, use acceptLeeway to specify a leeway window
+  Jwt verifyJWTToken(String jwtToken, String baseUrl) throws Exception {
+    // Time constraints are automatically checked, use setAllowedClockSkewSeconds
+    // to specify a leeway window
     // The token was issued in a past date "iat" < TODAY
     // The token hasn't expired yet "exp" > TODAY
-    JWTVerifier verifier =
-        JWT.require(algorithm).withAudience(baseUrl).withIssuer(IAP_ISSUER_URL).build();
-
-    DecodedJWT decodedJWT = verifier.verify(jwtToken);
-
-    if (decodedJWT.getSubject() == null) {
-      throw new JWTVerificationException("Subject expected, not found");
+    Jwt jwt =
+        Jwts.parser()
+            .setSigningKeyResolver(resolver)
+            .requireAudience(baseUrl)
+            .requireIssuer(IAP_ISSUER_URL)
+            .parse(jwtToken);
+    DefaultClaims claims = (DefaultClaims) jwt.getBody();
+    if (claims.getSubject() == null) {
+      throw new Exception("Subject expected, not found.");
     }
-    if (decodedJWT.getClaim("email") == null) {
-      throw new JWTVerificationException("Email expected, not found");
+    if (claims.get("email") == null) {
+      throw new Exception("Email expected, not found.");
     }
-    return decodedJWT;
+    return jwt;
   }
 
   private ECPublicKey getKey(String keyText) throws IOException {

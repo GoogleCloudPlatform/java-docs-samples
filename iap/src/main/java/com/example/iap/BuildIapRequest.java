@@ -13,8 +13,6 @@
  */
 package com.example.iap;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
@@ -28,9 +26,11 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.GenericData;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import java.io.IOException;
 import java.net.URL;
-import java.security.interfaces.RSAPrivateKey;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collections;
@@ -71,16 +71,18 @@ public class BuildIapRequest {
       throws IOException {
     Instant now = Instant.now(clock);
     long expirationTime = now.getEpochSecond() + EXPIRATION_TIME_IN_SECONDS;
+
     // generate jwt signed by service account
-    return JWT.create()
-        .withKeyId(credentials.getPrivateKeyId())
-        .withAudience(OAUTH_TOKEN_URI)
-        .withIssuer(credentials.getClientEmail())
-        .withSubject(credentials.getClientEmail())
-        .withIssuedAt(Date.from(now))
-        .withExpiresAt(Date.from(Instant.ofEpochSecond(expirationTime)))
-        .withClaim("target_audience", baseUrl)
-        .sign(Algorithm.RSA256(null, (RSAPrivateKey) credentials.getPrivateKey()));
+    return Jwts.builder()
+        .setHeaderParam("kid", credentials.getPrivateKeyId())
+        .setIssuer(credentials.getClientEmail())
+        .setAudience(OAUTH_TOKEN_URI)
+        .setSubject(credentials.getClientEmail())
+        .setIssuedAt(Date.from(now))
+        .setExpiration(Date.from(Instant.ofEpochSecond(expirationTime)))
+        .claim("target_audience", baseUrl)
+        .signWith(SignatureAlgorithm.RS256, credentials.getPrivateKey())
+        .compact();
   }
 
   private static String getGoogleIdToken(String jwt) throws Exception {
