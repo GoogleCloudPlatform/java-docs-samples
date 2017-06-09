@@ -14,9 +14,11 @@
  */
 package com.example.appengine.taskqueue.push;
 
+// [START import]
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+// [END import]
 
 import java.io.IOException;
 
@@ -37,8 +39,10 @@ public class Enqueue extends HttpServlet {
     String key = request.getParameter("key");
 
     // Add the task to the default queue.
+    // [START addQueue]  
     Queue queue = QueueFactory.getDefaultQueue();
     queue.add(TaskOptions.Builder.withUrl("/worker").param("key", key));
+    // [END addQueue]
 
     response.sendRedirect("/");
   }
