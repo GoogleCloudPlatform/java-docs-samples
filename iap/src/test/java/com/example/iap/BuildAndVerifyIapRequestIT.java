@@ -34,12 +34,14 @@ import org.junit.runners.JUnit4;
 public class BuildAndVerifyIapRequestIT {
 
   private String iapProtectedUrl = System.getenv("IAP_PROTECTED_URL");
+  private String iapClientId = System.getenv("IAP_CLIENT_ID");
   private HttpTransport httpTransport = new NetHttpTransport();
   private VerifyIapRequestHeader verifyIapRequestHeader = new VerifyIapRequestHeader();
 
   @Before
   public void setUp() {
     assertNotNull(iapProtectedUrl);
+    assertNotNull(iapClientId);
   }
 
   // Access an IAP protected url without signed jwt authorization header
@@ -59,7 +61,7 @@ public class BuildAndVerifyIapRequestIT {
   public void testGenerateAndVerifyIapRequestIsSuccessful() throws Exception {
     HttpRequest request =
         httpTransport.createRequestFactory().buildGetRequest(new GenericUrl(iapProtectedUrl));
-    HttpRequest iapRequest = buildIAPRequest(request);
+    HttpRequest iapRequest = buildIAPRequest(request, iapClientId);
     HttpResponse response = iapRequest.execute();
     assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
     String headerWithtoken = response.parseAsString();

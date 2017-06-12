@@ -26,6 +26,7 @@ It will be used to test both the authorization of an incoming request to an IAP 
 - [Enable](https://cloud.google.com/iap/docs/app-engine-quickstart) Identity-Aware Proxy on the App Engine app.
 - Add the service account email to the Identity-Aware Proxy access list for the project.
 - Set the environment variable `IAP_PROTECTED_URL` to point to `https://your-project-id.appspot.com`
+- Set the environment variable `IAP_CLIENT_ID` to point to the [OAuth 2.0 Client ID](https://console.cloud.google.com/apis/credentials) of your IAP protected App Engine Application.
 - Run the integration test:
 ```
     mvn -Dtest=com.example.iap.BuildAndVerifyIapRequestIT verify
