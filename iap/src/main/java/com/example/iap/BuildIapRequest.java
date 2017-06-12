@@ -50,13 +50,6 @@ public class BuildIapRequest {
 
   private BuildIapRequest() {}
 
-  private static String getBaseUrl(URL url) throws Exception {
-    String urlFilePath = url.getFile();
-    int pathDelim = urlFilePath.lastIndexOf('/');
-    String path = (pathDelim > 0) ? urlFilePath.substring(0, pathDelim) : "";
-    return (url.getProtocol() + "://" + url.getHost() + path).trim();
-  }
-
   private static ServiceAccountCredentials getCredentials() throws Exception {
     GoogleCredentials credentials =
         GoogleCredentials.getApplicationDefault().createScoped(Collections.singleton(IAM_SCOPE));
@@ -67,7 +60,7 @@ public class BuildIapRequest {
     return (ServiceAccountCredentials) credentials;
   }
 
-  private static String getSignedJWToken(ServiceAccountCredentials credentials, String baseUrl)
+  private static String getSignedJWToken(ServiceAccountCredentials credentials, String iapClientId)
       throws IOException {
     Instant now = Instant.now(clock);
     long expirationTime = now.getEpochSecond() + EXPIRATION_TIME_IN_SECONDS;
@@ -80,7 +73,7 @@ public class BuildIapRequest {
         .setSubject(credentials.getClientEmail())
         .setIssuedAt(Date.from(now))
         .setExpiration(Date.from(Instant.ofEpochSecond(expirationTime)))
-        .claim("target_audience", baseUrl)
+        .claim("target_audience", iapClientId)
         .signWith(SignatureAlgorithm.RS256, credentials.getPrivateKey())
         .compact();
   }
@@ -105,16 +98,15 @@ public class BuildIapRequest {
     return idToken;
   }
 
-  public static HttpRequest buildIAPRequest(HttpRequest request) throws Exception {
+  public static HttpRequest buildIAPRequest(HttpRequest request, String iapClientId) throws Exception {
     // get service account credentials
     ServiceAccountCredentials credentials = getCredentials();
     // get the base url of the request URL
-    String baseUrl = getBaseUrl(request.getUrl().toURL());
-    String jwt = getSignedJWToken(credentials, baseUrl);
+    String jwt = getSignedJWToken(credentials, iapClientId);
     if (jwt == null) {
       throw new Exception(
           "Unable to create a signed jwt token for : "
-              + baseUrl
+              + iapClientId
               + "with issuer : "
               + credentials.getClientEmail());
     }
