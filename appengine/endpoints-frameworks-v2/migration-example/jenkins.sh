@@ -63,7 +63,7 @@ mvn clean
 
 # Test with Gradle
 # Modify Greetings.java for Gradle
-sed -i'.bak' -e "s/hello version-${GOOGLE_VERSION_ID}!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
+sed -i'.bak' -e "s/hello version-${GOOGLE_VERSION_ID}!/hello version-gradle-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
 
 # Deploy Gradle
 gradle -Pappengine.deploy.promote=false \
@@ -71,7 +71,7 @@ gradle -Pappengine.deploy.promote=false \
   appengineDeploy
 
 # End-2-End tests
-TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}"
+TestEndpoints "${GOOGLE_PROJECT_ID}" "gradle-${GOOGLE_VERSION_ID}"
 
 # Clean
 gradle clean
