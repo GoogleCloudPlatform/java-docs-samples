@@ -51,6 +51,8 @@
 
     <module>firebase-tictactoe</module>
 
+    <module>gaeinfo</module>
+
     <module>guestbook-cloud-datastore</module>
     <module>guestbook-objectify</module>
 

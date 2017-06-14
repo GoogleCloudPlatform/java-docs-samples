@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * interface to background a task on the AppEngine task queues,
  * without needing to create a separate URL handler.
  */
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "TasksDefer", description = "TaskQueues: Defer a task",
     urlPatterns = "/taskqueues/defer")
 public class DeferSampleServlet extends HttpServlet {

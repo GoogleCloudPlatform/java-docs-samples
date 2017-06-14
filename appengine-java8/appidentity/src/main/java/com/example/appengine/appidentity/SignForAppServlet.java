@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "signforapp", description = "AppIdentity: Sign 'abcdefg'",
     urlPatterns = "/appidentity/sign")
 public class SignForAppServlet extends HttpServlet {
