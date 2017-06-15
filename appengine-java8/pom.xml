@@ -64,11 +64,15 @@
     <module>multitenancy</module>
     <module>oauth2</module>
     <module>requests</module>
-    <module>search</module>
-    <module>sendgrid</module>
 
     <module>remote-client</module>
     <module>remote-server</module>
+
+    <module>search</module>
+
+    <module>sendgrid</module>
+
+    <module>spanner</module>
 
     <module>static-files</module>
 
