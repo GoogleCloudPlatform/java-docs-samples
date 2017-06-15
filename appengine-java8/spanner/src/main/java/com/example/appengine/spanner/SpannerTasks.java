@@ -28,6 +28,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.common.base.Stopwatch;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -331,7 +332,8 @@ class SpannerTasks {
                 SpannerClient.getInstanceId(),
                 SpannerClient.getDatabaseId(),
                 Arrays.asList(
-                    "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)"),
+                    "CREATE INDEX AlbumsByAlbumTitle2 "
+                        + "ON Albums(AlbumTitle) STORING (MarketingBudget)"),
                 null);
     op.waitFor();
   }
