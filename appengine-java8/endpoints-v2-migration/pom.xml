@@ -26,20 +26,18 @@ limitations under the License.
       <artifactId>appengine-java8-samples</artifactId>
       <groupId>com.google.cloud</groupId>
       <version>1.0.0</version>
-      <relativePath>../..</relativePath>
+      <relativePath>..</relativePath>
   </parent>
 
   <properties>
-    <javax.inject.version>1</javax.inject.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <mojo.versions.maven.version>2.1</mojo.versions.maven.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
     <!-- Compile/runtime dependencies -->
-    <!-- Uncomment to use Endpoints Frameworks v1.0 -->
+    <!-- Uncomment to use Endpoints Frameworks v1.0 and comment the v2.0 section-->
     <!--
     [START appengine-endpoints]
     <dependency>
@@ -55,10 +53,15 @@ limitations under the License.
     <dependency>
       <groupId>com.google.endpoints</groupId>
       <artifactId>endpoints-framework</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.7</version>
     </dependency>
     <!-- [END endpoints-frameworks] -->
     <!-- End of Endpoints Frameworks v2.0 -->
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>1.9.53</version>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -69,7 +72,7 @@ limitations under the License.
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
-      <version>${javax.inject.version}</version>
+      <version>1</version>
     </dependency>
   </dependencies>
 
@@ -100,7 +103,7 @@ limitations under the License.
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>versions-maven-plugin</artifactId>
-            <version>${mojo.versions.maven.version}</version>
+            <version>2.3</version>
             <executions>
                 <execution>
                     <phase>compile</phase>
