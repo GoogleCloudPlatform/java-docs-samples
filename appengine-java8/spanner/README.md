@@ -30,7 +30,19 @@ for supported set of tasks.
 Note : by default all the spanner example operations run in order, this operation may take a while to return.
 
 ## Running locally
-There are known IAM permission issues running this sample locally.
+-Authorize the local application:
+```
+   gcloud auth application-default login
+```
+You may also [create and use service account credentials](https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account).
+- To run locally, we will be using the [Maven Jetty plugin](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html)
+```
+   mvn -DSPANNER_INSTANCE=my-spanner-instance jetty:run
+```
+
+To see the results of the local application, open
+[http://localhost:8080/run](http://localhost:8080/run) in a web browser.
+Note : by default all the spanner example operations run in order, this operation may take a while to show results.
 
 ## Deploying
 
@@ -38,6 +50,5 @@ There are known IAM permission issues running this sample locally.
 
 To see the results of the deployed sample application, open
 `https://spanner-dot-PROJECTID.appspot.com/run` in a web browser.
-
-Note : by default all the spanner example operations run in order, this operation may take a while to return.
+Note : by default all the spanner example operations run in order, this operation may take a while to show results.
 
