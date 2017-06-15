@@ -18,24 +18,24 @@ If this is your first time creating an App engine application:
 ```
 - [Create a Spanner instance](https://cloud.google.com/spanner/docs/quickstart-console#create_an_instance).
 
-- Update system properties in `[appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml):
-    - Required : `SPANNER_INSTANCE`
-    - Optional : `SPANNER_DATABASE`,
-      A database will created using the `SPANNER_DATABASE` name if provided, else will be auto-generated.
+- Update `SPANNER_INSTANCE` value in `[appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml).
 
 ## Endpoints
-- `/run` : will run sample operations against the spanner instance in order. Individual tasks can be run
+- `/spanner` : will run sample operations against the spanner instance in order. Individual tasks can be run
 using the `task` query parameter. See [SpannerTasks](src/main/java/com/example/appengine/spanner/SpannerTasks.java)
 for supported set of tasks.
 Note : by default all the spanner example operations run in order, this operation may take a while to return.
 
 ## Running locally
--Authorize the local application:
+- Authorize the local application:
 ```
    gcloud auth application-default login
 ```
 You may also [create and use service account credentials](https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account).
-- To run locally, we will be using the [Maven Jetty plugin](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html)
+
+- App Engine Maven plugins do not work correctly for this sample for local testing.
+  Here is the [tracking issue](https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2155).
+  As a workaround to run locally, this sample uses the [Maven Jetty plugin](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html).
 ```
    mvn -DSPANNER_INSTANCE=my-spanner-instance jetty:run
 ```

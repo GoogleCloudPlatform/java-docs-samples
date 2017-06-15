@@ -44,7 +44,8 @@ import javax.servlet.http.HttpServletResponse;
  * Individual tasks can be run using "tasks" query parameter. {@link SpannerTasks.Task} lists
  * supported tasks. All tasks are run in order if no parameter or "tasks=all" is provided.
  */
-@WebServlet(value = "/run")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
+@WebServlet(value = "/spanner")
 public class SpannerTasksServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)

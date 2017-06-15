@@ -58,11 +58,17 @@
     </outputDirectory>
 
     <plugins>
+      <!-- START Using Jetty plugin as workaround for local testing.
+      https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2155:
+      This sample does not work with the AppEngine Maven Plugins for local testing
+      -->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>9.4.6.v20170531</version>
       </plugin>
+      <!-- END -->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.5.1</version>
@@ -72,7 +78,6 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>

@@ -25,6 +25,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+// With @WebListener annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebListener
 public class SpannerClient implements ServletContextListener {
 
@@ -87,16 +88,10 @@ public class SpannerClient implements ServletContextListener {
       if (INSTANCE_ID == null) {
         INSTANCE_ID = sc.getInitParameter("SPANNER_INSTANCE");
       }
-      if (DATABASE_ID == null) {
-        DATABASE_ID = sc.getInitParameter("SPANNER_DATABASE");
-      }
     }
     //try system properties
     if (INSTANCE_ID == null) {
       INSTANCE_ID = System.getProperty("SPANNER_INSTANCE");
-    }
-    if (DATABASE_ID == null) {
-      DATABASE_ID = System.getProperty("SPANNER_DATABASE");
     }
 
     if (DATABASE_ID == null) {
@@ -126,11 +121,11 @@ public class SpannerClient implements ServletContextListener {
     databaseAdminClient = null;
   }
 
-  public static String getInstanceId() {
+  static String getInstanceId() {
     return INSTANCE_ID;
   }
 
-  public static String getDatabaseId() {
+  static String getDatabaseId() {
     return DATABASE_ID;
   }
 }
