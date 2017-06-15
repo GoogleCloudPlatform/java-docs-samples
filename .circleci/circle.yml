@@ -1,0 +1,15 @@
+machine:
+  java:
+    version: oraclejdk8
+dependencies:
+  pre:
+    - curl -LO https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz
+      && sudo tar -zxf geckodriver-*.tar.gz -C "${HOME}/bin"
+    - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe"
+      && sudo apt-get update
+      && sudo apt-get install -t trusty-backports shellcheck
+    - sudo apt-get install expect
+test:
+  override:
+    - bash ./travis.sh &&
+      bash <(curl -s https://codecov.io/bash) # If successful, run code coverage
