@@ -9,6 +9,8 @@ dependencies:
       && sudo apt-get update
       && sudo apt-get install -t trusty-backports shellcheck
     - sudo apt-get install expect
+    - openssl aes-256-cbc -d -in "${HOME}/${CIRCLE_PROJECT_REPONAME}/service-account.json.enc" -k "${key}" -iv "${iv}" -out "${HOME}/google-cloud-service-key.json"
+    - export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/google-cloud-service-key.json"
 test:
   override:
     - bash ./travis.sh &&
