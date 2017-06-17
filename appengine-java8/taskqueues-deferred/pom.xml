@@ -31,7 +31,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <appengine.sdk.version>1.9.52</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
+    <appengine.sdk.version>1.9.54</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
   </properties>
 
   <dependencies>
@@ -65,7 +65,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.7.22</version>
+      <version>2.8.47</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
