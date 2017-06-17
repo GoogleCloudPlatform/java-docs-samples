@@ -39,7 +39,7 @@ Copyright 2016 Google Inc.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20160810</version>
+      <version>20170516</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -80,7 +80,7 @@ Copyright 2016 Google Inc.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.32</version>
+      <version>0.33</version>
       <scope>test</scope>
     </dependency>
 

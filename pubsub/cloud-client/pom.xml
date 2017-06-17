@@ -31,7 +31,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <pubsub.version>0.17.2-alpha</pubsub.version>
+    <pubsub.version>0.20.0-beta</pubsub.version>
   </properties>
 
   <dependencies>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.32</version>
+      <version>0.33</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

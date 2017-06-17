@@ -37,7 +37,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.17.2-alpha</version>
+      <version>0.20.0-alpha</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.32</version>
+      <version>0.33</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
