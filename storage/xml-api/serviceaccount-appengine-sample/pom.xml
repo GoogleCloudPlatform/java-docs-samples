@@ -33,7 +33,7 @@
   <properties>
     <maven.compiler.target>1.7</maven.compiler.target>
     <maven.compiler.source>1.7</maven.compiler.source>
-    <appengine.sdk.version>1.9.53</appengine.sdk.version> <!-- TODO(): MOVE to /appengine -->
+    <appengine.sdk.version>1.9.54</appengine.sdk.version> <!-- TODO(): MOVE to /appengine -->
     <google-api-client.version>1.22.0</google-api-client.version>
     <webappDirectory>${project.build.directory}/${project.build.finalName}
     </webappDirectory>
