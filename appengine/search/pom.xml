@@ -73,7 +73,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.32</version>
+      <version>0.33</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
