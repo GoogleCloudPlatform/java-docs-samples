@@ -37,8 +37,6 @@ public class SubscriberExample {
 
   private static final BlockingQueue<PubsubMessage> messages = new LinkedBlockingDeque<>();
 
-  private final List<String> receivedMessageIds = new ArrayList<>();
-
   static class MessageReceiverExample implements MessageReceiver {
 
     @Override
@@ -46,10 +44,6 @@ public class SubscriberExample {
       messages.offer(message);
       consumer.ack();
     }
-  }
-
-  List<String> getReceivedMessages() {
-    return ImmutableList.copyOf(receivedMessageIds);
   }
 
   public static void main(String... args) throws Exception {
