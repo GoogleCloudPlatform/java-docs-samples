@@ -15,6 +15,7 @@
  */
 package com.example.pubsub;
 // [START pubsub_quickstart_publisher]
+
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.ServiceOptions;
@@ -33,13 +34,13 @@ public class PublisherExample {
   // use the default project id
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
-  //publish message asynchronously one at a time.
-  private static ApiFuture<String> publishMessage(Publisher publisher, String message) throws Exception {
-      // schedule publishing : messages get automatically batched
-      // convert message to bytes
-      ByteString data = ByteString.copyFromUtf8(message);
-      PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
-      return publisher.publish(pubsubMessage);
+  //schedule a message to be published, messages are automatically batched
+  private static ApiFuture<String> publishMessage(Publisher publisher, String message)
+      throws Exception {
+    // convert message to bytes
+    ByteString data = ByteString.copyFromUtf8(message);
+    PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
+    return publisher.publish(pubsubMessage);
   }
 
   public static void main(String... args) throws Exception {

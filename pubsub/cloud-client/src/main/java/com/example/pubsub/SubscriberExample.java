@@ -16,6 +16,7 @@
 package com.example.pubsub;
 
 // [START pubsub_quickstart_subscriber]
+
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.spi.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.spi.v1.MessageReceiver;
@@ -39,6 +40,7 @@ public class SubscriberExample {
   private final List<String> receivedMessageIds = new ArrayList<>();
 
   static class MessageReceiverExample implements MessageReceiver {
+
     @Override
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
       messages.offer(message);
@@ -57,7 +59,8 @@ public class SubscriberExample {
     Subscriber subscriber = null;
     try {
       // create a subscriber bound to the asynchronous message receiver
-      subscriber = Subscriber.defaultBuilder(subscriptionName, new MessageReceiverExample()).build();
+      subscriber = Subscriber.defaultBuilder(subscriptionName, new MessageReceiverExample())
+          .build();
       subscriber.startAsync().awaitRunning();
       // Continue to listen to messages
       while (true) {
