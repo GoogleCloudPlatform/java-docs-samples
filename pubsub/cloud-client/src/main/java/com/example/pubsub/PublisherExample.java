@@ -28,60 +28,45 @@ import java.util.List;
 
 public class PublisherExample {
 
+  static final int MESSAGE_COUNT = 5;
+
   // use the default project id
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
-  private static final int MESSAGE_COUNT = 5;
-
-  //publish messages asynchronously one at a time.
-  static List<String> publishMessages(String topicId) throws Exception {
-    List<String> messageIds;
-    List<ApiFuture<String>> messageIdFutures = new ArrayList<>();
-    TopicName topicName = TopicName.create(PROJECT_ID, topicId);
-    Publisher publisher = null;
-    try {
-      // Create a publisher instance with default settings bound to the topic
-      publisher = Publisher.defaultBuilder(topicName).build();
-      List<String> messages = getMessages();
-
-      // schedule publishing one message at a time : messages get automatically batched
-      for (String message : messages) {
-        // convert message to bytes
-        ByteString data = ByteString.copyFromUtf8(message);
-        PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
-
-        // Once published, returns a server-assigned message id (unique within the topic)
-        ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
-        messageIdFutures.add(messageIdFuture);
-      }
-    } finally {
-      // wait on any pending publish requests.
-      messageIds = ApiFutures.allAsList(messageIdFutures).get();
-
-      for (String messageId : messageIds) {
-        System.out.println("published with message ID: " + messageId);
-      }
-
-      if (publisher != null) {
-        // When finished with the publisher, shutdown to free up resources.
-        publisher.shutdown();
-      }
-    }
-    return messageIds;
-  }
-
-  private static List<String> getMessages() {
-    List<String> messages = new ArrayList<>();
-    for (int i = 0; i < MESSAGE_COUNT; i++) {
-      messages.add("message-" + String.valueOf(i));
-    }
-    return messages;
+  //publish message asynchronously one at a time.
+  private static ApiFuture<String> publishMessage(Publisher publisher, String message) throws Exception {
+      // schedule publishing : messages get automatically batched
+      // convert message to bytes
+      ByteString data = ByteString.copyFromUtf8(message);
+      PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
+      return publisher.publish(pubsubMessage);
   }
 
   public static void main(String... args) throws Exception {
     // topic id, eg. "my-topic-id"
     String topicId = args[0];
-    publishMessages(topicId);
+    TopicName topicName = TopicName.create(PROJECT_ID, topicId);
+    Publisher publisher = null;
+    List<ApiFuture<String>> apiFutures = new ArrayList<>();
+    try {
+      // Create a publisher instance with default settings bound to the topic
+      publisher = Publisher.defaultBuilder(topicName).build();
+      for (int i = 0; i < MESSAGE_COUNT; i++) {
+        String message = "message-" + i;
+        ApiFuture<String> messageId = publishMessage(publisher, message);
+        apiFutures.add(messageId);
+      }
+    } finally {
+      // Once published, returns server-assigned message ids (unique within the topic)
+      List<String> messageIds = ApiFutures.allAsList(apiFutures).get();
+      for (String messageId : messageIds) {
+        System.out.println(messageId);
+      }
+      if (publisher != null) {
+        // When finished with the publisher, shutdown to free up resources.
+        publisher.shutdown();
+      }
+    }
   }
 }
 // [END pubsub_quickstart_quickstart]

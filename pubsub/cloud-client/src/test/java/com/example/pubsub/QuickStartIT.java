@@ -23,6 +23,10 @@ import com.google.cloud.pubsub.spi.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.spi.v1.TopicAdminClient;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,18 +46,35 @@ import java.util.List;
 public class QuickStartIT {
 
   private ByteArrayOutputStream bout;
-  private PrintStream out;
 
   private String projectId = ServiceOptions.getDefaultProjectId();
   private String topicId = formatForTest("my-topic-id");
   private String subscriptionId = formatForTest("my-subscription-id");
+
+  class SubscriberRunnable implements Runnable {
+
+    private String subscriptionId;
+
+    SubscriberRunnable(String subscriptionId) {
+      this.subscriptionId = subscriptionId;
+    }
+
+    @Override
+    public void run() {
+      try {
+        SubscriberExample.main(subscriptionId);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
 
   @Rule public Timeout globalTimeout = Timeout.seconds(300); // 5 minute timeout
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     System.setOut(out);
     try {
       deleteTestSubscription();
@@ -82,22 +103,29 @@ public class QuickStartIT {
     got = bout.toString();
     assertThat(got).contains(subscriptionId + " created.");
 
+    bout.reset();
     // publish messages
-    List<String> published = PublisherExample.publishMessages(topicId);
-    assertThat(published).hasSize(5);
+    PublisherExample.main(topicId);
+    String[] messageIds = bout.toString().split("\n");
+    assertThat(messageIds).hasLength(PublisherExample.MESSAGE_COUNT);
 
-    SubscriberExample subscriberExample = new SubscriberExample(subscriptionId);
+    bout.reset();
     // receive messages
-    Thread subscriberThread = new Thread(subscriberExample);
+    Thread subscriberThread = new Thread(new SubscriberRunnable(subscriptionId));
     subscriberThread.start();
-
-    List<String> received;
-    while ((received = subscriberExample.getReceivedMessages()).size() < 5) {
-      Thread.sleep(1000);
+    Set<String> expectedMessageIds = new HashSet<>();
+    List<String> receivedMessageIds = new ArrayList<>();
+    expectedMessageIds.addAll(Arrays.asList(messageIds));
+    while (!expectedMessageIds.isEmpty()) {
+      for (String expectedId : expectedMessageIds) {
+        if (bout.toString().contains(expectedId)) {
+          receivedMessageIds.add(expectedId);
+        }
+      }
+      expectedMessageIds.removeAll(receivedMessageIds);
     }
-
-    assertThat(received).containsAllIn(published);
-    subscriberExample.stopSubscriber();
+    subscriberThread.interrupt();
+    assertThat(expectedMessageIds).isEmpty();
   }
 
   private String formatForTest(String name) {
