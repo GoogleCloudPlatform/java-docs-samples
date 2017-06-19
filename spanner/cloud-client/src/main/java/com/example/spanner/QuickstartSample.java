@@ -57,7 +57,7 @@ public class QuickstartSample {
       }
     } finally {
       // Closes the client which will free up the resources used
-      spanner.closeAsync();
+      spanner.close();
     }
   }
 }

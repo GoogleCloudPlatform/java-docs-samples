@@ -20,7 +20,7 @@ package com.example.pubsub;
 // Imports the Google Cloud client library
 import com.google.cloud.Identity;
 import com.google.cloud.Role;
-import com.google.cloud.pubsub.spi.v1.TopicAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
 import com.google.pubsub.v1.TopicName;
