@@ -16,7 +16,7 @@
 
 package com.google.cloud.language.samples;
 
-import com.google.cloud.language.spi.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.LanguageServiceClient;
 
 import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
 import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
