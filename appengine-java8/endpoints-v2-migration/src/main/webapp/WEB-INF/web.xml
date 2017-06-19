@@ -19,7 +19,7 @@ limitations under the License.
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-    <!-- Uncomment to use Endpoints Frameworks v1.0 -->
+    <!-- Uncomment to use Endpoints Frameworks v1.0 and comment the v2.0 section -->
     <!--
     [START appengine-endpoints]
     <servlet>

@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "oauth2", description = "Oauth2: restricted helloWorld",
     urlPatterns = "/oauth2hello")
 public class HelloServlet extends HttpServlet {

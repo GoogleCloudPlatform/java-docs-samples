@@ -54,7 +54,9 @@ cleanup() {
 shellcheck ./**/*.sh
 
 # Find all jenkins.sh's and run them.
-find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f | while read -r path; do
+export SCRIPT_LIST
+SCRIPT_LIST="$(find . -mindepth 2 -maxdepth 5 -name jenkins.sh -type f)"
+for path in $SCRIPT_LIST; do
   dir="${path%/jenkins.sh}"
   # Need different app versions because flex can't deploy over an existing
   # version. Use just the first letter of each subdir in version name

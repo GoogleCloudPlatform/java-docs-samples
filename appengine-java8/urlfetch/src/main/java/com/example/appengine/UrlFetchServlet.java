@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "URLFetch", description = "URLFetch: Write low order IP address to Cloud SQL",
     urlPatterns = "/urlfetch")
 public class UrlFetchServlet extends HttpServlet {

@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // Get request logs along with their app log lines and display them 5 at
 // a time, using a Next link to cycle through to the next 5.
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "logs", description = "Logs: Display 5 lines of the request log",
     urlPatterns = "/logs")
 public class LogsServlet extends HttpServlet {

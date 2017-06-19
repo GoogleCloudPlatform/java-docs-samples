@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "UserAPI", description = "UserAPI: Login / Logout with UserService",
     urlPatterns = "/userapi")
 public class UsersServlet extends HttpServlet {

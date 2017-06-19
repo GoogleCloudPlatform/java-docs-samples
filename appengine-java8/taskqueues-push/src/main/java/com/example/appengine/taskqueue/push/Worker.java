@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 //  [START worker]
 // The Worker servlet should be mapped to the "/worker" URL.
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "TaskWorker", description = "TaskQueues: worker",
     urlPatterns = "/taskqueues/worker")
 public class Worker extends HttpServlet {

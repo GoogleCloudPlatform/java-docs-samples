@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  * Form Handling Servlet -- takes the form submission from /src/main/webapp/taskqueues-pull.jsp to
  * add and delete tasks.
  */
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "TaskPull", description = "TaskQueues: Process some queues",
     urlPatterns = "/taskqueues/queue")
 public class TaskqueueServlet extends HttpServlet {

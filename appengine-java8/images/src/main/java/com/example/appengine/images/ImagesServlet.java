@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
+// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "images",
     description = "Images: Write an image to a bucket and display it in various sizes",
     urlPatterns = "/images")
