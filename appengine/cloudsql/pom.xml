@@ -72,7 +72,7 @@
     <dependency> <!-- ONLY USED LOCALY -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.40</version>  <!-- v5.x.x is Java 7, v6.x.x is Java 8 -->
+      <version>5.1.40</version>  <!-- v5.x.x is for production, v6.x.x EAP X DevAPI -->
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
