@@ -37,18 +37,6 @@ limitations under the License.
 
   <dependencies>
     <!-- Compile/runtime dependencies -->
-    <!-- Uncomment to use Endpoints Frameworks v1.0 and comment the v2.0 section-->
-    <!--
-    [START appengine-endpoints]
-    <dependency>
-          <groupId>com.google.appengine</groupId>
-          <artifactId>appengine-endpoints</artifactId>
-          <version>1.9.48</version>
-    </dependency>
-    [END appengine-endpoints]
-    -->
-    <!-- End of Endpoints Frameworks v1.0 -->
-    <!-- Endpoints Frameworks v2.0 -->
     <!-- [START endpoints-frameworks] -->
     <dependency>
       <groupId>com.google.endpoints</groupId>
@@ -56,7 +44,6 @@ limitations under the License.
       <version>2.0.7</version>
     </dependency>
     <!-- [END endpoints-frameworks] -->
-    <!-- End of Endpoints Frameworks v2.0 -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
@@ -97,6 +84,7 @@ limitations under the License.
           <version>1.0.0-beta4</version>
           <configuration>
               <!-- plugin configuration -->
+              <hostname>YOUR-PROJECT-ID.appspot.com</hostname>
           </configuration>
         </plugin>
         <!-- [END endpoints-frameworks-plugin] -->
