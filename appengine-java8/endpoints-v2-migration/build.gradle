@@ -20,10 +20,10 @@ buildscript {    // Configuration for building
   }
   dependencies {
     // App Engine Gradle plugin
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.1.1'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:+'
 
     // Endpoints Frameworks Gradle plugin
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.0-beta6'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:+'
   }
 }
 // [END buildscript]
@@ -49,15 +49,9 @@ dependencies {
   compile 'jstl:jstl:1.2'
   compile group: 'javax.inject', name: 'javax.inject', version: '1'
 
-  // Uncomment to use Endpoints Frameworks v1.0
-  // compile group: 'com.google.appengine', name: 'appengine-endpoints', version: '1.9.48'
-  // End of Endpoints Frameworks v1.0
-
-  // Endpoints Frameworks v2.0
   // [START endpoints-tools]
-  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.0.4'
+  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '+'
   // [END endpoints-tools]
-  // End of Endpoints Frameworks v2.0
 }
 
 appengine {  // App Engine tasks configuration
@@ -71,11 +65,12 @@ appengine {  // App Engine tasks configuration
   }
 }
 
-/* [START endpoints-server]
+// [START endpoints-server]
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
+  hostname = 'YOUR-PROJECT-ID.appspot.com'
 }
-[END endpoints-server] */
+// [END endpoints-server]
 
 group   = 'com.example.helloendpoints' // Generated output GroupId
 version = '1'                          // Version in generated output

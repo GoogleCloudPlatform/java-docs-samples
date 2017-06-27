@@ -19,30 +19,6 @@ limitations under the License.
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-    <!-- Uncomment to use Endpoints Frameworks v1.0 -->
-    <!--
-    [START appengine-endpoints]
-    <servlet>
-        <servlet-name>SystemServiceServlet</servlet-name>
-        <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
-        <init-param>
-            <param-name>services</param-name>
-            <param-value>com.example.helloendpoints.Greetings</param-value>
-        </init-param>
-        <init-param>
-            <param-name>restricted</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SystemServiceServlet</servlet-name>
-        <url-pattern>/_ah/spi/*</url-pattern>
-    </servlet-mapping>
-    [END appengine-endpoints]
-    -->
-    <!-- End of Endpoints Frameworks v1.0 -->
-
-    <!-- Endpoints Frameworks v2.0 -->
     <!-- [START endpoints-frameworks] -->
     <servlet>
         <servlet-name>EndpointsServlet</servlet-name>
@@ -61,7 +37,6 @@ limitations under the License.
         <url-pattern>/_ah/api/*</url-pattern>
     </servlet-mapping>
     <!-- [END endpoints-frameworks] -->
-    <!-- End of Endpoints Frameworks v2.0 -->
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

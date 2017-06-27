@@ -18,7 +18,7 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.language.spi.v1beta2.LanguageServiceClient;
+import com.google.cloud.language.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Entity;
 import com.google.cloud.language.v1beta2.EntityMention;
 import com.google.cloud.language.v1beta2.Sentiment;

@@ -23,7 +23,7 @@ function TestEndpoints () {
   curl -X GET \
     "https://${2}-dot-${1}.appspot.com/_ah/api/helloworld/v1/hellogreeting/0" | \
     tee "$ERROR_OUTPUT_DIR/response.json" | \
-    grep "hello version-${2}"
+    grep "hello ${3} version-${2}"
 
   # Test getGreeting Endpoint (goodbye world!)
   curl -X GET \
@@ -48,7 +48,10 @@ function TestEndpoints () {
 
 # Jenkins provides values for GOOGLE_PROJECT_ID and GOOGLE_VERSION_ID
 # Update Greetings.java
-sed -i'.bak' -e "s/hello world!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
+UNIQUE_MAVEN_STRING="maven"
+sed -i'.bak' \
+  -e "s/hello world!/hello ${UNIQUE_MAVEN_STRING} version-${GOOGLE_VERSION_ID}!/g" \
+  src/main/java/com/example/helloendpoints/Greetings.java
 
 # Test with Maven
 mvn clean appengine:deploy \
@@ -56,14 +59,17 @@ mvn clean appengine:deploy \
     -Dapp.deploy.promote=false
 
 # End-2-End tests
-TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}"
+TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}" "${UNIQUE_MAVEN_STRING}"
 
 # Clean
 mvn clean
 
 # Test with Gradle
 # Modify Greetings.java for Gradle
-sed -i'.bak' -e "s/hello version-${GOOGLE_VERSION_ID}!/hello version-${GOOGLE_VERSION_ID}!/g" src/main/java/com/example/helloendpoints/Greetings.java
+UNIQUE_GRADLE_STRING="gradle"
+sed -i'.bak' \
+  -e "s/hello ${UNIQUE_MAVEN_STRING} version-${GOOGLE_VERSION_ID}!/hello ${UNIQUE_GRADLE_STRING} version-${GOOGLE_VERSION_ID}!/g" \
+  src/main/java/com/example/helloendpoints/Greetings.java
 
 # Deploy Gradle
 gradle -Pappengine.deploy.promote=false \
@@ -71,7 +77,7 @@ gradle -Pappengine.deploy.promote=false \
   appengineDeploy
 
 # End-2-End tests
-TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}"
+TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}" "${UNIQUE_GRADLE_STRING}"
 
 # Clean
 gradle clean

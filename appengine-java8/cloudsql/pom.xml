@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.53</version>
+      <version>1.9.54</version>
     </dependency>
 
     <dependency>
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.40</version>  <!-- v5.x.x is for production, v6.x.x EAP X DevAPI -->
+      <version>5.1.42</version>  <!-- v5.x.x is for production, v6.x.x EAP X DevAPI -->
       <!--<version>6.0.6</version>-->
     </dependency>
     <dependency>
