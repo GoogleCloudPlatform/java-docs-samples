@@ -57,6 +57,7 @@
         <module>flexible/cron</module>
         <module>flexible/datastore</module>
         <module>flexible/disk</module>
+        <module>flexible/errorreporting</module>
         <module>flexible/extending-runtime</module>
         <module>flexible/helloworld</module>
         <module>flexible/mailgun</module>
