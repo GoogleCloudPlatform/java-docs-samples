@@ -73,7 +73,7 @@ public class AnalyzeBetaIT {
     List<EntityMention> mentions = entities.listIterator().next().getMentionsList();
 
     // Assert
-    assertThat(mentions.get(0).getText().getBeginOffset() == 4);
+    assertThat(mentions.get(0).getText().getBeginOffset()).isEqualTo(4);
   }
 
   @Test public void analyzeSyntax_entitySentimentFile() throws Exception {
