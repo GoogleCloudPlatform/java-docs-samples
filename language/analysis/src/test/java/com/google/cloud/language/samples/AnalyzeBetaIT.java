@@ -18,9 +18,9 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.language.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Entity;
 import com.google.cloud.language.v1beta2.EntityMention;
+import com.google.cloud.language.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Sentiment;
 
 import org.junit.Before;
@@ -58,8 +58,8 @@ public class AnalyzeBetaIT {
   }
 
   @Test public void analyzeSyntax_entitySentimentText() throws Exception {
-    List<Entity> entities = analyzeApp.entitySentimentText("Oranges, grapes, and apples can be " +
-        "found in the cafeterias located in Mountain View, Seattle, and London.");
+    List<Entity> entities = analyzeApp.entitySentimentText("Oranges, grapes, and apples can be "
+        + "found in the cafeterias located in Mountain View, Seattle, and London.");
 
     List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
 
