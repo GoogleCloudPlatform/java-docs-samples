@@ -39,7 +39,7 @@ public class ErrorReportingExample extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
 
-    // exceptions logged to std(out/err) / Cloud logging are automatically reported.
+    // errors logged to stderr / Cloud logging with exceptions are automatically reported.
     logger.log(Level.SEVERE, "exception using log framework", new IllegalArgumentException());
 
     // use the error-reporting client library to log custom error events
