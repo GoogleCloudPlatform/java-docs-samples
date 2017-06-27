@@ -17,6 +17,7 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.errorreporting.v1beta1.ReportErrorsServiceClient;
 import com.google.devtools.clouderrorreporting.v1beta1.ProjectName;
 import com.google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -38,7 +39,7 @@ public class ErrorReportingExample extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
 
-    // exceptions logged to stdout/stderr or Cloud logging gets automatically picked up by error reporting.
+    // exceptions logged to std(out/err) / Cloud logging are automatically reported.
     logger.log(Level.SEVERE, "exception using log framework", new IllegalArgumentException());
 
     // use the error-reporting client library to log custom error events
