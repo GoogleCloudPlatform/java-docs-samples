@@ -20,6 +20,13 @@ limitations under the License.
   <groupId>com.google.cloud.language.samples</groupId>
   <artifactId>language-entities</artifactId>
 
+  <parent>
+    <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+    <relativePath>../..</relativePath>
+  </parent>
+
   <dependencies>
     <!-- [START dependencies] -->
     <dependency>
@@ -33,6 +40,13 @@ limitations under the License.
       <version>20.0</version>
     </dependency>
     <!-- [END dependencies] -->
+
+    <!-- FIXME: remove after client fixes depenency issue -->
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>0.6.0</version>
+    </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
