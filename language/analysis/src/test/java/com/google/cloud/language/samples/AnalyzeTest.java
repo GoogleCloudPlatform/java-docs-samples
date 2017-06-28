@@ -19,7 +19,6 @@ package com.google.cloud.language.samples;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.language.v1.Entity;
-import com.google.cloud.language.v1.Entity.Builder;
 import com.google.cloud.language.v1.Entity.Type;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
