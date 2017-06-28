@@ -17,7 +17,7 @@
 package com.example.bigquery;
 
 // [START all]
-// [START create_client]
+// [START imports]
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValue;
@@ -30,7 +30,7 @@ import com.google.cloud.bigquery.QueryResult;
 
 import java.util.List;
 import java.util.UUID;
-// [END create_client]
+// [END imports]
 
 public class SimpleApp {
   public static void main(String... args) throws Exception {
