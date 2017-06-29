@@ -7,11 +7,6 @@ This sample provides an example of a [migration][7] from the prior version of
 the new App Engine Maven and Gradle plugins for deploying your Google App Engine
 Standard applications.
 
-This sample contains comments of how to use the prior Endpoints Frameworks as
-well. For clarity, the prior Endpoints Frameworks and the new Endpoints
-Frameworks are denoted as Endpoints Frameworks v1.0 and Endpoints Frameworks
-v2.0, respectively.
-
 Google Cloud Endpoints Frameworks v2.0 provides new functionality which may
 require payment and uses an OpenAPI specification. The OpenAPI development
 process is explained [here][8] and a quickstart is provided [here][9].
@@ -67,19 +62,6 @@ process is explained [here][8] and a quickstart is provided [here][9].
       found in [Greetings.java](src/main/java/com/example/helloendpoints/Greetings.java).
 
     - You can read more about different user authentication supported [here][12].
-
-
-1. [Optional]: Use Cloud Endpoints Frameworks v2.0 Maven and Gradle
-   client library generation plugins with Cloud Endpoints Frameworks v1.0.
-
-    - Uncomment `Endpoints Frameworks v1.0` sections and comment
-        `Endpoints Frameworks v2.0` sections in the following files.
-
-      ```
-        pom.xml
-        build.gradle
-        src/main/webapp/WEB-INF/web.xml
-      ```
 
 ## Build and Deployment
 

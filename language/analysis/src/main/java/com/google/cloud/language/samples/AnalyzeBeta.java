@@ -16,7 +16,6 @@
 
 package com.google.cloud.language.samples;
 
-import com.google.cloud.language.spi.v1beta2.LanguageServiceClient;
 
 import com.google.cloud.language.v1beta2.AnalyzeEntitySentimentRequest;
 import com.google.cloud.language.v1beta2.AnalyzeEntitySentimentResponse;
@@ -26,8 +25,8 @@ import com.google.cloud.language.v1beta2.Document.Type;
 import com.google.cloud.language.v1beta2.EncodingType;
 import com.google.cloud.language.v1beta2.Entity;
 import com.google.cloud.language.v1beta2.EntityMention;
+import com.google.cloud.language.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Sentiment;
-import com.google.cloud.language.v1beta2.Token;
 import com.google.protobuf.Descriptors;
 
 import java.io.IOException;
