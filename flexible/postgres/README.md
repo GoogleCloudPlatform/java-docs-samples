@@ -1,6 +1,6 @@
-# Cloud SQL sample for Google App Engine Flexible
+# PostgreSQL sample for Google App Engine Flexible
 
-This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/cloudsql/) on Google App
+This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/sql/) on Google App
 Engine Flexible
 
 ## Setup
@@ -18,11 +18,11 @@ Engine Flexible
 
     `gcloud auth application-default login`
 
-* [Create an instance](https://cloud.google.com/sql/docs/mysql/create-instance)
+* [Create an instance](https://cloud.google.com/sql/docs/postgresql/create-instance)
 
-* [Create a Database](https://cloud.google.com/sql/docs/mysql/create-manage-databases)
+* [Create a Database](https://cloud.google.com/sql/docs/postgresql/create-manage-databases)
 
-* [Create a user](https://cloud.google.com/sql/docs/mysql/create-manage-users)
+* [Create a user](https://cloud.google.com/sql/docs/postgresql/create-manage-users)
 
 * Note the **Instance connection name** under Overview > properties
 
@@ -44,5 +44,5 @@ $ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -
 
 ## Cleaning up
 
-* [Delete your Instance](https://cloud.google.com/sql/docs/mysql/delete-instance)
+* [Delete your Instance](https://cloud.google.com/sql/docs/postgresql/delete-instance)
 
