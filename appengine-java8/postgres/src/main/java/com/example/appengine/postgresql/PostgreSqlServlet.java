@@ -41,7 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 // [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "PostgreSQL", description = "PostgreSQL: Write low order IP address to Cloud PostgreSQL",
+@WebServlet(name = "PostgreSQL",
+    description = "PostgreSQL: Write low order IP address to PostgreSQL",
     urlPatterns = "/postgresql")
 public class PostgreSqlServlet extends HttpServlet {
 
