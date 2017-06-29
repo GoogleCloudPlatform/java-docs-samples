@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine.cloudsql;
+package com.example.appengine.postgresql;
 
 import com.google.common.base.Stopwatch;
 
@@ -41,20 +41,23 @@ import javax.servlet.http.HttpServletResponse;
 // [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "CloudSQL", description = "CloudSQL: Write low order IP address to Cloud SQL",
-    urlPatterns = "/cloudsql")
-public class CloudSqlServlet extends HttpServlet {
+@WebServlet(name = "PostgreSQL",
+    description = "PostgreSQL: Write low order IP address to PostgreSQL",
+    urlPatterns = "/postgresql")
+public class PostgreSqlServlet extends HttpServlet {
+
   Connection conn;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id INT NOT NULL "
-        + "AUTO_INCREMENT, user_ip VARCHAR(46) NOT NULL, timestamp DATETIME NOT NULL, "
-        + "PRIMARY KEY (visit_id) )";
-    final String createVisitSql = "INSERT INTO visits (user_ip, timestamp) VALUES (?, ?)";
-    final String selectSql = "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC "
-        + "LIMIT 10";
+
+    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id SERIAL NOT NULL, "
+        + "user_ip VARCHAR(46) NOT NULL, ts timestamp NOT NULL, "
+        + "PRIMARY KEY (visit_id) );";
+    final String createVisitSql = "INSERT INTO visits (user_ip, ts) VALUES (?, ?);";
+    final String selectSql = "SELECT user_ip, ts FROM visits ORDER BY ts DESC "
+        + "LIMIT 10;";
 
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
@@ -87,8 +90,8 @@ public class CloudSqlServlet extends HttpServlet {
         out.print("Last 10 visits:\n");
         while (rs.next()) {
           String savedIp = rs.getString("user_ip");
-          String timeStamp = rs.getString("timestamp");
-          out.print("Time: " + timeStamp + " Addr: " + savedIp + "\n");
+          String timeStamp = rs.getString("ts");
+          out.println("Time: " + timeStamp + " Addr: " + savedIp);
         }
         out.println("Elapsed: " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
       }
@@ -100,10 +103,10 @@ public class CloudSqlServlet extends HttpServlet {
   @Override
   public void init() throws ServletException {
     try {
-      String url = System.getProperty("cloudsql");
+      String url = System.getProperty("postgresql");
       log("connecting to: " + url);
       try {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("org.postgresql.Driver");
         conn = DriverManager.getConnection(url);
       } catch (ClassNotFoundException e) {
         throw new ServletException("Error loading JDBC Driver", e);

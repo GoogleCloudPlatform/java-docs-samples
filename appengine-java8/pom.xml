@@ -63,6 +63,7 @@
     <module>memcache</module>
     <module>multitenancy</module>
     <module>oauth2</module>
+    <module>postgres</module>
     <module>requests</module>
 
     <module>remote-client</module>
