@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.cloudsql;
+package com.example.postgres;
 
 import com.google.common.base.Stopwatch;
 
@@ -41,19 +41,20 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings("serial")
-@WebServlet(name = "cloudsql", value = "")
-public class CloudSqlServlet extends HttpServlet {
+@WebServlet(name = "postgresql", value = "")
+public class PostgresSqlServlet extends HttpServlet {
   Connection conn;
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id INT NOT NULL "
-        + "AUTO_INCREMENT, user_ip VARCHAR(46) NOT NULL, timestamp DATETIME NOT NULL, "
-        + "PRIMARY KEY (visit_id) )";
-    final String createVisitSql = "INSERT INTO visits (user_ip, timestamp) VALUES (?, ?)";
-    final String selectSql = "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC "
-        + "LIMIT 10";
+
+    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id SERIAL NOT NULL, "
+        + "user_ip VARCHAR(46) NOT NULL, ts timestamp NOT NULL, "
+        + "PRIMARY KEY (visit_id) );";
+    final String createVisitSql = "INSERT INTO visits (user_ip, ts) VALUES (?, ?);";
+    final String selectSql = "SELECT user_ip, ts FROM visits ORDER BY ts DESC "
+        + "LIMIT 10;";
 
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
@@ -86,8 +87,8 @@ public class CloudSqlServlet extends HttpServlet {
         out.print("Last 10 visits:\n");
         while (rs.next()) {
           String savedIp = rs.getString("user_ip");
-          String timeStamp = rs.getString("timestamp");
-          out.print("Time: " + timeStamp + " Addr: " + savedIp + "\n");
+          String timeStamp = rs.getString("ts");
+          out.println("Time: " + timeStamp + " Addr: " + savedIp);
         }
         out.println("Elapsed: " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
       }
@@ -98,29 +99,26 @@ public class CloudSqlServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
+    String url;
+
+    Properties properties = new Properties();
     try {
-      String url;
+      properties.load(
+          getServletContext().getResourceAsStream("/WEB-INF/classes/config.properties"));
+      url = properties.getProperty("sqlUrl");
+    } catch (IOException e) {
+      log("no property", e);  // Servlet Init should never fail.
+      return;
+    }
 
-      Properties properties = new Properties();
-      try {
-        properties.load(
-            getServletContext().getResourceAsStream("/WEB-INF/classes/config.properties"));
-        url = properties.getProperty("sqlUrl");
-      } catch (IOException e) {
-        log("no property", e);  // Servlet Init should never fail.
-        return;
-      }
-
-      log("connecting to: " + url);
-      try {
-        Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection(url);
-      } catch (ClassNotFoundException e) {
-        throw new ServletException("Error loading JDBC Driver", e);
-      } catch (SQLException e) {
-        throw new ServletException("Unable to connect to PostGre", e);
-      }
-
+    log("connecting to: " + url);
+    try {
+      Class.forName("org.postgresql.Driver");
+      conn = DriverManager.getConnection(url);
+    } catch (ClassNotFoundException e) {
+      throw new ServletException("Error loading JDBC Driver", e);
+    } catch (SQLException e) {
+      throw new ServletException("Unable to connect to PostGre", e);
     } finally {
       // Nothing really to do here.
     }
