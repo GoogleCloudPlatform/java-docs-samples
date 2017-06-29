@@ -1,5 +1,4 @@
-# Cloud SQL sample for Google App Engine
-
+# Postgre SQL sample for Google App Engine J8
 This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/cloudsql/) on Google App
 Engine standard Java 8
 
@@ -13,17 +12,16 @@ Engine standard Java 8
 
     `gcloud app create`
 
-* If you haven't already, Setup
-[Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+* If you haven't already, Setup [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
 
     `gcloud auth application-default login`
 
 
-* [Create an instance](https://cloud.google.com/sql/docs/mysql/create-instance)
+* [Create an instance](https://cloud.google.com/sql/docs/postgres/create-instance)
 
-* [Create a Database](https://cloud.google.com/sql/docs/mysql/create-manage-databases)
+* [Create a Database](https://cloud.google.com/sql/docs/postgres/create-manage-databases)
 
-* [Create a user](https://cloud.google.com/sql/docs/mysql/create-manage-users)
+* [Create a user](https://cloud.google.com/sql/docs/postgres/create-manage-users)
 
 * Note the **Instance connection name** under Overview > properties
 
@@ -43,5 +41,5 @@ $ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -
 
 ## Cleaning up
 
-* [Delete your Instance](https://cloud.google.com/sql/docs/mysql/delete-instance)
+* [Delete your Instance](https://cloud.google.com/sql/docs/postgres/delete-instance)
 

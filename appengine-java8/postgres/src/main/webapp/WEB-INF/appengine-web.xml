@@ -17,7 +17,7 @@
   <runtime>java8</runtime>
 
   <system-properties>
-    <property name="cloudsql" value="jdbc:mysql://google/${database}?useSSL=false&amp;cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}" />
+    <property name="postgresql" value="jdbc:postgresql://google/${database}?useSSL=false&amp;socketFactoryArg=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.postgres.SocketFactory&amp;user=${user}&amp;password=${password}" />
   </system-properties>
 </appengine-web-app>
 <!-- [END config] -->

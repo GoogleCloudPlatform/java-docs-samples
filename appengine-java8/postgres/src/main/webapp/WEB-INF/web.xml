@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- [START_EXCLUDE] -->
 <!--
   Copyright 2016 Google Inc.
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,13 +12,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [START config] -->
-<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <threadsafe>true</threadsafe>
-  <runtime>java8</runtime>
-
-  <system-properties>
-    <property name="cloudsql" value="jdbc:mysql://google/${database}?useSSL=false&amp;cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}" />
-  </system-properties>
-</appengine-web-app>
-<!-- [END config] -->
+<!-- [END_EXCLUDE] -->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+  <welcome-file-list>
+    <welcome-file>postgresql</welcome-file>
+  </welcome-file-list>
+</web-app>
