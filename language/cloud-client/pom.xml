@@ -45,7 +45,7 @@
       <version>20.0</version>
     </dependency>
 
-    <!-- FIXME: remove after client fixes depenency issue -->
+    <!-- FIXME: remove after client fixes dependency issue -->
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
