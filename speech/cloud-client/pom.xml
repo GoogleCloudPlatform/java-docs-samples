@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud</artifactId>
-      <version>0.20.0-alpha</version>
+      <version>0.20.1-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -65,7 +65,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.33</version>
+      <version>0.34</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -32,7 +32,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>0.20.0-beta</version>
+      <version>0.20.1-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -45,7 +45,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -57,7 +57,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.33</version>
+      <version>0.34</version>
     </dependency>
   </dependencies>
   <build>
