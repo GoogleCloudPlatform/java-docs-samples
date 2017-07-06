@@ -53,7 +53,7 @@ public class MqttExample {
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-    KeyFactory kf = KeyFactory.getInstance("RSA256");
+    KeyFactory kf = KeyFactory.getInstance("RSA");
 
     return jwtBuilder.signWith(SignatureAlgorithm.RS256, kf.generatePrivate(spec)).compact();
   }
@@ -107,10 +107,11 @@ public class MqttExample {
     // to authorize the device.
     connectOptions.setUserName("unused");
 
-    if (options.algorithm == "RSA256") {
+    System.out.println(options.algorithm);
+    if (options.algorithm.equals("RS256")) {
       connectOptions.setPassword(
           createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
-    } else if (options.algorithm == "ES256") {
+    } else if (options.algorithm.equals("ES256")) {
       connectOptions.setPassword(
           createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
     } else {
