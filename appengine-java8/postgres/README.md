@@ -1,5 +1,5 @@
 # Postgre SQL sample for Google App Engine J8
-This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/cloudsql/) on Google App
+This sample demonstrates how to use [PostgreSql](https://cloud.google.com/sql/) on Google App
 Engine standard Java 8
 
 ## Setup
