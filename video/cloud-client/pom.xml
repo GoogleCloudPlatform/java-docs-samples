@@ -43,24 +43,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud</artifactId>
-      <version>0.18.0-alpha</version>
-      <exclusions>
-        <exclusion> <!-- exclude an old version of Guava -->
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava-jdk5</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>0.20.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
       <version>0.20.0-alpha</version>
-      <exclusions>
-        <exclusion> <!-- exclude an old version of Guava -->
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava-jdk5</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
