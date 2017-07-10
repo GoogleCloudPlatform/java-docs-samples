@@ -61,7 +61,7 @@ targetCompatibility = 1.8
 task replaceProjectId(type: Copy) {
     from 'src/main/webapp/WEB-INF/'
     include '*.xml'
-    into 'build/exploded-${archivesBaseName}/WEB-INF'
+    into "build/exploded-${archivesBaseName}/WEB-INF"
     expand(endpoints:[project:[id:projectId]])
     filteringCharset = 'UTF-8'
 }
