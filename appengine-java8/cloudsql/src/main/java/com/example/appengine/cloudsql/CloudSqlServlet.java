@@ -16,7 +16,9 @@
 
 package com.example.appengine.cloudsql;
 
+import com.google.apphosting.api.ApiProxy;
 import com.google.common.base.Stopwatch;
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
@@ -100,15 +103,17 @@ public class CloudSqlServlet extends HttpServlet {
   @Override
   public void init() throws ServletException {
     try {
-      String url = System.getProperty("cloudsql");
+      ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();
+      Map<String,Object> attr = env.getAttributes();
+      String hostname = (String) attr.get("com.google.appengine.runtime.default_version_hostname");
+
+      String url = hostname.contains("localhost:")
+          ? System.getProperty("cloudsql-local") : System.getProperty("cloudsql");
       log("connecting to: " + url);
       try {
-        Class.forName("com.mysql.jdbc.Driver");
         conn = DriverManager.getConnection(url);
-      } catch (ClassNotFoundException e) {
-        throw new ServletException("Error loading JDBC Driver", e);
       } catch (SQLException e) {
-        throw new ServletException("Unable to connect to PostGre", e);
+        throw new ServletException("Unable to connect to Cloud SQL", e);
       }
 
     } finally {
