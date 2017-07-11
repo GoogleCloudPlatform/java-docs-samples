@@ -107,8 +107,8 @@ public class CloudSqlServlet extends HttpServlet {
       Map<String,Object> attr = env.getAttributes();
       String hostname = (String) attr.get("com.google.appengine.runtime.default_version_hostname");
 
-      String url = hostname.contains("localhost:") ?
-          System.getProperty("cloudsql-local") : System.getProperty("cloudsql");
+      String url = hostname.contains("localhost:")
+          ? System.getProperty("cloudsql-local") : System.getProperty("cloudsql");
       log("connecting to: " + url);
       try {
         conn = DriverManager.getConnection(url);
