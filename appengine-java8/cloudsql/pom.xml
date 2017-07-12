@@ -39,12 +39,11 @@
     <password>myPassword</password>
     <database>sqldemo</database>
 
-<!-- [START_EXCLUDE] -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-<!-- [END_EXCLUDE] -->
   </properties>
 <!-- [END properties] -->
+
   <dependencies>
     <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <dependency>
@@ -68,7 +67,8 @@
     </dependency>
 
     <!-- [START dependencies] -->
-    <dependency>
+    <!-- Driver injected at runtime by the use of <use-google-connector-j> in appengine-web.xml -->
+    <dependency> <!-- Only used locally -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.42</version>  <!-- v5.x.x is for production, v6.x.x EAP X DevAPI -->
@@ -76,7 +76,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
-      <artifactId>mysql-socket-factory</artifactId> <!-- mysql-socket-factory-connector-j-6 -->
+      <artifactId>mysql-socket-factory</artifactId>
       <version>1.0.3</version>
     </dependency>
     <!-- [END dependencies] -->
