@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spring Integration GCP sample</title>
+  <link href="css/angular-bootstrap.css" rel="stylesheet">
+  <script src="js/angular-bootstrap.js" type="text/javascript"></script>
+  <script src="js/pubsub.js"></script>
+</head>
+<body ng-app="pubsub">
+<div name="formDiv">
+  <form action="/postMessage" method="post">
+    Post message: <input type="text" name="message" /> <input type="submit" />
+  </form>
+  <form action="/newTopic" method="post">
+    New topic: <input type="text" name="name" /> <input type="submit" />
+  </form>
+  <form action="/newSubscription" method="post">
+    New subscription: <input type="text" name="name" />
+    for topic <input type="text" name="topic" /> <input type="submit" />
+  </form>
+</div>
+<div ng-controller="listTopics">
+  <h1>Topics</h1>
+  <div ng-repeat="topic in topics">
+    {{ topic }}<br/>
+  </div>
+</div>
+<div ng-controller="listSubscriptions">
+  <h1>Subscriptions</h1>
+  <div ng-repeat="subscription in subscriptions">
+    {{ subscription }}<br/>
+  </div>
+</div>
+</body>
+</html>
