@@ -66,5 +66,5 @@ java -cp target\\video-google-cloud-samples-1.0.0-jar-with-dependencies.jar com.
 ```
 or
 ```
-java -cp target\\video-google-cloud-samples-1.0.0-jar-with-dependencies.jar com.example.video.Detect labels-file resources/cat.mp4
+java -cp target\\video-google-cloud-samples-1.0.0-jar-with-dependencies.jar com.example.video.Detect labels-file resources\\cat.mp4
 ```
