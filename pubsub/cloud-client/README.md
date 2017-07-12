@@ -28,28 +28,28 @@ For more samples, see the samples in
 
 #### Create a new topic
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreateTopicExample -Dexec.args=my-topic-id
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreateTopicExample -Dexec.args=my-topic
 ```
 
 #### Create a subscription
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic-id my-subscription-id"
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic-id my-sub"
 ```
 
 #### Publish messages
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args=my-topic-id
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args=my-topic
 ```
-Publishes 5 messages to the topic `my-topic-id`.
+Publishes 5 messages to the topic `my-topic`.
 
 #### Receive messages
 ```
-   mvn exec:java -Dexec.mainClass=com.example.pubsub.SubscriberExample -Dexec.args=my-subscription-id
+   mvn exec:java -Dexec.mainClass=com.example.pubsub.SubscriberExample -Dexec.args=my-sub
 ```
 Subscriber will continue to listen on the topic for 5 minutes and print out message id and data as messages are received.
 
 #### Testing
 Run the test with Maven.
 ```
-  mvn clean -Dtest=com.example.pubsub.QuickStartIT verify
+  mvn -Dtest=com.example.pubsub.QuickStartIT verify
 ```

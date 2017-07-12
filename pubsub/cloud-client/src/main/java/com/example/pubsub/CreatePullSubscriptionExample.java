@@ -31,10 +31,10 @@ public class CreatePullSubscriptionExample {
     // Your Google Cloud Platform project ID
     String projectId = ServiceOptions.getDefaultProjectId();
 
-    // Your topic ID, eg. "my-topic-id"
+    // Your topic ID, eg. "my-topic"
     String topicId = args[0];
 
-    // Your subscription ID eg. "my-subscription-id"
+    // Your subscription ID eg. "my-sub"
     String subscriptionId = args[1];
 
     TopicName topicName = TopicName.create(projectId, topicId);

@@ -50,8 +50,8 @@ public class QuickStartIT {
   private ByteArrayOutputStream bout;
 
   private String projectId = ServiceOptions.getDefaultProjectId();
-  private String topicId = formatForTest("my-topic-id");
-  private String subscriptionId = formatForTest("my-subscription-id");
+  private String topicId = formatForTest("my-topic");
+  private String subscriptionId = formatForTest("my-sub");
 
   class SubscriberRunnable implements Runnable {
 

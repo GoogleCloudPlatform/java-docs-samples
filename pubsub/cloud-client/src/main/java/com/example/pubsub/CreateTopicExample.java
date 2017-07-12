@@ -29,7 +29,7 @@ public class CreateTopicExample {
     // Your Google Cloud Platform project ID
     String projectId = ServiceOptions.getDefaultProjectId();
 
-    // Your topic ID, eg. "my-topic-id"
+    // Your topic ID, eg. "my-topic"
     String topicId = args[0];
 
     // Create a new topic

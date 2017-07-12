@@ -44,7 +44,7 @@ public class PublisherExample {
   }
 
   public static void main(String... args) throws Exception {
-    // topic id, eg. "my-topic-id"
+    // topic id, eg. "my-topic"
     String topicId = args[0];
     TopicName topicName = TopicName.create(PROJECT_ID, topicId);
     Publisher publisher = null;

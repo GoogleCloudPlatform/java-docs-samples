@@ -44,7 +44,7 @@ public class SubscriberExample {
   }
 
   public static void main(String... args) throws Exception {
-    // set subscriber id, eg. my-subscriber-id
+    // set subscriber id, eg. my-sub
     String subscriptionId = args[0];
     SubscriptionName subscriptionName = SubscriptionName.create(PROJECT_ID, subscriptionId);
     Subscriber subscriber = null;
