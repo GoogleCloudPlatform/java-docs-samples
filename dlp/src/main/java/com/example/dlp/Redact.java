@@ -75,11 +75,9 @@ public class Redact {
 
       RedactContentResponse contentResponse = dlpClient.redactContent(
           inspectConfig, Collections.singletonList(contentItem), replaceConfigs);
-      if (contentResponse.getItemsCount() > 0) {
-        for (ContentItem responseItem : contentResponse.getItemsList()) {
-          // print out string with redacted content
-          System.out.println(responseItem.getData().toStringUtf8());
-        }
+      for (ContentItem responseItem : contentResponse.getItemsList()) {
+        // print out string with redacted content
+        System.out.println(responseItem.getData().toStringUtf8());
       }
     }
     // [END dlp_redact_string]

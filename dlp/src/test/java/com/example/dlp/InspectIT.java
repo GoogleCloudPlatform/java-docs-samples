@@ -49,7 +49,7 @@ public class InspectIT {
   @Test
   public void testStringInspectionReturnsInfoTypes() throws Exception {
     String text =
-        "\"My phone number is (2234) 456-7890 and my email address is gary@somedomain.com\"";
+        "\"My phone number is (234) 456-7890 and my email address is gary@somedomain.com\"";
     Inspect.main(new String[] {"-s", text});
     String output = bout.toString();
     assertTrue(output.contains("PHONE_NUMBER"));
