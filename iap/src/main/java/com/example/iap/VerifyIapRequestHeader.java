@@ -100,25 +100,31 @@ public class VerifyIapRequestHeader {
         }
       };
 
-  private static String getBaseUrl(URL url) throws Exception {
-    String urlFilePath = url.getFile();
-    int pathDelim = urlFilePath.lastIndexOf('/');
-    String path = (pathDelim > 0) ? urlFilePath.substring(0, pathDelim) : "";
-    return (url.getProtocol() + "://" + url.getHost() + path).trim();
-  }
-
-  Jwt verifyJWTToken(HttpRequest request) throws Exception {
+  Jwt verifyJWTTokenForAppEngine(HttpRequest request, long project_number, String project_id) throws Exception {
     // Check for iap jwt header in incoming request
     String jwtToken =
-        request.getHeaders().getFirstHeaderStringValue("x-goog-authenticated-user-jwt");
+        request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
     if (jwtToken == null) {
       return null;
     }
-    String baseUrl = getBaseUrl(request.getUrl().toURL());
-    return verifyJWTToken(jwtToken, baseUrl);
+    return verifyJWTToken(jwtToken, String.format("/projects/%s/apps/%s",
+                                                  Long.toUnsignedString(project_number),
+                                                 project_id));
   }
-
-  Jwt verifyJWTToken(String jwtToken, String baseUrl) throws Exception {
+  
+  Jwt verifyJWTTokenForComputeEngine(HttpRequest request, long project_number, long backend_service_id) throws Exception {
+    // Check for iap jwt header in incoming request
+    String jwtToken =
+        request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
+    if (jwtToken == null) {
+      return null;
+    }
+    return verifyJWTToken(jwtToken, String.format("/projects/%s/global/backendServices/%s",
+                                                  Long.toUnsignedString(project_number),
+                                                  Long.toUnsignedString(backend_service_id)));
+  }
+  
+  Jwt verifyJWTToken(String jwtToken, String expectedAudience) throws Exception {
     // Time constraints are automatically checked, use setAllowedClockSkewSeconds
     // to specify a leeway window
     // The token was issued in a past date "iat" < TODAY
@@ -126,7 +132,7 @@ public class VerifyIapRequestHeader {
     Jwt jwt =
         Jwts.parser()
             .setSigningKeyResolver(resolver)
-            .requireAudience(baseUrl)
+            .requireAudience(expectedAudience)
             .requireIssuer(IAP_ISSUER_URL)
             .parse(jwtToken);
     DefaultClaims claims = (DefaultClaims) jwt.getBody();
