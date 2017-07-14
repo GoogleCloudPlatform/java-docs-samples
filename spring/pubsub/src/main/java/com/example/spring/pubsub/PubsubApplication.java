@@ -45,6 +45,9 @@ public class PubsubApplication {
   public static void main(String[] args) throws IOException {
     SpringApplication.run(PubsubApplication.class, args);
   }
+
+  // Inbound channel adapter.
+
   /**
    * Spring channel for incoming messages from Google Cloud Pub/Sub.
    *
@@ -114,6 +117,8 @@ public class PubsubApplication {
       consumer.ack();
     };
   }
+
+  // Outbound channel adapter
 
   /**
    * The outbound channel adapter to write messages from a Spring channel to a Google Cloud Pub/Sub

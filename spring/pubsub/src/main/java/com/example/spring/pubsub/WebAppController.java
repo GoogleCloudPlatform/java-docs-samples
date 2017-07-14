@@ -37,7 +37,8 @@ public class WebAppController {
   @Autowired
   private PubsubOutboundGateway messagingGateway;
 
-  @Autowired private PubsubAdmin admin;
+  @Autowired
+  private PubsubAdmin admin;
 
   /**
    * Lists every topic in the project.
