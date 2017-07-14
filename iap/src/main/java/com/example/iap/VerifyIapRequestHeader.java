@@ -31,7 +31,6 @@ import io.jsonwebtoken.impl.DefaultClaims;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -100,7 +99,11 @@ public class VerifyIapRequestHeader {
         }
       };
 
-  Jwt verifyJWTTokenForAppEngine(HttpRequest request, long project_number, String project_id) throws Exception {
+  // Verify jwt tokens addressed to IAP protected resources on App Engine.
+  // The project *number* for your Google Cloud project available via 'gcloud projects describe $PROJECT_ID'
+  // or in the Project Info card in Cloud Console.
+  // projectId is The project *ID* for your Google Cloud Project.
+  Jwt verifyJWTTokenForAppEngine(HttpRequest request, long projectNumber, String projectId) throws Exception {
     // Check for iap jwt header in incoming request
     String jwtToken =
         request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
@@ -108,11 +111,11 @@ public class VerifyIapRequestHeader {
       return null;
     }
     return verifyJWTToken(jwtToken, String.format("/projects/%s/apps/%s",
-                                                  Long.toUnsignedString(project_number),
-                                                 project_id));
+                                                  Long.toUnsignedString(projectNumber),
+                                                 projectId));
   }
-  
-  Jwt verifyJWTTokenForComputeEngine(HttpRequest request, long project_number, long backend_service_id) throws Exception {
+
+  Jwt verifyJWTTokenForComputeEngine(HttpRequest request, long projectNumber, long backendServiceId) throws Exception {
     // Check for iap jwt header in incoming request
     String jwtToken =
         request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
@@ -120,8 +123,8 @@ public class VerifyIapRequestHeader {
       return null;
     }
     return verifyJWTToken(jwtToken, String.format("/projects/%s/global/backendServices/%s",
-                                                  Long.toUnsignedString(project_number),
-                                                  Long.toUnsignedString(backend_service_id)));
+                                                  Long.toUnsignedString(projectNumber),
+                                                  Long.toUnsignedString(backendServiceId)));
   }
   
   Jwt verifyJWTToken(String jwtToken, String expectedAudience) throws Exception {
