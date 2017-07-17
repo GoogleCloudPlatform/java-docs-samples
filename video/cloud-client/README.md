@@ -59,3 +59,12 @@ Detect Shots
 java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
     com.example.video.Detect shots gs://cloudmleap/video/next/gbikes_dinosaur.mp4
 ```
+
+From Windows, you may need to supply your classpath diferently, for example:
+```
+java -cp target\\video-google-cloud-samples-1.0.0-jar-with-dependencies.jar com.example.video.Detect labels gs://demomaker/cat.mp4
+```
+or
+```
+java -cp target\\video-google-cloud-samples-1.0.0-jar-with-dependencies.jar com.example.video.Detect labels-file resources\\cat.mp4
+```
