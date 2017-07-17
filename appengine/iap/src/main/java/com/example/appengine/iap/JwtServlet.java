@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class JwtServlet extends HttpServlet {
 
-  private static final String IAP_JWT_HEADER = "x-goog-authenticated-user-jwt";
+  private static final String IAP_JWT_HEADER = "x-goog-iap-jwt-assertion";
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
