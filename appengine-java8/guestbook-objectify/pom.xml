@@ -23,7 +23,7 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-guestbook-objectify-j8</artifactId>
   <properties>
-      <objectify.version>5.1.17</objectify.version>
+      <objectify.version>5.1.21</objectify.version>
       <guava.version>20.0</guava.version>
   </properties>
   <parent>
@@ -102,7 +102,7 @@
       <dependency>
           <groupId>com.google.truth</groupId>
           <artifactId>truth</artifactId>
-          <version>0.33</version>
+          <version>0.34</version>
           <scope>test</scope>
       </dependency>
 

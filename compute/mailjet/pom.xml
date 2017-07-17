@@ -27,7 +27,7 @@
   </parent>
 
   <properties>
-    <mailjet.version>4.0.5</mailjet.version>
+    <mailjet.version>4.1.0</mailjet.version>
   </properties>
 
   <dependencies>
