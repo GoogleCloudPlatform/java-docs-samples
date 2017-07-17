@@ -31,7 +31,6 @@ import io.jsonwebtoken.impl.DefaultClaims;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -100,25 +99,35 @@ public class VerifyIapRequestHeader {
         }
       };
 
-  private static String getBaseUrl(URL url) throws Exception {
-    String urlFilePath = url.getFile();
-    int pathDelim = urlFilePath.lastIndexOf('/');
-    String path = (pathDelim > 0) ? urlFilePath.substring(0, pathDelim) : "";
-    return (url.getProtocol() + "://" + url.getHost() + path).trim();
-  }
-
-  Jwt verifyJWTToken(HttpRequest request) throws Exception {
+  // Verify jwt tokens addressed to IAP protected resources on App Engine.
+  // The project *number* for your Google Cloud project available via 'gcloud projects describe $PROJECT_ID'
+  // or in the Project Info card in Cloud Console.
+  // projectId is The project *ID* for your Google Cloud Project.
+  Jwt verifyJWTTokenForAppEngine(HttpRequest request, long projectNumber, String projectId) throws Exception {
     // Check for iap jwt header in incoming request
     String jwtToken =
-        request.getHeaders().getFirstHeaderStringValue("x-goog-authenticated-user-jwt");
+        request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
     if (jwtToken == null) {
       return null;
     }
-    String baseUrl = getBaseUrl(request.getUrl().toURL());
-    return verifyJWTToken(jwtToken, baseUrl);
+    return verifyJWTToken(jwtToken, String.format("/projects/%s/apps/%s",
+                                                  Long.toUnsignedString(projectNumber),
+                                                 projectId));
   }
 
-  Jwt verifyJWTToken(String jwtToken, String baseUrl) throws Exception {
+  Jwt verifyJWTTokenForComputeEngine(HttpRequest request, long projectNumber, long backendServiceId) throws Exception {
+    // Check for iap jwt header in incoming request
+    String jwtToken =
+        request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
+    if (jwtToken == null) {
+      return null;
+    }
+    return verifyJWTToken(jwtToken, String.format("/projects/%s/global/backendServices/%s",
+                                                  Long.toUnsignedString(projectNumber),
+                                                  Long.toUnsignedString(backendServiceId)));
+  }
+  
+  Jwt verifyJWTToken(String jwtToken, String expectedAudience) throws Exception {
     // Time constraints are automatically checked, use setAllowedClockSkewSeconds
     // to specify a leeway window
     // The token was issued in a past date "iat" < TODAY
@@ -126,7 +135,7 @@ public class VerifyIapRequestHeader {
     Jwt jwt =
         Jwts.parser()
             .setSigningKeyResolver(resolver)
-            .requireAudience(baseUrl)
+            .requireAudience(expectedAudience)
             .requireIssuer(IAP_ISSUER_URL)
             .parse(jwtToken);
     DefaultClaims claims = (DefaultClaims) jwt.getBody();
