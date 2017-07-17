@@ -59,8 +59,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dlp</artifactId>
-      <!-- TODO update with release version -->
-      <version>0.20.2-alpha-SNAPSHOT</version>
+      <version>0.20.2-alpha</version>
     </dependency>
     <!-- [END dlp_maven] -->
     <dependency>
