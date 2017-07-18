@@ -104,10 +104,8 @@ Commands:
 - [Create a Google Cloud Datastore](https://console.cloud.google.com/datastore) kind and add an entity with properties:
   - `property1` : john@doe.com
   - `property2` : 343-343-3435
-- Ensure the following environment variables are set:
-   - `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
-   - `DLP_BUCKET_ID`  points to Google Cloud Storage bucket that contains the sample text document.
-   - `DLP_DATASTORE_KIND` points to a Datastore kind under default project.
+- Update the Google Cloud Storage path and Datastore kind in [InspectIT.java](src/test/java/com/example/dlp/InspectIT.java).
+- Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
 
 ## Run
 Run all tests:

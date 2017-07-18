@@ -30,8 +30,13 @@ import java.io.PrintStream;
 public class InspectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private String bucket;
-  private String datastoreKind;
+
+  // Update to Google Cloud Storage path containing test.txt
+  private String bucketName = System.getenv("GOOGLE_CLOUD_PROJECT") + "/dlp";
+
+  // Update to Google Cloud Datastore Kind containing an entity
+  // with phone number and email address properties.
+  private String datastoreKind = "dlp";
 
   @Before
   public void setUp() {
@@ -39,11 +44,6 @@ public class InspectIT {
     out = new PrintStream(bout);
     System.setOut(out);
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
-    assertNotNull(System.getenv("DLP_BUCKET_ID"));
-    assertNotNull(System.getenv("DLP_DATASTORE_KIND"));
-    // requires that a bucket with the project id name exists and contains "test.txt"
-    bucket = System.getenv("DLP_BUCKET_ID");
-    datastoreKind = System.getenv("DLP_DATASTORE_KIND");
   }
 
   @Test
@@ -79,13 +79,14 @@ public class InspectIT {
   // Requires that bucket by the specified name exists
   @Test
   public void testGcsFileInspectionReturnsInfoTypes() throws Exception {
-    Inspect.main(new String[] {"-gcs", "-bucketName", bucket, "-fileName", "test.txt"});
+    Inspect.main(new String[] {"-gcs", "-bucketName", bucketName, "-fileName", "test.txt"});
     String output = bout.toString();
     assertTrue(output.contains("PHONE_NUMBER"));
     assertTrue(output.contains("EMAIL_ADDRESS"));
   }
 
-  // Requires that a Datastore instance exists with kind 'DLP'
+  // Requires  a Datastore kind containing an entity
+  // with phone number and email address properties.
   @Test
   public void testDatastoreInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {"-ds", "-kind", datastoreKind});
