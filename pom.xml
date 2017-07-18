@@ -78,6 +78,7 @@
         <module>compute/sendgrid</module>
         <module>datastore</module>
         <module>datastore/cloud-client</module>
+        <module>dlp</module>
         <module>iap</module>
         <module>kms</module>
         <module>language/analysis</module>
