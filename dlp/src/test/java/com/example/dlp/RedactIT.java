@@ -41,7 +41,7 @@ public class RedactIT {
   @Test
   public void testInfoTypesInStringAreReplaced() throws Exception {
     String text =
-        "\"My phone number is (2234) 456-7890 and my email address is gary@somedomain.com\"";
+        "\"My phone number is (234) 456-7890 and my email address is gary@somedomain.com\"";
     Redact.main(new String[] {"-s", text, "-r", "_REDACTED_"});
     String output = bout.toString();
     assertTrue(output.contains("My phone number is _REDACTED_ and my email address is _REDACTED_"));
