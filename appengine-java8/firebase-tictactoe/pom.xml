@@ -27,14 +27,14 @@
   </parent>
 
   <properties>
-      <objectify.version>5.1.17</objectify.version>
+      <objectify.version>5.1.21</objectify.version>
 
       <gson.version>2.7</gson.version>
       <guava.version>20.0</guava.version>
       <google-api-client.version>1.22.0</google-api-client.version>
       <junit.version>4.12</junit.version>
       <mockito.version>1.10.19</mockito.version>
-      <google-truth.version>0.33</google-truth.version>
+      <google-truth.version>0.34</google-truth.version>
       <appengine-maven.version>1.3.1</appengine-maven.version>
   </properties>
 
