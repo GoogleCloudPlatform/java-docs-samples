@@ -26,7 +26,7 @@
         <relativePath>..</relativePath>
     </parent>
     <properties>
-        <objectify.version>5.1.17</objectify.version>
+        <objectify.version>5.1.21</objectify.version>
     </properties>
     <!-- [START set_versions] -->
     <prerequisites>
@@ -91,7 +91,7 @@
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>0.33</version>
+            <version>0.34</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
