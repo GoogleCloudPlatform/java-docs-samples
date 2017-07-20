@@ -37,7 +37,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.20.2-alpha</version>
+      <version>0.20.3-alpha</version>
     </dependency>
 
     <!-- Test dependencies -->
