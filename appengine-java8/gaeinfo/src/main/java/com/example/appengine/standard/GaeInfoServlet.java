@@ -53,14 +53,16 @@ public class GaeInfoServlet extends HttpServlet {
       "/computeMetadata/v1/instance/service-accounts/default/aliases",
       "/computeMetadata/v1/instance/service-accounts/default/",
       "/computeMetadata/v1/instance/service-accounts/default/scopes",
-      "/computeMetadata/v1/instance/service-accounts/default/token",
+// Tokens work - but are a security risk to display
+//      "/computeMetadata/v1/instance/service-accounts/default/token"
   };
 
   final String[] v1Acct = {
       "/computeMetadata/v1/instance/service-accounts/{account}/aliases",
       "/computeMetadata/v1/instance/service-accounts/{account}/email",
       "/computeMetadata/v1/instance/service-accounts/{account}/scopes",
-      "/computeMetadata/v1/instance/service-accounts/{account}/token"
+// Tokens work - but are a security risk to display
+//     "/computeMetadata/v1/instance/service-accounts/{account}/token"
   };
 
   final String metadata = "http://metadata.google.internal";
