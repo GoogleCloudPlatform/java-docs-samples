@@ -61,7 +61,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("anger: POSSIBLE");
     assertThat(got).contains("joy: POSSIBLE");
-    assertThat(got).contains("surprise: UNLIKELY");
+    assertThat(got).contains("surprise: LIKELY");
   }
 
   @Test
@@ -74,7 +74,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("anger: POSSIBLE");
     assertThat(got).contains("joy: POSSIBLE");
-    assertThat(got).contains("surprise: UNLIKELY");
+    assertThat(got).contains("surprise: LIKELY");
   }
 
   @Test
@@ -124,7 +124,9 @@ public class DetectIT {
   @Test
   public void testLandmarksUrl() throws Exception {
     // Act
-    String[] args = {"landmarks", "https://pbs.twimg.com/media/C4wfMOhVcAAUAgq.jpg"};
+    String uri = "https://storage-download.googleapis.com/"
+        + BUCKET + "/vision/landmark.jpg";
+    String[] args = {"landmarks", uri};
     Detect.argsHelper(args, out);
 
     // Assert

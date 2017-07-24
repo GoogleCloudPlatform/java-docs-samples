@@ -50,30 +50,8 @@
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-speech</artifactId>
-      <version>0.17.2-alpha</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api</groupId>
-      <artifactId>gax</artifactId>
-      <version>1.0.0</version>
-      <exclusions>
-        <exclusion> <!-- exclude an old version of Guava -->
-          <groupId>com.google.guava</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api</groupId>
-      <artifactId>gax-grpc</artifactId>
-      <version>0.16.0</version>
-      <exclusions>
-        <exclusion> <!-- exclude an old version of Guava -->
-          <groupId>com.google.guava</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <artifactId>google-cloud</artifactId>
+      <version>0.20.3-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -87,7 +65,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.32</version>
+      <version>0.34</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

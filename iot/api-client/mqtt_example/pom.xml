@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud.iot.examples</groupId>
+  <artifactId>cloudiot-mqtt-example</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>cloudiot-mqtt-example</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+
+  <!-- Parent defines config for testing & linting. -->
+  <parent>
+    <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+    <relativePath>../../../</relativePath>
+  </parent>
+
+  <repositories>
+    <repository>
+      <id>Eclipse Paho Repo</id>
+      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.paho</groupId>
+      <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt</artifactId>
+      <version>0.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.3</version>
+    </dependency>
+  </dependencies>
+
+</project>

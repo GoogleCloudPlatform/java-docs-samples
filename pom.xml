@@ -25,7 +25,7 @@
     <parent>
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
 <!--
         <relativePath>../java-repo-tools</relativePath>
  -->
@@ -47,6 +47,7 @@
     <modules>
         <!-- App Engine Standard -->
         <module>appengine</module>
+        <module>appengine-java8</module>
 
         <!-- App Engine Flexible -->
         <module>flexible/analytics</module>
@@ -56,11 +57,13 @@
         <module>flexible/cron</module>
         <module>flexible/datastore</module>
         <module>flexible/disk</module>
+        <module>flexible/errorreporting</module>
         <module>flexible/extending-runtime</module>
         <module>flexible/helloworld</module>
         <module>flexible/mailgun</module>
         <module>flexible/mailjet</module>
         <module>flexible/memcache</module>
+        <module>flexible/postgres</module>
         <module>flexible/pubsub</module>
         <module>flexible/sendgrid</module>
         <module>flexible/sparkjava</module>
@@ -75,6 +78,8 @@
         <module>compute/sendgrid</module>
         <module>datastore</module>
         <module>datastore/cloud-client</module>
+        <module>dlp</module>
+        <module>iap</module>
         <module>kms</module>
         <module>language/analysis</module>
         <module>language/cloud-client</module>
@@ -122,7 +127,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.7.22</version>
+            <version>2.8.47</version>
             <scope>test</scope>
         </dependency>
         <dependency>

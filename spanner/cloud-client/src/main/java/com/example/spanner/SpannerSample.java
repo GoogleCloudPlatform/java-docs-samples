@@ -500,7 +500,7 @@ public class SpannerSample {
       // [END init_client]
       run(dbClient, dbAdminClient, command, db);
     } finally {
-      spanner.closeAsync().get();
+      spanner.close();
     }
     System.out.println("Closed client");
   }

@@ -18,8 +18,8 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.language.spi.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Entity;
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.PartOfSpeech.Tag;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Token;
@@ -62,14 +62,14 @@ public class AnalyzeIT {
   }
 
   @Test public void analyzeEntities_withEntitiesFile_containsGod() throws Exception {
-      // Act
-      List<Entity> entities =
-          analyzeApp.analyzeEntitiesFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
-      List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
+    // Act
+    List<Entity> entities =
+        analyzeApp.analyzeEntitiesFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
+    List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
 
-      // Assert
-      assertThat(got).named("entity names").contains("God");
-    }
+    // Assert
+    assertThat(got).named("entity names").contains("God");
+  }
 
   @Test public void analyzeSentimentText_returnPositive() throws Exception {
     // Act
@@ -83,15 +83,15 @@ public class AnalyzeIT {
   }
 
   @Test public void analyzeSentimentFile_returnPositiveFile() throws Exception {
-      // Act
-      Sentiment sentiment =
-          analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
-                  + "sentiment/bladerunner-pos.txt");
+    // Act
+    Sentiment sentiment =
+        analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
+        + "sentiment/bladerunner-pos.txt");
 
-      // Assert
-      assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-      assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
-    }
+    // Assert
+    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
+    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+  }
 
   @Test public void analyzeSentiment_returnNegative() throws Exception {
     // Act
@@ -105,26 +105,26 @@ public class AnalyzeIT {
   }
 
   @Test public void analyzeSentiment_returnNegativeFile() throws Exception {
-      // Act
-      Sentiment sentiment =
-          analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
-                  + "sentiment/bladerunner-neg.txt");
+    // Act
+    Sentiment sentiment =
+        analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
+        + "sentiment/bladerunner-neg.txt");
 
-      // Assert
-      assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-      assertThat((double)sentiment.getScore()).isLessThan(0.0);
-    }
+    // Assert
+    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
+    assertThat((double)sentiment.getScore()).isLessThan(0.0);
+  }
 
   @Test public void analyzeSentiment_returnNeutralFile() throws Exception {
-      // Act
-      Sentiment sentiment =
-          analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
-                  + "sentiment/bladerunner-neutral.txt");
+    // Act
+    Sentiment sentiment =
+        analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
+        + "sentiment/bladerunner-neutral.txt");
 
-      // Assert
-      assertThat((double)sentiment.getMagnitude()).isGreaterThan(1.0);
-      assertThat((double)sentiment.getScore()).isWithin(0.1);
-    }
+    // Assert
+    assertThat((double)sentiment.getMagnitude()).isGreaterThan(1.0);
+    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+  }
 
   @Test public void analyzeSyntax_partOfSpeech() throws Exception {
     // Act
@@ -141,18 +141,18 @@ public class AnalyzeIT {
   }
 
   @Test public void analyzeSyntax_partOfSpeechFile() throws Exception {
-      // Act
-      List<Token> token =
-          analyzeApp.analyzeSyntaxFile("gs://" + BUCKET + "/natural-language/"
-                  + "sentiment/bladerunner-neutral.txt");
+    // Act
+    List<Token> token =
+        analyzeApp.analyzeSyntaxFile("gs://" + BUCKET + "/natural-language/"
+                + "sentiment/bladerunner-neutral.txt");
 
-      List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
-          .collect(Collectors.toList());
+    List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
+        .collect(Collectors.toList());
 
-      // Assert
-      assertThat(got).containsExactly(Tag.PRON, Tag.CONJ, Tag.VERB, Tag.CONJ, Tag.VERB,
-          Tag.DET, Tag.NOUN, Tag.PUNCT, Tag.NOUN, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.CONJ,
-          Tag.ADV, Tag.PRON, Tag.VERB, Tag.VERB, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.DET,
-          Tag.NOUN, Tag.VERB, Tag.ADV, Tag.ADJ,Tag.PUNCT).inOrder();
-    }
+    // Assert
+    assertThat(got).containsExactly(Tag.PRON, Tag.CONJ, Tag.VERB, Tag.CONJ, Tag.VERB,
+        Tag.DET, Tag.NOUN, Tag.PUNCT, Tag.NOUN, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.CONJ,
+        Tag.ADV, Tag.PRON, Tag.VERB, Tag.VERB, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.DET,
+        Tag.NOUN, Tag.VERB, Tag.ADV, Tag.ADJ,Tag.PUNCT).inOrder();
+  }
 }

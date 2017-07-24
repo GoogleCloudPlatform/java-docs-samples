@@ -29,13 +29,13 @@
 
 <!-- [START properties] -->
   <properties>
-<!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
-     or `gcloud sql instances describe <instance> | grep connectionName`
-     project:region:instance for Cloud SQL 2nd Generation
+<!--
+    INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
+    or `gcloud sql instances describe <instance> | grep connectionName`
 -->
-    <INSTANCE_CONNECTION_NAME></INSTANCE_CONNECTION_NAME>
+    <INSTANCE_CONNECTION_NAME>Project:Region:Instance</INSTANCE_CONNECTION_NAME>
     <user>root</user>
-    <password></password>
+    <password>myPassword</password>
     <database>sqldemo</database>
 <!-- [START_EXCLUDE] -->
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -43,7 +43,6 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <appengine.maven.plugin>1.3.1</appengine.maven.plugin>
     <jetty>9.4.4.v20170414</jetty>
 <!-- [END_EXCLUDE] -->
     <sqlURL>jdbc:mysql://google/${database}?cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}&amp;useSSL=false</sqlURL>
@@ -82,7 +81,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory-connector-j-6</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
@@ -97,28 +96,10 @@
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
 
-<!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <webResources>
-            <resource>
-              <directory>${basedir}/src/main/appengine</directory>
-              <filtering>true</filtering>
-              <targetPath></targetPath>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
- -->
-
-
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.maven.plugin}</version>
+        <version>1.3.1</version>
       </plugin>
 
       <plugin>
