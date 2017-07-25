@@ -42,7 +42,6 @@
     </dependency>
     <!-- [END dependencies] -->
 
-    <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
@@ -53,6 +52,7 @@
       <artifactId>guava</artifactId>
       <version>20.0</version>
     </dependency>
+    <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
