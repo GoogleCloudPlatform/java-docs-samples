@@ -25,11 +25,7 @@
     <parent>
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
-        <version>1.0.4</version>
-<!--
-        <relativePath>../java-repo-tools</relativePath>
- -->
-
+        <version>1.0.5</version>
     </parent>
 
     <properties>
@@ -48,58 +44,50 @@
         <!-- App Engine Standard -->
         <module>appengine</module>
         <module>appengine-java8</module>
-
-        <!-- App Engine Flexible -->
-        <module>flexible/analytics</module>
-        <module>flexible/async-rest</module>
-        <module>flexible/cloudsql</module>
-        <module>flexible/cloudstorage</module>
-        <module>flexible/cron</module>
-        <module>flexible/datastore</module>
-        <module>flexible/disk</module>
-        <module>flexible/errorreporting</module>
-        <module>flexible/extending-runtime</module>
-        <module>flexible/helloworld</module>
-        <module>flexible/mailgun</module>
-        <module>flexible/mailjet</module>
-        <module>flexible/memcache</module>
-        <module>flexible/postgres</module>
-        <module>flexible/pubsub</module>
-        <module>flexible/sendgrid</module>
-        <module>flexible/sparkjava</module>
-        <module>flexible/static-files</module>
-        <module>flexible/twilio</module>
+        <module>flexible</module>
+        <module>compute</module>
 
         <module>bigquery/cloud-client</module>
         <module>bigquery/rest</module>
-        <module>compute/cmdline</module>
-        <module>compute/error-reporting</module>
-        <module>compute/mailjet</module>
-        <module>compute/sendgrid</module>
+
         <module>datastore</module>
         <module>datastore/cloud-client</module>
+
         <module>dlp</module>
+
         <module>iap</module>
+
         <module>kms</module>
+
         <module>language/analysis</module>
         <module>language/cloud-client</module>
+
         <module>logging</module>
         <module>logging/cloud-client</module>
+
         <module>monitoring/cloud-client</module>
         <module>monitoring/v2</module>
         <module>monitoring/v3</module>
+
         <module>pubsub/cloud-client</module>
+
         <module>spanner/cloud-client</module>
+
         <module>speech/cloud-client</module>
+
         <module>storage/cloud-client</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
+
         <module>taskqueue/deferred</module>
+
         <module>translate</module>
         <module>translate/cloud-client</module>
+
         <module>unittests</module>
+
         <module>vision/cloud-client</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>

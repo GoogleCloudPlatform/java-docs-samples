@@ -20,21 +20,12 @@
   <groupId>com.example.compute</groupId>
   <artifactId>compute-sendgrid</artifactId>
 
-  <!-- TODO: Use common parent after fixing checkstyle errors.
-       https://github.com/GoogleCloudPlatform/java-docs-samples/issues/298
   <parent>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>compute</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
-  -->
-
-  <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven-assembly-plugin-version>3.0.0</maven-assembly-plugin-version>
-  </properties>
 
   <dependencies>
     <!-- [START dependencies] -->
@@ -49,7 +40,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven-assembly-plugin-version}</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>package</phase>
