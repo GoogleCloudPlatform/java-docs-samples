@@ -1,4 +1,4 @@
-# Copyright 2015 Google Inc.
+# Copyright 2017 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ info:
   description: "A simple Google Cloud Endpoints API example."
   title: "Endpoints Example"
   version: "1.0.0"
-host: "echo-api.endpoints.YOUR-PROJECT-ID.cloud.goog"
+host: "YOUR-PROJECT-ID.appspot.com"
 # [END swagger]
 basePath: "/"
 consumes:
