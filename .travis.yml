@@ -44,7 +44,7 @@ before_install:
   && set +x && source secrets.env && set -x
   || true
 # Cross project - GOOGLE_APPLICATION_CREDENTIALS uses cloud-docs-tests, but BQ uses G_C_P (argh!)
-- export GOOGLE_CLOUD_PROJECT=java-docs-samples-tests
+- export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
 # Skip the install step, since Maven will download the dependencies we need
 # when the test build runs.
 # http://stackoverflow.com/q/31945809/101923
