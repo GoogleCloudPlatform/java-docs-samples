@@ -24,6 +24,12 @@ import com.google.pubsub.v1.TopicName;
 
 public class CreateTopicExample {
 
+  /**
+   * Create a topic.
+   *
+   * @param args topicId
+   * @throws Exception exception thrown if operation is unsuccessful
+   */
   public static void main(String... args) throws Exception {
 
     // Your Google Cloud Platform project ID

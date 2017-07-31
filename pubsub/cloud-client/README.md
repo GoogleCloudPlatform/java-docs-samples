@@ -51,5 +51,5 @@ Subscriber will continue to listen on the topic for 5 minutes and print out mess
 #### Testing
 Run the test with Maven.
 ```
-  mvn -Dtest=com.example.pubsub.QuickStartIT verify
+  mvn verify
 ```

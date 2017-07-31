@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.pubsub;
 
 // [START pubsub_quickstart_subscriber]
@@ -23,7 +24,6 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.SubscriptionName;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -43,6 +43,7 @@ public class SubscriberExample {
     }
   }
 
+  /** Receive messages over a subscription. */
   public static void main(String... args) throws Exception {
     // set subscriber id, eg. my-sub
     String subscriptionId = args[0];
@@ -50,8 +51,8 @@ public class SubscriberExample {
     Subscriber subscriber = null;
     try {
       // create a subscriber bound to the asynchronous message receiver
-      subscriber = Subscriber.defaultBuilder(subscriptionName, new MessageReceiverExample())
-          .build();
+      subscriber =
+          Subscriber.defaultBuilder(subscriptionName, new MessageReceiverExample()).build();
       subscriber.startAsync().awaitRunning();
       // Continue to listen to messages
       while (true) {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.pubsub;
 // [START pubsub_quickstart_publisher]
 
@@ -23,7 +24,6 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.TopicName;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +43,7 @@ public class PublisherExample {
     return publisher.publish(pubsubMessage);
   }
 
+  /** Publish messages to a topic. */
   public static void main(String... args) throws Exception {
     // topic id, eg. "my-topic"
     String topicId = args[0];
