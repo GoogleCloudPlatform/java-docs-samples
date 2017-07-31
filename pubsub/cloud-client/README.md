@@ -14,13 +14,11 @@ For more samples, see the samples in
 ## Quickstart
 
 #### Setup
-- Install [Maven](http://maven.apache.org/)
-- Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and authenticate  :
-```
-  gcloud config set project [YOUR PROJECT ID]
-  gcloud auth application-default login
-```
-- [Enable](https://console.cloud.google.com/apis/api/pubsub.googleapis.com/overview) Pub/Sub API
+- Install [Maven](http://maven.apache.org/).
+- [Enable](https://console.cloud.google.com/apis/api/pubsub.googleapis.com/overview) Pub/Sub API.
+- Set up [authentication](https://cloud.google.com/docs/authentication/getting-started).
+
+#### Build
 - Build your project with:
 ```
   mvn clean package -DskipTests
