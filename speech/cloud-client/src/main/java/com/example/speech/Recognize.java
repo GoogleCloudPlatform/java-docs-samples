@@ -16,9 +16,9 @@
 
 package com.example.speech;
 
-import com.google.api.gax.grpc.ApiStreamObserver;
-import com.google.api.gax.grpc.OperationFuture;
-import com.google.api.gax.grpc.StreamingCallable;
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.api.gax.rpc.OperationFuture;
+import com.google.api.gax.rpc.StreamingCallable;
 import com.google.cloud.speech.v1.LongRunningRecognizeMetadata;
 import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
 import com.google.cloud.speech.v1.RecognitionAudio;
@@ -33,8 +33,8 @@ import com.google.cloud.speech.v1.StreamingRecognitionResult;
 import com.google.cloud.speech.v1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1.StreamingRecognizeResponse;
 import com.google.common.util.concurrent.SettableFuture;
+import com.google.longrunning.Operation;
 import com.google.protobuf.ByteString;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -169,7 +169,7 @@ public class Recognize {
         .build();
 
     // Use non-blocking call for getting file transcription
-    OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+    OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata, Operation> response =
         speech.longRunningRecognizeAsync(config, audio);
     while (!response.isDone()) {
       System.out.println("Waiting for response...");
@@ -208,7 +208,7 @@ public class Recognize {
         .build();
 
     // Use non-blocking call for getting file transcription
-    OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+    OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata, Operation> response =
         speech.longRunningRecognizeAsync(config, audio);
     while (!response.isDone()) {
       System.out.println("Waiting for response...");
