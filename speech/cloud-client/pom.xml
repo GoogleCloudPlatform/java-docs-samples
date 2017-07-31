@@ -33,18 +33,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- FIXME(lesv) - temp to fix an issue w/ GA Datastore -->
-  <!--
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-          <groupId>io.grpc</groupId>
-          <artifactId>grpc-core</artifactId>
-          <version>1.2.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
- -->
   <dependencies>
     <!-- [START dependencies] -->
     <dependency>
