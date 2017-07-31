@@ -19,11 +19,12 @@
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.compute</groupId>
   <artifactId>compute-mailjet</artifactId>
+
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>compute</artifactId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <properties>

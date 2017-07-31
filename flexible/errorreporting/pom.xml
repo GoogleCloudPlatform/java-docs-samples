@@ -22,10 +22,10 @@
   <artifactId>flexible-error-reporting</artifactId>
 
   <parent>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-flexible</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <properties>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-errorreporting</artifactId>
-      <version>0.20.3-alpha</version>
+      <version>0.21.0-alpha</version>
     </dependency>
   </dependencies>
 
