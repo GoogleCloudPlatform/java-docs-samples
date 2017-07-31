@@ -35,9 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 @SuppressWarnings({"serial"})
-// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "GAEInfo", description = "GAEInfo: Write info about GAE Standard",
-    urlPatterns = "/gaeinfo")
 //CHECKSTYLE:OFF
 public class GAEInfoServlet extends HttpServlet {
 

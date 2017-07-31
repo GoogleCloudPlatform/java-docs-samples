@@ -19,7 +19,7 @@ package com.example.pubsub;
 // [START pubsub_quickstart_create_topic]
 // Imports the Google Cloud client library
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsub.spi.v1.TopicAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.TopicName;
 
 public class CreateTopicExample {

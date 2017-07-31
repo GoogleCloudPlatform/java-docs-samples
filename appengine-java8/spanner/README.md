@@ -41,7 +41,7 @@ You may also [create and use service account credentials](https://cloud.google.c
 ```
 
 To see the results of the local application, open
-[http://localhost:8080/run](http://localhost:8080/run) in a web browser.
+[http://localhost:8080/spanner](http://localhost:8080/spanner) in a web browser.
 Note : by default all the spanner example operations run in order, this operation may take a while to show results.
 
 ## Deploying
@@ -49,6 +49,6 @@ Note : by default all the spanner example operations run in order, this operatio
     $ mvn clean appengine:deploy
 
 To see the results of the deployed sample application, open
-`https://spanner-dot-PROJECTID.appspot.com/run` in a web browser.
+`https://spanner-dot-PROJECTID.appspot.com/spanner` in a web browser.
 Note : by default all the spanner example operations run in order, this operation may take a while to show results.
 

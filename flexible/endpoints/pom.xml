@@ -9,10 +9,10 @@
   <artifactId>flexible-endpoints</artifactId>
 
   <parent>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-flexible</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <properties>

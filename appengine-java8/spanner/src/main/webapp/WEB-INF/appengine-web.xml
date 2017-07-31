@@ -21,8 +21,6 @@
   </manual-scaling>
   <system-properties>
     <property name="SPANNER_INSTANCE" value="spanner-instance" />
-    <!-- Optional setting to provide an explicit database name -->
-    <!--<property name="SPANNER_DATABASE" value="my-database" />-->
   </system-properties>
 </appengine-web-app>
   <!-- [END config] -->

@@ -18,14 +18,15 @@ package com.example.video;
 
 // [START videointelligence_quickstart]
 import com.google.api.gax.grpc.OperationFuture;
-import com.google.cloud.videointelligence.spi.v1beta1.VideoIntelligenceServiceClient;
-import com.google.cloud.videointelligence.spi.v1beta1.VideoIntelligenceServiceSettings;
+import com.google.cloud.videointelligence.v1beta1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1beta1.AnnotateVideoRequest;
 import com.google.cloud.videointelligence.v1beta1.AnnotateVideoResponse;
 import com.google.cloud.videointelligence.v1beta1.Feature;
 import com.google.cloud.videointelligence.v1beta1.LabelAnnotation;
 import com.google.cloud.videointelligence.v1beta1.LabelLocation;
 import com.google.cloud.videointelligence.v1beta1.VideoAnnotationResults;
+import com.google.cloud.videointelligence.v1beta1.VideoIntelligenceServiceClient;
+import com.google.cloud.videointelligence.v1beta1.VideoIntelligenceServiceSettings;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -48,7 +49,7 @@ public class QuickstartSample {
             .addFeatures(Feature.LABEL_DETECTION)
             .build();
 
-    OperationFuture<AnnotateVideoResponse> operation =
+    OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> operation =
             client.annotateVideoAsync(request);
 
     System.out.println("Waiting for operation to complete...");

@@ -18,7 +18,7 @@ package com.example.pubsub;
 
 // [START pubsub_quickstart_create_subscription]
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsub.spi.v1.SubscriptionAdminClient;
+import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.SubscriptionName;

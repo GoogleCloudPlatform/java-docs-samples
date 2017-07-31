@@ -20,9 +20,6 @@ info:
   version: "1.0.0"
 host: "echo-api.endpoints.YOUR-PROJECT-ID.cloud.goog"
 # [END swagger]
-# For App Engine deployments, delete the above "host:" line and remove the "# "
-# from the following line. Then change YOUR-PROJECT-ID to your project id.
-# host: "YOUR-PROJECT-ID.appspot.com"
 basePath: "/"
 consumes:
   - "application/json"
@@ -65,7 +62,7 @@ paths:
             $ref: "#/definitions/authInfoResponse"
       security:
         - api_key: []
-        - google_jwt: []
+          google_jwt: []
   "/auth/info/googleidtoken":
     get:
       description: "Returns the requests' authentication information."
@@ -79,7 +76,7 @@ paths:
             $ref: "#/definitions/authInfoResponse"
       security:
         - api_key: []
-        - google_id_token: []
+          google_id_token: []
 definitions:
   echoMessage:
     properties:

@@ -1,20 +1,36 @@
 # Cloud SQL sample for Google App Engine
-This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/sql/) on Google App Engine
+
+This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/cloudsql/) on Google App
+Engine standard Java 8
 
 ## Setup
-Before you can run or deploy the sample, you will need to create a [Cloud SQL instance)](https://cloud.google.com/sql/docs/create-instance)
 
-1. Create a new user and database for the application. The easiest way to do this is via the [Google
-Developers Console](https://console.cloud.google.com/sql/instances). Alternatively, you can use MySQL tools such as the command line client or workbench.
-2. Change the root password (under Access Control) and / or create a new user / password.
-3. Create a Database (under Databases) (or use MySQL with `gcloud beta sql connect <instance> --user=root`)
-4. Note the **Instance connection name** under Overview > properties
-(It will look like project:instance for 1st Generation or project:region:zone for 2nd Generation)
+* If you haven't already, Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
 
-or
+    `gcloud init`
+
+* If you haven't already, Create an App Engine app within the current Google Cloud Project
+
+    `gcloud app create`
+
+* If you haven't already, Setup
+[Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+
+    `gcloud auth application-default login`
+
+
+* [Create an instance](https://cloud.google.com/sql/docs/mysql/create-instance)
+
+* [Create a Database](https://cloud.google.com/sql/docs/mysql/create-manage-databases)
+
+* [Create a user](https://cloud.google.com/sql/docs/mysql/create-manage-users)
+
+* Note the **Instance connection name** under Overview > properties
+
+## Running locally
 
 ```bash
-gcloud sql instances describe <instance> | grep connectionName
+$ mvn clean appengine:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
 ```
 
 ## Deploying
@@ -24,12 +40,8 @@ $ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -
 -Dpassword=myPassword -Ddatabase=myDatabase
 ```
 
-Or you can update the properties in `pom.xml`
 
-## Running locally
+## Cleaning up
 
-```bash
-$ mvn clean appengine:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
-```
-Note - you must use a local mysql instance for the 1st Generation instance and change the local Url
-in `src/main/webapp/WEB-INF/appengine-web.xml` to use your local server.
+* [Delete your Instance](https://cloud.google.com/sql/docs/mysql/delete-instance)
+
