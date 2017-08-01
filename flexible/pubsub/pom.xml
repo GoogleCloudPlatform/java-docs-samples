@@ -39,7 +39,7 @@
   </properties>
 
 <!-- FIXME(lesv) Temporary fix due to Datastore having the wrong version -->
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
           <groupId>io.grpc</groupId>
@@ -47,7 +47,7 @@
           <version>1.2.0</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 <!-- end of FIXME -->
 
   <dependencies>
