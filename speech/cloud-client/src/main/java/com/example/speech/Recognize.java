@@ -95,6 +95,7 @@ public class Recognize {
         .setEncoding(AudioEncoding.LINEAR16)
         .setLanguageCode("en-US")
         .setSampleRateHertz(16000)
+        .setEnableWordTimeOffsets(false)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setContent(audioBytes)
@@ -127,6 +128,7 @@ public class Recognize {
         .setEncoding(AudioEncoding.FLAC)
         .setLanguageCode("en-US")
         .setSampleRateHertz(16000)
+        .setEnableWordTimeOffsets(false)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setUri(gcsUri)
@@ -165,6 +167,7 @@ public class Recognize {
         .setEncoding(AudioEncoding.LINEAR16)
         .setLanguageCode("en-US")
         .setSampleRateHertz(16000)
+        .setEnableWordTimeOffsets(true)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setContent(audioBytes)
@@ -186,6 +189,11 @@ public class Recognize {
       List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
       for (SpeechRecognitionAlternative alternative: alternatives) {
         System.out.printf("Transcription: %s%n", alternative.getTranscript());
+        for (WordInfo wordInfo: alternative.getWordsList()) {
+          System.out.println(wordInfo.getWord());
+          System.out.printf("\t%s ns - %s ns\n",
+              wordInfo.getStartTime().getNanos(), wordInfo.getEndTime().getNanos());
+        }
       }
     }
     speech.close();

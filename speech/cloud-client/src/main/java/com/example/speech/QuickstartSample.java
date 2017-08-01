@@ -50,6 +50,7 @@ public class QuickstartSample {
         .setEncoding(AudioEncoding.LINEAR16)
         .setSampleRateHertz(16000)
         .setLanguageCode("en-US")
+        .setEnableWordTimeOffsets(false)
         .build();
     RecognitionAudio audio = RecognitionAudio.newBuilder()
         .setContent(audioBytes)
