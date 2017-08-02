@@ -84,10 +84,17 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testAsyncWordoffset() throws Exception {
+  public void testAsyncWordoffsetFile() throws Exception {
+    Recognize.asyncRecognizeFile(fileName);
+    String got = bout.toString();
+    assertThat(got).contains("\t0 ns");
+  }
+
+  @Test
+  public void testAsyncWordoffsetGcs() throws Exception {
     Recognize.asyncRecognizeGcs(gcsPath);
     String got = bout.toString();
-    assertThat(got).contains("\t0.0 sec -");
+    assertThat(got).contains("\t0 ns");
   }
 
   @Test

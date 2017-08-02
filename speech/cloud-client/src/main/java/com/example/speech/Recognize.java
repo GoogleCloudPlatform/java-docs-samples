@@ -188,7 +188,7 @@ public class Recognize {
     for (SpeechRecognitionResult result: results) {
       List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
       for (SpeechRecognitionAlternative alternative: alternatives) {
-        System.out.printf("Transcription: %s%n", alternative.getTranscript());
+        System.out.printf("Transcription: %s\n",alternative.getTranscript());
         for (WordInfo wordInfo: alternative.getWordsList()) {
           System.out.println(wordInfo.getWord());
           System.out.printf("\t%s ns - %s ns\n",
