@@ -45,3 +45,15 @@ Build your project with:
     java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
     com.example.speech.Recognize asyncrecognize gs://cloud-samples-tests/speech/vr.flac
 ```
+
+### Synchronously transcribe an audio file and print word offsets
+```
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize wordoffsets ./resources/audio.raw
+```
+
+### Asynchronously transcribe a remote audio file and print word offsets
+```
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize wordoffsets gs://cloud-samples-tests/speech/vr.flac
+```
