@@ -21,9 +21,10 @@
 
   <!-- Parent defines config for testing & linting. -->
   <parent>
-      <groupId>com.google.cloud.samples</groupId>
-      <artifactId>shared-configuration</artifactId>
-      <version>1.0.5</version>
+    <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+    <relativePath>../..</relativePath>
   </parent>
 
   <properties>
