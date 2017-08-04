@@ -69,6 +69,7 @@
         <module>memcache</module>
         <module>multitenancy</module>
         <module>oauth2</module>
+        <module>pusher-chat</module>
         <module>requests</module>
         <module>search</module>
         <module>sendgrid</module>
