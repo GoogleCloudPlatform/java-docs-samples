@@ -65,6 +65,7 @@
         $('#chat_widget_counter').html($('.chat_widget_member').length);
     }
 
+    // [START pusher_client_initialize]
     // Connect to Pusher with auth endpoint on your server for private/presence channels
     // (default auth endpoint : /pusher/auth)
     var pusher = new Pusher('5c803f8fb10988b78247', {
@@ -72,8 +73,12 @@
         authEndpoint: '/authorize',
         encrypted: true
     });
+    // [END pusher_client_initialze]
+
+    // [START pusher_subscribe_channel]
     // subscribe to auth
     var channel = pusher.subscribe(channel_name);
+    // [END pusher_subscribe_channel]
 
     // [START pusher_bind_pusher_event]
     // bind to successful Pusher connection
