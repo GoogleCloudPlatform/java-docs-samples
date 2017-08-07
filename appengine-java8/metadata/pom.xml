@@ -19,7 +19,7 @@ Copyright 2017 Google Inc.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>gaeinfo-j8</artifactId>
+  <artifactId>metadata-j8</artifactId>
 
   <parent>
     <artifactId>appengine-java8-samples</artifactId>
@@ -29,7 +29,7 @@ Copyright 2017 Google Inc.
   </parent>
 
   <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+  <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>

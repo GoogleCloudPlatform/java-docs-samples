@@ -17,18 +17,13 @@ package com.example.appengine.standard;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
-import com.google.apphosting.api.ApiProxy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,9 +38,9 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 // [START example]
 @SuppressWarnings({"serial"})
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "GAEInfo", description = "GAEInfo: Write info about GAE Standard",
-    urlPatterns = "/gaeinfo")
-public class GaeInfoServlet extends HttpServlet {
+@WebServlet(name = "Metadata", description = "Metadata: Write info about GAE Standard",
+    urlPatterns = "/metadata")
+public class MetadataServlet extends HttpServlet {
 
   private final String[] metaPath = {
       "/computeMetadata/v1/project/numeric-project-id", //  (pending)
@@ -124,84 +119,31 @@ public class GaeInfoServlet extends HttpServlet {
     templateEngine.setTemplateResolver(templateResolver);
   }
 
-
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String key ="";
     final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
     WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
 
     resp.setContentType("text/html");
 
     ctx.setVariable("production", SystemProperty.environment.value().name());
-    ctx.setVariable("ServiceAccountName", appIdentity.getServiceAccountName());
-    ctx.setVariable("gcs", appIdentity.getDefaultGcsBucketName());
-
-    ctx.setVariable("appId", SystemProperty.applicationId.get());
-    ctx.setVariable("appVer", SystemProperty.applicationVersion.get());
-    ctx.setVariable("version", SystemProperty.version.get());
-    ctx.setVariable("environment", SystemProperty.environment.get());
-
-    // Environment Atributes
-    ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();
-    Map<String, Object> attr = env.getAttributes();
-    TreeMap<String, String> m = new TreeMap<>();
-
-    for (String k : attr.keySet()) {
-      Object o = attr.get(k);
-
-      if (o.getClass().getCanonicalName().equals("java.lang.String")) {
-        m.put(k, (String) o);
-      } else if (o.getClass().getCanonicalName().equals("java.lang.Boolean")) {
-        m.put(k, ((Boolean) o).toString());
-      } else {
-        m.put(k, "a " + o.getClass().getCanonicalName());
-      }
-    }
-    ctx.setVariable("attribs", m);
-
-    m = new TreeMap<>();
-    for (Enumeration<String> e = req.getHeaderNames(); e.hasMoreElements(); ) {
-      key = e.nextElement();
-      m.put(key, req.getHeader(key));
-    }
-    ctx.setVariable("headers", m);
-
-    Cookie[] cookies = req.getCookies();
-    m = new TreeMap<>();
-    if (cookies != null && cookies.length != 0) {
-      for (Cookie co : cookies) {
-        m.put(co.getName(), co.getValue());
-      }
-    }
-    ctx.setVariable("cookies", m);
-
-    Properties properties = System.getProperties();
-    m = new TreeMap<>();
-    for (Enumeration e = properties.propertyNames(); e.hasMoreElements(); ) {
-      key = (String) e.nextElement();
-      m.put(key, (String) properties.get(key));
-    }
-    ctx.setVariable("systemprops", m);
-
-    Map<String, String> envVar = System.getenv();
-    m = new TreeMap<>(envVar);
-    ctx.setVariable("envvar", m);
 
     // The metadata server is only on a production system
     if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) {
 
-      m = new TreeMap<>();
-      for (String k : metaPath) {
-        m.put(k, fetchMetadata(key));
+      TreeMap<String, String> m = new TreeMap<>();
+
+      for (String key : metaPath) {
+        m.put(key, fetchMetadata(key));
       }
+
       ctx.setVariable("Metadata", m.descendingMap());
 
       m = new TreeMap<>();
-      for (String k : metaServiceAcct) {
+      for (String key : metaServiceAcct) {
         // substitute a service account for {account}
-        k = k.replace("{account}", appIdentity.getServiceAccountName());
-        m.put(k, fetchMetadata(k));
+        key = key.replace("{account}", appIdentity.getServiceAccountName());
+        m.put(key, fetchMetadata(key));
       }
       ctx.setVariable("sam", m.descendingMap());
 
@@ -213,6 +155,7 @@ public class GaeInfoServlet extends HttpServlet {
     }
 
     templateEngine.process("index", ctx, resp.getWriter());
+
   }
 }
 // [END example]
