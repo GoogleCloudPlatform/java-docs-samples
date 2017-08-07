@@ -23,7 +23,6 @@ import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pusher.rest.data.Result;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +31,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Submit a chat message over a channel.
- * Note : we use socket_id to exclude the sender from receiving the message
- // {@see <ahref="https://pusher.com/docs/server_api_guide/server_excluding_recipients">Excluding Recipients</ahref>}
+ * Submit a chat message over a channel. Note : we use socket_id to exclude the sender from
+ * receiving the message // {@see
+ * <ahref="https://pusher.com/docs/server_api_guide/server_excluding_recipients">Excluding
+ * Recipients</ahref>}
  */
+// [START pusher_server_send_message]
 public class SendMessageServlet extends HttpServlet {
 
   private Gson gson = new GsonBuilder().create();
@@ -44,29 +45,38 @@ public class SendMessageServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Parse POST request body in the format :
+    // Parse POST request body received in the format :
     // [{"message": "my-message", "socket_id": "1232.24", "channel": "presence-my-channel"}]
 
     String body = CharStreams.readLines(request.getReader()).toString();
     String json = body.replaceFirst("^\\[", "").replaceFirst("\\]$", "");
-    Map<String, String> data  = gson.fromJson(json, typeReference.getType());
+    Map<String, String> data = gson.fromJson(json, typeReference.getType());
     String message = data.get("message");
     String socketId = data.get("socket_id");
     String channelId = data.get("channel_id");
 
     User user = UserServiceFactory.getUserService().getCurrentUser();
+    // user email prefix as display name for current logged in user
     String displayName = user.getNickname().replaceFirst("@.*", "");
 
+    // Create a message including the user email prefix to display in the chat window
     String taggedMessage = "<strong>&lt;" + displayName + "&gt;</strong> " + message;
     Map<String, String> messageData = new HashMap<>();
     messageData.put("message", taggedMessage);
-    Result result = PusherService.getDefaultInstance().trigger(
-        channelId, //the channel
-        "new_message", //the event
-        messageData, socketId);
-    messageData.put("status", result.getStatus().name());
+
+    // Send a message over the Pusher channel (maximum size of a message is 10KB)
+    Result result =
+        PusherService.getDefaultInstance()
+            .trigger(
+                channelId,
+                "new_message", // name of event
+                messageData,
+                socketId); // (optional) use client socket_id to exclude the sender from receiving the message
+
     // result.getStatus() == SUCCESS indicates successful transmission
-    // result.getStatus() == CLIENT_ERROR : confirm cluster, credentials of the Pusher instances.
+    messageData.put("status", result.getStatus().name());
+
     response.getWriter().println(gson.toJson(messageData));
   }
 }
+// [END pusher_server_send_message]

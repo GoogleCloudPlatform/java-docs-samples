@@ -21,7 +21,6 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.io.CharStreams;
 import com.pusher.rest.Pusher;
 import com.pusher.rest.data.PresenceUser;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,11 +31,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Authorization endpoint that is automatically triggered on `Pusher.subscribe`
- * for private, presence channels.
- * Successful authentication returns valid authorization token with user information.
+ * Authorization endpoint that is automatically triggered on `Pusher.subscribe` for private,
+ * presence channels. Successful authentication returns valid authorization token with user
+ * information.
+ *
  * @see <a href="https://pusher.com/docs/authenticating_users">Pusher Authentication Docs</a>
  */
+// [START pusher_authorize]
 public class AuthorizeServlet extends HttpServlet {
 
   @Override
@@ -45,7 +46,7 @@ public class AuthorizeServlet extends HttpServlet {
     // Instantiate a pusher connection
     Pusher pusher = PusherService.getDefaultInstance();
     // Get current logged in user credentials
-    User user =  UserServiceFactory.getUserService().getCurrentUser();
+    User user = UserServiceFactory.getUserService().getCurrentUser();
 
     // redirect to homepage if user is not authorized
     if (user == null) {
@@ -68,7 +69,8 @@ public class AuthorizeServlet extends HttpServlet {
 
     // Inject custom authentication code for your application here to allow /deny current request
 
-    String auth = pusher.authenticate(socketId, channelId, new PresenceUser(currentUserId, userInfo));
+    String auth =
+        pusher.authenticate(socketId, channelId, new PresenceUser(currentUserId, userInfo));
     // if successful, returns authorization in the format
     //    {
     //      "auth":"49e26cb8e9dde3dfc009:a8cf1d3deefbb1bdc6a9d1547640d49d94b4b512320e2597c257a740edd1788f",
@@ -83,9 +85,11 @@ public class AuthorizeServlet extends HttpServlet {
     String[] pairs = query.split("&");
     for (String pair : pairs) {
       int idx = pair.indexOf("=");
-      query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+      query_pairs.put(
+          URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
           URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
     }
     return query_pairs;
   }
 }
+// [END pusher_authorize]

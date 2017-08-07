@@ -19,7 +19,6 @@ package com.example.appengine.pusher;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,9 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Homepage of chat application, redirects user to login page if not authorized.
- */
+/** Homepage of chat application, redirects user to login page if not authorized. */
 public class ChatServlet extends HttpServlet {
 
   public static String getUriWithChatRoom(HttpServletRequest request, String chatRoom) {
@@ -40,9 +37,15 @@ public class ChatServlet extends HttpServlet {
         query = "room=" + chatRoom;
       }
       URI thisUri = new URI(request.getRequestURL().toString());
-      URI uriWithOptionalRoomParam = new URI(
-          thisUri.getScheme(), thisUri.getUserInfo(), thisUri.getHost(),
-          thisUri.getPort(), "/", query, "");
+      URI uriWithOptionalRoomParam =
+          new URI(
+              thisUri.getScheme(),
+              thisUri.getUserInfo(),
+              thisUri.getHost(),
+              thisUri.getPort(),
+              "/",
+              query,
+              "");
       return uriWithOptionalRoomParam.toString();
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
@@ -58,9 +61,7 @@ public class ChatServlet extends HttpServlet {
     // Show login link if user is not logged in.
     if (currentUser == null) {
       String loginUrl = userService.createLoginURL(getUriWithChatRoom(req, room));
-      resp.getWriter().println("<p>Please <a href=\""
-          + loginUrl
-          + "\">sign in</a>.</p>");
+      resp.getWriter().println("<p>Please <a href=\"" + loginUrl + "\">sign in</a>.</p>");
       return;
     }
 

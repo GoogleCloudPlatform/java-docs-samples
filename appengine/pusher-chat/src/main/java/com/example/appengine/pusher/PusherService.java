@@ -18,25 +18,24 @@ package com.example.appengine.pusher;
 
 import com.pusher.rest.Pusher;
 
+// [START pusher_server_initialize]
 abstract class PusherService {
 
-  private final static String APP_ID = System.getenv("PUSHER_APP_ID");
-  private final static String APP_KEY = System.getenv("PUSHER_APP_KEY");
-  private final static String APP_SECRET = System.getenv("PUSHER_APP_SECRET");
+  private static final String APP_ID = System.getenv("PUSHER_APP_ID");
+  private static final String APP_KEY = System.getenv("PUSHER_APP_KEY");
+  private static final String APP_SECRET = System.getenv("PUSHER_APP_SECRET");
 
   private static Pusher instance;
 
   static Pusher getDefaultInstance() {
     if (instance != null) {
       return instance;
-    }
-    // [START pusher_server_initialize]
-    // Instantiate a pusher
+    } // Instantiate a pusher
     Pusher pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
-    pusher.setCluster("mt1"); // required, if not default mt1 (us-east-1)
+    pusher.setCluster("us2"); // required, if not default mt1 (us-east-1)
     pusher.setEncrypted(true); // optional, ensure subscriber also matches these settings
-    // [END pusher_server_initialize]
     instance = pusher;
     return pusher;
   }
 }
+// [END pusher_server_initialize]
