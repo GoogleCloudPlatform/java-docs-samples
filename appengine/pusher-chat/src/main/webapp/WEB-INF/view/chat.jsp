@@ -54,8 +54,9 @@
     }
     %>
     var room = '<%= (String)request.getAttribute("room")%>';
+    alert(room);
     var roomLink = '<%= ChatServlet.getUriWithChatRoom(request, (String)request.getAttribute("room")) %>';
-
+    alert(roomLink);
     $('#chat_room_name').html("<a href=\"" + roomLink + "\">" + room + "<a>");
 
     var socket_id = null;
@@ -66,13 +67,15 @@
     }
 
     // [START pusher_client_initialize]
+
     // Connect to Pusher with auth endpoint on your server for private/presence channels
     // (default auth endpoint : /pusher/auth)
-    var pusher = new Pusher('5c803f8fb10988b78247', {
-        cluster: 'us2',
+    var pusher = new Pusher("my-pusher-app-key", {
+        cluster: "us2",
         authEndpoint: '/authorize',
         encrypted: true
     });
+
     // [END pusher_client_initialize]
 
     // [START pusher_subscribe_channel]
