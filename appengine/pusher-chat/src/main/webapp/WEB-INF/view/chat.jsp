@@ -73,10 +73,10 @@
         authEndpoint: '/authorize',
         encrypted: true
     });
-    // [END pusher_client_initialze]
+    // [END pusher_client_initialize]
 
     // [START pusher_subscribe_channel]
-    // subscribe to auth
+    // subscribe to the chat room presence channel, eg. "presence-my-room"
     var channel = pusher.subscribe(channel_name);
     // [END pusher_subscribe_channel]
 
