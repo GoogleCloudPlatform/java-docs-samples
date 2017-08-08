@@ -15,6 +15,8 @@
 
 set -e
 
+cd project   # lv3 8/8/17
+
 # Setup GCP application default credentials before `set -x` echos everything out
 if [[ $GCLOUD_SERVICE_KEY ]]; then
   echo "$GCLOUD_SERVICE_KEY" | \
