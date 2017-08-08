@@ -11,13 +11,13 @@ jobs:
 #          name: Gecko Driver
 #          command: curl -LO https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz && sudo tar -zxf geckodriver-*.tar.gz -C "${HOME}/bin"
 
-      - run:
-          name: backports
-          command: sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe" && sudo apt-get update  && sudo apt-get install -t trusty-backports shellcheck
-
-      - run:
-          name: expect
-          command: sudo apt-get install expect
+#      - run:
+#          name: backports
+#          command: sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe" && sudo apt-get update  && sudo apt-get install -t trusty-backports shellcheck
+#
+#      - run:
+#          name: expect
+#          command: sudo apt-get install expect
 
       - run:
           name: service account
