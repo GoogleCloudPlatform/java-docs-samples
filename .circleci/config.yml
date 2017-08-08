@@ -23,8 +23,17 @@ jobs:
           name: service account
           command: openssl aes-256-cbc -d -in "${HOME}/${CIRCLE_PROJECT_REPONAME}/service-account.json.enc" -k "${key}" -iv "${iv}" -out "${HOME}/google-cloud-service-key.json" && export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/google-cloud-service-key.json"
 
-  test:
-    steps:
       - run:
         name: test script
         command: bash ./travis.sh && bash <(curl -s https://codecov.io/bash) # If successful, run code coverage
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+        requires:
+          - build
+          filters:
+            branches:
+              only: master
