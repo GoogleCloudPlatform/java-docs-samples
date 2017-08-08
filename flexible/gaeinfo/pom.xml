@@ -19,10 +19,10 @@ Copyright 2017 Google Inc.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>gaeinfo-j8</artifactId>
+  <artifactId>gaeinfo-flex-compat</artifactId>
 
   <parent>
-    <artifactId>appengine-java8-samples</artifactId>
+    <artifactId>appengine-flexible</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
     <relativePath>..</relativePath>
@@ -39,7 +39,7 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.52</version>
     </dependency>
 
     <dependency>

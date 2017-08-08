@@ -40,6 +40,7 @@
         <module>disk</module>
         <module>errorreporting</module>
         <module>extending-runtime</module>
+        <module>gaeinfo</module>
         <module>helloworld</module>
         <module>mailgun</module>
         <module>mailjet</module>

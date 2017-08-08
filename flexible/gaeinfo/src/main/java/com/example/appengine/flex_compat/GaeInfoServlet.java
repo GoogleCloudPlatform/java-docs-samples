@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.example.appengine.standard;
+package com.example.appengine.flex_compat;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
