@@ -67,6 +67,7 @@ public class GaeInfoServlet extends HttpServlet {
   };
 
   private final String metadata = "http://metadata.google.internal";
+
   private TemplateEngine templateEngine;
 
   // Use OkHttp from Square as it's quite easy to use for simple fetches.
@@ -88,7 +89,7 @@ public class GaeInfoServlet extends HttpServlet {
         .addHeader("Metadata-Flavor", "Google")
         .get()
         .build();
-
+    
     Response response = ok.newCall(request).execute();
     return response.body().string();
   }
@@ -193,7 +194,7 @@ public class GaeInfoServlet extends HttpServlet {
 
       m = new TreeMap<>();
       for (String k : metaPath) {
-        m.put(k, fetchMetadata(key));
+        m.put(k, fetchMetadata(k));
       }
       ctx.setVariable("Metadata", m.descendingMap());
 
