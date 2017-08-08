@@ -18,14 +18,14 @@ package com.example.speech;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 /**
  * Tests for speech recognize sample.
@@ -63,6 +63,14 @@ public class RecognizeIT {
   }
 
   @Test
+  public void testRecognizeWordoffset() throws Exception {
+    Recognize.syncRecognizeWords(fileName);
+    String got = bout.toString();
+    assertThat(got).contains("how old is the Brooklyn Bridge");
+    assertThat(got).contains("\t0.0 sec -");
+  }
+
+  @Test
   public void testRecognizeGcs() throws Exception {
     Recognize.syncRecognizeGcs(gcsPath);
     String got = bout.toString();
@@ -81,6 +89,14 @@ public class RecognizeIT {
     Recognize.asyncRecognizeGcs(gcsPath);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
+  }
+
+  @Test
+  public void testAsyncWordoffset() throws Exception {
+    Recognize.asyncRecognizeWords(gcsPath);
+    String got = bout.toString();
+    assertThat(got).contains("how old is the Brooklyn Bridge");
+    assertThat(got).contains("\t0.0 sec -");
   }
 
   @Test
