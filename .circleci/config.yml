@@ -27,13 +27,3 @@ jobs:
         name: test script
         command: bash ./travis.sh && bash <(curl -s https://codecov.io/bash) # If successful, run code coverage
 
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-        requires:
-          - build
-          filters:
-            branches:
-              only: master
