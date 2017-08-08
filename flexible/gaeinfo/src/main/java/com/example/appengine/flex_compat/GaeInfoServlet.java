@@ -193,7 +193,7 @@ public class GaeInfoServlet extends HttpServlet {
 
       m = new TreeMap<>();
       for (String k : metaPath) {
-        m.put(k, fetchMetadata(key));
+        m.put(k, fetchMetadata(k));
       }
       ctx.setVariable("Metadata", m.descendingMap());
 
