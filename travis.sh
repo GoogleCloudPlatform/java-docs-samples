@@ -15,18 +15,19 @@
 
 set -e
 
-# Setup GCP application default credentials before `set -x` echos everything out
-if [[ $GCLOUD_SERVICE_KEY ]]; then
-  echo "$GCLOUD_SERVICE_KEY" | \
-    base64 --decode --ignore-garbage > "${HOME}/google-cloud-service-key.json"
-  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/google-cloud-service-key.json"
-fi
+cd "${HOME}/project"   # lv3 8/8/17
 
 set -x
 # Set pipefail so that `egrep` does not eat the exit code.
 set -o pipefail
 shopt -s globstar
 
+echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
+echo "CI_PULL_REQUEST: ${CI_PULL_REQUEST}"
+echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
+echo "git rev-parse HEAD: $(git rev-parse HEAD)"
+echo "CIRCLE_PR_NUMBER: ${CIRCLE_PR_NUMBER}"
+echo "CIRCLE_PR_USERNAME: ${CIRCLE_PR_USERNAME}"
 
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
@@ -35,22 +36,22 @@ fi
 
 # Finds the closest parent dir that encompasses all changed files, and has a
 # pom.xml
-travis_changed_files_parent() {
+changed_files_parent() {
   # If we're not in a PR, forget it
-  [ -z "${TRAVIS_PULL_REQUEST-CI_PULL_REQUEST}" ] && return 0
+  [ -z "${CI_PULL_REQUEST}" ] && return 0
 
   (
     set +e
 
-    changed="$(git diff --name-only "${TRAVIS_COMMIT-CIRCLE_SHA1}" "${TRAVIS_BRANCH-CIRCLE_BRANCH}")"
+    changed="$(git diff --name-only ${CIRCLE_SHA1} ${CIRCLE_BRANCH})"
     if [ $? -ne 0 ]; then
       # Fall back to git head
-      changed="$(git diff --name-only "$(git rev-parse HEAD)" "${TRAVIS_BRANCH-CIRCLE_BRANCH}")"
+      changed="$(git diff --name-only $(git rev-parse HEAD) ${CIRCLE_BRANCH})"
       [ $? -ne 0 ] && return 0  # Give up. Just run everything.
     fi
 
     # Find the common prefix
-    prefix="$(echo "$changed" | \
+    prefix="$(echo $changed | sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')"
       # N: Do this for a pair of lines
       # s: capture the beginning of a line, that's followed by a new line
       #    starting with that capture group. IOW - two lines that start with the
@@ -58,7 +59,6 @@ travis_changed_files_parent() {
       #    (ie the common prefix).
       # D: Delete the first line of the pair, leaving the second line for the
       #    next pass.
-      sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')"
 
     while [ ! -z "$prefix" ] && [ ! -r "$prefix/pom.xml" ] && [ "${prefix%/*}" != "$prefix" ]; do
       prefix="${prefix%/*}"
@@ -70,19 +70,20 @@ travis_changed_files_parent() {
   )
 }
 
-common_travis_dir="$(travis_changed_files_parent)"
+common_dir="$(changed_files_parent)"
 
-[ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
+echo "Common Dir: ${common_dir}"
+
+[ -z "${common_dir}" ] || pushd "${common_dir}"
 
 # Give Maven a bit more memory
-#export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
 export MAVEN_OPTS='-Xmx800m -Xms400m'
-"${TRAVIS_BUILD_DIR-$HOME/$CIRCLE_PROJECT_REPONAME}"/mvnw \
+mvn \
   --batch-mode clean verify -e \
   -DskipTests=$SKIP_TESTS | \
   egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
-[ -z "$common_travis_dir" ] || popd
+[ -z "$common_dir" ] || popd
 
 # Check that all shell scripts in this repo (including this one) pass the
 # Shell Check linter.
@@ -99,7 +100,7 @@ test_localhost() {
       appengine/datastore/indexes-perfect
   )
   for testdir in "${devserver_tests[@]}" ; do
-    if [ -z "$common_travis_dir" ] || [[ $testdir = $common_travis_dir* ]]; then
+    if [ -z "$common_dir" ] || [[ $testdir = $common_dir* ]]; then
       ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
     fi
   done
