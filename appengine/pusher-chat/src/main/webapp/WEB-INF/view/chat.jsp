@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <%@ page import="com.example.appengine.pusher.ChatServlet" %>
+<%@ page import="com.example.appengine.pusher.PusherService" %>
 <%@ page import="java.util.Date" %>
 <%--
  Copyright 2017 Google Inc.
@@ -68,8 +69,8 @@
 
     // Connect to Pusher with auth endpoint on your server for private/presence channels
     // (default auth endpoint : /pusher/auth)
-    var pusher = new Pusher("pusher_app_key", {
-        cluster: "pusher_cluster",
+    var pusher = new Pusher('<%= PusherService.APP_KEY %>', {
+        cluster: '<%= PusherService.CLUSTER %>',
         authEndpoint: '/authorize',
         encrypted: true
     });

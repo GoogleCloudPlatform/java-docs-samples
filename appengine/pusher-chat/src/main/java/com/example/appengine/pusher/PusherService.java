@@ -19,12 +19,13 @@ package com.example.appengine.pusher;
 import com.pusher.rest.Pusher;
 
 // [START pusher_server_initialize]
-abstract class PusherService {
+public abstract class PusherService {
+
+  public static final String APP_KEY = System.getenv("PUSHER_APP_KEY");
+  public static final String CLUSTER = System.getenv("PUSHER_CLUSTER");
 
   private static final String APP_ID = System.getenv("PUSHER_APP_ID");
-  private static final String APP_KEY = System.getenv("PUSHER_APP_KEY");
   private static final String APP_SECRET = System.getenv("PUSHER_APP_SECRET");
-  private static final String CLUSTER = System.getenv("PUSHER_CLUSTER");
 
   private static Pusher instance;
 

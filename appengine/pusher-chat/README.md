@@ -26,8 +26,6 @@ If this is your first time creating an App engine application:
 
 - Create a [Pusher] application and note down the `app_id`, `app_key`, `app_secret` and the cluster.
 - Update [appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml) with these credentials.
-- Update Line 71 in [chat.jsp](src/main/webapp/WEB-INF/view/chat.jsp) with the `app_id` and cluster information.
-
 
 ## Running locally
 
