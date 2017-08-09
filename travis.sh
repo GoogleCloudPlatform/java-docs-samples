@@ -23,6 +23,9 @@ set -o pipefail
 shopt -s globstar
 
 echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
+echo "CI_PULL_REQUEST: ${CI_PULL_REQUEST}"
+echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
+echo "git rev-parse HEAD: $(git rev-parse HEAD)"
 
 SKIP_TESTS=false
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ] ; then
@@ -33,9 +36,6 @@ fi
 # pom.xml
 changed_files_parent() {
   # If we're not in a PR, forget it
-  echo "CI_PULL_REQUEST: ${CI_PULL_REQUEST}"
-  echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
-  echo "git rev-parse HEAD: $(git rev-parse HEAD)"
   [ -z "${CI_PULL_REQUEST}" ] && return 0
 
   (
@@ -49,7 +49,7 @@ changed_files_parent() {
     fi
 
     # Find the common prefix
-    prefix="$(echo $changed | \
+    prefix="$(echo $changed | sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')"
       # N: Do this for a pair of lines
       # s: capture the beginning of a line, that's followed by a new line
       #    starting with that capture group. IOW - two lines that start with the
@@ -57,7 +57,6 @@ changed_files_parent() {
       #    (ie the common prefix).
       # D: Delete the first line of the pair, leaving the second line for the
       #    next pass.
-      sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')"
 
     while [ ! -z "$prefix" ] && [ ! -r "$prefix/pom.xml" ] && [ "${prefix%/*}" != "$prefix" ]; do
       prefix="${prefix%/*}"
@@ -73,7 +72,7 @@ common_dir="$(changed_files_parent)"
 
 echo "Common Dir: ${common_dir}"
 
-[ -z "$common_dir" ] || pushd "$common_dir"
+[ -z "${common_dir}" ] || pushd "${common_dir}"
 
 # Give Maven a bit more memory
 export MAVEN_OPTS='-Xmx800m -Xms400m'
