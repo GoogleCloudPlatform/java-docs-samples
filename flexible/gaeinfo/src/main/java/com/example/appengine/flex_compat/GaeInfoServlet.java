@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.example.appengine.standard;
+package com.example.appengine.flex_compat;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
@@ -67,7 +67,6 @@ public class GaeInfoServlet extends HttpServlet {
   };
 
   private final String metadata = "http://metadata.google.internal";
-
   private TemplateEngine templateEngine;
 
   // Use OkHttp from Square as it's quite easy to use for simple fetches.
@@ -89,7 +88,7 @@ public class GaeInfoServlet extends HttpServlet {
         .addHeader("Metadata-Flavor", "Google")
         .get()
         .build();
-    
+
     Response response = ok.newCall(request).execute();
     return response.body().string();
   }

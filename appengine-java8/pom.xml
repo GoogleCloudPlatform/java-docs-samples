@@ -61,9 +61,15 @@
     <module>mailgun</module>
     <module>mailjet</module>
     <module>memcache</module>
+
+    <module>metadata</module>
+
     <module>multitenancy</module>
+
     <module>oauth2</module>
+
     <module>postgres</module>
+
     <module>requests</module>
 
     <module>remote-client</module>
