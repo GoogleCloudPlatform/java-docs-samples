@@ -15,7 +15,7 @@
 
 set -e
 
-cd project   # lv3 8/8/17
+cd "${HOME}/project"   # lv3 8/8/17
 
 # Setup GCP application default credentials before `set -x` echos everything out
 if [[ $GCLOUD_SERVICE_KEY ]]; then
@@ -39,6 +39,9 @@ fi
 # pom.xml
 travis_changed_files_parent() {
   # If we're not in a PR, forget it
+  echo "CI_PULL_REQUEST: ${CI_PULL_REQUEST}"
+  echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
+  echo "git rev-parse HEAD: $(git rev-parse HEAD)"
   [ -z "${TRAVIS_PULL_REQUEST-CI_PULL_REQUEST}" ] && return 0
 
   (
@@ -74,12 +77,14 @@ travis_changed_files_parent() {
 
 common_travis_dir="$(travis_changed_files_parent)"
 
+echo "Common Dir: ${common_travis_dir}"
+
 [ -z "$common_travis_dir" ] || pushd "$common_travis_dir"
 
 # Give Maven a bit more memory
 #export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
 export MAVEN_OPTS='-Xmx800m -Xms400m'
-"${TRAVIS_BUILD_DIR-$HOME/$CIRCLE_PROJECT_REPONAME}"/mvnw \
+"mvn \
   --batch-mode clean verify -e \
   -DskipTests=$SKIP_TESTS | \
   egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
