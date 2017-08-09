@@ -284,12 +284,16 @@ public class Inspect {
       // The infoTypes of information to match
       // infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
 
-      // Get reference to the file to be inspected
+      // Reference to the Datastore namespace
       PartitionId partitionId =
           PartitionId.newBuilder().setProjectId(projectId).setNamespaceId(namespaceId).build();
+
+      // Reference to the Datastore kind
       KindExpression kindExpression = KindExpression.newBuilder().setName(kind).build();
       DatastoreOptions datastoreOptions =
           DatastoreOptions.newBuilder().setKind(kindExpression).setPartitionId(partitionId).build();
+
+      // Construct Datastore configuration to be inspected
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setDatastoreOptions(datastoreOptions).build();
 
