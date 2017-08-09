@@ -5,7 +5,7 @@ jobs:
       - image: circleci/openjdk:8-jdk-browsers
     steps:
       - checkout
-     - run:
+      - run:
          name: get shellcheck expect
          command: sudo apt-get update && sudo apt-get install shellcheck expect
       - run:
