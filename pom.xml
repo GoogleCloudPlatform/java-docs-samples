@@ -55,7 +55,9 @@
 
         <module>dlp</module>
 
+<!-- TODO() turn back on once we setup IAP envvar
         <module>iap</module>
+ -->
 
         <module>kms</module>
 
