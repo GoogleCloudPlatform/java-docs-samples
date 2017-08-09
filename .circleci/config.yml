@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     docker:
@@ -10,10 +11,9 @@ jobs:
 #      - run:
 #          name: Gecko Driver
 #          command: curl -LO https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz && sudo tar -zxf geckodriver-*.tar.gz -C "${HOME}/bin"
-
      - run:
-         name: shellcheck & expect
-         command: sudo apt-get update  && sudo apt-get install shellcheck expect
+         name: get shellcheck expect
+         command: sudo apt-get update && sudo apt-get install shellcheck expect
 
       - run:
           name: service account
