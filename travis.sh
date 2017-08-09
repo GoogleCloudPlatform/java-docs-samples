@@ -41,15 +41,15 @@ changed_files_parent() {
   (
     set +e
 
-    changed="$(git diff --name-only '${CIRCLE_SHA1}' '${CIRCLE_BRANCH}')"
+    changed="$(git diff --name-only ${CIRCLE_SHA1} ${CIRCLE_BRANCH})"
     if [ $? -ne 0 ]; then
       # Fall back to git head
-      changed="$(git diff --name-only '$(git rev-parse HEAD)' '${CIRCLE_BRANCH}')"
+      changed="$(git diff --name-only $(git rev-parse HEAD) ${CIRCLE_BRANCH})"
       [ $? -ne 0 ] && return 0  # Give up. Just run everything.
     fi
 
     # Find the common prefix
-    prefix="$(echo '$changed' | \
+    prefix="$(echo $changed | \
       # N: Do this for a pair of lines
       # s: capture the beginning of a line, that's followed by a new line
       #    starting with that capture group. IOW - two lines that start with the
@@ -76,7 +76,6 @@ echo "Common Dir: ${common_dir}"
 [ -z "$common_dir" ] || pushd "$common_dir"
 
 # Give Maven a bit more memory
-#export MAVEN_OPTS='-XX:+PrintFlagsFinal -Xmx800m -Xms400m'
 export MAVEN_OPTS='-Xmx800m -Xms400m'
 mvn \
   --batch-mode clean verify -e \
