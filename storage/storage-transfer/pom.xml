@@ -30,9 +30,6 @@
   <version>0.1</version>
   <packaging>jar</packaging>
 
-  <name>transfersample</name>
-  <url>http://maven.apache.org</url>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -48,14 +45,14 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>22.0</version>
+      <version>20.0</version>
     </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.30</version>
       <scope>test</scope>
     </dependency>
     <dependency>
