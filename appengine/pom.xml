@@ -58,6 +58,9 @@
         <module>endpoints-frameworks-v2/migration-example</module>
         <module>firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>firebase-tictactoe</module>
+
+        <module>gaeinfo</module>
+
         <module>guestbook-objectify</module>
         <module>helloworld</module>
         <module>helloworld-new-plugins</module>
@@ -75,7 +78,11 @@
         <module>sendgrid</module>
         <module>remote/remote-client</module>
         <module>remote/remote-server</module>
+
+        <module>sockets</module>
+
         <module>static-files</module>
+
         <module>taskqueue-push</module>
         <module>twilio</module>
         <module>urlfetch</module>
