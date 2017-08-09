@@ -14,9 +14,9 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <threadsafe>true</threadsafe>
   <env-variables>
-    <env-var name="PUSHER_APP_ID" value="my-pusher-app-id" />
-    <env-var name="PUSHER_APP_KEY" value = "my-pusher-app-key" />
-    <env-var name="PUSHER_APP_SECRET" value = "my-pusher-app-secret" />
-    <env-var name="PUSHER_CLUSTER" value="us2" />
+    <env-var name="PUSHER_APP_ID" value="pusher_app_id" />
+    <env-var name="PUSHER_APP_KEY" value = "pusher_app_key" />
+    <env-var name="PUSHER_APP_SECRET" value = "pusher_app_secret" />
+    <env-var name="PUSHER_CLUSTER" value="pusher_cluster" />
   </env-variables>
 </appengine-web-app>
