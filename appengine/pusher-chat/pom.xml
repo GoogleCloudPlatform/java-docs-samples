@@ -20,6 +20,13 @@ Copyright 2017 Google Inc.
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-pusher-chat</artifactId>
 
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>appengine-doc-samples</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
