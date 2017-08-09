@@ -31,6 +31,13 @@ info types for a given category. eg. HEALTH or GOVERNMENT.
   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
 ``` 
 
+## Run the quickstart
+
+The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
+```
+   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.QuickStart
+```
+
 ## Inspect data for sensitive elements
 Inspect strings, files locally and on Google Cloud Storage and Cloud Datastore kinds with the DLP API.
 
@@ -112,4 +119,3 @@ Run all tests:
   ```
      mvn clean verify
   ```
-
