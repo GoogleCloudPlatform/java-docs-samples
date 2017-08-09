@@ -1,13 +1,12 @@
 # Pusher sample for Google App Engine
 
-This sample demonstrates how to use the [Pusher][pusher] on [Google App
-Engine][ae-docs].
+This sample demonstrates how to use the [Pusher][pusher] on [Google App Engine][ae-docs].
 Pusher enables you to create public / private channels with presence information for real time messaging.
 This application demonstrates presence channels in Pusher using chat rooms.
-All users joining the chat room are authenticated.
+All users joining the chat room are authenticated using the `/authorize` endpoint.
 All users currently in the chat room receive updates of users joining / leaving the room.
-We will be using the [Java HTTP library](https://github.com/pusher/pusher-http-java) for publishing messages to the channel
-and will be subscribing to channels using JS.
+[Java HTTP library](https://github.com/pusher/pusher-http-java) is used for publishing messages to the channel
+and the [JS Websocket library](https://github.com/pusher/pusher-js) is used for subscribing.
 
 [pusher]: https://pusher.com
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
