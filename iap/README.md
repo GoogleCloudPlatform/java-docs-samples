@@ -33,7 +33,7 @@ It will be used to test both the authorization of an incoming request to an IAP 
 
   - `IAP_CLIENT_ID` to point to the [OAuth 2.0 Client ID](https://console.cloud.google.com/apis/credentials) of your IAP protected App Engine Application.
 
-  - `IAP_PROJECT_ID` : Google Cloud Project ID
+  - `IAP_PROJECT_ID` : Google Cloud Project ID of the IAP protected application
 
   - `IAP_PROJECT_NUMBER` : [Project number](https://console.cloud.google.com/home/dashboard) of the IAP protected resource.
      Also available via `gcloud` using:
