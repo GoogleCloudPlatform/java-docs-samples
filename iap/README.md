@@ -28,24 +28,22 @@ It will be used to test both the authorization of an incoming request to an IAP 
 
 - Add the service account email to the Identity-Aware Proxy access list for the project.
 
-- Set the following environment variables to test sending a request to an IAP protected resource:
+- Update the following variables in [BuildAndVerifyIapRequestIT.java](src/test/java/com/example/iap/BuildAndVerifyIapRequestIT.java):
   - `IAP_PROTECTED_URL` : URL of your IAP protected resource . eg. `https://your-project-id.appspot.com`
 
   - `IAP_CLIENT_ID` to point to the [OAuth 2.0 Client ID](https://console.cloud.google.com/apis/credentials) of your IAP protected App Engine Application.
 
-- Set the following environment variables to test verifying a JWT issued for an App Engine protected application:
-  - `GOOGLE_CLOUD_PROJECT`: Google Cloud Project ID
+  - `IAP_PROJECT_ID` : Google Cloud Project ID
 
   - `IAP_PROJECT_NUMBER` : [Project number](https://console.cloud.google.com/home/dashboard) of the IAP protected resource.
-  Also available via `gcloud` using:
-    ```
-       gcloud projects describe PROJECT_ID
-    ```
-
+     Also available via `gcloud` using:
+     ```
+         gcloud projects describe PROJECT_ID
+     ```
 - Run the integration test:
-```
-    mvn -Dtest=com.example.iap.BuildAndVerifyIapRequestIT verify
-```
+  ```
+      mvn -Dtest=com.example.iap.BuildAndVerifyIapRequestIT verify
+  ```
 
 ## References
 - [JWT library for Java (jjwt)](https://github.com/jwtk/jjwt)
