@@ -25,7 +25,7 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-guestbook-cloud-datastore-j8</artifactId>
   <properties>
-    <guava.version>19.0</guava.version>
+    <guava.version>22.0</guava.version>
   </properties>
   <parent>
     <groupId>com.google.cloud</groupId>

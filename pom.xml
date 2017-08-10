@@ -55,14 +55,18 @@
 
         <module>dlp</module>
 
+<!-- TODO() turn back on once we setup IAP envvar
         <module>iap</module>
+ -->
 
         <module>kms</module>
 
         <module>language/analysis</module>
         <module>language/cloud-client</module>
 
+<!-- APIary based sample - broken for testing
         <module>logging</module>
+ -->
         <module>logging/cloud-client</module>
 
         <module>monitoring/cloud-client</module>
