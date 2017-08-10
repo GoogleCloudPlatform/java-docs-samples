@@ -43,15 +43,16 @@ changed_files_parent() {
   (
     set +e
 
-    changed="$(git diff --name-only ${CIRCLE_SHA1} ${CIRCLE_BRANCH})"
-    if [ $? -ne 0 ]; then
+
+    if ! changed=$(git diff --name-only "${CIRCLE_SHA1}" "${CIRCLE_BRANCH}"); then
       # Fall back to git head
-      changed="$(git diff --name-only $(git rev-parse HEAD) ${CIRCLE_BRANCH})"
-      [ $? -ne 0 ] && return 0  # Give up. Just run everything.
+      if ! changed=$(git diff --name-only "$(git rev-parse HEAD)" "${CIRCLE_BRANCH}"); then
+        return 0  # Give up. Just run everything.
+      fi
     fi
 
     # Find the common prefix
-    prefix="$(echo $changed | sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')"
+    prefix=$(echo "${changed}" | sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')
       # N: Do this for a pair of lines
       # s: capture the beginning of a line, that's followed by a new line
       #    starting with that capture group. IOW - two lines that start with the
@@ -78,10 +79,8 @@ echo "Common Dir: ${common_dir}"
 
 # Give Maven a bit more memory
 export MAVEN_OPTS='-Xmx800m -Xms400m'
-mvn \
-  --batch-mode clean verify -e \
-  -DskipTests=$SKIP_TESTS | \
-  egrep -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+mvn --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | \
+  grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_dir" ] || popd
 
