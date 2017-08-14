@@ -18,7 +18,7 @@ Use either:
 ## Maven
 ### Running locally
 
-    $ mvn appengine:run
+## NOTE - There is no local Metadata server, so local running isn't available.  It is possible to setup an [Emulator](https://medium.com/google-cloud/google-compute-engine-metadata-server-emulator-fe0fb1e5a8b5).
 
 ### Deploying
 
