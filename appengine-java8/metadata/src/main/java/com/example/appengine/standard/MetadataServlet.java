@@ -14,9 +14,6 @@
 
 package com.example.appengine.standard;
 
-import com.google.appengine.api.appidentity.AppIdentityService;
-import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
-import com.google.appengine.api.utils.SystemProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -47,18 +44,19 @@ public class MetadataServlet extends HttpServlet {
       "/computeMetadata/v1/project/project-id",
       "/computeMetadata/v1/instance/zone",
       "/computeMetadata/v1/instance/service-accounts/default/aliases",
+      "/computeMetadata/v1/instance/service-accounts/default/email",
       "/computeMetadata/v1/instance/service-accounts/default/",
       "/computeMetadata/v1/instance/service-accounts/default/scopes",
-// Tokens work - but are a security risk to display
-//      "/computeMetadata/v1/instance/service-accounts/default/token"
+      // Tokens work - but are a security risk to display
+      //      "/computeMetadata/v1/instance/service-accounts/default/token"
   };
 
   final String[] metaServiceAcct = {
       "/computeMetadata/v1/instance/service-accounts/{account}/aliases",
       "/computeMetadata/v1/instance/service-accounts/{account}/email",
       "/computeMetadata/v1/instance/service-accounts/{account}/scopes",
-// Tokens work - but are a security risk to display
-//     "/computeMetadata/v1/instance/service-accounts/{account}/token"
+      // Tokens work - but are a security risk to display
+      //     "/computeMetadata/v1/instance/service-accounts/{account}/token"
   };
 
   private final String metadata = "http://metadata.google.internal";
@@ -90,7 +88,7 @@ public class MetadataServlet extends HttpServlet {
 
   String fetchJsonMetadata(String prefix) throws IOException {
     Request request = new Request.Builder()
-        .url(metadata + prefix )
+        .url(metadata + prefix)
         .addHeader("Metadata-Flavor", "Google")
         .get()
         .build();
@@ -121,20 +119,25 @@ public class MetadataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
+    String defaultServiceAccount = "";
     WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
 
     resp.setContentType("text/html");
 
-    ctx.setVariable("production", SystemProperty.environment.value().name());
+    String environment =
+        (String) System.getProperties().get("com.google.appengine.runtime.environment");
+    ctx.setVariable("production", environment);
 
     // The metadata server is only on a production system
-    if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) {
+    if (environment.equals("Production")) {
 
       TreeMap<String, String> m = new TreeMap<>();
 
       for (String key : metaPath) {
         m.put(key, fetchMetadata(key));
+        if (key.contains("default/email")) {
+          defaultServiceAccount = m.get(key);
+        }
       }
 
       ctx.setVariable("Metadata", m.descendingMap());
@@ -142,7 +145,7 @@ public class MetadataServlet extends HttpServlet {
       m = new TreeMap<>();
       for (String key : metaServiceAcct) {
         // substitute a service account for {account}
-        key = key.replace("{account}", appIdentity.getServiceAccountName());
+        key = key.replace("{account}", defaultServiceAccount);
         m.put(key, fetchMetadata(key));
       }
       ctx.setVariable("sam", m.descendingMap());
