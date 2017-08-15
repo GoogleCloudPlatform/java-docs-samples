@@ -11,11 +11,12 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.iap;
 
-import static com.example.iap.BuildIapRequest.buildIAPRequest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
@@ -24,7 +25,6 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import io.jsonwebtoken.Jwt;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +43,6 @@ public class BuildAndVerifyIapRequestIT {
   private HttpTransport httpTransport = new NetHttpTransport();
   private VerifyIapRequestHeader verifyIapRequestHeader = new VerifyIapRequestHeader();
 
-
   // Access an IAP protected url without signed jwt authorization header
   @Test
   public void accessIapProtectedResourceFailsWithoutJwtHeader() throws Exception {
@@ -61,7 +60,7 @@ public class BuildAndVerifyIapRequestIT {
   public void testGenerateAndVerifyIapRequestIsSuccessful() throws Exception {
     HttpRequest request =
         httpTransport.createRequestFactory().buildGetRequest(new GenericUrl(IAP_PROTECTED_URL));
-    HttpRequest iapRequest = buildIAPRequest(request, IAP_CLIENT_ID);
+    HttpRequest iapRequest = BuildIapRequest.buildIapRequest(request, IAP_CLIENT_ID);
     HttpResponse response = iapRequest.execute();
     assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
     String headerWithtoken = response.parseAsString();
@@ -71,12 +70,14 @@ public class BuildAndVerifyIapRequestIT {
     assertEquals("x-goog-authenticated-user-jwt", split[0].trim());
 
     String jwtToken = split[1].trim();
-    HttpRequest verifyJwtRequest = httpTransport
-        .createRequestFactory()
-        .buildGetRequest(new GenericUrl(IAP_PROTECTED_URL)).setHeaders(
-        new HttpHeaders().set("x-goog-iap-jwt-assertion", jwtToken));
-    Jwt decodedJWT = verifyIapRequestHeader.verifyJWTTokenForAppEngine(
-        verifyJwtRequest, IAP_PROJECT_NUMBER, IAP_PROJECT_ID);
-    assertNotNull(decodedJWT);
+    HttpRequest verifyJwtRequest =
+        httpTransport
+            .createRequestFactory()
+            .buildGetRequest(new GenericUrl(IAP_PROTECTED_URL))
+            .setHeaders(new HttpHeaders().set("x-goog-iap-jwt-assertion", jwtToken));
+    boolean verified =
+        verifyIapRequestHeader.verifyJwtForAppEngine(
+            verifyJwtRequest, IAP_PROJECT_NUMBER, IAP_PROJECT_ID);
+    assertTrue(verified);
   }
 }

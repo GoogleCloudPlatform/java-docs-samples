@@ -11,6 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.iap;
 
 import com.google.api.client.http.GenericUrl;
@@ -26,11 +27,12 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.GenericData;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
-import java.io.IOException;
-import java.net.URL;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collections;
@@ -60,22 +62,33 @@ public class BuildIapRequest {
     return (ServiceAccountCredentials) credentials;
   }
 
-  private static String getSignedJWToken(ServiceAccountCredentials credentials, String iapClientId)
-      throws IOException {
+  private static String getSignedJwt(ServiceAccountCredentials credentials, String iapClientId)
+      throws Exception {
     Instant now = Instant.now(clock);
     long expirationTime = now.getEpochSecond() + EXPIRATION_TIME_IN_SECONDS;
 
     // generate jwt signed by service account
-    return Jwts.builder()
-        .setHeaderParam("kid", credentials.getPrivateKeyId())
-        .setIssuer(credentials.getClientEmail())
-        .setAudience(OAUTH_TOKEN_URI)
-        .setSubject(credentials.getClientEmail())
-        .setIssuedAt(Date.from(now))
-        .setExpiration(Date.from(Instant.ofEpochSecond(expirationTime)))
-        .claim("target_audience", iapClientId)
-        .signWith(SignatureAlgorithm.RS256, credentials.getPrivateKey())
-        .compact();
+    // header must contain algorithm ("alg") and key ID ("kid")
+    JWSHeader jwsHeader =
+        new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(credentials.getPrivateKeyId()).build();
+
+    // set required claims
+    JWTClaimsSet claims =
+        new JWTClaimsSet.Builder()
+            .audience(OAUTH_TOKEN_URI)
+            .issuer(credentials.getClientEmail())
+            .subject(credentials.getClientEmail())
+            .issueTime(Date.from(now))
+            .expirationTime(Date.from(Instant.ofEpochSecond(expirationTime)))
+            .claim("target_audience", iapClientId)
+            .build();
+
+    // sign using service account private key
+    JWSSigner signer = new RSASSASigner(credentials.getPrivateKey());
+    SignedJWT signedJwt = new SignedJWT(jwsHeader, claims);
+    signedJwt.sign(signer);
+
+    return signedJwt.serialize();
   }
 
   private static String getGoogleIdToken(String jwt) throws Exception {
@@ -100,16 +113,18 @@ public class BuildIapRequest {
 
   /**
    * Clone request and add an IAP Bearer Authorization header with signed JWT token.
+   *
    * @param request Request to add authorization header
    * @param iapClientId OAuth 2.0 client ID for IAP protected resource
    * @return Clone of request with Bearer style authorization header with signed jwt token.
-   * @throws Exception
+   * @throws Exception exception creating signed JWT
    */
-  public static HttpRequest buildIAPRequest(HttpRequest request, String iapClientId) throws Exception {
+  public static HttpRequest buildIapRequest(HttpRequest request, String iapClientId)
+      throws Exception {
     // get service account credentials
     ServiceAccountCredentials credentials = getCredentials();
     // get the base url of the request URL
-    String jwt = getSignedJWToken(credentials, iapClientId);
+    String jwt = getSignedJwt(credentials, iapClientId);
     if (jwt == null) {
       throw new Exception(
           "Unable to create a signed jwt token for : "

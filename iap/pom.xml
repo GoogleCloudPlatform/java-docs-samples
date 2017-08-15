@@ -52,7 +52,6 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
     </dependency>
-
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.auth</groupId>
@@ -60,9 +59,9 @@
       <version>0.7.1</version>
     </dependency>
     <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt</artifactId>
-      <version>0.7.0</version>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>4.41.1</version>
     </dependency>
     <!-- [END dependencies] -->
 
