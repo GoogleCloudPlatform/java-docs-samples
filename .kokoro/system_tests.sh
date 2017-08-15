@@ -74,7 +74,7 @@ echo "********* gcloud config ********"
 gcloud config list
 
 echo "******** build everything ********"
-cd github/getting-started-java
+cd github/java-docs-samples
 mvn clean verify | grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 
