@@ -36,11 +36,6 @@ Copyright 2017 Google Inc.
   <!-- [END compiler] -->
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
