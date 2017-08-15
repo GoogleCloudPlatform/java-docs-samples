@@ -13,6 +13,7 @@
  */
 
 package com.example.iap;
+// [START generate_iap_request]
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
@@ -39,7 +40,6 @@ import java.util.Collections;
 import java.util.Date;
 
 public class BuildIapRequest {
-  // [START generate_iap_request]
   private static final String IAM_SCOPE = "https://www.googleapis.com/auth/iam";
   private static final String OAUTH_TOKEN_URI = "https://www.googleapis.com/oauth2/v4/token";
   private static final String JWT_BEARER_TOKEN_GRANT_TYPE =
@@ -147,5 +147,5 @@ public class BuildIapRequest {
         .buildRequest(request.getRequestMethod(), request.getUrl(), request.getContent())
         .setHeaders(httpHeaders);
   }
-  // [END generate_iap_request]
 }
+// [END generate_iap_request]

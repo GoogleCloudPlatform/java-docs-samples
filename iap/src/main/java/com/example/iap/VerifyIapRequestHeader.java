@@ -13,6 +13,7 @@
  */
 
 package com.example.iap;
+// [START verify_iap_request]
 
 import com.google.api.client.http.HttpRequest;
 import com.google.common.base.Preconditions;
@@ -35,7 +36,6 @@ import java.util.Map;
 /** Verify IAP authorization JWT token in incoming request. */
 public class VerifyIapRequestHeader {
 
-  // [START verify_iap_request]
   private static final String PUBLIC_KEY_VERIFICATION_URL =
       "https://www.gstatic.com/iap/verify/public_key-jwk";
 
@@ -94,7 +94,7 @@ public class VerifyIapRequestHeader {
             Long.toUnsignedString(projectNumber), Long.toUnsignedString(backendServiceId)));
   }
 
-  boolean verifyJwt(String jwtToken, String expectedAudience) throws Exception {
+  private boolean verifyJwt(String jwtToken, String expectedAudience) throws Exception {
 
     // parse signed token into header / claims
     SignedJWT signedJwt = SignedJWT.parse(jwtToken);
@@ -110,9 +110,11 @@ public class VerifyIapRequestHeader {
     Preconditions.checkArgument(claims.getAudience().contains(expectedAudience));
     Preconditions.checkArgument(claims.getIssuer().equals(IAP_ISSUER_URL));
 
-    // claim must have issued at time and must be before current time
+    // claim must have issued at time in the past
     Date currentTime = Date.from(Instant.now(clock));
     Preconditions.checkArgument(claims.getIssueTime().before(currentTime));
+    // claim must have expiration time in the future
+    Preconditions.checkArgument(claims.getExpirationTime().after(currentTime));
 
     // must have subject, email
     Preconditions.checkNotNull(claims.getSubject());
@@ -125,5 +127,5 @@ public class VerifyIapRequestHeader {
     JWSVerifier jwsVerifier = new ECDSAVerifier(publicKey);
     return signedJwt.verify(jwsVerifier);
   }
-  // [END verify_iap_request]
 }
+// [END verify_iap_request]
