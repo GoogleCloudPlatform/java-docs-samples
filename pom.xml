@@ -89,7 +89,7 @@
         <module>translate/cloud-client</module>
 
         <module>unittests</module>
-
+        <module>video/cloud-client</module>
         <module>vision/cloud-client</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>
