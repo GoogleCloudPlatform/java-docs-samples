@@ -44,17 +44,17 @@ public class MailjetSender{
   public MailjetResponse sendMailjet(String recipient, String sender, MailjetClient client)
   throws MailjetException, MailjetSocketTimeoutException {
     MailjetRequest email = new MailjetRequest(Emailv31.resource)
-        .property(Emailv31.MESSAGES, new JSONArray()
-                .put(new JSONObject()
-                    .put(Emailv31.Message.FROM, new JSONObject()
-                        .put("Email", sender)
-                        .put("Name", "pandora"))
-                    .put(Emailv31.Message.TO, new JSONArray()
-                        .put(new JSONObject()
-                            .put("Email", recipient)))
-                    .put(Emailv31.Message.SUBJECT, "Your email flight plan!")
-                    .put(Emailv31.Message.TEXTPART, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
-                    .put(Emailv31.Message.HTMLPART, "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!")));
+      .property(Emailv31.MESSAGES, new JSONArray()
+        .put(new JSONObject()
+          .put(Emailv31.Message.FROM, new JSONObject()
+            .put("Email", sender)
+            .put("Name", "pandora"))
+          .put(Emailv31.Message.TO, new JSONArray()
+            .put(new JSONObject()
+              .put("Email", recipient)))
+          .put(Emailv31.Message.SUBJECT, "Your email flight plan!")
+          .put(Emailv31.Message.TEXTPART, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
+          .put(Emailv31.Message.HTMLPART, "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!")));
 
 
     try {
