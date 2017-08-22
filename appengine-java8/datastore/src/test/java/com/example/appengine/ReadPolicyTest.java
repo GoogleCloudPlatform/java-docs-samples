@@ -28,23 +28,25 @@ import com.google.appengine.api.datastore.ReadPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.List;
-
 /**
  * Unit tests for {@link ReadPolicy}.
  */
 @RunWith(JUnit4.class)
 public class ReadPolicyTest {
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set 100% eventual consistency, so we can test with other job policies.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
 

@@ -18,19 +18,15 @@ package com.example.appengine.firetactoe;
 
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-
 import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Handler that signals to all players of a game that the game has started.
- */
+/** Handler that signals to all players of a game that the game has started. */
 public class OpenedServlet extends HttpServlet {
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO(you): In practice, you should validate the user has permission to post to the given Game
     String gameId = request.getParameter("gameKey");
     Objectify ofy = ObjectifyService.ofy();

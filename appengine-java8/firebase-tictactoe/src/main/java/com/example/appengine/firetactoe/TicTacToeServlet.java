@@ -20,7 +20,6 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,10 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Base handler for the Tic Tac Toe game.
- * This handler serves up the initial jsp page that is the game, and also creates the persistent
- * game in the datastore, as well as the Firebase database to serve as the communication channel to
- * the clients.
+ * Base handler for the Tic Tac Toe game. This handler serves up the initial jsp page that is the
+ * game, and also creates the persistent game in the datastore, as well as the Firebase database to
+ * serve as the communication channel to the clients.
  */
 @SuppressWarnings("serial")
 public class TicTacToeServlet extends HttpServlet {
@@ -45,9 +43,15 @@ public class TicTacToeServlet extends HttpServlet {
         query = "gameKey=" + gameKey;
       }
       URI thisUri = new URI(request.getRequestURL().toString());
-      URI uriWithOptionalGameParam = new URI(
-          thisUri.getScheme(), thisUri.getUserInfo(), thisUri.getHost(),
-          thisUri.getPort(), thisUri.getPath(), query, "");
+      URI uriWithOptionalGameParam =
+          new URI(
+              thisUri.getScheme(),
+              thisUri.getUserInfo(),
+              thisUri.getHost(),
+              thisUri.getPort(),
+              thisUri.getPath(),
+              query,
+              "");
       return uriWithOptionalGameParam.toString();
     } catch (URISyntaxException e) {
       // This should never happen, since we're constructing the URI from a valid URI.

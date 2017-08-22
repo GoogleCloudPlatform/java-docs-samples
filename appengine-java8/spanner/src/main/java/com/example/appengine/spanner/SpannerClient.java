@@ -11,6 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.spanner;
 
 import com.google.cloud.spanner.DatabaseAdminClient;
@@ -18,7 +19,6 @@ import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-
 import java.io.IOException;
 import java.util.UUID;
 import javax.servlet.ServletContext;

@@ -20,7 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +31,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link SignForAppServlet}.
@@ -43,12 +40,15 @@ public class SignForAppServletTest {
 
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private SignForAppServlet servletUnderTest;
 
-  @Before public void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
 
@@ -59,11 +59,13 @@ public class SignForAppServletTest {
     servletUnderTest = new SignForAppServlet();
   }
 
-  @After public void tearDown() {
+  @After
+  public void tearDown() {
     helper.tearDown();
   }
 
-  @Test public void doGet_defaultEnvironment_successfullyVerifiesSignature() throws Exception {
+  @Test
+  public void doGet_defaultEnvironment_successfullyVerifiesSignature() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     assertThat(responseWriter.toString())
