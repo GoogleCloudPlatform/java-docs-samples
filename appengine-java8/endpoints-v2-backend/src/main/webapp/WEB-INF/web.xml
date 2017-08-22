@@ -53,7 +53,7 @@
         </init-param>
         <init-param>
             <param-name>endpoints.serviceName</param-name>
-            <param-value>echo-api.endpoints.${endpoints.project.id}.cloud.goog</param-value>
+            <param-value>${endpoints.project.id}.appspot.com</param-value>
         </init-param>
     </filter>
 

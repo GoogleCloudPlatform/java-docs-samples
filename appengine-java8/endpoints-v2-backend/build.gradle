@@ -51,7 +51,7 @@ dependencies {
 
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
-  hostname = "echo-api.endpoints.${projectId}.cloud.goog"
+  hostname = "${projectId}.appspot.com"
 }
 
 sourceCompatibility = 1.8

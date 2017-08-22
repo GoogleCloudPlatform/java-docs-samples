@@ -79,7 +79,7 @@
                             <mainClass>com.google.api.server.spi.tools.EndpointsTool</mainClass>
                             <arguments>
                                 <argument>get-swagger-doc</argument>
-                                <argument>--hostname=echo-api.endpoints.${endpoints.project.id}.cloud.goog</argument>
+                                <argument>--hostname=${endpoints.project.id}.appspot.com</argument>
                                 <argument>--war=target/echo-1.0-SNAPSHOT</argument>
                                 <argument>com.example.echo.Echo</argument>
                             </arguments>
