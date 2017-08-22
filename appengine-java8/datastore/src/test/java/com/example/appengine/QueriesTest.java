@@ -36,16 +36,15 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Unit tests to demonstrate App Engine Datastore queries.
@@ -56,7 +55,9 @@ public class QueriesTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
@@ -682,7 +683,8 @@ public class QueriesTest {
 
     // Entity "a" will not match because no individual value matches all filters.
     // See the documentation for more details:
-    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
+    // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertThat(results).named("query results").isEmpty();
@@ -714,7 +716,8 @@ public class QueriesTest {
 
     // Only "a" and "e" have both 1 and 2 in the "x" array-valued property.
     // See the documentation for more details:
-    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
+    // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertThat(results).named("query results").containsExactly(a, e);
@@ -741,7 +744,8 @@ public class QueriesTest {
 
     // The query matches any entity that has a some value other than 1. Only
     // entity "e" is not matched.  See the documentation for more details:
-    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
+    // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertThat(results).named("query results").containsExactly(a, b, c, d);
@@ -771,7 +775,8 @@ public class QueriesTest {
     // Only "b" has some value which matches the "x > 2" portion of this query.
     //
     // See the documentation for more details:
-    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
+    // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
+    // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertThat(results).named("query results").containsExactly(b);

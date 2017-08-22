@@ -28,6 +28,7 @@ import org.joda.time.Instant;
  * framework such as Mockito.
  */
 public interface Clock {
+
   /**
    * Returns the current, absolute time according to this clock.
    */

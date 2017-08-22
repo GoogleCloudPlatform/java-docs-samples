@@ -33,15 +33,14 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.StringWriter;
 
 /**
  * Unit tests to demonstrate App Engine Datastore entity group metadata.
@@ -52,7 +51,9 @@ public class MetadataEntityGroupTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
           new LocalMemcacheServiceTestConfig());
 
@@ -114,6 +115,7 @@ public class MetadataEntityGroupTest {
   // [START entity_group_2]
   // A simple class for tracking consistent entity group counts.
   private static class EntityGroupCount implements Serializable {
+
     long version; // Version of the entity group whose count we are tracking
     int count;
 

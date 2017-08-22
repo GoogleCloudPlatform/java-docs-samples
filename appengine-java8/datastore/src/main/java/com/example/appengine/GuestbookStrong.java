@@ -17,7 +17,6 @@
 package com.example.appengine;
 
 import com.example.time.Clock;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
@@ -25,19 +24,18 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
-
 import java.util.Date;
 import java.util.List;
 
 /**
  * A log of notes left by users.
  *
- * <p>This demonstrates the use of Google Cloud Datastore using the App Engine
- * APIs. See the
- * <a href="https://cloud.google.com/appengine/docs/java/datastore/">documentation</a>
- * for more information.
+ * <p>This demonstrates the use of Google Cloud Datastore using the App Engine APIs. See the <a
+ * href="https://cloud.google.com/appengine/docs/java/datastore/">documentation</a> for more
+ * information.
  */
 class GuestbookStrong extends AbstractGuestbook {
+
   private final String guestbookName;
 
   GuestbookStrong(String guestbookName, Clock clock) {
@@ -68,7 +66,6 @@ class GuestbookStrong extends AbstractGuestbook {
         new Query("Greeting", guestbookKey)
             .setAncestor(guestbookKey)
             .addSort("date", Query.SortDirection.DESCENDING);
-    return datastore.prepare(query)
-        .asList(FetchOptions.Builder.withLimit(10));
+    return datastore.prepare(query).asList(FetchOptions.Builder.withLimit(10));
   }
 }

@@ -11,6 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.analytics;
 
 import com.google.appengine.api.urlfetch.URLFetchService;
@@ -30,9 +31,9 @@ import org.apache.http.client.utils.URIBuilder;
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
-  name = "analytics",
-  description = "Analytics: Send Analytics Event to Google Analytics",
-  urlPatterns = "/analytics"
+    name = "analytics",
+    description = "Analytics: Send Analytics Event to Google Analytics",
+    urlPatterns = "/analytics"
 )
 public class AnalyticsServlet extends HttpServlet {
 

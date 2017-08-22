@@ -33,17 +33,23 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-/** Unit tests for {@link UsersServlet}. */
+/**
+ * Unit tests for {@link UsersServlet}.
+ */
 @RunWith(JUnit4.class)
 public class UsersServletTest {
+
   private static final String FAKE_URL = "fakey.fake.fak";
   private static final String FAKE_NAME = "Fake";
   // Set up a helper so that the ApiProxy returns a valid environment for local testing.
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
-  @Mock private HttpServletRequest mockRequestNotLoggedIn;
-  @Mock private HttpServletRequest mockRequestLoggedIn;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequestNotLoggedIn;
+  @Mock
+  private HttpServletRequest mockRequestLoggedIn;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private UsersServlet servletUnderTest;
 

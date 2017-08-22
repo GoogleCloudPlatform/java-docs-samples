@@ -1,16 +1,14 @@
 /**
  * Copyright 2015 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -20,7 +18,6 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.appengine.api.taskqueue.TaskOptions;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,9 +33,13 @@ import javax.servlet.http.HttpServletResponse;
  * add and delete tasks.
  */
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "TaskPull", description = "TaskQueues: Process some queues",
-    urlPatterns = "/taskqueues/queue")
+@WebServlet(
+    name = "TaskPull",
+    description = "TaskQueues: Process some queues",
+    urlPatterns = "/taskqueues/queue"
+)
 public class TaskqueueServlet extends HttpServlet {
+
   private static final Logger log = Logger.getLogger(TaskqueueServlet.class.getName());
   private static final int numberOfTasksToAdd = 100;
   private static final int numberOfTasksToLease = 100;
@@ -48,12 +49,14 @@ public class TaskqueueServlet extends HttpServlet {
 
   // Process the http POST of the form
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     if (req.getParameter("addTask") != null) {
       String content = req.getParameter("content");
-      String output = String.format("Adding %d Tasks to the Task Queue with a payload of '%s'",
-          numberOfTasksToAdd, content.toString());
+      String output =
+          String.format(
+              "Adding %d Tasks to the Task Queue with a payload of '%s'",
+              numberOfTasksToAdd, content.toString());
       log.info(output.toString());
 
       // Add Tasks to Task Queue
@@ -63,23 +66,24 @@ public class TaskqueueServlet extends HttpServlet {
       if (!useTaggedTasks) {
         for (int i = 0; i < numberOfTasksToAdd; i++) {
           // [START add_task]
-          q.add(TaskOptions.Builder.withMethod(TaskOptions.Method.PULL)
-                                               .payload(content.toString()));
+          q.add(
+              TaskOptions.Builder.withMethod(TaskOptions.Method.PULL).payload(content.toString()));
           // [END add_task]
         }
       } else {
         for (int i = 0; i < numberOfTasksToAdd; i++) {
           // [START add_task_w_tag]
-          q.add(TaskOptions.Builder.withMethod(TaskOptions.Method.PULL)
-                                            .payload(content.toString())
-                                            .tag("process".getBytes()));
+          q.add(
+              TaskOptions.Builder.withMethod(TaskOptions.Method.PULL)
+                  .payload(content.toString())
+                  .tag("process".getBytes()));
           // [END add_task_w_tag]
         }
       }
       try {
         message = "Added " + numberOfTasksToAdd + " tasks to the task queue.";
         req.setAttribute("message", message);
-        req.getRequestDispatcher("taskqueues-pull.jsp").forward(req,resp);
+        req.getRequestDispatcher("taskqueues-pull.jsp").forward(req, resp);
       } catch (ServletException e) {
         throw new ServletException("ServletException error: ", e);
       }
@@ -98,14 +102,14 @@ public class TaskqueueServlet extends HttpServlet {
         } else {
           // [START lease_tasks_by_tag]
           // Lease only tasks tagged with "process"
-          List<TaskHandle> tasks = q.leaseTasksByTag(3600, TimeUnit.SECONDS, numberOfTasksToLease,
-              "process");
+          List<TaskHandle> tasks =
+              q.leaseTasksByTag(3600, TimeUnit.SECONDS, numberOfTasksToLease, "process");
           // You can also specify a tag to lease via LeaseOptions passed to leaseTasks.
           // [END lease_tasks_by_tag]
           message = processTasks(tasks, q);
         }
         req.setAttribute("message", message);
-        req.getRequestDispatcher("taskqueues-pull.jsp").forward(req,resp);
+        req.getRequestDispatcher("taskqueues-pull.jsp").forward(req, resp);
       } else {
         resp.sendRedirect("/");
       }
@@ -118,8 +122,10 @@ public class TaskqueueServlet extends HttpServlet {
     int numberOfDeletedTasks = 0;
     for (TaskHandle task : tasks) {
       payload = new String(task.getPayload());
-      output = String.format("Processing: taskName='%s'  payload='%s'", task.getName()
-       .toString(), payload.toString());
+      output =
+          String.format(
+              "Processing: taskName='%s'  payload='%s'",
+              task.getName().toString(), payload.toString());
       log.info(output.toString());
       output = String.format("Deleting taskName='%s'", task.getName().toString());
       log.info(output.toString());
@@ -129,8 +135,8 @@ public class TaskqueueServlet extends HttpServlet {
       numberOfDeletedTasks++;
     }
     if (numberOfDeletedTasks > 0) {
-      message = "Processed and deleted " + numberOfTasksToLease + " tasks from the "
-          + " task queue.";
+      message =
+          "Processed and deleted " + numberOfTasksToLease + " tasks from the " + " task queue.";
     } else {
       message = "Task Queue has no tasks available for lease.";
     }

@@ -1,55 +1,49 @@
 /**
  * Copyright 2015 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.bigtable;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-import org.apache.hadoop.hbase.client.Connection;
-
 import java.io.IOException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import org.apache.hadoop.hbase.client.Connection;
 
 /**
- * BigtableHelper, a ServletContextListener, is setup in web.xml to run before a JSP is run.
- * Project / Instance settings can be passed as an Environment Variable, a System Property, or set
- * in web.xml from a context-param
- *
- **/
+ * BigtableHelper, a ServletContextListener, is setup in web.xml to run before a jsp is run. Project
+ * / Instance settings can be passed as an Environment Variable, a System Property, or set in
+ * web.xml from a context-param
+ */
 @WebListener
 public class BigtableHelper implements ServletContextListener {
 
   private static String PROJECT_ID;
   private static String INSTANCE_ID;
 
-// The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
-// to speed things up.  For this sample, keeping them here is a good idea, for
-// your application, you may wish to keep this somewhere else.
-  private static Connection connection = null;     // The authenticated connection
+  // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
+  // to speed things up.  For this sample, keeping them here is a good idea, for
+  // your application, you may wish to keep this somewhere else.
+  private static Connection connection = null; // The authenticated connection
 
   private static ServletContext sc;
 
-/**
- * Connect will establish the connection to Cloud Bigtable.
- **/
+  /** Connect will establish the connection to Cloud Bigtable. */
   public static void connect() throws IOException {
 
-    if (PROJECT_ID == null || INSTANCE_ID == null ) {
+    if (PROJECT_ID == null || INSTANCE_ID == null) {
       if (sc != null) {
         sc.log("environment variables BIGTABLE_PROJECT, and BIGTABLE_INSTANCE need to be defined.");
       }
@@ -59,6 +53,10 @@ public class BigtableHelper implements ServletContextListener {
     connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
   }
 
+  /**
+   * Get the shared connection to Cloud Bigtable.
+   * @return the connection
+   */
   public static Connection getConnection() {
     if (connection == null) {
       try {

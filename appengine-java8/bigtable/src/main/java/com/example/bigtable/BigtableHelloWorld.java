@@ -16,6 +16,7 @@
 
 package com.example.bigtable;
 
+import java.io.IOException;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
@@ -28,12 +29,11 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-
-import java.io.IOException;
 // [START example]
+
 /**
- * A minimal application that connects to Cloud Bigtable using the native HBase API
- * and performs some basic operations.
+ * A minimal application that connects to Cloud Bigtable using the native HBase API and performs
+ * some basic operations.
  */
 public class BigtableHelloWorld {
 
@@ -43,13 +43,18 @@ public class BigtableHelloWorld {
   private static final byte[] COLUMN_NAME = Bytes.toBytes("greeting");
 
   // Write some friendly greetings to Cloud Bigtable
-  private static final String[] GREETINGS =
-      { "Hello World!", "Hello Cloud Bigtable!", "Hello HBase!" };
+  private static final String[] GREETINGS = {
+    "Hello World!", "Hello Cloud Bigtable!", "Hello HBase!"
+  };
 
-
+  /**
+   * Create a table -- first time only.
+   * @param connection to Bigtable
+   * @return the status
+   */
   public static String create(Connection connection) {
     try {
-        // The admin API lets us create, manage and delete tables
+      // The admin API lets us create, manage and delete tables
       Admin admin = connection.getAdmin();
       // [END connecting_to_bigtable]
 
@@ -66,9 +71,7 @@ public class BigtableHelloWorld {
     return "Create table " + Bytes.toString(TABLE_NAME);
   }
 
-  /**
-   * Connects to Cloud Bigtable, runs some basic operations and prints the results.
-   */
+  /** Connects to Cloud Bigtable, runs some basic operations and prints the results. */
   public static String doHelloWorld() {
 
     StringBuilder result = new StringBuilder();
@@ -141,7 +144,5 @@ public class BigtableHelloWorld {
 
     return result.toString();
   }
-
-
 }
 // [END example]

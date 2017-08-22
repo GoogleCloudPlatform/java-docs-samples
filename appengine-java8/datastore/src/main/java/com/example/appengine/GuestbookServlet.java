@@ -19,6 +19,7 @@ package com.example.appengine;
 import com.example.time.SystemClock;
 
 public class GuestbookServlet extends AbstractGuestbookServlet {
+
   public GuestbookServlet() {
     super(new Guestbook(new SystemClock()));
   }
