@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -20,16 +21,16 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuestbookTestUtilities {
 
   public static void cleanDatastore(DatastoreService ds, String book) {
-    Query query = new Query("Greeting")
-        .setAncestor(new KeyFactory.Builder("Guestbook", book)
-            .getKey()).setKeysOnly();
+    Query query =
+        new Query("Greeting")
+            .setAncestor(new KeyFactory.Builder("Guestbook", book).getKey())
+            .setKeysOnly();
     PreparedQuery pq = ds.prepare(query);
     List<Entity> entities = pq.asList(FetchOptions.Builder.withDefaults());
     ArrayList<Key> keys = new ArrayList<>(entities.size());
@@ -39,5 +40,4 @@ public class GuestbookTestUtilities {
     }
     ds.delete(keys);
   }
-
 }

@@ -29,17 +29,16 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Unit tests to demonstrate App Engine Datastore entities.
@@ -50,7 +49,9 @@ public class EntitiesTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
@@ -70,14 +71,13 @@ public class EntitiesTest {
   @Test
   public void kindExample_writesEntity() throws Exception {
     // [START kind_example]
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     Entity employee = new Entity("Employee", "asalieri");
     employee.setProperty("firstName", "Antonio");
     employee.setProperty("lastName", "Salieri");
     employee.setProperty("hireDate", new Date());
     employee.setProperty("attendedHrTraining", true);
 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(employee);
     // [END kind_example]
 
@@ -212,12 +212,14 @@ public class EntitiesTest {
     // Sometime later
     employee = datastore.get(employee.getKey());
     @SuppressWarnings("unchecked") // Cast can't verify generic type.
-    ArrayList<String> retrievedFruits = (ArrayList<String>) employee.getProperty("favoriteFruit");
+        ArrayList<String> retrievedFruits = (ArrayList<String>) employee
+        .getProperty("favoriteFruit");
     // [END repeated_properties]
 
     assertThat(retrievedFruits).containsExactlyElementsIn(favoriteFruit).inOrder();
   }
 
+  @SuppressWarnings(VariableDeclarationUsageDistance)
   @Test
   public void embeddedEntity_fromEmbedded_embedsProperties() throws Exception {
     Entity employee = new Entity("Employee");

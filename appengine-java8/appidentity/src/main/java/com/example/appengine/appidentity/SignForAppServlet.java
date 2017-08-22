@@ -19,7 +19,6 @@ package com.example.appengine.appidentity;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.appidentity.PublicCertificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +34,6 @@ import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,9 +41,13 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "signforapp", description = "AppIdentity: Sign 'abcdefg'",
-    urlPatterns = "/appidentity/sign")
+@WebServlet(
+    name = "signforapp",
+    description = "AppIdentity: Sign 'abcdefg'",
+    urlPatterns = "/appidentity/sign"
+)
 public class SignForAppServlet extends HttpServlet {
+
   private final AppIdentityService appIdentity;
 
   public SignForAppServlet() {
@@ -98,10 +100,7 @@ public class SignForAppServlet extends HttpServlet {
 
     return String.format(
         "isValid=%b for message: %s\n\tsignature: %s\n\tpublic cert: %s",
-        isValid,
-        message,
-        Arrays.toString(blobSignature),
-        Arrays.toString(publicCert));
+        isValid, message, Arrays.toString(blobSignature), Arrays.toString(publicCert));
   }
   // [END asserting_identity_to_other_services]
 

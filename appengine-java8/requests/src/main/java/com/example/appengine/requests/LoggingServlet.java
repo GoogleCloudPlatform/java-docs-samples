@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.requests;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,14 +24,17 @@ import javax.servlet.http.HttpServletResponse;
 
 // [START simple_logging_example]
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "RequestLogging", description = "Requests: Logging example",
-    urlPatterns = "/requests/log")
+@WebServlet(
+    name = "RequestLogging",
+    description = "Requests: Logging example",
+    urlPatterns = "/requests/log"
+)
 public class LoggingServlet extends HttpServlet {
+
   private static final Logger log = Logger.getLogger(LoggingServlet.class.getName());
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     log.info("An informational message.");
     log.warning("A warning message.");
     log.severe("An error message.");
@@ -42,4 +45,3 @@ public class LoggingServlet extends HttpServlet {
   }
 }
 // [END simple_logging_example]
-

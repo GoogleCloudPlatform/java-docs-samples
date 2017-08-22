@@ -14,6 +14,7 @@
  */
 
 // [START users_API_example]
+
 package com.example.appengine.users;
 
 import com.google.appengine.api.users.UserService;
@@ -26,11 +27,12 @@ import javax.servlet.http.HttpServletResponse;
 
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
-  name = "UserAPI",
-  description = "UserAPI: Login / Logout with UserService",
-  urlPatterns = "/userapi"
+    name = "UserAPI",
+    description = "UserAPI: Login / Logout with UserService",
+    urlPatterns = "/userapi"
 )
 public class UsersServlet extends HttpServlet {
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     UserService userService = UserServiceFactory.getUserService();

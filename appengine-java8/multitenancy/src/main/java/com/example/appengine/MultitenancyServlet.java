@@ -23,10 +23,8 @@ import com.google.appengine.api.search.SearchService;
 import com.google.appengine.api.search.SearchServiceConfig;
 import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,15 +41,15 @@ public class MultitenancyServlet extends HttpServlet {
     out.println("Code Snippets -- not yet fully runnable as an app");
 
     // [START temp_namespace]
-// Set the namepace temporarily to "abc"
+    // Set the namepace temporarily to "abc"
     String oldNamespace = NamespaceManager.get();
     NamespaceManager.set("abc");
     try {
-//      ... perform operation using current namespace ...
+      //      ... perform operation using current namespace ...
     } finally {
       NamespaceManager.set(oldNamespace);
     }
-// [END temp_namespace]
+    // [END temp_namespace]
 
     // [START per_user_namespace]
     if (com.google.appengine.api.NamespaceManager.get() == null) {
@@ -59,7 +57,7 @@ public class MultitenancyServlet extends HttpServlet {
       namespace = UserServiceFactory.getUserService().getCurrentUser().getUserId();
       NamespaceManager.set(namespace);
     }
-// [END per_user_namespace]
+    // [END per_user_namespace]
     String value = "something here";
 
     // [START ns_memcache]
@@ -71,16 +69,16 @@ public class MultitenancyServlet extends HttpServlet {
     oldNamespace = NamespaceManager.get();
     NamespaceManager.set("abc");
     try {
-      current.put("key", value);  // stores value in namespace “abc”
+      current.put("key", value); // stores value in namespace “abc”
     } finally {
       NamespaceManager.set(oldNamespace);
     }
-// [END ns_memcache]
+    // [END ns_memcache]
 
     // [START specific_memcache]
     // Create a MemcacheService that uses the namespace "abc".
     MemcacheService explicit = MemcacheServiceFactory.getMemcacheService("abc");
-    explicit.put("key", value);  // stores value in namespace "abc"
+    explicit.put("key", value); // stores value in namespace "abc"
     // [END specific_memcache]
 
     //[START searchns]
@@ -96,19 +94,16 @@ public class MultitenancyServlet extends HttpServlet {
 
     // [START searchns_2]
     // Create a SearchServiceConfig, specifying the namespace "anotherSpace"
-    SearchServiceConfig config =  SearchServiceConfig.newBuilder()
-        .setNamespace("anotherSpace").build();
+    SearchServiceConfig config =
+        SearchServiceConfig.newBuilder().setNamespace("anotherSpace").build();
     // Create a SearchService with the namespace "anotherSpace"
     searchService = SearchServiceFactory.getSearchService(config);
     // Create an IndexSpec
     indexSpec = IndexSpec.newBuilder().setName("myindex").build();
     // Create an Index with the namespace "anotherSpace"
     index = searchService.getIndex(indexSpec);
-  // [END searchns_2]
+    // [END searchns_2]
 
   }
-
-
-
 }
 // [END example]

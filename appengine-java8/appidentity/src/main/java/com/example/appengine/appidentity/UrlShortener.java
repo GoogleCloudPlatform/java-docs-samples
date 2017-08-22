@@ -19,10 +19,6 @@ package com.example.appengine.appidentity;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.io.CharStreams;
-
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,10 +26,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 @SuppressWarnings("serial")
 class UrlShortener {
   // [START asserting_identity_to_Google_APIs]
+
   /**
    * Returns a shortened URL by calling the Google URL Shortener API.
    *
@@ -68,11 +67,10 @@ class UrlShortener {
     } else {
       try (InputStream s = connection.getErrorStream();
           InputStreamReader r = new InputStreamReader(s, StandardCharsets.UTF_8)) {
-        throw new RuntimeException(String.format(
-            "got error (%d) response %s from %s",
-            connection.getResponseCode(),
-            CharStreams.toString(r),
-            connection.toString()));
+        throw new RuntimeException(
+            String.format(
+                "got error (%d) response %s from %s",
+                connection.getResponseCode(), CharStreams.toString(r), connection.toString()));
       }
     }
   }

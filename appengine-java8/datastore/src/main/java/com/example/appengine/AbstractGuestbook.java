@@ -17,7 +17,6 @@
 package com.example.appengine;
 
 import com.example.time.Clock;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -25,7 +24,6 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
-
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +33,7 @@ import java.util.List;
  * <p>This is meant to be subclassed to demonstrate different storage structures in Datastore.
  */
 abstract class AbstractGuestbook {
+
   private final DatastoreService datastore;
   private final UserService userService;
   private final Clock clock;
@@ -47,15 +46,11 @@ abstract class AbstractGuestbook {
 
   /**
    * Appends a new greeting to the guestbook and returns the {@link Entity} that was created.
-   */
+   **/
   public Greeting appendGreeting(String content) {
     Greeting greeting =
         Greeting.create(
-            createGreeting(
-                datastore,
-                userService.getCurrentUser(),
-                clock.now().toDate(),
-                content));
+            createGreeting(datastore, userService.getCurrentUser(), clock.now().toDate(), content));
     return greeting;
   }
 

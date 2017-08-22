@@ -28,9 +28,12 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,30 +42,28 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Unit tests for {@link com.example.appengine.SignGuestbookServlet}.
  */
 @RunWith(JUnit4.class)
 public class SignGuestbookServletTest {
+
   private static final String FAKE_URL = "fakey.org/sign";
   private static final String FAKE_NAME = "Fake";
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
   private final String testPhrase = "Noew is the time";
 
-  @Mock private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletRequest mockRequest;
 
   @Mock
   private HttpServletResponse mockResponse;
@@ -81,8 +82,8 @@ public class SignGuestbookServletTest {
 
     //  Set up some fake HTTP requests
     when(mockRequest.getRequestURI()).thenReturn(FAKE_URL);
-    when(mockRequest.getParameter("guestbookName")).thenReturn( "default" );
-    when(mockRequest.getParameter("content")).thenReturn( testPhrase );
+    when(mockRequest.getParameter("guestbookName")).thenReturn("default");
+    when(mockRequest.getParameter("content")).thenReturn(testPhrase);
 
     stringWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
@@ -97,7 +98,8 @@ public class SignGuestbookServletTest {
     cleanDatastore(ds, "default");
   }
 
-  @After public void tearDown() {
+  @After
+  public void tearDown() {
     cleanDatastore(ds, "default");
     helper.tearDown();
     closeable.close();
@@ -107,12 +109,11 @@ public class SignGuestbookServletTest {
   public void doPost_userNotLoggedIn() throws Exception {
     servletUnderTest.doPost(mockRequest, mockResponse);
 
-    Query query = new Query("Greeting")
-        .setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
+    Query query =
+        new Query("Greeting").setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
     PreparedQuery pq = ds.prepare(query);
 
-    Entity greeting = pq.asSingleEntity();    // Should only be one at this point.
+    Entity greeting = pq.asSingleEntity(); // Should only be one at this point.
     assertEquals(greeting.getProperty("content"), testPhrase);
   }
-
 }

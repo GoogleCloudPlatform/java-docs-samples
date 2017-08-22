@@ -14,8 +14,6 @@
 
 package com.example.appengine;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,24 +21,27 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "URLFetch", description = "URLFetch: Write low order IP address to Cloud SQL",
-    urlPatterns = "/urlfetch")
+@WebServlet(
+    name = "URLFetch",
+    description = "URLFetch: Write low order IP address to Cloud SQL",
+    urlPatterns = "/urlfetch"
+)
 public class UrlFetchServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
 
-// [START example]
+    // [START example]
     URL url = new URL("http://api.icndb.com/jokes/random");
     BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
     StringBuffer json = new StringBuffer();
@@ -50,7 +51,7 @@ public class UrlFetchServlet extends HttpServlet {
       json.append(line);
     }
     reader.close();
-// [END example]
+    // [END example]
     JSONObject jo = new JSONObject(json.toString());
 
     req.setAttribute("joke", jo.getJSONObject("value").getString("joke"));
@@ -70,11 +71,8 @@ public class UrlFetchServlet extends HttpServlet {
       return;
     }
 
-    JSONObject jsonObj = new JSONObject()
-        .put("userId", 1)
-        .put("id", id)
-        .put("title", text)
-        .put("body", text);
+    JSONObject jsonObj =
+        new JSONObject().put("userId", 1).put("id", id).put("title", text).put("body", text);
 
     // [START complex]
     URL url = new URL("http://jsonplaceholder.typicode.com/posts/" + id);
@@ -86,7 +84,7 @@ public class UrlFetchServlet extends HttpServlet {
     writer.write(URLEncoder.encode(jsonObj.toString(), "UTF-8"));
     writer.close();
 
-    int respCode = conn.getResponseCode();  // New items get NOT_FOUND on PUT
+    int respCode = conn.getResponseCode(); // New items get NOT_FOUND on PUT
     if (respCode == HttpURLConnection.HTTP_OK || respCode == HttpURLConnection.HTTP_NOT_FOUND) {
       req.setAttribute("error", "");
       StringBuffer response = new StringBuffer();
@@ -104,5 +102,4 @@ public class UrlFetchServlet extends HttpServlet {
     // [END complex]
     req.getRequestDispatcher("/urlfetchresult.jsp").forward(req, resp);
   }
-
 }

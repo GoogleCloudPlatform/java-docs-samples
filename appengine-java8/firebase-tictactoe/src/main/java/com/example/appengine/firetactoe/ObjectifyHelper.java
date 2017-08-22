@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.firetactoe;
 
 import com.googlecode.objectify.ObjectifyService;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- * ObjectifyHelper, a ServletContextListener, is setup in web.xml to run before a JSP is run.  This
+ * ObjectifyHelper, a ServletContextListener, is setup in web.xml to run before a JSP is run. This
  * is required to let JSP's access Ofy.
- **/
+ */
 public class ObjectifyHelper implements ServletContextListener {
+
+  /**
+   * This will be invoked as part of a warmup request, or the first user request if no warmup
+   * request.
+   * @param event ServletContextEvent.
+   */
   public void contextInitialized(ServletContextEvent event) {
-    // This will be invoked as part of a warmup request, or the first user request if no warmup
-    // request.
+    //
     ObjectifyService.register(Game.class);
   }
 

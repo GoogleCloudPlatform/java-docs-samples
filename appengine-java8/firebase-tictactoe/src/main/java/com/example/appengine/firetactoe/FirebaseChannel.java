@@ -29,7 +29,6 @@ import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,18 +40,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility functions for communicating with the realtime communication channel using Firebase.
- * In this app, we use Firebase as a communication bus to push the state of the board to all clients
- * - that is, players of the game. This class contains the methods used to communicate with
- * Firebase.
+ * Utility functions for communicating with the realtime communication channel using Firebase. In
+ * this app, we use Firebase as a communication bus to push the state of the board to all clients -
+ * that is, players of the game. This class contains the methods used to communicate with Firebase.
  */
 public class FirebaseChannel {
+
   private static final String FIREBASE_SNIPPET_PATH = "WEB-INF/view/firebase_config.jspf";
   static InputStream firebaseConfigStream = null;
-  private static final Collection FIREBASE_SCOPES = Arrays.asList(
-      "https://www.googleapis.com/auth/firebase.database",
-      "https://www.googleapis.com/auth/userinfo.email"
-  );
+  private static final Collection FIREBASE_SCOPES =
+      Arrays.asList(
+          "https://www.googleapis.com/auth/firebase.database",
+          "https://www.googleapis.com/auth/userinfo.email");
   private static final String IDENTITY_ENDPOINT =
       "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit";
 
@@ -64,8 +63,8 @@ public class FirebaseChannel {
   private static FirebaseChannel instance;
 
   /**
-   * FirebaseChannel is a singleton, since it's just utility functions.
-   * The class derives auth information when first instantiated.
+   * FirebaseChannel is a singleton, since it's just utility functions. The class derives auth
+   * information when first instantiated.
    */
   public static FirebaseChannel getInstance() {
     if (instance == null) {
@@ -88,8 +87,8 @@ public class FirebaseChannel {
         firebaseConfigStream = new FileInputStream(FIREBASE_SNIPPET_PATH);
       }
 
-      String firebaseSnippet = CharStreams.toString(new InputStreamReader(
-          firebaseConfigStream, StandardCharsets.UTF_8));
+      String firebaseSnippet =
+          CharStreams.toString(new InputStreamReader(firebaseConfigStream, StandardCharsets.UTF_8));
       firebaseDbUrl = parseFirebaseUrl(firebaseSnippet);
 
       credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
@@ -100,9 +99,9 @@ public class FirebaseChannel {
   }
 
   /**
-   * Parses out the Firebase database url from the client-side code snippet.
-   * The code snippet is a piece of javascript that defines an object with the key 'databaseURL'. So
-   * look for that key, then parse out its quote-surrounded value.
+   * Parses out the Firebase database url from the client-side code snippet. The code snippet is a
+   * piece of javascript that defines an object with the key 'databaseURL'. So look for that key,
+   * then parse out its quote-surrounded value.
    */
   private static String parseFirebaseUrl(String firebaseSnippet) {
     int idx = firebaseSnippet.indexOf("databaseURL");
@@ -116,12 +115,17 @@ public class FirebaseChannel {
     return firebaseSnippet.substring(openQuote + 1, closeQuote);
   }
 
-  public void sendFirebaseMessage(String channelKey, Game game)
-      throws IOException {
+  /**
+   * sendFirebaseMessage.
+   * @param channelKey .
+   * @param game .
+   * @throws IOException .
+   */
+  public void sendFirebaseMessage(String channelKey, Game game) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
-    GenericUrl url = new GenericUrl(
-        String.format("%s/channels/%s.json", firebaseDbUrl, channelKey));
+    GenericUrl url =
+        new GenericUrl(String.format("%s/channels/%s.json", firebaseDbUrl, channelKey));
     HttpResponse response = null;
 
     try {
@@ -129,8 +133,11 @@ public class FirebaseChannel {
         response = requestFactory.buildDeleteRequest(url).execute();
       } else {
         String gameJson = new Gson().toJson(game);
-        response = requestFactory.buildPatchRequest(
-            url, new ByteArrayContent("application/json", gameJson.getBytes())).execute();
+        response =
+            requestFactory
+                .buildPatchRequest(
+                    url, new ByteArrayContent("application/json", gameJson.getBytes()))
+                .execute();
       }
 
       if (response.getStatusCode() != 200) {
@@ -177,6 +184,13 @@ public class FirebaseChannel {
   // The following methods are to illustrate making various calls to Firebase from App Engine
   // Standard
 
+  /**
+   * firebasePut.
+   * @param path .
+   * @param object .
+   * @return .
+   * @throws IOException .
+   */
   public HttpResponse firebasePut(String path, Object object) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
@@ -185,10 +199,18 @@ public class FirebaseChannel {
     String json = new Gson().toJson(object);
     GenericUrl url = new GenericUrl(path);
 
-    return requestFactory.buildPutRequest(
-        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+    return requestFactory
+        .buildPutRequest(url, new ByteArrayContent("application/json", json.getBytes()))
+        .execute();
   }
 
+  /**
+   * firebasePatch.
+   * @param path .
+   * @param object .
+   * @return .
+   * @throws IOException .
+   */
   public HttpResponse firebasePatch(String path, Object object) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
@@ -197,10 +219,18 @@ public class FirebaseChannel {
     String json = new Gson().toJson(object);
     GenericUrl url = new GenericUrl(path);
 
-    return requestFactory.buildPatchRequest(
-        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+    return requestFactory
+        .buildPatchRequest(url, new ByteArrayContent("application/json", json.getBytes()))
+        .execute();
   }
 
+  /**
+   * firebasePost.
+   * @param path .
+   * @param object .
+   * @return .
+   * @throws IOException .
+   */
   public HttpResponse firebasePost(String path, Object object) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
@@ -209,10 +239,17 @@ public class FirebaseChannel {
     String json = new Gson().toJson(object);
     GenericUrl url = new GenericUrl(path);
 
-    return requestFactory.buildPostRequest(
-        url, new ByteArrayContent("application/json", json.getBytes())).execute();
+    return requestFactory
+        .buildPostRequest(url, new ByteArrayContent("application/json", json.getBytes()))
+        .execute();
   }
 
+  /**
+   * firebaseGet.
+   * @param path .
+   * @return .
+   * @throws IOException .
+   */
   public HttpResponse firebaseGet(String path) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);
@@ -223,6 +260,12 @@ public class FirebaseChannel {
     return requestFactory.buildGetRequest(url).execute();
   }
 
+  /**
+   * firebaseDelete.
+   * @param path .
+   * @return .
+   * @throws IOException .
+   */
   public HttpResponse firebaseDelete(String path) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);

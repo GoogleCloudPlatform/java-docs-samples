@@ -19,6 +19,12 @@ package com.example.appengine.requests;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,25 +33,20 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Unit tests for {@link LoggingServlet}.
  */
 @RunWith(JUnit4.class)
 public class LoggingServletTest {
+
   // To capture and restore stderr
   private final ByteArrayOutputStream stderr = new ByteArrayOutputStream();
   private static final PrintStream REAL_ERR = System.err;
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private LoggingServlet servletUnderTest;
 
@@ -81,5 +82,4 @@ public class LoggingServletTest {
     assertThat(out).contains("A warning message.");
     assertThat(out).contains("An error message.");
   }
-
 }
