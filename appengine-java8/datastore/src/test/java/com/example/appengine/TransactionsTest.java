@@ -140,7 +140,6 @@ public class TransactionsTest {
     }
   }
 
-  @SuppressWarnings(VariableDeclarationUsageDistance)
   @Test
   public void creatingAnEntityInASpecificEntityGroup() throws Exception {
     String boardName = "my-message-board";
@@ -152,14 +151,14 @@ public class TransactionsTest {
     String messageText = "Some message.";
     Date postDate = new Date();
 
-    Transaction txn = datastore.beginTransaction();
-
     Key messageBoardKey = KeyFactory.createKey("MessageBoard", boardName);
 
     Entity message = new Entity("Message", messageBoardKey);
     message.setProperty("message_title", messageTitle);
     message.setProperty("message_text", messageText);
     message.setProperty("post_date", postDate);
+
+    Transaction txn = datastore.beginTransaction();
     datastore.put(txn, message);
 
     txn.commit();

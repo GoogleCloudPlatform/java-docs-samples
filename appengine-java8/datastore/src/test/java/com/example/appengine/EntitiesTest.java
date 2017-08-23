@@ -218,7 +218,7 @@ public class EntitiesTest {
     assertThat(retrievedFruits).containsExactlyElementsIn(favoriteFruit).inOrder();
   }
 
-  @SuppressWarnings(VariableDeclarationUsageDistance)
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   @Test
   public void embeddedEntity_fromEmbedded_embedsProperties() throws Exception {
     Entity employee = new Entity("Employee");
