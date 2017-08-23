@@ -79,7 +79,10 @@ echo "Common Dir: ${common_dir}"
 
 # Give Maven a bit more memory
 export MAVEN_OPTS='-Xmx800m -Xms400m'
-mvn --batch-mode clean verify -e -DskipTests=$SKIP_TESTS | \
+mvn --batch-mode clean verify -e \
+    -DskipTests=$SKIP_TESTS \
+    -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+    -Dbigtable.instanceID=instance | \
   grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 
 [ -z "$common_dir" ] || popd

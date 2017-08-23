@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -14,6 +14,9 @@
 
 package com.example.appengine.search;
 
+// CHECKSTYLE:OFF
+// @formatter:off
+// [START search_option_import]
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.Index;
@@ -26,6 +29,9 @@ import com.google.appengine.api.search.SearchException;
 import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.SortExpression;
 import com.google.appengine.api.search.SortOptions;
+// [END search_option_import]
+// @formatter:on
+// CHECKSTYLE:ON
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
@@ -33,13 +39,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-// CHECKSTYLE:OFF
-// @formatter:off
-// [START search_option_import]
-// [END search_option_import]
-// @formatter:on
-// CHECKSTYLE:ON
 
 /**
  * Code snippet for searching with query options.

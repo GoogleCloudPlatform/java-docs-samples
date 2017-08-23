@@ -48,12 +48,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class MetadataEntityGroupTest {
 
+  // Set no eventual consistency, that way queries return all results.
+  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
+  // #Java_Writing_High_Replication_Datastore_tests
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google
-          // .com/appengine/docs/java/tools/localunittesting
-          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
           new LocalMemcacheServiceTestConfig());
 

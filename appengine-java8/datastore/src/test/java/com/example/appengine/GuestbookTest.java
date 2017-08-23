@@ -55,12 +55,11 @@ public class GuestbookTest {
     }
   }
 
+  // Set custom, deterministic, eventual consistency.
+  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
+  // #Java_Writing_High_Replication_Datastore_tests
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          // Set custom, deterministic, eventual consistency.
-          // https://cloud.google
-          // .com/appengine/docs/java/tools/localunittesting
-          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setAlternateHighRepJobPolicyClass(CustomHighRepJobPolicy.class),
           // Make sure there is a user logged in. We enforce this in web.xml.
