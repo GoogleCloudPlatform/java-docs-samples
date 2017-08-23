@@ -39,12 +39,11 @@ public class GuestbookStrongTest {
   private static final Instant FAKE_NOW = new Instant(1234567890L);
   private static final String GUESTBOOK_ID = "my guestbook";
 
+  // Set maximum eventual consistency.
+  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
+  // #Java_Writing_High_Replication_Datastore_tests
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          // Set maximum eventual consistency.
-          // https://cloud.google
-          // .com/appengine/docs/java/tools/localunittesting
-          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(100),
           // Make sure there is a user logged in. We enforce this in web.xml.

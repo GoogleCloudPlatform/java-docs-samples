@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -25,17 +25,16 @@ import com.google.appengine.api.search.ScoredDocument;
 import com.google.appengine.api.search.SearchException;
 import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.StatusCode;
+// [END search_document_import]
+// CHECKSTYLE:OFF
+// @formatter:on
+// CHECKSTYLE:ON
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-// [END search_document_import]
-// CHECKSTYLE:OFF
-// @formatter:on
-// CHECKSTYLE:ON
 
 @SuppressWarnings("serial")
 @WebServlet(
