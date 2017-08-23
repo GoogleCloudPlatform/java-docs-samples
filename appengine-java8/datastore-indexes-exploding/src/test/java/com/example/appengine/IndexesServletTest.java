@@ -86,7 +86,7 @@ public class IndexesServletTest {
         .isEqualTo("Got 0 widgets.\n");
   }
 
-  @SuppressWarnings(VariableDeclarationUsageDistance)
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   @Test
   public void doGet_repeatedPropertyEntities_writesWidgets() throws Exception {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

@@ -33,7 +33,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 
 // [START example]
-@SuppressWarnings({"serial"})
+@SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "Metadata", description = "Metadata: Write info about GAE Standard",
     urlPatterns = "/metadata")

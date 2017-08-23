@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 //[START all]
-@SuppressWarnings(JavadocMethod)
+@SuppressWarnings("JavadocMethod")
 public class Guestbook {
 
   private static final KeyFactory keyFactory = getKeyFactory(Guestbook.class);
