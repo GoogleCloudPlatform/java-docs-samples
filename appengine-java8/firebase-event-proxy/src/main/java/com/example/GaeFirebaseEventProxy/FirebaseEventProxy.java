@@ -66,7 +66,7 @@ public class FirebaseEventProxy {
   /**
    * start the proxy.
    */
-  @SuppressWarnings(VariableDeclarationUsageDistance)
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   public void start() {
     DatabaseReference firebase = FirebaseDatabase.getInstance().getReference();
 

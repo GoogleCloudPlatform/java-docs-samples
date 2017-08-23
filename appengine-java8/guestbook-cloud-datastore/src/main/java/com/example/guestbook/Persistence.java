@@ -24,7 +24,7 @@ public class Persistence {
 
   private static AtomicReference<Datastore> datastore = new AtomicReference<>();
 
-  @SuppressWarnings(JavadocMethod)
+  @SuppressWarnings("JavadocMethod")
   public static Datastore getDatastore() {
     if (datastore.get() == null) {
       datastore.set(

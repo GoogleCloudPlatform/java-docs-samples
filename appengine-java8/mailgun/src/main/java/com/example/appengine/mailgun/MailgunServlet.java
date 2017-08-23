@@ -51,7 +51,7 @@ public class MailgunServlet extends HttpServlet {
   }
 
   // [START simple]
-  @SuppressWarnings(VariableDeclarationUsageDistance)
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
@@ -69,7 +69,7 @@ public class MailgunServlet extends HttpServlet {
   // [END simple]
 
   // [START complex]
-  @SuppressWarnings(VariableDeclarationUsageDistance)
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   private ClientResponse sendComplexMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));

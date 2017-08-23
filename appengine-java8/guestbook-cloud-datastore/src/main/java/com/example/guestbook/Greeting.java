@@ -28,7 +28,7 @@ import com.google.common.base.MoreObjects;
 import java.util.Date;
 import java.util.Objects;
 
-@SuppressWarnings(JavadocMethod)
+@SuppressWarnings("JavadocMethod")
 public class Greeting {
 
   private Guestbook book;
