@@ -17,19 +17,25 @@
 package com.example.logging;
 
 // [START logging_quickstart]
-// Imports the Google Cloud client library
-
 import com.google.cloud.MonitoredResource;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload.StringPayload;
+import com.google.cloud.logging.Severity;
 import java.util.Collections;
 
+/**
+ * This sample demonstrates writing logs using the Stackdriver Logging API.
+ * The library also offers a java.util.logging Handler `com.google.cloud.logging.LoggingHandler`
+ * Logback integration is also available :
+ * https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-contrib/google-cloud-logging-logback
+ * Using the java.util.logging handler / Logback appender should be preferred to programmatically using the API.
+ */
 public class QuickstartSample {
 
+  /** Expects a new or existing Stackdriver log name as the first argument.*/
   public static void main(String... args) throws Exception {
-
 
     // Instantiates a client
     Logging logging = LoggingOptions.getDefaultInstance().getService();
@@ -41,6 +47,7 @@ public class QuickstartSample {
     String text = "Hello, world!";
 
     LogEntry entry = LogEntry.newBuilder(StringPayload.of(text))
+        .setSeverity(Severity.ERROR)
         .setLogName(logName)
         .setResource(MonitoredResource.newBuilder("global").build())
         .build();

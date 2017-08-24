@@ -21,10 +21,10 @@
 
   <!-- Parent defines config for testing & linting. -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
+    <groupId>com.google.cloud.logging.samples</groupId>
+    <artifactId>cloud-logging-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <properties>
