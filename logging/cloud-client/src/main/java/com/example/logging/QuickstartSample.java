@@ -24,12 +24,13 @@ import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload.StringPayload;
-
 import java.util.Collections;
 
 public class QuickstartSample {
 
   public static void main(String... args) throws Exception {
+
+
     // Instantiates a client
     Logging logging = LoggingOptions.getDefaultInstance().getService();
 
@@ -44,7 +45,7 @@ public class QuickstartSample {
         .setResource(MonitoredResource.newBuilder("global").build())
         .build();
 
-    // Writes the log entry
+    // Writes the log entry asynchronously
     logging.write(Collections.singleton(entry));
 
     System.out.printf("Logged: %s%n", text);

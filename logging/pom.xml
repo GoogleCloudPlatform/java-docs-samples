@@ -32,35 +32,16 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
+  <modules>
+    <module>logback</module>
+    <module>jul</module>
+    <module>cloud-client</module>
+  </modules>
+
   <dependencies>
-    <dependency>
-        <groupId>com.google.apis</groupId>
-        <artifactId>google-api-services-logging</artifactId>
-        <version>v1beta3-rev10-1.21.0</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.oauth-client</groupId>
-        <artifactId>google-oauth-client</artifactId>
-        <version>${project.oauth.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.http-client</groupId>
-        <artifactId>google-http-client-jackson2</artifactId>
-        <version>${project.http.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.oauth-client</groupId>
-      <artifactId>google-oauth-client-jetty</artifactId>
-      <version>${project.oauth.version}</version>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.jcabi</groupId>
-      <artifactId>jcabi-matchers</artifactId>
-    </dependency>
   </dependencies>
-
 </project>
