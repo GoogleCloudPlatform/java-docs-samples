@@ -9,13 +9,15 @@ the [Google Cloud Client Library for Java][google-cloud-java].
 [logging]: https://cloud.google.com/logging/
 [google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java
 
-## Quickstart
+## Setup
 
 Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
 	mvn clean package -DskipTests
+	
+[Setup authentication](https://cloud.google.com/docs/authentication) using a service account.
 
 ### Writing a log entry (using the quickstart sample)
 
