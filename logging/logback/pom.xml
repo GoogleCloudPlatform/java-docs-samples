@@ -16,7 +16,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.logging</groupId>
-  <artifactId>logging-google-cloud-samples-api</artifactId>
+  <artifactId>logging-google-cloud-samples-logback</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent defines config for testing & linting. -->
@@ -36,8 +36,8 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-logging</artifactId>
-      <version>1.4.0</version>
+      <artifactId>google-cloud-logging-logback</artifactId>
+      <version>0.22.0-alpha</version>
     </dependency>
 
     <!-- Test dependencies -->

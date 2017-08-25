@@ -16,7 +16,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.logging</groupId>
-  <artifactId>logging-google-cloud-samples-api</artifactId>
+  <artifactId>logging-google-cloud-samples-jul</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent defines config for testing & linting. -->

@@ -1,5 +1,5 @@
 /*
-  Copyright 2016, Google, Inc.
+  Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,37 +18,37 @@ package com.example.logging;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.MonitoredResource;
+import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
+import com.google.cloud.logging.Payload.StringPayload;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 /**
  * Tests for quickstart sample.
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartSampleIT {
+public class LoggingIT {
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private Logging logging = LoggingOptions.getDefaultInstance().getService();
 
-  private static final void deleteMyLog() {
-    Logging logging = LoggingOptions.getDefaultInstance().getService();
-
-    logging.deleteLog("my-log");
+  private void deleteLog(String logName) {
+    logging.deleteLog(logName);
   }
 
   @Before
   public void setUp() {
-    deleteMyLog();
-
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -57,13 +57,36 @@ public class QuickstartSampleIT {
   @After
   public void tearDown() {
     System.setOut(null);
-    deleteMyLog();
   }
 
   @Test
   public void testQuickstart() throws Exception {
-    QuickstartSample.main("my-log");
+    String logName = "my-log";
+    deleteLog(logName);
+    QuickstartSample.main(logName);
     String got = bout.toString();
     assertThat(got).contains("Logged: Hello, world!");
+    deleteLog(logName);
+  }
+
+  @Test(timeout = 10000)
+  public void testWriteAndListLogs() throws Exception {
+    String logName = "test-log";
+    deleteLog(logName);
+    // write a log entry
+    LogEntry entry = LogEntry.newBuilder(StringPayload.of("Hello world again"))
+        .setLogName(logName)
+        .setResource(MonitoredResource.newBuilder("global").build())
+        .build();
+    logging.write(Collections.singleton(entry));
+    // flush out log immediately
+    logging.flush();
+    bout.reset();
+    while (bout.toString().isEmpty()) {
+      ListLogs.main(logName);
+      Thread.sleep(1000);
+    }
+    assertThat(bout.toString().contains("Hello world again")).isTrue();
+    deleteLog(logName);
   }
 }

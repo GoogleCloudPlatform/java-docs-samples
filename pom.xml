@@ -16,7 +16,6 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <version>1.0.0</version>
-
     <groupId>com.google.cloud</groupId>
     <artifactId>doc-samples</artifactId>
     <packaging>pom</packaging>
