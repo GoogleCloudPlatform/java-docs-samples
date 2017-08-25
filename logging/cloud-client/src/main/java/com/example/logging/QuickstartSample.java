@@ -1,5 +1,5 @@
 /*
-  Copyright 2016, Google, Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -28,9 +28,8 @@ import java.util.Collections;
 /**
  * This sample demonstrates writing logs using the Stackdriver Logging API.
  * The library also offers a java.util.logging Handler `com.google.cloud.logging.LoggingHandler`
- * Logback integration is also available :
- * https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-contrib/google-cloud-logging-logback
- * Using the java.util.logging handler / Logback appender should be preferred to programmatically using the API.
+ * Logback integration is also available : https://goo.gl/DNMoRh
+ * Using the java.util.logging handler / Logback appender should be preferred to using the API directly.
  */
 public class QuickstartSample {
 
