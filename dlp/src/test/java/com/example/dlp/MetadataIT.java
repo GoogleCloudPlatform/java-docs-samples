@@ -53,7 +53,7 @@ public class MetadataIT {
   public void testInfoTypesAreRetrieved() throws Exception {
     Metadata.main(new String[] {"-category", "GOVERNMENT"});
     String output = bout.toString();
-    assertTrue(output.contains("Name") && output.contains("Display name")));
+    assertTrue(output.contains("Name") && output.contains("Display name"));
   }
 
   @After
