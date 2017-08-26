@@ -84,6 +84,8 @@ public class SpannerSampleIT {
     out = runSample("query");
     assertThat(out).contains("1 1 Total Junk");
     runSample("addmarketingbudget");
+    
+    // wait for 10 seconds to elapse and then run an update, and query for stale data
     lastUpdateDataTimeInMillis = System.currentTimeMillis();
     while (System.currentTimeMillis() < lastUpdateDataTimeInMillis + 11000) {
       Thread.sleep(1000);
