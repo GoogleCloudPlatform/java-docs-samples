@@ -16,66 +16,29 @@
 
 package com.example.spanner;
 
-// [START transaction_import]
-
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
-// [START transaction_import]
 import com.google.cloud.spanner.Key;
-// [END transaction_import]
-// [START read_import]
 import com.google.cloud.spanner.KeySet;
-// [END read_import]
-// [START write_import]
 import com.google.cloud.spanner.Mutation;
-// [END write_import]
 import com.google.cloud.spanner.Operation;
-// [START read_only_transaction_import]
 import com.google.cloud.spanner.ReadOnlyTransaction;
-// [END read_only_transaction_import]
-// [START query_import]
 import com.google.cloud.spanner.ResultSet;
-// [END query_import]
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-// [START query_import]
 import com.google.cloud.spanner.Statement;
-// [END query_import]
-// [START transaction_import]
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
-// [END transaction_import]
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
-
-// [START write_import]
-
 import java.util.ArrayList;
-// [END write_import]
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-// [END transaction_import]
-// [START transaction_import]
-// [END transaction_import]
-// [START read_import]
-// [END read_import]
-// [START write_import]
-// [END write_import]
-// [START read_only_transaction_import]
-// [END read_only_transaction_import]
-// [START query_import]
-// [END query_import]
-// [START query_import]
-// [END query_import]
-// [START transaction_import]
-// [END transaction_import]
-// [START write_import]
-// [END write_import]
 
 /**
  * Example code for using the Cloud Spanner API. This example demonstrates all the common
@@ -86,11 +49,14 @@ import java.util.concurrent.TimeUnit;
  * <li> Writing data using a read-write transaction.
  * <li> Using an index to read and execute SQL queries over data.
  * </ul>
- *
  */
 public class SpannerSample {
-  /** Class to contain singer sample data. */
+
+  /**
+   * Class to contain singer sample data.
+   */
   static class Singer {
+
     final long singerId;
     final String firstName;
     final String lastName;
@@ -102,8 +68,11 @@ public class SpannerSample {
     }
   }
 
-  /** Class to contain album sample data. */
+  /**
+   * Class to contain album sample data.
+   */
   static class Album {
+
     final long singerId;
     final long albumId;
     final String albumTitle;
@@ -135,22 +104,22 @@ public class SpannerSample {
 
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
     Operation<Database, CreateDatabaseMetadata> op = dbAdminClient
-            .createDatabase(
-                id.getInstanceId().getInstance(),
-                id.getDatabase(),
-                Arrays.asList(
-                    "CREATE TABLE Singers (\n"
-                        + "  SingerId   INT64 NOT NULL,\n"
-                        + "  FirstName  STRING(1024),\n"
-                        + "  LastName   STRING(1024),\n"
-                        + "  SingerInfo BYTES(MAX)\n"
-                        + ") PRIMARY KEY (SingerId)",
-                    "CREATE TABLE Albums (\n"
-                        + "  SingerId     INT64 NOT NULL,\n"
-                        + "  AlbumId      INT64 NOT NULL,\n"
-                        + "  AlbumTitle   STRING(MAX)\n"
-                        + ") PRIMARY KEY (SingerId, AlbumId),\n"
-                        + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"));
+        .createDatabase(
+            id.getInstanceId().getInstance(),
+            id.getDatabase(),
+            Arrays.asList(
+                "CREATE TABLE Singers (\n"
+                    + "  SingerId   INT64 NOT NULL,\n"
+                    + "  FirstName  STRING(1024),\n"
+                    + "  LastName   STRING(1024),\n"
+                    + "  SingerInfo BYTES(MAX)\n"
+                    + ") PRIMARY KEY (SingerId)",
+                "CREATE TABLE Albums (\n"
+                    + "  SingerId     INT64 NOT NULL,\n"
+                    + "  AlbumId      INT64 NOT NULL,\n"
+                    + "  AlbumTitle   STRING(MAX)\n"
+                    + ") PRIMARY KEY (SingerId, AlbumId),\n"
+                    + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"));
     Database db = op.waitFor().getResult();
     System.out.println("Created database [" + db.getId() + "]");
   }
