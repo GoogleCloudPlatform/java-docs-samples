@@ -17,46 +17,48 @@
 package com.example.spanner;
 
 // [START transaction_import]
+
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
-// [END transaction_import]
 
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
-// [START transaction_import]
 import com.google.cloud.spanner.Key;
-// [END transaction_import]
-// [START read_import]
 import com.google.cloud.spanner.KeySet;
-// [END read_import]
-// [START write_import]
 import com.google.cloud.spanner.Mutation;
-// [END write_import]
 import com.google.cloud.spanner.Operation;
-// [START read_only_transaction_import]
 import com.google.cloud.spanner.ReadOnlyTransaction;
-// [END read_only_transaction_import]
-// [START query_import]
 import com.google.cloud.spanner.ResultSet;
-// [END query_import]
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-// [START query_import]
 import com.google.cloud.spanner.Statement;
-// [END query_import]
-// [START transaction_import]
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
-// [END transaction_import]
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
-
-// [START write_import]
-
 import java.util.ArrayList;
-// [END write_import]
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+// [END transaction_import]
+// [START transaction_import]
+// [END transaction_import]
+// [START read_import]
+// [END read_import]
+// [START write_import]
+// [END write_import]
+// [START read_only_transaction_import]
+// [END read_only_transaction_import]
+// [START query_import]
+// [END query_import]
+// [START query_import]
+// [END query_import]
+// [START transaction_import]
+// [END transaction_import]
+// [START write_import]
+// [END write_import]
 
 /**
  * Example code for using the Cloud Spanner API. This example demonstrates all the common
@@ -413,6 +415,22 @@ public class SpannerSample {
   }
   // [END read_only_transaction]
 
+  // [START read_stale_data]
+  static void readStaleData(DatabaseClient dbClient) {
+    ResultSet resultSet =
+        dbClient
+            .singleUse(TimestampBound.ofExactStaleness(10, TimeUnit.SECONDS))
+            .read("Albums",
+                KeySet.all(),
+                Arrays.asList("SingerId", "AlbumId", "MarketingBudget"));
+    while (resultSet.next()) {
+      System.out.printf(
+          "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1),
+          resultSet.isNull(2) ? "NULL" : resultSet.getLong("MarketingBudget"));
+    }
+  }
+  // [END read_stale_data]
+
   static void run(DatabaseClient dbClient, DatabaseAdminClient dbAdminClient, String command,
       DatabaseId database) {
     switch (command) {
@@ -457,6 +475,9 @@ public class SpannerSample {
         break;
       case "readonlytransaction":
         readOnlyTransaction(dbClient);
+        break;
+      case "readstaledata":
+        readStaleData(dbClient);
         break;
       default:
         printUsageAndExit();
