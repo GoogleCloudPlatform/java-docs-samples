@@ -24,20 +24,37 @@ import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+// [START transaction_import]
 import com.google.cloud.spanner.Key;
+// [END transaction_import]
+// [START read_import]
 import com.google.cloud.spanner.KeySet;
+// [END read_import]
+// [START write_import]
 import com.google.cloud.spanner.Mutation;
+// [END write_import]
 import com.google.cloud.spanner.Operation;
+// [START read_only_transaction_import]
 import com.google.cloud.spanner.ReadOnlyTransaction;
+// [END read_only_transaction_import]
+// [START query_import]
 import com.google.cloud.spanner.ResultSet;
+// [END query_import]
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
+// [START query_import]
 import com.google.cloud.spanner.Statement;
+// [END query_import]
+// [START transaction_import]
 import com.google.cloud.spanner.Struct;
-import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
+// [END transaction_import]
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
+
+// [START write_import]
+
 import java.util.ArrayList;
+// [END write_import]
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
