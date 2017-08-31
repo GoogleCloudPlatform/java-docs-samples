@@ -76,7 +76,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.4</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

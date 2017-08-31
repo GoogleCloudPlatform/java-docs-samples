@@ -31,8 +31,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <endpoints.framework.version>2.0.7</endpoints.framework.version>
-    <endpoints.management.version>1.0.4</endpoints.management.version>
+    <endpoints.framework.version>2.0.8</endpoints.framework.version>
+    <endpoints.management.version>1.0.5</endpoints.management.version>
 
     <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
     <maven.compiler.target>1.8</maven.compiler.target>
