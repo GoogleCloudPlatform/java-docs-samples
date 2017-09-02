@@ -33,7 +33,7 @@ To build the project:
 
 To generate the required configuration file `openapi.json`:
 
-    mvn exec:java -DGetSwaggerDoc
+    mvn endpoints-framework:openApiDocs
 
 ### Deploying the sample API to App Engine
 
