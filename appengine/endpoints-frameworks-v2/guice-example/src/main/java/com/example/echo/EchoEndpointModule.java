@@ -25,6 +25,7 @@ public class EchoEndpointModule extends EndpointsModule {
   public void configureServlets() {
     bind(Echo.class).toInstance(new Echo());
     configureEndpoints("/_ah/api/*", ImmutableList.of(Echo.class));
+    super.configureServlets();
   }
 }
 // [END endpoints_module]
