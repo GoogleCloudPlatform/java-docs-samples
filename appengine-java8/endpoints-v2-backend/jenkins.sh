@@ -33,8 +33,12 @@ function TestEndpoints () {
 UNIQUE_MAVEN_STRING="maven"
 sed -i'.bak' -e "s/YOUR_PROJECT_ID/${GOOGLE_PROJECT_ID}/g" pom.xml
 
+mvn clean endpoints-framework:openApiDocs
+
+gcloud service-management deploy target/openapi-docs/openapi.json
+
 # Test with Maven
-mvn clean appengine:deploy \
+mvn appengine:deploy \
     -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
     -Dapp.deploy.promote=false
 
@@ -49,10 +53,14 @@ mvn clean
 UNIQUE_GRADLE_STRING="gradle"
 sed -i'.bak' -e "s/YOUR_PROJECT_ID/${GOOGLE_PROJECT_ID}/g" build.gradle
 
+gradle clean endpointsOpenApiDocs
+
+gcloud service-management deploy build/endpointsOpenApiDocs/openapi.json
+
 # Deploy Gradle
 gradle -Pappengine.deploy.promote=false \
-  -Pappengine.deploy.version="${GOOGLE_VERSION_ID}" \
-  appengineDeploy
+       -Pappengine.deploy.version="${GOOGLE_VERSION_ID}" \
+       appengineDeploy
 
 # End-2-End tests
 TestEndpoints "${GOOGLE_PROJECT_ID}" "${GOOGLE_VERSION_ID}" "${UNIQUE_GRADLE_STRING}"
