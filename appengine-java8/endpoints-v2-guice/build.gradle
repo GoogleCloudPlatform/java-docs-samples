@@ -56,6 +56,17 @@ endpointsServer {
   serviceClasses = ['com.example.echo.Echo']
 }
 
+appengine {  // App Engine tasks configuration
+  deploy {   // deploy configuration
+    version = findProperty("appengine.deploy.version")
+
+    def promoteProp = findProperty("appengine.deploy.promote")
+    if (promoteProp != null) {
+      promote = new Boolean(promoteProp)
+    }
+  }
+}
+
 sourceCompatibility = 1.8  // App Engine Standard uses Java 8
 targetCompatibility = 1.8  // App Engine Standard uses Java 8
 
@@ -63,7 +74,7 @@ targetCompatibility = 1.8  // App Engine Standard uses Java 8
 task replaceProjectId(type: Copy) {
     from 'src/main/webapp/WEB-INF/'
     include '*.xml'
-    into 'build/exploded-guice-example/WEB-INF'
+    into 'build/exploded-endpoints-v2-guice/WEB-INF'
     expand(endpoints:[project:[id:projectId]])
     filteringCharset = 'UTF-8'
 }
