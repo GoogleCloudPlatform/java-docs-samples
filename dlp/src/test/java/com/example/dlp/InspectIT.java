@@ -87,7 +87,7 @@ public class InspectIT {
     assertTrue(output.contains("EMAIL_ADDRESS"));
   }
 
-  // Requires  a Datastore kind containing an entity
+  // Requires a Datastore kind containing an entity
   // with phone number and email address properties.
   @Test
   public void testDatastoreInspectionReturnsInfoTypes() throws Exception {
@@ -95,6 +95,13 @@ public class InspectIT {
     String output = bout.toString();
     assertTrue(output.contains("PHONE_NUMBER"));
     assertTrue(output.contains("EMAIL_ADDRESS"));
+  }
+
+  @Test
+  public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
+    Inspect.main(new String[] {"-bq", "-dataset", "integration_tests_dlp", "-table", "harmful"});
+    String output = bout.toString();
+    assertTrue(output.contains("CREDIT_CARD_NUMBER"));
   }
 
   @After
