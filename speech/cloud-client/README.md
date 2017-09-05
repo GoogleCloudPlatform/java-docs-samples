@@ -57,3 +57,28 @@ Build your project with:
     java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
     com.example.speech.Recognize wordoffsets gs://cloud-samples-tests/speech/vr.flac
 ```
+
+### Synchronously transcribe and punctuate a remote audio file
+```
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize punctuation ./resources/audio.raw
+```
+
+### Asynchronously transcribe and punctuate an audio file hosted on GCS
+```
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize punctuation gs://cloud-samples-tests/speech/brooklyn.flac
+```
+
+### Synchronously transcribe a video file
+```
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize video ./resources/Google_Gnome.wav
+```
+
+### Asynchronously transcribe a video file hosted on GCS
+```
+    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
+    com.example.speech.Recognize video gs://cloud-samples-tests/speech/Google_Gnome.wav
+```
+
