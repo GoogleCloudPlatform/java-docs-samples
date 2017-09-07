@@ -34,11 +34,12 @@
   </properties>
 
   <dependencies>
+    <!-- TODO replace with release version -->
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.23.0</version>
+      <version>0.22.1-alpha-SNAPSHOT</version>
     </dependency>
     <!-- [END dependencies] -->
 

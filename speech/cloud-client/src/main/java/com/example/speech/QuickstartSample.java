@@ -18,13 +18,13 @@ package com.example.speech;
 
 // [START speech_quickstart]
 // Imports the Google Cloud client library
-import com.google.cloud.speech.v1.RecognitionAudio;
-import com.google.cloud.speech.v1.RecognitionConfig;
-import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding;
-import com.google.cloud.speech.v1.RecognizeResponse;
 import com.google.cloud.speech.v1_1beta1.SpeechClient;
-import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1.SpeechRecognitionResult;
+import com.google.cloud.speech.v1p1beta1.RecognitionAudio;
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1p1beta1.RecognizeResponse;
+import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1p1beta1.SpeechRecognitionResult;
 import com.google.protobuf.ByteString;
 
 import java.nio.file.Files;
@@ -33,6 +33,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class QuickstartSample {
+
+  /**
+   * Demonstrates using the Speech API to transcribe an audio file.
+   */
   public static void main(String... args) throws Exception {
     // Instantiates a client
     try (SpeechClient speechClient = SpeechClient.create()) {

@@ -40,8 +40,12 @@ public class RecognizeIT {
   private PrintStream out;
 
   // The path to the audio file to transcribe
-  private String fileName = "./resources/audio.raw";
-  private String gcsPath = "gs://" + BUCKET + "/speech/brooklyn.flac";
+  private String audioFileName = "./resources/audio.raw";
+  private String gcsAudioPath = "gs://" + BUCKET + "/speech/brooklyn.flac";
+
+  // The path to the video file to transcribe
+  private String videoFileName = "./resources/Google_Gnome.wav";
+  private String gcsVideoPath = "gs://" + BUCKET + "/speech/Google_Gnome.wav";
 
   @Before
   public void setUp() {
@@ -57,58 +61,58 @@ public class RecognizeIT {
 
   @Test
   public void testRecognizeFile() throws Exception {
-    Recognize.syncRecognizeFile(fileName);
+    Recognize.syncRecognizeFile(audioFileName);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
 
-//  @Test
-//  public void testRecognizeWordoffset() throws Exception {
-//    Recognize.syncRecognizeWords(fileName);
-//    String got = bout.toString();
-//    assertThat(got).contains("how old is the Brooklyn Bridge");
-//    assertThat(got).contains("\t0.0 sec -");
-//  }
+  @Test
+  public void testRecognizeWordoffset() throws Exception {
+    Recognize.syncRecognizeWords(audioFileName);
+    String got = bout.toString();
+    assertThat(got).contains("how old is the Brooklyn Bridge");
+    assertThat(got).contains("\t0.0 sec -");
+  }
 
   @Test
   public void testRecognizeGcs() throws Exception {
-    Recognize.syncRecognizeGcs(gcsPath);
+    Recognize.syncRecognizeGcs(gcsAudioPath);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
 
   @Test
   public void testAsyncRecognizeFile() throws Exception {
-    Recognize.asyncRecognizeFile(fileName);
+    Recognize.asyncRecognizeFile(audioFileName);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
 
   @Test
   public void testAsyncRecognizeGcs() throws Exception {
-    Recognize.asyncRecognizeGcs(gcsPath);
+    Recognize.asyncRecognizeGcs(gcsAudioPath);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
 
-//  @Test
-//  public void testAsyncWordoffset() throws Exception {
-//    Recognize.asyncRecognizeWords(gcsPath);
-//    String got = bout.toString();
-//    assertThat(got).contains("how old is the Brooklyn Bridge");
-//    assertThat(got).contains("\t0.0 sec -");
-//  }
+  @Test
+  public void testAsyncWordoffset() throws Exception {
+    Recognize.asyncRecognizeWords(gcsAudioPath);
+    String got = bout.toString();
+    assertThat(got).contains("how old is the Brooklyn Bridge");
+    assertThat(got).contains("\t0.0 sec -");
+  }
 
   @Test
   public void testStreamRecognize() throws Exception {
-    Recognize.streamingRecognizeFile(fileName);
+    Recognize.streamingRecognizeFile(audioFileName);
     String got = bout.toString();
     assertThat(got).contains("how old is the Brooklyn Bridge");
   }
 
   @Test
   public void testAutomaticPunctuationFile() throws Exception {
-    Recognize.transcribeFileWithAutomaticPunctuation(fileName);
+    Recognize.transcribeFileWithAutomaticPunctuation(audioFileName);
     String got = bout.toString();
     assertThat(got).contains("How");
     assertThat(got).contains("Bridge?");
@@ -116,7 +120,7 @@ public class RecognizeIT {
 
   @Test
   public void testAutomaticPunctuationGcs() throws Exception {
-    Recognize.transcribeGcsWithAutomaticPunctuation(gcsPath);
+    Recognize.transcribeGcsWithAutomaticPunctuation(gcsAudioPath);
     String got = bout.toString();
     assertThat(got).contains("How");
     assertThat(got).contains("Bridge?");
@@ -124,15 +128,15 @@ public class RecognizeIT {
 
   @Test
   public void testVideoTranscription() throws Exception {
-    Recognize.transcribeVideoFile(fileName);
+    Recognize.transcribeVideoFile(videoFileName);
     String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
+    assertThat(got).contains("OK Google");
   }
 
   @Test
   public void testGcsVideoTranscription() throws Exception {
-    Recognize.transcribeGcsVideoFile(gcsPath);
+    Recognize.transcribeGcsVideoFile(gcsVideoPath);
     String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
+    assertThat(got).contains("OK Google");
   }
 }
