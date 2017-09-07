@@ -523,8 +523,10 @@ public class Recognize {
 
       // Configure request with video media type
       RecognitionConfig recConfig = RecognitionConfig.newBuilder()
+          // encoding may either be omitted or must match the value in the file header
           .setEncoding(AudioEncoding.LINEAR16)
           .setLanguageCode("en-US")
+          // sample rate hertz may be either be omitted or must match the value in the file header
           .setSampleRateHertz(16000)
           .setMetadata(recognitionMetadata)
           .build();
@@ -539,12 +541,13 @@ public class Recognize {
 
       if (results.isEmpty()) {
         System.out.println("No results");
-        return;
       }
-      List<SpeechRecognitionAlternative> alternatives = results.get(0).getAlternativesList();
-      for (SpeechRecognitionAlternative alternative : alternatives) {
-        System.out.printf("Confidence : %f, Transcript : %s\n", alternative.getConfidence(),
-            alternative.getTranscript());
+      for (SpeechRecognitionResult recognitionResult: results) {
+        List<SpeechRecognitionAlternative> alternatives = recognitionResult.getAlternativesList();
+        for (SpeechRecognitionAlternative alternative : alternatives) {
+          System.out.printf("Confidence : %f, Transcript : %s\n", alternative.getConfidence(),
+              alternative.getTranscript());
+        }
       }
     }
     // [END transcribe_video_file]
@@ -565,8 +568,10 @@ public class Recognize {
 
       // Configure request with video media type
       RecognitionConfig config = RecognitionConfig.newBuilder()
+          // encoding may either be omitted or must match the value in the file header
           .setEncoding(AudioEncoding.LINEAR16)
           .setLanguageCode("en-US")
+          // sample rate hertz may be either be omitted or must match the value in the file header
           .setSampleRateHertz(16000)
           .setMetadata(recognitionMetadata)
           .build();
@@ -586,6 +591,9 @@ public class Recognize {
 
       List<SpeechRecognitionResult> results = response.get().getResultsList();
 
+      if (results.isEmpty()) {
+        System.out.println("No results");
+      }
       for (SpeechRecognitionResult result: results) {
         List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
         for (SpeechRecognitionAlternative alternative: alternatives) {
