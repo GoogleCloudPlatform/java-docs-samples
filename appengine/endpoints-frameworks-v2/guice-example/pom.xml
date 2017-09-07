@@ -19,7 +19,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <groupId>com.example.echo</groupId>
-    <artifactId>echo</artifactId>
+    <artifactId>echo-guice</artifactId>
 
     <parent>
         <artifactId>appengine-doc-samples</artifactId>

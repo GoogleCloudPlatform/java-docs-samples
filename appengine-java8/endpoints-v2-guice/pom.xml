@@ -19,7 +19,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <groupId>com.example.echo</groupId>
-    <artifactId>echo</artifactId>
+    <artifactId>echo-guice-j8</artifactId>
 
     <parent>
         <artifactId>appengine-java8-samples</artifactId>
