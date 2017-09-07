@@ -130,7 +130,7 @@ public class Recognize {
         // There can be several alternative transcripts for a given chunk of speech. Just use the
         // first (most likely) one here.
         SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-          System.out.printf("Transcription: %s%n", alternative.getTranscript());
+        System.out.printf("Transcription: %s%n", alternative.getTranscript());
       }
     }
   }
@@ -178,7 +178,6 @@ public class Recognize {
     }
   }
 
-
   /**
    * Performs speech recognition on remote FLAC file and prints the transcription.
    *
@@ -209,6 +208,7 @@ public class Recognize {
       }
     }
   }
+
 
   /**
    * Performs non-blocking speech recognition on raw PCM audio and prints
@@ -415,11 +415,14 @@ public class Recognize {
     List<StreamingRecognizeResponse> responses = responseObserver.future().get();
 
     for (StreamingRecognizeResponse response: responses) {
-      for (StreamingRecognitionResult result: response.getResultsList()) {
-        for (SpeechRecognitionAlternative alternative : result.getAlternativesList()) {
-          System.out.println(alternative.getTranscript());
-        }
-      }
+      // For streaming recognize, the results list has one is_final result (if available) followed
+      // by a number of in-progress results (if iterim_results is true) for subsequent utterances.
+      // Just print the first result here.
+      StreamingRecognitionResult result = response.getResultsList().get(0);
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
     speech.close();
   }
@@ -448,18 +451,13 @@ public class Recognize {
           .setContent(ByteString.copyFrom(content))
           .build();
 
-      RecognizeResponse result = speechClient.recognize(recConfig, recognitionAudio);
-      List<SpeechRecognitionResult> results = result.getResultsList();
-
-      if (results.isEmpty()) {
-        System.out.println("No results");
-        return;
-      }
-      List<SpeechRecognitionAlternative> alternatives = results.get(0).getAlternativesList();
-      for (SpeechRecognitionAlternative alternative : alternatives) {
-        System.out.printf("Confidence : %f, Transcript : %s\n", alternative.getConfidence(),
-            alternative.getTranscript());
-      }
+      RecognizeResponse recognizeResponse = speechClient.recognize(recConfig, recognitionAudio);
+      // Just print the first result here.
+      SpeechRecognitionResult result = recognizeResponse.getResultsList().get(0);
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
     // [END transcribe_file_with_automatic_punctuation]
   }
@@ -492,15 +490,13 @@ public class Recognize {
         Thread.sleep(10000);
       }
 
-      List<SpeechRecognitionResult> results = response.get().getResultsList();
+      // Just print the first result here.
+      SpeechRecognitionResult result = response.get().getResultsList().get(0);
 
-      for (SpeechRecognitionResult result: results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative: alternatives) {
-          System.out.printf("Confidence : %f, Transcript : %s\n", alternative.getConfidence(),
-              alternative.getTranscript());
-        }
-      }
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
     // [START transcribe_gcs_with_automatic_punctuation]
   }
@@ -536,19 +532,13 @@ public class Recognize {
           .build();
 
 
-      RecognizeResponse result = speech.recognize(recConfig, recognitionAudio);
-      List<SpeechRecognitionResult> results = result.getResultsList();
-
-      if (results.isEmpty()) {
-        System.out.println("No results");
-      }
-      for (SpeechRecognitionResult recognitionResult: results) {
-        List<SpeechRecognitionAlternative> alternatives = recognitionResult.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
-          System.out.printf("Confidence : %f, Transcript : %s\n", alternative.getConfidence(),
-              alternative.getTranscript());
-        }
-      }
+      RecognizeResponse recognizeResponse = speech.recognize(recConfig, recognitionAudio);
+      // Just print the first result here.
+      SpeechRecognitionResult result = recognizeResponse.getResultsList().get(0);
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+              System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
     // [END transcribe_video_file]
   }
@@ -591,16 +581,12 @@ public class Recognize {
 
       List<SpeechRecognitionResult> results = response.get().getResultsList();
 
-      if (results.isEmpty()) {
-        System.out.println("No results");
-      }
-      for (SpeechRecognitionResult result: results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative: alternatives) {
-          System.out.printf("Confidence : %f, Transcript : %s\n",alternative.getConfidence(),
-              alternative.getTranscript());
-        }
-      }
+      // Just print the first result here.
+      SpeechRecognitionResult result = results.get(0);
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
     // [START transcribe_video_gcs]
   }
