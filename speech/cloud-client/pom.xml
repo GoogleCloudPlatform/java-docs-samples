@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.21.1-alpha</version>
+      <version>0.22.0-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

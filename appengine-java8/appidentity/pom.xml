@@ -30,7 +30,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <appengine.sdk.version>1.9.54</appengine.sdk.version>
+    <appengine.sdk.version>1.9.55</appengine.sdk.version>
   </properties>
 
   <dependencies>
@@ -95,7 +95,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
