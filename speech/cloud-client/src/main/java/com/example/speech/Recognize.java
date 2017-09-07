@@ -127,10 +127,10 @@ public class Recognize {
       List<SpeechRecognitionResult> results = response.getResultsList();
 
       for (SpeechRecognitionResult result : results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
+        // There can be several alternative transcripts for a given chunk of speech. Just use the
+        // first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
           System.out.printf("Transcription: %s%n", alternative.getTranscript());
-        }
       }
     }
   }
@@ -162,17 +162,17 @@ public class Recognize {
       List<SpeechRecognitionResult> results = response.getResultsList();
 
       for (SpeechRecognitionResult result : results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
-          System.out.printf("Transcription: %s%n", alternative.getTranscript());
-          for (WordInfo wordInfo : alternative.getWordsList()) {
-            System.out.println(wordInfo.getWord());
-            System.out.printf("\t%s.%s sec - %s.%s sec\n",
-                wordInfo.getStartTime().getSeconds(),
-                wordInfo.getStartTime().getNanos() / 100000000,
-                wordInfo.getEndTime().getSeconds(),
-                wordInfo.getEndTime().getNanos() / 100000000);
-          }
+        // There can be several alternative transcripts for a given chunk of speech. Just use the
+        // first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+        System.out.printf("Transcription: %s%n", alternative.getTranscript());
+        for (WordInfo wordInfo : alternative.getWordsList()) {
+          System.out.println(wordInfo.getWord());
+          System.out.printf("\t%s.%s sec - %s.%s sec\n",
+              wordInfo.getStartTime().getSeconds(),
+              wordInfo.getStartTime().getNanos() / 100000000,
+              wordInfo.getEndTime().getSeconds(),
+              wordInfo.getEndTime().getNanos() / 100000000);
         }
       }
     }
@@ -202,10 +202,10 @@ public class Recognize {
       List<SpeechRecognitionResult> results = response.getResultsList();
 
       for (SpeechRecognitionResult result : results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
-          System.out.printf("Transcription: %s%n", alternative.getTranscript());
-        }
+        // There can be several alternative transcripts for a given chunk of speech. Just use the
+        // first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+        System.out.printf("Transcription: %s%n", alternative.getTranscript());
       }
     }
   }
@@ -246,10 +246,10 @@ public class Recognize {
       List<SpeechRecognitionResult> results = response.get().getResultsList();
 
       for (SpeechRecognitionResult result : results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
-          System.out.printf("Transcription: %s%n", alternative.getTranscript());
-        }
+        // There can be several alternative transcripts for a given chunk of speech. Just use the
+        // first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+        System.out.printf("Transcription: %s%n", alternative.getTranscript());
       }
     }
   }
@@ -287,17 +287,17 @@ public class Recognize {
       List<SpeechRecognitionResult> results = response.get().getResultsList();
 
       for (SpeechRecognitionResult result : results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
-          System.out.printf("Transcription: %s\n", alternative.getTranscript());
-          for (WordInfo wordInfo : alternative.getWordsList()) {
-            System.out.println(wordInfo.getWord());
-            System.out.printf("\t%s.%s sec - %s.%s sec\n",
-                wordInfo.getStartTime().getSeconds(),
-                wordInfo.getStartTime().getNanos() / 100000000,
-                wordInfo.getEndTime().getSeconds(),
-                wordInfo.getEndTime().getNanos() / 100000000);
-          }
+        // There can be several alternative transcripts for a given chunk of speech. Just use the
+        // first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+        System.out.printf("Transcription: %s\n", alternative.getTranscript());
+        for (WordInfo wordInfo : alternative.getWordsList()) {
+          System.out.println(wordInfo.getWord());
+          System.out.printf("\t%s.%s sec - %s.%s sec\n",
+              wordInfo.getStartTime().getSeconds(),
+              wordInfo.getStartTime().getNanos() / 100000000,
+              wordInfo.getEndTime().getSeconds(),
+              wordInfo.getEndTime().getNanos() / 100000000);
         }
       }
     }
@@ -334,10 +334,10 @@ public class Recognize {
       List<SpeechRecognitionResult> results = response.get().getResultsList();
 
       for (SpeechRecognitionResult result : results) {
-        List<SpeechRecognitionAlternative> alternatives = result.getAlternativesList();
-        for (SpeechRecognitionAlternative alternative : alternatives) {
-          System.out.printf("Transcription: %s\n", alternative.getTranscript());
-        }
+        // There can be several alternative transcripts for a given chunk of speech. Just use the
+        // first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+        System.out.printf("Transcription: %s\n", alternative.getTranscript());
       }
     }
   }
