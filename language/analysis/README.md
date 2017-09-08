@@ -99,6 +99,20 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
   "There's nothing better than searching for ice cream on Google."
 ```
 
+Analyze categories in text Beta
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.AnalyzeBeta classify \
+  "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."
+```
+
+Analyze categories in GCS file Beta
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.AnalyzeBeta classify \
+  "gs://cloud-samples-tests/natural-language/android-text.txt"
+```
+
 Run beta demo from *nix or OSX
 ```
 demo-beta.sh
