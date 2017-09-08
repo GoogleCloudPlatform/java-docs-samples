@@ -1,5 +1,5 @@
 <!--
- Copyright 2016 Google Inc.
+ Copyright 2017 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <groupId>com.example.echo</groupId>
-    <artifactId>echo-j8</artifactId>
+    <artifactId>echo-guice-j8</artifactId>
 
     <parent>
         <artifactId>appengine-java8-samples</artifactId>
@@ -46,6 +46,11 @@
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework</artifactId>
             <version>${endpoints.framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.endpoints</groupId>
+            <artifactId>endpoints-framework-guice</artifactId>
+            <version>2.0.8</version>
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>
@@ -100,11 +105,21 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <configuration>
                     <!-- plugin configuration -->
                     <hostname>${endpoints.project.id}.appspot.com</hostname>
+                    <serviceClasses>
+                      <serviceClass>com.example.echo.Echo</serviceClass>
+                    </serviceClasses>
                 </configuration>
+                <dependencies>
+                  <dependency>
+                      <groupId>com.google.endpoints</groupId>
+                      <artifactId>endpoints-management-control-appengine-all</artifactId>
+                      <version>1.0.4</version>
+                  </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

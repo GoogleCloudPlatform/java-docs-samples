@@ -1,7 +1,7 @@
-# App Engine Standard & Google Cloud Endpoints Frameworks & Java
+# App Engine Standard & Google Cloud Endpoints Frameworks
 
-This sample demonstrates how to use Google Cloud Endpoints Frameworks using
-Java on App Engine Standard.
+This sample demonstrates how to use Google Cloud Endpoints Frameworks with Guice
+on App Engine Standard.
 
 ## Build with Maven
 

@@ -45,6 +45,7 @@ apply plugin: 'com.google.cloud.tools.appengine'
 dependencies {
     // For real projects: use concrete versions here instead of the '+' to make your build consistent
     compile 'com.google.endpoints:endpoints-framework:+'
+    compile 'com.google.endpoints:endpoints-framework-guice:+'
     compile 'com.google.endpoints:endpoints-management-control-appengine:+'
     compile 'com.google.endpoints:endpoints-framework-auth:+'
 }
@@ -52,6 +53,7 @@ dependencies {
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
   hostname = "${projectId}.appspot.com"
+  serviceClasses = ['com.example.echo.Echo']
 }
 
 appengine {  // App Engine tasks configuration
@@ -65,14 +67,14 @@ appengine {  // App Engine tasks configuration
   }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.8  // App Engine Standard uses Java 8
+targetCompatibility = 1.8  // App Engine Standard uses Java 8
 
 // this replaces the ${endpoints.project.id} in appengine-web.xml and web.xml
 task replaceProjectId(type: Copy) {
     from 'src/main/webapp/WEB-INF/'
     include '*.xml'
-    into "build/exploded-${archivesBaseName}/WEB-INF"
+    into 'build/exploded-endpoints-v2-guice/WEB-INF'
     expand(endpoints:[project:[id:projectId]])
     filteringCharset = 'UTF-8'
 }
