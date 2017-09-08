@@ -54,11 +54,10 @@ public class StorageSample {
     Storage.Objects.List listRequest = client.objects().list(bucketName);
 
     List<StorageObject> results = new ArrayList<StorageObject>();
-    Objects objects;
 
     // Iterate through each page of results, and add them to our results list.
     do {
-      objects = listRequest.execute();
+      Objects objects = listRequest.execute();
       // Add the items in this page of results to the list we'll return.
       results.addAll(objects.getItems());
 
@@ -164,7 +163,6 @@ public class StorageSample {
       for (StorageObject object : bucketContents) {
         System.out.println(object.getName() + " (" + object.getSize() + " bytes)");
       }
-
 
       // Create a temp file to upload
       Path tempPath = Files.createTempFile("StorageSample", "txt");
