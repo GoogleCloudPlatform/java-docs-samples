@@ -24,21 +24,21 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.servlet.GuiceFilter;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Singleton;
 
 // [START endpoints_module]
 public class EchoEndpointModule extends EndpointsModule {
   @Override
   public void configureServlets() {
-    filter("/_ah/api/*").through(GuiceFilter.class);
-
     Map<String, String> apiController = new HashMap<String, String>();
     apiController.put("endpoints.projectId", "YOUR_PROJECT_ID");
     apiController.put("endpoints.serviceName", "YOUR_PROJECT_ID.appspot.com");
 
+    bind(ServiceManagementConfigFilter.class).in(Singleton.class);
     filter("/_ah/api/*").through(ServiceManagementConfigFilter.class);
-    filter("/_ah/api/*").through(GoogleAppEngineControlFilter.class, apiController);
 
-    serve("/_ah/api/*").with(EndpointsServlet.class);
+    bind(GoogleAppEngineControlFilter.class).in(Singleton.class);
+    filter("/_ah/api/*").through(GoogleAppEngineControlFilter.class, apiController);
 
     bind(Echo.class).toInstance(new Echo());
     configureEndpoints("/_ah/api/*", ImmutableList.of(Echo.class));
