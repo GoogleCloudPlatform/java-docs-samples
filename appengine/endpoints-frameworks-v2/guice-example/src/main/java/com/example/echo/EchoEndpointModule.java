@@ -16,13 +16,30 @@
 
 package com.example.echo;
 
+import com.google.api.control.ServiceManagementConfigFilter;
+import com.google.api.control.extensions.appengine.GoogleAppEngineControlFilter;
+import com.google.api.server.spi.EndpointsServlet;
 import com.google.api.server.spi.guice.EndpointsModule;
 import com.google.common.collect.ImmutableList;
+import com.google.inject.servlet.GuiceFilter;
+import java.util.HashMap;
+import java.util.Map;
 
 // [START endpoints_module]
 public class EchoEndpointModule extends EndpointsModule {
   @Override
   public void configureServlets() {
+    filter("/_ah/api/*").through(GuiceFilter.class);
+
+    Map<String, String> apiController = new HashMap<String, String>();
+    apiController.put("endpoints.projectId", "YOUR_PROJECT_ID");
+    apiController.put("endpoints.serviceName", "YOUR_PROJECT_ID.appspot.com");
+
+    filter("/_ah/api/*").through(ServiceManagementConfigFilter.class);
+    filter("/_ah/api/*").through(GoogleAppEngineControlFilter.class, apiController);
+
+    serve("/_ah/api/*").with(EndpointsServlet.class);
+
     bind(Echo.class).toInstance(new Echo());
     configureEndpoints("/_ah/api/*", ImmutableList.of(Echo.class));
     super.configureServlets();
