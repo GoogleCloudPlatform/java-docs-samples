@@ -30,19 +30,20 @@ import javax.inject.Singleton;
 public class EchoEndpointModule extends EndpointsModule {
   @Override
   public void configureServlets() {
-    Map<String, String> apiController = new HashMap<String, String>();
-    apiController.put("endpoints.projectId", "YOUR_PROJECT_ID");
-    apiController.put("endpoints.serviceName", "YOUR_PROJECT_ID.appspot.com");
+    super.configureServlets();
 
     bind(ServiceManagementConfigFilter.class).in(Singleton.class);
     filter("/_ah/api/*").through(ServiceManagementConfigFilter.class);
+
+    Map<String, String> apiController = new HashMap<String, String>();
+    apiController.put("endpoints.projectId", "YOUR-PROJECT-ID");
+    apiController.put("endpoints.serviceName", "YOUR-PROJECT-ID.appspot.com");
 
     bind(GoogleAppEngineControlFilter.class).in(Singleton.class);
     filter("/_ah/api/*").through(GoogleAppEngineControlFilter.class, apiController);
 
     bind(Echo.class).toInstance(new Echo());
     configureEndpoints("/_ah/api/*", ImmutableList.of(Echo.class));
-    super.configureServlets();
   }
 }
 // [END endpoints_module]
