@@ -37,8 +37,8 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <bigtable.version>0.9.6.2</bigtable.version>
-    <hbase.version>1.2.4</hbase.version>
+    <bigtable.version>0.9.7.1</bigtable.version>
+    <hbase.version>2.0.0-alpha2</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
 
@@ -66,7 +66,7 @@ limitations under the License.
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork26</version>
+      <version>2.0.6.Final</version>
     </dependency>
 
     <!-- Compile/runtime dependencies -->
@@ -88,7 +88,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.30</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
 
