@@ -1,7 +1,7 @@
-# App Engine Standard & Google Cloud Endpoints Frameworks & Java
+# App Engine Standard & Google Cloud Endpoints Frameworks
 
-This sample demonstrates how to use Google Cloud Endpoints Frameworks using
-Java on App Engine Standard.
+This sample demonstrates how to use Google Cloud Endpoints Frameworks with Guice
+on App Engine Standard.
 
 ## Build with Maven
 
@@ -17,7 +17,8 @@ To add the project ID:
 0. For `<endpoints.project.id>`, replace the value `YOUR_PROJECT_ID` with
 your project ID.
 
-0. Edit the file `src/main/java/com/example/echo/Echo.java`.
+0. Edit the file `src/main/java/com/example/echo/Echo.java` and
+   `src/main/java/com/example/echo/EchoEndpointModule.java`.
 
 0. Replace the value `YOUR-PROJECT-ID` with your project ID.
 
@@ -82,7 +83,8 @@ You will get a 200 response with the following data:
 0. For `def projectId = 'YOUR_PROJECT_ID'`, replace the value `YOUR_PROJECT_ID`
 with your project ID.
 
-0. Edit the file `src/main/java/com/example/echo/Echo.java
+0. Edit the file `src/main/java/com/example/echo/Echo.java` and
+   `src/main/java/com/example/echo/EchoEndpointModule.java`
 
 0. Replace the value `YOUR-PROJECT-ID` with your project ID.
 

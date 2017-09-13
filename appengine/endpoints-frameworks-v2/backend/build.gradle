@@ -54,6 +54,17 @@ endpointsServer {
   hostname = "${projectId}.appspot.com"
 }
 
+appengine {  // App Engine tasks configuration
+  deploy {   // deploy configuration
+    version = findProperty("appengine.deploy.version")
+
+    def promoteProp = findProperty("appengine.deploy.promote")
+    if (promoteProp != null) {
+      promote = new Boolean(promoteProp)
+    }
+  }
+}
+
 sourceCompatibility = 1.7  // App Engine Standard uses Java 7
 targetCompatibility = 1.7  // App Engine Standard uses Java 7
 

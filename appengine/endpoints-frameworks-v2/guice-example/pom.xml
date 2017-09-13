@@ -1,5 +1,5 @@
 <!--
- Copyright 2016 Google Inc.
+ Copyright 2017 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <groupId>com.example.echo</groupId>
-    <artifactId>echo</artifactId>
+    <artifactId>echo-guice</artifactId>
 
     <parent>
         <artifactId>appengine-doc-samples</artifactId>
@@ -46,6 +46,11 @@
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework</artifactId>
             <version>${endpoints.framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.endpoints</groupId>
+            <artifactId>endpoints-framework-guice</artifactId>
+            <version>2.0.8</version>
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>
@@ -89,6 +94,9 @@
                 <configuration>
                     <!-- plugin configuration -->
                     <hostname>${endpoints.project.id}.appspot.com</hostname>
+                    <serviceClasses>
+                      <serviceClass>com.example.echo.Echo</serviceClass>
+                    </serviceClasses>
                 </configuration>
             </plugin>
             <plugin>
