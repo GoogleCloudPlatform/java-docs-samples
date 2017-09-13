@@ -22,6 +22,11 @@
         <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
     </filter>
 
+    <!--
+      URL Pattern /_ah/api/* instead of /* because a legacy v1 servlet uses
+      the route /_ah/api/ and using /* will erronously use the legacy v1
+      servlet instead of routing to your API.
+    -->
     <filter-mapping>
         <filter-name>guiceFilter</filter-name>
         <url-pattern>/_ah/api/*</url-pattern>
@@ -35,33 +40,4 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
-    <!-- Add a filter that fetches the service config from service management. -->
-    <filter>
-        <filter-name>endpoints-api-configuration</filter-name>
-        <filter-class>com.google.api.control.ServiceManagementConfigFilter</filter-class>
-    </filter>
-
-    <!-- Add a filter that performs Endpoints logging and monitoring. -->
-    <filter>
-        <filter-name>endpoints-api-controller</filter-name>
-        <filter-class>com.google.api.control.extensions.appengine.GoogleAppEngineControlFilter</filter-class>
-        <init-param>
-            <param-name>endpoints.projectId</param-name>
-            <param-value>${endpoints.project.id}</param-value>
-        </init-param>
-        <init-param>
-            <param-name>endpoints.serviceName</param-name>
-            <param-value>${endpoints.project.id}.appspot.com</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>endpoints-api-configuration</filter-name>
-        <servlet-name>EndpointsServlet</servlet-name>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>endpoints-api-controller</filter-name>
-        <servlet-name>EndpointsServlet</servlet-name>
-    </filter-mapping>
 </web-app>
