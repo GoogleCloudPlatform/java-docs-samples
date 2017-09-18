@@ -38,14 +38,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>0.21.1-beta</version>
+      <version>0.23.1-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.7.1</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

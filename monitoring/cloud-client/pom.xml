@@ -39,12 +39,12 @@
       <dependency>
         <groupId>com.google.auth</groupId>
         <artifactId>google-auth-library-credentials</artifactId>
-        <version>0.7.1</version>
+        <version>0.8.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.auth</groupId>
         <artifactId>google-auth-library-oauth2-http</artifactId>
-        <version>0.7.1</version>
+        <version>0.8.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.21.1-alpha</version>
+      <version>0.23.1-alpha</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
