@@ -136,4 +136,27 @@ public class AnalyzeIT {
         Tag.ADV, Tag.PRON, Tag.VERB, Tag.VERB, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.DET,
         Tag.NOUN, Tag.VERB, Tag.ADV, Tag.ADJ, Tag.PUNCT).inOrder();
   }
+
+  @Test
+  public void analyzeEntitySentimentTextReturnsExpectedResult() throws Exception {
+    Analyze.entitySentimentText("Oranges, grapes, and apples can be "
+        + "found in the cafeterias located in Mountain View, Seattle, and London.");
+    String got = bout.toString();
+    assertThat(got).contains("Seattle");
+  }
+
+  @Test
+  public void analyzeEntitySentimentTextEncodedReturnsExpectedResult() throws Exception {
+    Analyze.entitySentimentText("foo→bar");
+    String got = bout.toString();
+    assertThat(got).contains("offset: 4");
+  }
+
+  @Test
+  public void analyzeEntitySentimenFileReturnsExpectedResult() throws Exception {
+    Analyze.entitySentimentFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
+    String got = bout.toString();
+    assertThat(got).contains("God");
+  }
+
 }

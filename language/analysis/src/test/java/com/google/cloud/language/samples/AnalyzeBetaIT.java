@@ -56,28 +56,6 @@ public class AnalyzeBetaIT {
   }
 
   @Test
-  public void analyzeEntitySentimentTextReturnsExpectedResult() throws Exception {
-    AnalyzeBeta.entitySentimentText("Oranges, grapes, and apples can be "
-        + "found in the cafeterias located in Mountain View, Seattle, and London.");
-    String got = bout.toString();
-    assertThat(got).contains("Seattle");
-  }
-
-  @Test
-  public void analyzeEntitySentimentTextEncodedReturnsExpectedResult() throws Exception {
-    AnalyzeBeta.entitySentimentText("foo→bar");
-    String got = bout.toString();
-    assertThat(got).contains("offset: 4");
-  }
-
-  @Test
-  public void analyzeEntitySentimenFileReturnsExpectedResult() throws Exception {
-    AnalyzeBeta.entitySentimentFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
-    String got = bout.toString();
-    assertThat(got).contains("God");
-  }
-
-  @Test
   public void analyzeCategoriesInTextReturnsExpectedResult() throws Exception {
     AnalyzeBeta.classifyText("Android is a mobile operating system developed by Google, "
         + "based on the Linux kernel and designed primarily for touchscreen "

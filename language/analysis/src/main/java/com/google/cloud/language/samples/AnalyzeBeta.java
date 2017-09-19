@@ -60,12 +60,6 @@ public class AnalyzeBeta {
       } else {
         classifyText(text);
       }
-    } else if (command.equals("entities-sentiment")) {
-      if (text.startsWith("gs://")) {
-        entitySentimentFile(text);
-      } else {
-        entitySentimentText(text);
-      }
     } else if (command.equals("sentiment")) {
       analyzeSentimentText(text, lang);
     }
@@ -104,70 +98,6 @@ public class AnalyzeBeta {
     // [END beta_sentiment_text]
   }
 
-  /**
-   * Detects the entity sentiments in the string {@code text} using the Language Beta API.
-   */
-  public static void entitySentimentText(String text) throws Exception {
-    // [START entity_sentiment_text]
-    // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setContent(text).setType(Type.PLAIN_TEXT).build();
-      AnalyzeEntitySentimentRequest request = AnalyzeEntitySentimentRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16).build();
-      // detect entity sentiments in the given string
-      AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
-      // Print the response
-      for (Entity entity : response.getEntitiesList()) {
-        System.out.printf("Entity: %s\n", entity.getName());
-        System.out.printf("Salience: %.3f\n", entity.getSalience());
-        System.out.printf("Sentiment : %s\n", entity.getSentiment());
-        for (EntityMention mention : entity.getMentionsList()) {
-          System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
-          System.out.printf("Content: %s\n", mention.getText().getContent());
-          System.out.printf("Magnitude: %.3f\n", mention.getSentiment().getMagnitude());
-          System.out.printf("Sentiment score : %.3f\n", mention.getSentiment().getScore());
-          System.out.printf("Type: %s\n\n", mention.getType());
-        }
-      }
-    }
-    // [END entity_sentiment_text]
-  }
-
-  /**
-   * Identifies the entity sentiments in the the GCS hosted file using the Language Beta API.
-   */
-  public static void entitySentimentFile(String gcsUri) throws Exception {
-    // [START entity_sentiment_file]
-    // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      AnalyzeEntitySentimentRequest request = AnalyzeEntitySentimentRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16)
-          .build();
-      // Detect entity sentiments in the given file
-      AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
-      // Print the response
-      for (Entity entity : response.getEntitiesList()) {
-        System.out.printf("Entity: %s\n", entity.getName());
-        System.out.printf("Salience: %.3f\n", entity.getSalience());
-        System.out.printf("Sentiment : %s\n", entity.getSentiment());
-        for (EntityMention mention : entity.getMentionsList()) {
-          System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
-          System.out.printf("Content: %s\n", mention.getText().getContent());
-          System.out.printf("Magnitude: %.3f\n", mention.getSentiment().getMagnitude());
-          System.out.printf("Sentiment score : %.3f\n", mention.getSentiment().getScore());
-          System.out.printf("Type: %s\n\n", mention.getType());
-        }
-      }
-    }
-    // [END entity_sentiment_file]
-  }
 
   /**
    * Detects categories in text using the Language Beta API.
