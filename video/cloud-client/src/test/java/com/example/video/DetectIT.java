@@ -58,7 +58,7 @@ public class DetectIT {
     // Model changes have caused the results from face detection to change to an
     // empty response (e.g. no faces detected) so we check either for an empty
     // response or that a response with face thumbnails was returned.
-    if (got.indexOf("No faces detected") == 0) {
+    if (got.indexOf("No faces detected") == -1) {
       assertThat(got).contains("Thumbnail size:");
     } else {
       // No faces detected, verify sample reports this.
