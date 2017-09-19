@@ -56,6 +56,7 @@
         <module>datastore/indexes-perfect</module>
         <module>endpoints-frameworks-v2/backend</module>
         <module>endpoints-frameworks-v2/migration-example</module>
+        <module>endpoints-frameworks-v2/guice-example</module>
         <module>firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>firebase-tictactoe</module>
 
