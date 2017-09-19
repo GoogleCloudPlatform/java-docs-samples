@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.22.1-alpha-SNAPSHOT</version>
+      <version>0.24.0-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
