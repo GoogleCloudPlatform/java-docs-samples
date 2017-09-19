@@ -34,4 +34,4 @@ provides an example of enhancing log entries with additional labels.
     mvn exec:java -Dexec.mainClass=com.example.logging.jul.Quickstart \
         -Dexec.args="-Djava.util.logging.file=src/main/resources/logging.properties"           
 
-Logs can be viewed using the [Logs Viewer Console](https://pantheon.corp.google.com/logs/viewer).
+Logs can be viewed using the [Logs Viewer Console](https://console.cloud.google.com/logs/viewer).

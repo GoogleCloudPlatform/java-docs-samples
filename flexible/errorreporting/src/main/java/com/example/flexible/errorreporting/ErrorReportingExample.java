@@ -53,13 +53,12 @@ public class ErrorReportingExample extends HttpServlet {
     try (ReportErrorsServiceClient reportErrorsServiceClient = ReportErrorsServiceClient.create()) {
       // custom exception logged using the API
       Exception e = new Exception("custom event reported using the API");
-      // Events reported using the API must contain a stack trace message
-      StringWriter stackTrace = new StringWriter();
-      e.printStackTrace(new PrintWriter(stackTrace));
+      StringWriter sw = new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
       ReportedErrorEvent errorEvent =
           ReportedErrorEvent.getDefaultInstance()
               .toBuilder()
-              .setMessage(stackTrace.toString())
+              .setMessage(sw.toString())
               .build();
       // default project id
       ProjectName projectName = ProjectName.create(ServiceOptions.getDefaultProjectId());

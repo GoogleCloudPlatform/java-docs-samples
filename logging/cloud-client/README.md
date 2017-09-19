@@ -31,4 +31,4 @@ Build your project with:
            -Dexec.args="my-log"
  
 
-Logs can also viewed using the [Logs Viewer Console](https://pantheon.corp.google.com/logs/viewer).
+Logs can also viewed using the [Logs Viewer Console](https://console.cloud.google.com/logs/viewer).
