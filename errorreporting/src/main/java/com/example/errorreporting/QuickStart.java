@@ -21,11 +21,15 @@ import com.google.devtools.clouderrorreporting.v1beta1.ErrorContext;
 import com.google.devtools.clouderrorreporting.v1beta1.ProjectName;
 import com.google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent;
 import com.google.devtools.clouderrorreporting.v1beta1.SourceLocation;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
- * Snippet demonstrates using the Google Cloud Error Reporting API to report a custom error event.
+ * Snippet demonstrates using the Stackdriver Error Reporting API to report a custom error event.
+
+ * This library is not required on App Engine, errors written to stderr are automatically written
+ * to Stackdriver Error Reporting.
+ * It is also not required if you are writing logs to Stackdriver Logging.
+ * Errors written to Stackdriver Logging that contain an exception or stack trace
+ * are automatically written out to Stackdriver Error Reporting.
  */
 public class QuickStart {
   public static void main(String[] args) throws Exception {
@@ -45,6 +49,7 @@ public class QuickStart {
                   .setFunctionName("myMethod")
                   .build())
           .build();
+
       //Report a custom error event
       ReportedErrorEvent customErrorEvent = ReportedErrorEvent.getDefaultInstance()
               .toBuilder()
@@ -53,17 +58,6 @@ public class QuickStart {
               .build();
       // Report an event synchronously, use .reportErrorEventCallable for asynchronous reporting.
       reportErrorsServiceClient.reportErrorEvent(projectName, customErrorEvent);
-
-      // Report a stack trace from an exception using the API
-      // Stack trace / exception reporting does not require source location
-      Exception e = new Exception("custom event reported using the API");
-      StringWriter sw = new StringWriter();
-      e.printStackTrace(new PrintWriter(sw));
-      ReportedErrorEvent stackTraceEvent = ReportedErrorEvent.getDefaultInstance()
-          .toBuilder()
-          .setMessage(sw.toString())
-          .build();
-      reportErrorsServiceClient.reportErrorEvent(projectName, stackTraceEvent);
     }
   }
 }
