@@ -1,4 +1,4 @@
-# Stack Driver Error Reporting sample
+# Stackdriver Error Reporting sample
 
 [Stackdriver Error Reporting][error-reporting] Stackdriver Error Reporting counts, analyzes and aggregates the crashes in your running cloud services.
 A [centralized error management interface](https://console.cloud.google.com/errors) displays the results with sorting and filtering capabilities.
