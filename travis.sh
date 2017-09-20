@@ -79,7 +79,7 @@ echo "Common Dir: ${common_dir}"
 
 # Give Maven a bit more memory
 export MAVEN_OPTS='-Xmx800m -Xms400m'
-mvn --batch-mode clean verify -e \
+mvn --batch-mode --fail-at-end clean verify -e \
     -DskipTests=$SKIP_TESTS \
     -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
     -Dbigtable.instanceID=instance | \

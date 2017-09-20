@@ -40,10 +40,6 @@
         <maven.compiler.source>1.7</maven.compiler.source>
     </properties>
 
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
-
     <modules>
         <!-- App Engine Standard -->
         <module>analytics</module>
