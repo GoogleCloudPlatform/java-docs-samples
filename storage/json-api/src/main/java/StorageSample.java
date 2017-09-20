@@ -55,9 +55,10 @@ public class StorageSample {
 
     List<StorageObject> results = new ArrayList<StorageObject>();
 
+    Objects objects;
     // Iterate through each page of results, and add them to our results list.
     do {
-      Objects objects = listRequest.execute();
+      objects = listRequest.execute();
       // Add the items in this page of results to the list we'll return.
       results.addAll(objects.getItems());
 
