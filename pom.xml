@@ -54,6 +54,8 @@
 
         <module>dlp</module>
 
+        <module>errorreporting</module>
+
         <module>iap</module>
 
         <module>kms</module>
