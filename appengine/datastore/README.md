@@ -1,5 +1,9 @@
 # Google Cloud Datastore Sample
 
+# DEPRECATED
+
+### This sample uses endpoints v1 the preferred strategy for new development is to use Endpoints v2
+
 This sample demonstrates how to use [Google Cloud Datastore][java-datastore]
 from [Google App Engine standard environment][ae-docs].
 
