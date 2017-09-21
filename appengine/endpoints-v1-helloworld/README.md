@@ -1,6 +1,10 @@
 endpoints-skeleton
 ==================
 
+# DEPRECATED
+
+### This sample uses endpoints v1 the preferred strategy for new development is to use Endpoints v2
+
 A skeleton application for Google Cloud Endpoints in Java.
 
 - [App Engine][1]
@@ -22,7 +26,7 @@ A skeleton application for Google Cloud Endpoints in Java.
 
     1. Update the values in `src/main/java/com/example/helloworld/Constants.java`
        to reflect the respective client IDs you have registered in the
-       [APIs Console][6]. 
+       [APIs Console][6].
 
     1. You also need to supply the web client ID you have registered
        in the [APIs Console][4] to your client of choice (web, Android,
