@@ -20,16 +20,10 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Charsets;
-import com.google.api.services.cloudiot.v1beta1.CloudIot;
-import com.google.api.services.cloudiot.v1beta1.CloudIotScopes;
-import com.google.api.services.cloudiot.v1beta1.model.Device;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceConfig;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceConfigData;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceCredential;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceRegistry;
-import com.google.api.services.cloudiot.v1beta1.model.ModifyCloudToDeviceConfigRequest;
-import com.google.api.services.cloudiot.v1beta1.model.NotificationConfig;
-import com.google.api.services.cloudiot.v1beta1.model.PublicKeyCredential;
+import com.google.api.services.cloudiot.v1.CloudIot;
+import com.google.api.services.cloudiot.v1.CloudIotScopes;
+import com.google.api.services.cloudiot.v1.model.*;
+import com.google.api.services.cloudiot.v1.model.DeviceConfig;
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
@@ -116,9 +110,11 @@ public class DeviceRegistryExample {
     final String fullPubsubPath = "projects/" + projectId + "/topics/" + pubsubTopicPath;
 
     DeviceRegistry registry = new DeviceRegistry();
-    NotificationConfig notificationConfig = new NotificationConfig();
+    EventNotificationConfig notificationConfig = new EventNotificationConfig ();
     notificationConfig.setPubsubTopicName(fullPubsubPath);
-    registry.setEventNotificationConfig(notificationConfig);
+    List<EventNotificationConfig> notificationConfigs = new ArrayList<EventNotificationConfig>();
+    notificationConfigs.add(notificationConfig);
+    registry.setEventNotificationConfigs(notificationConfigs);
     registry.setId(registryName);
 
     DeviceRegistry reg = service.projects().locations().registries().create(projectPath,
@@ -331,6 +327,28 @@ public class DeviceRegistryExample {
     return service.projects().locations().registries().devices().get(devicePath).execute();
   }
 
+  /** Retrieves device metadata from a registry. **/
+  public static List<DeviceState> getDeviceStates(
+      String deviceId, String projectId, String cloudRegion, String registryName)
+      throws GeneralSecurityException, IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
+        init);
+
+    String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
+        + registryName;
+
+    String devicePath = registryPath + "/devices/" + deviceId;
+    System.out.println("Retrieving device " + devicePath);
+
+    ListDeviceStatesResponse resp  = service.projects().locations().registries().devices().states().
+        list(devicePath).execute();
+    return resp.getDeviceStates();
+  }
+
   /** Retrieves registry metadata from a project. **/
   public static DeviceRegistry getRegistry(
       String projectId, String cloudRegion, String registryName)
@@ -376,7 +394,7 @@ public class DeviceRegistryExample {
 
     for (DeviceConfig config : deviceConfigs) {
       System.out.println("Config version: " + config.getVersion());
-      System.out.println("Contents: " + config.getData().getBinaryData());
+      System.out.println("Contents: " + config.getBinaryData());
       System.out.println();
     }
   }
@@ -432,10 +450,8 @@ public class DeviceRegistryExample {
         + "/registries/" + registryName;
     final String devicePath = registryPath + "/devices/" + deviceId;
     ModifyCloudToDeviceConfigRequest request = new ModifyCloudToDeviceConfigRequest();
-    DeviceConfigData data = new DeviceConfigData();
-    data.setBinaryData(DatatypeConverter.printBase64Binary(configData.getBytes(Charsets.UTF_8)));
     request.setVersionToUpdate(0L); // 0L indicates update all versions
-    request.setData(data);
+    request.setBinaryData(DatatypeConverter.printBase64Binary(configData.getBytes(Charsets.UTF_8)));
     DeviceConfig config =
         service
             .projects()
@@ -574,6 +590,14 @@ public class DeviceRegistryExample {
         System.out.println(getDevice(options.deviceId, options.projectId, options.cloudRegion,
             options.registryName)
             .toPrettyString());
+        break;
+      case "get-device-state":
+        System.out.println("Get device state");
+        List<DeviceState> states = getDeviceStates(options.deviceId, options.projectId,
+            options.cloudRegion, options.registryName);
+        for (DeviceState state: states) {
+          System.out.println(state.toPrettyString());
+        }
         break;
       case "get-registry":
         System.out.println("Get registry");
