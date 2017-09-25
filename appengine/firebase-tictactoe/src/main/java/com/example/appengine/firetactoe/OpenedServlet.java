@@ -35,6 +35,6 @@ public class OpenedServlet extends HttpServlet {
     String gameId = request.getParameter("gameKey");
     Objectify ofy = ObjectifyService.ofy();
     Game game = ofy.load().type(Game.class).id(gameId).safe();
-    game.sendUpdateToClients();
+    game.sendUpdateToClients(getServletContext());
   }
 }

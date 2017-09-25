@@ -42,6 +42,6 @@ public class DeleteServlet extends HttpServlet {
     String currentUserId = userService.getCurrentUser().getUserId();
 
     // TODO(you): In practice, first validate that the user has permission to delete the Game
-    game.deleteChannel(currentUserId);
+    game.deleteChannel(getServletContext(), currentUserId);
   }
 }
