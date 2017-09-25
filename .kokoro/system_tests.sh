@@ -20,35 +20,25 @@ set -xe
 # We spin up some subprocesses. Don't kill them on hangup
 trap '' HUP
 
+echo "**** ENVIRONMENT ****"
+env
+
+export MAVEN_OPTS='-Xmx800m -Xms400m'
+
 # Temporary directory to store any output to display on error
-export ERROR_OUTPUT_DIR
-ERROR_OUTPUT_DIR="$(mktemp -d)"
+export ERROR_OUTPUT_DIR="$(mktemp -d)"
 trap 'rm -r "${ERROR_OUTPUT_DIR}"' EXIT
 
-delete_app_version() {
-  yes | gcloud --project="${GOOGLE_PROJECT_ID}" \
-    app versions delete "${1}"
-}
-
-handle_error() {
-  errcode=$? # Remember the error code so we can exit with it after cleanup
-
-  # Clean up remote app version
-  delete_app_version "${1}" &
-
-  # Display any errors
-  if [ -n "$(find "${2}" -mindepth 1 -print -quit)" ]; then
-    cat "${2:?}"/* 1>&2
+# $1 - project
+# $2 - PATH
+# $3 - search string
+function TestIt() {
+  curl -s --show-error "https://${1}-${URL}/${2}" | \
+  tee -a "${ERROR_OUTPUT_DIR}/response.txt" | \
+  grep "${3}"
+  if [ "${?}" -ne 0 ]; then
+    echo "${1}/${2} ****** NOT FOUND"
   fi
-
-  wait
-
-  exit ${errcode}
-}
-
-cleanup() {
-  delete_app_version "${GOOGLE_VERSION_ID}" &
-  ( [ -d "${ERROR_OUTPUT_DIR}" ] && rm -r "${ERROR_OUTPUT_DIR:?}/"* ) || /bin/true
 }
 
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
@@ -75,7 +65,57 @@ gcloud config list
 
 echo "******** build everything ********"
 cd github/java-docs-samples
-mvn clean verify | grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+mvn -B --fail-at-end clean verify -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+        -Dbigtable.instanceID=instance | \
+     grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
+
+echo "******** Deploy to prod *******"
+cd appengine-java8
+
+for app in "bigtable" "cloudsql" "datastore" "spanner" \
+      "urlfetch"
+do
+  (cd "${app}"
+      sed --in-place='.xx' "s/<\/runtime>/<\/runtime><service>${app}<\/service>/" \
+          src/main/webapp/WEB-INF/appengine-web.xml
+      mvn -B --fail-at-end -q appengine:deploy -Dapp.deploy.version="1" \
+          -Dapp.stage.quickstart=true -Dapp.deploy.force=true -Dapp.deploy.promote=true \
+          -Dapp.deploy.project="${GOOGLE_CLOUD_PROJECT}" -DskipTests=true
+      mv src/main/webapp/WEB-INF/appengine-web.xml.xx src/main/webapp/WEB-INF/appengine-web.xml)
+done
+
+echo "******* Test prod Deployed Apps ********"
+export URL="dot-${GOOGLE_CLOUD_PROJECT}.appspot.com"
+
+# TestIt "helloworld" "" "Hello App Engine -- Java 8!"
+
+
+## Run tests using App Engine local devserver.
+# test_localhost() {
+#   git clone https://github.com/GoogleCloudPlatform/java-repo-tools.git
+#
+#   devserver_tests=(
+#       appengine/helloworld
+#       appengine/datastore/indexes
+#       appengine/datastore/indexes-exploding
+#       appengine/datastore/indexes-perfect
+#   )
+#   for testdir in "${devserver_tests[@]}" ; do
+#     if [ -z "$common_dir" ] || [[ $testdir = $common_dir* ]]; then
+#       ./java-repo-tools/scripts/test-localhost.sh appengine "${testdir}"
+#     fi
+#   done
+
+  # newplugin_std_tests=(
+  #     appengine/helloworld-new-plugins
+  # )
+  # for testdir in "${newplugin_std_tests[@]}" ; do
+  #   ./java-repo-tools/scripts/test-localhost.sh standard_mvn "${testdir}"
+  #   ./java-repo-tools/scripts/test-localhost.sh standard_gradle "${testdir}"
+  # done
+}
+test_localhost
+
 
 
 # (
@@ -98,5 +138,6 @@ mvn clean verify | grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 # ./java-repo-tools/scripts/test-localhost.sh spring-boot helloworld-springboot -- -DskipTests=true
 
 # Check that all shell scripts in this repo (including this one) pass the
-Shell Check linter.
+# Shell Check linter.
+cd ..
 shellcheck ./**/*.sh
