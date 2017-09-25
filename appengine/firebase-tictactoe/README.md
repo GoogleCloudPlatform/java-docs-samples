@@ -10,17 +10,11 @@ for realtime notifications when the board changes.
 ## Prerequisites
 
 * Install [Apache Maven][maven] 3.0.5 or later
-* Install the [Google Cloud SDK][sdk]
 * Create a project in the [Firebase Console][fb-console]
 * In the [Overview section][fb-overview] of the Firebase console, click 'Add
   Firebase to your web app' and replace the contents of the file
   `src/main/webapp/WEB-INF/view/firebase_config.jspf` with that code snippet.
-* If using the development appserver to run the app locally, you must supply
-  credentials that would otherwise be inferred from the App Engine environment.
-  Download [service account credentials][creds] and set the
-  `GOOGLE_APPLICATION_CREDENTIALS` environment variable to its path:
-
-        export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/credentials.json
+* [Enable the Identity API](https://console.cloud.google.com/apis/api/identitytoolkit.googleapis.com/overview)
 
 
 [fb-console]: https://console.firebase.google.com
@@ -29,26 +23,36 @@ for realtime notifications when the board changes.
 [fb-overview]: https://console.firebase.google.com/project/_/overview
 [maven]: https://maven.apache.org
 
+## Setup
 
-## Run the sample
+* If you haven't already, Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
+```
+    gcloud init
+```
+* If you haven't already, Create an App Engine app within the current Google Cloud Project
+```
+    gcloud app create
+```
+* If you haven't already, setup
+[Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+to run your application locally:
+Download [service account credentials][creds] and set the `GOOGLE_APPLICATION_CREDENTIALS`
+environment variable to its path:
+```
+   export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/credentials.json
+```
 
-* To run the app locally using the development appserver:
 
-    ```sh
+### Running locally
+
     $ mvn appengine:run
-    ```
 
-## Troubleshooting
+When running locally, the page does not automatically refresh,
+please reload the page manually after each move.
 
-* If you see the error `Google Cloud SDK path was not provided ...`:
-    * Make sure you've installed the [Google Cloud SDK][sdk]
-    * Make sure the Google Cloud SDK's `bin/` directory is in your `PATH`. If
-      you prefer it not to be, you can also set the environment variable
-      `GOOGLE_CLOUD_SDK_HOME` to point to where you installed the SDK:
+### Deploying to App Engine Standard
 
-        ```sh
-        export GOOGLE_CLOUD_SDK_HOME=/path/to/google-cloud-sdk
-        ```
+    $ mvn appengine:deploy
 
 ## Contributing changes
 
