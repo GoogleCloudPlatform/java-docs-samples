@@ -25,11 +25,6 @@
         <version>1.0.0</version>
         <relativePath>..</relativePath>
     </parent>
-    <!-- [START set_versions] -->
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
-    <!-- [END set_versions] -->
    <dependencies>
        <dependency>
            <groupId>com.googlecode.objectify</groupId>

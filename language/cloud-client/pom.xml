@@ -34,22 +34,16 @@
   </properties>
 
   <dependencies>
+    <!-- TODO replace with release version -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>0.21.1-beta</version>
+      <version>0.24.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>20.0</version>
-    </dependency>
-
-    <!-- FIXME: remove after client fixes dependency issue -->
-    <dependency>
-      <groupId>com.google.auth</groupId>
-      <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.7.1</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -62,7 +56,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

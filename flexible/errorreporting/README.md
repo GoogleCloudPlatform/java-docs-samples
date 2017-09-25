@@ -24,10 +24,9 @@ Build your project with:
 ```
 
 ## Local testing
-1. Authorize the local environment
-```
-   gcloud auth application-default login
-```
+[Create a service account](https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account)
+and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
+
 For local testing, we will be using the [Jetty Maven plugin](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html).
 Run:
 ```
