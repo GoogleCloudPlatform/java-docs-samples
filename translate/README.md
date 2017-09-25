@@ -75,7 +75,7 @@ Translate API Features:
  * Detect input text language
    ```
    java -jar $JAR_FILE detect "$INPUT"
-  ```
+   ```
 
  * Translate input text (with options)
    ```
