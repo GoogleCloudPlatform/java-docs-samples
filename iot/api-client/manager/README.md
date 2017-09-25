@@ -96,7 +96,14 @@ Create a device registry:
     java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
         com.example.cloud.iot.examples.DeviceRegistryExample \
         -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -command=create-registry \
+        -registry_name=hello-java -command=create-registry
+
+Delete a device registry:
+
+    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
+        com.example.cloud.iot.examples.DeviceRegistryExample \
+        -project_id=blue-jet-123 -pubsub_topic=hello-java \
+        -registry_name=hello-java -command=delete-registry
 
 Get a device registry:
 
