@@ -1,7 +1,9 @@
 # Cloud Machine Learning Engine - Online Prediction with Java
 
+Modify the OnlinePredictionSample.java with your project/model/version information.
+
 Compile and run the sample:
-  1. Compile the sample code using Maven by running the following command:
+  Compile the sample code using Maven by running the following command:
   <pre>mvn compile</pre>
-  1. Execute the sample code using Maven by running the following command:
+  Execute the sample code using Maven by running the following command:
   <pre>mvn -q exec:java</pre>
