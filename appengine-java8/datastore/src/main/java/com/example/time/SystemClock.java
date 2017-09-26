@@ -21,15 +21,16 @@ import org.joda.time.Instant;
 /**
  * Clock implementation that returns the "real" system time.
  *
- * <p>This class exists so that we can use a fake implementation for unit
- * testing classes that need the current time value. See {@link Clock} for
- * general information about clocks.
+ * <p>This class exists so that we can use a fake implementation for unit testing classes that need
+ * the current time value. See {@link Clock} for general information about clocks.
  */
 public class SystemClock implements Clock {
+
   /**
    * Creates a new instance. All {@code SystemClock} instances function identically.
    */
-  public SystemClock() {}
+  public SystemClock() {
+  }
 
   @Override
   public Instant now() {

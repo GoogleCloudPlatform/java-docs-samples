@@ -18,7 +18,6 @@ package com.example.appengine.firetactoe;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -29,21 +28,32 @@ import java.util.regex.Pattern;
  * The datastore-persisted Game object. This holds the entire game state - from a representation of
  * the board, to the players are and whose turn it is, and who the winner is and how they won.
  *
- * It also contains some convenience functions for communicating updates to the board to the
+ * <p>It also contains some convenience functions for communicating updates to the board to the
  * clients, via Firebase.
  */
 @Entity
 public class Game {
-  static final Pattern[] XWins =
-      {Pattern.compile("XXX......"), Pattern.compile("...XXX..."), Pattern.compile("......XXX"),
-          Pattern.compile("X..X..X.."), Pattern.compile(".X..X..X."),
-          Pattern.compile("..X..X..X"), Pattern.compile("X...X...X"),
-          Pattern.compile("..X.X.X..")};
-  static final Pattern[] OWins =
-      {Pattern.compile("OOO......"), Pattern.compile("...OOO..."), Pattern.compile("......OOO"),
-          Pattern.compile("O..O..O.."), Pattern.compile(".O..O..O."),
-          Pattern.compile("..O..O..O"), Pattern.compile("O...O...O"),
-          Pattern.compile("..O.O.O..")};
+
+  static final Pattern[] XWins = {
+      Pattern.compile("XXX......"),
+      Pattern.compile("...XXX..."),
+      Pattern.compile("......XXX"),
+      Pattern.compile("X..X..X.."),
+      Pattern.compile(".X..X..X."),
+      Pattern.compile("..X..X..X"),
+      Pattern.compile("X...X...X"),
+      Pattern.compile("..X.X.X..")
+  };
+  static final Pattern[] OWins = {
+      Pattern.compile("OOO......"),
+      Pattern.compile("...OOO..."),
+      Pattern.compile("......OOO"),
+      Pattern.compile("O..O..O.."),
+      Pattern.compile(".O..O..O."),
+      Pattern.compile("..O..O..O"),
+      Pattern.compile("O...O...O"),
+      Pattern.compile("..O.O.O..")
+  };
 
   @Id
   public String id;
@@ -109,29 +119,38 @@ public class Game {
     return userId + id;
   }
 
-  public void deleteChannel(String userId)
-      throws IOException {
+  /**
+   * deleteChannel.
+   * @param userId .
+   * @throws IOException .
+   */
+  public void deleteChannel(String userId) throws IOException {
     if (userId != null) {
       String channelKey = getChannelKey(userId);
       FirebaseChannel.getInstance().sendFirebaseMessage(channelKey, null);
     }
   }
 
-  private void sendUpdateToUser(String userId)
-      throws IOException {
+  private void sendUpdateToUser(String userId) throws IOException {
     if (userId != null) {
       String channelKey = getChannelKey(userId);
       FirebaseChannel.getInstance().sendFirebaseMessage(channelKey, this);
     }
   }
 
-  public void sendUpdateToClients()
-      throws IOException {
+  /**
+   * sendUpdateToClients.
+   * @throws IOException if we had some kind of network issue.
+   */
+  public void sendUpdateToClients() throws IOException {
     sendUpdateToUser(userX);
     sendUpdateToUser(userO);
   }
   // [END send_updates]
 
+  /**
+   * checkWin - has anyone won.
+   */
   public void checkWin() {
     final Pattern[] wins;
     if (moveX) {
@@ -152,6 +171,12 @@ public class Game {
     }
   }
 
+  /**
+   * makeMove for user.
+   * @param position .
+   * @param userId .
+   * @return true if successful.
+   */
   public boolean makeMove(int position, String userId) {
     String currentMovePlayer;
     char value;

@@ -11,16 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import com.google.appengine.api.NamespaceManager;
-
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,11 +27,16 @@ import javax.servlet.http.HttpServletResponse;
 // [START datastore]
 // [START tq_1]
 public class UpdateCountsServlet extends HttpServlet {
+
   private static final int NUM_RETRIES = 10;
 
-  @Entity public class CounterPojo {
-    @Id public Long id;
-    @Index public String name;
+  @Entity
+  public class CounterPojo {
+
+    @Id
+    public Long id;
+    @Index
+    public String name;
     public Long count;
 
     public CounterPojo() {
@@ -49,7 +53,9 @@ public class UpdateCountsServlet extends HttpServlet {
     }
   }
 
-  // Increment the count in a Counter datastore entity.
+  /**
+   * Increment the count in a Counter datastore entity.
+   **/
   public long updateCount(String countName) {
 
     CounterPojo cp = ofy().load().type(CounterPojo.class).filter("name", countName).first().now();
@@ -61,7 +67,7 @@ public class UpdateCountsServlet extends HttpServlet {
 
     return cp.count;
   }
-// [END tq_1]
+  // [END tq_1]
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)

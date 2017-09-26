@@ -11,6 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.guestbook;
 
 import static com.example.guestbook.Persistence.getDatastore;
@@ -27,12 +28,13 @@ import com.google.cloud.datastore.QueryResults;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-
 import java.util.List;
 import java.util.Objects;
 
 //[START all]
+@SuppressWarnings("JavadocMethod")
 public class Guestbook {
+
   private static final KeyFactory keyFactory = getKeyFactory(Guestbook.class);
   private final Key key;
 

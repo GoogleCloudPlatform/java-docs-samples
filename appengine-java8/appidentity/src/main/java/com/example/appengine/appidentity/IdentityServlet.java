@@ -17,9 +17,7 @@
 package com.example.appengine.appidentity;
 
 import com.google.apphosting.api.ApiProxy;
-
 import java.io.IOException;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "appidentity", description = "AppIdentity: Get the Host Name",
-    urlPatterns = "/appidentity/identity")
+@WebServlet(
+    name = "appidentity",
+    description = "AppIdentity: Get the Host Name",
+    urlPatterns = "/appidentity/identity"
+)
 public class IdentityServlet extends HttpServlet {
 
   // [START versioned_hostnames]

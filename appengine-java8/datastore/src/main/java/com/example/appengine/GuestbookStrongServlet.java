@@ -19,6 +19,7 @@ package com.example.appengine;
 import com.example.time.SystemClock;
 
 public class GuestbookStrongServlet extends AbstractGuestbookServlet {
+
   public static final String GUESTBOOK_ID = "my guestbook";
 
   public GuestbookStrongServlet() {

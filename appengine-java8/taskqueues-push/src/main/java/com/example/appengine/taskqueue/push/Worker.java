@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.taskqueue.push;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,13 +26,17 @@ import javax.servlet.http.HttpServletResponse;
 //  [START worker]
 // The Worker servlet should be mapped to the "/worker" URL.
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "TaskWorker", description = "TaskQueues: worker",
-    urlPatterns = "/taskqueues/worker")
+@WebServlet(
+    name = "TaskWorker",
+    description = "TaskQueues: worker",
+    urlPatterns = "/taskqueues/worker"
+)
 public class Worker extends HttpServlet {
+
   private static final Logger log = Logger.getLogger(Worker.class.getName());
 
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
+      throws ServletException, IOException {
     String key = request.getParameter("key");
 
     // Do something with key.

@@ -28,6 +28,8 @@ import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.appengine.tools.development.testing.LocalAppIdentityServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,12 +38,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-/**
- * Unit tests for {@link FirebaseChannel}.
- */
+/** Unit tests for {@link FirebaseChannel}. */
 @RunWith(JUnit4.class)
 public class FirebaseChannelTest {
   private static final String FIREBASE_DB_URL = "http://firebase.com/dburl";
@@ -53,8 +50,8 @@ public class FirebaseChannelTest {
   @BeforeClass
   public static void setUpBeforeClass() {
     // Mock out the firebase config
-    FirebaseChannel.firebaseConfigStream = new ByteArrayInputStream(
-        String.format("databaseURL: \"%s\"", FIREBASE_DB_URL).getBytes());
+    FirebaseChannel.firebaseConfigStream =
+        new ByteArrayInputStream(String.format("databaseURL: \"%s\"", FIREBASE_DB_URL).getBytes());
 
     firebaseChannel = FirebaseChannel.getInstance();
   }
@@ -74,50 +71,56 @@ public class FirebaseChannelTest {
   public void sendFirebaseMessage_create() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
     firebaseChannel.sendFirebaseMessage("my_key", new Game());
 
-    verify(mockHttpTransport, times(1)).buildRequest(
-        "PATCH", FIREBASE_DB_URL + "/channels/my_key.json");
+    verify(mockHttpTransport, times(1))
+        .buildRequest("PATCH", FIREBASE_DB_URL + "/channels/my_key.json");
   }
 
   @Test
   public void sendFirebaseMessage_delete() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
     firebaseChannel.sendFirebaseMessage("my_key", null);
 
-    verify(mockHttpTransport, times(1)).buildRequest(
-        "DELETE", FIREBASE_DB_URL + "/channels/my_key.json");
+    verify(mockHttpTransport, times(1))
+        .buildRequest("DELETE", FIREBASE_DB_URL + "/channels/my_key.json");
   }
 
   @Test
@@ -133,19 +136,22 @@ public class FirebaseChannelTest {
   public void firebasePut() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
     Game game = new Game();
 
@@ -158,19 +164,22 @@ public class FirebaseChannelTest {
   public void firebasePatch() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
     Game game = new Game();
 
@@ -183,19 +192,22 @@ public class FirebaseChannelTest {
   public void firebasePost() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
     Game game = new Game();
 
@@ -208,19 +220,22 @@ public class FirebaseChannelTest {
   public void firebaseGet() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
     firebaseChannel.firebaseGet(FIREBASE_DB_URL + "/my/path");
@@ -232,19 +247,22 @@ public class FirebaseChannelTest {
   public void firebaseDelete() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
     firebaseChannel.firebaseDelete(FIREBASE_DB_URL + "/my/path");

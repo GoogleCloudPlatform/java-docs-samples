@@ -30,7 +30,7 @@ class SnippetCommands {
    * An interface for a command-line sub-command.
    */
   interface Command {
-    public void run() throws IOException;
+    void run() throws IOException;
   }
 
   // Most of the commands take some subset of the same arguments, so specify groups of arguments
@@ -40,143 +40,158 @@ class SnippetCommands {
     String projectId;
   }
 
-  static class KeyRingArgs extends ProjectIdArgs {
-    @Argument(metaVar = "ringId", required = true, index = 0, usage = "The ring id")
-    String ringId;
+  static class LocationIdArgs extends ProjectIdArgs {
+    @Argument(metaVar = "locationId", required = true, index = 0, usage = "The location id")
+    String locationId;
+  }
+
+  static class KeyRingArgs extends LocationIdArgs {
+    @Argument(metaVar = "keyRingId", required = true, index = 1, usage = "The key ring id")
+    String keyRingId;
   }
 
   static class KeyArgs extends KeyRingArgs {
-    @Argument(metaVar = "keyId", required = true, index = 1, usage = "The key id")
-    String keyId;
+    @Argument(metaVar = "cryptoKeyId", required = true, index = 2, usage = "The crypto key id")
+    String cryptoKeyId;
   }
 
   static class KeyVersionArgs extends KeyArgs {
-    @Argument(metaVar = "version", required = true, index = 2, usage = "The key version")
+    @Argument(metaVar = "version", required = true, index = 3, usage = "The key version")
     String version;
   }
 
 
   public static class CreateKeyRingCommand extends KeyRingArgs implements Command {
     public void run() throws IOException {
-      Snippets.createKeyRing(projectId, ringId);
+      Snippets.createKeyRing(projectId, locationId, keyRingId);
     }
   }
 
   public static class CreateCryptoKeyCommand extends KeyArgs implements Command {
     public void run() throws IOException {
-      Snippets.createCryptoKey(projectId, ringId, keyId);
+      Snippets.createCryptoKey(projectId, locationId, keyRingId, cryptoKeyId);
     }
   }
 
   public static class CreateCryptoKeyVersionCommand extends KeyArgs implements Command {
     public void run() throws IOException {
-      Snippets.createCryptoKeyVersion(projectId, ringId, keyId);
+      Snippets.createCryptoKeyVersion(projectId, locationId, keyRingId, cryptoKeyId);
     }
   }
 
-  public static class ListKeyRingsCommand extends ProjectIdArgs implements Command {
+  public static class ListKeyRingsCommand extends LocationIdArgs implements Command {
     public void run() throws IOException {
-      Snippets.listKeyRings(projectId);
+      Snippets.listKeyRings(projectId, locationId);
     }
   }
 
   public static class ListCryptoKeysCommand extends KeyRingArgs implements Command {
     public void run() throws IOException {
-      Snippets.listCryptoKeys(projectId, ringId);
+      Snippets.listCryptoKeys(projectId, locationId, keyRingId);
     }
   }
 
   public static class ListCryptoKeyVersionsCommand extends KeyArgs implements Command {
     public void run() throws IOException {
-      Snippets.listCryptoKeyVersions(projectId, ringId, keyId);
+      Snippets.listCryptoKeyVersions(projectId, locationId, keyRingId, cryptoKeyId);
     }
   }
 
   public static class DisableCryptoKeyVersionCommand extends KeyVersionArgs implements Command {
     public void run() throws IOException {
-      Snippets.disableCryptoKeyVersion(projectId, ringId, keyId, version);
+      Snippets.disableCryptoKeyVersion(projectId, locationId, keyRingId, cryptoKeyId, version);
     }
   }
 
   public static class DestroyCryptoKeyVersionCommand extends KeyVersionArgs implements Command {
     public void run() throws IOException {
-      Snippets.destroyCryptoKeyVersion(projectId, ringId, keyId, version);
+      Snippets.destroyCryptoKeyVersion(projectId, locationId, keyRingId, cryptoKeyId, version);
+    }
+  }
+
+  public static class SetPrimaryVersionCommand extends KeyVersionArgs implements Command {
+
+    public void run() throws IOException {
+      Snippets.setPrimaryVersion(projectId, locationId, keyRingId, cryptoKeyId, version);
     }
   }
 
   public static class GetKeyRingPolicyCommand extends KeyRingArgs implements Command {
     public void run() throws IOException {
-      Snippets.getKeyRingPolicy(projectId, ringId);
+      Snippets.getKeyRingPolicy(projectId, locationId, keyRingId);
     }
   }
 
   public static class GetCryptoKeyPolicyCommand extends KeyArgs implements Command {
     public void run() throws IOException {
-      Snippets.getCryptoKeyPolicy(projectId, ringId, keyId);
+      Snippets.getCryptoKeyPolicy(projectId, locationId, keyRingId, cryptoKeyId);
     }
   }
 
   public static class AddMemberToKeyRingPolicyCommand extends KeyRingArgs implements Command {
     @Argument(metaVar = "member", required = true, index = 1,
         usage = "The member to add.\n"
-        + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
-        + "for valid values.")
+            + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
+            + "for valid values.")
     String member;
     @Argument(metaVar = "role", required = true, index = 2,
         usage = "The role for the member.\n"
-        + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
+            + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
     String role;
 
     public void run() throws IOException {
-      Snippets.addMemberToKeyRingPolicy(projectId, ringId, member, role);
+      Snippets.addMemberToKeyRingPolicy(projectId, locationId, keyRingId, member, role);
     }
   }
 
   public static class AddMemberToCryptoKeyPolicyCommand extends KeyArgs implements Command {
     @Argument(metaVar = "member", required = true, index = 2,
         usage = "The member to add.\n"
-        + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
-        + "for valid values.")
+            + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
+            + "for valid values.")
     String member;
     @Argument(metaVar = "role", required = true, index = 3,
         usage = "The role for the member.\n"
-        + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
+            + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
     String role;
 
     public void run() throws IOException {
-      Snippets.addMemberToCryptoKeyPolicy(projectId, ringId, keyId, member, role);
+      Snippets
+          .addMemberToCryptoKeyPolicy(projectId, locationId, keyRingId, cryptoKeyId, member, role);
     }
   }
 
   public static class RemoveMemberFromKeyRingPolicyCommand extends KeyRingArgs implements Command {
     @Argument(metaVar = "member", required = true, index = 1,
         usage = "The member to add.\n"
-        + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
-        + "for valid values.")
+            + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
+            + "for valid values.")
     String member;
     @Argument(metaVar = "role", required = true, index = 2,
         usage = "The role for the member.\n"
-        + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
+            + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
     String role;
 
     public void run() throws IOException {
-      Snippets.removeMemberFromKeyRingPolicy(projectId, ringId, member, role);
+      Snippets.removeMemberFromKeyRingPolicy(projectId, locationId, keyRingId, member, role);
     }
   }
 
   public static class RemoveMemberFromCryptoKeyPolicyCommand extends KeyArgs implements Command {
     @Argument(metaVar = "member", required = true, index = 2,
         usage = "The member to add.\n"
-        + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
-        + "for valid values.")
+            + "See https://g.co/cloud/kms/docs/reference/rest/v1/Policy#binding "
+            + "for valid values.")
     String member;
     @Argument(metaVar = "role", required = true, index = 3,
         usage = "The role for the member.\n"
-        + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
+            + "See https://g.co/cloud/iam/docs/understanding-roles for valid values.")
     String role;
 
     public void run() throws IOException {
-      Snippets.removeMemberFromCryptoKeyPolicy(projectId, ringId, keyId, member, role);
+      Snippets
+          .removeMemberFromCryptoKeyPolicy(projectId, locationId, keyRingId, cryptoKeyId, member,
+              role);
     }
   }
 
@@ -193,6 +208,7 @@ class SnippetCommands {
       @SubCommand(name = "destroyCryptoKeyVersion", impl = DestroyCryptoKeyVersionCommand.class),
       @SubCommand(name = "getKeyRingPolicy", impl = GetKeyRingPolicyCommand.class),
       @SubCommand(name = "getCryptoKeyPolicy", impl = GetCryptoKeyPolicyCommand.class),
+      @SubCommand(name = "setPrimaryVersion", impl = SetPrimaryVersionCommand.class),
       @SubCommand(name = "addMemberToKeyRingPolicy", impl = AddMemberToKeyRingPolicyCommand.class),
       @SubCommand(name = "addMemberToCryptoKeyPolicy",
           impl = AddMemberToCryptoKeyPolicyCommand.class),
@@ -200,6 +216,6 @@ class SnippetCommands {
           impl = RemoveMemberFromKeyRingPolicyCommand.class),
       @SubCommand(name = "removeMemberFromCryptoKeyPolicy",
           impl = RemoveMemberFromCryptoKeyPolicyCommand.class)
-      })
+  })
   Command command;
 }

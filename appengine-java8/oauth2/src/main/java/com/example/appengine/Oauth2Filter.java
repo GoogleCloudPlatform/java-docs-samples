@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine;
 
 import com.google.appengine.api.oauth.OAuthRequestException;
@@ -19,9 +20,7 @@ import com.google.appengine.api.oauth.OAuthServiceFactory;
 import com.google.appengine.api.oauth.OAuthServiceFailureException;
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.collect.ImmutableSet;
-
 import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,11 +32,11 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *  Filter to verify that request has a "Authorization: Bearer xxxx" header,
- *  and check if xxxx is authorized to use this app.
+ * Filter to verify that request has a "Authorization: Bearer xxxx" header, and check if xxxx is
+ * authorized to use this app.
  *
- *  <p>Note - this is to demonstrate the OAuth2 APIs, as it is possible to lockdown some
- *  of your app's URL's using cloud console by adding service accounts to the project.</p>
+ * <p>Note - this is to demonstrate the OAuth2 APIs, as it is possible to lockdown some of your
+ * app's URL's using cloud console by adding service accounts to the project.
  */
 // With @WebFilter annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebFilter(urlPatterns = "/oauth2hello")
@@ -53,13 +52,14 @@ public class Oauth2Filter implements Filter {
   // [START oauth2]
   @Override
   public void doFilter(
-      final ServletRequest servletReq, final ServletResponse servletResp,  final FilterChain chain)
+      final ServletRequest servletReq, final ServletResponse servletResp, final FilterChain chain)
       throws IOException, ServletException {
     final String scope = "https://www.googleapis.com/auth/userinfo.email";
-    ImmutableSet<String> allowedClients = new ImmutableSet.Builder<String>()
-        .add("407408718192.apps.googleusercontent.com")
-        .add("755878275993-j4k7emq6rlupctce1c28enpcrr50vfo1.apps.googleusercontent.com")
-        .build();
+    ImmutableSet<String> allowedClients =
+        new ImmutableSet.Builder<String>()
+            .add("407408718192.apps.googleusercontent.com")
+            .add("755878275993-j4k7emq6rlupctce1c28enpcrr50vfo1.apps.googleusercontent.com")
+            .build();
 
     HttpServletResponse resp = (HttpServletResponse) servletResp;
 
@@ -71,27 +71,27 @@ public class Oauth2Filter implements Filter {
       try {
         String tokenAudience = oauth.getClientId(scope);
 
-          // The line below is commented out for privacy.
-//        context.log("tokenAudience: " + tokenAudience);   // Account we match
+        // The line below is commented out for privacy.
+        //        context.log("tokenAudience: " + tokenAudience);   // Account we match
 
         if (!allowedClients.contains(tokenAudience)) {
-          throw new OAuthRequestException("audience of token '" + tokenAudience
-              + "' is not in allowed list " + allowedClients);
+          throw new OAuthRequestException(
+              "audience of token '" + tokenAudience + "' is not in allowed list " + allowedClients);
         }
       } catch (OAuthRequestException ex) {
-        resp.sendError(HttpServletResponse.SC_NOT_FOUND);    // Not allowed
+        resp.sendError(HttpServletResponse.SC_NOT_FOUND); // Not allowed
         return;
       } catch (OAuthServiceFailureException ex) {
-        resp.sendError(HttpServletResponse.SC_NOT_FOUND);    // some failure - reject
+        resp.sendError(HttpServletResponse.SC_NOT_FOUND); // some failure - reject
         context.log("oauth2 failure", ex);
         return;
       }
     }
-    chain.doFilter(servletReq, servletResp);  // continue processing
+    chain.doFilter(servletReq, servletResp); // continue processing
   }
   // [END oauth2]
 
   @Override
-  public void destroy() { }
-
+  public void destroy() {
+  }
 }

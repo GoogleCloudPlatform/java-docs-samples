@@ -42,23 +42,8 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud</artifactId>
-      <version>0.20.1-alpha</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.20.1-alpha</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.auth</groupId>
-        <artifactId>google-auth-library-credentials</artifactId>
-      <version>0.6.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.oauth-client</groupId>
-      <artifactId>google-oauth-client-jetty</artifactId>
-      <version>1.22.0</version>
+      <version>0.24.0-alpha</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -72,7 +57,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.35</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

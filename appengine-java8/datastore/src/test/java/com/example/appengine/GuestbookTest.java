@@ -19,26 +19,26 @@ package com.example.appengine;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.example.time.testing.FakeClock;
-
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.dev.HighRepJobPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.List;
-
 /**
  * Unit tests for {@link Guestbook}.
  */
 @RunWith(JUnit4.class)
 public class GuestbookTest {
+
   private static final class CustomHighRepJobPolicy implements HighRepJobPolicy {
+
     static int newJobCounter = 0;
     static int existingJobCounter = 0;
 
@@ -55,17 +55,18 @@ public class GuestbookTest {
     }
   }
 
+  // Set custom, deterministic, eventual consistency.
+  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
+  // #Java_Writing_High_Replication_Datastore_tests
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          // Set custom, deterministic, eventual consistency.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setAlternateHighRepJobPolicyClass(CustomHighRepJobPolicy.class),
           // Make sure there is a user logged in. We enforce this in web.xml.
           new LocalUserServiceTestConfig())
-      .setEnvIsLoggedIn(true)
-      .setEnvEmail("test@example.com")
-      .setEnvAuthDomain("gmail.com");
+          .setEnvIsLoggedIn(true)
+          .setEnvEmail("test@example.com")
+          .setEnvAuthDomain("gmail.com");
 
   private FakeClock clock;
   private Guestbook guestbookUnderTest;
@@ -86,9 +87,7 @@ public class GuestbookTest {
   public void appendGreeting_normalData_setsContentProperty() {
     Greeting got = guestbookUnderTest.appendGreeting("Hello, Datastore!");
 
-    assertThat(got.getContent())
-        .named("content property")
-        .isEqualTo("Hello, Datastore!");
+    assertThat(got.getContent()).named("content property").isEqualTo("Hello, Datastore!");
   }
 
   @Test

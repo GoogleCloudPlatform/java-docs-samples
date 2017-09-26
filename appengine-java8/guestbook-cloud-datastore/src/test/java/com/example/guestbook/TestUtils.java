@@ -8,13 +8,10 @@ import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.google.common.collect.Lists;
-
-import org.threeten.bp.Duration;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
-
+import org.threeten.bp.Duration;
 
 public class TestUtils {
   static LocalDatastoreHelper datastore = LocalDatastoreHelper.create();
@@ -30,7 +27,7 @@ public class TestUtils {
 
   public static void stopDatastore() {
     try {
-      datastore.stop(Duration.ofSeconds(20 ));
+      datastore.stop(Duration.ofSeconds(20));
       Persistence.setDatastore(null);
     } catch (TimeoutException | IOException | InterruptedException e) {
       throw new RuntimeException(e);
@@ -39,8 +36,8 @@ public class TestUtils {
 
   public static void wipeDatastore() {
     Datastore datastore = getDatastore();
-    QueryResults<Key> guestbooks = datastore.run(Query.newKeyQueryBuilder().setKind("Greeting")
-        .build());
+    QueryResults<Key> guestbooks =
+        datastore.run(Query.newKeyQueryBuilder().setKind("Greeting").build());
     ArrayList<Key> keys = Lists.newArrayList(guestbooks);
 
     if (!keys.isEmpty()) {

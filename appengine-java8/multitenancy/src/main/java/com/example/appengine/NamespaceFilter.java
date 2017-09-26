@@ -15,7 +15,6 @@
 package com.example.appengine;
 
 import com.google.appengine.api.NamespaceManager;
-
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,6 +26,7 @@ import javax.servlet.ServletResponse;
 // [START nsfilter]
 // Filter to set the Google Apps domain as the namespace.
 public class NamespaceFilter implements Filter {
+
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
@@ -38,15 +38,13 @@ public class NamespaceFilter implements Filter {
     }
     chain.doFilter(req, res); // Pass request back down the filter chain
   }
-// [END nsfilter]
+  // [END nsfilter]
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-
   }
 
   @Override
   public void destroy() {
-
   }
 }

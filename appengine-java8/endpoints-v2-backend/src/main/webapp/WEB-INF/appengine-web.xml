@@ -27,6 +27,6 @@
     </system-properties>
 
    <env-variables>
-        <env-var name="ENDPOINTS_SERVICE_NAME" value="echo-api.endpoints.${endpoints.project.id}.cloud.goog" />
+        <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />
     </env-variables>
 </appengine-web-app>

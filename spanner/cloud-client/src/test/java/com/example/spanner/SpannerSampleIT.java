@@ -23,14 +23,13 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 /**
  * Unit tests for {@code SpannerSample}
@@ -43,6 +42,7 @@ public class SpannerSampleIT {
   private final String databaseId = System.getProperty("spanner.sample.database");
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
+  private long lastUpdateDataTimeInMillis;
 
   private String runSample(String command) throws Exception {
     PrintStream stdOut = System.out;
@@ -83,12 +83,17 @@ public class SpannerSampleIT {
 
     out = runSample("query");
     assertThat(out).contains("1 1 Total Junk");
-
     runSample("addmarketingbudget");
+    
+    // wait for 10 seconds to elapse and then run an update, and query for stale data
+    lastUpdateDataTimeInMillis = System.currentTimeMillis();
+    while (System.currentTimeMillis() < lastUpdateDataTimeInMillis + 11000) {
+      Thread.sleep(1000);
+    }
     runSample("update");
-
+    out = runSample("readstaledata");
+    assertThat(out).contains("1 1 NULL");
     runSample("writetransaction");
-
     out = runSample("querymarketingbudget");
     assertThat(out).contains("1 1 300000");
     assertThat(out).contains("2 2 300000");

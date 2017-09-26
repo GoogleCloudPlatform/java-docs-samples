@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.taskqueue.push;
 
 // [START import]
@@ -19,9 +20,7 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 // [END import]
-
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,15 +30,19 @@ import javax.servlet.http.HttpServletResponse;
 // [START enqueue]
 // The Enqueue servlet should be mapped to the "/enqueue" URL.
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "TaskEnque", description = "taskqueue: Enqueue a job with a key",
-    urlPatterns = "/taskqueues/enqueue")
+@WebServlet(
+    name = "TaskEnque",
+    description = "taskqueue: Enqueue a job with a key",
+    urlPatterns = "/taskqueues/enqueue"
+)
 public class Enqueue extends HttpServlet {
+
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
+      throws ServletException, IOException {
     String key = request.getParameter("key");
 
     // Add the task to the default queue.
-    // [START addQueue]  
+    // [START addQueue]
     Queue queue = QueueFactory.getDefaultQueue();
     queue.add(TaskOptions.Builder.withUrl("/worker").param("key", key));
     // [END addQueue]

@@ -11,22 +11,24 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.guestbook;
 
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.KeyFactory;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 //[START all]
 public class Persistence {
+
   private static AtomicReference<Datastore> datastore = new AtomicReference<>();
 
+  @SuppressWarnings("JavadocMethod")
   public static Datastore getDatastore() {
     if (datastore.get() == null) {
-      datastore.set(DatastoreOptions.newBuilder().setProjectId("your-project-id-here")
-          .build().getService());
+      datastore.set(
+          DatastoreOptions.newBuilder().setProjectId("your-project-id-here").build().getService());
     }
 
     return datastore.get();

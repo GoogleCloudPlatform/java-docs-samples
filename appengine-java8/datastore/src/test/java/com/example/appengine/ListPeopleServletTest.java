@@ -31,6 +31,10 @@ import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,17 +43,12 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Unit tests for {@link ListPeopleServlet}.
  */
 @RunWith(JUnit4.class)
 public class ListPeopleServletTest {
+
   private static final ImmutableList<String> TEST_NAMES =
       // Keep in alphabetical order, so this is the same as the query order.
       ImmutableList.<String>builder()
@@ -75,15 +74,18 @@ public class ListPeopleServletTest {
           .add("Tango")
           .build();
 
+  // Set no eventual consistency, that way queries return all results.
+  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
+  // #Java_Writing_High_Replication_Datastore_tests
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
 
