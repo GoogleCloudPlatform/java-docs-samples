@@ -43,7 +43,7 @@ public class MoveServlet extends HttpServlet {
     String currentUserId = userService.getCurrentUser().getUserId();
 
     int cell = new Integer(request.getParameter("cell"));
-    if (!game.makeMove(cell, currentUserId)) {
+    if (!game.makeMove(getServletContext(), cell, currentUserId)) {
       response.sendError(HttpServletResponse.SC_FORBIDDEN);
     } else {
       ofy.save().entity(game).now();
