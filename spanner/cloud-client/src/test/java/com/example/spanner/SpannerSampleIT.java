@@ -25,6 +25,7 @@ import com.google.cloud.spanner.SpannerOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import org.junit.runners.JUnit4;
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
   private final String instanceId = System.getProperty("spanner.test.instance");
-  private final String databaseId = System.getProperty("spanner.sample.database");
+  private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
   private long lastUpdateDataTimeInMillis;
@@ -115,5 +116,9 @@ public class SpannerSampleIT {
 
     out = runSample("readonlytransaction");
     assertThat(out.replaceAll("[\r\n]+", " ")).containsMatch("(Total Junk.*){2}");
+  }
+
+  private String formatForTest(String name) {
+    return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 }
