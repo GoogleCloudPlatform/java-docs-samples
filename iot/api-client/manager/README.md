@@ -10,7 +10,7 @@ PubSub topic for Cloud IoT as described in [the parent README](../README.md).
 Manually install [the provided client library](https://cloud.google.com/iot/resources/java/cloud-iot-core-library.jar)
 for Cloud IoT Core to Maven:
 
-     mvn install:install-file -Dfile=cloud-iot-core-library.jar -DgroupId=com.example.apis \
+     mvn install:install-file -Dfile=cloud-iot-core-library.jar -DgroupId=com.google.apis \
     -DartifactId=google-api-services-cloudiot -Dversion=v1beta1-rev20170926-1.22.0-SNAPSHOT \
     -Dpackaging=jar
 
