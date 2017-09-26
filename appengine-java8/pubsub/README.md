@@ -38,7 +38,10 @@ gcloud beta pubsub topics create <your-topic-name>
 ```
 
 - Create a push subscription, to send messages to a Google Cloud Project URL such as https://<your-project-id>.appspot.com/push.
+
 The verification token is used to ensure that the end point only handles requests that are sent matching the verification token.
+You can use `uuidgen` on MacOS X, Windows, and Linux to generate a unique verification token.
+
 ```
 gcloud beta pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
@@ -47,7 +50,7 @@ gcloud beta pubsub subscriptions create <your-subscription-name> \
   --ack-deadline 30
 ```
 
-## Run
+## Run locally
 Set the following environment variables and run using shown Maven command. You can then
 direct your browser to `http://localhost:8080/`
 
