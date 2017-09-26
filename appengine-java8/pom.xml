@@ -37,7 +37,7 @@
     <!-- App Engine Standard -->
     <module>analytics</module>
     <module>appidentity</module>
-    <!--<module>bigtable</module>--><!-- TODO(lesv) circle won't be happy yet -->
+    <module>bigtable</module>
     <module>cloudsql</module>
 
     <module>datastore</module>
@@ -46,6 +46,8 @@
     <module>datastore-indexes-perfect</module>
 
     <module>endpoints-v2-backend</module>
+    <module>endpoints-v2-migration</module>
+    <module>endpoints-v2-guice</module>
 
     <module>firebase-event-proxy</module>
 

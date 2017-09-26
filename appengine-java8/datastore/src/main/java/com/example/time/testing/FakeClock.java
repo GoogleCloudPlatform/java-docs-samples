@@ -17,25 +17,24 @@
 package com.example.time.testing;
 
 import com.example.time.Clock;
-
+import java.util.concurrent.atomic.AtomicLong;
 import org.joda.time.Instant;
 import org.joda.time.ReadableDuration;
 import org.joda.time.ReadableInstant;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
- * A Clock that returns a fixed Instant value as the current clock time.  The
- * fixed Instant is settable for testing.  Test code should hold a reference to
- * the FakeClock, while code under test should hold a Clock reference.
+ * A Clock that returns a fixed Instant value as the current clock time. The fixed Instant is
+ * settable for testing. Test code should hold a reference to the FakeClock, while code under test
+ * should hold a Clock reference.
  *
- * <p>The clock time can be incremented/decremented manually, with
- * {@link #incrementTime} and {@link #decrementTime} respectively.
+ * <p>The clock time can be incremented/decremented manually, with {@link #incrementTime} and {@link
+ * #decrementTime} respectively.
  *
- * <p>The clock can also be configured so that the time is incremented whenever
- * {@link #now()} is called: see {@link #setAutoIncrementStep}.
+ * <p>The clock can also be configured so that the time is incremented whenever {@link #now()} is
+ * called: see {@link #setAutoIncrementStep}.
  */
 public class FakeClock implements Clock {
+
   private static final Instant DEFAULT_TIME = new Instant(1000000000L);
   private final long baseTimeMs;
   private final AtomicLong fakeNowMs;
@@ -72,16 +71,16 @@ public class FakeClock implements Clock {
   }
 
   /**
-   * Returns the current time without applying an auto increment, if configured.
-   * The default behavior of {@link #now()} is the same as this method.
+   * Returns the current time without applying an auto increment, if configured. The default
+   * behavior of {@link #now()} is the same as this method.
    */
   public Instant peek() {
     return new Instant(fakeNowMs.get());
   }
 
   /**
-   * Reset the given clock back to the base time with which the FakeClock was
-   * initially constructed.
+   * Reset the given clock back to the base time with which the FakeClock was initially
+   * constructed.
    *
    * @return this
    */
@@ -104,8 +103,7 @@ public class FakeClock implements Clock {
   /**
    * Increments the clock time by the given duration.
    *
-   * @param durationMs the duration to increment the clock time by,
-   *     in milliseconds
+   * @param durationMs the duration to increment the clock time by, in milliseconds
    * @return this
    */
   public FakeClock incrementTime(long durationMs) {
@@ -127,8 +125,7 @@ public class FakeClock implements Clock {
   /**
    * Decrements the clock time by the given duration.
    *
-   * @param durationMs the duration to decrement the clock time by,
-   *     in milliseconds
+   * @param durationMs the duration to decrement the clock time by, in milliseconds
    * @return this
    */
   public FakeClock decrementTime(long durationMs) {
@@ -137,8 +134,8 @@ public class FakeClock implements Clock {
   }
 
   /**
-   * Sets the increment applied to the clock whenever it is queried.
-   * The increment is zero by default: the clock is left unchanged when queried.
+   * Sets the increment applied to the clock whenever it is queried. The increment is zero by
+   * default: the clock is left unchanged when queried.
    *
    * @param autoIncrementStep the new auto increment duration
    * @return this
@@ -149,8 +146,8 @@ public class FakeClock implements Clock {
   }
 
   /**
-   * Sets the increment applied to the clock whenever it is queried.
-   * The increment is zero by default: the clock is left unchanged when queried.
+   * Sets the increment applied to the clock whenever it is queried. The increment is zero by
+   * default: the clock is left unchanged when queried.
    *
    * @param autoIncrementStepMs the new auto increment duration, in milliseconds
    * @return this
@@ -163,10 +160,9 @@ public class FakeClock implements Clock {
   /**
    * Atomically adds the given value to the current time.
    *
-   * @see AtomicLong#addAndGet
-   *
    * @param durationMs the duration to add, in milliseconds
    * @return the updated current time
+   * @see AtomicLong#addAndGet
    */
   protected final Instant addAndGet(long durationMs) {
     return new Instant(fakeNowMs.addAndGet(durationMs));
@@ -175,10 +171,9 @@ public class FakeClock implements Clock {
   /**
    * Atomically adds the given value to the current time.
    *
-   * @see AtomicLong#getAndAdd
-   *
    * @param durationMs the duration to add, in milliseconds
    * @return the previous time
+   * @see AtomicLong#getAndAdd
    */
   protected final Instant getAndAdd(long durationMs) {
     return new Instant(fakeNowMs.getAndAdd(durationMs));

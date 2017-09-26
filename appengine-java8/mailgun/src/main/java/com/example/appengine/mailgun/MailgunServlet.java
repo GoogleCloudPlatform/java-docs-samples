@@ -1,16 +1,14 @@
-/**
+/*
  * Copyright 2015 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -23,10 +21,8 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
-
 import java.io.File;
 import java.io.IOException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,27 +51,30 @@ public class MailgunServlet extends HttpServlet {
   }
 
   // [START simple]
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
-    WebResource webResource = client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME
-        + "/messages");
+    WebResource webResource =
+        client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     MultivaluedMapImpl formData = new MultivaluedMapImpl();
     formData.add("from", "Mailgun User <mailgun@" + MAILGUN_DOMAIN_NAME + ">");
     formData.add("to", recipient);
     formData.add("subject", "Simple Mailgun Example");
     formData.add("text", "Plaintext content");
-    return webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class,
-        formData);
+    return webResource
+        .type(MediaType.APPLICATION_FORM_URLENCODED)
+        .post(ClientResponse.class, formData);
   }
   // [END simple]
 
   // [START complex]
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   private ClientResponse sendComplexMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
-    WebResource webResource = client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME
-        + "/messages");
+    WebResource webResource =
+        client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     FormDataMultiPart formData = new FormDataMultiPart();
     formData.field("from", "Mailgun User <mailgun@" + MAILGUN_DOMAIN_NAME + ">");
     formData.field("to", recipient);
@@ -84,7 +83,8 @@ public class MailgunServlet extends HttpServlet {
     ClassLoader classLoader = getClass().getClassLoader();
     File txtFile = new File(classLoader.getResource("example-attachment.txt").getFile());
     formData.bodyPart(new FileDataBodyPart("attachment", txtFile, MediaType.TEXT_PLAIN_TYPE));
-    return webResource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
+    return webResource
+        .type(MediaType.MULTIPART_FORM_DATA_TYPE)
         .post(ClientResponse.class, formData);
   }
   // [END complex]

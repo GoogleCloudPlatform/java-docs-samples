@@ -34,6 +34,7 @@
     <module>error-reporting</module>
     <module>mailjet</module>
     <module>sendgrid</module>
+    <module>signed-metadata</module>
   </modules>
 
 </project>

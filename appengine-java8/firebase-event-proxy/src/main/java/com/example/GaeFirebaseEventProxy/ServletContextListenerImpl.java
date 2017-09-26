@@ -17,7 +17,6 @@
 package com.example.gaefirebaseeventproxy;
 
 import java.util.logging.Logger;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -29,7 +28,8 @@ public class ServletContextListenerImpl implements ServletContextListener {
   @Override
   public void contextInitialized(ServletContextEvent event) {
     log.info("Starting ....");
-    FirebaseEventProxy proxy = new FirebaseEventProxy();
+    com.example.gaefirebaseeventproxy.FirebaseEventProxy proxy = new com.example
+        .gaefirebaseeventproxy.FirebaseEventProxy();
     proxy.start();
   }
 

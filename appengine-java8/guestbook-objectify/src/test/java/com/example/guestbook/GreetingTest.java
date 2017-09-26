@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.guestbook;
 
 import static com.example.guestbook.GuestbookTestUtilities.cleanDatastore;
@@ -24,7 +25,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import org.junit.After;
@@ -33,15 +33,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 public class GreetingTest {
+
   private static final String TEST_CONTENT = "The world is Blue today";
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
@@ -75,10 +77,10 @@ public class GreetingTest {
     Greeting g = new Greeting("default", TEST_CONTENT);
     ObjectifyService.ofy().save().entity(g).now();
 
-    Query query = new Query("Greeting")
-        .setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
+    Query query =
+        new Query("Greeting").setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
     PreparedQuery pq = ds.prepare(query);
-    Entity greeting = pq.asSingleEntity();    // Should only be one at this point.
+    Entity greeting = pq.asSingleEntity(); // Should only be one at this point.
     assertEquals(greeting.getProperty("content"), TEST_CONTENT);
   }
 }

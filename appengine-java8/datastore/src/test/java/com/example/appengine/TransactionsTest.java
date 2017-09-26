@@ -35,15 +35,14 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Unit tests to demonstrate App Engine Datastore transactions.
@@ -152,14 +151,14 @@ public class TransactionsTest {
     String messageText = "Some message.";
     Date postDate = new Date();
 
-    Transaction txn = datastore.beginTransaction();
-
     Key messageBoardKey = KeyFactory.createKey("MessageBoard", boardName);
 
     Entity message = new Entity("Message", messageBoardKey);
     message.setProperty("message_title", messageTitle);
     message.setProperty("message_text", messageText);
     message.setProperty("post_date", postDate);
+
+    Transaction txn = datastore.beginTransaction();
     datastore.put(txn, message);
 
     txn.commit();

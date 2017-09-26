@@ -11,30 +11,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-
 import java.io.IOException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START tq_3]
 public class SomeRequestServlet extends HttpServlet {
+
   // Handler for URL get requests.
   @Override
-  protected void doGet(HttpServletRequest req,
-                       HttpServletResponse resp)
-      throws IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     // Increment the count for the current namespace asynchronously.
-    QueueFactory.getDefaultQueue().add(
-        TaskOptions.Builder.withUrl("/_ah/update_count")
-            .param("countName", "SomeRequest"));
+    QueueFactory.getDefaultQueue()
+        .add(TaskOptions.Builder.withUrl("/_ah/update_count").param("countName", "SomeRequest"));
     // Increment the global count and set the
     // namespace locally.  The namespace is
     // transferred to the invoked request and
@@ -42,9 +39,8 @@ public class SomeRequestServlet extends HttpServlet {
     String namespace = NamespaceManager.get();
     try {
       NamespaceManager.set("-global-");
-      QueueFactory.getDefaultQueue().add(
-          TaskOptions.Builder.withUrl("/_ah/update_count")
-              .param("countName", "SomeRequest"));
+      QueueFactory.getDefaultQueue()
+          .add(TaskOptions.Builder.withUrl("/_ah/update_count").param("countName", "SomeRequest"));
     } finally {
       NamespaceManager.set(namespace);
     }

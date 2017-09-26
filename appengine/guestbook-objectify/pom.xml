@@ -34,10 +34,7 @@
     </parent>
 
     <!-- [START set_versions] -->
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
-<!-- [END set_versions] -->
+    <!-- [END set_versions] -->
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
@@ -105,7 +102,7 @@
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>0.34</version>
+            <version>0.35</version>
             <scope>test</scope>
         </dependency>
 

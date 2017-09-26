@@ -24,6 +24,12 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,14 +37,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link IndexesServlet}.
@@ -49,12 +47,16 @@ public class IndexesServletTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private IndexesServlet servletUnderTest;
 
@@ -84,6 +86,7 @@ public class IndexesServletTest {
         .isEqualTo("Got 0 widgets.\n");
   }
 
+  @SuppressWarnings("VariableDeclarationUsageDistance")
   @Test
   public void doGet_repeatedPropertyEntities_writesWidgets() throws Exception {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

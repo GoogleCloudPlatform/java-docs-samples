@@ -17,7 +17,6 @@
 package com.example.appengine.spanner;
 
 import com.example.appengine.spanner.SpannerTasks.Task;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -33,21 +32,17 @@ import javax.servlet.http.HttpServletResponse;
  * Example code for using the Cloud Spanner API. This example demonstrates all the common operations
  * that can be done on Cloud Spanner. These are:
  *
- * <p>
+ * <p><ul><li>Creating a Cloud Spanner database. <li>Writing, reading and executing SQL queries.
+ * <li>Writing data using a read-write transaction. <li>Using an index to read and execute SQL
+ * queries over data. </ul>
  *
- * <ul>
- *   <li>Creating a Cloud Spanner database.
- *   <li>Writing, reading and executing SQL queries.
- *   <li>Writing data using a read-write transaction.
- *   <li>Using an index to read and execute SQL queries over data.
- * </ul>
- *
- * Individual tasks can be run using "tasks" query parameter. {@link SpannerTasks.Task} lists
+ * <p></p>Individual tasks can be run using "tasks" query parameter. {@link SpannerTasks.Task} lists
  * supported tasks. All tasks are run in order if no parameter or "tasks=all" is provided.
  */
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(value = "/spanner")
 public class SpannerTasksServlet extends HttpServlet {
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {

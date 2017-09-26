@@ -24,19 +24,15 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * A servlet to demonstrate the use of Cloud Datastore indexes.
- */
+/** A servlet to demonstrate the use of Cloud Datastore indexes. */
 public class IndexesServlet extends HttpServlet {
   private final DatastoreService datastore;
 

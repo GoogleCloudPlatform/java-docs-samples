@@ -28,36 +28,43 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.UnauthorizedException;
 
-/** The Echo API which Endpoints will be exposing. */
+/**
+ * The Echo API which Endpoints will be exposing.
+ */
 // [START echo_api_annotation]
 @Api(
     name = "echo",
     version = "v1",
     namespace =
-      @ApiNamespace(
+    @ApiNamespace(
         ownerDomain = "echo.example.com",
         ownerName = "echo.example.com",
         packagePath = ""
-      ),
+    ),
     // [START_EXCLUDE]
     issuers = {
-      @ApiIssuer(
-        name = "firebase",
-        issuer = "https://securetoken.google.com/YOUR-PROJECT-ID",
-        jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
+        @ApiIssuer(
+            name = "firebase",
+            issuer = "https://securetoken.google.com/YOUR-PROJECT-ID",
+            jwksUri =
+                "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system"
+                    + ".gserviceaccount.com"
+        )
     }
-    // [END_EXCLUDE]
-    )
+// [END_EXCLUDE]
+)
 // [END echo_api_annotation]
+
 public class Echo {
+
   /**
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
    * many times in the returned message.
    *
-   * Note that name is specified and will override the default name of "{class name}.{method
+   * <p>Note that name is specified and will override the default name of "{class name}.{method
    * name}". For example, the default is "echo.echo".
    *
-   * Note that httpMethod is not specified. This will default to a reasonable HTTP method
+   * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
   // [START echo_method]
@@ -71,10 +78,10 @@ public class Echo {
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
    * many times in the returned message.
    *
-   * Note that name is specified and will override the default name of "{class name}.{method
+   * <p>Note that name is specified and will override the default name of "{class name}.{method
    * name}". For example, the default is "echo.echo".
    *
-   * Note that httpMethod is not specified. This will default to a reasonable HTTP method
+   * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
   // [START echo_path]
@@ -88,10 +95,10 @@ public class Echo {
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
    * many times in the returned message.
    *
-   * Note that name is specified and will override the default name of "{class name}.{method
+   * <p>Note that name is specified and will override the default name of "{class name}.{method
    * name}". For example, the default is "echo.echo".
    *
-   * Note that httpMethod is not specified. This will default to a reasonable HTTP method
+   * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
   // [START echo_api_key]
@@ -119,10 +126,10 @@ public class Echo {
    * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
    * 401.
    *
-   * Note that name is not specified. This will default to "{class name}.{method name}". For
+   * <p>Note that name is not specified. This will default to "{class name}.{method name}". For
    * example, the default is "echo.getUserEmail".
    *
-   * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
+   * <p>Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
   // [START google_id_token_auth]
@@ -131,7 +138,7 @@ public class Echo {
       authenticators = {EspAuthenticator.class},
       audiences = {"YOUR_OAUTH_CLIENT_ID"},
       clientIds = {"YOUR_OAUTH_CLIENT_ID"}
-      )
+  )
   public Email getUserEmail(User user) throws UnauthorizedException {
     if (user == null) {
       throw new UnauthorizedException("Invalid credentials");
@@ -147,10 +154,10 @@ public class Echo {
    * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
    * 401.
    *
-   * Note that name is not specified. This will default to "{class name}.{method name}". For
+   * <p>Note that name is not specified. This will default to "{class name}.{method name}". For
    * example, the default is "echo.getUserEmail".
    *
-   * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
+   * <p>Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
   // [START firebase_auth]
@@ -158,8 +165,13 @@ public class Echo {
       path = "firebase_user",
       httpMethod = ApiMethod.HttpMethod.GET,
       authenticators = {EspAuthenticator.class},
-      issuerAudiences = {@ApiIssuerAudience(name = "firebase", audiences = {"YOUR-PROJECT-ID"})}
-      )
+      issuerAudiences = {
+          @ApiIssuerAudience(
+              name = "firebase",
+              audiences = {"YOUR-PROJECT-ID"}
+          )
+      }
+  )
   public Email getUserEmailFirebase(User user) throws UnauthorizedException {
     if (user == null) {
       throw new UnauthorizedException("Invalid credentials");

@@ -19,6 +19,10 @@ package com.example.appengine.requests;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,19 +30,16 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Unit tests for {@link RequestsServlet}.
  */
 @RunWith(JUnit4.class)
 public class RequestsServletTest {
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private RequestsServlet servletUnderTest;
 

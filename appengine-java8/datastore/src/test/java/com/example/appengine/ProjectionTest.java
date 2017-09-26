@@ -26,13 +26,12 @@ import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
 
 /**
  * Unit tests to demonstrate App Engine Datastore projection queries.
@@ -43,7 +42,9 @@ public class ProjectionTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           // Set no eventual consistency, that way queries return all results.
-          // https://cloud.google.com/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
@@ -59,7 +60,6 @@ public class ProjectionTest {
   public void tearDown() {
     helper.tearDown();
   }
-
 
   @Test
   public void projectionQuery_grouping_filtersDuplicates() {
@@ -77,8 +77,7 @@ public class ProjectionTest {
     q.addSort("A");
     // [END grouping]
 
-    List<Entity> entities =
-        datastore.prepare(q).asList(FetchOptions.Builder.withLimit(5));
+    List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(5));
     assertThat(entities).hasSize(1);
     Entity entity = entities.get(0);
     assertThat((String) entity.getProperty("A")).named("entity.A").isEqualTo("some duplicate");

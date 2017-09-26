@@ -37,6 +37,11 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,15 +53,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-/**
- * Unit tests for {@link MoveServlet}.
- */
+/** Unit tests for {@link MoveServlet}. */
 @RunWith(JUnit4.class)
 public class MoveServletTest {
   private static final String USER_EMAIL = "whisky@tangofoxtr.ot";
@@ -65,16 +62,18 @@ public class MoveServletTest {
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          // Set no eventual consistency, that way queries return all results.
-          // http://g.co/cloud/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
-          new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-          new LocalUserServiceTestConfig(),
-          new LocalURLFetchServiceTestConfig()
-          )
-      .setEnvEmail(USER_EMAIL)
-      .setEnvAuthDomain("gmail.com")
-      .setEnvAttributes(new HashMap(
-          ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              // Set no eventual consistency, that way queries return all results.
+              // http://g.co/cloud/appengine/docs/java/tools/localunittesting#Java_Writing_High_Replication_Datastore_tests
+              new LocalDatastoreServiceTestConfig()
+                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+              new LocalUserServiceTestConfig(),
+              new LocalURLFetchServiceTestConfig())
+          .setEnvEmail(USER_EMAIL)
+          .setEnvAuthDomain("gmail.com")
+          .setEnvAttributes(
+              new HashMap(
+                  ImmutableMap.of(
+                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -88,8 +87,8 @@ public class MoveServletTest {
     ObjectifyService.setFactory(new ObjectifyFactory());
     ObjectifyService.register(Game.class);
     // Mock out the firebase config
-    FirebaseChannel.firebaseConfigStream = new ByteArrayInputStream(
-        String.format("databaseURL: \"%s\"", FIREBASE_DB_URL).getBytes());
+    FirebaseChannel.firebaseConfigStream =
+        new ByteArrayInputStream(String.format("databaseURL: \"%s\"", FIREBASE_DB_URL).getBytes());
   }
 
   @Before
@@ -124,19 +123,22 @@ public class MoveServletTest {
 
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
-    MockHttpTransport mockHttpTransport = spy(new MockHttpTransport() {
-      @Override
-      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-        return new MockLowLevelHttpRequest() {
-          @Override
-          public LowLevelHttpResponse execute() throws IOException {
-            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-            response.setStatusCode(200);
-            return response;
-          }
-        };
-      }
-    });
+    MockHttpTransport mockHttpTransport =
+        spy(
+            new MockHttpTransport() {
+              @Override
+              public LowLevelHttpRequest buildRequest(String method, String url)
+                  throws IOException {
+                return new MockLowLevelHttpRequest() {
+                  @Override
+                  public LowLevelHttpResponse execute() throws IOException {
+                    MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+                    response.setStatusCode(200);
+                    return response;
+                  }
+                };
+              }
+            });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
     servletUnderTest.doPost(mockRequest, mockResponse);
@@ -144,8 +146,8 @@ public class MoveServletTest {
     game = ofy.load().type(Game.class).id(gameKey).safe();
     assertThat(game.board).isEqualTo(" X       ");
 
-    verify(mockHttpTransport, times(2)).buildRequest(
-        eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(2))
+        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 
   @Ignore // TODO: this wasn't running, and I've turned it off.

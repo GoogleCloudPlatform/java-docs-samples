@@ -16,7 +16,9 @@
 
 package com.example.echo;
 
-/** The message bean that will be used in the echo request and response. */
+/**
+ * The message bean that will be used in the echo request and response.
+ */
 public class Message {
 
   private String message;

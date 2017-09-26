@@ -19,8 +19,8 @@ package com.example.appengine.cloudsql;
 import com.google.apphosting.api.ApiProxy;
 import com.google.common.base.Stopwatch;
 
-
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
