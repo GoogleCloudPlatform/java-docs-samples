@@ -11,7 +11,7 @@ Manually install [the provided client library](https://cloud.google.com/iot/reso
 for Cloud IoT Core to Maven:
 
      mvn install:install-file -Dfile=cloud-iot-core-library.jar -DgroupId=com.example.apis \
-    -DartifactId=google-api-services-cloudiot -Dversion=v1beta1-rev20170418-1.22.0-SNAPSHOT \
+    -DartifactId=google-api-services-cloudiot -Dversion=v1beta1-rev20170926-1.22.0-SNAPSHOT \
     -Dpackaging=jar
 
 Run the following command to install the libraries and build the sample with
