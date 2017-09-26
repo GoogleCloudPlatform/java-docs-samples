@@ -18,6 +18,7 @@ public class MqttExampleOptions {
   int numMessages = 100;
   String mqttBridgeHostname = "mqtt.googleapis.com";
   short mqttBridgePort = 8883;
+  String messageType = "event";
 
   /** Construct an MqttExampleOptions class from command line flags. */
   public static MqttExampleOptions fromFlags(String[] args) {
@@ -93,6 +94,13 @@ public class MqttExampleOptions {
             .hasArg()
             .desc("MQTT bridge port.")
             .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("message_type")
+            .hasArg()
+            .desc("Indicates whether the message is a telemetry event or a device state message")
+            .build());
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine;
@@ -117,6 +125,9 @@ public class MqttExampleOptions {
       if (commandLine.hasOption("mqtt_bridge_port")) {
         res.mqttBridgePort =
             ((Number) commandLine.getParsedOptionValue("mqtt_bridge_port")).shortValue();
+      }
+      if (commandLine.hasOption("message_type")) {
+        res.messageType = commandLine.getOptionValue("message_type");
       }
       return res;
     } catch (ParseException e) {
