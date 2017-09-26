@@ -60,6 +60,7 @@ public class DeviceRegistryExampleOptions {
                 + "\n\tdelete-device"
                 + "\n\tdelete-registry"
                 + "\n\tget-device"
+                + "\n\tget-device-state"
                 + "\n\tget-registry"
                 + "\n\tlist-devices"
                 + "\n\tlist-registries"
