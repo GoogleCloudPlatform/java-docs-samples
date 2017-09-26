@@ -1,5 +1,11 @@
 # Using Google Cloud Pub/Sub on App Engine Standard Java 8 Environment
 
+This sample demonstrates how to use [Google Cloud Pub/Sub][pubsub]
+from [Google App Engine standard environment][ae-docs].
+
+[pubsub]: https://cloud.google.com/pubsub/docs/
+[ae-docs]: https://cloud.google.com/appengine/docs/java/
+
 The home page of this application provides a form to publish messages using Google/Cloud PubSub. The application
 then receives these published messages over a push subscription endpoint and then stores in Google Cloud Datastore.
 The home page provides a view of the most recent messages persisted in storage.
