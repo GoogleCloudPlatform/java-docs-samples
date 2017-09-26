@@ -20,16 +20,17 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Charsets;
-import com.google.api.services.cloudiot.v1beta1.CloudIot;
-import com.google.api.services.cloudiot.v1beta1.CloudIotScopes;
-import com.google.api.services.cloudiot.v1beta1.model.Device;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceConfig;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceConfigData;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceCredential;
-import com.google.api.services.cloudiot.v1beta1.model.DeviceRegistry;
-import com.google.api.services.cloudiot.v1beta1.model.ModifyCloudToDeviceConfigRequest;
-import com.google.api.services.cloudiot.v1beta1.model.NotificationConfig;
-import com.google.api.services.cloudiot.v1beta1.model.PublicKeyCredential;
+import com.google.api.services.cloudiot.v1.CloudIot;
+import com.google.api.services.cloudiot.v1.CloudIotScopes;
+import com.google.api.services.cloudiot.v1.model.Device;
+import com.google.api.services.cloudiot.v1.model.DeviceConfig;
+import com.google.api.services.cloudiot.v1.model.DeviceCredential;
+import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
+import com.google.api.services.cloudiot.v1.model.DeviceState;
+import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
+import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
+import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
+import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
@@ -80,7 +81,7 @@ import javax.xml.bind.DatatypeConverter;
 public class DeviceRegistryExample {
 
   /** Creates a topic and grants the IoT service account access. */
-  public static void createIotTopic(String projectId, String topicId) throws Exception {
+  public static Topic createIotTopic(String projectId, String topicId) throws Exception {
     // Create a new topic
     final TopicName topicName = TopicName.create(projectId, topicId);
 
@@ -98,6 +99,7 @@ public class DeviceRegistryExample {
       topicAdminClient.setIamPolicy(topicName.toString(), updatedPolicy);
 
       System.out.println("Setup topic / policy for: " + topic.getName());
+      return topic;
     }
   }
 
@@ -116,9 +118,11 @@ public class DeviceRegistryExample {
     final String fullPubsubPath = "projects/" + projectId + "/topics/" + pubsubTopicPath;
 
     DeviceRegistry registry = new DeviceRegistry();
-    NotificationConfig notificationConfig = new NotificationConfig();
+    EventNotificationConfig notificationConfig = new EventNotificationConfig();
     notificationConfig.setPubsubTopicName(fullPubsubPath);
-    registry.setEventNotificationConfig(notificationConfig);
+    List<EventNotificationConfig> notificationConfigs = new ArrayList<EventNotificationConfig>();
+    notificationConfigs.add(notificationConfig);
+    registry.setEventNotificationConfigs(notificationConfigs);
     registry.setId(registryName);
 
     DeviceRegistry reg = service.projects().locations().registries().create(projectPath,
@@ -331,6 +335,28 @@ public class DeviceRegistryExample {
     return service.projects().locations().registries().devices().get(devicePath).execute();
   }
 
+  /** Retrieves device metadata from a registry. **/
+  public static List<DeviceState> getDeviceStates(
+      String deviceId, String projectId, String cloudRegion, String registryName)
+      throws GeneralSecurityException, IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
+        init);
+
+    String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
+        + registryName;
+
+    String devicePath = registryPath + "/devices/" + deviceId;
+    System.out.println("Retrieving device states " + devicePath);
+
+    ListDeviceStatesResponse resp  = service.projects().locations().registries().devices().states()
+        .list(devicePath).execute();
+    return resp.getDeviceStates();
+  }
+
   /** Retrieves registry metadata from a project. **/
   public static DeviceRegistry getRegistry(
       String projectId, String cloudRegion, String registryName)
@@ -376,7 +402,7 @@ public class DeviceRegistryExample {
 
     for (DeviceConfig config : deviceConfigs) {
       System.out.println("Config version: " + config.getVersion());
-      System.out.println("Contents: " + config.getData().getBinaryData());
+      System.out.println("Contents: " + config.getBinaryData());
       System.out.println();
     }
   }
@@ -432,10 +458,8 @@ public class DeviceRegistryExample {
         + "/registries/" + registryName;
     final String devicePath = registryPath + "/devices/" + deviceId;
     ModifyCloudToDeviceConfigRequest request = new ModifyCloudToDeviceConfigRequest();
-    DeviceConfigData data = new DeviceConfigData();
-    data.setBinaryData(DatatypeConverter.printBase64Binary(configData.getBytes(Charsets.UTF_8)));
     request.setVersionToUpdate(0L); // 0L indicates update all versions
-    request.setData(data);
+    request.setBinaryData(DatatypeConverter.printBase64Binary(configData.getBytes(Charsets.UTF_8)));
     DeviceConfig config =
         service
             .projects()
@@ -575,6 +599,14 @@ public class DeviceRegistryExample {
             options.registryName)
             .toPrettyString());
         break;
+      case "get-device-state":
+        System.out.println("Get device state");
+        List<DeviceState> states = getDeviceStates(options.deviceId, options.projectId,
+            options.cloudRegion, options.registryName);
+        for (DeviceState state: states) {
+          System.out.println(state.toPrettyString());
+        }
+        break;
       case "get-registry":
         System.out.println("Get registry");
         System.out.println(getRegistry(options.projectId, options.cloudRegion,
@@ -603,68 +635,5 @@ public class DeviceRegistryExample {
         System.out.println("Wrong, wrong, wrong. Usage is like this:"); // TODO:
         break;
     }
-
-
-    /*
-    // Simple example of interacting with the Cloud IoT API.
-    String registryName = "cloudiot_device_manager_example_registry_" + System.currentTimeMillis();
-
-    // Create a new registry with the above name.
-    DeviceRegistryExample registry =
-        new DeviceRegistryExample(
-            options.projectId, options.cloudRegion, registryName, options.pubsubTopic);
-
-    // List the devices in the registry. Since we haven't created any yet, this should be empty.
-    registry.listDevices();
-
-    // Create a device that is authenticated using RSA.
-    String rs256deviceId = "rs256-device";
-    registry.createDeviceWithRs256(rs256deviceId, options.rsaCertificateFile);
-
-    // Create a device without an authentication credential. We'll patch it to use elliptic curve
-    // cryptography.
-    String es256deviceId = "es256-device";
-    registry.createDeviceWithNoAuth(es256deviceId);
-
-    // List the devices again. This should show the above two devices.
-    registry.listDevices();
-
-    // Give the device without an authentication credential an elliptic curve credential.
-    registry.patchEs256ForAuth(es256deviceId, options.ecPublicKeyFile);
-
-    // List the devices in the registry again, still showing the two devices.
-    registry.listDevices();
-
-    // List the device configs for the RSA authenticated device. Since we haven't pushed any, this
-    // list will only contain the default empty config.
-    registry.listDeviceConfigs(rs256deviceId);
-
-    // Push two new configs to the device.
-    registry.modifyCloudToDeviceConfig(rs256deviceId, "config v1");
-    registry.modifyCloudToDeviceConfig(rs256deviceId, "config v2");
-
-    // List the configs again. This will show the two configs that we just pushed.
-    registry.listDeviceConfigs(rs256deviceId);
-
-    // Delete the elliptic curve device.
-    registry.deleteDevice(es256deviceId);
-
-    // Since we deleted the elliptic curve device, this will only show the RSA device.
-    registry.listDevices();
-
-    try {
-      // Try to delete the registry. However, since the registry is not empty, this will fail and
-      // throw an exception.
-      registry.deleteRegistry();
-    } catch (IOException e) {
-      System.out.println("Exception: " + e.getMessage());
-    }
-
-    // Delete the RSA device. The registry is now empty.
-    registry.deleteDevice(rs256deviceId);
-
-    // Since the registry has no devices in it, the delete will succeed.
-    registry.deleteRegistry();
-    */
   }
 }

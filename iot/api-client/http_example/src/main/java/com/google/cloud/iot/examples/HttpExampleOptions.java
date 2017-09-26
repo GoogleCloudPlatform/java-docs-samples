@@ -21,8 +21,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-/** Command line options for the MQTT example. */
-public class MqttExampleOptions {
+/** Command line options for the HTTP example. */
+public class HttpExampleOptions {
   String projectId;
   String registryId;
   String deviceId;
@@ -30,12 +30,12 @@ public class MqttExampleOptions {
   String algorithm;
   String cloudRegion = "us-central1";
   int numMessages = 100;
-  String mqttBridgeHostname = "mqtt.googleapis.com";
-  short mqttBridgePort = 8883;
+  String httpBridgeAddress = "https://cloudiot-device.googleapis.com";
+  String apiVersion = "v1beta1";
   String messageType = "event";
 
-  /** Construct an MqttExampleOptions class from command line flags. */
-  public static MqttExampleOptions fromFlags(String[] args) {
+  /** Construct an HttpExampleOptions class from command line flags. */
+  public static HttpExampleOptions fromFlags(String[] args) {
     Options options = new Options();
     // Required arguments
     options.addOption(
@@ -97,30 +97,30 @@ public class MqttExampleOptions {
     options.addOption(
         Option.builder()
             .type(String.class)
-            .longOpt("mqtt_bridge_hostname")
+            .longOpt("http_bridge_address")
             .hasArg()
-            .desc("MQTT bridge hostname.")
+            .desc("HTTP bridge address.")
             .build());
     options.addOption(
         Option.builder()
-            .type(Number.class)
-            .longOpt("mqtt_bridge_port")
+            .type(String.class)
+            .longOpt("api_version")
             .hasArg()
-            .desc("MQTT bridge port.")
+            .desc("The version to use of the API.")
             .build());
     options.addOption(
         Option.builder()
             .type(String.class)
             .longOpt("message_type")
             .hasArg()
-            .desc("Indicates whether the message is a telemetry event or a device state message")
+            .desc("Indicates whether message is a telemetry event or a device state message")
             .build());
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine;
     try {
       commandLine = parser.parse(options, args);
-      MqttExampleOptions res = new MqttExampleOptions();
+      HttpExampleOptions res = new HttpExampleOptions();
 
       res.projectId = commandLine.getOptionValue("project_id");
       res.registryId = commandLine.getOptionValue("registry_id");
@@ -133,12 +133,11 @@ public class MqttExampleOptions {
       if (commandLine.hasOption("num_messages")) {
         res.numMessages = ((Number) commandLine.getParsedOptionValue("num_messages")).intValue();
       }
-      if (commandLine.hasOption("mqtt_bridge_hostname")) {
-        res.mqttBridgeHostname = commandLine.getOptionValue("mqtt_bridge_hostname");
+      if (commandLine.hasOption("http_bridge_address")) {
+        res.httpBridgeAddress = commandLine.getOptionValue("http_bridge_address");
       }
-      if (commandLine.hasOption("mqtt_bridge_port")) {
-        res.mqttBridgePort =
-            ((Number) commandLine.getParsedOptionValue("mqtt_bridge_port")).shortValue();
+      if (commandLine.hasOption("api_version")) {
+        res.apiVersion = commandLine.getOptionValue("api_version");
       }
       if (commandLine.hasOption("message_type")) {
         res.messageType = commandLine.getOptionValue("message_type");
