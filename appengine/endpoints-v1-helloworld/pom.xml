@@ -32,7 +32,7 @@
         <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <appengine.plugin.version>1.9.56</appengine.plugin.version>
+        <appengine.plugin.version>1.9.57</appengine.plugin.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
