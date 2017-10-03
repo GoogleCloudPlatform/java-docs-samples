@@ -72,6 +72,8 @@
 
     <module>postgres</module>
 
+    <module>pubsub</module>
+
     <module>requests</module>
 
     <module>remote-client</module>

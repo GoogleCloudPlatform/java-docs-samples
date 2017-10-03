@@ -1,3 +1,17 @@
+/**
+ * Copyright 2017, Google, Inc.
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.iot.examples;
 
 import org.apache.commons.cli.CommandLine;
@@ -18,6 +32,7 @@ public class MqttExampleOptions {
   int numMessages = 100;
   String mqttBridgeHostname = "mqtt.googleapis.com";
   short mqttBridgePort = 8883;
+  String messageType = "event";
 
   /** Construct an MqttExampleOptions class from command line flags. */
   public static MqttExampleOptions fromFlags(String[] args) {
@@ -93,6 +108,13 @@ public class MqttExampleOptions {
             .hasArg()
             .desc("MQTT bridge port.")
             .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("message_type")
+            .hasArg()
+            .desc("Indicates whether the message is a telemetry event or a device state message")
+            .build());
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine;
@@ -117,6 +139,9 @@ public class MqttExampleOptions {
       if (commandLine.hasOption("mqtt_bridge_port")) {
         res.mqttBridgePort =
             ((Number) commandLine.getParsedOptionValue("mqtt_bridge_port")).shortValue();
+      }
+      if (commandLine.hasOption("message_type")) {
+        res.messageType = commandLine.getOptionValue("message_type");
       }
       return res;
     } catch (ParseException e) {

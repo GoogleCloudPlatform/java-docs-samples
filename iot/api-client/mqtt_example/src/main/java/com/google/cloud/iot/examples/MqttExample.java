@@ -1,32 +1,45 @@
+/**
+ * Copyright 2017, Google, Inc.
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.iot.examples;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.spec.PKCS8EncodedKeySpec;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
  *
  * <p>This example connects to Google Cloud IoT Core via MQTT, using a JWT for device
- * authentication. After connecting, by default the device publishes 100 messages to
- * the device's MQTT topic at a rate of one per second, and then exits.
+ * authentication. After connecting, by default the device publishes 100 messages to the device's
+ * MQTT topic at a rate of one per second, and then exits. To set state instead of publishing
+ * telemetry events, set the `-message_type` flag to `state.`
  *
- * <p>To run this example, first create your credentials and register your device as
- * described in the README located in the sample's parent folder.
+ * <p>To run this example, first create your credentials and register your device as described in
+ * the README located in the sample's parent folder.
  *
- * <p>After you have registered your device and generated your credentials, compile and
- * run with the corresponding algorithm flag, for example:
+ * <p>After you have registered your device and generated your credentials, compile and run with the
+ * corresponding algorithm flag, for example:
  *
  * <pre>
  *   $ mvn compile
@@ -86,12 +99,12 @@ public class MqttExample {
     // Build the connection string for Google's Cloud IoT Core MQTT server. Only SSL
     // connections are accepted. For server authentication, the JVM's root certificates
     // are used.
-    String mqttServerAddress =
+    final String mqttServerAddress =
         String.format("ssl://%s:%s", options.mqttBridgeHostname, options.mqttBridgePort);
 
     // Create our MQTT client. The mqttClientId is a unique string that identifies this device. For
     // Google Cloud IoT Core, it must be in the format below.
-    String mqttClientId =
+    final String mqttClientId =
         String.format(
             "projects/%s/locations/%s/registries/%s/devices/%s",
             options.projectId, options.cloudRegion, options.registryId, options.deviceId);
@@ -121,27 +134,42 @@ public class MqttExample {
 
     // Create a client, and connect to the Google MQTT bridge.
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
-    client.connect(connectOptions);
+    try {
+      client.connect(connectOptions);
 
-    // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
-    // required to be in the format below. Note that this is not the same as the device registry's
-    // Cloud Pub/Sub topic.
-    String mqttTopic = String.format("/devices/%s/events", options.deviceId);
+      // Publish to the events or state topic based on the flag.
+      String subTopic = options.messageType.equals("event") ? "events" : options.messageType;
 
-    // Publish numMessages messages to the MQTT bridge, at a rate of 1 per second.
-    for (int i = 1; i <= options.numMessages; ++i) {
-      String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
-      System.out.format("Publishing message %d/%d: '%s'\n", i, options.numMessages, payload);
+      // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
+      // required to be in the format below. Note that this is not the same as the device registry's
+      // Cloud Pub/Sub topic.
+      String mqttTopic = String.format("/devices/%s/%s", options.deviceId, subTopic);
 
-      // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
-      // also supports qos=0 for at most once delivery.
-      MqttMessage message = new MqttMessage(payload.getBytes());
-      message.setQos(1);
-      client.publish(mqttTopic, message);
-      Thread.sleep(1000);
+      // Publish numMessages messages to the MQTT bridge, at a rate of 1 per second.
+      for (int i = 1; i <= options.numMessages; ++i) {
+        String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
+        System.out.format(
+            "Publishing %s message %d/%d: '%s'\n",
+            options.messageType, i, options.numMessages, payload);
+
+        // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
+        // also supports qos=0 for at most once delivery.
+        MqttMessage message = new MqttMessage(payload.getBytes());
+        message.setQos(1);
+        client.publish(mqttTopic, message);
+
+        if (options.messageType.equals("event")) {
+          // Send telemetry events every second
+          Thread.sleep(1000);
+        } else {
+          // Note: Update Device state less frequently than with telemetry events
+          Thread.sleep(5000);
+        }
+      }
+    } finally {
+      // Disconnect the client and finish the run.
+      client.disconnect();
     }
-    // Disconnect the client and finish the run.
-    client.disconnect();
     System.out.println("Finished loop successfully. Goodbye!");
   }
 }

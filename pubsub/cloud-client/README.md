@@ -31,7 +31,7 @@ For more samples, see the samples in
 
 #### Create a subscription
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic-id my-sub"
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic my-sub"
 ```
 
 #### Publish messages
