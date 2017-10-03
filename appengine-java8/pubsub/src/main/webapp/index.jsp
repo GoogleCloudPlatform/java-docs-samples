@@ -1,4 +1,4 @@
-<%@ page import="com.example.flexible.pubsub.PubSubHome" %>
+<%@ page import="com.example.appengine.pubsub.PubSubHome" %>
 <html>
   <head>
     <meta http-equiv="refresh" content="10">
