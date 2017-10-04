@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.oauth-client</groupId>
       <artifactId>google-oauth-client-jetty</artifactId>
-      <version>1.22.0</version>
+      <version>1.23.0</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
