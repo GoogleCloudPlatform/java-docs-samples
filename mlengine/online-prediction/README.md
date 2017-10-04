@@ -12,8 +12,7 @@ This sample is using the [Application Default Credential](https://developers.goo
 ## Run
 Modify the OnlinePredictionSample.java with your project/model/version information.
 
-Compile and run the sample:
-  Compile the sample code using Maven by running the following command:
-  <pre>mvn compile</pre>
-  Execute the sample code using Maven by running the following command:
-  <pre>mvn -q exec:java</pre>
+Compile the sample code using Maven by running the following command:
+<pre>mvn compile</pre>
+Execute the sample code using Maven by running the following command:
+<pre>mvn -q exec:java</pre>
