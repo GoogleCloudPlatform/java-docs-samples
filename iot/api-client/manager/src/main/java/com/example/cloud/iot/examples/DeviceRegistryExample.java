@@ -80,6 +80,8 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class DeviceRegistryExample {
 
+  static final String APP_NAME = "DeviceRegistryExample";
+
   /** Creates a topic and grants the IoT service account access. */
   public static Topic createIotTopic(String projectId, String topicId) throws Exception {
     // Create a new topic
@@ -111,8 +113,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String projectPath = "projects/" + projectId + "/locations/" + cloudRegion;
     final String fullPubsubPath = "projects/" + projectId + "/topics/" + pubsubTopicPath;
@@ -137,8 +140,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     String projectPath = "projects/" + projectId + "/locations/" + cloudRegion;
     String registryPath = projectPath + "/registries/" + registryName;
@@ -154,8 +158,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
         + registryName;
@@ -193,8 +198,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -233,8 +239,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -276,8 +283,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -306,8 +314,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+            GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+            .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -324,8 +333,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
         + registryName;
@@ -343,8 +353,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
         + registryName;
@@ -365,8 +376,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -381,8 +393,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -414,8 +427,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String projectPath = "projects/" + projectId + "/locations/" + cloudRegion;
 
@@ -451,8 +465,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -480,8 +495,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -505,7 +521,7 @@ public class DeviceRegistryExample {
             .registries()
             .devices()
             .patch(devicePath, device)
-            .setFields("credentials")
+            .setUpdateMask("credentials")
             .execute();
 
     System.out.println("Patched device is " + patchedDevice.toPrettyString());
@@ -520,8 +536,9 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
-        init);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
 
     final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
         + "/registries/" + registryName;
@@ -545,7 +562,7 @@ public class DeviceRegistryExample {
             .registries()
             .devices()
             .patch(devicePath, device)
-            .setFields("credentials")
+            .setUpdateMask("credentials")
             .execute();
 
     System.out.println("Patched device is " + patchedDevice.toPrettyString());
