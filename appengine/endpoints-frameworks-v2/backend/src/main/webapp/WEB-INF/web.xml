@@ -40,6 +40,7 @@
     </filter>
 
     <!-- Add a filter that performs Endpoints logging and monitoring. -->
+    <!-- [START api_management] -->
     <filter>
         <filter-name>endpoints-api-controller</filter-name>
         <filter-class>com.google.api.control.extensions.appengine.GoogleAppEngineControlFilter</filter-class>
@@ -62,4 +63,5 @@
         <filter-name>endpoints-api-controller</filter-name>
         <servlet-name>EndpointsServlet</servlet-name>
     </filter-mapping>
+    <!-- [END api_management] -->
 </web-app>
