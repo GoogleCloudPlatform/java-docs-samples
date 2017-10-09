@@ -28,6 +28,9 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.UnauthorizedException;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The Echo API which Endpoints will be exposing.
  */
@@ -109,17 +112,10 @@ public class Echo {
   // [END echo_api_key]
 
   private Message doEcho(Message message, Integer n) {
-    if (n != null && n >= 0) {
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < n; i++) {
-        if (i > 0) {
-          sb.append(" ");
-        }
-        sb.append(message.getMessage());
-      }
-      message.setMessage(sb.toString());
-    }
-    return message;
+    List<String> elements = Collections.nCopies(n, message.getMessage());
+    Message response = new Message();
+    response.setMessage(String.join(" ", elements));
+    return response;
   }
 
   /**
