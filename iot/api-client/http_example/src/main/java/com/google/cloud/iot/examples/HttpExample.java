@@ -105,6 +105,8 @@ public class HttpExample {
 
     String encPayload = encoder.encodeToString(payload.getBytes("UTF-8"));
 
+
+    urlPath = urlPath + devicePath + ":" + urlSuffix;
     URL url = new URL(urlPath);
     HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
     httpCon.setDoOutput(true);
