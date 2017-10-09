@@ -60,6 +60,57 @@ public class ManagerIT {
   }
 
   @Test
+  public void testPatchRsa() throws Exception {
+    final String deviceName = "patchme-device-rsa";
+    topic = DeviceRegistryExample.createIotTopic(
+            PROJECT_ID,
+            TOPIC_ID);
+    try {
+      DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+      DeviceRegistryExample.createDeviceWithNoAuth(deviceName, PROJECT_ID, CLOUD_REGION,
+          REGISTRY_ID);
+      DeviceRegistryExample.patchRsa256ForAuth(deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION,
+          REGISTRY_ID);
+
+      String got = bout.toString();
+      Assert.assertTrue(got.contains("Created device: {"));
+    } finally {
+      DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+      DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    }
+
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testPatchEs() throws Exception {
+    final String deviceName = "patchme-device-es";
+    topic = DeviceRegistryExample.createIotTopic(
+            PROJECT_ID,
+            TOPIC_ID);
+
+    try {
+      DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+      DeviceRegistryExample.createDeviceWithNoAuth(deviceName, PROJECT_ID, CLOUD_REGION,
+          REGISTRY_ID);
+      DeviceRegistryExample.patchEs256ForAuth(deviceName, ES_PATH, PROJECT_ID, CLOUD_REGION,
+          REGISTRY_ID);
+
+      String got = bout.toString();
+      Assert.assertTrue(got.contains("Created device: {"));
+    } finally {
+      DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+      DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    }
+
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
   public void testCreateDeleteUnauthDevice() throws Exception {
     final String deviceName = "noauth-device";
     topic = DeviceRegistryExample.createIotTopic(
