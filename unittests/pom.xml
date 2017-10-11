@@ -21,7 +21,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <appengine.sdk.version>1.9.57</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven-war-plugin-version>3.1.0</maven-war-plugin-version>
+        <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
         <maven-compiler-plugin-version>2.5.1</maven-compiler-plugin-version>
         <google-api-client.version>1.23.0</google-api-client.version>
     </properties>
