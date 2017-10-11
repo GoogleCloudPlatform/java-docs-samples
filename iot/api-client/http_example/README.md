@@ -20,11 +20,12 @@ The following command summarizes the sample usage:
 ```
     mvn exec:java \
         -Dexec.mainClass="com.google.cloud.iot.examples.HttpExample" \
-        -Dexec.args="-project_id=my-iot-project \
-                     -registry_id=my-registry \
-                     -device_id=my-device \
-                     -private_key_file=rsa_private_pkcs8 \
-                     -algorithm=RS256"
+        -Dexec.args="-project_id=<your-iot-project> \
+                     -registry_id=<your-registry-id> \
+                     -device_id=<device-id> \
+                     -private_key_file=<path-to-keyfile> \
+                     -message_type=<event|state> \
+                     -algorithm=<RS256|ES256>"
 ```
 
 For example, if your project ID is `blue-jet-123`, your service account
@@ -41,6 +42,20 @@ provided in the parent folder, you can run the sample as:
                      -private_key_file=../rsa_private_pkcs8 \
                      -algorithm=RS256"
 ```
+
+To publish state messages, run the sample as follows:
+
+```
+    mvn exec:java \
+        -Dexec.mainClass="com.google.cloud.iot.examples.HttpExample" \
+        -Dexec.args="-project_id=blue-jet-123 \
+                     -registry_id=my-registry \
+                     -device_id=my-java-device \
+                     -private_key_file=../rsa_private_pkcs8 \
+                     -message_type=state \
+                     -algorithm=RS256"
+```
+
 
 ## Reading the messages written by the sample client
 

@@ -14,6 +14,7 @@
 
 package com.google.cloud.iot.examples;
 
+// [START cloudiotcore_mqtt_imports]
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,6 +27,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
+// [END cloudiotcore_mqtt_imports]
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
@@ -52,7 +54,8 @@ import org.joda.time.DateTime;
  * </pre>
  */
 public class MqttExample {
-  /** Create a Cloud IoT Core JWT for the given project id, signed with the given private key. */
+  // [START cloudiotcore_mqtt_createjwt]
+  /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
     DateTime now = new DateTime();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
@@ -71,6 +74,7 @@ public class MqttExample {
     return jwtBuilder.signWith(SignatureAlgorithm.RS256, kf.generatePrivate(spec)).compact();
   }
 
+  /** Create a Cloud IoT Core JWT for the given project id, signed with the given ES key. */
   private static String createJwtEs(String projectId, String privateKeyFile) throws Exception {
     DateTime now = new DateTime();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
@@ -88,8 +92,11 @@ public class MqttExample {
 
     return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
+  // [END cloudiotcore_mqtt_createjwt]
 
+  /** Parse arguments, configure MQTT, and publish messages. */
   public static void main(String[] args) throws Exception {
+    // [START cloudiotcore_mqtt_configuremqtt]
     MqttExampleOptions options = MqttExampleOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
@@ -131,7 +138,9 @@ public class MqttExample {
       throw new IllegalArgumentException(
           "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
+    // [END cloudiotcore_mqtt_configuremqtt]
 
+    // [START cloudiotcore_mqtt_publish]
     // Create a client, and connect to the Google MQTT bridge.
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
     try {
@@ -171,5 +180,6 @@ public class MqttExample {
       client.disconnect();
     }
     System.out.println("Finished loop successfully. Goodbye!");
+    // [END cloudiotcore_mqtt_publish]
   }
 }
