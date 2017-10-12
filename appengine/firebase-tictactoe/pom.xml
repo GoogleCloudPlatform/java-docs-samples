@@ -34,7 +34,7 @@
        <dependency>
            <groupId>com.google.appengine</groupId>
            <artifactId>appengine-api-1.0-sdk</artifactId>
-           <version>1.9.57</version>
+           <version>1.9.58</version>
        </dependency>
        <dependency>
            <groupId>com.google.api-client</groupId>
@@ -60,13 +60,13 @@
        <dependency>
          <groupId>com.google.appengine</groupId>
          <artifactId>appengine-api-stubs</artifactId>
-         <version>1.9.57</version>
+         <version>1.9.58</version>
          <scope>test</scope>
          </dependency>
        <dependency>
            <groupId>com.google.appengine</groupId>
            <artifactId>appengine-testing</artifactId>
-           <version>1.9.57</version>
+           <version>1.9.58</version>
        </dependency>
    </dependencies>
     <build>
