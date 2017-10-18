@@ -57,19 +57,21 @@ public class RiskAnalysis {
       String projectId, String datasetId, String tableId, String columnName)
       throws Exception {
     // [START dlp_numerical_stats_analysis]
+
+    /**
+     * Calculate numerical statistics for a column in a BigQuery table using the DLP API.
+     * @param projectId The Google Cloud Platform project ID to run the API call under.
+     * @param datasetId The BigQuery dataset to analyze.
+     * @param tableId The BigQuery table to analyze.
+     * @param columnName The name of the column to analyze. This column must contain only numerical data.
+     */
+
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // (Optional) The project ID to run the API call under
       // projectId = process.env.GCLOUD_PROJECT;
-
-      // The ID of the dataset to inspect, e.g. "my_dataset"
       // datasetId = "my_dataset";
-
-      // The ID of the table to inspect, e.g. "my_table"
       // tableId = "my_table";
-
-      // The name of the column to compute risk metrics for, e.g. 'firstName'
       // columnName = "firstName";
 
       FieldId fieldId =
@@ -133,19 +135,20 @@ public class RiskAnalysis {
       String projectId, String datasetId, String tableId, String columnName)
       throws Exception {
     // [START dlp_categorical_stats_analysis]
+    /**
+     * Calculate categorical statistics for a column in a BigQuery table using the DLP API.
+     * @param projectId The Google Cloud Platform project ID to run the API call under.
+     * @param datasetId The BigQuery dataset to analyze.
+     * @param tableId The BigQuery table to analyze.
+     * @param columnName The name of the column to analyze. This column can contain numerical or non-numerical data.
+     */
+
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // (Optional) The project ID to run the API call under
       // projectId = process.env.GCLOUD_PROJECT;
-
-      // The ID of the dataset to inspect, e.g. "my_dataset"
       // datasetId = "my_dataset";
-
-      // The ID of the table to inspect, e.g. "my_table"
       // tableId = "my_table";
-
-      // The name of the column to compute risk metrics for, e.g. 'firstName'
       // columnName = "firstName";
 
       FieldId fieldId =
@@ -207,19 +210,20 @@ public class RiskAnalysis {
       String projectId, String datasetId, String tableId, List<String> quasiIds)
       throws Exception {
     // [START dlp_k_anonymity]
+    /**
+     * Calculate k-anonymity for quasi-identifiers in a BigQuery table using the DLP API.
+     * @param projectId The Google Cloud Platform project ID to run the API call under.
+     * @param datasetId The BigQuery dataset to analyze.
+     * @param tableId The BigQuery table to analyze.
+     * @param quasiIds The names of a set of columns that form a composite key ('quasi-identifiers').
+     */
+
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // (Optional) The project ID to run the API call under
       // projectId = process.env.GCLOUD_PROJECT;
-
-      // The ID of the dataset to inspect, e.g. 'my_dataset'
       // datasetId = 'my_dataset';
-
-      // The ID of the table to inspect, e.g. 'my_table'
       // tableId = 'my_table';
-
-      // A set of columns that form a composite key ('quasi-identifiers')
       // quasiIds = [{ columnName: 'age' }, { columnName: 'city' }];
 
       List<FieldId> quasiIdFields =
@@ -287,22 +291,22 @@ public class RiskAnalysis {
       String projectId, String datasetId, String tableId,  String sensitiveAttribute, List<String> quasiIds)
       throws Exception {
     // [START dlp_l_diversity]
+    /**
+     * Calculate l-diversity for an attribute relative to quasi-identifiers in a BigQuery table using the DLP API.
+     * @param projectId The Google Cloud Platform project ID to run the API call under.
+     * @param datasetId The BigQuery dataset to analyze.
+     * @param tableId The BigQuery table to analyze.
+     * @param sensitiveAttribute The name of the attribute to compare the quasi-ID against
+     * @param quasiIds The names of a set of columns that form a composite key ('quasi-identifiers').
+     */
+
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // (Optional) The project ID to run the API call under
       // projectId = process.env.GCLOUD_PROJECT;
-
-      // The ID of the dataset to inspect, e.g. "my_dataset"
       // datasetId = "my_dataset";
-
-      // The ID of the table to inspect, e.g. "my_table"
       // tableId = "my_table";
-
-      // The column to measure l-diversity relative to, e.g. "firstName"
       // sensitiveAttribute = "name";
-
-      // A set of columns that form a composite key ('quasi-identifiers')
       // quasiIds = [{ columnName: "age" }, { columnName: "city" }];
 
       FieldId sensitiveAttributeField = FieldId.newBuilder().setColumnName(sensitiveAttribute).build();

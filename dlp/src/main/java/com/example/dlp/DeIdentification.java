@@ -44,17 +44,19 @@ public class DeIdentification {
 
   private static void deIdentifyWithMask(String string, Character maskingCharacter, int numberToMask) {
     // [START dlp_deidentify_mask]
+    /**
+     * Deidentify a string by masking sensitive information with a character using the DLP API.
+     * @param string The string to deidentify.
+     * @param maskingCharacter (Optional) The character to mask sensitive data with.
+     * @param numberToMask (Optional) The number of characters' worth of sensitive data to mask.
+     *                     Omitting this value or setting it to 0 will mask all sensitive characters.
+     */
+
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // The string to deidentify
       // string = "My SSN is 372819127";
-
-      // (Optional) The maximum number of sensitive characters to mask in a match
-      // If omitted from the request or set to 0, the API will mask any matching characters
       // numberToMask = 5;
-
-      // (Optional) The character to mask matching sensitive data with
       // maskingCharacter = 'x';
 
       ContentItem contentItem =
@@ -114,22 +116,22 @@ public class DeIdentification {
   private static void deIdentifyWithFpe(
       String string, FfxCommonNativeAlphabet alphabet, String keyName, String wrappedKey) {
     // [START dlp_deidentify_fpe]
+    /**
+     * Deidentify a string by encrypting sensitive information while preserving format using the DLP API.
+     * @param string The string to deidentify.
+     * @param alphabet The set of characters to use when encrypting the input. For more information, see
+     *                 cloud.google.com/dlp/docs/reference/rest/v2beta1/content/deidentify#FfxCommonNativeAlphabet
+     * @param keyName The name of the Cloud KMS key to use when decrypting the wrapped key.
+     * @param wrappedKey The encrypted (or "wrapped") AES-256 encryption key.
+     */
+
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // The string to deidentify
       // string = "My SSN is 372819127";
-
-      // The set of characters to replace sensitive ones with
-      // For more information, see https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/deidentify#FfxCommonNativeAlphabet
       // alphabet = FfxCommonNativeAlphabet.ALPHA_NUMERIC;
-
-      // The name of the Cloud KMS key used to encrypt ('wrap') the AES-256 key
       // keyName = "projects/YOUR_GCLOUD_PROJECT/locations/YOUR_LOCATION/keyRings/YOUR_KEYRING_NAME/cryptoKeys/YOUR_KEY_NAME";
-
-      // The encrypted ('wrapped') AES-256 key to use
-      // This key should be encrypted using the Cloud KMS key specified above
-      // const wrappedKey = "YOUR_ENCRYPTED_AES_256_KEY"
+      // wrappedKey = "YOUR_ENCRYPTED_AES_256_KEY"
 
       ContentItem contentItem =
           ContentItem.newBuilder()
