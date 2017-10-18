@@ -99,7 +99,12 @@ public class InspectIT {
 
   @Test
   public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
-    Inspect.main(new String[] {"-bq", "-datasetId", "integration_tests_dlp", "-tableId", "harmful"});
+    Inspect.main(new String[] {
+        "-bq",
+        "-projectId", "nodejs-docs-samples",
+        "-datasetId", "integration_tests_dlp",
+        "-tableId", "harmful"
+    });
     String output = bout.toString();
     assertTrue(output.contains("PHONE_NUMBER"));
   }
