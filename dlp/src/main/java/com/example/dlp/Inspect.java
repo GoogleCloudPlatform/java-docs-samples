@@ -20,24 +20,8 @@ import com.google.api.gax.rpc.OperationFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2beta1.DlpServiceClient;
 import com.google.longrunning.Operation;
-import com.google.privacy.dlp.v2beta1.CloudStorageOptions;
+import com.google.privacy.dlp.v2beta1.*;
 import com.google.privacy.dlp.v2beta1.CloudStorageOptions.FileSet;
-import com.google.privacy.dlp.v2beta1.ContentItem;
-import com.google.privacy.dlp.v2beta1.DatastoreOptions;
-import com.google.privacy.dlp.v2beta1.Finding;
-import com.google.privacy.dlp.v2beta1.InfoType;
-import com.google.privacy.dlp.v2beta1.InspectConfig;
-import com.google.privacy.dlp.v2beta1.InspectContentRequest;
-import com.google.privacy.dlp.v2beta1.InspectContentResponse;
-import com.google.privacy.dlp.v2beta1.InspectOperationMetadata;
-import com.google.privacy.dlp.v2beta1.InspectOperationResult;
-import com.google.privacy.dlp.v2beta1.InspectResult;
-import com.google.privacy.dlp.v2beta1.KindExpression;
-import com.google.privacy.dlp.v2beta1.Likelihood;
-import com.google.privacy.dlp.v2beta1.OutputStorageConfig;
-import com.google.privacy.dlp.v2beta1.PartitionId;
-import com.google.privacy.dlp.v2beta1.ResultName;
-import com.google.privacy.dlp.v2beta1.StorageConfig;
 import com.google.protobuf.ByteString;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -338,7 +322,7 @@ public class Inspect {
           String tableId,
           Likelihood minLikelihood,
           List<InfoType> infoTypes) {
-    // [START dlp_inspect_datastore]
+    // [START dlp_inspect_bigquery]
     // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
@@ -357,17 +341,15 @@ public class Inspect {
       // The infoTypes of information to match
       // infoTypes = ['US_MALE_NAME', 'US_FEMALE_NAME'];
 
-      // Reference to the Datastore namespace
-      TableReference tableReference =
-              TableReference.newBuilder().setProjectId(projectId).setDatasetId(datasetId).setTableId(tableId).build();
+      // Reference to the BigQuery table
+      BigQueryTable tableReference =
+              BigQueryTable.newBuilder().setProjectId(projectId).setDatasetId(datasetId).setTableId(tableId).build();
+      BigQueryOptions bigQueryOptions =
+              BigQueryOptions.newBuilder().setTableReference(tableReference).build();
 
-      // Reference to the Datastore kind
-      BigqueryOptions bigqueryOptions =
-              BigqueryOptions.newBuilder().setKind(kindExpression).setPartitionId(partitionId).build();
-
-      // Construct Datastore configuration to be inspected
+      // Construct BigQuery configuration to be inspected
       StorageConfig storageConfig =
-              StorageConfig.newBuilder().setTableReference(tableReference).build();
+              StorageConfig.newBuilder().setBigQueryOptions(bigQueryOptions).build();
 
       InspectConfig inspectConfig =
               InspectConfig.newBuilder()
@@ -401,12 +383,12 @@ public class Inspect {
       e.printStackTrace();
       System.out.println("Error in inspectBigguery: " + e.getMessage());
     }
-    // [END dlp_inspect_datastore]
+    // [END dlp_inspect_bigquery]
   }
 
   /**
    * Command line application to inspect data using the Data Loss Prevention API.
-   * Supported data formats : string, file, text files on GCS and Datastore entities
+   * Supported data formats: strings, files, text files on GCS, BigQuery tables, and Datastore entities
    */
   public static void main(String[] args) throws Exception {
 

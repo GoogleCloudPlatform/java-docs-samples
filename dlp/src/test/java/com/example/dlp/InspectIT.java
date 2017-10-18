@@ -99,9 +99,9 @@ public class InspectIT {
 
   @Test
   public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
-    Inspect.main(new String[] {"-bq", "-dataset", "integration_tests_dlp", "-table", "harmful"});
+    Inspect.main(new String[] {"-bq", "-datasetId", "integration_tests_dlp", "-tableId", "harmful"});
     String output = bout.toString();
-    assertTrue(output.contains("CREDIT_CARD_NUMBER"));
+    assertTrue(output.contains("PHONE_NUMBER"));
   }
 
   @After
