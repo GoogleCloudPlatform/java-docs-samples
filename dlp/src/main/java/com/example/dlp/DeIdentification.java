@@ -100,6 +100,8 @@ public class DeIdentification {
       // Execute the deidentification request
       DeidentifyContentResponse response = dlpServiceClient.deidentifyContent(request);
 
+      // Print the character-masked input value
+      // e.g. "My SSN is 123456789" --> "My SSN is *********"
       for (ContentItem item : response.getItemsList()) {
         System.out.println(item.getValue());
       }
@@ -184,6 +186,8 @@ public class DeIdentification {
       // Execute the deidentification request
       DeidentifyContentResponse response = dlpServiceClient.deidentifyContent(request);
 
+      // Print the deidentified input value
+      // e.g. "My SSN is 123456789" --> "My SSN is 7261298621"
       for (ContentItem item : response.getItemsList()) {
         System.out.println(item.getValue());
       }
