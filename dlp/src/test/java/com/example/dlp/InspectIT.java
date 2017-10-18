@@ -101,7 +101,6 @@ public class InspectIT {
   public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-bq",
-        "-projectId", "nodejs-docs-samples",
         "-datasetId", "integration_tests_dlp",
         "-tableId", "harmful"
     });

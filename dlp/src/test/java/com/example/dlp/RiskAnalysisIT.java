@@ -48,7 +48,6 @@ public class RiskAnalysisIT {
   public void testNumericalStats() throws Exception {
     RiskAnalysis.main(new String[] {
         "-n",
-        "-projectId", "nodejs-docs-samples",
         "-datasetId", "integration_tests_dlp",
         "-tableId", "harmful",
         "-columnName", "Age"
@@ -62,7 +61,6 @@ public class RiskAnalysisIT {
   public void testCategoricalStats() throws Exception {
     RiskAnalysis.main(new String[] {
         "-c",
-        "-projectId", "nodejs-docs-samples",
         "-datasetId", "integration_tests_dlp",
         "-tableId", "harmful",
         "-columnName", "Mystery"
@@ -75,7 +73,6 @@ public class RiskAnalysisIT {
   public void testKAnonymity() throws Exception {
     RiskAnalysis.main(new String[] {
         "-k",
-        "-projectId", "nodejs-docs-samples",
         "-datasetId", "integration_tests_dlp",
         "-tableId", "harmful",
         "-quasiIdColumnNames", "Age", "Mystery"
@@ -90,7 +87,6 @@ public class RiskAnalysisIT {
   public void testLDiversity() throws Exception {
     RiskAnalysis.main(new String[] {
         "-l",
-        "-projectId", "nodejs-docs-samples",
         "-datasetId", "integration_tests_dlp",
         "-tableId", "harmful",
         "-sensitiveAttribute", "Name",
