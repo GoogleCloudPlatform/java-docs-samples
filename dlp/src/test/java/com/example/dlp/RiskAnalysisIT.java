@@ -26,7 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class RiskAnalysisIT {

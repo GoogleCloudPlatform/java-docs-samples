@@ -18,15 +18,31 @@ package com.example.dlp;
 
 import com.google.cloud.dlp.v2beta1.DlpServiceClient;
 import com.google.common.io.BaseEncoding;
-import com.google.privacy.dlp.v2beta1.*;
+import com.google.privacy.dlp.v2beta1.CharacterMaskConfig;
+import com.google.privacy.dlp.v2beta1.ContentItem;
+import com.google.privacy.dlp.v2beta1.CryptoKey;
+import com.google.privacy.dlp.v2beta1.CryptoReplaceFfxFpeConfig;
+import com.google.privacy.dlp.v2beta1.DeidentifyConfig;
+import com.google.privacy.dlp.v2beta1.DeidentifyContentRequest;
+import com.google.privacy.dlp.v2beta1.DeidentifyContentResponse;
+import com.google.privacy.dlp.v2beta1.InfoTypeTransformations;
 import com.google.privacy.dlp.v2beta1.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2beta1.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
+import com.google.privacy.dlp.v2beta1.KmsWrappedCryptoKey;
+import com.google.privacy.dlp.v2beta1.PrimitiveTransformation;
 import com.google.protobuf.ByteString;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
-public class DeId {
+public class DeIdentification {
 
-  private static void deidentifyWithMask(String string, Character maskingCharacter, int numberToMask) {
+  private static void deIdentifyWithMask(String string, Character maskingCharacter, int numberToMask) {
     // [START dlp_deidentify_mask]
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -53,6 +69,7 @@ public class DeId {
               .setNumberToMask(numberToMask)
               .build();
 
+      // Create the deidentification transformation configuration
       PrimitiveTransformation primitiveTransformation =
           PrimitiveTransformation.newBuilder()
               .setCharacterMaskConfig(characterMaskConfig)
@@ -68,6 +85,7 @@ public class DeId {
               .addTransformations(infoTypeTransformationObject)
               .build();
 
+      // Create the deidentification request object
       DeidentifyConfig deidentifyConfig =
           DeidentifyConfig.newBuilder()
               .setInfoTypeTransformations(infoTypeTransformationArray)
@@ -79,6 +97,7 @@ public class DeId {
               .addItems(contentItem)
               .build();
 
+      // Execute the deidentification request
       DeidentifyContentResponse response = dlpServiceClient.deidentifyContent(request);
 
       for (ContentItem item : response.getItemsList()) {
@@ -90,8 +109,8 @@ public class DeId {
     // [END dlp_deidentify_mask]
   }
 
-  private static void deidentifyWithFpe(
-      String string, CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet alphabet, String keyName, String wrappedKey) {
+  private static void deIdentifyWithFpe(
+      String string, FfxCommonNativeAlphabet alphabet, String keyName, String wrappedKey) {
     // [START dlp_deidentify_fpe]
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -116,6 +135,7 @@ public class DeId {
               .setValue(string)
               .build();
 
+      // Create the format-preserving encryption (FPE) configuration
       KmsWrappedCryptoKey kmsWrappedCryptoKey =
           KmsWrappedCryptoKey.newBuilder()
               .setWrappedKey(ByteString.copyFrom(BaseEncoding.base64().decode(wrappedKey)))
@@ -133,6 +153,7 @@ public class DeId {
               .setCommonAlphabet(alphabet)
               .build();
 
+      // Create the deidentification transformation configuration
       PrimitiveTransformation primitiveTransformation =
           PrimitiveTransformation.newBuilder()
               .setCryptoReplaceFfxFpeConfig(cryptoReplaceFfxFpeConfig)
@@ -148,6 +169,7 @@ public class DeId {
               .addTransformations(infoTypeTransformationObject)
               .build();
 
+      // Create the deidentification request object
       DeidentifyConfig deidentifyConfig =
           DeidentifyConfig.newBuilder()
               .setInfoTypeTransformations(infoTypeTransformationArray)
@@ -159,6 +181,7 @@ public class DeId {
               .addItems(contentItem)
               .build();
 
+      // Execute the deidentification request
       DeidentifyContentResponse response = dlpServiceClient.deidentifyContent(request);
 
       for (ContentItem item : response.getItemsList()) {
@@ -211,19 +234,19 @@ public class DeId {
       cmd = parser.parse(commandLineOptions, args);
     } catch (ParseException e) {
       System.out.println(e.getMessage());
-      formatter.printHelp(DeId.class.getName(), commandLineOptions);
+      formatter.printHelp(DeIdentification.class.getName(), commandLineOptions);
       System.exit(1);
       return;
     }
 
     if (cmd.hasOption("m")) {
-      // deid with character masking
+      // deidentification with character masking
       int numberToMask = Integer.parseInt(cmd.getOptionValue(numberToMaskOption.getOpt(), "0"));
       char maskingCharacter = cmd.getOptionValue(maskingCharacterOption.getOpt(), "*").charAt(0);
       String val = cmd.getOptionValue(deidentifyMaskingOption.getOpt());
-      deidentifyWithMask(val, maskingCharacter, numberToMask);
+      deIdentifyWithMask(val, maskingCharacter, numberToMask);
     } else if (cmd.hasOption("f")) {
-      // deid with FPE
+      // deidentification with FPE
       String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
       String keyName = cmd.getOptionValue(keyNameOption.getOpt());
       String val = cmd.getOptionValue(deidentifyFpeOption.getOpt());
@@ -231,7 +254,7 @@ public class DeId {
           FfxCommonNativeAlphabet.valueOf(
               cmd.getOptionValue(
                   alphabetOption.getOpt(), FfxCommonNativeAlphabet.ALPHA_NUMERIC.name()));
-      deidentifyWithFpe(val, alphabet, keyName, wrappedKey);
+      deIdentifyWithFpe(val, alphabet, keyName, wrappedKey);
     }
   }
 }
