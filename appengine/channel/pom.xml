@@ -29,9 +29,6 @@
         <objectify.version>5.1.21</objectify.version>
     </properties>
     <!-- [START set_versions] -->
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
     <!-- [END set_versions] -->
     <dependencies>
         <dependency>
@@ -91,7 +88,7 @@
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>0.34</version>
+            <version>0.36</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

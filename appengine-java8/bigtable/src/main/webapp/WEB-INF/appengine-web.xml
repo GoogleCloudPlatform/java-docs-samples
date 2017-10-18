@@ -19,6 +19,7 @@
   <system-properties>
     <property name="BIGTABLE_PROJECT" value="@bigtable.projectID@" />
     <property name="BIGTABLE_INSTANCE" value="@bigtable.instanceID@" />
+    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
   </system-properties>
 </appengine-web-app>
   <!-- [END config] -->

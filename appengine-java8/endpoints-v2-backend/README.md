@@ -33,7 +33,7 @@ To build the project:
 
 To generate the required configuration file `openapi.json`:
 
-    mvn exec:java -DGetSwaggerDoc
+    mvn endpoints-framework:openApiDocs
 
 ### Deploying the sample API to App Engine
 
@@ -41,7 +41,7 @@ To deploy the sample API:
 
 0. Invoke the `gcloud` command to deploy the API configuration file:
 
-         gcloud service-management deploy openapi.json
+         gcloud service-management deploy target/openapi-docs/openapi.json
 
 0. Deploy the API implementation code by invoking:
 

@@ -46,6 +46,8 @@
     <module>datastore-indexes-perfect</module>
 
     <module>endpoints-v2-backend</module>
+    <module>endpoints-v2-migration</module>
+    <module>endpoints-v2-guice</module>
 
     <module>firebase-event-proxy</module>
 
@@ -69,6 +71,8 @@
     <module>oauth2</module>
 
     <module>postgres</module>
+
+    <module>pubsub</module>
 
     <module>requests</module>
 

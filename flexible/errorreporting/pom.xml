@@ -36,22 +36,6 @@
     <jetty.maven.plugin>9.4.6.v20170531</jetty.maven.plugin>
   </properties>
 
-  <!-- Temporary workaround for known issue : https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2192 -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.auth</groupId>
-        <artifactId>google-auth-library-credentials</artifactId>
-        <version>0.7.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.auth</groupId>
-        <artifactId>google-auth-library-oauth2-http</artifactId>
-        <version>0.7.1</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -63,7 +47,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-errorreporting</artifactId>
-      <version>0.21.1-alpha</version>
+      <version>0.25.0-alpha</version>
     </dependency>
   </dependencies>
 
