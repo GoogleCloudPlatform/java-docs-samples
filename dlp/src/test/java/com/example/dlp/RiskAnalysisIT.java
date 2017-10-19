@@ -16,18 +16,17 @@
 
 package com.example.dlp;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class RiskAnalysisIT {
@@ -53,8 +52,10 @@ public class RiskAnalysisIT {
         "-columnName", "Age"
     });
     String output = bout.toString();
-    assertTrue(Pattern.compile("Value at 0% quantile: integer_value: \\d{2}").matcher(output).find());
-    assertTrue(Pattern.compile("Value at \\d{2}% quantile: integer_value: \\d{2}").matcher(output).find());
+    assertTrue(Pattern.compile(
+        "Value at 0% quantile: integer_value: \\d{2}").matcher(output).find());
+    assertTrue(Pattern.compile(
+        "Value at \\d{2}% quantile: integer_value: \\d{2}").matcher(output).find());
   }
 
   @Test
@@ -66,7 +67,8 @@ public class RiskAnalysisIT {
         "-columnName", "Mystery"
     });
     String output = bout.toString();
-    assertTrue(Pattern.compile("Most common value occurs \\d time\\(s\\)").matcher(output).find());
+    assertTrue(Pattern.compile(
+        "Most common value occurs \\d time\\(s\\)").matcher(output).find());
   }
 
   @Test

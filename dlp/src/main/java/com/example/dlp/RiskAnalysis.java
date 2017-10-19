@@ -24,20 +24,23 @@ import com.google.privacy.dlp.v2beta1.AnalyzeDataSourceRiskRequest;
 import com.google.privacy.dlp.v2beta1.BigQueryTable;
 import com.google.privacy.dlp.v2beta1.FieldId;
 import com.google.privacy.dlp.v2beta1.PrivacyMetric;
-import com.google.privacy.dlp.v2beta1.PrivacyMetric.NumericalStatsConfig;
 import com.google.privacy.dlp.v2beta1.PrivacyMetric.CategoricalStatsConfig;
 import com.google.privacy.dlp.v2beta1.PrivacyMetric.KAnonymityConfig;
 import com.google.privacy.dlp.v2beta1.PrivacyMetric.LDiversityConfig;
+import com.google.privacy.dlp.v2beta1.PrivacyMetric.NumericalStatsConfig;
 import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationMetadata;
 import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult;
-import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.NumericalStatsResult;
-import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.LDiversityResult.LDiversityHistogramBucket;
-import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.LDiversityResult.LDiversityEquivalenceClass;
-import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.KAnonymityResult.KAnonymityHistogramBucket;
-import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.KAnonymityResult.KAnonymityEquivalenceClass;
 import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.CategoricalStatsResult.CategoricalStatsHistogramBucket;
+import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.KAnonymityResult.KAnonymityEquivalenceClass;
+import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.KAnonymityResult.KAnonymityHistogramBucket;
+import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.LDiversityResult.LDiversityEquivalenceClass;
+import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.LDiversityResult.LDiversityHistogramBucket;
+import com.google.privacy.dlp.v2beta1.RiskAnalysisOperationResult.NumericalStatsResult;
 import com.google.privacy.dlp.v2beta1.Value;
 import com.google.privacy.dlp.v2beta1.ValueFrequency;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -47,13 +50,9 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class RiskAnalysis {
 
-  private static void numericalStatsAnalysis(
+  private static void calculateNumericalStats(
       String projectId, String datasetId, String tableId, String columnName)
       throws Exception {
     // [START dlp_numerical_stats_analysis]
@@ -63,7 +62,7 @@ public class RiskAnalysis {
      * @param projectId The Google Cloud Platform project ID to run the API call under.
      * @param datasetId The BigQuery dataset to analyze.
      * @param tableId The BigQuery table to analyze.
-     * @param columnName The name of the column to analyze. This column must contain only numerical data.
+     * @param columnName The name of the column to analyze, which must contain only numerical data.
      */
 
     // instantiate a client
@@ -103,8 +102,8 @@ public class RiskAnalysis {
               .build();
 
       // asynchronously submit a risk analysis operation
-      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation> responseFuture =
-          dlpServiceClient.analyzeDataSourceRiskAsync(request);
+      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation>
+          responseFuture = dlpServiceClient.analyzeDataSourceRiskAsync(request);
 
       // ...
       // block on response
@@ -112,7 +111,8 @@ public class RiskAnalysis {
       NumericalStatsResult results =
           response.getNumericalStatsResult();
 
-      System.out.println("Value range: [" + results.getMaxValue() + ", " + results.getMinValue() + "]");
+      System.out.println(
+          "Value range: [" + results.getMaxValue() + ", " + results.getMinValue() + "]");
 
       // Print out unique quantiles
       String previousValue = "";
@@ -131,7 +131,7 @@ public class RiskAnalysis {
     // [END dlp_numerical_stats_analysis]
   }
 
-  private static void categoricalStatsAnalysis(
+  private static void calculateCategoricalStats(
       String projectId, String datasetId, String tableId, String columnName)
       throws Exception {
     // [START dlp_categorical_stats_analysis]
@@ -140,7 +140,7 @@ public class RiskAnalysis {
      * @param projectId The Google Cloud Platform project ID to run the API call under.
      * @param datasetId The BigQuery dataset to analyze.
      * @param tableId The BigQuery table to analyze.
-     * @param columnName The name of the column to analyze. This column can contain numerical or non-numerical data.
+     * @param columnName The name of the column to analyze, which need not contain numerical data.
      */
 
     // instantiate a client
@@ -180,8 +180,8 @@ public class RiskAnalysis {
               .build();
 
       // asynchronously submit a risk analysis operation
-      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation> responseFuture =
-          dlpServiceClient.analyzeDataSourceRiskAsync(request);
+      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation>
+          responseFuture = dlpServiceClient.analyzeDataSourceRiskAsync(request);
 
       // ...
       // block on response
@@ -189,15 +189,18 @@ public class RiskAnalysis {
       CategoricalStatsHistogramBucket results =
           response.getCategoricalStatsResult().getValueFrequencyHistogramBuckets(0);
 
-      System.out.println("Most common value occurs " + results.getValueFrequencyUpperBound() + " time(s)");
-      System.out.println("Least common value occurs " + results.getValueFrequencyLowerBound() + " time(s)");
+      System.out.println(
+          "Most common value occurs " + results.getValueFrequencyUpperBound() + " time(s)");
+      System.out.println(
+          "Least common value occurs " + results.getValueFrequencyLowerBound() + " time(s)");
 
       for (ValueFrequency valueFrequency : results.getBucketValuesList()) {
-        System.out.println("Value " +
-            valueFrequency.getValue().toString() +
-            " occurs " +
-            valueFrequency.getCount() +
-            " time(s).");
+        System.out.println("Value "
+            + valueFrequency.getValue().toString()
+            + " occurs "
+            + valueFrequency.getCount()
+            + " time(s)."
+        );
       }
 
     } catch (Exception e) {
@@ -206,7 +209,7 @@ public class RiskAnalysis {
     // [END dlp_categorical_stats_analysis]
   }
 
-  private static void kAnonymityAnalysis(
+  private static void calculateKAnonymity(
       String projectId, String datasetId, String tableId, List<String> quasiIds)
       throws Exception {
     // [START dlp_k_anonymity]
@@ -215,7 +218,7 @@ public class RiskAnalysis {
      * @param projectId The Google Cloud Platform project ID to run the API call under.
      * @param datasetId The BigQuery dataset to analyze.
      * @param tableId The BigQuery table to analyze.
-     * @param quasiIds The names of a set of columns that form a composite key ('quasi-identifiers').
+     * @param quasiIds The names of columns that form a composite key ('quasi-identifiers').
      */
 
     // instantiate a client
@@ -232,7 +235,7 @@ public class RiskAnalysis {
               .map(columnName -> FieldId.newBuilder().setColumnName(columnName).build())
               .collect(Collectors.toList());
 
-      KAnonymityConfig kAnonymityConfig =
+      KAnonymityConfig kanonymityConfig =
           KAnonymityConfig.newBuilder()
               .addAllQuasiIds(quasiIdFields)
               .build();
@@ -246,7 +249,7 @@ public class RiskAnalysis {
 
       PrivacyMetric privacyMetric =
           PrivacyMetric.newBuilder()
-              .setKAnonymityConfig(kAnonymityConfig)
+              .setKAnonymityConfig(kanonymityConfig)
               .build();
 
       AnalyzeDataSourceRiskRequest request =
@@ -256,8 +259,8 @@ public class RiskAnalysis {
               .build();
 
       // asynchronously submit a risk analysis operation
-      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation> responseFuture =
-          dlpServiceClient.analyzeDataSourceRiskAsync(request);
+      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation>
+          responseFuture = dlpServiceClient.analyzeDataSourceRiskAsync(request);
 
       // ...
       // block on response
@@ -270,7 +273,7 @@ public class RiskAnalysis {
           + ", "
           + results.getEquivalenceClassSizeUpperBound()
           + "]"
-        );
+      );
 
       for (KAnonymityEquivalenceClass bucket : results.getBucketValuesList()) {
         List<String> quasiIdValues = bucket.getQuasiIdsValuesList()
@@ -287,17 +290,21 @@ public class RiskAnalysis {
     // [END dlp_k_anonymity]
   }
 
-  private static void lDiversityAnalysis(
-      String projectId, String datasetId, String tableId,  String sensitiveAttribute, List<String> quasiIds)
-      throws Exception {
+  private static void calculateLDiversity(
+      String projectId,
+      String datasetId,
+      String tableId,
+      String sensitiveAttribute,
+      List<String> quasiIds
+  ) throws Exception {
     // [START dlp_l_diversity]
     /**
-     * Calculate l-diversity for an attribute relative to quasi-identifiers in a BigQuery table using the DLP API.
+     * Calculate l-diversity for an attribute relative to quasi-identifiers in a BigQuery table.
      * @param projectId The Google Cloud Platform project ID to run the API call under.
      * @param datasetId The BigQuery dataset to analyze.
      * @param tableId The BigQuery table to analyze.
      * @param sensitiveAttribute The name of the attribute to compare the quasi-ID against
-     * @param quasiIds The names of a set of columns that form a composite key ('quasi-identifiers').
+     * @param quasiIds A set of column names that form a composite key ('quasi-identifiers').
      */
 
     // instantiate a client
@@ -309,7 +316,10 @@ public class RiskAnalysis {
       // sensitiveAttribute = "name";
       // quasiIds = [{ columnName: "age" }, { columnName: "city" }];
 
-      FieldId sensitiveAttributeField = FieldId.newBuilder().setColumnName(sensitiveAttribute).build();
+      FieldId sensitiveAttributeField =
+          FieldId.newBuilder()
+              .setColumnName(sensitiveAttribute)
+              .build();
 
       List<FieldId> quasiIdFields =
           quasiIds
@@ -317,7 +327,7 @@ public class RiskAnalysis {
               .map(columnName -> FieldId.newBuilder().setColumnName(columnName).build())
               .collect(Collectors.toList());
 
-      LDiversityConfig lDiversityConfig =
+      LDiversityConfig ldiversityConfig =
           LDiversityConfig.newBuilder()
               .addAllQuasiIds(quasiIdFields)
               .setSensitiveAttribute(sensitiveAttributeField)
@@ -332,7 +342,7 @@ public class RiskAnalysis {
 
       PrivacyMetric privacyMetric =
           PrivacyMetric.newBuilder()
-              .setLDiversityConfig(lDiversityConfig)
+              .setLDiversityConfig(ldiversityConfig)
               .build();
 
       AnalyzeDataSourceRiskRequest request =
@@ -342,8 +352,8 @@ public class RiskAnalysis {
               .build();
 
       // asynchronously submit a risk analysis operation
-      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation> responseFuture =
-          dlpServiceClient.analyzeDataSourceRiskAsync(request);
+      OperationFuture<RiskAnalysisOperationResult, RiskAnalysisOperationMetadata, Operation>
+          responseFuture = dlpServiceClient.analyzeDataSourceRiskAsync(request);
 
       // ...
       // block on response
@@ -361,11 +371,11 @@ public class RiskAnalysis {
         System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
 
         for (ValueFrequency valueFrequency : bucket.getTopSensitiveValuesList()) {
-          System.out.println("\t\tSensitive value " +
-              valueFrequency.getValue().toString() +
-              " occurs " +
-              valueFrequency.getCount() +
-              " time(s).");
+          System.out.println("\t\tSensitive value "
+              + valueFrequency.getValue().toString()
+              + " occurs "
+              + valueFrequency.getCount()
+              + " time(s).");
         }
       }
     } catch (Exception e) {
@@ -390,11 +400,11 @@ public class RiskAnalysis {
     Option categoricalAnalysisOption = new Option("c", "categorical");
     optionsGroup.addOption(categoricalAnalysisOption);
 
-    Option kAnonymityOption = new Option("k", "kAnonymity");
-    optionsGroup.addOption(kAnonymityOption);
+    Option kanonymityOption = new Option("k", "kAnonymity");
+    optionsGroup.addOption(kanonymityOption);
 
-    Option lDiversityOption = new Option("l", "lDiversity");
-    optionsGroup.addOption(lDiversityOption);
+    Option ldiversityOption = new Option("l", "lDiversity");
+    optionsGroup.addOption(ldiversityOption);
 
     Options commandLineOptions = new Options();
     commandLineOptions.addOptionGroup(optionsGroup);
@@ -408,13 +418,16 @@ public class RiskAnalysis {
     Option projectIdOption = Option.builder("projectId").hasArg(true).required(false).build();
     commandLineOptions.addOption(projectIdOption);
 
-    Option columnNameOption = Option.builder("columnName").hasArg(true).required(false).build();
+    Option columnNameOption =
+        Option.builder("columnName").hasArg(true).required(false).build();
     commandLineOptions.addOption(columnNameOption);
 
-    Option sensitiveAttributeOption = Option.builder("sensitiveAttribute").hasArg(true).required(false).build();
+    Option sensitiveAttributeOption =
+        Option.builder("sensitiveAttribute").hasArg(true).required(false).build();
     commandLineOptions.addOption(sensitiveAttributeOption);
 
-    Option quasiIdColumnNamesOption = Option.builder("quasiIdColumnNames").hasArg(true).required(false).build();
+    Option quasiIdColumnNamesOption =
+        Option.builder("quasiIdColumnNames").hasArg(true).required(false).build();
     commandLineOptions.addOption(quasiIdColumnNamesOption);
 
     CommandLineParser parser = new DefaultParser();
@@ -440,20 +453,22 @@ public class RiskAnalysis {
     if (cmd.hasOption("n")) {
       // numerical stats analysis
       String columnName = cmd.getOptionValue(columnNameOption.getOpt());
-      numericalStatsAnalysis(projectId, datasetId, tableId, columnName);
+      calculateNumericalStats(projectId, datasetId, tableId, columnName);
     } else if (cmd.hasOption("c")) {
       // categorical stats analysis
       String columnName = cmd.getOptionValue(columnNameOption.getOpt());
-      categoricalStatsAnalysis(projectId, datasetId, tableId, columnName);
+      calculateCategoricalStats(projectId, datasetId, tableId, columnName);
     } else if (cmd.hasOption("k")) {
       // k-anonymity analysis
-      List<String> quasiIdColumnNames = Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
-      kAnonymityAnalysis(projectId, datasetId, tableId, quasiIdColumnNames);
+      List<String> quasiIdColumnNames =
+          Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
+      calculateKAnonymity(projectId, datasetId, tableId, quasiIdColumnNames);
     } else if (cmd.hasOption("l")) {
       // l-diversity analysis
       String sensitiveAttribute = cmd.getOptionValue(sensitiveAttributeOption.getOpt());
-      List<String> quasiIdColumnNames = Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
-      lDiversityAnalysis(projectId, datasetId, tableId, sensitiveAttribute, quasiIdColumnNames);
+      List<String> quasiIdColumnNames =
+          Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
+      calculateLDiversity(projectId, datasetId, tableId, sensitiveAttribute, quasiIdColumnNames);
     }
   }
 }

@@ -22,12 +22,12 @@ import com.google.privacy.dlp.v2beta1.CharacterMaskConfig;
 import com.google.privacy.dlp.v2beta1.ContentItem;
 import com.google.privacy.dlp.v2beta1.CryptoKey;
 import com.google.privacy.dlp.v2beta1.CryptoReplaceFfxFpeConfig;
+import com.google.privacy.dlp.v2beta1.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
 import com.google.privacy.dlp.v2beta1.DeidentifyConfig;
 import com.google.privacy.dlp.v2beta1.DeidentifyContentRequest;
 import com.google.privacy.dlp.v2beta1.DeidentifyContentResponse;
 import com.google.privacy.dlp.v2beta1.InfoTypeTransformations;
 import com.google.privacy.dlp.v2beta1.InfoTypeTransformations.InfoTypeTransformation;
-import com.google.privacy.dlp.v2beta1.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
 import com.google.privacy.dlp.v2beta1.KmsWrappedCryptoKey;
 import com.google.privacy.dlp.v2beta1.PrimitiveTransformation;
 import com.google.protobuf.ByteString;
@@ -42,14 +42,17 @@ import org.apache.commons.cli.ParseException;
 
 public class DeIdentification {
 
-  private static void deIdentifyWithMask(String string, Character maskingCharacter, int numberToMask) {
+  private static void deIdentifyWithMask(
+      String string,
+      Character maskingCharacter,
+      int numberToMask) {
     // [START dlp_deidentify_mask]
     /**
      * Deidentify a string by masking sensitive information with a character using the DLP API.
      * @param string The string to deidentify.
      * @param maskingCharacter (Optional) The character to mask sensitive data with.
      * @param numberToMask (Optional) The number of characters' worth of sensitive data to mask.
-     *                     Omitting this value or setting it to 0 will mask all sensitive characters.
+     *                     Omitting this value or setting it to 0 masks all sensitive chars.
      */
 
     // instantiate a client
@@ -117,10 +120,10 @@ public class DeIdentification {
       String string, FfxCommonNativeAlphabet alphabet, String keyName, String wrappedKey) {
     // [START dlp_deidentify_fpe]
     /**
-     * Deidentify a string by encrypting sensitive information while preserving format using the DLP API.
+     * Deidentify a string by encrypting sensitive information while preserving format.
      * @param string The string to deidentify.
-     * @param alphabet The set of characters to use when encrypting the input. For more information, see
-     *                 cloud.google.com/dlp/docs/reference/rest/v2beta1/content/deidentify#FfxCommonNativeAlphabet
+     * @param alphabet The set of characters to use when encrypting the input. For more information,
+     *                 see cloud.google.com/dlp/docs/reference/rest/v2beta1/content/deidentify
      * @param keyName The name of the Cloud KMS key to use when decrypting the wrapped key.
      * @param wrappedKey The encrypted (or "wrapped") AES-256 encryption key.
      */
@@ -130,7 +133,7 @@ public class DeIdentification {
 
       // string = "My SSN is 372819127";
       // alphabet = FfxCommonNativeAlphabet.ALPHA_NUMERIC;
-      // keyName = "projects/YOUR_GCLOUD_PROJECT/locations/YOUR_LOCATION/keyRings/YOUR_KEYRING_NAME/cryptoKeys/YOUR_KEY_NAME";
+      // keyName = "projects/GCP_PROJECT/locations/REGION/keyRings/KEYRING_ID/cryptoKeys/KEY_NAME";
       // wrappedKey = "YOUR_ENCRYPTED_AES_256_KEY"
 
       ContentItem contentItem =
@@ -217,19 +220,24 @@ public class DeIdentification {
     Options commandLineOptions = new Options();
     commandLineOptions.addOptionGroup(optionsGroup);
 
-    Option maskingCharacterOption = Option.builder("maskingCharacter").hasArg(true).required(false).build();
+    Option maskingCharacterOption =
+        Option.builder("maskingCharacter").hasArg(true).required(false).build();
     commandLineOptions.addOption(maskingCharacterOption);
 
-    Option numberToMaskOption = Option.builder("numberToMask").hasArg(true).required(false).build();
+    Option numberToMaskOption =
+        Option.builder("numberToMask").hasArg(true).required(false).build();
     commandLineOptions.addOption(numberToMaskOption);
 
-    Option alphabetOption = Option.builder("commonAlphabet").hasArg(true).required(false).build();
+    Option alphabetOption =
+        Option.builder("commonAlphabet").hasArg(true).required(false).build();
     commandLineOptions.addOption(alphabetOption);
 
-    Option wrappedKeyOption = Option.builder("wrappedKey").hasArg(true).required(false).build();
+    Option wrappedKeyOption =
+        Option.builder("wrappedKey").hasArg(true).required(false).build();
     commandLineOptions.addOption(wrappedKeyOption);
 
-    Option keyNameOption = Option.builder("keyName").hasArg(true).required(false).build();
+    Option keyNameOption =
+        Option.builder("keyName").hasArg(true).required(false).build();
     commandLineOptions.addOption(keyNameOption);
 
     CommandLineParser parser = new DefaultParser();

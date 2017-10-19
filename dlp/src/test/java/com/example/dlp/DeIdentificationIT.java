@@ -16,20 +16,19 @@
 
 package com.example.dlp;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class DeIdentificationIT {
@@ -55,7 +54,11 @@ public class DeIdentificationIT {
   @Test
   public void testDeidStringMasksCharacters() throws Exception {
     String text = "\"My SSN is 372819127\"";
-    DeIdentification.main(new String[] {"-m", text, "-maskingCharacter", "x", "-numberToMask", "5"});
+    DeIdentification.main(new String[] {
+        "-m", text,
+        "-maskingCharacter", "x",
+        "-numberToMask", "5"
+    });
     String output = bout.toString();
     assertEquals(output, "My SSN is xxxxx9127\n");
   }
@@ -63,7 +66,11 @@ public class DeIdentificationIT {
   @Test
   public void testDeidStringPerformsFpe() throws Exception {
     String text = "\"My SSN is 372819127\"";
-    DeIdentification.main(new String[] {"-f", text, "-wrappedKey", wrappedKey, "-keyName", keyName});
+    DeIdentification.main(new String[] {
+        "-f", text,
+        "-wrappedKey", wrappedKey,
+        "-keyName", keyName
+    });
     String output = bout.toString();
     assertFalse(output.contains(text));
     assertTrue(Pattern.compile("My SSN is \\w+").matcher(output).find());

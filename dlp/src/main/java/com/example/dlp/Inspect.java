@@ -361,13 +361,21 @@ public class Inspect {
 
       // Reference to the BigQuery table
       BigQueryTable tableReference =
-              BigQueryTable.newBuilder().setProjectId(projectId).setDatasetId(datasetId).setTableId(tableId).build();
+              BigQueryTable.newBuilder()
+                  .setProjectId(projectId)
+                  .setDatasetId(datasetId)
+                  .setTableId(tableId)
+                  .build();
       BigQueryOptions bigQueryOptions =
-              BigQueryOptions.newBuilder().setTableReference(tableReference).build();
+              BigQueryOptions.newBuilder()
+                  .setTableReference(tableReference)
+                  .build();
 
       // Construct BigQuery configuration to be inspected
       StorageConfig storageConfig =
-              StorageConfig.newBuilder().setBigQueryOptions(bigQueryOptions).build();
+              StorageConfig.newBuilder()
+                  .setBigQueryOptions(bigQueryOptions)
+                  .build();
 
       InspectConfig inspectConfig =
               InspectConfig.newBuilder()
@@ -380,7 +388,8 @@ public class Inspect {
 
       // asynchronously submit an inspect operation
       OperationFuture<InspectOperationResult, InspectOperationMetadata, Operation> responseFuture =
-              dlpServiceClient.createInspectOperationAsync(inspectConfig, storageConfig, outputConfig);
+              dlpServiceClient.createInspectOperationAsync(
+                  inspectConfig, storageConfig, outputConfig);
 
       // ...
       // block on response, returning job id of the operation
@@ -406,7 +415,7 @@ public class Inspect {
 
   /**
    * Command line application to inspect data using the Data Loss Prevention API.
-   * Supported data formats: strings, files, text files on GCS, BigQuery tables, and Datastore entities
+   * Supported data formats: string, file, text file on GCS, BigQuery table, and Datastore entity
    */
   public static void main(String[] args) throws Exception {
 
