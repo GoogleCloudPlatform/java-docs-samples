@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20170516</version>
+            <version>20171018</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>

@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.7.0</version>
+      <version>1.8.0</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
