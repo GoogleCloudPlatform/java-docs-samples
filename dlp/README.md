@@ -6,8 +6,10 @@ a powerful detection engine for personally identifiable information and other pr
 ## Setup
 - A Google Cloud project with billing enabled
 - [Enable](https://console.cloud.google.com/launcher/details/google/dlp.googleapis.com) the DLP API.
-- (Local testing)[Create a service account](https://cloud.google.com/docs/authentication/getting-started)
+- (Local testing) [Create a service account](https://cloud.google.com/docs/authentication/getting-started)
 and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to the downloaded credentials file.
+- (Local testing) Set the `DLP_DEID_WRAPPED_KEY` environment variable to an AES-256 key encrypted ('wrapped') [with a Cloud Key Management Service (KMS) key](https://cloud.google.com/kms/docs/encrypt-decrypt).
+- (Local testing) Set the `DLP_DEID_KEY_NAME` environment variable to the path-name of the Cloud KMS key you wrapped `DLP_DEID_WRAPPED_KEY` with.
 
 ## Build
 This project uses the [Assembly Plugin](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html) to build an uber jar.
