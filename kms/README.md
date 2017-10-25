@@ -27,4 +27,4 @@ and can see the available snippet commands with:
 For example:
 
     java -cp target/kms-samples-1.0.0-jar-with-dependencies.jar \
-        com.example.Snippets createKeyRing -p <your-project-id> <location> myFirstKeyRing
+        com.example.Snippets createKeyRing -p [your-project-id] [your-location] myFirstKeyRing
