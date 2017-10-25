@@ -233,7 +233,7 @@ public class Snippets {
     System.out.println(restored);
     return restored;
   }
-  // [END kms_destroy_cryptokey_version]
+  // [END kms_restore_cryptokey_version]
 
   // [START kms_get_cryptokey_policy]
 
