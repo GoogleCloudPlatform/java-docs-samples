@@ -59,7 +59,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud</artifactId>
-      <version>0.25.0-alpha</version>
+      <version>0.26.0-alpha</version>
     </dependency>
 
     <dependency>
