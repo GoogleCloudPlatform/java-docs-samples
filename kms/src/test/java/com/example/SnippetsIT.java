@@ -209,12 +209,21 @@ public class SnippetsIT {
   public void restoreCryptoKeyVersion_restores() throws Exception {
     Snippets.createCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
 
-    Matcher matcher = Pattern.compile(".*cryptoKeyVersions/(\\d+)\",\"state\":\"DESTROY_SCHEDULED\".*",
+    Matcher matcher = Pattern.compile(".*cryptoKeyVersions/(\\d+)\",\"state\":\"ENABLED\".*",
         Pattern.DOTALL | Pattern.MULTILINE).matcher(bout.toString().trim());
     assertTrue(matcher.matches());
 
     String version = matcher.group(1);
 
+    // Only key versions schedule for destruction are restorable, so schedule this key
+    // version for destruction.
+    Snippets.destroyCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, version);
+
+    assertThat(bout.toString()).containsMatch(String.format(
+        "keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s\",\"state\":\"DESTROY_SCHEDULED\"",
+        KEY_RING_ID, CRYPTO_KEY_ID, version));
+
+    // Now restore the key version.
     Snippets.restoreCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, version);
 
     assertThat(bout.toString()).containsMatch(String.format(
