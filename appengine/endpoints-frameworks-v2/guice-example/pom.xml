@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <endpoints.framework.version>2.0.8</endpoints.framework.version>
+        <endpoints.framework.version>2.0.9</endpoints.framework.version>
 
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework-guice</artifactId>
-            <version>2.0.8</version>
+            <version>2.0.9</version>
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>

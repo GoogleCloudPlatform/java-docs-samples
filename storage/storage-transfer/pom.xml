@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storagetransfer</artifactId>
-      <version>v1-rev27-1.23.0</version>
+      <version>v1-rev29-1.23.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>

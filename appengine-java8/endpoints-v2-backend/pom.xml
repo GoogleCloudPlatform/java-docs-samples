@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <endpoints.framework.version>2.0.8</endpoints.framework.version>
+        <endpoints.framework.version>2.0.9</endpoints.framework.version>
         <endpoints.management.version>1.0.4</endpoints.management.version>
 
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
