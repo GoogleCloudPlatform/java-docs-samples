@@ -20,10 +20,10 @@ buildscript {    // Configuration for building
   }
   dependencies {
     // App Engine Gradle plugin
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:+'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.0.2'
 
     // Endpoints Frameworks Gradle plugin
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:+'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.3.3'
   }
 }
 // [END buildscript]
@@ -50,7 +50,7 @@ dependencies {
   compile group: 'javax.inject', name: 'javax.inject', version: '1'
 
   // [START endpoints-tools]
-  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '+'
+  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.0.8'
   // [END endpoints-tools]
 }
 
