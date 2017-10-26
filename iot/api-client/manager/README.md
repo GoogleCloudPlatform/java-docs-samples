@@ -54,10 +54,11 @@ run the sample as:
 
 Create a PubSub topic, `hello-java`, for the project, `blue-jet-123`:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java
-        -command=create-iot-topic
+    mvn exec:java \
+        -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+        -Dexec.args="-project_id=blue-jet-123 \
+                     -command=create-iot-topic \
+                     -pubsub_topic=hello-java "
 
 Create an ES device:
 

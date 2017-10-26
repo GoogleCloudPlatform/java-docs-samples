@@ -28,7 +28,7 @@
   </parent>
 
   <properties>
-    <appengine.sdk.version>1.9.57</appengine.sdk.version>
+    <appengine.sdk.version>1.9.58</appengine.sdk.version>
   </properties>
 
   <dependencies>

@@ -33,6 +33,7 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <!-- [START api_management] -->
     <!-- Add a filter that fetches the service config from service management. -->
     <filter>
         <filter-name>endpoints-api-configuration</filter-name>
@@ -62,4 +63,5 @@
         <filter-name>endpoints-api-controller</filter-name>
         <servlet-name>EndpointsServlet</servlet-name>
     </filter-mapping>
+    <!-- [END api_management] -->
 </web-app>

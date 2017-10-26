@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.57</version>
+            <version>1.9.58</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -105,7 +105,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
-                <version>1.0.1</version>
+                <version>1.0.2</version>
                 <configuration>
                     <!-- plugin configuration -->
                     <hostname>${endpoints.project.id}.appspot.com</hostname>

@@ -56,6 +56,8 @@
 
         <module>errorreporting</module>
 
+        <module>firestore</module>
+
         <module>iap</module>
 
         <module>kms</module>

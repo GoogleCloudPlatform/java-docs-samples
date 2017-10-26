@@ -44,10 +44,10 @@ apply plugin: 'com.google.cloud.tools.appengine'
 
 dependencies {
     // For real projects: use concrete versions here instead of the '+' to make your build consistent
-    compile 'com.google.endpoints:endpoints-framework:+'
-    compile 'com.google.endpoints:endpoints-framework-guice:+'
-    compile 'com.google.endpoints:endpoints-management-control-appengine:+'
-    compile 'com.google.endpoints:endpoints-framework-auth:+'
+    compile 'com.google.endpoints:endpoints-framework:2.0.8'
+    compile 'com.google.endpoints:endpoints-framework-guice:2.0.8'
+    compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
+    compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
 }
 
 endpointsServer {

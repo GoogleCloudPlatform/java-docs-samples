@@ -47,7 +47,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.57</version>
+      <version>1.9.58</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -81,7 +81,7 @@ limitations under the License.
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>endpoints-framework-maven-plugin</artifactId>
-          <version>1.0.0-beta4</version>
+          <version>1.0.2</version>
           <configuration>
               <!-- plugin configuration -->
               <hostname>YOUR-PROJECT-ID.appspot.com</hostname>

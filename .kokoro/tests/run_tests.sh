@@ -44,6 +44,7 @@ function TestIt() {
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
 export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
 export PATH=/google-cloud-sdk/bin:$PATH
+source ${KOKORO_GFILE_DIR}/aws-secrets.sh
 
 echo "******** Environment *********"
 env
@@ -65,7 +66,8 @@ gcloud config list
 
 echo "******** build everything ********"
 cd github/java-docs-samples
-mvn -B --fail-at-end clean verify -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+mvn -B --fail-at-end clean verify -Dfile.encoding="UTF-16" \
+        -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
         -Dbigtable.instanceID=instance | \
      grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
 

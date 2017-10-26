@@ -43,7 +43,7 @@ public class SimpleApp {
                 "SELECT "
                     + "APPROX_TOP_COUNT(corpus, 10) as title, "
                     + "COUNT(*) as unique_words "
-                    + "FROM `publicdata.samples.shakespeare`;")
+                    + "FROM `bigquery-public-data.samples.shakespeare`;")
             // Use standard SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
