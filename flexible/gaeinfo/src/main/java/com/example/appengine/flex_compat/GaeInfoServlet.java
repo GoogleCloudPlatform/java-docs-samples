@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import java.io.IOException;
+import java.lang.Exception;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
@@ -83,27 +84,39 @@ public class GaeInfoServlet extends HttpServlet {
 
   // Fetch Metadata
   String fetchMetadata(String key) throws IOException {
-    Request request = new Request.Builder()
-        .url(metadata + key)
-        .addHeader("Metadata-Flavor", "Google")
-        .get()
-        .build();
+    try {
+      Request request = new Request.Builder()
+          .url(metadata + key)
+          .addHeader("Metadata-Flavor", "Google")
+          .get()
+          .build();
 
-    Response response = ok.newCall(request).execute();
-    return response.body().string();
+      Response response = ok.newCall(request).execute();
+      return response.body().string();
+    } catch (Exception e) {
+      log("fetchMetadata - "+metadata+key+": ", e);
+    }
+    return "";
   }
 
   String fetchJsonMetadata(String prefix) throws IOException {
+    String json = "";
+    try {
     Request request = new Request.Builder()
         .url(metadata + prefix )
         .addHeader("Metadata-Flavor", "Google")
         .get()
         .build();
 
-    Response response = ok.newCall(request).execute();
-
-    // Convert json to prety json
-    return gson.toJson(jp.parse(response.body().string()));
+      Response response = ok.newCall(request).execute();
+      // Convert json to prety json
+      json = response.body().string();
+      return gson.toJson(jp.parse(json));
+    } catch (Exception e) {
+      log("fetchJsonMetadata - "+metadata+prefix+" : ", e);
+      log(" body: "+json);
+    }
+    return "{}";
   }
 
   @Override
