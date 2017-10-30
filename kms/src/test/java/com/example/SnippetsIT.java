@@ -202,7 +202,7 @@ public class SnippetsIT {
         "keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s\",\"state\":\"DISABLED\"",
         KEY_RING_ID, CRYPTO_KEY_ID, version));
 
-    // Enable the now-disabeld key version
+    // Enable the now-disabled key version
     Snippets.enableCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, version);
     assertThat(bout.toString()).containsMatch(String.format(
         "keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s\",\"state\":\"ENABLED\"",
