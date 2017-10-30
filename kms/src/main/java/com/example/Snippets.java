@@ -207,7 +207,7 @@ public class Snippets {
     System.out.println(response);
     return response;
   }
-  // [END kms_disable_cryptokey_version]
+  // [END kms_enable_cryptokey_version]
 
   // [START kms_destroy_cryptokey_version]
 
