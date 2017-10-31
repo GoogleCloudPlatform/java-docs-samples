@@ -94,7 +94,9 @@ public class TranslateTextTest {
     // Assert
     String got = bout.toString();
     for (String language : languages) {
-      assertThat(got).contains(language);
+      bout.reset();
+      out.print(language);
+      assertThat(got).contains(bout.toString());
     }
   }
 
