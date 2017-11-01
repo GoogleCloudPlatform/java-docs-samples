@@ -39,13 +39,16 @@ public class ListLogs {
 
       String logFilter = "logName=projects/" + options.getProjectId() + "/logs/" + logName;
 
-      // List log entries
+      // List all log entries
       Page<LogEntry> entries = logging.listLogEntries(
           EntryListOption.filter(logFilter));
-      for (LogEntry logEntry : entries.iterateAll()) {
-        System.out.println(logEntry);
-      }
-      // Use entries.getNextPage() to paginate
+      do {
+        for (LogEntry logEntry : entries.iterateAll()) {
+          System.out.println(logEntry);
+        }
+        entries = entries.getNextPage();
+      } while(entries != null);
+
     }
     // [END listlogs]
   }
