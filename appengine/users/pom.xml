@@ -49,7 +49,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20170516</version>
+      <version>20171018</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
