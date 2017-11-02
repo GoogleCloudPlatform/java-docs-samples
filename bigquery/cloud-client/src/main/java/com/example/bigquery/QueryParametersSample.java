@@ -20,7 +20,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.QueryParameterValue;
-import com.google.cloud.bigquery.QueryRequest;
+import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryResponse;
 import com.google.cloud.bigquery.QueryResult;
 import org.joda.time.DateTime;
@@ -122,8 +122,8 @@ public class QueryParametersSample {
             + "WHERE corpus = @corpus\n"
             + "AND word_count >= @min_word_count\n"
             + "ORDER BY word_count DESC";
-    QueryRequest queryRequest =
-        QueryRequest.newBuilder(queryString)
+    QueryJobConfiguration queryRequest =
+        QueryJobConfiguration.newBuilder(queryString)
             .addNamedParameter("corpus", QueryParameterValue.string(corpus))
             .addNamedParameter("min_word_count", QueryParameterValue.int64(minWordCount))
             // Standard SQL syntax is required for parameterized queries.
@@ -177,8 +177,8 @@ public class QueryParametersSample {
             + "GROUP BY name\n"
             + "ORDER BY count DESC\n"
             + "LIMIT 10;";
-    QueryRequest queryRequest =
-        QueryRequest.newBuilder(queryString)
+    QueryJobConfiguration queryRequest =
+        QueryJobConfiguration.newBuilder(queryString)
             .addNamedParameter("gender", QueryParameterValue.string(gender))
             .addNamedParameter("states", QueryParameterValue.array(states, String.class))
             // Standard SQL syntax is required for parameterized queries.
@@ -224,8 +224,8 @@ public class QueryParametersSample {
     DateTime timestamp = new DateTime(2016, 12, 7, 8, 0, 0, DateTimeZone.UTC);
 
     String queryString = "SELECT TIMESTAMP_ADD(@ts_value, INTERVAL 1 HOUR);";
-    QueryRequest queryRequest =
-        QueryRequest.newBuilder(queryString)
+    QueryJobConfiguration queryRequest =
+        QueryJobConfiguration.newBuilder(queryString)
             .addNamedParameter(
                 "ts_value",
                 QueryParameterValue.timestamp(

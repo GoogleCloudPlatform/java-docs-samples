@@ -39,6 +39,9 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class LoggingIT {
 
+  private final String QUICKSTART_LOG = "my-log";
+  private final String TEST_WRITE_LOG = "test-log";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private Logging logging = LoggingOptions.getDefaultInstance().getService();
@@ -56,37 +59,36 @@ public class LoggingIT {
 
   @After
   public void tearDown() {
+    // Clean up created logs
+    deleteLog(QUICKSTART_LOG);
+    deleteLog(TEST_WRITE_LOG);
+
     System.setOut(null);
   }
 
   @Test
   public void testQuickstart() throws Exception {
-    String logName = "my-log";
-    deleteLog(logName);
-    QuickstartSample.main(logName);
+    QuickstartSample.main(QUICKSTART_LOG);
     String got = bout.toString();
     assertThat(got).contains("Logged: Hello, world!");
-    deleteLog(logName);
   }
 
-  @Test(timeout = 10000)
+  @Test(timeout = 20000)
   public void testWriteAndListLogs() throws Exception {
-    String logName = "test-log";
-    deleteLog(logName);
     // write a log entry
     LogEntry entry = LogEntry.newBuilder(StringPayload.of("Hello world again"))
-        .setLogName(logName)
+        .setLogName(TEST_WRITE_LOG)
         .setResource(MonitoredResource.newBuilder("global").build())
         .build();
     logging.write(Collections.singleton(entry));
     // flush out log immediately
     logging.flush();
     bout.reset();
+    // Check if the log is listed yet
     while (bout.toString().isEmpty()) {
-      ListLogs.main(logName);
+      ListLogs.main(TEST_WRITE_LOG);
       Thread.sleep(1000);
     }
     assertThat(bout.toString().contains("Hello world again")).isTrue();
-    deleteLog(logName);
   }
 }
