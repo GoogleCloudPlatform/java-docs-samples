@@ -35,7 +35,7 @@ sed -i'.bak' -e "s/YOUR_PROJECT_ID/${GOOGLE_PROJECT_ID}/g" pom.xml
 
 mvn clean endpoints-framework:openApiDocs
 
-gcloud service-management deploy target/openapi-docs/openapi.json
+gcloud endpoints services deploy target/openapi-docs/openapi.json
 
 # Test with Maven
 mvn appengine:deploy \
@@ -55,7 +55,7 @@ sed -i'.bak' -e "s/YOUR_PROJECT_ID/${GOOGLE_PROJECT_ID}/g" build.gradle
 
 gradle clean endpointsOpenApiDocs
 
-gcloud service-management deploy build/endpointsOpenApiDocs/openapi.json
+gcloud endpoints services deploy build/endpointsOpenApiDocs/openapi.json
 
 # Deploy Gradle
 gradle -Pappengine.deploy.promote=false \

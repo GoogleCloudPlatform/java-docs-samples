@@ -42,7 +42,7 @@ To deploy the sample API:
 
 0. Invoke the `gcloud` command to deploy the API configuration file:
 
-         gcloud service-management deploy target/openapi-docs/openapi.json
+         gcloud endpoints services deploy target/openapi-docs/openapi.json
 
 0. Deploy the API implementation code by invoking:
 
@@ -121,7 +121,7 @@ To deploy the sample API:
 
 0. Invoke the `gcloud` command to deploy the API configuration file:
 
-         gcloud service-management deploy build/endpointsOpenApiDocs/openapi.json
+         gcloud endpoints services deploy build/endpointsOpenApiDocs/openapi.json
 
 0. Deploy the API implementation code by invoking:
 
