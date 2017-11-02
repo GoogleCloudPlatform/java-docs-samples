@@ -30,6 +30,7 @@ public class HttpExampleOptions {
   String algorithm;
   String cloudRegion = "us-central1";
   int numMessages = 100;
+  int tokenExpMins = 20;
   String httpBridgeAddress = "https://cloudiot-device.googleapis.com";
   String apiVersion = "v1beta1";
   String messageType = "event";
@@ -96,6 +97,13 @@ public class HttpExampleOptions {
             .build());
     options.addOption(
         Option.builder()
+            .type(Number.class)
+            .longOpt("token_exp_minutes")
+            .hasArg()
+            .desc("Minutes to JWT token refresh (token expiration time).")
+            .build());
+    options.addOption(
+        Option.builder()
             .type(String.class)
             .longOpt("http_bridge_address")
             .hasArg()
@@ -132,6 +140,10 @@ public class HttpExampleOptions {
       }
       if (commandLine.hasOption("num_messages")) {
         res.numMessages = ((Number) commandLine.getParsedOptionValue("num_messages")).intValue();
+      }
+      if (commandLine.hasOption("token_exp_minutes")) {
+        res.tokenExpMins =
+            ((Number) commandLine.getParsedOptionValue("token_exp_minutes")).intValue();
       }
       if (commandLine.hasOption("http_bridge_address")) {
         res.httpBridgeAddress = commandLine.getOptionValue("http_bridge_address");
