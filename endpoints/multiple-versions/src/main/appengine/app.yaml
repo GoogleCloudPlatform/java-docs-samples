@@ -22,6 +22,6 @@ handlers:
 
 endpoints_api_service:
   # The following values are to be replaced by information from the output of
-  # 'gcloud service-management deploy openapi-v1.yaml openapi-v2.yaml' command.
+  # 'gcloud endpoints services deploy openapi-v1.yaml openapi-v2.yaml' command.
   name: ENDPOINTS-SERVICE-NAME
   config_id: ENDPOINTS-CONFIG-ID
