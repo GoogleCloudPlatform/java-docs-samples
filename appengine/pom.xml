@@ -30,7 +30,7 @@
     </parent>
 
     <properties>
-        <appengine.sdk.version>1.9.58</appengine.sdk.version>
+        <appengine.sdk.version>1.9.59</appengine.sdk.version>
         <appengine.app.version>1</appengine.app.version>
 
         <project.http.version>1.19.0</project.http.version>
@@ -114,7 +114,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.10.0</version>
+            <version>2.11.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -28,7 +28,7 @@
   </parent>
 
   <properties>
-    <appengine.sdk.version>1.9.58</appengine.sdk.version>
+    <appengine.sdk.version>1.9.59</appengine.sdk.version>
   </properties>
 
   <dependencies>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20170516</version>
+      <version>20171018</version>
     </dependency>
 
     <!-- Test Dependencies -->
