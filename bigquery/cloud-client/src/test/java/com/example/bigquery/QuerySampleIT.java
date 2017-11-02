@@ -73,7 +73,7 @@ public class QuerySampleIT {
 
   @Test
   public void testSimpleQuery() throws Exception {
-    QuerySample.main(new String[]{"--query", LEGACY_SQL_QUERY, "--runSimpleQuery"});
+    QuerySample.main(new String[]{"--query", STANDARD_SQL_QUERY, "--runSimpleQuery"});
     String got = bout.toString();
     assertThat(got).contains(CORPUS_NAME);
   }
@@ -87,7 +87,7 @@ public class QuerySampleIT {
 
   @Test
   public void testUncachedQuery() throws Exception {
-    QuerySample.main(new String[]{"--query", LEGACY_SQL_QUERY, "--runSimpleQuery"});
+    QuerySample.main(new String[]{"--query", STANDARD_SQL_QUERY, "--runSimpleQuery"});
     String got = bout.toString();
     assertThat(got).contains(CORPUS_NAME);
   }
@@ -98,7 +98,7 @@ public class QuerySampleIT {
   // See: https://cloud.google.com/bigquery/querying-data#interactive-batch
   @Ignore
   public void testBatchQuery() throws Exception {
-    QuerySample.main(new String[]{"--query", LEGACY_SQL_QUERY, "--runBatchQuery"});
+    QuerySample.main(new String[]{"--query", STANDARD_SQL_QUERY, "--runBatchQuery"});
     String got = bout.toString();
     assertThat(got).contains(CORPUS_NAME);
   }
@@ -112,7 +112,7 @@ public class QuerySampleIT {
     QuerySample.main(
         new String[]{
             "--query",
-            LEGACY_SQL_QUERY,
+            STANDARD_SQL_QUERY,
             "--runPermanentTableQuery",
             "--destDataset",
             TEST_DATASET,
