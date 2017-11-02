@@ -145,6 +145,7 @@ public class HttpExample {
 
     // Create the corresponding JWT depending on the selected algorithm.
     String token;
+    DateTime iat = new DateTime();
     if (options.algorithm.equals("RS256")) {
       token = createJwtRsa(options.projectId, options.privateKeyFile);
     } else if (options.algorithm.equals("ES256")) {
@@ -154,6 +155,9 @@ public class HttpExample {
           "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
 
+    String urlPath = String.format("%s/%s/", options.httpBridgeAddress, options.apiVersion);
+    System.out.format("Using URL: '%s'\n", urlPath);
+
     // Publish numMessages messages to the HTTP bridge.
     for (int i = 1; i <= options.numMessages; ++i) {
       String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
@@ -161,8 +165,18 @@ public class HttpExample {
           "Publishing %s message %d/%d: '%s'\n",
           options.messageType, i, options.numMessages, payload);
 
-      String urlPath = String.format("%s/%s/", options.httpBridgeAddress, options.apiVersion);
-      System.out.format("Using URL: '%s'\n", urlPath);
+      // Refresh the authentication token if the token has expired.
+      long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
+      if (secsSinceRefresh > (options.tokenExpMins * 60)) {
+        System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+        iat = new DateTime();
+
+        if (options.algorithm.equals("RS256")) {
+          token = createJwtRsa(options.projectId, options.privateKeyFile);
+        } else if (options.algorithm.equals("ES256")) {
+          token = createJwtEs(options.projectId, options.privateKeyFile);
+        }
+      }
 
       publishMessage(payload, urlPath, options.messageType, token, options.projectId,
               options.cloudRegion, options.registryId, options.deviceId);
