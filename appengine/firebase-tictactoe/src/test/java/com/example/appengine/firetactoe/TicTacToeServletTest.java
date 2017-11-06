@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine.firetactoe;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
@@ -38,6 +38,13 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.StringBuffer;
+import java.util.HashMap;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,15 +53,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.lang.StringBuffer;
-import java.util.HashMap;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link TicTacToeServlet}.
@@ -105,7 +105,7 @@ public class TicTacToeServletTest {
     when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://timbre/"));
     when(mockRequest.getRequestDispatcher("/WEB-INF/view/index.jsp")).thenReturn(requestDispatcher);
 
-    servletUnderTest = new TicTacToeServlet();
+    servletUnderTest = spy(new TicTacToeServlet());
 
     helper.setEnvIsLoggedIn(true);
   }
@@ -133,14 +133,16 @@ public class TicTacToeServletTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
+
+    Mockito.doReturn(null).when(servletUnderTest).getServletContext();
 
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     // Make sure the game object was created for a new game
     Objectify ofy = ObjectifyService.ofy();
     Game game = ofy.load().type(Game.class).first().safe();
-    assertThat(game.userX).isEqualTo(USER_ID);
+    assertEquals(game.userX, USER_ID);
 
     verify(mockHttpTransport, times(1)).buildRequest(
         eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
@@ -170,7 +172,7 @@ public class TicTacToeServletTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
 
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
@@ -180,12 +182,14 @@ public class TicTacToeServletTest {
 
     when(mockRequest.getParameter("gameKey")).thenReturn(gameKey);
 
+    Mockito.doReturn(null).when(servletUnderTest).getServletContext();
+
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     // Make sure the game object was updated with the other player
     game = ofy.load().type(Game.class).first().safe();
-    assertThat(game.userX).isEqualTo("some-other-user-id");
-    assertThat(game.userO).isEqualTo(USER_ID);
+    assertEquals(game.userX, "some-other-user-id");
+    assertEquals(game.userO, USER_ID);
 
     verify(mockHttpTransport, times(2)).buildRequest(
         eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));

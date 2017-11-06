@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Google Inc. All Rights Reserved.
+Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <artifactId>appengine-images</artifactId>
 
   <properties>
-      <appengine.sdk.version>1.9.48</appengine.sdk.version>
+      <appengine.sdk.version>1.9.59</appengine.sdk.version>
   </properties>
 
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-doc-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <dependencies>
@@ -40,7 +40,7 @@ Copyright 2015 Google Inc. All Rights Reserved.
     <dependency>
       <groupId>com.google.appengine.tools</groupId>
       <artifactId>appengine-gcs-client</artifactId>
-      <version>0.6</version>
+      <version>0.7</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

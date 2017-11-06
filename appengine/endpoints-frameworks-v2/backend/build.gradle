@@ -1,0 +1,86 @@
+// Copyright 2017 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    // [START endpoints_plugin]
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
+    // [END endpoints_plugin]
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.3'
+  }
+}
+
+repositories {
+    maven {
+        url 'https://maven-central.storage.googleapis.com'
+    }
+    jcenter()
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+
+def projectId = 'YOUR_PROJECT_ID'
+
+apply plugin: 'java'
+apply plugin: 'war'
+// [START endpoints_plugin_apply]
+apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
+// [END endpoints_plugin_apply]
+apply plugin: 'com.google.cloud.tools.appengine'
+
+dependencies {
+    compile 'com.google.endpoints:endpoints-framework:2.0.8'
+    // [START api_management]
+    compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
+    compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
+    // [END api_management]
+}
+
+// [START endpoints_plugin_config]
+endpointsServer {
+  // Endpoints Framework Plugin server-side configuration
+  hostname = "${projectId}.appspot.com"
+}
+// [END endpoints_plugin_config]
+
+appengine {  // App Engine tasks configuration
+  deploy {   // deploy configuration
+    version = findProperty("appengine.deploy.version")
+
+    def promoteProp = findProperty("appengine.deploy.promote")
+    if (promoteProp != null) {
+      promote = new Boolean(promoteProp)
+    }
+  }
+}
+
+sourceCompatibility = 1.7  // App Engine Standard uses Java 7
+targetCompatibility = 1.7  // App Engine Standard uses Java 7
+
+// this replaces the ${endpoints.project.id} in appengine-web.xml and web.xml
+task replaceProjectId(type: Copy) {
+    from 'src/main/webapp/WEB-INF/'
+    include '*.xml'
+    into 'build/exploded-backend/WEB-INF'
+    expand(endpoints:[project:[id:projectId]])
+    filteringCharset = 'UTF-8'
+}
+assemble.dependsOn replaceProjectId

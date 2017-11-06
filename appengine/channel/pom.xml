@@ -1,5 +1,5 @@
 <!--
- Copyright 2015 Google Inc. All Rights Reserved.
+ Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,17 +21,14 @@
     <artifactId>appengine-channel</artifactId>
     <parent>
         <groupId>com.google.cloud</groupId>
-        <artifactId>doc-samples</artifactId>
+        <artifactId>appengine-doc-samples</artifactId>
         <version>1.0.0</version>
-        <relativePath>../..</relativePath>
+        <relativePath>..</relativePath>
     </parent>
     <properties>
-        <objectify.version>5.1.14</objectify.version>
+        <objectify.version>5.1.21</objectify.version>
     </properties>
     <!-- [START set_versions] -->
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
     <!-- [END set_versions] -->
     <dependencies>
         <dependency>
@@ -49,7 +46,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20160810</version>
+            <version>20171018</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.objectify</groupId>
@@ -91,7 +88,7 @@
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>0.31</version>
+            <version>0.36</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

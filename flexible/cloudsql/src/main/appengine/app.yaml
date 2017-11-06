@@ -18,7 +18,6 @@ env: flex
 handlers:
 - url: /.*
   script: this field is required, but ignored
-  secure: always
 
 automatic_scaling:
   min_num_instances: 1

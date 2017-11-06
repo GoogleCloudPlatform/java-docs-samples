@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine.firetactoe;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,6 +28,8 @@ import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.appengine.tools.development.testing.LocalAppIdentityServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -35,9 +37,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockitoAnnotations;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * Unit tests for {@link FirebaseChannel}.
@@ -56,7 +55,7 @@ public class FirebaseChannelTest {
     FirebaseChannel.firebaseConfigStream = new ByteArrayInputStream(
         String.format("databaseURL: \"%s\"", FIREBASE_DB_URL).getBytes());
 
-    firebaseChannel = FirebaseChannel.getInstance();
+    firebaseChannel = FirebaseChannel.getInstance(null);
   }
 
   @Before
@@ -87,7 +86,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
 
     firebaseChannel.sendFirebaseMessage("my_key", new Game());
 
@@ -112,7 +111,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
 
     firebaseChannel.sendFirebaseMessage("my_key", null);
 
@@ -126,7 +125,7 @@ public class FirebaseChannelTest {
 
     String jwt = firebaseChannel.createFirebaseToken(game, "userId");
 
-    assertThat(jwt).matches("^([\\w+/=-]+\\.){2}[\\w+/=-]+$");
+    assertTrue(jwt.matches("^([\\w+/=-]+\\.){2}[\\w+/=-]+$"));
   }
 
   @Test
@@ -146,7 +145,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
     Game game = new Game();
 
     firebaseChannel.firebasePut(FIREBASE_DB_URL + "/my/path", game);
@@ -171,7 +170,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
     Game game = new Game();
 
     firebaseChannel.firebasePatch(FIREBASE_DB_URL + "/my/path", game);
@@ -196,7 +195,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
     Game game = new Game();
 
     firebaseChannel.firebasePost(FIREBASE_DB_URL + "/my/path", game);
@@ -221,7 +220,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
 
     firebaseChannel.firebaseGet(FIREBASE_DB_URL + "/my/path");
 
@@ -245,7 +244,7 @@ public class FirebaseChannelTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
 
     firebaseChannel.firebaseDelete(FIREBASE_DB_URL + "/my/path");
 

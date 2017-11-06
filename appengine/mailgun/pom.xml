@@ -1,5 +1,5 @@
 <!--
- Copyright 2015 Google Inc. All Rights Reserved.
+ Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@
   <artifactId>appengine-mailgun</artifactId>
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
+    <artifactId>appengine-doc-samples</artifactId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <dependencies>
     <dependency>
@@ -37,17 +37,17 @@
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-core</artifactId>
-      <version>1.19.3</version>
+      <version>1.19.4</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>1.19.3</version>
+      <version>1.19.4</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-multipart</artifactId>
-      <version>1.19.3</version>
+      <version>1.19.4</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

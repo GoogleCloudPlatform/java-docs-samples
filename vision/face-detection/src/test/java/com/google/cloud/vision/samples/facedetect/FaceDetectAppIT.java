@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package com.google.cloud.vision.samples.facedetect;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-import com.google.api.services.vision.v1.model.FaceAnnotation;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1FaceAnnotation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class FaceDetectAppIT {
   }
 
   @Test public void detectFaces_withFace_returnsAtLeastOneFace() throws Exception {
-    List<FaceAnnotation> faces =
+    List<GoogleCloudVisionV1FaceAnnotation> faces =
         appUnderTest.detectFaces(Paths.get("data/face.jpg"), MAX_RESULTS);
 
     assertThat(faces).named("face.jpg faces").isNotEmpty();

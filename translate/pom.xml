@@ -1,5 +1,5 @@
 <!--
-Copyright 2016 Google Inc. All Rights Reserved.
+Copyright 2016 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ limitations under the License.
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloud.translate.samples</groupId>
+  <groupId>com.example.cloud.translate.samples</groupId>
   <artifactId>translate</artifactId>
   <version>1.0</version>
   <name>translate</name>
@@ -38,7 +38,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
-      <version>0.8.0</version>
+      <version>1.8.0</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -49,7 +49,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.36</version>
     </dependency>
   </dependencies>
   <build>
@@ -59,7 +59,7 @@ limitations under the License.
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.google.cloud.translate.samples.TranslateText</mainClass>
+              <mainClass>com.example.cloud.translate.samples.TranslateText</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

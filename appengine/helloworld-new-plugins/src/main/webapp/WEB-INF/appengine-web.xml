@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -13,8 +13,6 @@
 -->
 <!-- [START config] -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>your-project-id</application>
-  <version>1</version>
   <threadsafe>true</threadsafe>
 </appengine-web-app>
 <!-- [END config] -->

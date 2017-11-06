@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud.kms.samples</groupId>
+  <artifactId>kms-samples</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <artifactId>doc-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-cloudkms</artifactId>
+      <version>v1-rev26-1.23.0</version>
+      <exclusions>
+        <exclusion> <!-- exclude an old version of Guava -->
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>1.23.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client-jackson2</artifactId>
+        <version>1.23.0</version>
+    </dependency>
+    <dependency>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+      <version>2.33</version>
+    </dependency>
+
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.36</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+
+  <build>
+      <sourceDirectory>src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,6 @@ public class OpenedServlet extends HttpServlet {
     String gameId = request.getParameter("gameKey");
     Objectify ofy = ObjectifyService.ofy();
     Game game = ofy.load().type(Game.class).id(gameId).safe();
-    game.sendUpdateToClients();
+    game.sendUpdateToClients(getServletContext());
   }
 }

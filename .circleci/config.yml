@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - checkout
+      - run:
+         name: get shellcheck expect
+         command: sudo apt-get update && sudo apt-get install shellcheck expect
+      - run:
+          name: service account
+          command: openssl aes-256-cbc -d -md md5 -in "${HOME}/project/service-account.json.enc" -k "${key}" -iv "${iv}" -out "${HOME}/google-cloud-service-key.json" && echo 'export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/google-cloud-service-key.json"' >> $BASH_ENV
+      - run:
+          name: test script
+          command: bash "${HOME}/project/travis.sh" && bash <(curl -s https://codecov.io/bash) # If successful, run code coverage
+
+#      - run:
+#          name: Gecko Driver
+#          command: curl -LO https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz && sudo tar -zxf geckodriver-*.tar.gz -C "${HOME}/bin"
+

@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -34,10 +34,16 @@
   </properties>
 
   <dependencies>
+    <!-- TODO replace with release version -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>0.8.0</version>
+      <version>0.26.0-beta</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -50,8 +56,26 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.36</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.example.language.QuickstartSample</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

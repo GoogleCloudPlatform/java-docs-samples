@@ -20,7 +20,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.QueryParameterValue;
-import com.google.cloud.bigquery.QueryRequest;
+import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryResponse;
 import com.google.cloud.bigquery.QueryResult;
 import org.joda.time.DateTime;
@@ -30,13 +30,9 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * A sample that demonstrates use of query parameters.
- */
+/** A sample that demonstrates use of query parameters. */
 public class QueryParametersSample {
   private static final int ERROR_CODE = 1;
 
@@ -44,22 +40,19 @@ public class QueryParametersSample {
     System.err.println("Usage:");
     System.err.printf(
         "\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
-        QueryParametersSample.class.getCanonicalName(),
-        "${sample}");
+        QueryParametersSample.class.getCanonicalName(), "${sample}");
     System.err.println();
     System.err.println("${sample} can be one of: named, array, timestamp");
     System.err.println();
     System.err.println("Usage for ${sample}=named:");
     System.err.printf(
         "\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
-        QueryParametersSample.class.getCanonicalName(),
-        "named ${corpus} ${minWordCount}");
+        QueryParametersSample.class.getCanonicalName(), "named ${corpus} ${minWordCount}");
     System.err.println();
     System.err.println("Usage for sample=array:");
     System.err.printf(
         "\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
-        QueryParametersSample.class.getCanonicalName(),
-        "array ${gender} ${states...}");
+        QueryParametersSample.class.getCanonicalName(), "array ${gender} ${states...}");
     System.err.println();
     System.err.println("\twhere ${gender} can be on of: M, F");
     System.err.println(
@@ -67,13 +60,10 @@ public class QueryParametersSample {
     System.err.println();
     System.err.printf(
         "\t\tmvn exec:java -Dexec.mainClass=%s -Dexec.args='%s'\n",
-        QueryParametersSample.class.getCanonicalName(),
-        "array F MD WA");
+        QueryParametersSample.class.getCanonicalName(), "array F MD WA");
   }
 
-  /**
-   * Prompts the user for the required parameters to perform a query.
-   */
+  /** Prompts the user for the required parameters to perform a query. */
   public static void main(final String[] args) throws IOException, InterruptedException {
     if (args.length < 1) {
       System.err.println("Expected first argument 'sample'");
@@ -126,13 +116,14 @@ public class QueryParametersSample {
     BigQuery bigquery =
         new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
 
-    String queryString = "SELECT word, word_count\n"
-        + "FROM `bigquery-public-data.samples.shakespeare`\n"
-        + "WHERE corpus = @corpus\n"
-        + "AND word_count >= @min_word_count\n"
-        + "ORDER BY word_count DESC";
-    QueryRequest queryRequest =
-        QueryRequest.newBuilder(queryString)
+    String queryString =
+        "SELECT word, word_count\n"
+            + "FROM `bigquery-public-data.samples.shakespeare`\n"
+            + "WHERE corpus = @corpus\n"
+            + "AND word_count >= @min_word_count\n"
+            + "ORDER BY word_count DESC";
+    QueryJobConfiguration queryRequest =
+        QueryJobConfiguration.newBuilder(queryString)
             .addNamedParameter("corpus", QueryParameterValue.string(corpus))
             .addNamedParameter("min_word_count", QueryParameterValue.int64(minWordCount))
             // Standard SQL syntax is required for parameterized queries.
@@ -149,24 +140,23 @@ public class QueryParametersSample {
       response = bigquery.getQueryResults(response.getJobId());
     }
 
+    // Check for errors.
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
+    // Print all pages of the results.
     QueryResult result = response.getResult();
-    Iterator<List<FieldValue>> iter = result.iterateAll();
+    while (result != null) {
+      for (List<FieldValue> row : result.iterateAll()) {
+        System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      }
 
-    while (iter.hasNext()) {
-      List<FieldValue> row = iter.next();
-      System.out.printf(
-          "%s: %d\n",
-          row.get(0).getStringValue(),
-          row.get(1).getLongValue());
+      result = result.getNextPage();
     }
   }
   // [END bigquery_query_params]
@@ -175,24 +165,22 @@ public class QueryParametersSample {
    * Query the baby names database to find the most popular names for a gender in a list of states.
    */
   // [START bigquery_query_params_arrays]
-  private static void runArray(String gender, String[] states)
-      throws InterruptedException {
+  private static void runArray(String gender, String[] states) throws InterruptedException {
     BigQuery bigquery =
         new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
 
-    String queryString = "SELECT name, sum(number) as count\n"
-        + "FROM `bigquery-public-data.usa_names.usa_1910_2013`\n"
-        + "WHERE gender = @gender\n"
-        + "AND state IN UNNEST(@states)\n"
-        + "GROUP BY name\n"
-        + "ORDER BY count DESC\n"
-        + "LIMIT 10;";
-    QueryRequest queryRequest =
-        QueryRequest.newBuilder(queryString)
+    String queryString =
+        "SELECT name, sum(number) as count\n"
+            + "FROM `bigquery-public-data.usa_names.usa_1910_2013`\n"
+            + "WHERE gender = @gender\n"
+            + "AND state IN UNNEST(@states)\n"
+            + "GROUP BY name\n"
+            + "ORDER BY count DESC\n"
+            + "LIMIT 10;";
+    QueryJobConfiguration queryRequest =
+        QueryJobConfiguration.newBuilder(queryString)
             .addNamedParameter("gender", QueryParameterValue.string(gender))
-            .addNamedParameter(
-                "states",
-                QueryParameterValue.array(states, String.class))
+            .addNamedParameter("states", QueryParameterValue.array(states, String.class))
             // Standard SQL syntax is required for parameterized queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
@@ -207,21 +195,23 @@ public class QueryParametersSample {
       response = bigquery.getQueryResults(response.getJobId());
     }
 
+    // Check for errors.
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
+    // Print all pages of the results.
     QueryResult result = response.getResult();
-    Iterator<List<FieldValue>> iter = result.iterateAll();
+    while (result != null) {
+      for (List<FieldValue> row : result.iterateAll()) {
+        System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      }
 
-    while (iter.hasNext()) {
-      List<FieldValue> row = iter.next();
-      System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
+      result = result.getNextPage();
     }
   }
   // [END bigquery_query_params_arrays]
@@ -234,8 +224,8 @@ public class QueryParametersSample {
     DateTime timestamp = new DateTime(2016, 12, 7, 8, 0, 0, DateTimeZone.UTC);
 
     String queryString = "SELECT TIMESTAMP_ADD(@ts_value, INTERVAL 1 HOUR);";
-    QueryRequest queryRequest =
-        QueryRequest.newBuilder(queryString)
+    QueryJobConfiguration queryRequest =
+        QueryJobConfiguration.newBuilder(queryString)
             .addNamedParameter(
                 "ts_value",
                 QueryParameterValue.timestamp(
@@ -255,29 +245,30 @@ public class QueryParametersSample {
       response = bigquery.getQueryResults(response.getJobId());
     }
 
+    // Check for errors.
     if (response.hasErrors()) {
-      throw new RuntimeException(
-          response
-              .getExecutionErrors()
-              .stream()
-              .<String>map(err -> err.getMessage())
-              .collect(Collectors.joining("\n")));
+      String firstError = "";
+      if (response.getExecutionErrors().size() != 0) {
+        firstError = response.getExecutionErrors().get(0).getMessage();
+      }
+      throw new RuntimeException(firstError);
     }
 
+    // Print all pages of the results.
     QueryResult result = response.getResult();
-    Iterator<List<FieldValue>> iter = result.iterateAll();
-
     DateTimeFormatter formatter = ISODateTimeFormat.dateTimeNoMillis().withZoneUTC();
-    while (iter.hasNext()) {
-      List<FieldValue> row = iter.next();
-      System.out.printf(
-          "%s\n",
-          formatter.print(
-              new DateTime(
-                  // Timestamp values are returned in microseconds since 1970-01-01T00:00:00 UTC,
-                  // but org.joda.time.DateTime constructor accepts times in milliseconds.
-                  row.get(0).getTimestampValue() / 1000,
-                  DateTimeZone.UTC)));
+    while (result != null) {
+      for (List<FieldValue> row : result.iterateAll()) {
+        System.out.printf(
+            "%s\n",
+            formatter.print(
+                new DateTime(
+                    // Timestamp values are returned in microseconds since 1970-01-01T00:00:00 UTC,
+                    // but org.joda.time.DateTime constructor accepts times in milliseconds.
+                    row.get(0).getTimestampValue() / 1000, DateTimeZone.UTC)));
+      }
+
+      result = result.getNextPage();
     }
   }
   // [END bigquery_query_params_timestamps]

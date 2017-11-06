@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <!-- [START api_management] -->
     <!-- Add a filter that fetches the service config from service management. -->
     <filter>
         <filter-name>endpoints-api-configuration</filter-name>
@@ -49,7 +50,7 @@
         </init-param>
         <init-param>
             <param-name>endpoints.serviceName</param-name>
-            <param-value>echo-api.endpoints.${endpoints.project.id}.cloud.goog</param-value>
+            <param-value>${endpoints.project.id}.appspot.com</param-value>
         </init-param>
     </filter>
 
@@ -62,4 +63,5 @@
         <filter-name>endpoints-api-controller</filter-name>
         <servlet-name>EndpointsServlet</servlet-name>
     </filter-mapping>
+    <!-- [END api_management] -->
 </web-app>

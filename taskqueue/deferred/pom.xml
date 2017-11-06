@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -31,8 +31,9 @@
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
-        <codehaus-versions-maven-plugin-version>2.3</codehaus-versions-maven-plugin-version>
-        <maven-war-plugin-version>3.0.0</maven-war-plugin-version>
+        <appengine.sdk.version>1.9.59</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
+        <codehaus-versions-maven-plugin-version>2.5</codehaus-versions-maven-plugin-version>
+        <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
     </properties>
 
     <dependencies>
@@ -40,6 +41,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${appengine.sdk.version}</version>
         </dependency>
         <dependency>
           <groupId>javax.servlet</groupId>
@@ -56,19 +58,23 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
+            <version>${appengine.sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-        </dependency>
+            <version>${appengine.sdk.version}</version>
+       </dependency>
     </dependencies>
 
     <build>

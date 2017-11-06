@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Google Inc. All Rights Reserved.
+ * Copyright (c) 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You may
@@ -31,11 +31,11 @@ import com.google.cloud.datastore.StructuredQuery;
 import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.google.common.collect.Iterators;
 
-import org.joda.time.Duration;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.threeten.bp.Duration;
 
 import java.io.IOException;
 import java.util.List;
@@ -75,7 +75,7 @@ public class UserServiceTest {
 
   @AfterClass
   public static void afterClass() throws IOException, InterruptedException, TimeoutException {
-    HELPER.stop(Duration.standardMinutes(1));
+    HELPER.stop(Duration.ofMinutes(1));
   }
 
   @Test

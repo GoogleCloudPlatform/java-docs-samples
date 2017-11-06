@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StorageSampleTest {
-  private static final String BUCKET = "cloud-samples-test";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
   private static final String TEST_OBJECT = "storage-sample-test-upload.txt";
 
   @Test
@@ -43,7 +44,7 @@ public class StorageSampleTest {
   public void testGetBucket() throws Exception {
     Bucket bucket = StorageSample.getBucket(BUCKET);
     assertThat(bucket.getName()).named("bucket name").isEqualTo(BUCKET);
-    assertThat(bucket.getLocation()).named("bucket location").isEqualTo("US-CENTRAL1");
+    assertThat(bucket.getLocation()).named("bucket location").startsWith("US");
   }
 
   @Test

@@ -1,5 +1,5 @@
 <!--
-  Copyright 2017 Google Inc. All Rights Reserved.
+  Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,10 +38,20 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>0.8.1-alpha</version>
+      <version>0.26.0-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>23.0</version>
+    </dependency>
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -49,10 +59,11 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.36</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
