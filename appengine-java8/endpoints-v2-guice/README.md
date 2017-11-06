@@ -34,7 +34,7 @@ To build the project:
 
 To generate the required configuration file `openapi.json`:
 
-    mvn endpoints-framework:openApiDoc
+    mvn endpoints-framework:openApiDocs
 
 ### Deploying the sample API to App Engine
 
