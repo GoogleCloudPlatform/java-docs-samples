@@ -44,16 +44,20 @@ apply plugin: 'com.google.cloud.tools.appengine'
 
 dependencies {
     compile 'com.google.endpoints:endpoints-framework:2.0.8'
+    // [START guice_dependency]
     compile 'com.google.endpoints:endpoints-framework-guice:'
+    // [END guice_dependency]
     compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
     compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
 }
 
+// [START endpoints_plugin_configuration]
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
   hostname = "${projectId}.appspot.com"
   serviceClasses = ['com.example.echo.Echo']
 }
+// [END endpoints_plugin_configuration]
 
 appengine {  // App Engine tasks configuration
   deploy {   // deploy configuration
