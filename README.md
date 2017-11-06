@@ -4,6 +4,9 @@
 [![ghit.me](https://ghit.me/badge.svg?repo=GoogleCloudPlatform/java-docs-samples)](https://ghit.me/repo/GoogleCloudPlatform/java-docs-samples)
 [![Coverage Status](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples/branch/master/graph/badge.svg)](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples)
 
+
+While this library is still supported, we suggest trying the newer [Cloud Client Library](https://developers.google.com/api-client-library/java/apis/vision/v1) for Google Cloud Vision, especially for new projects. For more information, please see the notice on the [API Client Library Page](https://developers.google.com/api-client-library/java/apis/vision/v1).
+
 This is a repository that contains java code snippets on [Cloud Platform Documentation](https://cloud.google.com/docs/).
 
 The repo is organized as follows:
