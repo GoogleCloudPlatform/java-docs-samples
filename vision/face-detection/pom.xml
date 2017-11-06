@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev364-1.23.0</version>
+      <version>v1-rev365-1.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
