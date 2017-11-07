@@ -306,16 +306,19 @@ public class SpannerSample {
   // "CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)".
   // [START query_index]
   static void queryUsingIndex(DatabaseClient dbClient) {
-    ResultSet resultSet =
-        dbClient
-            .singleUse()
-            .executeQuery(
-                // We use FORCE_INDEX hint to specify which index to use. For more details see
-                // https://cloud.google.com/spanner/docs/query-syntax#from-clause
-                Statement.of(
-                    "SELECT AlbumId, AlbumTitle, MarketingBudget\n"
-                        + "FROM Albums@{FORCE_INDEX=AlbumsByAlbumTitle}\n"
-                        + "WHERE AlbumTitle >= 'Aardvark' AND AlbumTitle < 'Goo'"));
+    Statement statement = Statement
+        // We use FORCE_INDEX hint to specify which index to use. For more details see
+        // https://cloud.google.com/spanner/docs/query-syntax#from-clause
+        .newBuilder("SELECT AlbumId, AlbumTitle, MarketingBudget\n"
+            + "FROM Albums@{FORCE_INDEX=AlbumsByAlbumTitle}\n"
+            + "WHERE AlbumTitle >= @StartTitle AND AlbumTitle < @EndTitle")
+        // We use @BoundParameters to help speed up frequently executed queries.
+        //  For more details see https://cloud.google.com/spanner/docs/sql-best-practices
+        .bind("StartTitle").to("Aardvark")
+        .bind("EndTitle").to("Goo")
+        .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
     while (resultSet.next()) {
       System.out.printf(
           "%d %s %s\n",
