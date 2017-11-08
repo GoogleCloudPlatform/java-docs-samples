@@ -47,11 +47,13 @@
             <artifactId>endpoints-framework</artifactId>
             <version>${endpoints.framework.version}</version>
         </dependency>
+        <!-- [START guice_dependency] -->
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework-guice</artifactId>
             <version>2.0.9</version>
         </dependency>
+        <!-- [END guice_dependency] -->
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-management-control-appengine-all</artifactId>
@@ -102,6 +104,7 @@
                     <!-- deploy configuration -->
                 </configuration>
             </plugin>
+            <!-- [START endpoints_plugin] -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
@@ -113,14 +116,8 @@
                       <serviceClass>com.example.echo.Echo</serviceClass>
                     </serviceClasses>
                 </configuration>
-                <dependencies>
-                  <dependency>
-                      <groupId>com.google.endpoints</groupId>
-                      <artifactId>endpoints-management-control-appengine-all</artifactId>
-                      <version>1.0.5</version>
-                  </dependency>
-                </dependencies>
             </plugin>
+            <!-- [START endpoints_plugin] -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
