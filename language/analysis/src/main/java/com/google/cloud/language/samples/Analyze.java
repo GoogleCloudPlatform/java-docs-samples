@@ -23,6 +23,9 @@ import com.google.cloud.language.v1.AnalyzeEntitySentimentResponse;
 import com.google.cloud.language.v1.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.AnalyzeSyntaxRequest;
 import com.google.cloud.language.v1.AnalyzeSyntaxResponse;
+import com.google.cloud.language.v1.ClassificationCategory;
+import com.google.cloud.language.v1.ClassifyTextRequest;
+import com.google.cloud.language.v1.ClassifyTextResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.Document.Type;
 import com.google.cloud.language.v1.EncodingType;
@@ -55,7 +58,13 @@ public class Analyze {
     String command = args[0];
     String text = args[1];
 
-    if (command.equals("entities")) {
+    if (command.equals("classify")) {
+      if (text.startsWith("gs://")) {
+        classifyFile(text);
+      } else {
+        classifyText(text);
+      }
+    } else if (command.equals("entities")) {
       if (text.startsWith("gs://")) {
         analyzeEntitiesFile(text);
       } else {
@@ -289,12 +298,65 @@ public class Analyze {
     }
     // [END analyze_syntax_file]
   }
+
+  /**
+   * Detects categories in text using the Language Beta API.
+   */
+  public static void classifyText(String text) throws Exception {
+    // [START classify_text]
+    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    try (LanguageServiceClient language = LanguageServiceClient.create()) {
+      // set content to the text string
+      Document doc = Document.newBuilder()
+          .setContent(text)
+          .setType(Type.PLAIN_TEXT)
+          .build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
+          .setDocument(doc)
+          .build();
+      // detect categories in the given text
+      ClassifyTextResponse response = language.classifyText(request);
+
+      for (ClassificationCategory category : response.getCategoriesList()) {
+        System.out.printf("Category name : %s, Confidence : %.3f\n",
+            category.getName(), category.getConfidence());
+      }
+    }
+    // [END classify_text]
+  }
+
+  /**
+   * Detects categories in a GCS hosted file using the Language Beta API.
+   */
+  public static void classifyFile(String gcsUri) throws Exception {
+    // [START classify_file]
+    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    try (LanguageServiceClient language = LanguageServiceClient.create()) {
+      // set the GCS content URI path
+      Document doc = Document.newBuilder()
+          .setGcsContentUri(gcsUri)
+          .setType(Type.PLAIN_TEXT)
+          .build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
+          .setDocument(doc)
+          .build();
+      // detect categories in the given file
+      ClassifyTextResponse response = language.classifyText(request);
+
+      for (ClassificationCategory category : response.getCategoriesList()) {
+        System.out.printf("Category name : %s, Confidence : %.3f\n",
+            category.getName(), category.getConfidence());
+      }
+    }
+    // [END classify_file]
+  }
+
   /**
    * Detects the entity sentiments in the string {@code text} using the Language Beta API.
    */
   public static void entitySentimentText(String text) throws Exception {
     // [START entity_sentiment_text]
-    // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
           .setContent(text).setType(Type.PLAIN_TEXT).build();
@@ -325,7 +387,7 @@ public class Analyze {
    */
   public static void entitySentimentFile(String gcsUri) throws Exception {
     // [START entity_sentiment_file]
-    // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
           .setGcsContentUri(gcsUri)
