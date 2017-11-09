@@ -408,7 +408,7 @@ public class SpannerSample {
   static void readStaleData(DatabaseClient dbClient) {
     ResultSet resultSet =
         dbClient
-            .singleUse(TimestampBound.ofExactStaleness(10, TimeUnit.SECONDS))
+            .singleUse(TimestampBound.ofExactStaleness(15, TimeUnit.SECONDS))
             .read("Albums",
                 KeySet.all(),
                 Arrays.asList("SingerId", "AlbumId", "MarketingBudget"));
