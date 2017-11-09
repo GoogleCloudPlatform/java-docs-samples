@@ -18,7 +18,7 @@ package com.example.video;
 
 // [START videointelligence_quickstart]
 
-import com.google.api.gax.rpc.OperationFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.videointelligence.v1beta2.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1beta2.AnnotateVideoRequest;
 import com.google.cloud.videointelligence.v1beta2.AnnotateVideoResponse;
