@@ -19,7 +19,7 @@ package com.google.cloud.vision.samples.landmarkdetection;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
+import com.google.api.services.vision.v1.model.EntityAnnotation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class DetectLandmarkIT {
   }
 
   @Test public void identifyLandmark_withLandmark_returnsKnownLandmark() throws Exception {
-    List<GoogleCloudVisionV1EntityAnnotation> landmarks = appUnderTest.identifyLandmark(LANDMARK_URI, MAX_RESULTS);
+    List<EntityAnnotation> landmarks = appUnderTest.identifyLandmark(LANDMARK_URI, MAX_RESULTS);
 
     assertThat(landmarks).named("water.jpg landmarks").isNotEmpty();
     assertThat(landmarks.get(0).getDescription())

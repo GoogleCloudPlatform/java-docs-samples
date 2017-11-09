@@ -18,9 +18,9 @@ package com.google.cloud.vision.samples.facedetect;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BoundingPoly;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1FaceAnnotation;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Vertex;
+import com.google.api.services.vision.v1.model.BoundingPoly;
+import com.google.api.services.vision.v1.model.FaceAnnotation;
+import com.google.api.services.vision.v1.model.Vertex;
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Test;
@@ -36,21 +36,21 @@ import java.awt.image.BufferedImage;
 public class FaceDetectAppTest {
   @Test public void annotateWithFaces_manyFaces_outlinesFaces() throws Exception {
     // Arrange
-    ImmutableList<GoogleCloudVisionV1FaceAnnotation> faces =
+    ImmutableList<FaceAnnotation> faces =
         ImmutableList.of(
-            new GoogleCloudVisionV1FaceAnnotation()
+            new FaceAnnotation()
                 .setFdBoundingPoly(
-                    new GoogleCloudVisionV1BoundingPoly().setVertices(ImmutableList.of(
-                        new GoogleCloudVisionV1Vertex().setX(10).setY(5),
-                        new GoogleCloudVisionV1Vertex().setX(20).setY(5),
-                        new GoogleCloudVisionV1Vertex().setX(20).setY(25),
-                        new GoogleCloudVisionV1Vertex().setX(10).setY(25)))),
-            new GoogleCloudVisionV1FaceAnnotation()
+                    new BoundingPoly().setVertices(ImmutableList.of(
+                        new Vertex().setX(10).setY(5),
+                        new Vertex().setX(20).setY(5),
+                        new Vertex().setX(20).setY(25),
+                        new Vertex().setX(10).setY(25)))),
+            new FaceAnnotation()
                 .setFdBoundingPoly(
-                    new GoogleCloudVisionV1BoundingPoly().setVertices(ImmutableList.of(
-                        new GoogleCloudVisionV1Vertex().setX(60).setY(50),
-                        new GoogleCloudVisionV1Vertex().setX(70).setY(60),
-                        new GoogleCloudVisionV1Vertex().setX(50).setY(60)))));
+                    new BoundingPoly().setVertices(ImmutableList.of(
+                        new Vertex().setX(60).setY(50),
+                        new Vertex().setX(70).setY(60),
+                        new Vertex().setX(50).setY(60)))));
     BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
 
     // Act
