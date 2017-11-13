@@ -73,7 +73,7 @@ public class LoggingIT {
     assertThat(got).contains("Logged: Hello, world!");
   }
 
-  @Test(timeout = 20000)
+  @Test(timeout = 60000)
   public void testWriteAndListLogs() throws Exception {
     // write a log entry
     LogEntry entry = LogEntry.newBuilder(StringPayload.of("Hello world again"))
@@ -87,7 +87,7 @@ public class LoggingIT {
     // Check if the log is listed yet
     while (bout.toString().isEmpty()) {
       ListLogs.main(TEST_WRITE_LOG);
-      Thread.sleep(1000);
+      Thread.sleep(5000);
     }
     assertThat(bout.toString().contains("Hello world again")).isTrue();
   }
