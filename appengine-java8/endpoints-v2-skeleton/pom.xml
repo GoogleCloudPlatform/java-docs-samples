@@ -103,24 +103,6 @@
                     <hostname>YOUR_PROJECT_ID.appspot.com</hostname>
                 </configuration>
             </plugin>
-            <!--
-                 The versions-maven-plugin is used for dependency updates and
-                 is not required.
-            -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>display-dependency-updates</goal>
-                            <goal>display-plugin-updates</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <!-- [END pom_build] -->
