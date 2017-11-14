@@ -14,6 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<!-- [START appengine_web_xml] -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
@@ -26,3 +27,4 @@
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
 </appengine-web-app>
+<!-- [END appengine_web_xml] -->
