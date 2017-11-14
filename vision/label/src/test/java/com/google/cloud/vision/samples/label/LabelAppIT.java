@@ -19,7 +19,7 @@ package com.google.cloud.vision.samples.label;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-import com.google.api.services.vision.v1.model.EntityAnnotation;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
@@ -46,11 +46,11 @@ public class LabelAppIT {
   }
 
   @Test public void labelImage_cat_returnsCatDescription() throws Exception {
-    List<EntityAnnotation> labels =
+    List<GoogleCloudVisionV1EntityAnnotation> labels =
         appUnderTest.labelImage(Paths.get("data/cat.jpg"), MAX_LABELS);
 
     ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-    for (EntityAnnotation label : labels) {
+    for (GoogleCloudVisionV1EntityAnnotation label : labels) {
       builder.add(label.getDescription());
     }
     ImmutableSet<String> descriptions = builder.build();

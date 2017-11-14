@@ -76,6 +76,20 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     "The quick brown fox jumped over the lazy dog."
 ```
 
+Analyze categories in text
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.Analyze classify \
+  "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."
+```
+
+Analyze categories in GCS file
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.Analyze classify \
+  "gs://cloud-samples-tests/natural-language/android-text.txt"
+```
+
 Included with the sample are `demo.sh` and `demo.bat` which show additional
 examples of usage.
 

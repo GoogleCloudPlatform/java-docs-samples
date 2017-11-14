@@ -16,8 +16,8 @@
 
 package com.google.cloud.vision.samples.text;
 
-import com.google.api.services.vision.v1.model.EntityAnnotation;
-import com.google.api.services.vision.v1.model.Status;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
+import com.google.api.services.vision.v1.model.GoogleRpcStatus;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -29,8 +29,8 @@ import javax.annotation.Nullable;
  */
 public class ImageText {
   private Path pth;
-  private List<EntityAnnotation> ts;
-  private Status err;
+  private List<GoogleCloudVisionV1EntityAnnotation> ts;
+  private GoogleRpcStatus err;
 
   public static Builder builder() {
     return new Builder();
@@ -42,19 +42,19 @@ public class ImageText {
     return this.pth;
   }
 
-  public List<EntityAnnotation> textAnnotations() {
+  public List<GoogleCloudVisionV1EntityAnnotation> textAnnotations() {
     return this.ts;
   }
 
   @Nullable
-  public Status error() {
+  public GoogleRpcStatus error() {
     return this.err;
   }
 
   public static class Builder {
     private Path pth;
-    private List<EntityAnnotation> ts;
-    private Status err;
+    private List<GoogleCloudVisionV1EntityAnnotation> ts;
+    private GoogleRpcStatus err;
 
     Builder() {}
 
@@ -63,12 +63,12 @@ public class ImageText {
       return this;
     }
 
-    public Builder textAnnotations(List<EntityAnnotation> ts) {
+    public Builder textAnnotations(List<GoogleCloudVisionV1EntityAnnotation> ts) {
       this.ts = ts;
       return this;
     }
 
-    public Builder error(@Nullable Status err) {
+    public Builder error(@Nullable GoogleRpcStatus err) {
       this.err = err;
       return this;
     }

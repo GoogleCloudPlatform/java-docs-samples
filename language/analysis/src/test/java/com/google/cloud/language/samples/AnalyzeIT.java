@@ -53,6 +53,23 @@ public class AnalyzeIT {
   }
 
   @Test
+  public void analyzeCategoriesInTextReturnsExpectedResult() throws Exception {
+    Analyze.classifyText("Android is a mobile operating system developed by Google, "
+        + "based on the Linux kernel and designed primarily for touchscreen "
+        + "mobile devices such as smartphones and tablets.");
+    String got = bout.toString();
+    assertThat(got).contains("Computers & Electronics");
+  }
+
+  @Test
+  public void analyzeCategoriesInFileReturnsExpectedResult() throws Exception {
+    String gcsFile = "gs://" + PROJECT_ID + "/natural-language/android_text.txt";
+    Analyze.classifyFile(gcsFile);
+    String got = bout.toString();
+    assertThat(got).contains("Computers & Electronics");
+  }
+
+  @Test
   public void analyzeEntities_withEntities_returnsLarryPage() throws Exception {
     Analyze.analyzeEntitiesText(
         "Larry Page, Google's co-founder, once described the 'perfect search engine' as"
