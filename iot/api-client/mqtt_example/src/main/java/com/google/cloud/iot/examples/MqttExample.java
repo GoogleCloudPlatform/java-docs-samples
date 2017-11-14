@@ -127,7 +127,7 @@ public class MqttExample {
     // to authorize the device.
     connectOptions.setUserName("unused");
 
-    System.out.println(options.algorithm);
+    DateTime iat = new DateTime();
     if (options.algorithm.equals("RS256")) {
       connectOptions.setPassword(
           createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
@@ -160,6 +160,24 @@ public class MqttExample {
         System.out.format(
             "Publishing %s message %d/%d: '%s'\n",
             options.messageType, i, options.numMessages, payload);
+
+        // Refresh the connection credentials before the JWT expires.
+        long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
+        if (secsSinceRefresh > (options.tokenExpMins * 60)) {
+          System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+          iat = new DateTime();
+          if (options.algorithm.equals("RS256")) {
+            connectOptions.setPassword(
+                createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
+          } else if (options.algorithm.equals("ES256")) {
+            connectOptions.setPassword(
+                createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
+          } else {
+            throw new IllegalArgumentException(
+                "Invalid algorithm " + options.algorithm
+                    + ". Should be one of 'RS256' or 'ES256'.");
+          }
+        }
 
         // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
         // also supports qos=0 for at most once delivery.

@@ -30,6 +30,7 @@ public class MqttExampleOptions {
   String algorithm;
   String cloudRegion = "us-central1";
   int numMessages = 100;
+  int tokenExpMins = 20;
   String mqttBridgeHostname = "mqtt.googleapis.com";
   short mqttBridgePort = 8883;
   String messageType = "event";
@@ -104,6 +105,13 @@ public class MqttExampleOptions {
     options.addOption(
         Option.builder()
             .type(Number.class)
+            .longOpt("token_exp_minutes")
+            .hasArg()
+            .desc("Minutes to JWT token refresh (token expiration time).")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(Number.class)
             .longOpt("mqtt_bridge_port")
             .hasArg()
             .desc("MQTT bridge port.")
@@ -132,6 +140,10 @@ public class MqttExampleOptions {
       }
       if (commandLine.hasOption("num_messages")) {
         res.numMessages = ((Number) commandLine.getParsedOptionValue("num_messages")).intValue();
+      }
+      if (commandLine.hasOption("token_exp_minutes")) {
+        res.tokenExpMins =
+            ((Number) commandLine.getParsedOptionValue("token_exp_minutes")).intValue();
       }
       if (commandLine.hasOption("mqtt_bridge_hostname")) {
         res.mqttBridgeHostname = commandLine.getOptionValue("mqtt_bridge_hostname");
