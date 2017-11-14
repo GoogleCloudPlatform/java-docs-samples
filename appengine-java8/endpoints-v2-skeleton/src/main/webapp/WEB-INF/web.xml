@@ -14,6 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<!-- [START web_xml] -->
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
@@ -34,3 +35,4 @@
         <url-pattern>/_ah/api/*</url-pattern>
     </servlet-mapping>
 </web-app>
+<!-- [END web_xml] -->
