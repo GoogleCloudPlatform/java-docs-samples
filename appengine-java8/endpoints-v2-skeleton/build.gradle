@@ -46,6 +46,7 @@ dependencies {
 }
 // [END dependencies]
 
+// You must replace YOUR_PROJECT_ID with your Google Cloud Project Id
 def projectId = 'YOUR_PROJECT_ID'
 
 // [START endpoints_server_configuration]
