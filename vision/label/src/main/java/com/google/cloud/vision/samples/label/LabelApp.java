@@ -23,13 +23,13 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
-import com.google.api.services.vision.v1.model.AnnotateImageRequest;
-import com.google.api.services.vision.v1.model.AnnotateImageResponse;
-import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
-import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
-import com.google.api.services.vision.v1.model.EntityAnnotation;
-import com.google.api.services.vision.v1.model.Feature;
-import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1AnnotateImageRequest;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1AnnotateImageResponse;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BatchAnnotateImagesRequest;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BatchAnnotateImagesResponse;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Feature;
+import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Image;
 import com.google.common.collect.ImmutableList;
 
 import java.io.IOException;
@@ -74,9 +74,9 @@ public class LabelApp {
   /**
    * Prints the labels received from the Vision API.
    */
-  public static void printLabels(PrintStream out, Path imagePath, List<EntityAnnotation> labels) {
+  public static void printLabels(PrintStream out, Path imagePath, List<GoogleCloudVisionV1EntityAnnotation> labels) {
     out.printf("Labels for image %s:\n", imagePath);
-    for (EntityAnnotation label : labels) {
+    for (GoogleCloudVisionV1EntityAnnotation label : labels) {
       out.printf(
           "\t%s (score: %.3f)\n",
           label.getDescription(),
@@ -114,28 +114,28 @@ public class LabelApp {
   /**
    * Gets up to {@code maxResults} labels for an image stored at {@code path}.
    */
-  public List<EntityAnnotation> labelImage(Path path, int maxResults) throws IOException {
+  public List<GoogleCloudVisionV1EntityAnnotation> labelImage(Path path, int maxResults) throws IOException {
     // [START construct_request]
     byte[] data = Files.readAllBytes(path);
 
-    AnnotateImageRequest request =
-        new AnnotateImageRequest()
-            .setImage(new Image().encodeContent(data))
+    GoogleCloudVisionV1AnnotateImageRequest request =
+        new GoogleCloudVisionV1AnnotateImageRequest()
+            .setImage(new GoogleCloudVisionV1Image().encodeContent(data))
             .setFeatures(ImmutableList.of(
-                new Feature()
+                new GoogleCloudVisionV1Feature()
                     .setType("LABEL_DETECTION")
                     .setMaxResults(maxResults)));
     Vision.Images.Annotate annotate =
         vision.images()
-            .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
+            .annotate(new GoogleCloudVisionV1BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
     // Due to a bug: requests to Vision API containing large images fail when GZipped.
     annotate.setDisableGZipContent(true);
     // [END construct_request]
 
     // [START parse_response]
-    BatchAnnotateImagesResponse batchResponse = annotate.execute();
+    GoogleCloudVisionV1BatchAnnotateImagesResponse batchResponse = annotate.execute();
     assert batchResponse.getResponses().size() == 1;
-    AnnotateImageResponse response = batchResponse.getResponses().get(0);
+    GoogleCloudVisionV1AnnotateImageResponse response = batchResponse.getResponses().get(0);
     if (response.getLabelAnnotations() == null) {
       throw new IOException(
           response.getError() != null

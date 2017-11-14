@@ -165,7 +165,8 @@ public class ManageDataSnippetsIT {
     assertEquals(info, "Population increased to 51");
     try {
       info = manageDataSnippets.returnInfoFromTransaction(5000001L);
-      assertTrue("Should never get here", false);
+      assertTrue("returnInfoFromTransaction should have failed,"
+          + " instead returned info: " + info, false);
     } catch (Exception e) {
       assertTrue(e.getMessage().contains("Sorry! Population is too big."));
     }
