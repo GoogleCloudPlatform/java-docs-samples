@@ -1,4 +1,4 @@
-# App Engine Standard & Endpoints Frameworks Hello World
+# App Engine Standard & Endpoints Frameworks skeleton
 
 This is a skeleton example for getting setup with Endpoints Framework v2 for
 Java.
