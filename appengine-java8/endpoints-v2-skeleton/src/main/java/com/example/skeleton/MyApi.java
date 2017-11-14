@@ -21,7 +21,15 @@ import com.google.api.server.spi.config.Api;
 /**
  * MyApi skeleton endpoints sample
  * Add your first API methods in this class, or you may create another class.
- * In that case, update your src/main/webapp/WEB-INF/web.xml accordingly.
+ * In that case, update the src/main/webapp/WEB-INF/web.xml and modify
+ * the class set to the services param as a comma separated list.
+ *
+ * For example:
+ *  <init-param>
+ *      <param-name>services</param-name>
+ *      <param-value>com.example.skeleton.FirstApi, com.example.skeleton.SecondApi</param-value>
+ *  </init-param>
+ *
  */
 @Api(name = "skeleton-api",
      version = "v1")
