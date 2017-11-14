@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.3.1</version>
+                <version>1.3.2</version>
                 <configuration>
                     <!-- deploy configuration -->
                 </configuration>
@@ -96,7 +96,7 @@
                 <version>1.0.2</version>
                 <configuration>
                     <!-- plugin configuration -->
-                    <hostname>YOUR-PROJECT-ID.appspot.com</hostname>
+                    <hostname>YOUR_PROJECT_ID.appspot.com</hostname>
                 </configuration>
             </plugin>
             <!--
