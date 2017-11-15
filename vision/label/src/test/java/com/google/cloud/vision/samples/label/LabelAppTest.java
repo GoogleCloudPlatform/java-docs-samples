@@ -18,7 +18,7 @@ package com.google.cloud.vision.samples.label;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
+import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class LabelAppTest {
 
     // Act
     LabelApp.printLabels(
-        out, Paths.get("path/to/some/image.jpg"), ImmutableList.<GoogleCloudVisionV1EntityAnnotation>of());
+        out, Paths.get("path/to/some/image.jpg"), ImmutableList.<EntityAnnotation>of());
 
     // Assert
     assertThat(bout.toString()).contains("No labels found.");
@@ -52,11 +52,11 @@ public class LabelAppTest {
     // Arrange
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
-    ImmutableList<GoogleCloudVisionV1EntityAnnotation> labels =
+    ImmutableList<EntityAnnotation> labels =
         ImmutableList.of(
-            new GoogleCloudVisionV1EntityAnnotation().setDescription("dog").setScore(0.7564f),
-            new GoogleCloudVisionV1EntityAnnotation().setDescription("husky").setScore(0.67891f),
-            new GoogleCloudVisionV1EntityAnnotation().setDescription("poodle").setScore(0.1233f));
+            new EntityAnnotation().setDescription("dog").setScore(0.7564f),
+            new EntityAnnotation().setDescription("husky").setScore(0.67891f),
+            new EntityAnnotation().setDescription("poodle").setScore(0.1233f));
 
     // Act
     LabelApp.printLabels(out, Paths.get("path/to/some/image.jpg"), labels);
