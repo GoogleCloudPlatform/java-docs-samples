@@ -28,7 +28,6 @@ import com.google.cloud.videointelligence.v1beta2.LabelAnnotation;
 import com.google.cloud.videointelligence.v1beta2.LabelSegment;
 import com.google.cloud.videointelligence.v1beta2.VideoAnnotationResults;
 import com.google.cloud.videointelligence.v1beta2.VideoIntelligenceServiceClient;
-import com.google.longrunning.Operation;
 import java.util.List;
 
 public class QuickstartSample {
@@ -48,7 +47,7 @@ public class QuickstartSample {
           .addFeatures(Feature.LABEL_DETECTION)
           .build();
 
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress, Operation> operation =
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> operation =
           client.annotateVideoAsync(request);
 
       System.out.println("Waiting for operation to complete...");
