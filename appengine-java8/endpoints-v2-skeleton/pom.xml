@@ -90,6 +90,7 @@
                     <!-- deploy configuration -->
                 </configuration>
             </plugin>
+            <!-- [START endpoints_maven_configuration] -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
@@ -103,6 +104,7 @@
                     <hostname>YOUR_PROJECT_ID.appspot.com</hostname>
                 </configuration>
             </plugin>
+            <!-- [END endpoints_maven_configuration] -->
         </plugins>
     </build>
     <!-- [END pom_build] -->
