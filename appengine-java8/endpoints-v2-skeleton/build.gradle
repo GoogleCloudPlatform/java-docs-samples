@@ -46,10 +46,10 @@ dependencies {
 }
 // [END dependencies]
 
+// [START endpoints_server_configuration]
 // You must replace YOUR_PROJECT_ID with your Google Cloud Project Id
 def projectId = 'YOUR_PROJECT_ID'
 
-// [START endpoints_server_configuration]
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
   hostname = "${projectId}.appspot.com"
