@@ -36,13 +36,10 @@ repositories {   // repositories for Jar's you access in your code
 apply plugin: 'java'                              // standard Java tasks
 apply plugin: 'war'                               // standard Web Archive plugin
 
-// [START apply_appengine]
-apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
-// [END apply_appengine]
-
-// [START apply_endpoints-framework-server]
+// [START apply_plugins]
+apply plugin: 'com.google.cloud.tools.appengine'
 apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
-// [END apply_endpoints-framework-server]
+// [END apply_plugins]
 
 dependencies {
   providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.1.0'

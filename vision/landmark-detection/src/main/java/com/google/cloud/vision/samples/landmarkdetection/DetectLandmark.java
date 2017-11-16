@@ -23,14 +23,14 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1AnnotateImageRequest;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1AnnotateImageResponse;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BatchAnnotateImagesRequest;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BatchAnnotateImagesResponse;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Feature;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Image;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1ImageSource;
+import com.google.api.services.vision.v1.model.AnnotateImageRequest;
+import com.google.api.services.vision.v1.model.AnnotateImageResponse;
+import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
+import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
+import com.google.api.services.vision.v1.model.EntityAnnotation;
+import com.google.api.services.vision.v1.model.Feature;
+import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.ImageSource;
 import com.google.common.collect.ImmutableList;
 
 import java.io.IOException;
@@ -68,9 +68,9 @@ public class DetectLandmark {
     }
 
     DetectLandmark app = new DetectLandmark(getVisionService());
-    List<GoogleCloudVisionV1EntityAnnotation> landmarks = app.identifyLandmark(args[0], MAX_RESULTS);
+    List<EntityAnnotation> landmarks = app.identifyLandmark(args[0], MAX_RESULTS);
     System.out.printf("Found %d landmark%s\n", landmarks.size(), landmarks.size() == 1 ? "" : "s");
-    for (GoogleCloudVisionV1EntityAnnotation annotation : landmarks) {
+    for (EntityAnnotation annotation : landmarks) {
       System.out.printf("\t%s\n", annotation.getDescription());
     }
   }
@@ -103,24 +103,24 @@ public class DetectLandmark {
   /**
    * Gets up to {@code maxResults} landmarks for an image stored at {@code uri}.
    */
-  public List<GoogleCloudVisionV1EntityAnnotation> identifyLandmark(String uri, int maxResults) throws IOException {
-    GoogleCloudVisionV1AnnotateImageRequest request =
-        new GoogleCloudVisionV1AnnotateImageRequest()
-            .setImage(new GoogleCloudVisionV1Image().setSource(
-                new GoogleCloudVisionV1ImageSource().setGcsImageUri(uri)))
+  public List<EntityAnnotation> identifyLandmark(String uri, int maxResults) throws IOException {
+    AnnotateImageRequest request =
+        new AnnotateImageRequest()
+            .setImage(new Image().setSource(
+                new ImageSource().setGcsImageUri(uri)))
             .setFeatures(ImmutableList.of(
-                new GoogleCloudVisionV1Feature()
+                new Feature()
                     .setType("LANDMARK_DETECTION")
                     .setMaxResults(maxResults)));
     Vision.Images.Annotate annotate =
         vision.images()
-            .annotate(new GoogleCloudVisionV1BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
+            .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
     // Due to a bug: requests to Vision API containing large images fail when GZipped.
     annotate.setDisableGZipContent(true);
 
-    GoogleCloudVisionV1BatchAnnotateImagesResponse batchResponse = annotate.execute();
+    BatchAnnotateImagesResponse batchResponse = annotate.execute();
     assert batchResponse.getResponses().size() == 1;
-    GoogleCloudVisionV1AnnotateImageResponse response = batchResponse.getResponses().get(0);
+    AnnotateImageResponse response = batchResponse.getResponses().get(0);
     if (response.getLandmarkAnnotations() == null) {
       throw new IOException(
           response.getError() != null
