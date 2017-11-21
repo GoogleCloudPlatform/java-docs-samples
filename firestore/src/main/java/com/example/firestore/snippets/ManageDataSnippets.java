@@ -345,7 +345,8 @@ class ManageDataSnippets {
   String returnInfoFromTransaction(long population) throws Exception {
     Map<String, Object> map = new HashMap<>();
     map.put("population", population);
-    db.collection("cities").document("SF").set(map);
+    // Block until transaction is complete is using transaction.get()
+    db.collection("cities").document("SF").set(map).get();
     // [START fs_return_info_transaction]
     final DocumentReference docRef = db.collection("cities").document("SF");
     ApiFuture<String> transaction =
