@@ -34,11 +34,13 @@
   </properties>
 
   <dependencies>
+    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
       <version>0.30.0-beta</version>
     </dependency>
+    <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
