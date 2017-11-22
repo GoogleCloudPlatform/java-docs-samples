@@ -47,12 +47,12 @@ public class SubscriberExample {
   public static void main(String... args) throws Exception {
     // set subscriber id, eg. my-sub
     String subscriptionId = args[0];
-    SubscriptionName subscriptionName = SubscriptionName.create(PROJECT_ID, subscriptionId);
+    SubscriptionName subscriptionName = SubscriptionName.of(PROJECT_ID, subscriptionId);
     Subscriber subscriber = null;
     try {
       // create a subscriber bound to the asynchronous message receiver
       subscriber =
-          Subscriber.defaultBuilder(subscriptionName, new MessageReceiverExample()).build();
+          Subscriber.newBuilder(subscriptionName, new MessageReceiverExample()).build();
       subscriber.startAsync().awaitRunning();
       // Continue to listen to messages
       while (true) {
