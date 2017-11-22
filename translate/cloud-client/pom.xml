@@ -34,11 +34,13 @@
   </properties>
 
   <dependencies>
+    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
       <version>1.12.0</version>
     </dependency>
+    <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
