@@ -1,3 +1,19 @@
+/*
+  Copyright 2016, Google, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 package com.example.dataflow;
 
 import com.google.cloud.spanner.Struct;
@@ -10,17 +26,16 @@ import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.Sum;
 import org.apache.beam.sdk.transforms.ToString;
 import org.apache.beam.sdk.values.PCollection;
 
-/**
- * Created by dcavazos on 10/18/17.
- */
 public class Spanner {
 
   public interface Options extends PipelineOptions {
+
     @Description("Spanner instance ID to query from")
     @Validation.Required
     String getInstanceId();
@@ -28,51 +43,48 @@ public class Spanner {
 
     @Description("Spanner database name to query from")
     @Validation.Required
-    String getDatabaseName();
-    void setDatabaseName(String value);
+    String getDatabaseId();
+    void setDatabaseId(String value);
 
     @Description("Spanner table name to query from")
     @Validation.Required
     String getTableName();
     void setTableName(String value);
 
-    @Description("Output filename for records count")
-    @Validation.Required
-    String getOutputCount();
-    void setOutputCount(String value);
-
     @Description("Output filename for records size")
     @Validation.Required
-    String getOutputSize();
-    void setOutputSize(String value);
+    String getOutput();
+    void setOutput(String value);
   }
 
-  private static class EstimateStructSizeFn extends DoFn<Struct, Long> {
-    @ProcessElement public void processElement(ProcessContext c) throws Exception {
-      Struct struct = c.element();
-      long result = 0;
-      for (int i = 0; i < struct.getColumnCount(); i++) {
-        if (struct.isNull(i)) {
+  public static class EstimateStructSizeFn extends DoFn<Struct, Long> {
+
+    @ProcessElement
+    public void processElement(ProcessContext c) throws Exception {
+      Struct row = c.element();
+      long sum = 0;
+      for (int i = 0; i < row.getColumnCount(); i++) {
+        if (row.isNull(i)) {
           continue;
         }
 
-        switch (struct.getColumnType(i).getCode()) {
+        switch (row.getColumnType(i).getCode()) {
           case BOOL:
-            result += 1;
+            sum += 1;
             break;
           case INT64:
           case FLOAT64:
-            result += 8;
-            break;
-          case BYTES:
-            result += struct.getBytes(i).length();
-            break;
-          case STRING:
-            result += struct.getString(i).length();
+            sum += 8;
             break;
           case TIMESTAMP:
           case DATE:
-            result += 12;
+            sum += 12;
+            break;
+          case BYTES:
+            sum += row.getBytes(i).length();
+            break;
+          case STRING:
+            sum += row.getString(i).length();
             break;
           case ARRAY:
             throw new IllegalArgumentException("Arrays are not supported :(");
@@ -80,32 +92,29 @@ public class Spanner {
             throw new IllegalArgumentException("Structs are not supported :(");
         }
       }
-      c.output(result);
+      c.output(sum);
     }
   }
 
   public static void main(String[] args) {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
-
     Pipeline p = Pipeline.create(options);
 
-    PCollection<Struct> records = p
+    String instanceId = options.getInstanceId();
+    String databaseId = options.getDatabaseId();
+    String query = "SELECT * FROM " + options.getTableName();
+
+    PCollection<Long> tableEstimatedSize = p
         .apply(SpannerIO.read()
-            .withInstanceId(options.getInstanceId())
-            .withDatabaseId(options.getDatabaseName())
-            .withQuery("SELECT * FROM " + options.getTableName())
-        );
-
-    records
-        .apply(Count.globally())
-        .apply(ToString.elements())
-        .apply(TextIO.write().to(options.getOutputCount()));
-
-    records
+            .withInstanceId(instanceId)
+            .withDatabaseId(databaseId)
+            .withQuery(query))
         .apply(ParDo.of(new EstimateStructSizeFn()))
-        .apply(Sum.longsGlobally())
+        .apply(Sum.longsGlobally());
+
+    tableEstimatedSize
         .apply(ToString.elements())
-        .apply(TextIO.write().to(options.getOutputSize()));
+        .apply(TextIO.write().to(options.getOutput()));
 
     p.run().waitUntilFinish();
   }
