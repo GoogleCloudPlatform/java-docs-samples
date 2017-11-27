@@ -64,6 +64,12 @@
 
     <!-- Google Cloud -->
     <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-common-protos</artifactId>
+      <version>0.1.9</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
       <version>0.20.0-beta</version>
@@ -74,14 +80,6 @@
       <artifactId>proto-google-cloud-spanner-admin-database-v1</artifactId>
       <version>0.1.9</version>
     </dependency>
-
-    <!-- Google GRPC -->
-    <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>proto-google-common-protos</artifactId>
-      <version>0.1.9</version>
-    </dependency>
-
 
     <!-- Misc -->
     <dependency>
