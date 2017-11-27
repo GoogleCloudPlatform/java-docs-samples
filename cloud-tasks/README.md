@@ -19,12 +19,6 @@ queues, creating tasks, and pulling and acknowledging tasks.
  * Download and install [Maven](http://maven.apache.org/install.html).
 
 
-## Authentication
-
-To authenticate locally, download the
-
-and run the following command
-
 ## Creating a queue
 
 To create a queue using the Cloud SDK, use the following gcloud command:
@@ -37,28 +31,32 @@ In this example, the queue will be named `my-pull-queue`.
 
 ## Running the Samples
 
-First, build your project with:
+From the project folder, build your project with:
+
 ```
-mvn clean package
+mvn clean assembly:single
 ```
 
 Optionally, you can set up your settings as environment variables:
+
 ```
 export PROJECT_ID=<YOUR_PROJECT_ID>
-export QUEUE_ID=<YOUR_QUEUE_NAME>
 export LOCATION_ID=<YOUR_ZONE>
+export QUEUE_ID=<YOUR_QUEUE_NAME>
 ```
 
 Next, create a task for a queue:
+
 ```
 java -cp target/cloudtasks-1.0.0-jar-with-dependencies.jar \
-    com.example.PullQueue create-task --project=$PROJECT_ID --queue=$QUEUE_ID --location=$LOCATION_ID
+    com.example.PullQueue create-task --project=$PROJECT_ID --location=$LOCATION_ID --queue=$QUEUE_ID
 ```
+
 Finally, pull and acknowledge a task:
 
 ```
 java -cp target/cloudtasks-1.0.0-jar-with-dependencies.jar \
-    com.example.PullQueue pull-and-ack-task --project=$PROJECT_ID --queue=$QUEUE_ID --location=$LOCATION_ID
+    com.example.PullQueue pull-and-ack-task --project=$PROJECT_ID --location=$LOCATION_ID --queue=$QUEUE_ID
 ```
 Note that usually, there would be a processing step in between pulling a task and acknowledging it.
 

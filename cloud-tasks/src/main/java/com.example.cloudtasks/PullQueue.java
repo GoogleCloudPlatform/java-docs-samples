@@ -25,7 +25,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudtasks.v2beta2.CloudTasksScopes;
 import com.google.api.services.cloudtasks.v2beta2.model.AcknowledgeTaskRequest;
 import com.google.api.services.cloudtasks.v2beta2.model.CreateTaskRequest;
-import com.google.api.services.cloudtasks.v2beta2.model.PullTaskTarget;
+import com.google.api.services.cloudtasks.v2beta2.model.PullMessage;
 import com.google.api.services.cloudtasks.v2beta2.model.PullTasksRequest;
 import com.google.api.services.cloudtasks.v2beta2.model.PullTasksResponse;
 import com.google.api.services.cloudtasks.v2beta2.model.Task;
@@ -80,7 +80,7 @@ public class PullQueue {
     // Create the Task to put in the Queue
     String message = "a message for the recipient";
     String payload = BaseEncoding.base64().encode(message.getBytes());
-    Task task = new Task().setPullTaskTarget(new PullTaskTarget().setPayload(payload));
+    Task task = new Task().setPullMessage(new PullMessage().setPayload(payload));
 
     // Create the CreateTaskRequest
     CreateTaskRequest request = new CreateTaskRequest().setTask(task);

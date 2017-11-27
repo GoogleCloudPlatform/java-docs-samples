@@ -34,7 +34,7 @@ public class PullQueueIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  static final private String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  static final private String PROJECT_ID = "java-docs-samples-cloud-tasks";
   static final private String LOCATION_ID = "us-central1";
   static final private String QUEUE_ID = "test-queue";
 
@@ -47,7 +47,7 @@ public class PullQueueIT {
     out = new PrintStream(bout);
     System.setOut(out);
 
-    assertNotNull(System.getenv("GOOGLE_CLOUD_PROJECT"));
+    assertNotNull(PROJECT_ID);
   }
 
   /**
