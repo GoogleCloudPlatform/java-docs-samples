@@ -1,4 +1,4 @@
-# Google Cloud Tasks App Engine Queue Samples
+# Google Cloud Tasks App Engine Flexible Queue Samples
 
 This is a sample AppEngine app demonstrating use of the Cloud Tasks API
 using App Engine Queues.
