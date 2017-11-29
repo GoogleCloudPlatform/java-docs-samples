@@ -22,7 +22,7 @@
 
     <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <parent>
-        <artifactId>doc-samples</artifactId>
+        <artifactId>appengine-doc-samples</artifactId>
         <groupId>com.google.cloud</groupId>
         <version>1.0.0</version>
         <relativePath>../..</relativePath>

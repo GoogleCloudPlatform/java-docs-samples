@@ -18,12 +18,12 @@
     <version>1.0.0</version>
 
     <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-doc-samples</artifactId>
+    <artifactId>taskqueue-doc-samples</artifactId>
     <packaging>pom</packaging>
 
     <!-- Parent POM defines common plugins and properties. -->
     <parent>
-        <artifactId>doc-samples</artifactId>
+        <artifactId>appengine-doc-samples</artifactId>
         <groupId>com.google.cloud</groupId>
         <version>1.0.0</version>
         <relativePath>..</relativePath>
