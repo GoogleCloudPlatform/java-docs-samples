@@ -1,5 +1,5 @@
 /*
-  Copyright 2016, Google, Inc.
+  Copyright 2017, Google, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -32,7 +32,33 @@ import org.apache.beam.sdk.transforms.Sum;
 import org.apache.beam.sdk.transforms.ToString;
 import org.apache.beam.sdk.values.PCollection;
 
-public class Spanner {
+/*
+This sample demonstrates how to read from a Spanner table.
+
+## Prerequisites
+* Maven installed
+* Set up GCP default credentials, one of the following:
+    - export GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
+    - gcloud auth application-default login
+  [https://developers.google.com/identity/protocols/application-default-credentials]
+* Create the Spanner table to read from, you'll need:
+    - Instance ID
+    - Database ID
+    - Any table, preferably populated
+  [https://cloud.google.com/spanner/docs/quickstart-console]
+
+## How to run
+cd java-docs-samples/dataflow/spanner-io
+mvn clean
+mvn compile
+mvn exec:java \
+    -Dexec.mainClass=com.example.dataflow.SpannerRead \
+    -Dexec.args="--instanceId=my-instance-id \
+                 --databaseId=my-database-id \
+                 --table=my_table \
+                 --output=path/to/output_file"
+*/
+public class SpannerRead {
 
   public interface Options extends PipelineOptions {
 
@@ -48,8 +74,8 @@ public class Spanner {
 
     @Description("Spanner table name to query from")
     @Validation.Required
-    String getTableName();
-    void setTableName(String value);
+    String getTable();
+    void setTable(String value);
 
     @Description("Output filename for records size")
     @Validation.Required
@@ -57,6 +83,9 @@ public class Spanner {
     void setOutput(String value);
   }
 
+  /**
+   * Estimates the size of a Spanner row. For simplicity, arrays and structs aren't supported.
+   */
   public static class EstimateStructSizeFn extends DoFn<Struct, Long> {
 
     @ProcessElement
@@ -102,16 +131,20 @@ public class Spanner {
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
-    String query = "SELECT * FROM " + options.getTableName();
+    String query = "SELECT * FROM " + options.getTable();
 
     PCollection<Long> tableEstimatedSize = p
+        // Query for all the columns and rows in the specified Spanner table
         .apply(SpannerIO.read()
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId)
             .withQuery(query))
+        // Estimate the size of every row
         .apply(ParDo.of(new EstimateStructSizeFn()))
+        // Sum all the row sizes to get the total estimated size of the table
         .apply(Sum.longsGlobally());
 
+    // Write the total size to a file
     tableEstimatedSize
         .apply(ToString.elements())
         .apply(TextIO.write().to(options.getOutput()));
