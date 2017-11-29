@@ -49,6 +49,8 @@
         <module>bigquery/cloud-client</module>
         <module>bigquery/rest</module>
 
+        <module>dataflow/spanner-io</module>
+
         <module>datastore</module>
         <module>datastore/cloud-client</module>
 
