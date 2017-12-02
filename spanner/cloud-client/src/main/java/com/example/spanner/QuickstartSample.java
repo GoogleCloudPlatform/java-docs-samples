@@ -24,6 +24,7 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
+import java.util.*;
 
 /**
  * A quick start code for Cloud Spanner. It demonstrates how to setup the Cloud Spanner client and
@@ -37,7 +38,10 @@ public class QuickstartSample {
       return;
     }
     // Instantiates a client
-    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Map<String, String> labels = new HashMap<>();
+    labels.put("dev", "env");
+    labels.put("machine", "mac");
+    SpannerOptions options = SpannerOptions.newBuilder().setSessionLabels(labels).build();
     Spanner spanner = options.getService();
 
     // Name of your instance & database.
@@ -57,7 +61,7 @@ public class QuickstartSample {
       }
     } finally {
       // Closes the client which will free up the resources used
-      spanner.close();
+      //spanner.close();
     }
   }
 }

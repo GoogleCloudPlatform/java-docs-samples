@@ -18,6 +18,7 @@ package com.example.spanner;
 
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -35,6 +36,12 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
+import io.opencensus.contrib.zpages.ZPageHandlers;
+import io.opencensus.trace.*;
+import io.opencensus.trace.config.*;
+import io.opencensus.trace.samplers.*;
+import io.opencensus.exporter.trace.stackdriver.*;
+import io.opencensus.exporter.trace.logging.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -484,12 +491,28 @@ public class SpannerSample {
         "    SpannerExample write my-instance example-db");
     System.exit(1);
   }
+ private static void doWork() {
+    Tracer tracer = Tracing.getTracer();
+    Span rootSpan = tracer.spanBuilderWithExplicitParent("MyRootSpan", null).setSampler(Samplers.alwaysSample()).startSpan();
+    rootSpan.addAnnotation("Annotation to the root Span before child is created.");
+    Span childSpan = tracer.spanBuilderWithExplicitParent("MyChildSpan", rootSpan).startSpan();
+    childSpan.addAnnotation("Annotation to the child Span");
+    childSpan.end();
+    rootSpan.addAnnotation("Annotation to the root Span after child is ended.");
+    rootSpan.end();
+  }
 
   public static void main(String[] args) throws Exception {
     if (args.length != 3) {
       printUsageAndExit();
     }
+    Tracing.getTraceConfig().updateActiveTraceParams(TraceParams.DEFAULT.toBuilder().setSampler(Samplers.alwaysSample()).build());
+    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(Arrays.asList("MyRootSpan", "MyChildSpan"));
+    LoggingExporter.register();
+    ZPageHandlers.startHttpServerAndRegisterAll(8080);
+    StackdriverExporter.createAndRegister();
     // [START init_client]
+    doWork();
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     try {
