@@ -86,8 +86,6 @@
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
 
-        <module>taskqueue/deferred</module>
-
         <module>translate</module>
         <module>translate/cloud-client</module>
 

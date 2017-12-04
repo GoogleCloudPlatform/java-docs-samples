@@ -114,12 +114,12 @@ and [SDK](https://cloud.google.com/sdk/) configured.
     gcloud container clusters create my-cluster
     ```
 
-1. Edit `container-engine.yaml`. Replace `SERVICE_NAME`, `SERVICE_CONFIG_ID`, and `GCLOUD_PROJECT` with your values.
+1. Edit `kubernetes-engine.yaml`. Replace `SERVICE_NAME`, `SERVICE_CONFIG_ID`, and `GCLOUD_PROJECT` with your values.
 
 1. Deploy to GKE
 
     ```bash
-    kubectl create -f ./container-engine.yaml
+    kubectl create -f ./kubernetes-engine.yaml
     ```
 
 1. Get IP of load balancer, run until you see an External IP.
