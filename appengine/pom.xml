@@ -82,8 +82,7 @@
         <module>sockets</module>
 
         <module>static-files</module>
-
-        <module>taskqueue-push</module>
+        <module>taskqueue</module>
         <module>twilio</module>
         <module>urlfetch</module>
         <module>users</module>

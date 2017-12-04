@@ -22,7 +22,7 @@
 
     <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <parent>
-        <artifactId>doc-samples</artifactId>
+        <artifactId>appengine-doc-samples</artifactId>
         <groupId>com.google.cloud</groupId>
         <version>1.0.0</version>
         <relativePath>../..</relativePath>
@@ -31,7 +31,7 @@
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
-        <appengine.sdk.version>1.9.59</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
+        <appengine.sdk.version>1.9.59</appengine.sdk.version>
         <codehaus-versions-maven-plugin-version>2.5</codehaus-versions-maven-plugin-version>
         <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
     </properties>
