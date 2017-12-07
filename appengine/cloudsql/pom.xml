@@ -20,14 +20,17 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-cloudsql</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.7-SNAPSHOT</version>
   </parent>
 
-<!-- [START properties] -->
+  <!-- [START properties] -->
   <properties>
 <!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
      or gcloud sql instances describe <instance>
@@ -58,7 +61,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
     </dependency>
 
     <dependency>
@@ -111,7 +114,7 @@
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.59</version>
       </plugin>
     </plugins>
   </build>
