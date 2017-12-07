@@ -17,12 +17,10 @@
 package com.example.time.testing;
 
 import com.example.time.Clock;
-
+import java.util.concurrent.atomic.AtomicLong;
 import org.joda.time.Instant;
 import org.joda.time.ReadableDuration;
 import org.joda.time.ReadableInstant;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A Clock that returns a fixed Instant value as the current clock time.  The

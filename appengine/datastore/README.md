@@ -9,6 +9,10 @@ Samples for the Java 8 runtime can be found [here](/appengine-java8).
 This sample demonstrates how to use [Google Cloud Datastore][java-datastore]
 from [Google App Engine standard environment][ae-docs].
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/datastore/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 [java-datastore]: https://cloud.google.com/appengine/docs/java/datastore/
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
