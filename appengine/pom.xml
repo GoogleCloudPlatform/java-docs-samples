@@ -44,7 +44,6 @@
         <!-- App Engine Standard -->
         <module>analytics</module>
         <module>appidentity</module>
-        <module>channel</module>
         <module>cloudsql</module>
         <module>datastore</module>
         <module>datastore/indexes</module>
