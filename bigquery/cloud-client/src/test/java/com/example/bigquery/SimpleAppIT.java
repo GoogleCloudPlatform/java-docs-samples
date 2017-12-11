@@ -18,14 +18,13 @@ package com.example.bigquery;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 /** Tests for simple app sample. */
 @RunWith(JUnit4.class)
@@ -50,6 +49,6 @@ public class SimpleAppIT {
   public void testQuickstart() throws Exception {
     SimpleApp.main();
     String got = bout.toString();
-    assertThat(got).contains("hamlet");
+    assertThat(got).contains("views:");
   }
 }
