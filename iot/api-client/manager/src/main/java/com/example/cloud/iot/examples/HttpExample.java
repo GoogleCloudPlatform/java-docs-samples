@@ -15,13 +15,14 @@
 */
 
 
-package com.google.cloud.iot.examples;
+package com.example.cloud.iot.examples;
 
 // [START cloudiotcore_http_imports]
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -88,6 +89,42 @@ public class HttpExample {
   }
   // [END cloudiotcore_http_createjwt]
 
+  // [START cloudiotcore_http_getconfig]
+  /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
+  public static void getConfig(String urlPath, String token, String projectId,
+      String cloudRegion, String registryId, String deviceId, String version)
+      throws UnsupportedEncodingException, IOException, JSONException, ProtocolException {
+    // Build the resource path of the device that is going to be authenticated.
+    String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryId, deviceId);
+
+    urlPath = urlPath + devicePath + "/config?local_version=" + version;
+    System.out.println(urlPath);
+    URL url = new URL(urlPath);
+    HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+    httpCon.setDoOutput(true);
+    httpCon.setRequestMethod("GET");
+
+    // Add headers.
+    httpCon.setRequestProperty("authorization", String.format("Bearer %s", token));
+    httpCon.setRequestProperty("content-type", "application/json; charset=UTF-8");
+    httpCon.setRequestProperty("cache-control", "no-cache");
+
+    System.out.println(httpCon.getResponseCode());
+    System.out.println(httpCon.getResponseMessage());
+    byte[] buffer = new byte[1024];
+    InputStream in = httpCon.getInputStream();
+    int len = in.read(buffer);
+    while (len != -1) {
+      System.out.write(buffer, 0, len);
+      len = in.read(buffer);
+    }
+  }
+  // [END cloudiotcore_http_getconfig]
+
+
   // [START cloudiotcore_http_publishmessage]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
   public static void publishMessage(String payload, String urlPath, String messageType,
@@ -104,7 +141,6 @@ public class HttpExample {
     Base64.Encoder encoder = Base64.getEncoder();
 
     String encPayload = encoder.encodeToString(payload.getBytes("UTF-8"));
-
 
     urlPath = urlPath + devicePath + ":" + urlSuffix;
     URL url = new URL(urlPath);
@@ -138,6 +174,7 @@ public class HttpExample {
   /** Parse arguments and publish messages. */
   public static void main(String[] args) throws Exception {
     HttpExampleOptions options = HttpExampleOptions.fromFlags(args);
+
     if (options == null) {
       // Could not parse the flags.
       System.exit(1);
@@ -157,6 +194,10 @@ public class HttpExample {
 
     String urlPath = String.format("%s/%s/", options.httpBridgeAddress, options.apiVersion);
     System.out.format("Using URL: '%s'\n", urlPath);
+
+    // Show the latest configuration
+    getConfig(urlPath, token, options.projectId, options.cloudRegion, options.registryId,
+        options.deviceId, "0");
 
     // Publish numMessages messages to the HTTP bridge.
     for (int i = 1; i <= options.numMessages; ++i) {

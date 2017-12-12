@@ -43,6 +43,7 @@ public class ManagerIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGISTRY_ID = "java-reg-" + (System.currentTimeMillis() / 1000L);
   private static final String RSA_PATH = "resources/rsa_cert.pem";
+  private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID = "java-pst-" + (System.currentTimeMillis() / 1000L);
 
   private static Topic topic;
@@ -228,6 +229,115 @@ public class ManagerIT {
     String got = bout.toString();
     Assert.assertFalse(got.contains("eventNotificationConfigs"));
 
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testHttpDeviceEvent() throws Exception {
+    final String deviceName = "rsa-device-http-event";
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createDeviceWithRs256(
+        deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.listDevices(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    // Device bootstrapped, time to connect and run.
+    String[] testArgs = {
+      "-project_id=" + PROJECT_ID,
+      "-registry_id=" + REGISTRY_ID,
+      "-device_id=" + deviceName,
+      "-private_key_file=" + PKCS_PATH,
+      "-message_type=event",
+      "-algorithm=RS256"
+    };
+    com.example.cloud.iot.examples.HttpExample.main(testArgs);
+    // End device test.
+
+    // Assertions
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("200"));
+    Assert.assertTrue(got.contains("OK"));
+
+    // Clean up
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testHttpDeviceState() throws Exception {
+    final String deviceName = "rsa-device-http-state";
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createDeviceWithRs256(
+        deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.listDevices(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    // Device bootstrapped, time to connect and run.
+    String[] testArgs = {
+      "-project_id=" + PROJECT_ID,
+      "-registry_id=" + REGISTRY_ID,
+      "-device_id=" + deviceName,
+      "-private_key_file=" + PKCS_PATH,
+      "-message_type=state",
+      "-algorithm=RS256"
+    };
+    com.example.cloud.iot.examples.HttpExample.main(testArgs);
+    // End device test.
+
+    // Assertions
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("200"));
+    Assert.assertTrue(got.contains("OK"));
+
+    // Clean up
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testHttpDeviceConfig() throws Exception {
+    final String deviceName = "rsa-device-http-state";
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createDeviceWithRs256(
+        deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.listDevices(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    // Device bootstrapped, time to connect and run.
+    String[] testArgs = {
+      "-project_id=" + PROJECT_ID,
+      "-registry_id=" + REGISTRY_ID,
+      "-device_id=" + deviceName,
+      "-private_key_file=" + PKCS_PATH,
+      "-message_type=event",
+      "-algorithm=RS256"
+    };
+    com.example.cloud.iot.examples.HttpExample.main(testArgs);
+    // End device test.
+
+    // Assertions
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("200"));
+    Assert.assertTrue(got.contains("OK"));
+    Assert.assertTrue(got.contains("\"binaryData\": \"\""));
+
+    // Clean up
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.deleteTopic(topic.getNameAsTopicName());
