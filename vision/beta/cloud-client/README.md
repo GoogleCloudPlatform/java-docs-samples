@@ -16,15 +16,13 @@ Install [Maven](http://maven.apache.org/).
 Build your project with:
 
 ```
-mvn clean compile assembly:single
+mvn clean package
 ```
 
-You can then run a given `ClassName` via:
+You can then run `Detect` via:
 
 ```
-mvn exec:java -Dexec.mainClass=com.example.vision.ClassName \
-    -DpropertyName=propertyValue \
-    -Dexec.args="arg1 'arg 2' arg3"
+mvn exec:java -DDetect -Dexec.args="arg1 'arg 2' arg3"
 ```
 
 ### Analyze an image
@@ -34,7 +32,5 @@ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
 ```
 
 ```
-java -cp target/vision-detect-beta-1.0.0-jar-with-dependencies.jar \
-    com.example.vision.Detect \
-    logos "./resources/logos.png"
+mvn exec:java -DDetect -Dexec.args="logos './resources/logos.png'"
 ```

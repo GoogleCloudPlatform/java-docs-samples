@@ -1,16 +1,18 @@
-/**
- * Copyright 2017, Google, Inc.
- *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
- *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
- *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/*
+  Copyright 2017, Google, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 package com.example.vision;
 
@@ -56,7 +58,7 @@ import java.util.List;
 public class Detect {
 
   /**
-   * Detects entities,sentiment and syntax in a document using the Natural Language API.
+   * Detects entities, sentiment, and syntax in a document using the Vision API.
    *
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -75,13 +77,12 @@ public class Detect {
     if (args.length < 1) {
       out.println("Usage:");
       out.printf(
-          "\tjava %s \"<command>\" \"<path-to-image>\"\n"
+          "\tmvn exec:java -DDetect -Dexec.args=\"<command> <path-to-image>\"\n"
               + "Commands:\n"
               + "\tfaces | labels | landmarks | logos | text | safe-search | properties"
               + "| web | web-entities | web-entities-include-geo | crop \n"
               + "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
-              + "resource (gs://...)\n",
-          Detect.class.getCanonicalName());
+              + "resource (gs://...)\n");
       return;
     }
     String command = args[0];
@@ -207,9 +208,10 @@ public class Detect {
   }
 
   /**
-   * Detects faces in the specified remote image.
+   * Detects faces in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform face detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform face detection
+   *                on.
    * @param out A {@link PrintStream} to write detected features to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -287,9 +289,10 @@ public class Detect {
   }
 
   /**
-   * Detects labels in the specified remote image.
+   * Detects labels in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform label detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform label detection
+   *                on.
    * @param out A {@link PrintStream} to write detected features to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -365,16 +368,16 @@ public class Detect {
   /**
    * Detects landmarks in the specified URI.
    *
-   * @param url The path to the file to perform landmark detection on.
+   * @param uri The path to the file to perform landmark detection on.
    * @param out A {@link PrintStream} to write detected landmarks to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectLandmarksUrl(String url, PrintStream out) throws Exception,
+  public static void detectLandmarksUrl(String uri, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    ImageSource imgSource = ImageSource.newBuilder().setImageUri(url).build();
+    ImageSource imgSource = ImageSource.newBuilder().setImageUri(uri).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feat = Feature.newBuilder().setType(Type.LANDMARK_DETECTION).build();
     AnnotateImageRequest request =
@@ -401,9 +404,10 @@ public class Detect {
   }
 
   /**
-   * Detects landmarks in the specified remote image.
+   * Detects landmarks in the specified remote imageon Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform landmark detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform landmark
+   *                detection on.
    * @param out A {@link PrintStream} to write detected landmarks to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -476,9 +480,10 @@ public class Detect {
   }
 
   /**
-   * Detects logos in the specified remote image.
+   * Detects logos in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform logo detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform logo detection
+   *                on.
    * @param out A {@link PrintStream} to write detected logos to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -551,9 +556,9 @@ public class Detect {
   }
 
   /**
-   * Detects text in the specified remote image.
+   * Detects text in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect text in.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect text in.
    * @param out A {@link PrintStream} to write the detected text to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -632,9 +637,10 @@ public class Detect {
   }
 
   /**
-   * Detects image properties such as color frequency from the specified remote image.
+   * Detects image properties such as color frequency from the specified remote image on Google
+   * Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect properties on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect properties on.
    * @param out A {@link PrintStream} to write
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -721,9 +727,10 @@ public class Detect {
 
   // [START vision_detect_safe_search_uri]
   /**
-   * Detects whether the specified remote image has features you would want to moderate.
+   * Detects whether the specified image on Google Cloud Storage has features you would want
+   * to moderate.
    *
-   * @param gcsPath The path to the remote file to detect safe-search on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect safe-search on.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -830,9 +837,10 @@ public class Detect {
 
   // [START vision_detect_web_uri]
   /**
-   * Detects whether the specified remote image has features you would want to moderate.
+   * Detects whether the remote image on Google Cloud Storage has features you would want to
+   * moderate.
    *
-   * @param gcsPath The path to the remote file to detect web annotations.
+   * @param gcsPath The path to the remote on Google Cloud Storage file to detect web annotations.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -929,8 +937,8 @@ public class Detect {
   }
 
   /**
-   * Find web entities given the uri to an image.
-   * @param gcsPath The path to the remote file to detect web entities.
+   * Find web entities given the remote image on Google Cloud Storage.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect web entities.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -1016,8 +1024,9 @@ public class Detect {
 
   // [START vision_web_entities_include_geo_results_uri]
   /**
-   * Find web entities given the uri to an image.
-   * @param gcsPath The path to the remote file to detect web entities with geo results.
+   * Find web entities given the remote image on Google Cloud Storage.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect web entities with
+   *                geo results.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -1104,9 +1113,9 @@ public class Detect {
   }
 
   /**
-   * Suggests a region to crop to for a remote file.
+   * Suggests a region to crop to for a remote file on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect safe-search on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect safe-search on.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -1208,9 +1217,9 @@ public class Detect {
 
   // [START vision_detect_document_uri]
   /**
-   * Performs document text detection on a local image file.
+   * Performs document text detection on a remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect document text on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect document text on.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
