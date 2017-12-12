@@ -298,7 +298,7 @@ public class TransactionsTest {
     Transaction txn = datastore.beginTransaction();
     // ...
 
-    queue.add(TaskOptions.Builder.withUrl("/path/to/handler"));
+    queue.add(txn, TaskOptions.Builder.withUrl("/path/to/handler"));
 
     // ...
 
