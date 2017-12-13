@@ -16,7 +16,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.vision</groupId>
-  <artifactId>vision-google-cloud-samples</artifactId>
+  <artifactId>vision-detect-beta</artifactId>
   <packaging>jar</packaging>
 
   <!-- Parent defines config for testing & linting. -->
@@ -24,7 +24,7 @@
     <artifactId>doc-samples</artifactId>
     <groupId>com.google.cloud</groupId>
     <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <relativePath>../../..</relativePath>
   </parent>
 
   <properties>
@@ -57,6 +57,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <profiles>
     <profile>
       <id>Detect</id>
@@ -80,35 +81,6 @@
             </executions>
             <configuration>
               <mainClass>com.example.vision.Detect</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>QuickstartSample</id>
-      <activation>
-        <property>
-          <name>QuickstartSample</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <mainClass>com.example.vision.QuickstartSample</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </plugin>
