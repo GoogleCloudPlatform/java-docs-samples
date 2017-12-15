@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.30.0-beta</version>
+      <version>0.32.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.36</version>
+      <version>0.37</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
