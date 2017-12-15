@@ -19,21 +19,16 @@ Build your project with:
 mvn clean package
 ```
 
-You can then run a given `ClassName` via:
+You can then run `Detect` via:
 
 ```
-mvn exec:java -DClassName -Dexec.args="arg1 'arg 2' arg3"
+mvn exec:java -DDetect -Dexec.args="arg1 'arg 2' arg3"
 ```
 
 ### Analyze an image
 
 ```
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
-```
-
-#### Quickstart
-```
-mvn exec:java -DQuickstartSample
 ```
 
 #### Faces
@@ -76,8 +71,17 @@ mvn exec:java -DDetect -Dexec.args="properties ./resources/city.jpg"
 mvn exec:java -DDetect -Dexec.args="web ./resources/landmark.jpg"
 ```
 
+#### Web Entities
+```
+mvn exec:java -DDetect -Dexec.args="web-entities ./resources/landmark.jpg"
+```
+
+#### Web Entities Include Geo
+```
+mvn exec:java -DDetect -Dexec.args="web-entities-include-geo ./resources/landmark.jpg"
+```
+
 #### Crop
 ```
 mvn exec:java -DDetect -Dexec.args="crop ./resources/landmark.jpg"
 ```
-
