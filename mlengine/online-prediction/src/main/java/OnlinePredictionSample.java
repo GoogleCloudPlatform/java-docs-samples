@@ -47,7 +47,7 @@ public class OnlinePredictionSample {
     JsonSchema param = new JsonSchema();
     String projectId = "YOUR_PROJECT_ID";
     // You should have already deployed a model and a version.
-    // For reference, see https://cloud.google.com/ml-engine/docs/how-tos/deploying-models.
+    // For reference, see https://cloud.google.com/ml-engine/docs/deploying-models.
     String modelId = "YOUR_MODEL_ID";
     String versionId = "YOUR_VERSION_ID";
     param.set(
