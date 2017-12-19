@@ -60,6 +60,7 @@
 
         <module>gaeinfo</module>
 
+        <module>guestbook-cloud-datastore</module>
         <module>guestbook-objectify</module>
         <module>helloworld</module>
         <module>helloworld-new-plugins</module>
