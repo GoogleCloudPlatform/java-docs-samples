@@ -6,6 +6,9 @@ December 13, 2017 and will be shut down entirely on January 16, 2019. It is repl
 
 Samples for the Java 8 runtime can be found [here](/appengine-java8).
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/endpoints-frameworks-v2/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This directory contains Google Cloud Endpoints Frameworks for App Engine for
 App Engine Standard samples. The [`backend/`](backend/) directory contains the
 sample code for the [quickstart][4] for Cloud Endpoints Frameworks on App Engine
