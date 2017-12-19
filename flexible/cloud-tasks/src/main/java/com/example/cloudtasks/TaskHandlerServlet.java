@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet(value = "/log_payload")
+@WebServlet(value = "/example_task_handler")
 @SuppressWarnings("serial")
-public class LogPayloadServlet extends HttpServlet {
+public class TaskHandlerServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
