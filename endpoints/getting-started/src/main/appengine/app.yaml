@@ -19,9 +19,10 @@ handlers:
 - url: /.*
   script: this field is required, but ignored
   secure: always
-
+# [START configuration]
 endpoints_api_service:
   # The following values are to be replaced by information from the output of
-  # 'gcloud endpoints services deploy openapi.yaml' command.
+  # 'gcloud endpoints services deploy openapi-appengine.yaml' command.
   name: ENDPOINTS-SERVICE-NAME
   config_id: ENDPOINTS-CONFIG-ID
+# [END configuration]
