@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.example.appengine.standard;
 
@@ -33,9 +34,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+//CHECKSTYLE.OFF: AbbreviationAsWordInName - readability
 // [START example]
 @SuppressWarnings({"serial"})
-//CHECKSTYLE:OFF
 public class GAEInfoServlet extends HttpServlet {
 
   public void table(PrintWriter p, String title, String c) {
@@ -63,16 +64,17 @@ public class GAEInfoServlet extends HttpServlet {
     p.print("<html><body>");
 
     final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
-    table(p, "AppIdentity",
-      tr(td("ServiceAccountName") + td(appIdentity.getServiceAccountName()) ) +
-         tr(td("GCS Bucket") + td( appIdentity.getDefaultGcsBucketName()))
+    table(
+        p, "AppIdentity",
+        tr(td("ServiceAccountName") + td(appIdentity.getServiceAccountName()))
+            + tr(td("GCS Bucket") + td(appIdentity.getDefaultGcsBucketName()))
     );
 
     table(p, "SystemProperties",
-        tr( td( "appId") + td(SystemProperty.applicationId.get()) ) +
-        tr(td("appVer") + td( SystemProperty.applicationVersion.get()) ) +
-        tr(td("version") + td(SystemProperty.version.get()) ) +
-        tr(td("environment") + td(SystemProperty.environment.get()) )
+        tr(td("appId") + td(SystemProperty.applicationId.get()))
+            + tr(td("appVer") + td(SystemProperty.applicationVersion.get()))
+            + tr(td("version") + td(SystemProperty.version.get()))
+            + tr(td("environment") + td(SystemProperty.environment.get()))
     );
 
 
@@ -81,13 +83,14 @@ public class GAEInfoServlet extends HttpServlet {
     Map<String,Object> attr = env.getAttributes();
 
     String c = "";
-    for(String key : attr.keySet()) {
+    for (String key : attr.keySet()) {
       Object o = attr.get(key);
 
-      if(o.getClass().getCanonicalName().equals("java.lang.String")) {
+      if (o.getClass().getCanonicalName().equals("java.lang.String")) {
         c += tr(td(key) + td((String) o));
-      } else
+      } else {
         c += tr(td(key) + td(o.getClass().getCanonicalName()));
+      }
     }
     table(p, "Environment Attributes", c);
 
@@ -95,33 +98,33 @@ public class GAEInfoServlet extends HttpServlet {
     for (Enumeration<String> e = req.getHeaderNames(); e.hasMoreElements();) {
       String key = e.nextElement();
       String val = req.getHeader(key);
-      c += tr(td(key) + td(val) );;
+      c += tr(td(key) + td(val));;
     }
     table(p, "Headers", c);
 
 
     Cookie[] cookies = req.getCookies();
-    if(cookies != null && cookies.length != 0) {
+    if (cookies != null && cookies.length != 0) {
       c = "";
       for (Cookie co : cookies) {
-        c += tr( td(co.getName()) + td(co.getValue()) + td(co.getComment()) +
-                td(co.getPath()) + td(Integer.toString(co.getMaxAge())) );
+        c += tr(td(co.getName()) + td(co.getValue()) + td(co.getComment())
+            + td(co.getPath()) + td(Integer.toString(co.getMaxAge())));
       }
       table(p, "Cookies", c);
     }
 
     Properties properties = System.getProperties();
     c = "";
-    for(Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
+    for (Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
       String key = (String) e.nextElement();
-      c += tr( td(key) + td((String)properties.get(key)));
+      c += tr(td(key) + td((String)properties.get(key)));
     }
     table(p, "Java SystemProperties", c);
 
     Map<String, String> envVar = System.getenv();
     c = "";
-    for(String key : envVar.keySet()) {
-      c += tr(td(key)+td(envVar.get(key)));
+    for (String key : envVar.keySet()) {
+      c += tr(td(key) + td(envVar.get(key)));
     }
     table(p, "Envirionment Variables", c);
     p.print("</body></html>");
@@ -130,3 +133,4 @@ public class GAEInfoServlet extends HttpServlet {
   }
 }
 // [END example]
+//CHECKSTYLE.ON: AbbreviationAsWordInName
