@@ -124,7 +124,7 @@ public class MqttExample {
     String configTopic = String.format("/devices/%s/config", deviceId);
     client.subscribe(configTopic, 1);
 
-    mClient.setCallback(mCallback);
+    client.setCallback(mCallback);
   }
   // [END cloudiotcore_mqtt_configcallback]
 
