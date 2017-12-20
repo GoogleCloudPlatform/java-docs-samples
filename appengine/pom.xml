@@ -49,6 +49,7 @@
         <module>datastore/indexes</module>
         <module>datastore/indexes-exploding</module>
         <module>datastore/indexes-perfect</module>
+
         <module>endpoints-frameworks-v2/backend</module>
         <module>endpoints-frameworks-v2/migration-example</module>
         <module>endpoints-frameworks-v2/guice-example</module>
@@ -67,6 +68,8 @@
         <module>iap</module>
         <module>images</module>
         <module>logs</module>
+        <module>mail</module>
+
         <module>mailgun</module>
         <module>mailjet</module>
         <module>memcache</module>
