@@ -196,6 +196,29 @@ public class ManagerIT {
   }
 
   @Test
+  public void testCreateConfigureDevice() throws Exception {
+    final String deviceName = "rsa-device-config";
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createDeviceWithRs256(
+        deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.setDeviceConfiguration(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID,
+        "some-test-data", 0L);
+
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("Updated: 2"));
+
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+
+  @Test
   public void testCreateListDevices() throws Exception {
     final String deviceName = "rsa-device";
     topic = DeviceRegistryExample.createIotTopic(
