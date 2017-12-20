@@ -1,6 +1,12 @@
 
 # Java Socket API Example App: Whois Client
 
+**Java 7 runtime support on App Engine standard was [deprecated](https://cloud.google.com/appengine/docs/deprecations/java7) on
+December 13, 2017 and will be shut down entirely on January 16, 2019. It is replaced by the
+[Java 8 Runtime Environment](https://cloud.google.com/appengine/docs/standard/java/runtime-java8).**
+
+Samples for the Java 8 runtime can be found [here](/appengine-java8).
+
 This sample displays what's going on in your app. It dumps the environment and lots more.
 
 See the [Google App Engine standard environment documentation][ae-docs] for more

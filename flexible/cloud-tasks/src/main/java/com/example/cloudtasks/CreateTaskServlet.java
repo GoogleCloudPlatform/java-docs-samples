@@ -98,7 +98,7 @@ public class CreateTaskServlet extends HttpServlet {
     payload = BaseEncoding.base64().encode(payload.getBytes());
     AppEngineHttpRequest postRequest = new AppEngineHttpRequest()
         .setHttpMethod("POST")
-        .setRelativeUrl("/log_payload")
+        .setRelativeUrl("/example_task_handler")
         .setPayload(payload);
     Task task = new Task().setAppEngineHttpRequest(postRequest);
 
