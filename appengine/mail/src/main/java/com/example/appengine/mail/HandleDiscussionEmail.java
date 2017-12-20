@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HandleDiscussionEmail extends MailHandlerBase {
 
   private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
-  
+
   public HandleDiscussionEmail() {
     super("discuss-(.*)@(.*)");
   }
