@@ -20,20 +20,19 @@
     <groupId>com.google.cloud.taskqueue.samples</groupId>
     <artifactId>taskqueue-defer-sample</artifactId>
 
-    <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
+    <!--
+      The parent pom defines common style checks and testing strategies for our samples.
+      Removing or replacing it should not effect the execution of the samples in anyway.
+    -->
     <parent>
-        <artifactId>appengine-doc-samples</artifactId>
-        <groupId>com.google.cloud</groupId>
-        <version>1.0.0</version>
-        <relativePath>../..</relativePath>
+        <groupId>com.google.cloud.samples</groupId>
+        <artifactId>shared-configuration</artifactId>
+        <version>1.0.7</version>
     </parent>
 
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
-        <appengine.sdk.version>1.9.60</appengine.sdk.version>
-        <codehaus-versions-maven-plugin-version>2.5</codehaus-versions-maven-plugin-version>
-        <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
     </properties>
 
     <dependencies>
@@ -41,7 +40,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.59</version>
         </dependency>
         <dependency>
           <groupId>javax.servlet</groupId>
@@ -52,13 +51,14 @@
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
+            <version>1.2</version>
         </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-
+            <version>4.12</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -68,12 +68,12 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.59</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.59</version>
        </dependency>
     </dependencies>
 
@@ -84,7 +84,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>${codehaus-versions-maven-plugin-version}</version>
+                <version>2.5</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -99,7 +99,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin-version}</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
@@ -116,7 +116,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.sdk.version}</version>
+                <version>1.9.59</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->

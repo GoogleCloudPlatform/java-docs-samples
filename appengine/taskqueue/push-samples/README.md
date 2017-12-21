@@ -3,6 +3,10 @@
 This sample demonstrates how to use the [TaskQueue API][taskqueue-api] on [Google App
 Engine][ae-docs].
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/taskqueue/push-samples/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 [taskqueue-api]: https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/taskqueue/package-summary
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
