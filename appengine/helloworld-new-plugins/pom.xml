@@ -22,7 +22,7 @@ Copyright 2015 Google Inc.
   <artifactId>appengine-helloworld-newplugins</artifactId>
 
 <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+  <properties>
     <maven.compiler.target>1.7</maven.compiler.target>
     <maven.compiler.source>1.7</maven.compiler.source>
   </properties>
