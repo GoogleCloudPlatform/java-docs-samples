@@ -44,7 +44,9 @@ apply plugin: 'com.google.cloud.tools.appengine'
 
 dependencies {
     compile 'com.google.endpoints:endpoints-framework:2.0.9'
+    // [START endpoints-guice]
     compile 'com.google.endpoints:endpoints-framework-guice:2.0.9'
+    // [END endpoints-guice]
     compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
     compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
 }
