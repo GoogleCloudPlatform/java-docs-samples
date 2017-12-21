@@ -84,7 +84,9 @@ public class IndexesServletTest {
 
   @Test
   public void doGet_repeatedPropertyEntities_writesWidgets() throws Exception {
+    //CHECKSTYLE.OFF: VariableDeclarationUsageDistance - readability
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    //CHECKSTYLE.ON: VariableDeclarationUsageDistance
     // [START exploding_index_example_3]
     Entity widget = new Entity("Widget");
     widget.setProperty("x", Arrays.asList(1, 2, 3, 4));
