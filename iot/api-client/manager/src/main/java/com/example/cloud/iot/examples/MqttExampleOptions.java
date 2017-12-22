@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.iot.examples;
+package com.example.cloud.iot.examples;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

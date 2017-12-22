@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.iot.examples;
+package com.example.cloud.iot.examples;
 
 // [START cloudiotcore_mqtt_imports]
 import io.jsonwebtoken.JwtBuilder;
@@ -22,8 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
@@ -94,6 +97,37 @@ public class MqttExample {
   }
   // [END cloudiotcore_mqtt_createjwt]
 
+  // [START cloudiotcore_mqtt_configcallback]
+  static MqttCallback mCallback;
+
+  /** Attaches the callback used when configuration changes occur. */
+  public static void attachCallback(MqttClient client, String deviceId) throws MqttException {
+    mCallback = new MqttCallback() {
+      @Override
+      public void connectionLost(Throwable cause) {
+        // Do nothing...
+      }
+
+      @Override
+      public void messageArrived(String topic, MqttMessage message) throws Exception {
+        String payload = new String(message.getPayload());
+        System.out.println("Payload : " + payload);
+        // TODO: Insert your parsing / handling of the configuration message here.
+      }
+
+      @Override
+      public void deliveryComplete(IMqttDeliveryToken token) {
+        // Do nothing;
+      }
+    };
+
+    String configTopic = String.format("/devices/%s/config", deviceId);
+    client.subscribe(configTopic, 1);
+
+    client.setCallback(mCallback);
+  }
+  // [END cloudiotcore_mqtt_configcallback]
+
   /** Parse arguments, configure MQTT, and publish messages. */
   public static void main(String[] args) throws Exception {
     // [START cloudiotcore_mqtt_configuremqtt]
@@ -145,6 +179,7 @@ public class MqttExample {
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
     try {
       client.connect(connectOptions);
+      attachCallback(client, options.deviceId);
 
       // Publish to the events or state topic based on the flag.
       String subTopic = options.messageType.equals("event") ? "events" : options.messageType;
@@ -177,6 +212,9 @@ public class MqttExample {
                 "Invalid algorithm " + options.algorithm
                     + ". Should be one of 'RS256' or 'ES256'.");
           }
+          client.disconnect();
+          client.connect();
+          attachCallback(client, options.deviceId);
         }
 
         // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
