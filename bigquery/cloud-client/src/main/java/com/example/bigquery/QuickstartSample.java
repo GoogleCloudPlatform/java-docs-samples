@@ -25,7 +25,9 @@ import com.google.cloud.bigquery.DatasetInfo;
 
 public class QuickstartSample {
   public static void main(String... args) throws Exception {
-    // Instantiates a client
+    // Instantiate a client. If you don't specify credentials when constructing a client, the
+    // client library will look for credentials in the environment, such as the
+    // GOOGLE_APPLICATION_CREDENTIALS environment variable.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     // The name for the new dataset
