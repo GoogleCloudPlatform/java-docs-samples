@@ -31,7 +31,7 @@
     <properties>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
-        <appengine.sdk.version>1.9.59</appengine.sdk.version>
+        <appengine.sdk.version>1.9.60</appengine.sdk.version>
         <codehaus-versions-maven-plugin-version>2.5</codehaus-versions-maven-plugin-version>
         <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
     </properties>
