@@ -1,5 +1,5 @@
 /*
-  Copyright 2017, Google LLC
+  Copyright 2018 Google LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -32,7 +32,9 @@ public class QuickstartSample {
     // String projectId = "YOUR_PROJECT_ID";
     String projectId = args[0];
 
-    // Creates a client.
+    // Instantiate a client. If you don't specify credentials when constructing a client, the
+    // client library will look for credentials in the environment, such as the
+    // GOOGLE_APPLICATION_CREDENTIALS environment variable.
     try (DataTransferServiceClient client = DataTransferServiceClient.create()) {
       // Request the list of available data sources.
       String parent = String.format("projects/%s", projectId);
