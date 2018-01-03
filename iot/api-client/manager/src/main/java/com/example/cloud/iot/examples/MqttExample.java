@@ -197,6 +197,7 @@ public class MqttExample {
             options.messageType, i, options.numMessages, payload);
 
         // Refresh the connection credentials before the JWT expires.
+        // [START cloudiotcore_mqtt_jwt_refresh]
         long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
         if (secsSinceRefresh > (options.tokenExpMins * 60)) {
           System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
@@ -216,6 +217,7 @@ public class MqttExample {
           client.connect();
           attachCallback(client, options.deviceId);
         }
+        // [END cloudiotcore_mqtt_jwt_refresh]
 
         // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
         // also supports qos=0 for at most once delivery.
