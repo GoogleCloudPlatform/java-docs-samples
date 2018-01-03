@@ -19,10 +19,6 @@ package com.example.appengine.appidentity;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.io.CharStreams;
-
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 @SuppressWarnings("serial")
 class UrlShortener {

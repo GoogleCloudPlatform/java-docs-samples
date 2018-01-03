@@ -1,5 +1,8 @@
 # Hello World Google Cloud Endpoints for App Engine
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/endpoints-frameworks-v2/migration-example/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample provides an example of a [migration][7] from the prior version of
 [Google Cloud Endpoints Frameworks][3] to new
 [Google Cloud Endpoints Frameworks for App Engine][8] using a

@@ -13,21 +13,19 @@
  * limitations under the License.
  */
 // [START logs_API_example]
+
 package com.example.appengine.logs;
 
 import com.google.appengine.api.log.AppLogLine;
 import com.google.appengine.api.log.LogQuery;
 import com.google.appengine.api.log.LogServiceFactory;
 import com.google.appengine.api.log.RequestLogs;
-
-import org.joda.time.DateTime;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.joda.time.DateTime;
 
 
 // Get request logs along with their app log lines and display them 5 at

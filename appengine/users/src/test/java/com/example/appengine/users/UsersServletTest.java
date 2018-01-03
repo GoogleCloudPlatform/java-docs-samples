@@ -20,7 +20,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.management.remote.JMXPrincipal;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,26 +33,23 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.management.remote.JMXPrincipal;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Unit tests for {@link UsersServlet}.
  */
 @RunWith(JUnit4.class)
 public class UsersServletTest {
-  private static final String FAKE_URL = "fakey.fake.fak"; 
-  private static final String FAKE_NAME = "Fake"; 
+
+  private static final String FAKE_URL = "fakey.fake.fak";
+  private static final String FAKE_NAME = "Fake";
   // Set up a helper so that the ApiProxy returns a valid environment for local testing.
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
-  @Mock private HttpServletRequest mockRequestNotLoggedIn;
-  @Mock private HttpServletRequest mockRequestLoggedIn;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequestNotLoggedIn;
+  @Mock
+  private HttpServletRequest mockRequestLoggedIn;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private UsersServlet servletUnderTest;
 
@@ -75,7 +76,8 @@ public class UsersServletTest {
     servletUnderTest = new UsersServlet();
   }
 
-  @After public void tearDown() {
+  @After
+  public void tearDown() {
     helper.tearDown();
   }
 
@@ -90,7 +92,7 @@ public class UsersServletTest {
         .contains("<p>Please <a href=");
     assertThat(responseWriter.toString())
         .named("UsersServlet response")
-        .contains("sign in</a>.</p>"); 
+        .contains("sign in</a>.</p>");
   }
 
   @Test
@@ -104,6 +106,6 @@ public class UsersServletTest {
         .contains("<p>Hello, " + FAKE_NAME + "!");
     assertThat(responseWriter.toString())
         .named("UsersServlet response")
-        .contains("sign out"); 
+        .contains("sign out");
   }
 }

@@ -19,17 +19,22 @@ Copyright 2015 Google Inc.
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-search</artifactId>
+
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
+
   <dependencies>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -55,19 +60,19 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -94,7 +99,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.59</version>
       </plugin>
     </plugins>
   </build>

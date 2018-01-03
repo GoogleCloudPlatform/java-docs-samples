@@ -21,18 +21,19 @@
     <groupId>com.example.helloworld</groupId>
     <artifactId>helloworld</artifactId>
 
-  <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
-  </parent>
+    <!--
+      The parent pom defines common style checks and testing strategies for our samples.
+      Removing or replacing it should not effect the execution of the samples in anyway.
+    -->
+    <parent>
+        <groupId>com.google.cloud.samples</groupId>
+        <artifactId>shared-configuration</artifactId>
+        <version>1.0.8</version>
+    </parent>
+
 
     <properties>
-        <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <appengine.plugin.version>1.9.60</appengine.plugin.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
@@ -46,12 +47,12 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.plugin.version}</version>
+            <version>1.9.59</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-endpoints</artifactId>
-            <version>${appengine.plugin.version}</version>
+            <version>1.9.59</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -81,13 +82,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>${appengine.plugin.version}</version>
+            <version>1.9.59</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.plugin.version}</version>
+            <version>1.9.59</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -134,7 +135,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.plugin.version}</version>
+                <version>1.9.59</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->

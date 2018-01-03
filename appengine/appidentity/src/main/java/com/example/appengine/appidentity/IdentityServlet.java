@@ -17,9 +17,7 @@
 package com.example.appengine.appidentity;
 
 import com.google.apphosting.api.ApiProxy;
-
 import java.io.IOException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

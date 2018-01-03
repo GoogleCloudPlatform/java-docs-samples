@@ -49,7 +49,8 @@ public class SendMessageServlet extends HttpServlet {
     // [{"message": "my-message", "socket_id": "1232.24", "channel": "presence-my-channel"}]
 
     String body = CharStreams.readLines(request.getReader()).toString();
-    String json = body.replaceFirst("^\\[", "").replaceFirst("\\]$", "");
+    String json = body.replaceFirst("^\\[", "")
+        .replaceFirst("\\]$", "");
     Map<String, String> data = gson.fromJson(json, typeReference.getType());
     String message = data.get("message");
     String socketId = data.get("socket_id");
@@ -71,7 +72,8 @@ public class SendMessageServlet extends HttpServlet {
                 channelId,
                 "new_message", // name of event
                 messageData,
-                socketId); // (optional) use client socket_id to exclude the sender from receiving the message
+                // (optional) use client socket_id to exclude the sender from receiving the message
+                socketId);
 
     // result.getStatus() == SUCCESS indicates successful transmission
     messageData.put("status", result.getStatus().name());

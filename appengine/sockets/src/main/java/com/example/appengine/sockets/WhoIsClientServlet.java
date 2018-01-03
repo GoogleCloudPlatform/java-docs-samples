@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.sockets;
 
 import java.io.IOException;
@@ -22,13 +23,11 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.Socket;
 import java.util.logging.Logger;
-
-import javax.servlet.http.*;
-
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
-
 
 /**
  * This simple example uses the Socket API to access a WHOIS server and query
@@ -45,8 +44,8 @@ public class WhoIsClientServlet extends HttpServlet {
   void writeHeader(HttpServletResponse resp, String name) throws IOException {
     resp.setContentType("text/html");
     resp.setCharacterEncoding("UTF-8");
-    String header = "<html><head><title>App Engine Whois example result for " + name + "</title>" +
-            "</head><body>\n";
+    String header = "<html><head><title>App Engine Whois example result for " + name + "</title>"
+        + "</head><body>\n";
     resp.getWriter().print(header);
   }
 

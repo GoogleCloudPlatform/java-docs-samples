@@ -8,6 +8,9 @@ Samples for the Java 8 runtime can be found [here](/appengine-java8).
 
 This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/sql/) on Google App Engine
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/cloudsql/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 ## Setup
 Before you can run or deploy the sample, you will need to create a [Cloud SQL instance)](https://cloud.google.com/sql/docs/create-instance)
 

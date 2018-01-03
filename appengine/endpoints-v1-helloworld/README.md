@@ -1,6 +1,10 @@
 endpoints-skeleton
 ==================
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/endpoints-v1-helloworld/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 # DEPRECATED
 
 ### This sample uses endpoints v1 the preferred strategy for new development is to use Endpoints v2
