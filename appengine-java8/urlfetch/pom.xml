@@ -29,7 +29,7 @@ Copyright 2015 Google Inc.
     <artifactId>shared-configuration</artifactId>
     <version>1.0.8</version>
   </parent>
-  
+
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
