@@ -1,5 +1,8 @@
 # Google Cloud Endpoints Frameworks for App Engine Standard
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/endpoints-v2-README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This directory contains Google Cloud Endpoints Frameworks for App Engine for
 App Engine Standard samples. The [`backend/`](backend/) directory contains the
 sample code for the [quickstart][4] for Cloud Endpoints Frameworks on App Engine
