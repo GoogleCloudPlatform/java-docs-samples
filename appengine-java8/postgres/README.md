@@ -1,4 +1,8 @@
 # Postgre SQL sample for Google App Engine J8
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/postgres/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use [PostgreSql](https://cloud.google.com/sql/) on Google App
 Engine standard Java 8
 
