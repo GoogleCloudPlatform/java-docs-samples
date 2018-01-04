@@ -1,5 +1,8 @@
 # App Engine Standard & Google Cloud Endpoints Frameworks
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/endpoints-v2-guice/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use Google Cloud Endpoints Frameworks with Guice
 on App Engine Standard.
 
