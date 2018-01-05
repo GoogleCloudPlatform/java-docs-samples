@@ -26,7 +26,7 @@ Command-line Instructions
 -------------------------
 
 * **Prerequisites:**
-    * Install the latest version of [Java](http://java.com) and [Maven](http://maven.apache.org/download.html).
+    * Install the latest version of [Java](https://java.com) and [Maven](https://maven.apache.org/download.html).
     * Set the environment variable: `export GOOGLE_APPLICATION_CREDENTIALS=your-key-filename.json`
     * You may need to set your `JAVA_HOME`.
 
