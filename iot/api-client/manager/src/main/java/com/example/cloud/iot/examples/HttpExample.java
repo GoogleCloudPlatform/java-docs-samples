@@ -18,15 +18,32 @@
 package com.example.cloud.iot.examples;
 
 // [START cloudiotcore_http_imports]
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
+import com.google.api.client.util.Charsets;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.common.io.CharStreams;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.ProtocolException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
@@ -49,6 +66,9 @@ import org.json.JSONObject;
  * folder.
  */
 public class HttpExample {
+  static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+  static final JsonFactory JSON_FACTORY = new JacksonFactory();
+
   // [START cloudiotcore_http_createjwt]
   /** Create a RSA-based JWT for the given project id, signed with the given private key. */
   private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
@@ -99,31 +119,40 @@ public class HttpExample {
         String.format(
             "projects/%s/locations/%s/registries/%s/devices/%s",
             projectId, cloudRegion, registryId, deviceId);
-
     urlPath = urlPath + devicePath + "/config?local_version=" + version;
-    System.out.println(urlPath);
-    URL url = new URL(urlPath);
-    HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-    httpCon.setDoOutput(true);
-    httpCon.setRequestMethod("GET");
 
-    // Add headers.
-    httpCon.setRequestProperty("authorization", String.format("Bearer %s", token));
-    httpCon.setRequestProperty("content-type", "application/json; charset=UTF-8");
-    httpCon.setRequestProperty("cache-control", "no-cache");
+    HttpRequestFactory requestFactory =
+        HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+          @Override
+          public void initialize(HttpRequest request) {
+            request.setParser(new JsonObjectParser(JSON_FACTORY));
+          }
+        });
 
-    System.out.println(httpCon.getResponseCode());
-    System.out.println(httpCon.getResponseMessage());
-    byte[] buffer = new byte[1024];
-    InputStream in = httpCon.getInputStream();
-    int len = in.read(buffer);
-    while (len != -1) {
-      System.out.write(buffer, 0, len);
-      len = in.read(buffer);
-    }
+    final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
+    HttpHeaders heads = new HttpHeaders();
+
+    heads.setAuthorization(String.format("Bearer %s", token));
+    heads.setContentType("application/json; charset=UTF-8");
+    heads.setCacheControl("no-cache");
+
+    req.setHeaders(heads);
+    ExponentialBackOff backoff = new ExponentialBackOff.Builder()
+        .setInitialIntervalMillis(500)
+        .setMaxElapsedTimeMillis(900000)
+        .setMaxIntervalMillis(6000)
+        .setMultiplier(1.5)
+        .setRandomizationFactor(0.5)
+        .build();
+    req.setUnsuccessfulResponseHandler(new HttpBackOffUnsuccessfulResponseHandler(backoff));
+    HttpResponse res = req.execute();
+    System.out.println(res.getStatusCode());
+    System.out.println(res.getStatusMessage());
+    InputStream in = res.getContent();
+
+    System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)));
   }
   // [END cloudiotcore_http_getconfig]
-
 
   // [START cloudiotcore_http_publishmessage]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
@@ -143,15 +172,20 @@ public class HttpExample {
     String encPayload = encoder.encodeToString(payload.getBytes("UTF-8"));
 
     urlPath = urlPath + devicePath + ":" + urlSuffix;
-    URL url = new URL(urlPath);
-    HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-    httpCon.setDoOutput(true);
-    httpCon.setRequestMethod("POST");
 
-    // Add headers.
-    httpCon.setRequestProperty("authorization", String.format("Bearer %s", token));
-    httpCon.setRequestProperty("content-type", "application/json; charset=UTF-8");
-    httpCon.setRequestProperty("cache-control", "no-cache");
+
+    final HttpRequestFactory requestFactory =
+        HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+          @Override
+          public void initialize(HttpRequest request) {
+            request.setParser(new JsonObjectParser(JSON_FACTORY));
+          }
+        });
+
+    HttpHeaders heads = new HttpHeaders();
+    heads.setAuthorization(String.format("Bearer %s", token));
+    heads.setContentType("application/json; charset=UTF-8");
+    heads.setCacheControl("no-cache");
 
     // Add post data. The data sent depends on whether we're updating state or publishing events.
     JSONObject data = new JSONObject();
@@ -162,11 +196,26 @@ public class HttpExample {
       state.put("binary_data", encPayload);
       data.put("state", state);
     }
-    httpCon.getOutputStream().write(data.toString().getBytes("UTF-8"));
-    httpCon.getOutputStream().close();
 
-    System.out.println(httpCon.getResponseCode());
-    System.out.println(httpCon.getResponseMessage());
+    ByteArrayContent content = new ByteArrayContent(
+        "application/json", data.toString().getBytes("UTF-8"));
+
+    final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
+    req.setHeaders(heads);
+    req.setContent(content);
+    req.setRequestMethod("POST");
+    ExponentialBackOff backoff = new ExponentialBackOff.Builder()
+        .setInitialIntervalMillis(500)
+        .setMaxElapsedTimeMillis(900000)
+        .setMaxIntervalMillis(6000)
+        .setMultiplier(1.5)
+        .setRandomizationFactor(0.5)
+        .build();
+    req.setUnsuccessfulResponseHandler(new HttpBackOffUnsuccessfulResponseHandler(backoff));
+
+    HttpResponse res = req.execute();
+    System.out.println(res.getStatusCode());
+    System.out.println(res.getStatusMessage());
   }
   // [END cloudiotcore_http_publishmessage]
 
