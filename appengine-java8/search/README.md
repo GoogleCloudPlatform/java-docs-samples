@@ -1,5 +1,9 @@
 # Google App Engine Standard Environment Search API Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8//README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This sample demonstrates how to use App Engine Search API.
 
 See the [Google App Engine Search API documentation][search-api-docs] for more
