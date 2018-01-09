@@ -47,7 +47,7 @@
         <module>firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>firebase-tictactoe</module>
         <module>gaeinfo</module>
-        <module>guestbook-cloud-datastore</module>
+        <!-- <module>guestbook-cloud-datastore</module> disabled see b/71755044 -->
         <module>guestbook-objectify</module>
         <module>helloworld</module>
         <module>helloworld-new-plugins</module>
