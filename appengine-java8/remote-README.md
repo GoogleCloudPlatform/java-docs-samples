@@ -1,5 +1,8 @@
 # Google App Engine Standard Environment Remote API Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/remote-README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to access App Engine Standard Environment APIs remotely,
 using the [Remote API](https://cloud.google.com/appengine/docs/java/tools/remoteapi).
 

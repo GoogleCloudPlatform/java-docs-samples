@@ -1,5 +1,8 @@
 # Tic Tac Toe on Google App Engine Standard using Firebase
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/firebase-tictactoe/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This directory contains a project that implements a realtime two-player game of
 Tic Tac Toe on Google [App Engine Standard][standard], using the [Firebase] database
 for realtime notifications when the board changes.

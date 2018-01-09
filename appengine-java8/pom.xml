@@ -21,82 +21,62 @@
   <artifactId>appengine-java8-samples</artifactId>
   <packaging>pom</packaging>
 
-  <!-- Parent POM defines common plugins and properties. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
-
+  
   <properties>
-    <appengine.sdk.version>1.9.52</appengine.sdk.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <modules>
-    <!-- App Engine Standard -->
     <module>analytics</module>
     <module>appidentity</module>
     <module>bigtable</module>
     <module>cloudsql</module>
-
     <module>datastore</module>
     <module>datastore-indexes</module>
     <module>datastore-indexes-exploding</module>
     <module>datastore-indexes-perfect</module>
-
     <module>endpoints-v2-backend</module>
     <module>endpoints-v2-migration</module>
     <module>endpoints-v2-guice</module>
     <module>endpoints-v2-skeleton</module>
-
     <module>firebase-event-proxy</module>
-
     <module>firebase-tictactoe</module>
-
     <module>gaeinfo</module>
-
     <module>guestbook-cloud-datastore</module>
     <module>guestbook-objectify</module>
-
     <module>images</module>
     <module>logs</module>
     <module>mailgun</module>
     <module>mailjet</module>
     <module>memcache</module>
-
     <module>metadata</module>
-
     <module>multitenancy</module>
-
     <module>oauth2</module>
-
     <module>postgres</module>
-
     <module>pubsub</module>
-
     <module>requests</module>
-
     <module>remote-client</module>
     <module>remote-server</module>
-
     <module>search</module>
-
     <module>sendgrid</module>
-
     <module>spanner</module>
-
     <module>static-files</module>
-
     <module>taskqueues-deferred</module>
     <module>taskqueues-pull</module>
     <module>taskqueues-push</module>
-
     <module>twilio</module>
-
     <module>urlfetch</module>
     <module>users</module>
-
   </modules>
 
 </project>

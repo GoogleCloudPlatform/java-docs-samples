@@ -1,4 +1,8 @@
 # Google App Engine Standard Environment
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/oauth2/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 ## Oauth2 Sample
 
 This sample demonstrates using the Oauth2 apis to create an authenticaion filter.

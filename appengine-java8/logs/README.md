@@ -1,5 +1,8 @@
 # Users Authentication sample for Google App Engine
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/logs/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use the [Logs API][log-docs] on [Google App
 Engine][ae-docs].
 
