@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,9 @@
 
 package com.example.cloudtasks;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -23,20 +26,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Integration (system) tests for {@link PullQueue}.
  */
 @RunWith(JUnit4.class)
+//CHECKSTYLE OFF: AbbreviationAsWordInName
 public class PullQueueIT {
+  //CHECKSTYLE ON: AbbreviationAsWordInName
+
+  private static final String PROJECT_ID = "java-docs-samples-cloud-tasks";
+  private static final String LOCATION_ID = "us-central1";
+  private static final String QUEUE_ID = "test-queue";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
-
-  static final private String PROJECT_ID = "java-docs-samples-cloud-tasks";
-  static final private String LOCATION_ID = "us-central1";
-  static final private String QUEUE_ID = "test-queue";
 
   /**
    * Capture standard out for each test.
