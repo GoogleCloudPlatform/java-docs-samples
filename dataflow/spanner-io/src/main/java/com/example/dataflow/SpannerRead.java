@@ -1,18 +1,18 @@
 /*
-  Copyright 2017, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dataflow;
 
@@ -65,21 +65,25 @@ public class SpannerRead {
     @Description("Spanner instance ID to query from")
     @Validation.Required
     String getInstanceId();
+
     void setInstanceId(String value);
 
     @Description("Spanner database name to query from")
     @Validation.Required
     String getDatabaseId();
+
     void setDatabaseId(String value);
 
     @Description("Spanner table name to query from")
     @Validation.Required
     String getTable();
+
     void setTable(String value);
 
     @Description("Output filename for records size")
     @Validation.Required
     String getOutput();
+
     void setOutput(String value);
   }
 
@@ -119,6 +123,8 @@ public class SpannerRead {
             throw new IllegalArgumentException("Arrays are not supported :(");
           case STRUCT:
             throw new IllegalArgumentException("Structs are not supported :(");
+          default:
+            throw new IllegalArgumentException("Unsupported type :(");
         }
       }
       c.output(sum);
