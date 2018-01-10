@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,9 @@ import com.sendgrid.SendGridException;
 
 // [START example]
 public class SendEmailServlet {
-  final static String SENDGRID_API_KEY = "YOUR-SENDGRID-API-KEY";
-  final static String SENDGRID_SENDER = "YOUR-SENDGRID-FROM-EMAIL";
-  final static String TO_EMAIL = "DESTINATION-EMAIL";
+  static final String SENDGRID_API_KEY = "YOUR-SENDGRID-API-KEY";
+  static final String SENDGRID_SENDER = "YOUR-SENDGRID-FROM-EMAIL";
+  static final String TO_EMAIL = "DESTINATION-EMAIL";
 
   public static void main(String[] args) throws SendGridException {
 
