@@ -1,5 +1,8 @@
 # Getting Started with BigQuery Data Transfer API
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=bigquery/datatransfer/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [BigQuery Data Transfer Service][BigQuery Data Transfer] features an API that
 allows developers to create transfer jobs from data sources to BigQuery.
 These sample Java applications demonstrate how to access the BigQuery Data
