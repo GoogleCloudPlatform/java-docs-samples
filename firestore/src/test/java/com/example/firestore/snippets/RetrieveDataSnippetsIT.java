@@ -22,10 +22,13 @@ import static org.junit.Assert.assertTrue;
 import com.example.firestore.snippets.model.City;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QuerySnapshot;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +100,25 @@ public class RetrieveDataSnippetsIT {
             && docIds.contains("DC")
             && docIds.contains("TOK")
             && docIds.contains("BJ"));
+  }
+
+  @Test
+  public void testGetSubcollections() throws Exception {
+    // Add a landmark subcollection
+    Map<String, String> data = new HashMap<>();
+    data.put("foo", "bar");
+    db.document("cities/SF/landmarks/example").set(data).get();
+
+    Iterable<CollectionReference> collections =
+        retrieveDataSnippets.getCollections();
+
+    List<CollectionReference> collectionList = new ArrayList<>();
+    for (CollectionReference collRef : collections) {
+      collectionList.add(collRef);
+    }
+
+    assertEquals(collectionList.size(), 1);
+    assertEquals(collectionList.get(0).getId(), "landmarks");
   }
 
   private static void deleteAllDocuments() throws Exception {
