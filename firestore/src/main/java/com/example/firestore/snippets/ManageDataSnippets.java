@@ -1,15 +1,17 @@
 /*
  * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.firestore.snippets;
@@ -212,6 +214,7 @@ class ManageDataSnippets {
 
   /** Partial update nested fields of a document. */
   void updateNestedFields() throws Exception {
+    //CHECKSTYLE OFF: VariableDeclarationUsageDistance
     // [START fs_update_nested_fields]
     // Create an initial document to update
     DocumentReference frankDocRef = db.collection("users").document("frank");
@@ -239,6 +242,7 @@ class ManageDataSnippets {
     // ...
     System.out.println("Update time : " + writeResult.get().getUpdateTime());
     // [END fs_update_nested_fields]
+    //CHECKSTYLE ON: VariableDeclarationUsageDistance
   }
 
   /** Update document with server timestamp. */

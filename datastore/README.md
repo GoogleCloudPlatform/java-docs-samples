@@ -1,5 +1,8 @@
 ## Datastore Samples
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=datastore/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This directory contains sample code used in Google Cloud Datastore documentation. Included here is a sample command line application, `TaskList`, that interacts with Datastore to manage a to-do list.
 
 ## Run the `TaskList` sample application.
