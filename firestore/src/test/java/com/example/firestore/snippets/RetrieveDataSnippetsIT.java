@@ -28,6 +28,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QuerySnapshot;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,9 @@ public class RetrieveDataSnippetsIT {
   @Test
   public void testGetSubcollections() throws Exception {
     // Add a landmark subcollection
-    db.document("cities/SF/landmarks/example").set(new Object()).get();
+    Map<String, String> data = new HashMap<>();
+    data.put("foo", "bar");
+    db.document("cities/SF/landmarks/example").set(data).get();
 
     Iterable<CollectionReference> collections =
         retrieveDataSnippets.getCollections();
