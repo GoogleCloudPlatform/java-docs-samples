@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,12 @@
 
 package com.example.cloudtasks;
 
-import com.google.api.services.cloudtasks.v2beta2.CloudTasks;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudtasks.v2beta2.CloudTasks;
 import com.google.api.services.cloudtasks.v2beta2.CloudTasksScopes;
 import com.google.api.services.cloudtasks.v2beta2.model.AcknowledgeTaskRequest;
 import com.google.api.services.cloudtasks.v2beta2.model.CreateTaskRequest;
@@ -126,7 +126,7 @@ public class PullQueue {
   /**
    * Acknowledge a given task, which removes it from the queue.
    */
-  private static void acknowledgeTask(Task task) throws IOException{
+  private static void acknowledgeTask(Task task) throws IOException {
     // Create the Cloud Tasks Client
     CloudTasks client = createAuthorizedClient();
 
@@ -197,10 +197,10 @@ public class PullQueue {
     String location = cmd.get("location");
 
     // Execute commands
-    if(command.equals("create-task")){
+    if (command.equals("create-task")) {
       createTask(project, location, queue);
     }
-    if(command.equals("pull-and-ask-task")){
+    if (command.equals("pull-and-ask-task")) {
       Task task = pullTask(project, location, queue);
       acknowledgeTask(task);
     }

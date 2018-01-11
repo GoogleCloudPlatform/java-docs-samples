@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,34 +17,36 @@
 package com.example.compute.mailjet;
 
 // [START mailjet_imports]
+
+import com.mailjet.client.ClientOptions;
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.errors.MailjetException;
-import com.mailjet.client.ClientOptions;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.resource.Emailv31;
-// [END mailjet_imports]
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// [END mailjet_imports]
+
 // [START app]
-public class MailjetSender{
+public class MailjetSender {
 
   public static void main(String[] args) throws MailjetException, MailjetSocketTimeoutException {
     final String mailjetApiKey = "YOUR-MAILJET-API-KEY";
     final String mailjetSecretKey = "YOUR-MAILJET-SECRET-KEY";
-    MailjetClient client = new MailjetClient(mailjetApiKey, mailjetSecretKey, new ClientOptions("v3.1"));
+    MailjetClient client = new MailjetClient(
+        mailjetApiKey, mailjetSecretKey, new ClientOptions("v3.1"));
 
     MailjetSender sender = new MailjetSender();
     sender.sendMailjet(args[0], args[1], client);
   }
 
   public MailjetResponse sendMailjet(String recipient, String sender, MailjetClient client)
-  throws MailjetException, MailjetSocketTimeoutException {
+        throws MailjetException, MailjetSocketTimeoutException {
     MailjetRequest email = new MailjetRequest(Emailv31.resource)
-      .property(Emailv31.MESSAGES, new JSONArray()
+        .property(Emailv31.MESSAGES, new JSONArray()
         .put(new JSONObject()
           .put(Emailv31.Message.FROM, new JSONObject()
             .put("Email", sender)
@@ -53,8 +55,11 @@ public class MailjetSender{
             .put(new JSONObject()
               .put("Email", recipient)))
           .put(Emailv31.Message.SUBJECT, "Your email flight plan!")
-          .put(Emailv31.Message.TEXTPART, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
-          .put(Emailv31.Message.HTMLPART, "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!")));
+          .put(Emailv31.Message.TEXTPART,
+              "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
+          .put(Emailv31.Message.HTMLPART,
+              "<h3>Dear passenger, welcome to Mailjet!</h3>"
+              + "<br />May the delivery force be with you!")));
 
 
     try {
