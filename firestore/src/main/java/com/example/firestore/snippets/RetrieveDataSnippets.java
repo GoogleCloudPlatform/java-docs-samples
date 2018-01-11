@@ -137,4 +137,21 @@ public class RetrieveDataSnippets {
     // [END fs_get_all_docs]
     return documents;
   }
+
+  /**
+   * Return all subcollections of the cities/SF document.
+   *
+   * @return iterable of collection references.
+   */
+  public Iterable<CollectionReference> getCollections() throws Exception {
+    // [START fs_get_collections]
+    Iterable<CollectionReference> collections =
+        db.collection("cities").document("SF").getCollections();
+
+    for (CollectionReference collRef : collections) {
+      System.out.println("Found subcollection with id: " + collRef.getId());
+    }
+    // [END fs_get_collections]
+    return collections;
+  }
 }
