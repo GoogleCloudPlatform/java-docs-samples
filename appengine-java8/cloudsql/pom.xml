@@ -77,6 +77,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
+      <!-- If using MySQL 6.x driver, use mysql-socket-factory-connector-j-6 instead -->
       <artifactId>mysql-socket-factory</artifactId>
       <version>1.0.5</version>
     </dependency>
