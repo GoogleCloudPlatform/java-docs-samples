@@ -1,5 +1,8 @@
 # Getting Started with Stackdriver Logging and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=logging/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Stackdriver Logging][logging]  allows you to store, search, analyze, monitor,
 and alert on log data and events from Google Cloud Platform and Amazon Web
 Services.
