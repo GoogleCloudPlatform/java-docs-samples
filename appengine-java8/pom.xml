@@ -41,6 +41,7 @@
     <module>appidentity</module>
     <module>bigtable</module>
     <module>cloudsql</module>
+    <module>cloudsql-postgres</module>
     <module>datastore</module>
     <module>datastore-indexes</module>
     <module>datastore-indexes-exploding</module>
@@ -62,7 +63,6 @@
     <module>metadata</module>
     <module>multitenancy</module>
     <module>oauth2</module>
-    <module>postgres</module>
     <module>pubsub</module>
     <module>requests</module>
     <module>remote-client</module>
