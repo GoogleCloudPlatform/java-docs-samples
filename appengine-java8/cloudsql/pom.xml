@@ -48,7 +48,6 @@
 <!-- [END properties] -->
 
   <dependencies>
-    <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
@@ -78,8 +77,9 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
-      <artifactId>mysql-socket-factory</artifactId> <!-- mysql-socket-factory-connector-j-6 if using 6.x.x -->
-      <version>1.0.4</version>
+      <!-- If using MySQL 6.x driver, use mysql-socket-factory-connector-j-6 instead -->
+      <artifactId>mysql-socket-factory</artifactId>
+      <version>1.0.5</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
