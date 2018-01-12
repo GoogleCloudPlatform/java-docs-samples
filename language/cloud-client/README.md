@@ -1,5 +1,8 @@
 # Getting Started with Google Cloud Natural Language API and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=language/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Natural Language API][language] provides natural language
 understanding technologies to developers, including sentiment analysis, entity
 recognition, and syntax analysis. This API is part of the larger collection of
