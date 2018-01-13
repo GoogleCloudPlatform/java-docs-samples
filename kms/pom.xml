@@ -5,12 +5,21 @@
   <artifactId>kms-samples</artifactId>
   <packaging>jar</packaging>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -59,12 +68,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-  </properties>
 
   <build>
       <sourceDirectory>src/main/java</sourceDirectory>
