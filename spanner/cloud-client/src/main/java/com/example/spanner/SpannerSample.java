@@ -498,10 +498,10 @@ public class SpannerSample {
     if (args.length != 3) {
       printUsageAndExit();
     }
-    Tracing.getTraceConfig().updateActiveTraceParams(TraceParams.DEFAULT.toBuilder().setSampler(Samplers.alwaysSample()).build());
     ZPageHandlers.startHttpServerAndRegisterAll(8080);
     StackdriverExporter.createAndRegister();
     // [START init_client]
+    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(Arrays.asList("CloudSpannerSample"));
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     try {
