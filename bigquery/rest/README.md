@@ -1,5 +1,8 @@
 # Getting Started with BigQuery with the REST API
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=bigquery/rest/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 Google's BigQuery Service features a REST-based API that allows developers to
 create applications to run ad-hoc queries on massive datasets. These sample
 Java applications demonstrate how to access the BigQuery API directly using the

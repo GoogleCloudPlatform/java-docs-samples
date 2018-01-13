@@ -44,10 +44,15 @@
         <module>appengine</module>
         <module>appengine-java8</module>
         <module>flexible</module>
-        <module>compute</module>
 
         <module>bigquery/cloud-client</module>
+        <module>bigquery/datatransfer/cloud-client</module>
         <module>bigquery/rest</module>
+
+        <module>cloud-tasks</module>
+        <module>compute</module>
+
+        <module>dataflow/spanner-io</module>
 
         <module>datastore</module>
         <module>datastore/cloud-client</module>
@@ -84,13 +89,12 @@
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
 
-        <module>taskqueue/deferred</module>
-
         <module>translate</module>
         <module>translate/cloud-client</module>
 
         <module>unittests</module>
         <module>video/cloud-client</module>
+        <module>vision/beta/cloud-client</module>
         <module>vision/cloud-client</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>
@@ -118,7 +122,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.11.0</version>
+            <version>2.13.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

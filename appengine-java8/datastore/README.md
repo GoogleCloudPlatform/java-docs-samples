@@ -1,5 +1,8 @@
 # Google Cloud Datastore Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/datastore/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use [Google Cloud Datastore][java-datastore]
 from [Google App Engine standard environment][ae-docs].
 

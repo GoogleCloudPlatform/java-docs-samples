@@ -18,6 +18,7 @@ package com.example.pubsub;
 
 // [START pubsub_quickstart_create_topic]
 // Imports the Google Cloud client library
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.TopicName;
@@ -39,9 +40,13 @@ public class CreateTopicExample {
     String topicId = args[0];
 
     // Create a new topic
-    TopicName topic = TopicName.create(projectId, topicId);
+    TopicName topic = TopicName.of(projectId, topicId);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.createTopic(topic);
+    } catch (ApiException e) {
+      // example : code = ALREADY_EXISTS(409) implies topic already exists
+      System.out.print(e.getStatusCode().getCode());
+      System.out.print(e.isRetryable());
     }
 
     System.out.printf("Topic %s:%s created.\n", topic.getProject(), topic.getTopic());

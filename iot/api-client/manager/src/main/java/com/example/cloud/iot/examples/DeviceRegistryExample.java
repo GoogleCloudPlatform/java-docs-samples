@@ -1,14 +1,16 @@
-/**
- * Copyright 2017, Google, Inc.
+/*
+ * Copyright 2017 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -44,8 +46,10 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.cli.HelpFormatter;
 
 /**
  * Example of using Cloud IoT device manager API to administer devices, registries and projects.
@@ -144,8 +148,8 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    String projectPath = "projects/" + projectId + "/locations/" + cloudRegion;
-    String registryPath = projectPath + "/registries/" + registryName;
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
 
     System.out.println("Deleting: " + registryPath);
     service.projects().locations().registries().delete(registryPath).execute();
@@ -162,8 +166,8 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
-        + registryName;
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
 
     List<Device> devices =
         service
@@ -202,8 +206,8 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     final String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
@@ -243,8 +247,8 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     String key = Files.toString(new File(certificateFilePath), Charsets.UTF_8);
@@ -318,10 +322,9 @@ public class DeviceRegistryExample {
             GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
             .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
 
-    final String devicePath = registryPath + "/devices/" + deviceId;
     System.out.println("Deleting device " + devicePath);
     service.projects().locations().registries().devices().delete(devicePath).execute();
   }
@@ -337,10 +340,9 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
-        + registryName;
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
 
-    String devicePath = registryPath + "/devices/" + deviceId;
     System.out.println("Retrieving device " + devicePath);
     return service.projects().locations().registries().devices().get(devicePath).execute();
   }
@@ -357,14 +359,19 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    String registryPath = "projects/" + projectId + "/locations/" + cloudRegion + "/registries/"
-        + registryName;
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
 
-    String devicePath = registryPath + "/devices/" + deviceId;
     System.out.println("Retrieving device states " + devicePath);
 
-    ListDeviceStatesResponse resp  = service.projects().locations().registries().devices().states()
+    ListDeviceStatesResponse resp  = service
+        .projects()
+        .locations()
+        .registries()
+        .devices()
+        .states()
         .list(devicePath).execute();
+
     return resp.getDeviceStates();
   }
 
@@ -380,8 +387,9 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
+
     return service.projects().locations().registries().get(registryPath).execute();
   }
 
@@ -397,10 +405,9 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
 
-    final String devicePath = registryPath + "/devices/" + deviceId;
     System.out.println("Listing device configs for " + devicePath);
     List<DeviceConfig> deviceConfigs =
         service
@@ -457,36 +464,6 @@ public class DeviceRegistryExample {
     }
   }
 
-  /** Modify the latest cloud to device config for the given device, with the config data. */
-  public static void modifyCloudToDeviceConfig(String deviceId, String configData, String projectId,
-                                        String cloudRegion, String registryName)
-      throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
-
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
-    final String devicePath = registryPath + "/devices/" + deviceId;
-    ModifyCloudToDeviceConfigRequest request = new ModifyCloudToDeviceConfigRequest();
-    request.setVersionToUpdate(0L); // 0L indicates update all versions
-    request.setBinaryData(DatatypeConverter.printBase64Binary(configData.getBytes(Charsets.UTF_8)));
-    DeviceConfig config =
-        service
-            .projects()
-            .locations()
-            .registries()
-            .devices()
-            .modifyCloudToDeviceConfig(devicePath, request)
-            .execute();
-
-    System.out.println("Created device config: " + config.toPrettyString());
-  }
-
   /** Patch the device to add an ES256 key for authentication. */
   public static void patchEs256ForAuth(String deviceId, String publicKeyFilePath, String projectId,
                                        String cloudRegion, String registryName)
@@ -499,10 +476,9 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
 
-    final String devicePath = registryPath + "/devices/" + deviceId;
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
     publicKeyCredential.setKey(key);
@@ -540,10 +516,9 @@ public class DeviceRegistryExample {
         GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
         .setApplicationName(APP_NAME).build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
 
-    final String devicePath = registryPath + "/devices/" + deviceId;
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
     publicKeyCredential.setKey(key);
@@ -566,6 +541,41 @@ public class DeviceRegistryExample {
             .execute();
 
     System.out.println("Patched device is " + patchedDevice.toPrettyString());
+  }
+
+  /** Set a device configuration to the specified data (string, JSON) and version (0 for latest). */
+  public static void setDeviceConfiguration(
+      String deviceId, String projectId, String cloudRegion, String registryName,
+      String data, long version)
+      throws GeneralSecurityException, IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
+
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
+
+    ModifyCloudToDeviceConfigRequest req = new ModifyCloudToDeviceConfigRequest();
+    req.setVersionToUpdate(version);
+
+    // Data sent through the wire has to be base64 encoded.
+    Base64.Encoder encoder = Base64.getEncoder();
+    String encPayload = encoder.encodeToString(data.getBytes("UTF-8"));
+    req.setBinaryData(encPayload);
+
+    DeviceConfig config =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .modifyCloudToDeviceConfig(devicePath, req).execute();
+
+    System.out.println("Updated: " + config.getVersion());
   }
 
   /** Entry poit for CLI. */
@@ -647,9 +657,22 @@ public class DeviceRegistryExample {
         patchRsa256ForAuth(options.deviceId, options.rsaCertificateFile, options.projectId,
             options.cloudRegion, options.registryName);
         break;
+      case "set-config":
+        if (options.deviceId == null) {
+          System.out.println("Specify device_id for the device you are updating.");
+        } else {
+          System.out.println("Setting device configuration");
+          setDeviceConfiguration(options.deviceId, options.projectId, options.cloudRegion,
+              options.registryName, options.configuration, options.version);
+        }
+        break;
       default:
-        System.out.println("You entered: " + options.command);
-        System.out.println("Wrong, wrong, wrong. Usage is like this:"); // TODO:
+        String header = "Cloud IoT Core Commandline Example (Device / Registry management): \n\n";
+        String footer = "\nhttps://cloud.google.com/iot-core";
+
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("DeviceRegistryExample", header, options.options, footer,
+            true);
         break;
     }
   }

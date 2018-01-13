@@ -33,6 +33,7 @@
         <!-- App Engine Flexible -->
         <module>analytics</module>
         <module>async-rest</module>
+        <module>cloud-tasks</module>
         <module>cloudsql</module>
         <module>cloudstorage</module>
         <module>cron</module>

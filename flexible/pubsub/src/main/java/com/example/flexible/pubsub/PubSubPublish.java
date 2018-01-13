@@ -39,8 +39,8 @@ public class PubSubPublish extends HttpServlet {
       String topicId = System.getenv("PUBSUB_TOPIC");
       // create a publisher on the topic
       if (publisher == null) {
-        publisher = Publisher.defaultBuilder(
-            TopicName.create(ServiceOptions.getDefaultProjectId(), topicId))
+        publisher = Publisher.newBuilder(
+            TopicName.of(ServiceOptions.getDefaultProjectId(), topicId))
             .build();
       }
       // construct a pubsub message from the payload

@@ -20,18 +20,20 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-analytics-j8</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-java8-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
-  <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <appengine.sdk.version>1.9.59</appengine.sdk.version>
+    <appengine.sdk.version>1.9.60</appengine.sdk.version>
   </properties>
 
   <dependencies>
@@ -39,7 +41,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.60</version>
     </dependency>
 
     <dependency>
@@ -51,7 +53,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.3</version>
+      <version>4.5.4</version>
     </dependency>
 
     <dependency>
@@ -72,7 +74,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.60</version>
       <scope>test</scope>
     </dependency>
 
@@ -85,7 +87,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.11.0</version>
+      <version>2.13.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -96,7 +98,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.36</version>
+      <version>0.39</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

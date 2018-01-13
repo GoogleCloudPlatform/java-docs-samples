@@ -1,5 +1,8 @@
 # App Engine Firebase Event Proxy
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/firebase-event-proxy-README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 An example app that illustrates how to create a Java App Engine Standard Environment
 app that proxies Firebase events to another App Engine app.
 

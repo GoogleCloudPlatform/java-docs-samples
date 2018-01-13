@@ -1,5 +1,16 @@
 # Google App Engine Standard Environment Java Samples
 
+**Java 7 runtime support on App Engine standard was [deprecated](https://cloud.google.com/appengine/docs/deprecations/java7) on
+December 13, 2017 and will be shut down entirely on January 16, 2019. It is replaced by the
+[Java 8 Runtime Environment](https://cloud.google.com/appengine/docs/standard/java/runtime-java8).**
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
+Samples for the Java 8 runtime can be found [here](/appengine-java8).
+
+
 This is a repository that contains Java code samples for [Google App Engine
 standard environment][ae-docs].
 

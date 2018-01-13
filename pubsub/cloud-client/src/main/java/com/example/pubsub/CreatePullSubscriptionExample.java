@@ -17,6 +17,7 @@
 package com.example.pubsub;
 
 // [START pubsub_quickstart_create_subscription]
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.pubsub.v1.PushConfig;
@@ -43,15 +44,19 @@ public class CreatePullSubscriptionExample {
     // Your subscription ID eg. "my-sub"
     String subscriptionId = args[1];
 
-    TopicName topicName = TopicName.create(projectId, topicId);
+    TopicName topicName = TopicName.of(projectId, topicId);
 
     // Create a new subscription
-    SubscriptionName subscriptionName = SubscriptionName.create(projectId, subscriptionId);
+    SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       // create a pull subscription with default acknowledgement deadline (= 10 seconds)
       Subscription subscription =
           subscriptionAdminClient.createSubscription(
               subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
+    } catch (ApiException e) {
+      // example : code = ALREADY_EXISTS(409) implies subscription already exists
+      System.out.print(e.getStatusCode().getCode());
+      System.out.print(e.isRetryable());
     }
 
     System.out.printf(

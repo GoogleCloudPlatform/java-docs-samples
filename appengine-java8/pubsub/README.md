@@ -1,5 +1,8 @@
 # Using Google Cloud Pub/Sub on App Engine Standard Java 8 Environment
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/pubsub/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use [Google Cloud Pub/Sub][pubsub]
 from [Google App Engine standard environment][ae-docs].
 

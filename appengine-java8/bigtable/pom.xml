@@ -23,27 +23,22 @@ limitations under the License.
   <groupId>com.example.google.cloud.bigtable</groupId>
   <artifactId>bigtable-hello-j8</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-java8-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
-    <appengine.maven.plugin>1.3.1</appengine.maven.plugin>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <bigtable.version>1.0.0-pre3</bigtable.version>
-    <hbase.version>1.2.6</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
-
-    <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-    <archiveClasses>true</archiveClasses>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
@@ -51,7 +46,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>${bigtable.version}</version>
+      <version>1.0.0-pre3</version>
     </dependency>
 
     <dependency>
@@ -79,7 +74,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.36</version>
+      <version>0.39</version>
       <scope>test</scope>
     </dependency>
 
@@ -162,7 +157,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.maven.plugin}</version>
+        <version>1.3.2</version>
         <configuration>
         </configuration>
       </plugin>
@@ -202,6 +197,5 @@ limitations under the License.
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
   </repositories>
-
 
 </project>

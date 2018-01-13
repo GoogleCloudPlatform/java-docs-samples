@@ -1,15 +1,17 @@
 /*
  * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.firestore.snippets;
@@ -20,10 +22,13 @@ import static org.junit.Assert.assertTrue;
 import com.example.firestore.snippets.model.City;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QuerySnapshot;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +100,25 @@ public class RetrieveDataSnippetsIT {
             && docIds.contains("DC")
             && docIds.contains("TOK")
             && docIds.contains("BJ"));
+  }
+
+  @Test
+  public void testGetSubcollections() throws Exception {
+    // Add a landmark subcollection
+    Map<String, String> data = new HashMap<>();
+    data.put("foo", "bar");
+    db.document("cities/SF/landmarks/example").set(data).get();
+
+    Iterable<CollectionReference> collections =
+        retrieveDataSnippets.getCollections();
+
+    List<CollectionReference> collectionList = new ArrayList<>();
+    for (CollectionReference collRef : collections) {
+      collectionList.add(collRef);
+    }
+
+    assertEquals(collectionList.size(), 1);
+    assertEquals(collectionList.get(0).getId(), "landmarks");
   }
 
   private static void deleteAllDocuments() throws Exception {

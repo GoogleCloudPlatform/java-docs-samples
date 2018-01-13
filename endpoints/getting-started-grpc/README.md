@@ -78,20 +78,22 @@ and [SDK](https://cloud.google.com/sdk/) configured.
 
     ```bash
     /usr/share/google/dockercfg_update.sh
-    docker run -d --name=grpc-hello gcr.io/${GCLOUD_PROJECT}/java-grpc-hello:1.0
+    docker run --detach --name=grpc-hello gcr.io/${GCLOUD_PROJECT}/java-grpc-hello:1.0
     ```
 
 1. Run the Endpoints proxy
 
     ```bash
-    docker run --detach --name=esp \
-        -p 80:9000 \
+    docker run \
+        --detach \
+        --name=esp \
+        --publish 80:9000 \
         --link=grpc-hello:grpc-hello \
         gcr.io/endpoints-release/endpoints-runtime:1 \
-        -s ${SERVICE_NAME} \
-        -v ${SERVICE_CONFIG_ID} \
-        -P 9000 \
-        -a grpc://grpc-hello:50051
+        --service=${SERVICE_NAME} \
+        --version=${SERVICE_CONFIG_ID} \
+        --http2_port=9000 \
+        --backend=grpc://grpc-hello:50051
     ```
 
 1. Back on your local machine, get the external IP of your GCE instance.
@@ -114,12 +116,12 @@ and [SDK](https://cloud.google.com/sdk/) configured.
     gcloud container clusters create my-cluster
     ```
 
-1. Edit `container-engine.yaml`. Replace `SERVICE_NAME`, `SERVICE_CONFIG_ID`, and `GCLOUD_PROJECT` with your values.
+1. Edit `deployment.yaml`. Replace `SERVICE_NAME`, `SERVICE_CONFIG_ID`, and `GCLOUD_PROJECT` with your values.
 
 1. Deploy to GKE
 
     ```bash
-    kubectl create -f ./container-engine.yaml
+    kubectl create -f ./deployment.yaml
     ```
 
 1. Get IP of load balancer, run until you see an External IP.

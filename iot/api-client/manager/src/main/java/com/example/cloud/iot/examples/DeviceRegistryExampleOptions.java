@@ -1,14 +1,16 @@
-/**
- * Copyright 2017, Google, Inc.
+/*
+ * Copyright 2017 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -29,13 +31,15 @@ public class DeviceRegistryExampleOptions {
   String rsaCertificateFile = "rsa_cert.pem";
   String cloudRegion = "us-central1";
   String command = "help";
+  String configuration = "Specify with -configuration";
   String deviceId; // Default to UUID?
   String pubsubTopic;
   String registryName;
+  long version = 0;
+  static final Options options = new Options();
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
   public static DeviceRegistryExampleOptions fromFlags(String[] args) {
-    Options options = new Options();
     // Required arguments
     options.addOption(
         Option.builder()
@@ -65,7 +69,8 @@ public class DeviceRegistryExampleOptions {
                 + "\n\tlist-devices"
                 + "\n\tlist-registries"
                 + "\n\tpatch-device-es"
-                + "\n\tpatch-device-rsa")
+                + "\n\tpatch-device-rsa"
+                + "\n\tset-config")
             .required()
             .build());
 
@@ -112,6 +117,20 @@ public class DeviceRegistryExampleOptions {
             .hasArg()
             .desc("Name for your Device.")
             .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("configuration")
+            .hasArg()
+            .desc("The configuration (string or JSON) to set the specified device to.")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("version")
+            .hasArg()
+            .desc("The configuration version to send on the device (0 is latest).")
+            .build());
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine;
@@ -156,6 +175,13 @@ public class DeviceRegistryExampleOptions {
       if (commandLine.hasOption("device_id")) {
         res.deviceId = commandLine.getOptionValue("device_id");
       }
+      if (commandLine.hasOption("configuration")) {
+        res.configuration = commandLine.getOptionValue("configuration");
+      }
+      if (commandLine.hasOption("version")) {
+        res.version = new Long(commandLine.getOptionValue("version")).longValue();
+      }
+
       return res;
     } catch (ParseException e) {
       String header = "Cloud IoT Core Commandline Example (Device / Registry management): \n\n";

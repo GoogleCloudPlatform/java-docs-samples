@@ -3,6 +3,10 @@
 This sample demonstrates how to use Google Cloud Endpoints Frameworks using
 Java on App Engine Standard.
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/endpoints-frameworks-v2/backend/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 ## Build with Maven
 
 ### Adding the project ID to the sample API code

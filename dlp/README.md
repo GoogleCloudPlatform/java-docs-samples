@@ -1,4 +1,8 @@
 # Cloud Data Loss Prevention (DLP) API Samples
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=dlp/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 The [Data Loss Prevention API](https://cloud.google.com/dlp/docs/) provides programmatic access to 
 a powerful detection engine for personally identifiable information and other privacy-sensitive data
  in unstructured data streams.

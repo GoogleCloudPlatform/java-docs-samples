@@ -17,13 +17,11 @@
 package com.example.appengine;
 
 import com.example.time.Clock;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
-
 import java.util.Date;
 import java.util.List;
 

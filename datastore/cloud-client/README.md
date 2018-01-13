@@ -1,5 +1,8 @@
 # Getting Started with Cloud Datastore and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=datastore/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Datastore][Datastore] is a highly-scalable NoSQL database for your applications.
 These sample Java applications demonstrate how to access the Datastore API using
 the [Google Cloud Client Library for Java][google-cloud-java].
