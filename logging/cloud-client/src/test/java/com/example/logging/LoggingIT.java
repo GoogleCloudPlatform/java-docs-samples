@@ -40,7 +40,7 @@ import org.junit.runners.JUnit4;
 public class LoggingIT {
 
   private static final String QUICKSTART_LOG = "my-log";
-  private final String TEST_WRITE_LOG = "test-log";
+  private static final String TEST_WRITE_LOG = "test-log";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
