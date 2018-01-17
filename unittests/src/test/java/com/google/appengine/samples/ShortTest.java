@@ -29,7 +29,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.apphosting.api.ApiProxy;
-
 import org.junit.After;
 import org.junit.Test;
 
