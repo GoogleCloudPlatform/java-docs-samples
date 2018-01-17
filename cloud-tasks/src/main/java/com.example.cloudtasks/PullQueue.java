@@ -30,12 +30,11 @@ import com.google.api.services.cloudtasks.v2beta2.model.LeaseTasksResponse;
 import com.google.api.services.cloudtasks.v2beta2.model.PullMessage;
 import com.google.api.services.cloudtasks.v2beta2.model.Task;
 import com.google.common.io.BaseEncoding;
+import java.io.IOException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparsers;
-
-import java.io.IOException;
 
 
 public class PullQueue {
