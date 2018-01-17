@@ -18,18 +18,18 @@ package com.example.firestore;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-// [START fs_include_dependencies]
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-// [END fs_include_dependencies]
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// [START fs_include_dependencies]
+// [END fs_include_dependencies]
 
 /**
  * A simple Quick start application demonstrating how to connect to Firestore
@@ -126,8 +126,8 @@ public class Quickstart {
     // ...
     // query.get() blocks on response
     QuerySnapshot querySnapshot = query.get();
-    List<DocumentSnapshot> documents = querySnapshot.getDocuments();
-    for (DocumentSnapshot document : documents) {
+    List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+    for (QueryDocumentSnapshot document : documents) {
       System.out.println("User: " + document.getId());
       System.out.println("First: " + document.getString("first"));
       if (document.contains("middle")) {
@@ -146,8 +146,8 @@ public class Quickstart {
     // ...
     // query.get() blocks on response
     QuerySnapshot querySnapshot = query.get();
-    List<DocumentSnapshot> documents = querySnapshot.getDocuments();
-    for (DocumentSnapshot document : documents) {
+    List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+    for (QueryDocumentSnapshot document : documents) {
       System.out.println("User: " + document.getId());
       System.out.println("First: " + document.getString("first"));
       if (document.contains("middle")) {
