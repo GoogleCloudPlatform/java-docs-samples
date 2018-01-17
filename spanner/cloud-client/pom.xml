@@ -101,9 +101,9 @@ limitations under the License.
         <version>2.19.1</version>
         <configuration>
           <systemPropertyVariables>
-            <spanner.test.instance>${spanner.test.instance}</spanner.test.instance>
-            <spanner.sample.database>${spanner.sample.database}</spanner.sample.database>
-            <spanner.quickstart.database>${spanner.quickstart.database}</spanner.quickstart.database>
+            <spanner.test.instance>default-instance</spanner.test.instance>
+            <spanner.sample.database>mysample</spanner.sample.database>
+            <spanner.quickstart.database>quickstart-db</spanner.quickstart.database>
           </systemPropertyVariables>
         </configuration>
       </plugin>
