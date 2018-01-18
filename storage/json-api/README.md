@@ -1,5 +1,8 @@
 # Google Cloud Storage (GCS) and the Google Java API Client library
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=storage/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 Google Cloud Storage Service features a REST-based API that allows developers to store and access arbitrarily-large objects. These sample Java applications demonstrate how to access the Google Cloud Storage JSON API using the Google Java API Client Libraries. For more information, read the [Google Cloud Storage JSON API Overview][1].
 
 ## Quickstart

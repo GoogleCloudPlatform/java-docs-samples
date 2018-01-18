@@ -21,7 +21,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collection;

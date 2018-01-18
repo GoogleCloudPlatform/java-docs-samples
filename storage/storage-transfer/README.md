@@ -1,11 +1,14 @@
 # Transfer Service sample using Java
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=storage/storage-transfer/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This app creates two types of transfers using the Transfer Service tool.
 
 <!-- auto-doc-link -->
 These samples are used on the following documentation pages:
 
->
+
 * https://cloud.google.com/storage/transfer/create-client
 * https://cloud.google.com/storage/transfer/create-manage-transfer-program
 
