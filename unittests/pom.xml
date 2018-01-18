@@ -4,34 +4,32 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-
-    <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
-    <parent>
-        <artifactId>doc-samples</artifactId>
-        <groupId>com.google.cloud</groupId>
-        <version>1.0.0</version>
-        <relativePath>..</relativePath>
-    </parent>
-
     <groupId>com.google.appengine.samples</groupId>
     <artifactId>unittests-appengine-local-testing-samples</artifactId>
 
+    <!--
+      The parent pom defines common style checks and testing strategies for our samples.
+      Removing or replacing it should not affect the execution of the samples in anyway.
+    -->
+    <parent>
+        <groupId>com.google.cloud.samples</groupId>
+        <artifactId>shared-configuration</artifactId>
+        <version>1.0.8</version>
+    </parent>
+
     <properties>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <appengine.sdk.version>1.9.60</appengine.sdk.version> <!-- TODO: MOVE TO /appengine -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
-        <maven-compiler-plugin-version>2.5.1</maven-compiler-plugin-version>
-        <google-api-client.version>1.23.0</google-api-client.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
+
+
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.60</version>
         </dependency>
         <dependency>
           <groupId>javax.servlet</groupId>
@@ -55,25 +53,25 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.60</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.60</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-tools-sdk</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.60</version>
             <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>com.google.api-client</groupId>
           <artifactId>google-api-client-appengine</artifactId>
-          <version>${google-api-client.version}</version>
+          <version>1.23.0</version>
           <scope>test</scope>
         </dependency>
     </dependencies>
@@ -83,7 +81,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin-version}</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
@@ -100,7 +98,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.sdk.version}</version>
+                <version>$1.9.60</version>
             </plugin>
         </plugins>
     </build>
