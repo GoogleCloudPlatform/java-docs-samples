@@ -42,7 +42,7 @@ public class ManageDataSnippetsIT extends BaseIntegrationTest {
   private static ManageDataSnippets manageDataSnippets;
 
   @BeforeClass
-  public static void setUpBeforeClass() throws Exception { ;
+  public static void setUpBeforeClass() throws Exception {
     manageDataSnippets = new ManageDataSnippets(db);
   }
 
