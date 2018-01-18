@@ -21,12 +21,14 @@
   <groupId>com.google.cloud.vision.samples</groupId>
   <artifactId>vision-label</artifactId>
 
-  <!-- Parent defines shared plugins for linting and unit testing. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
