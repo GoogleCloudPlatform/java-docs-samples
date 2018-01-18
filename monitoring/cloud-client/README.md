@@ -1,5 +1,9 @@
 # Getting Started with Google Stackdriver Monitoring API and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=monitoring/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 [Google Stackdriver Monitoring API][monitoring] collects metrics, events, and
 metadata from Google Cloud Platform, Amazon Web Services (AWS), hosted uptime
 probes, application instrumentation, and a variety of common application
