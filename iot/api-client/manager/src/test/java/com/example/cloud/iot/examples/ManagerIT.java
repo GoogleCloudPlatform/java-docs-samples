@@ -45,6 +45,9 @@ public class ManagerIT {
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID = "java-pst-" + (System.currentTimeMillis() / 1000L);
+  private static final String MEMBER = "group:dpebot@google.com";
+  private static final String ROLE = "roles/viewer";
+
 
   private static Topic topic;
 
@@ -242,7 +245,6 @@ public class ManagerIT {
 
   @Test
   public void testCreateGetRegistry() throws Exception {
-
     topic = DeviceRegistryExample.createIotTopic(
         PROJECT_ID,
         TOPIC_ID);
@@ -251,6 +253,41 @@ public class ManagerIT {
 
     String got = bout.toString();
     Assert.assertFalse(got.contains("eventNotificationConfigs"));
+
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testGetIam() throws Exception {
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.getIamPermissions(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("ETAG"));
+
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testSetIam() throws Exception {
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.setIamPermissions(PROJECT_ID, CLOUD_REGION, REGISTRY_ID, MEMBER, ROLE);
+    DeviceRegistryExample.getIamPermissions(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("ETAG"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
