@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 // [START all]
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -24,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
 import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
 import com.google.common.base.Preconditions;
-
 import java.io.IOException;
 
 /**
