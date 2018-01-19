@@ -17,6 +17,7 @@
 package com.google.cloud.vision.samples.landmarkdetection;
 
 // [START import_libraries]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -32,7 +33,6 @@ import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.api.services.vision.v1.model.ImageSource;
 import com.google.common.collect.ImmutableList;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
