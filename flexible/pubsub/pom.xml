@@ -63,12 +63,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>0.32.0-beta</version>
+      <version>0.33.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.14.0</version>
+      <version>1.15.0</version>
     </dependency>
     <!-- [END dependencies] -->
 
