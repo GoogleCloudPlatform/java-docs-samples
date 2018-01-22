@@ -52,10 +52,15 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>0.32.0-beta</version>
+      <version>0.33.0-beta</version>
       <exclusions>
-        <groupId>com.google.guava</groupId>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
           <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -65,26 +70,30 @@ limitations under the License.
       <artifactId>guava</artifactId>
       <version>20.0</version>
     </dependency>
-
+    <dependency>
+        <groupId>io.opencensus</groupId>
+        <artifactId>opencensus-api</artifactId>
+        <version>0.11.0</version>
+    </dependency>
     <dependency>
         <groupId>io.opencensus</groupId>
         <artifactId>opencensus-impl</artifactId>
-        <version>0.6.0</version>
+        <version>0.11.0</version>
     </dependency>
     <dependency>
         <groupId>io.opencensus</groupId>
         <artifactId>opencensus-contrib-zpages</artifactId>
-        <version>0.6.0</version>
+        <version>0.11.0</version>
     </dependency>
     <dependency>
         <groupId>io.opencensus</groupId>
         <artifactId>opencensus-exporter-trace-logging</artifactId>
-        <version>0.6.0</version>
+        <version>0.11.0</version>
     </dependency>
     <dependency>
         <groupId>io.opencensus</groupId>
         <artifactId>opencensus-exporter-trace-stackdriver</artifactId>
-        <version>0.9.0</version>
+        <version>0.11.0</version>
     </dependency>
 
     <!-- Test dependencies -->
