@@ -18,7 +18,6 @@ package com.example.spanner;
 
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -36,14 +35,6 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
-
-import io.opencensus.common.Scope;
-import io.opencensus.contrib.zpages.ZPageHandlers;
-import io.opencensus.trace.*;
-import io.opencensus.trace.config.*;
-import io.opencensus.trace.samplers.*;
-import io.opencensus.exporter.trace.stackdriver.*;
-import io.opencensus.exporter.trace.logging.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -498,10 +489,7 @@ public class SpannerSample {
     if (args.length != 3) {
       printUsageAndExit();
     }
-    ZPageHandlers.startHttpServerAndRegisterAll(8080);
-    StackdriverExporter.createAndRegister();
     // [START init_client]
-    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(Arrays.asList("CloudSpannerSample"));
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     try {
@@ -520,12 +508,7 @@ public class SpannerSample {
       DatabaseClient dbClient = spanner.getDatabaseClient(db);
       DatabaseAdminClient dbAdminClient = spanner.getDatabaseAdminClient();
       // [END init_client]
-      try (Scope ss = Tracing.getTracer()
-    		  .spanBuilderWithExplicitParent("CloudSpannerSample", null)
-    		  .setSampler(Samplers.alwaysSample())
-    		  .startScopedSpan()) {
-        run(dbClient, dbAdminClient, command, db);
-      }
+      run(dbClient, dbAdminClient, command, db);
     } finally {
       spanner.close();
     }
