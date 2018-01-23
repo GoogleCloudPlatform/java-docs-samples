@@ -1,22 +1,24 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.flexible.pubsub;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
 import java.io.IOException;
 import java.util.Base64;
 import java.util.stream.Collectors;
@@ -50,7 +52,7 @@ public class PubSubPush extends HttpServlet {
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
-// [END pubsub_appengine_flex_push]
+  // [END pubsub_appengine_flex_push]
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
