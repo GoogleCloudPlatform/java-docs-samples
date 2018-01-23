@@ -16,12 +16,14 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <groupId>com.google.apis-samples</groupId>
@@ -33,7 +35,6 @@
   <properties>
     <maven.compiler.target>1.7</maven.compiler.target>
     <maven.compiler.source>1.7</maven.compiler.source>
-    <appengine.sdk.version>1.9.60</appengine.sdk.version> <!-- TODO(): MOVE to /appengine -->
     <google-api-client.version>1.23.0</google-api-client.version>
     <webappDirectory>${project.build.directory}/${project.build.finalName}
     </webappDirectory>
@@ -87,7 +88,7 @@
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.59</version>
         <configuration>
           <port>8888</port>
         </configuration>
@@ -111,7 +112,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
     </dependency>
 
     <dependency>

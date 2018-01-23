@@ -1,5 +1,9 @@
 # App Engine Flexible Environment - Pub/Sub Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/pubsub/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 ## Clone the sample app
 
 Copy the sample apps to your local machine, and cd to the pubsub directory:

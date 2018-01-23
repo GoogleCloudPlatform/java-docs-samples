@@ -1,4 +1,8 @@
 # Google Cloud Endpoints on App Engine flexible environment
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/endpoints/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use Google Cloud Endpoints on Google App Engine Flexible Environment using Java.
 
 ## Edit the Open API specification
