@@ -10,12 +10,16 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 
 import io.opencensus.common.Scope;
+import io.opencensus.contrib.grpc.metrics.RpcViews;
 import io.opencensus.contrib.zpages.ZPageHandlers;
+import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
 import io.opencensus.exporter.trace.stackdriver.StackdriverExporter;
 import io.opencensus.trace.Tracing;
 import io.opencensus.trace.samplers.Samplers;
 
 public class TracingSample {
+  
+  private static final String SAMPLE_SPAN = "CloudSpannerSample";
 
   public static void main(String[] args) throws Exception {	
     if (args.length != 2) {
@@ -27,10 +31,14 @@ public class TracingSample {
 
     // Installs a handler for /tracez page.
     ZPageHandlers.startHttpServerAndRegisterAll(8080);
-    // Installs an exporter for stack driver.
+    // Installs an exporter for stack driver traces.
     StackdriverExporter.createAndRegister();
-    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(Arrays.asList("CloudSpannerSample"));
+    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(Arrays.asList(SAMPLE_SPAN));
 
+    // Installs an exporter for stack driver stats.
+    StackdriverStatsExporter.createAndRegister();
+    RpcViews.registerAllCumulativeViews();
+    
     // Name of your instance & database.
     String instanceId = args[0];
     String databaseId = args[1];
@@ -40,7 +48,7 @@ public class TracingSample {
           options.getProjectId(), instanceId, databaseId));
       // Queries the database
       try (Scope ss = Tracing.getTracer()
-          .spanBuilderWithExplicitParent("CloudSpannerSample", null)
+          .spanBuilderWithExplicitParent(SAMPLE_SPAN, null)
           .setSampler(Samplers.alwaysSample())
           .startScopedSpan()) {
         ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of("SELECT 1"));
