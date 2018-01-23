@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,6 +56,7 @@ public class MailgunServlet extends HttpServlet {
     }
   }
 
+  //CHECKSTYLE OFF: VariableDeclarationUsageDistance
   // [START simple]
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
@@ -90,5 +91,6 @@ public class MailgunServlet extends HttpServlet {
         .post(ClientResponse.class, formData);
   }
   // [END complex]
+  //CHECKSTYLE ON: VariableDeclarationUsageDistance
 }
 // [END example]
