@@ -33,10 +33,6 @@
 
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-
-        <spanner.test.instance>default-instance</spanner.test.instance>
-        <spanner.sample.database>mysample</spanner.sample.database>
-        <spanner.quickstart.database>quickstart-db</spanner.quickstart.database>
     </properties>
 
     <modules>
@@ -70,10 +66,9 @@
         <module>language/analysis</module>
         <module>language/cloud-client</module>
 
-<!-- APIary based sample - broken for testing
         <module>logging</module>
- -->
-        <module>logging/cloud-client</module>
+
+        <module>mlengine/online-prediction</module>
 
         <module>monitoring/cloud-client</module>
 

@@ -27,7 +27,7 @@ import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryResponse;
-import com.google.cloud.bigquery.QueryResult;
+import com.google.cloud.bigquery.TableResult;
 import java.util.UUID;
 // [END bigquery_simple_app_deps]
 
@@ -71,7 +71,7 @@ public class SimpleApp {
     // Get the results.
     QueryResponse response = bigquery.getQueryResults(jobId);
 
-    QueryResult result = response.getResult();
+    TableResult result = queryJob.getQueryResults();
 
     // Print all pages of the results.
     for (FieldValueList row : result.iterateAll()) {

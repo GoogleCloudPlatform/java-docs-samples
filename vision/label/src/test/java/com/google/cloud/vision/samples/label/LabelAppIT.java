@@ -21,15 +21,13 @@ import static org.junit.Assert.fail;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.common.collect.ImmutableSet;
-
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link LabelApp}.

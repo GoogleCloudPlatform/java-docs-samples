@@ -19,18 +19,16 @@ package com.google.appengine.samples;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-// [START imports]
-
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
-// [END imports]
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+// [START imports]
+// [END imports]
 
 // [START NameAndHelper]
 public class LocalMemcacheTest {

@@ -16,8 +16,8 @@ limitations under the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloud.logging.samples</groupId>
-  <artifactId>cloud-logging-samples</artifactId>
+  <groupId>com.google.cloud.errorreporting.samples</groupId>
+  <artifactId>cloud-errorreporting-samples</artifactId>
   <packaging>pom</packaging>
 
   <!--
@@ -38,7 +38,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-errorreporting</artifactId>
-      <version>0.32.0-beta</version>
+      <version>0.33.0-beta</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>

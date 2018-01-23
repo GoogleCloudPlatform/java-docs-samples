@@ -20,14 +20,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
-
-import org.junit.Test;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.Test;
 
 public class StorageSampleTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");

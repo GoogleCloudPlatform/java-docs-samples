@@ -23,9 +23,8 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.QueryResponse;
-import com.google.cloud.bigquery.QueryResult;
 import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.TableResult;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -137,8 +136,7 @@ public class QuerySample {
     }
 
     // Get the results.
-    QueryResponse response = bigquery.getQueryResults(jobId);
-    QueryResult result = response.getResult();
+    TableResult result = queryJob.getQueryResults();
 
     // Print all pages of the results.
     while (result != null) {

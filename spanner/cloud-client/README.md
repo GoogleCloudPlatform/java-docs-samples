@@ -1,5 +1,8 @@
 # Getting Started with Cloud Spanner and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=spanner/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Cloud Spanner][Spanner] is a horizontally-scalable database-as-a-service
 with transactions and SQL support.
 These sample Java applications demonstrate how to access the Spanner API using

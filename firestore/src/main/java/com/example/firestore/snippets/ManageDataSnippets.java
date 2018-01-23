@@ -23,6 +23,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.FieldValue;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.SetOptions;
 import com.google.cloud.firestore.Transaction;
@@ -294,8 +295,8 @@ class ManageDataSnippets {
       ApiFuture<QuerySnapshot> future = collection.limit(batchSize).get();
       int deleted = 0;
       // future.get() blocks on document retrieval
-      List<DocumentSnapshot> documents = future.get().getDocuments();
-      for (DocumentSnapshot document : documents) {
+      List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+      for (QueryDocumentSnapshot document : documents) {
         document.getReference().delete();
         ++deleted;
       }

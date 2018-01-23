@@ -20,14 +20,12 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.example.firestore.BaseIntegrationTest;
 import com.example.firestore.snippets.model.City;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.firestore.QuerySnapshot;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -39,19 +37,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class ManageDataSnippetsIT {
+public class ManageDataSnippetsIT extends BaseIntegrationTest {
 
-  private static Firestore db;
   private static ManageDataSnippets manageDataSnippets;
-  private static String projectId = "java-docs-samples-firestore";
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
-        .setProjectId(projectId)
-        .build();
-    db = firestoreOptions.getService();
-    deleteAllDocuments();
     manageDataSnippets = new ManageDataSnippets(db);
   }
 
@@ -185,27 +176,6 @@ public class ManageDataSnippetsIT {
     assertTrue(data.containsKey("population"));
     document = collection.document("LA").get();
     assertFalse(document.get().exists());
-  }
-
-  private DocumentSnapshot getDocumentData(DocumentReference docRef) throws Exception {
-    return docRef.get().get();
-  }
-
-  private Map<String, Object> getDocumentDataAsMap(DocumentReference docRef) throws Exception {
-    return docRef.get().get().getData();
-  }
-
-  private City getDocumentDataAsCity(DocumentReference docRef) throws Exception {
-    return docRef.get().get().toObject(City.class);
-  }
-
-  private static void deleteAllDocuments() throws Exception {
-    ApiFuture<QuerySnapshot> future = db.collection("cities").get();
-    QuerySnapshot querySnapshot = future.get();
-    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-      // block on delete operation
-      db.collection("cities").document(doc.getId()).delete().get();
-    }
   }
 
   @AfterClass

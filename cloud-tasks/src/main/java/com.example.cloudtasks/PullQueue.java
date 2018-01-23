@@ -25,9 +25,9 @@ import com.google.api.services.cloudtasks.v2beta2.CloudTasks;
 import com.google.api.services.cloudtasks.v2beta2.CloudTasksScopes;
 import com.google.api.services.cloudtasks.v2beta2.model.AcknowledgeTaskRequest;
 import com.google.api.services.cloudtasks.v2beta2.model.CreateTaskRequest;
+import com.google.api.services.cloudtasks.v2beta2.model.LeaseTasksRequest;
+import com.google.api.services.cloudtasks.v2beta2.model.LeaseTasksResponse;
 import com.google.api.services.cloudtasks.v2beta2.model.PullMessage;
-import com.google.api.services.cloudtasks.v2beta2.model.PullTasksRequest;
-import com.google.api.services.cloudtasks.v2beta2.model.PullTasksResponse;
 import com.google.api.services.cloudtasks.v2beta2.model.Task;
 import com.google.common.io.BaseEncoding;
 import java.io.IOException;
@@ -110,15 +110,15 @@ public class PullQueue {
     CloudTasks client = createAuthorizedClient();
 
     // Create the PullTasksRequest
-    PullTasksRequest request = new PullTasksRequest().setMaxTasks(1).setLeaseDuration("600s");
+    LeaseTasksRequest request = new LeaseTasksRequest().setMaxTasks(1).setLeaseDuration("600s");
 
     //Execute the request and return the pulled task
-    PullTasksResponse response = client
+    LeaseTasksResponse response = client
         .projects()
         .locations()
         .queues()
         .tasks()
-        .pull(queueName, request)
+        .lease(queueName, request)
         .execute();
     return response.getTasks().get(0);
   }

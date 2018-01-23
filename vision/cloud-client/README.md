@@ -1,5 +1,8 @@
 # Image Feature Detection Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=vision/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Vision API][vision] provides feature detection for images.
 This API is part of the larger collection of Cloud Machine Learning APIs.
 

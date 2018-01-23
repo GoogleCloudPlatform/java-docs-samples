@@ -24,6 +24,7 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 
@@ -106,13 +107,13 @@ public class RetrieveDataSnippets {
    *
    * @return list of documents of capital cities.
    */
-  public List<DocumentSnapshot> getQueryResults() throws Exception {
+  public List<QueryDocumentSnapshot> getQueryResults() throws Exception {
     // [START fs_get_multiple_docs]
     //asynchronously retrieve multiple documents
     ApiFuture<QuerySnapshot> future =
         db.collection("cities").whereEqualTo("capital", true).get();
     // future.get() blocks on response
-    List<DocumentSnapshot> documents = future.get().getDocuments();
+    List<QueryDocumentSnapshot> documents = future.get().getDocuments();
     for (DocumentSnapshot document : documents) {
       System.out.println(document.getId() + " => " + document.toObject(City.class));
     }
@@ -125,13 +126,13 @@ public class RetrieveDataSnippets {
    *
    * @return list of documents
    */
-  public List<DocumentSnapshot> getAllDocuments() throws Exception {
+  public List<QueryDocumentSnapshot> getAllDocuments() throws Exception {
     // [START fs_get_all_docs]
     //asynchronously retrieve all documents
     ApiFuture<QuerySnapshot> future = db.collection("cities").get();
     // future.get() blocks on response
-    List<DocumentSnapshot> documents = future.get().getDocuments();
-    for (DocumentSnapshot document : documents) {
+    List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+    for (QueryDocumentSnapshot document : documents) {
       System.out.println(document.getId() + " => " + document.toObject(City.class));
     }
     // [END fs_get_all_docs]
