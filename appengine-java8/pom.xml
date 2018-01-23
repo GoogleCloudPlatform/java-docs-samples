@@ -39,6 +39,7 @@
   <modules>
     <module>analytics</module>
     <module>appidentity</module>
+    <module>bigquery</module>
     <module>bigtable</module>
     <module>cloudsql</module>
     <module>cloudsql-postgres</module>
@@ -74,6 +75,7 @@
     <module>taskqueues-deferred</module>
     <module>taskqueues-pull</module>
     <module>taskqueues-push</module>
+    <module>translate-pubsub</module>
     <module>twilio</module>
     <module>urlfetch</module>
     <module>users</module>
