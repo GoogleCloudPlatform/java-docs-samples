@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ package com.example.cloudtasks;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +33,9 @@ public class TaskHandlerServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     BufferedReader br = req.getReader();
     StringBuffer dataBuffer = new StringBuffer();
-    while(br.ready()) dataBuffer.append(br.readLine());
+    while (br.ready()) {
+      dataBuffer.append(br.readLine());
+    }
     String data = dataBuffer.toString();
 
     System.out.println(String.format("Received task with payload: %s", data));

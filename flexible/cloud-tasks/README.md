@@ -1,5 +1,8 @@
 # Google Cloud Tasks App Engine Flexible Queue Samples
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/cloud-tasks/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This is a sample AppEngine app demonstrating use of the Cloud Tasks API
 using App Engine Queues.
 

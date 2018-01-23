@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,16 @@
 
 package com.example.cloudtasks;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudtasks.v2beta2.CloudTasks;
 import com.google.api.services.cloudtasks.v2beta2.CloudTasksScopes;
 import com.google.api.services.cloudtasks.v2beta2.model.AppEngineHttpRequest;
 import com.google.api.services.cloudtasks.v2beta2.model.CreateTaskRequest;
 import com.google.api.services.cloudtasks.v2beta2.model.Task;
-import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.io.BaseEncoding;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,13 +33,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.api.services.cloudtasks.v2beta2.CloudTasks;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-
 
 @WebServlet(value = "/create_task")
 @SuppressWarnings("serial")
@@ -44,13 +42,15 @@ public class CreateTaskServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     String message = req.getParameter("message");
-    if(message == null) message = "Hello World!";
+    if (message == null) {
+      message = "Hello World!";
+    }
 
     String project = req.getParameter("project");
     String location = req.getParameter("location");
-    String queue_id = req.getParameter("queue");
+    String queueId = req.getParameter("queue");
 
-    createTask(project, location, queue_id, message);
+    createTask(project, location, queueId, message);
 
     PrintWriter out = resp.getWriter();
     out.println(String.format("Created a task with the following message: %s", message));
