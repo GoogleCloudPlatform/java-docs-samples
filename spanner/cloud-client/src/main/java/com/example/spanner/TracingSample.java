@@ -1,6 +1,20 @@
-package com.example.spanner;
+/*
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.util.Arrays;
+package com.example.spanner;
 
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -17,11 +31,16 @@ import io.opencensus.exporter.trace.stackdriver.StackdriverExporter;
 import io.opencensus.trace.Tracing;
 import io.opencensus.trace.samplers.Samplers;
 
+import java.util.Arrays;
+
+/**
+ * This sample demonstrates how to enable opencensus tracing and stats in cloud spanner client.
+ */
 public class TracingSample {
   
   private static final String SAMPLE_SPAN = "CloudSpannerSample";
 
-  public static void main(String[] args) throws Exception {	
+  public static void main(String[] args) throws Exception {
     if (args.length != 2) {
       System.err.println("Usage: TracingSample <instance_id> <database_id>");
       return;
@@ -33,7 +52,8 @@ public class TracingSample {
     ZPageHandlers.startHttpServerAndRegisterAll(8080);
     // Installs an exporter for stack driver traces.
     StackdriverExporter.createAndRegister();
-    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(Arrays.asList(SAMPLE_SPAN));
+    Tracing.getExportComponent().getSampledSpanStore().registerSpanNamesForCollection(
+        Arrays.asList(SAMPLE_SPAN));
 
     // Installs an exporter for stack driver stats.
     StackdriverStatsExporter.createAndRegister();
