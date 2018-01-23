@@ -22,12 +22,10 @@ import com.google.api.services.vision.v1.model.BoundingPoly;
 import com.google.api.services.vision.v1.model.FaceAnnotation;
 import com.google.api.services.vision.v1.model.Vertex;
 import com.google.common.collect.ImmutableList;
-
+import java.awt.image.BufferedImage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.awt.image.BufferedImage;
 
 /**
  * Unit tests for {@link FaceDetectApp}.
