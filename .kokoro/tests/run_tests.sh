@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -xeo pipefail
+set -eo pipefail
 shopt -s globstar
 # We spin up some subprocesses. Don't kill them on hangup
 trap '' HUP
