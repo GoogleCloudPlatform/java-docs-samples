@@ -1,6 +1,10 @@
 
 # Example Web App Using Asynchronous Servlets #
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/async-rest/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This web app demonstrates using asynchronous servlet techniques to reduce server resources.
 
 The code for this tutorial is [here](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/flexible/async-rest).

@@ -21,11 +21,14 @@
   <groupId>com.example.cloudtasks</groupId>
   <artifactId>cloudtasks</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-flexible</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
@@ -43,7 +46,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudtasks</artifactId>
-      <version>v2beta2-rev32-1.23.0</version>
+      <version>v2beta2-rev36-1.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>

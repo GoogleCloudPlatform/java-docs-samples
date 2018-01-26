@@ -1,5 +1,8 @@
 # SparkJava on App Engine Flexible Environment
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/sparkjava/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This app demonstrates how to use [Datastore with the Google Cloud client
 library](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-datastore)
 from within an [App Engine flexible

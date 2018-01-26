@@ -61,17 +61,17 @@ limitations under the License.
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.2</version>
+      <version>2.9.9</version>
     </dependency>
     <dependency>
      <groupId>com.google.api-client</groupId>
      <artifactId>google-api-client</artifactId>
-     <version>1.22.0</version>
+     <version>1.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-discovery</artifactId>
-      <version>v1-rev58-1.22.0</version>
+      <version>v1-rev62-1.23.0</version>
     </dependency>
   </dependencies>
 </project>

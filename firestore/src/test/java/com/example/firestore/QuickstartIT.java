@@ -19,10 +19,8 @@ package com.example.firestore;
 import static org.junit.Assert.assertTrue;
 
 import com.google.api.core.ApiFuture;
-
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -37,18 +35,15 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartIT {
+public class QuickstartIT extends BaseIntegrationTest {
 
   private Quickstart quickstart;
-  private Firestore db;
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private String projectId = "java-docs-samples-firestore";
 
   @Before
   public void setUp() throws Exception {
     quickstart = new Quickstart(projectId);
-    db = quickstart.getDb();
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);

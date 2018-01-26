@@ -15,59 +15,33 @@
 
 set -eo pipefail
 shopt -s globstar
-
-set -xe
 # We spin up some subprocesses. Don't kill them on hangup
 trap '' HUP
 
-echo "**** ENVIRONMENT ****"
-env
+# Update gcloud and check version
+gcloud components update --quiet
+echo "********** GCLOUD INFO ***********"
+gcloud -v
+echo "********** MAVEN INFO  ***********"
+mvn -v
+echo "********** GRADLE INFO ***********"
+gradle -v
 
-export MAVEN_OPTS='-Xmx800m -Xms400m'
-
-# Temporary directory to store any output to display on error
-export ERROR_OUTPUT_DIR="$(mktemp -d)"
-trap 'rm -r "${ERROR_OUTPUT_DIR}"' EXIT
-
-# $1 - project
-# $2 - PATH
-# $3 - search string
-function TestIt() {
-  curl -s --show-error "https://${1}-${URL}/${2}" | \
-  tee -a "${ERROR_OUTPUT_DIR}/response.txt" | \
-  grep "${3}"
-  if [ "${?}" -ne 0 ]; then
-    echo "${1}/${2} ****** NOT FOUND"
-  fi
-}
-
+# Setup required enviormental variables
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
 export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
-export PATH=/google-cloud-sdk/bin:$PATH
 source ${KOKORO_GFILE_DIR}/aws-secrets.sh
 source ${KOKORO_GFILE_DIR}/dlp_secrets.txt
-echo "******** Environment *********"
-env
-echo "******** mvn & Java *********"
-mvn -version
-
-echo "Update gcloud ********"
-gcloud components update --quiet
-
-echo "******** activate-service-account ********"
-ls -lr ${KOKORO_GFILE_DIR}
-
+# Activate service account
 gcloud auth activate-service-account\
     --key-file=$GOOGLE_APPLICATION_CREDENTIALS \
     --project=$GOOGLE_CLOUD_PROJECT
 
-echo "********* gcloud config ********"
-gcloud config list
-
-echo "******** build everything ********"
+# Run the tests
 cd github/java-docs-samples
-mvn -B --fail-at-end clean verify -Dfile.encoding="UTF-16" \
-        -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-        -Dbigtable.instanceID=instance | \
-     grep -E -v "(^\[INFO\] Download|^\[INFO\].*skipping)"
-
+mvn --batch-mode --fail-at-end clean verify \
+    -Dfile.encoding="UTF-8" \
+    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+    -Dmaven.test.redirectTestOutputToFile=true \
+    -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+    -Dbigtable.instanceID=instance

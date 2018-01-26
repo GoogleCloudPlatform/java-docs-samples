@@ -1,5 +1,9 @@
 # Java SendGrid Email Sample for Google App Engine Flexible Environment
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/sendgrid/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This sample demonstrates how to use [SendGrid](https://www.sendgrid.com) on
 [Google App Engine flexible environment][aeflex-docs].
 

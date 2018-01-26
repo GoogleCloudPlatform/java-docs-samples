@@ -19,13 +19,12 @@ package com.example.firestore.snippets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.example.firestore.BaseIntegrationTest;
 import com.example.firestore.snippets.model.City;
-
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,18 +40,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class RetrieveDataSnippetsIT {
-  private static Firestore db;
+public class RetrieveDataSnippetsIT extends BaseIntegrationTest {
+
   private static RetrieveDataSnippets retrieveDataSnippets;
-  private static String projectId = "java-docs-samples-firestore";
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
-            .setProjectId(projectId)
-            .build();
-    db = firestoreOptions.getService();
-    deleteAllDocuments();
     retrieveDataSnippets = new RetrieveDataSnippets(db);
     retrieveDataSnippets.prepareExamples();
   }
@@ -77,7 +70,7 @@ public class RetrieveDataSnippetsIT {
 
   @Test
   public void testRetrieveQueryResults() throws Exception {
-    List<DocumentSnapshot> docs = retrieveDataSnippets.getQueryResults();
+    List<QueryDocumentSnapshot> docs = retrieveDataSnippets.getQueryResults();
     assertEquals(docs.size(), 3);
     Set<String> docIds = new HashSet<>();
     for (DocumentSnapshot doc : docs) {
@@ -88,7 +81,7 @@ public class RetrieveDataSnippetsIT {
 
   @Test
   public void testRetrieveAllDocuments() throws Exception {
-    List<DocumentSnapshot> docs = retrieveDataSnippets.getAllDocuments();
+    List<QueryDocumentSnapshot> docs = retrieveDataSnippets.getAllDocuments();
     assertEquals(docs.size(), 5);
     Set<String> docIds = new HashSet<>();
     for (DocumentSnapshot doc : docs) {
