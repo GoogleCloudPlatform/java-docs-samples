@@ -65,6 +65,7 @@ public class PullQueue {
         .build();
   }
 
+  // [START cloud_tasks_create_task]
   /**
    * Create a task for a given queue with a given payload.
    */
@@ -96,7 +97,10 @@ public class PullQueue {
     System.out.println(String.format("Created task %s",task.getName()));
     return result;
   }
-
+  // [END cloud_tasks_create_task]
+ 
+ 
+  // [START cloud_tasks_lease_and_acknowledge_task]
   /**
    * Pull a single task from a given queue and lease it for 10 minutes.
    */
@@ -144,6 +148,7 @@ public class PullQueue {
         .execute();
     System.out.println(String.format("Acknowledged task %s", task.getName()));
   }
+  // [END cloud_tasks_lease_and_acknowledge_task]
 
   public static void main(String[] args) throws Exception {
     ArgumentParser parser = ArgumentParsers.newFor("PullQueue").build()
