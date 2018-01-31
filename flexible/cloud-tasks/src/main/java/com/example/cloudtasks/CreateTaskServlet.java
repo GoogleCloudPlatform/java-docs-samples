@@ -82,6 +82,7 @@ public class CreateTaskServlet extends HttpServlet {
         .build();
   }
 
+  // [START cloud_tasks_appengine_create_task]
   /**
    * Create a task for a given queue with a given payload.
    */
@@ -118,3 +119,4 @@ public class CreateTaskServlet extends HttpServlet {
   }
 
 }
+  // [END cloud_tasks_appengine_create_task]
