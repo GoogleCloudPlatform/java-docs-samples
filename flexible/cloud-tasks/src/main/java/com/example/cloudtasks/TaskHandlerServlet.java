@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+// [START cloud_tasks_appengine_handler]
 @WebServlet(value = "/example_task_handler")
 @SuppressWarnings("serial")
 public class TaskHandlerServlet extends HttpServlet {
@@ -45,3 +45,4 @@ public class TaskHandlerServlet extends HttpServlet {
   }
 
 }
+// [END cloud_tasks_appengine_handler]
