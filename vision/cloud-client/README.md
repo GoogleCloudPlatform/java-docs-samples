@@ -79,8 +79,17 @@ mvn exec:java -DDetect -Dexec.args="properties ./resources/city.jpg"
 mvn exec:java -DDetect -Dexec.args="web ./resources/landmark.jpg"
 ```
 
+#### Web Entities
+```
+mvn exec:java -DDetect -Dexec.args="web-entities ./resources/landmark.jpg"
+```
+
+#### Web Entities Include Geo
+```
+mvn exec:java -DDetect -Dexec.args="web-entities-include-geo ./resources/landmark.jpg"
+```
+
 #### Crop
 ```
 mvn exec:java -DDetect -Dexec.args="crop ./resources/landmark.jpg"
 ```
-
