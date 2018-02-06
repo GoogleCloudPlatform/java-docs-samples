@@ -35,6 +35,8 @@ public class DeviceRegistryExampleOptions {
   String deviceId; // Default to UUID?
   String pubsubTopic;
   String registryName;
+  String member;
+  String role;
   long version = 0;
   static final Options options = new Options();
 
@@ -65,12 +67,14 @@ public class DeviceRegistryExampleOptions {
                 + "\n\tdelete-registry"
                 + "\n\tget-device"
                 + "\n\tget-device-state"
+                + "\n\tget-iam-permissions"
                 + "\n\tget-registry"
                 + "\n\tlist-devices"
                 + "\n\tlist-registries"
                 + "\n\tpatch-device-es"
                 + "\n\tpatch-device-rsa"
-                + "\n\tset-config")
+                + "\n\tset-config"
+                + "\n\tset-iam-permissions")
             .required()
             .build());
 
@@ -131,6 +135,20 @@ public class DeviceRegistryExampleOptions {
             .hasArg()
             .desc("The configuration version to send on the device (0 is latest).")
             .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("member")
+            .hasArg()
+            .desc("The member used for setting IAM permissions.")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("role")
+            .hasArg()
+            .desc("The role (e.g. 'roles/viewer') used when setting IAM permissions.")
+            .build());
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine;
@@ -180,6 +198,12 @@ public class DeviceRegistryExampleOptions {
       }
       if (commandLine.hasOption("version")) {
         res.version = new Long(commandLine.getOptionValue("version")).longValue();
+      }
+      if (commandLine.hasOption("member")) {
+        res.member = commandLine.getOptionValue("member");
+      }
+      if (commandLine.hasOption("role")) {
+        res.role = commandLine.getOptionValue("role");
       }
 
       return res;

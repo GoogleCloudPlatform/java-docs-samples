@@ -30,14 +30,15 @@ import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.api.services.cloudiot.v1.model.DeviceState;
 import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
+import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
+import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
 import com.google.iam.v1.Binding;
-import com.google.iam.v1.Policy;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
 
@@ -48,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.cli.HelpFormatter;
 
 /**
@@ -93,7 +93,7 @@ public class DeviceRegistryExample {
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       final Topic topic = topicAdminClient.createTopic(topicName);
-      Policy policy = topicAdminClient.getIamPolicy(topicName.toString());
+      com.google.iam.v1.Policy policy = topicAdminClient.getIamPolicy(topicName.toString());
       // add role -> members binding
       Binding binding =
           Binding.newBuilder()
@@ -101,7 +101,8 @@ public class DeviceRegistryExample {
               .setRole(Role.owner().toString())
               .build();
       // create updated policy
-      Policy updatedPolicy = Policy.newBuilder(policy).addBindings(binding).build();
+      com.google.iam.v1.Policy updatedPolicy =
+          com.google.iam.v1.Policy.newBuilder(policy).addBindings(binding).build();
       topicAdminClient.setIamPolicy(topicName.toString(), updatedPolicy);
 
       System.out.println("Setup topic / policy for: " + topic.getName());
@@ -578,6 +579,114 @@ public class DeviceRegistryExample {
     System.out.println("Updated: " + config.getVersion());
   }
 
+  /** Retrieves IAM permissions for the given registry. */
+  public static void getIamPermissions(
+      String projectId, String cloudRegion, String registryName)
+      throws GeneralSecurityException, IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
+
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
+
+    com.google.api.services.cloudiot.v1.model.Policy policy =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .getIamPolicy(registryPath, new GetIamPolicyRequest()).execute();
+
+    System.out.println("Policy ETAG: " + policy.getEtag());
+
+    if (policy.getBindings() != null) {
+      for (com.google.api.services.cloudiot.v1.model.Binding binding : policy.getBindings()) {
+        System.out.println(String.format("Role: %s", binding.getRole()));
+        System.out.println("Binding members: ");
+        for (String member : binding.getMembers()) {
+          System.out.println(String.format("\t%s", member));
+        }
+      }
+    } else {
+      System.out.println(String.format("No policy bindings for %s", registryName));
+    }
+  }
+
+  /** Sets IAM permissions for the given registry. */
+  public static void setIamPermissions(
+      String projectId, String cloudRegion, String registryName,
+      String member, String role)
+      throws GeneralSecurityException, IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
+
+    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
+        projectId, cloudRegion, registryName);
+
+    com.google.api.services.cloudiot.v1.model.Policy policy =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .getIamPolicy(registryPath, new GetIamPolicyRequest()).execute();
+
+    List<com.google.api.services.cloudiot.v1.model.Binding> bindings =
+        policy.getBindings();
+
+    boolean addNewRole = true;
+    if (bindings != null) {
+      for (com.google.api.services.cloudiot.v1.model.Binding binding : bindings) {
+        if (binding.getRole().equals(role)) {
+          List<String> members = binding.getMembers();
+          members.add(member);
+          binding.setMembers(members);
+          addNewRole = false;
+        }
+      }
+    } else {
+      bindings = new ArrayList<>();
+    }
+
+    if (addNewRole) {
+      com.google.api.services.cloudiot.v1.model.Binding bind =
+          new com.google.api.services.cloudiot.v1.model.Binding();
+      bind.setRole(role);
+      List<String> members = new ArrayList<>();
+      members.add(member);
+      bind.setMembers(members);
+
+      bindings.add(bind);
+    }
+
+    policy.setBindings(bindings);
+    SetIamPolicyRequest req = new SetIamPolicyRequest().setPolicy(policy);
+
+    policy =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .setIamPolicy(registryPath, req).execute();
+
+    System.out.println("Policy ETAG: " + policy.getEtag());
+    for (com.google.api.services.cloudiot.v1.model.Binding binding: policy.getBindings()) {
+      System.out.println(String.format("Role: %s", binding.getRole()));
+      System.out.println("Binding members: ");
+      for (String mem : binding.getMembers()) {
+        System.out.println(String.format("\t%s", mem));
+      }
+    }
+  }
+
   /** Entry poit for CLI. */
   public static void main(String[] args) throws Exception {
     DeviceRegistryExampleOptions options = DeviceRegistryExampleOptions.fromFlags(args);
@@ -626,6 +735,10 @@ public class DeviceRegistryExample {
             options.registryName)
             .toPrettyString());
         break;
+      case "get-iam-permissions":
+        System.out.println("Get iam permissions");
+        getIamPermissions(options.projectId, options.cloudRegion, options.registryName);
+        break;
       case "get-device-state":
         System.out.println("Get device state");
         List<DeviceState> states = getDeviceStates(options.deviceId, options.projectId,
@@ -664,6 +777,15 @@ public class DeviceRegistryExample {
           System.out.println("Setting device configuration");
           setDeviceConfiguration(options.deviceId, options.projectId, options.cloudRegion,
               options.registryName, options.configuration, options.version);
+        }
+        break;
+      case "set-iam-permissions":
+        if (options.member == null || options.role == null) {
+          System.out.println("Specify member and role for the policy you are updating.");
+        } else {
+          System.out.println("Setting iam permissions");
+          setIamPermissions(options.projectId, options.cloudRegion, options.registryName,
+              options.member, options.role);
         }
         break;
       default:
