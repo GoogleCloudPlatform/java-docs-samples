@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20171018</version>
+      <version>20180130</version>
     </dependency>
 
     <!-- Test Dependencies -->

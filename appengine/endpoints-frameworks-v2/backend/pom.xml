@@ -54,12 +54,12 @@
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-management-control-appengine</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
         </dependency>
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework-auth</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
         </dependency>
         <!-- [END api_management] -->
         <dependency>
