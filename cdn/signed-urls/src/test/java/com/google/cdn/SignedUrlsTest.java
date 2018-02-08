@@ -17,34 +17,37 @@
 
 package com.google.cdn;
 
+import static com.google.cdn.SignedUrls.signUrl;
+import static junit.framework.TestCase.assertEquals;
+
 import java.util.Base64;
 import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.google.cdn.SignedUrls.signUrl;
-import static junit.framework.TestCase.assertEquals;
-
-
+/**
+ * Test SignedUrls samples
+ */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SignedUrlsTest {
-    private static Date EXPIRATION = new Date((long)1518135754*1000);
+    private static long TIMESTAMP = 1518135754;
+    private static Date EXPIRATION = new Date(TIMESTAMP * 1000);
     private static byte[] KEY_BYTES = Base64.getUrlDecoder().decode("aaaaaaaaaaaaaaaaaaaaaa==");
     private static String KEY_NAME = "my-key";
     private static String BASE_URL = "https://www.google.com/";
 
     @Test
     public void testUrlPath() throws Exception {
-        String result = signUrl(BASE_URL+"foo", KEY_BYTES, KEY_NAME, EXPIRATION);
+        String result = signUrl(BASE_URL + "foo", KEY_BYTES, KEY_NAME, EXPIRATION);
         final String expected = "https://www.google.com/foo?Expires=1518135754&KeyName=my-key&Signature=SBdQtypBTcz0gvHRDZjy2pc-F0s=";
         assertEquals(result, expected);
     }
 
     @Test
     public void testUrlParams() throws Exception {
-        String result = signUrl(BASE_URL+"?param=true", KEY_BYTES, KEY_NAME, EXPIRATION);
+        String result = signUrl(BASE_URL + "?param=true", KEY_BYTES, KEY_NAME, EXPIRATION);
         final String expected = "https://www.google.com/?param=true&Expires=1518135754&KeyName=my-key&Signature=ilkstIAKFvOlckbVdfZBWAror3o=";
         assertEquals(result, expected);
     }
