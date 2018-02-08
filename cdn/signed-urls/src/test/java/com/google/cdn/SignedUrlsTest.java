@@ -32,33 +32,31 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SignedUrlsTest {
-    private static long TIMESTAMP = 1518135754;
-    private static Date EXPIRATION = new Date(TIMESTAMP * 1000);
-    private static byte[] KEY_BYTES = Base64.getUrlDecoder().decode("aaaaaaaaaaaaaaaaaaaaaa==");
-    private static String KEY_NAME = "my-key";
-    private static String BASE_URL = "https://www.google.com/";
+  private static long TIMESTAMP = 1518135754;
+  private static Date EXPIRATION = new Date(TIMESTAMP * 1000);
+  private static byte[] KEY_BYTES = Base64.getUrlDecoder().decode("aaaaaaaaaaaaaaaaaaaaaa==");
+  private static String KEY_NAME = "my-key";
+  private static String BASE_URL = "https://www.google.com/";
 
-    @Test
-    public void testUrlPath() throws Exception {
-        String result = signUrl(BASE_URL + "foo", KEY_BYTES, KEY_NAME, EXPIRATION);
-        final String expected = "https://www.google.com/foo?Expires=1518135754&KeyName=my-key&Signature=SBdQtypBTcz0gvHRDZjy2pc-F0s=";
-        assertEquals(result, expected);
-    }
+  @Test
+  public void testUrlPath() throws Exception {
+    String result = signUrl(BASE_URL + "foo", KEY_BYTES, KEY_NAME, EXPIRATION);
+    final String expected = "https://www.google.com/foo?Expires=1518135754&KeyName=my-key&Signature=SBdQtypBTcz0gvHRDZjy2pc-F0s=";
+    assertEquals(result, expected);
+  }
 
-    @Test
-    public void testUrlParams() throws Exception {
-        String result = signUrl(BASE_URL + "?param=true", KEY_BYTES, KEY_NAME, EXPIRATION);
-        final String expected = "https://www.google.com/?param=true&Expires=1518135754&KeyName=my-key&Signature=ilkstIAKFvOlckbVdfZBWAror3o=";
-        assertEquals(result, expected);
-    }
-
-
-    @Test
-    public void testStandard() throws Exception {
-        String result = signUrl(BASE_URL, KEY_BYTES, KEY_NAME, EXPIRATION);
-        final String expected = "https://www.google.com/?Expires=1518135754&KeyName=my-key&Signature=yYnIFLMqsuGfpSuo7nf7wk21boM=";
-        assertEquals(result, expected);
-    }
+  @Test
+  public void testUrlParams() throws Exception {
+    String result = signUrl(BASE_URL + "?param=true", KEY_BYTES, KEY_NAME, EXPIRATION);
+    final String expected = "https://www.google.com/?param=true&Expires=1518135754&KeyName=my-key&Signature=ilkstIAKFvOlckbVdfZBWAror3o=";
+    assertEquals(result, expected);
+  }
 
 
+  @Test
+  public void testStandard() throws Exception {
+    String result = signUrl(BASE_URL, KEY_BYTES, KEY_NAME, EXPIRATION);
+    final String expected = "https://www.google.com/?Expires=1518135754&KeyName=my-key&Signature=yYnIFLMqsuGfpSuo7nf7wk21boM=";
+    assertEquals(result, expected);
+  }
 }
