@@ -36,13 +36,13 @@ public class SignedUrls {
     /**
      * Creates a signed URL for a Cloud CDN endpoint with the given key
      * should pass in a properly formatted URL
-     * good:
+     * will work:
      *   https://www.google.com/
      *   http://www.google.com/
      *   https://www.google.com/?foo=test&bar=test
      *   https://www.google.com/foo
      *
-     * bad:
+     * won't work:
      *    https://www.google.com
      *    https://www.google.com?test
      *    www.google.com
