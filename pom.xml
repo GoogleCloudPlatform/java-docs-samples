@@ -47,6 +47,7 @@
 
         <module>cloud-tasks</module>
         <module>compute</module>
+        <module>cdn/signed-urls</module>
 
         <module>dataflow/spanner-io</module>
 
