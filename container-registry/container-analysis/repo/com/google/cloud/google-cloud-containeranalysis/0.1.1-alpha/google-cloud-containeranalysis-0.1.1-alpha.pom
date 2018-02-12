@@ -4,6 +4,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.cloud</groupId>
   <artifactId>google-cloud-containeranalysis</artifactId>
-  <version>0.1.1-0</version>
+  <version>0.1.1-alpha</version>
   <description>POM was created from install:install-file</description>
 </project>
