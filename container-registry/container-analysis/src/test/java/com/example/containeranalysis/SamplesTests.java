@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.samples.containeranalysis;
+package com.example.containeranalysis;
 
 import static java.lang.Thread.sleep;
 import static junit.framework.Assert.fail;
