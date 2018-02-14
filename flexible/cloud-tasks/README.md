@@ -68,7 +68,7 @@ curl -d "project=$PROJECT_ID" \
      -d "location=$LOCATION_ID" \
      -d "queue=$QUEUE_ID" \
      -d "message=Hello World!" \
-     --request POST https://<YOUR_PROJECT_URL>.appspot.com/
+     --request POST https://<YOUR_PROJECT_URL>.appspot.com/create_task
 ```
 
 This endpoint will create a Cloud Tasks to trigger the `/log_payload`
