@@ -62,17 +62,19 @@ export LOCATION_ID=<YOUR_ZONE>
 export QUEUE_ID=<YOUR_QUEUE_NAME>
 ```
 
-Next, you can send a POST request to trigger the /create_task endpoint:
+Next, you can send a POST request to trigger the `/create_task`
+endpoint:
 ```bash
 curl -d "project=$PROJECT_ID" \
      -d "location=$LOCATION_ID" \
      -d "queue=$QUEUE_ID" \
      -d "message=Hello World!" \
-     --request POST https://<YOUR_PROJECT_URL>.appspot.com/
+     --request POST https://<YOUR_PROJECT_URL>.appspot.com/create_task
 ```
 
-This endpoint will create a Cloud Tasks to trigger the `/log_payload`
-endpoint, which will be visible the application's logs:
+This endpoint will create a Cloud Task to trigger the
+`/example_task_handler` endpoint, which will be visible the
+application's logs:
 ```
 Received task with payload: Hello World!
 ```
