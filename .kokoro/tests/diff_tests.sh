@@ -19,7 +19,7 @@ shopt -s globstar
 trap '' HUP
 
 # Update gcloud and check version
-gcloud components update --quiet
+gcloud components update --quiet --verbosity="error"
 echo -e "\n ********** GCLOUD INFO *********** \n"
 gcloud -v
 echo -e "\n ********** MAVEN INFO  *********** \n"
@@ -27,7 +27,7 @@ mvn -v
 echo -e "\n ********** GRADLE INFO *********** "
 gradle -v
 
-# Setup required enviormental variables
+# Setup required environmental variables
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
 export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
 source ${KOKORO_GFILE_DIR}/aws-secrets.sh
@@ -37,26 +37,29 @@ gcloud auth activate-service-account\
     --key-file=$GOOGLE_APPLICATION_CREDENTIALS \
     --project=$GOOGLE_CLOUD_PROJECT
 
-echo -e "\n******************** CHECKING FOR AFFECTED FOLDERS ********************"
+echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
 # Diff to find out what has changed from master
 cd github/java-docs-samples
-find ./*/ -name pom.xml -print0 | sort -z | while read -d $'\0' file
+find * -name pom.xml -print0 | sort -z | while read -d $'\0' file
 do
-    file=$(dirname "$file")
-    echo "------------------------------------------------------------"
-    echo "- checking $file"
-    echo "------------------------------------------------------------"
 
-
+    # Navigate to project
     pushd "$file" > /dev/null
     set +e
+    # Has the project changed?
     git diff --quiet master.. .
-    RTN=$?
+    CHANGED=$?
+    # Skip parents so the projects aren't tested twice
+    PARENT=$(grep "<modules>" pom.xml -c)
     set -e
 
     # Check for changes to the current folder
-    if [ "$RTN" -eq 1 ]; then
-        echo -e "\n Change detected. Running tests. \n "
+    if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ]; then
+        file=$(dirname "$file")
+        echo "------------------------------------------------------------"
+        echo "- testing $file"
+        echo "------------------------------------------------------------"
+
         mvn -q --batch-mode --fail-at-end clean verify \
            -Dfile.encoding="UTF-8" \
            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
@@ -64,8 +67,6 @@ do
            -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
            -Dbigtable.instanceID=instance
         echo -e " Tests complete. \n"
-    else
-        echo -e "\n NO change found. \n"
     fi
 
     popd > /dev/null
