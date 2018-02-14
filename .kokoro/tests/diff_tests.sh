@@ -19,7 +19,7 @@ shopt -s globstar
 trap '' HUP
 
 # Update gcloud and check version
-gcloud components update --quiet --verbosity="error"
+gcloud components update --quiet 1> /dev/null
 echo -e "\n ********** GCLOUD INFO *********** \n"
 gcloud -v
 echo -e "\n ********** MAVEN INFO  *********** \n"
@@ -42,14 +42,15 @@ echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
 cd github/java-docs-samples
 find * -name pom.xml -print0 | sort -z | while read -d $'\0' file
 do
-
     # Navigate to project
+    file=$(dirname "$file")
     pushd "$file" > /dev/null
+
     set +e
-    # Has the project changed?
+    # Only tests changed projects
     git diff --quiet master.. .
     CHANGED=$?
-    # Skip parents so the projects aren't tested twice
+    # Only test leafs to prevent testing twice
     PARENT=$(grep "<modules>" pom.xml -c)
     set -e
 
@@ -66,7 +67,7 @@ do
            -Dmaven.test.redirectTestOutputToFile=true \
            -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
            -Dbigtable.instanceID=instance
-        echo -e " Tests complete. \n"
+        echo -e "\n Tests complete. \n"
     fi
 
     popd > /dev/null
