@@ -18,6 +18,24 @@ shopt -s globstar
 # We spin up some subprocesses. Don't kill them on hangup
 trap '' HUP
 
+# Update gcloud and check version
+gcloud components update --quiet 1> /dev/null
+echo -e "\n ********** GCLOUD INFO *********** \n"
+gcloud -v
+echo -e "\n ********** MAVEN INFO  *********** \n"
+mvn -v
+echo -e "\n ********** GRADLE INFO *********** "
+gradle -v
+
+# Setup required environmental variables
+export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
+source ${KOKORO_GFILE_DIR}/aws-secrets.sh
+source ${KOKORO_GFILE_DIR}/dlp_secrets.txt
+# Activate service account
+gcloud auth activate-service-account\
+    --key-file=$GOOGLE_APPLICATION_CREDENTIALS \
+    --project=$GOOGLE_CLOUD_PROJECT
 
 echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
 # Diff to find out what has changed from master
