@@ -1,9 +1,9 @@
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/bigquery/README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
-# Google Cloud API Showcase: Cloud BigQuery & StackDriver Monitoring in App Engine Standard Java 8 Environment
+# Google Cloud API Showcase: Cloud BigQuery & StackDriver Monitoring in App Engine Standard Environment for Java 8
 
-This API Showcase demonstrates how to run an AppEngine Standard application with dependencies on both 
+This API Showcase demonstrates how to run an AppEngine standard environment application with dependencies on both 
 [Google BigQuery][bigquery] and [StackDriver Monitoring][stackdriver].
 
 [bigquery]: https://cloud.google.com/bigquery/docs
@@ -16,7 +16,7 @@ The home page also provides a summary view of the metrics that have been logged 
 
 ## Clone the sample app
 
-Copy the sample apps to your local machine, and cd to the appengine-java8/bigquery directory:
+Copy the sample apps to your local machine, and cd to the `appengine-java8/bigquery` directory:
 
 ```
 git clone https://github.com/GoogleCloudPlatform/java-docs-samples
@@ -56,7 +56,7 @@ few moments and try again.
 
 ## Deploy
 
-- Deploy to AppEngine Standard using the following Maven command.
+- Deploy to AppEngine standard environment using the following Maven command.
 ```
    mvn appengine:deploy
 ```
