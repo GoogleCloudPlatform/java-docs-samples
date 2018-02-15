@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -148,6 +149,7 @@ public class MoveServletTest {
         eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 
+  @Ignore
   public void doPost_notMyTurn_move() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();

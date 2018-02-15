@@ -1,5 +1,8 @@
 This is the sample used in the [Cloud Storage Java documentation](https://cloud.google.com/storage/docs/xml-api-java-samples).
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=storage/xml-api/cmdline-sample/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 Using the Command Line Sample
 ==============================================================
 
@@ -26,7 +29,7 @@ Command-line Instructions
 -------------------------
 
 * **Prerequisites:**
-    * Install the latest version of [Java](http//java.com) and [Maven](http://maven.apache.org/download.html).
+    * Install the latest version of [Java](https://java.com) and [Maven](https://maven.apache.org/download.html).
     * Set the environment variable: `export GOOGLE_APPLICATION_CREDENTIALS=your-key-filename.json`
     * You may need to set your `JAVA_HOME`.
 

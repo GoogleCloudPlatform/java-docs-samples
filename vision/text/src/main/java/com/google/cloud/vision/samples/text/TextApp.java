@@ -22,24 +22,18 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1AnnotateImageRequest;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1AnnotateImageResponse;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BatchAnnotateImagesRequest;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1BatchAnnotateImagesResponse;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Feature;
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1Image;
-import com.google.api.services.vision.v1.model.GoogleRpcStatus;
+import com.google.api.services.vision.v1.model.AnnotateImageRequest;
+import com.google.api.services.vision.v1.model.AnnotateImageResponse;
+import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
+import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
+import com.google.api.services.vision.v1.model.EntityAnnotation;
+import com.google.api.services.vision.v1.model.Feature;
+import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.Status;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import opennlp.tools.stemmer.snowball.SnowballStemmer;
-import opennlp.tools.tokenize.TokenizerME;
-
-import redis.clients.jedis.JedisPool;
-
 import java.io.Console;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,6 +42,9 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.stream.Collectors;
+import opennlp.tools.stemmer.snowball.SnowballStemmer;
+import opennlp.tools.tokenize.TokenizerME;
+import redis.clients.jedis.JedisPool;
 
 
 /**
@@ -168,39 +165,39 @@ public class TextApp {
    * Gets up to {@code maxResults} text annotations for images stored at {@code paths}.
    */
   public ImmutableList<ImageText> detectText(List<Path> paths) {
-    ImmutableList.Builder<GoogleCloudVisionV1AnnotateImageRequest> requests = ImmutableList.builder();
+    ImmutableList.Builder<AnnotateImageRequest> requests = ImmutableList.builder();
     try {
       for (Path path : paths) {
         byte[] data;
         data = Files.readAllBytes(path);
         requests.add(
-            new GoogleCloudVisionV1AnnotateImageRequest()
-                .setImage(new GoogleCloudVisionV1Image().encodeContent(data))
+            new AnnotateImageRequest()
+                .setImage(new Image().encodeContent(data))
                 .setFeatures(ImmutableList.of(
-                    new GoogleCloudVisionV1Feature()
+                    new Feature()
                         .setType("TEXT_DETECTION")
                         .setMaxResults(MAX_RESULTS))));
       }
 
       Vision.Images.Annotate annotate =
           vision.images()
-              .annotate(new GoogleCloudVisionV1BatchAnnotateImagesRequest().setRequests(requests.build()));
+              .annotate(new BatchAnnotateImagesRequest().setRequests(requests.build()));
       // Due to a bug: requests to Vision API containing large images fail when GZipped.
       annotate.setDisableGZipContent(true);
-      GoogleCloudVisionV1BatchAnnotateImagesResponse batchResponse = annotate.execute();
+      BatchAnnotateImagesResponse batchResponse = annotate.execute();
       assert batchResponse.getResponses().size() == paths.size();
 
       ImmutableList.Builder<ImageText> output = ImmutableList.builder();
       for (int i = 0; i < paths.size(); i++) {
         Path path = paths.get(i);
-        GoogleCloudVisionV1AnnotateImageResponse response = batchResponse.getResponses().get(i);
+        AnnotateImageResponse response = batchResponse.getResponses().get(i);
         output.add(
             ImageText.builder()
                 .path(path)
                 .textAnnotations(
                     MoreObjects.firstNonNull(
                         response.getTextAnnotations(),
-                        ImmutableList.<GoogleCloudVisionV1EntityAnnotation>of()))
+                        ImmutableList.<EntityAnnotation>of()))
                 .error(response.getError())
                 .build());
       }
@@ -212,8 +209,8 @@ public class TextApp {
         output.add(
             ImageText.builder()
                 .path(path)
-                .textAnnotations(ImmutableList.<GoogleCloudVisionV1EntityAnnotation>of())
-                .error(new GoogleRpcStatus().setMessage(ex.getMessage()))
+                .textAnnotations(ImmutableList.<EntityAnnotation>of())
+                .error(new Status().setMessage(ex.getMessage()))
                 .build());
       }
       return output.build();
@@ -236,7 +233,7 @@ public class TextApp {
    */
   public Word extractDescriptions(ImageText image) {
     String document = "";
-    for (GoogleCloudVisionV1EntityAnnotation text : image.textAnnotations()) {
+    for (EntityAnnotation text : image.textAnnotations()) {
       document += text.getDescription();
     }
     if (document.equals("")) {

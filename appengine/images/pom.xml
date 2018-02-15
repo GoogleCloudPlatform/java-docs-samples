@@ -21,14 +21,17 @@ Copyright 2015 Google Inc.
   <artifactId>appengine-images</artifactId>
 
   <properties>
-      <appengine.sdk.version>1.9.59</appengine.sdk.version>
+      <appengine.sdk.version>1.9.60</appengine.sdk.version>
   </properties>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <dependencies>

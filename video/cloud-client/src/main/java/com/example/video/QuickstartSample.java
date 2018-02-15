@@ -1,11 +1,11 @@
 /*
- * Copyright 2017, Google, Inc.
+ * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,17 +18,16 @@ package com.example.video;
 
 // [START videointelligence_quickstart]
 
-import com.google.api.gax.rpc.OperationFuture;
-import com.google.cloud.videointelligence.v1beta2.AnnotateVideoProgress;
-import com.google.cloud.videointelligence.v1beta2.AnnotateVideoRequest;
-import com.google.cloud.videointelligence.v1beta2.AnnotateVideoResponse;
-import com.google.cloud.videointelligence.v1beta2.Entity;
-import com.google.cloud.videointelligence.v1beta2.Feature;
-import com.google.cloud.videointelligence.v1beta2.LabelAnnotation;
-import com.google.cloud.videointelligence.v1beta2.LabelSegment;
-import com.google.cloud.videointelligence.v1beta2.VideoAnnotationResults;
-import com.google.cloud.videointelligence.v1beta2.VideoIntelligenceServiceClient;
-import com.google.longrunning.Operation;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
+import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
+import com.google.cloud.videointelligence.v1.AnnotateVideoResponse;
+import com.google.cloud.videointelligence.v1.Entity;
+import com.google.cloud.videointelligence.v1.Feature;
+import com.google.cloud.videointelligence.v1.LabelAnnotation;
+import com.google.cloud.videointelligence.v1.LabelSegment;
+import com.google.cloud.videointelligence.v1.VideoAnnotationResults;
+import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import java.util.List;
 
 public class QuickstartSample {
@@ -48,12 +47,12 @@ public class QuickstartSample {
           .addFeatures(Feature.LABEL_DETECTION)
           .build();
 
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress, Operation> operation =
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
           client.annotateVideoAsync(request);
 
       System.out.println("Waiting for operation to complete...");
 
-      List<VideoAnnotationResults> results = operation.get().getAnnotationResultsList();
+      List<VideoAnnotationResults> results = response.get().getAnnotationResultsList();
       if (results.isEmpty()) {
         System.out.println("No labels detected in " + gcsUri);
         return;

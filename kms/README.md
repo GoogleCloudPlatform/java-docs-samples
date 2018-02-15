@@ -1,5 +1,8 @@
 # Cloud Key Management Service
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=kms/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 Google [Cloud Key Management Service](https://cloud.google.com/kms/) is a
 cloud-hosted key management service that lets you manage encryption for your
 cloud services the same way you do on-premise. You can generate, use, rotate and

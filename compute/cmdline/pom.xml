@@ -19,13 +19,35 @@ limitations under the License.
   <artifactId>compute-cmdline</artifactId>
   <version>1</version>
 
-  <!-- Parent POM defines common plugins and properties. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>compute</artifactId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
+
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <project.compute.version>v1-rev169-1.23.0</project.compute.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>1.23.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-compute</artifactId>
+      <version>${project.compute.version}</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -71,20 +93,5 @@ limitations under the License.
     </plugins>
     <finalName>${project.artifactId}-${project.version}</finalName>
   </build>
-  <dependencies>
-    <dependency>
-     <groupId>com.google.api-client</groupId>
-     <artifactId>google-api-client</artifactId>
-     <version>1.23.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-compute</artifactId>
-      <version>${project.compute.version}</version>
-    </dependency>
-  </dependencies>
-  <properties>
-    <project.compute.version>v1-rev160-1.23.0</project.compute.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+
 </project>

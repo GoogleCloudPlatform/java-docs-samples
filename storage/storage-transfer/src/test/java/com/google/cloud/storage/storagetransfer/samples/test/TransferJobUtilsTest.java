@@ -21,10 +21,8 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.api.services.storagetransfer.v1.model.Date;
 import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 import com.google.cloud.storage.storagetransfer.samples.TransferJobUtils;
-
-import org.junit.Test;
-
 import java.util.Random;
+import org.junit.Test;
 
 public class TransferJobUtilsTest {
   private Random rand = new Random();

@@ -20,23 +20,19 @@
     <artifactId>doc-samples</artifactId>
     <packaging>pom</packaging>
 
-    <!-- Parent POM defines common plugins and properties. -->
+    <!--
+      The parent pom defines common style checks and testing strategies for our samples.
+      Removing or replacing it should not affect the execution of the samples in anyway.
+    -->
     <parent>
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.8</version>
     </parent>
 
     <properties>
-        <project.http.version>1.19.0</project.http.version>
-        <project.oauth.version>1.19.0</project.oauth.version>
-
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-
-        <spanner.test.instance>default-instance</spanner.test.instance>
-        <spanner.sample.database>mysample</spanner.sample.database>
-        <spanner.quickstart.database>quickstart-db</spanner.quickstart.database>
     </properties>
 
     <modules>
@@ -44,10 +40,16 @@
         <module>appengine</module>
         <module>appengine-java8</module>
         <module>flexible</module>
-        <module>compute</module>
 
         <module>bigquery/cloud-client</module>
+        <module>bigquery/datatransfer/cloud-client</module>
         <module>bigquery/rest</module>
+
+        <module>cloud-tasks</module>
+        <module>compute</module>
+        <module>container-registry/container-analysis</module>
+
+        <module>dataflow/spanner-io</module>
 
         <module>datastore</module>
         <module>datastore/cloud-client</module>
@@ -65,10 +67,9 @@
         <module>language/analysis</module>
         <module>language/cloud-client</module>
 
-<!-- APIary based sample - broken for testing
         <module>logging</module>
- -->
-        <module>logging/cloud-client</module>
+
+        <module>mlengine/online-prediction</module>
 
         <module>monitoring/cloud-client</module>
 
@@ -84,49 +85,17 @@
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
 
-        <module>taskqueue/deferred</module>
-
         <module>translate</module>
         <module>translate/cloud-client</module>
 
         <module>unittests</module>
         <module>video/cloud-client</module>
+        <module>vision/beta/cloud-client</module>
         <module>vision/cloud-client</module>
         <module>vision/face-detection</module>
         <module>vision/label</module>
         <module>vision/landmark-detection</module>
         <module>vision/text</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-        <!-- Compile/runtime dependencies -->
-
-        <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.11.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-matchers</artifactId>
-            <version>1.4</version>
-        </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>

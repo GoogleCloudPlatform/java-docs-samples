@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,8 @@ import javax.servlet.http.HttpServletResponse;
 // [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "CloudSQL", description = "CloudSQL: Write low order IP address to Cloud SQL",
+@WebServlet(name = "CloudSQL",
+    description = "CloudSQL: Write timestamps of visitors to Cloud SQL",
     urlPatterns = "/cloudsql")
 public class CloudSqlServlet extends HttpServlet {
   Connection conn;
@@ -52,12 +53,13 @@ public class CloudSqlServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
       ServletException {
-    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id INT NOT NULL "
-        + "AUTO_INCREMENT, user_ip VARCHAR(46) NOT NULL, timestamp DATETIME NOT NULL, "
-        + "PRIMARY KEY (visit_id) )";
-    final String createVisitSql = "INSERT INTO visits (user_ip, timestamp) VALUES (?, ?)";
-    final String selectSql = "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC "
-        + "LIMIT 10";
+
+    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( "
+        + "visit_id SERIAL NOT NULL, ts timestamp NOT NULL, "
+        + "PRIMARY KEY (visit_id) );";
+    final String createVisitSql = "INSERT INTO visits (ts) VALUES (?);";
+    final String selectSql = "SELECT ts FROM visits ORDER BY ts DESC "
+        + "LIMIT 10;";
 
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
@@ -67,37 +69,24 @@ public class CloudSqlServlet extends HttpServlet {
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");
 
-    // store only the first two octets of a users ip address
-    String userIp = req.getRemoteAddr();
-    InetAddress address = InetAddress.getByName(userIp);
-    if (address instanceof Inet6Address) {
-      // nest indexOf calls to find the second occurrence of a character in a string
-      // an alternative is to use Apache Commons Lang: StringUtils.ordinalIndexOf()
-      userIp = userIp.substring(0, userIp.indexOf(":", userIp.indexOf(":") + 1)) + ":*:*:*:*:*:*";
-    } else if (address instanceof Inet4Address) {
-      userIp = userIp.substring(0, userIp.indexOf(".", userIp.indexOf(".") + 1)) + ".*.*";
-    }
-
     Stopwatch stopwatch = Stopwatch.createStarted();
     try (PreparedStatement statementCreateVisit = conn.prepareStatement(createVisitSql)) {
       conn.createStatement().executeUpdate(createTableSql);
-      statementCreateVisit.setString(1, userIp);
-      statementCreateVisit.setTimestamp(2, new Timestamp(new Date().getTime()));
+      statementCreateVisit.setTimestamp(1, new Timestamp(new Date().getTime()));
       statementCreateVisit.executeUpdate();
 
       try (ResultSet rs = conn.prepareStatement(selectSql).executeQuery()) {
         stopwatch.stop();
         out.print("Last 10 visits:\n");
         while (rs.next()) {
-          String savedIp = rs.getString("user_ip");
-          String timeStamp = rs.getString("timestamp");
-          out.print("Time: " + timeStamp + " Addr: " + savedIp + "\n");
+          String timeStamp = rs.getString("ts");
+          out.println("Visited at time: " + timeStamp);
         }
-        out.println("Elapsed: " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
       }
     } catch (SQLException e) {
       throw new ServletException("SQL error", e);
     }
+    out.println("Query time (ms):" + stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   @Override

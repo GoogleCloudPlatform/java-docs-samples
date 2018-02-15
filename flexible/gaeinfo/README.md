@@ -1,5 +1,8 @@
 # Google App Engine Information
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/gaeinfo/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 ## WARNING - this version runs on App Engine Flexible using the deprecated COMPAT runtime.
 ## Most users will prefer to use the Metadata example for flex (in progress)
 This sample displays what's going on in your app. It dumps the environment and lots more.

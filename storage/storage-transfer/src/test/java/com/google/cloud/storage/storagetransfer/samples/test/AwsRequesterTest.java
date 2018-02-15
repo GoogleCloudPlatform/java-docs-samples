@@ -19,13 +19,11 @@ package com.google.cloud.storage.storagetransfer.samples.test;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.storage.storagetransfer.samples.AwsRequester;
-
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 @RunWith(JUnit4.class)
 public class AwsRequesterTest {
@@ -37,8 +35,6 @@ public class AwsRequesterTest {
    */
   @Test
   public void testRun() throws Exception {
-    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-    PrintStream outStream = new PrintStream(outBytes);
     System.setProperty("projectId", PROJECT_ID);
     System.setProperty("jobDescription", "Sample transfer job from S3 to GCS.");
     System.setProperty("awsSourceBucket", "cloud-samples-tests");
@@ -46,6 +42,8 @@ public class AwsRequesterTest {
     System.setProperty("startDate", "2000-01-01");
     System.setProperty("startTime", "00:00:00");
 
+    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+    PrintStream outStream = new PrintStream(outBytes);
     AwsRequester.run(outStream);
     String out = outBytes.toString();
 

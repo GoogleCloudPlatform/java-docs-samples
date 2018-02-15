@@ -1,6 +1,9 @@
 Bigtable-hello-j8
 =================
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/bigtable/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 Moves the Bigtable Hello World application to Google App Engine Standard for Java 8.
 
 

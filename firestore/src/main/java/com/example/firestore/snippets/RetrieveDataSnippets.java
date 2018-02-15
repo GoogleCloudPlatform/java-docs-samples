@@ -1,15 +1,17 @@
 /*
  * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.firestore.snippets;
@@ -22,6 +24,7 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 
@@ -104,13 +107,13 @@ public class RetrieveDataSnippets {
    *
    * @return list of documents of capital cities.
    */
-  public List<DocumentSnapshot> getQueryResults() throws Exception {
+  public List<QueryDocumentSnapshot> getQueryResults() throws Exception {
     // [START fs_get_multiple_docs]
     //asynchronously retrieve multiple documents
     ApiFuture<QuerySnapshot> future =
         db.collection("cities").whereEqualTo("capital", true).get();
     // future.get() blocks on response
-    List<DocumentSnapshot> documents = future.get().getDocuments();
+    List<QueryDocumentSnapshot> documents = future.get().getDocuments();
     for (DocumentSnapshot document : documents) {
       System.out.println(document.getId() + " => " + document.toObject(City.class));
     }
@@ -123,16 +126,33 @@ public class RetrieveDataSnippets {
    *
    * @return list of documents
    */
-  public List<DocumentSnapshot> getAllDocuments() throws Exception {
+  public List<QueryDocumentSnapshot> getAllDocuments() throws Exception {
     // [START fs_get_all_docs]
     //asynchronously retrieve all documents
     ApiFuture<QuerySnapshot> future = db.collection("cities").get();
     // future.get() blocks on response
-    List<DocumentSnapshot> documents = future.get().getDocuments();
-    for (DocumentSnapshot document : documents) {
+    List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+    for (QueryDocumentSnapshot document : documents) {
       System.out.println(document.getId() + " => " + document.toObject(City.class));
     }
     // [END fs_get_all_docs]
     return documents;
+  }
+
+  /**
+   * Return all subcollections of the cities/SF document.
+   *
+   * @return iterable of collection references.
+   */
+  public Iterable<CollectionReference> getCollections() throws Exception {
+    // [START fs_get_collections]
+    Iterable<CollectionReference> collections =
+        db.collection("cities").document("SF").getCollections();
+
+    for (CollectionReference collRef : collections) {
+      System.out.println("Found subcollection with id: " + collRef.getId());
+    }
+    // [END fs_get_collections]
+    return collections;
   }
 }

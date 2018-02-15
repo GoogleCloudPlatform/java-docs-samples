@@ -1,4 +1,8 @@
 # Getting started with Google Cloud Firestore
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=firestore/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Firestore](https://cloud.google.com/firestore/docs/) is a hosted NoSQL database built
 for automatic scaling, high performance, and ease of application development.
 

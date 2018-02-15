@@ -1,6 +1,9 @@
 App Engine Java Guestbook
 Copyright (C) 2010-2012 Google Inc.
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/taskqueues-deferred/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 ## Sample guestbook for use with App Engine Java.
 
 Requires [Apache Maven](http://maven.apache.org) 3.1 or greater, and JDK 7+ in order to run.

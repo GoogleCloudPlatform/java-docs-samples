@@ -1,15 +1,17 @@
 /*
  * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.firestore.snippets;
@@ -17,11 +19,11 @@ package com.example.firestore.snippets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.example.firestore.BaseIntegrationTest;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -39,19 +41,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QueryDataSnippetsIT {
+public class QueryDataSnippetsIT extends BaseIntegrationTest {
 
-  private static Firestore db;
   private static QueryDataSnippets queryDataSnippets;
-  private static String projectId = "java-docs-samples-firestore";
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
-            .setProjectId(projectId)
-            .build();
-    db = firestoreOptions.getService();
-    deleteAllDocuments();
     queryDataSnippets = new QueryDataSnippets(db);
     queryDataSnippets.prepareExamples();
   }
@@ -176,7 +171,7 @@ public class QueryDataSnippetsIT {
 
     // all documents are retrieved
     QuerySnapshot querySnapshot = query1.get().get();
-    List<DocumentSnapshot> docs = querySnapshot.getDocuments();
+    List<QueryDocumentSnapshot> docs = querySnapshot.getDocuments();
     assertEquals(3, docs.size());
 
 
@@ -209,17 +204,8 @@ public class QueryDataSnippetsIT {
     return docIds;
   }
 
-  private static void deleteAllDocuments() throws Exception {
-    ApiFuture<QuerySnapshot> future = db.collection("cities").get();
-    QuerySnapshot querySnapshot = future.get();
-    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-      // block on delete operation
-      db.collection("cities").document(doc.getId()).delete().get();
-    }
-  }
-
   @AfterClass
   public static void tearDown() throws Exception {
-    deleteAllDocuments();
+    deleteAllDocuments(db);
   }
 }

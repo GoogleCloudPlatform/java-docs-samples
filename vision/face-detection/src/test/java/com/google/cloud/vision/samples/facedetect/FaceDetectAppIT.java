@@ -19,16 +19,14 @@ package com.google.cloud.vision.samples.facedetect;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1FaceAnnotation;
-
+import com.google.api.services.vision.v1.model.FaceAnnotation;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link FaceDetectApp}.
@@ -45,7 +43,7 @@ public class FaceDetectAppIT {
   }
 
   @Test public void detectFaces_withFace_returnsAtLeastOneFace() throws Exception {
-    List<GoogleCloudVisionV1FaceAnnotation> faces =
+    List<FaceAnnotation> faces =
         appUnderTest.detectFaces(Paths.get("data/face.jpg"), MAX_RESULTS);
 
     assertThat(faces).named("face.jpg faces").isNotEmpty();

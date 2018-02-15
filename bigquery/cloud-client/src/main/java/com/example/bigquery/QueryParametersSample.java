@@ -1,36 +1,34 @@
 /*
-  Copyright 2016 Google Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.bigquery;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValue;
-import com.google.cloud.bigquery.QueryParameterValue;
 import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.QueryResponse;
-import com.google.cloud.bigquery.QueryResult;
+import com.google.cloud.bigquery.QueryParameterValue;
+import com.google.cloud.bigquery.TableResult;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /** A sample that demonstrates use of query parameters. */
 public class QueryParametersSample {
@@ -113,8 +111,7 @@ public class QueryParametersSample {
   // [START bigquery_query_params]
   private static void runNamed(final String corpus, final long minWordCount)
       throws InterruptedException {
-    BigQuery bigquery =
-        new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     String queryString =
         "SELECT word, word_count\n"
@@ -132,25 +129,9 @@ public class QueryParametersSample {
             .build();
 
     // Execute the query.
-    QueryResponse response = bigquery.query(queryRequest);
-
-    // Wait for the job to finish (if the query takes more than 10 seconds to complete).
-    while (!response.jobCompleted()) {
-      Thread.sleep(1000);
-      response = bigquery.getQueryResults(response.getJobId());
-    }
-
-    // Check for errors.
-    if (response.hasErrors()) {
-      String firstError = "";
-      if (response.getExecutionErrors().size() != 0) {
-        firstError = response.getExecutionErrors().get(0).getMessage();
-      }
-      throw new RuntimeException(firstError);
-    }
+    TableResult result = bigquery.query(queryRequest);
 
     // Print all pages of the results.
-    QueryResult result = response.getResult();
     while (result != null) {
       for (List<FieldValue> row : result.iterateAll()) {
         System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
@@ -166,8 +147,7 @@ public class QueryParametersSample {
    */
   // [START bigquery_query_params_arrays]
   private static void runArray(String gender, String[] states) throws InterruptedException {
-    BigQuery bigquery =
-        new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     String queryString =
         "SELECT name, sum(number) as count\n"
@@ -187,25 +167,9 @@ public class QueryParametersSample {
             .build();
 
     // Execute the query.
-    QueryResponse response = bigquery.query(queryRequest);
-
-    // Wait for the job to finish (if the query takes more than 10 seconds to complete).
-    while (!response.jobCompleted()) {
-      Thread.sleep(1000);
-      response = bigquery.getQueryResults(response.getJobId());
-    }
-
-    // Check for errors.
-    if (response.hasErrors()) {
-      String firstError = "";
-      if (response.getExecutionErrors().size() != 0) {
-        firstError = response.getExecutionErrors().get(0).getMessage();
-      }
-      throw new RuntimeException(firstError);
-    }
+    TableResult result = bigquery.query(queryRequest);
 
     // Print all pages of the results.
-    QueryResult result = response.getResult();
     while (result != null) {
       for (List<FieldValue> row : result.iterateAll()) {
         System.out.printf("%s: %d\n", row.get(0).getStringValue(), row.get(1).getLongValue());
@@ -218,8 +182,7 @@ public class QueryParametersSample {
 
   // [START bigquery_query_params_timestamps]
   private static void runTimestamp() throws InterruptedException {
-    BigQuery bigquery =
-        new BigQueryOptions.DefaultBigqueryFactory().create(BigQueryOptions.getDefaultInstance());
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     DateTime timestamp = new DateTime(2016, 12, 7, 8, 0, 0, DateTimeZone.UTC);
 
@@ -237,25 +200,9 @@ public class QueryParametersSample {
             .build();
 
     // Execute the query.
-    QueryResponse response = bigquery.query(queryRequest);
-
-    // Wait for the job to finish (if the query takes more than 10 seconds to complete).
-    while (!response.jobCompleted()) {
-      Thread.sleep(1000);
-      response = bigquery.getQueryResults(response.getJobId());
-    }
-
-    // Check for errors.
-    if (response.hasErrors()) {
-      String firstError = "";
-      if (response.getExecutionErrors().size() != 0) {
-        firstError = response.getExecutionErrors().get(0).getMessage();
-      }
-      throw new RuntimeException(firstError);
-    }
+    TableResult result = bigquery.query(queryRequest);
 
     // Print all pages of the results.
-    QueryResult result = response.getResult();
     DateTimeFormatter formatter = ISODateTimeFormat.dateTimeNoMillis().withZoneUTC();
     while (result != null) {
       for (List<FieldValue> row : result.iterateAll()) {

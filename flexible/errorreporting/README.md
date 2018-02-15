@@ -1,5 +1,8 @@
 # Error reporting sample for Google App Engine Flexible
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/errorreporting/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Stackdriver Error Reporting][error-reporting] Stackdriver Error Reporting counts, analyzes and aggregates the crashes in your running cloud services.
 A [centralized error management interface](https://console.cloud.google.com/errors) displays the results with sorting and filtering capabilities.
 

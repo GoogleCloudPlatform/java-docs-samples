@@ -1,15 +1,17 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.helloworld;
@@ -27,8 +29,9 @@ import java.io.IOException;
 
 import javax.inject.Named;
 
+// CHECKSTYLE.OFF: AbbreviationAsWordInName
 // [START header]
-/** An endpoint class we are exposing */
+/** An endpoint class we are exposing. */
 @Api(name = "myApi",
     version = "v1",
     namespace = @ApiNamespace(ownerDomain = "helloworld.example.com",
@@ -39,7 +42,7 @@ import javax.inject.Named;
 public class YourFirstAPI {
 
   // [START hi]
-  /** A simple endpoint method that takes a name and says Hi back */
+  /** A simple endpoint method that takes a name and says Hi back. */
   @ApiMethod(name = "sayHi")
   public MyBean sayHi(@Named("name") String name) {
     MyBean response = new MyBean();
@@ -50,7 +53,7 @@ public class YourFirstAPI {
   //[END hi]
 
   // [START hi_user]
-  /** A simple endpoint method that takes a name and says Hi back */
+  /** A simple endpoint method that takes a name and says Hi back. */
   @ApiMethod(
       name = "sayHiUser",
       httpMethod = ApiMethod.HttpMethod.GET)
@@ -73,6 +76,7 @@ public class YourFirstAPI {
   }
   // [END post]
   // [START resources]
+
   class Resp {
     private String foobar = "foobar";
     private String bin = "bin";
@@ -102,15 +106,16 @@ public class YourFirstAPI {
   public Resp getResp() {
     return new Resp();
   }
+
   // [END resources]
 
   @SuppressWarnings("unused")
   // [START lookmeup]
-  /** A simple endpoint method that takes a name and says Hi back */
+  /** A simple endpoint method that takes a name and says Hi back. */
   @ApiMethod(
       name = "lookmeup",
       httpMethod = ApiMethod.HttpMethod.GET)
-  public MyBean lookMeUp( User user)
+  public MyBean lookMeUp(User user)
       throws OAuthRequestException, RequestTimeoutException, NotFoundException, IOException {
     MyBean response = new MyBean();
 
@@ -123,7 +128,7 @@ public class YourFirstAPI {
       throw new NotFoundException(user.getEmail());
       // [END notfound]
     }
-    if (true /* did we time out */ ) {
+    if (true) { /* did we time out */
       // [START timeout]
       throw new RequestTimeoutException("lookMeUp() timed out");  // custom timeout exception
       // [END timeout]
@@ -133,3 +138,4 @@ public class YourFirstAPI {
   }
   // [END lookmeup]
 }
+// CHECKSTYLE.ON: AbbreviationAsWordInName

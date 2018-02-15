@@ -19,17 +19,15 @@ package com.google.cloud.vision.samples.label;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
+import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.common.collect.ImmutableSet;
-
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link LabelApp}.
@@ -46,11 +44,11 @@ public class LabelAppIT {
   }
 
   @Test public void labelImage_cat_returnsCatDescription() throws Exception {
-    List<GoogleCloudVisionV1EntityAnnotation> labels =
+    List<EntityAnnotation> labels =
         appUnderTest.labelImage(Paths.get("data/cat.jpg"), MAX_LABELS);
 
     ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-    for (GoogleCloudVisionV1EntityAnnotation label : labels) {
+    for (EntityAnnotation label : labels) {
       builder.add(label.getDescription());
     }
     ImmutableSet<String> descriptions = builder.build();

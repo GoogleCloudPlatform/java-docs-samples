@@ -1,5 +1,8 @@
 # Compute Engine - Getting started with Java
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=compute/cmdline/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample command line application demonstrates how to access the Google
 Compute Engine API using the Google Java API Client Library.
 

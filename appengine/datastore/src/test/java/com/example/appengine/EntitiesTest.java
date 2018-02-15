@@ -29,17 +29,16 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.KeyRange;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Unit tests to demonstrate App Engine Datastore entities.
@@ -69,6 +68,7 @@ public class EntitiesTest {
 
   @Test
   public void kindExample_writesEntity() throws Exception {
+    //CHECKSTYLE.OFF: VariableDeclarationUsageDistance - Increased clarity in sample
     // [START kind_example]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -80,6 +80,7 @@ public class EntitiesTest {
 
     datastore.put(employee);
     // [END kind_example]
+    //CHECKSTYLE.ON: VariableDeclarationUsageDistance
 
     Entity got = datastore.get(employee.getKey());
     assertThat((String) got.getProperty("firstName")).named("got.firstName").isEqualTo("Antonio");
@@ -220,7 +221,9 @@ public class EntitiesTest {
 
   @Test
   public void embeddedEntity_fromEmbedded_embedsProperties() throws Exception {
+    //CHECKSTYLE.OFF: VariableDeclarationUsageDistance - Increased clarity in sample
     Entity employee = new Entity("Employee");
+    //CHECKSTYLE.ON: VariableDeclarationUsageDistance
     // [START embedded_entities_1]
     // Entity employee = ...;
     EmbeddedEntity embeddedContactInfo = new EmbeddedEntity();

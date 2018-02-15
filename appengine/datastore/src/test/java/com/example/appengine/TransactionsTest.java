@@ -35,15 +35,14 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Unit tests to demonstrate App Engine Datastore transactions.
@@ -145,6 +144,7 @@ public class TransactionsTest {
   public void creatingAnEntityInASpecificEntityGroup() throws Exception {
     String boardName = "my-message-board";
 
+    //CHECKSTYLE.OFF: VariableDeclarationUsageDistance - Increased clarity in sample
     // [START creating_an_entity_in_a_specific_entity_group]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -164,6 +164,7 @@ public class TransactionsTest {
 
     txn.commit();
     // [END creating_an_entity_in_a_specific_entity_group]
+    //CHECKSTYLE.ON: VariableDeclarationUsageDistance
   }
 
   @Test

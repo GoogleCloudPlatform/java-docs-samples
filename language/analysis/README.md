@@ -1,5 +1,9 @@
 # Google Cloud Natural Language API Entity Recognition Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=language/analysis/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This sample demonstrates the use of the [Google Cloud Natural Language API][NL-Docs]
 for entity recognition.
 

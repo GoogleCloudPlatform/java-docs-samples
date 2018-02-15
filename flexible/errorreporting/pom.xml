@@ -21,15 +21,18 @@
   <groupId>com.example.flexible</groupId>
   <artifactId>flexible-error-reporting</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-flexible</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
-    <appengine.maven.plugin>1.3.1</appengine.maven.plugin>
+    <appengine.maven.plugin>1.3.2</appengine.maven.plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -47,7 +50,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-errorreporting</artifactId>
-      <version>0.26.0-alpha</version>
+      <version>0.34.0-beta</version>
     </dependency>
   </dependencies>
 

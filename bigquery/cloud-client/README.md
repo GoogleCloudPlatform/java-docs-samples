@@ -1,5 +1,8 @@
 # Getting Started with BigQuery and the Google Java API Client library
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=bigquery/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google's BigQuery Service][BigQuery] features a REST-based API that allows
 developers to create applications to run ad-hoc queries on massive datasets.
 These sample Java applications demonstrate how to access the BigQuery API using
@@ -11,6 +14,9 @@ the [Google Cloud Client Library for Java][google-cloud-java].
 ## Quickstart
 
 Install [Maven](http://maven.apache.org/).
+
+[Authenticate using a service account](https://cloud.google.com/docs/authentication/getting-started).
+Create a service account, download a JSON key file, and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
 
 Build your project with:
 

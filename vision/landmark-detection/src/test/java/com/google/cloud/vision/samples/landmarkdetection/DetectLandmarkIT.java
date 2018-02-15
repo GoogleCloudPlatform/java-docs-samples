@@ -19,15 +19,13 @@ package com.google.cloud.vision.samples.landmarkdetection;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-import com.google.api.services.vision.v1.model.GoogleCloudVisionV1EntityAnnotation;
-
+import com.google.api.services.vision.v1.model.EntityAnnotation;
+import java.io.IOException;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link DetectLandmark}.
@@ -49,7 +47,7 @@ public class DetectLandmarkIT {
   }
 
   @Test public void identifyLandmark_withLandmark_returnsKnownLandmark() throws Exception {
-    List<GoogleCloudVisionV1EntityAnnotation> landmarks = appUnderTest.identifyLandmark(LANDMARK_URI, MAX_RESULTS);
+    List<EntityAnnotation> landmarks = appUnderTest.identifyLandmark(LANDMARK_URI, MAX_RESULTS);
 
     assertThat(landmarks).named("water.jpg landmarks").isNotEmpty();
     assertThat(landmarks.get(0).getDescription())
@@ -66,13 +64,13 @@ public class DetectLandmarkIT {
     }
   }
 
-// TODO(lesv): Currently we can access it, need to set better attributes.
-//   @Test public void identifyLandmark_noImage_throwsForbidden() throws Exception {
-//     try {
-//       appUnderTest.identifyLandmark(PRIVATE_LANDMARK_URI, MAX_RESULTS);
-//       fail("Expected IOException");
-//     } catch (IOException expected) {
-//       assertThat(expected.getMessage()).named("IOException message").contains("permission");
-//     }
-//   }
+  // TODO(lesv): Currently we can access it, need to set better attributes.
+  //   @Test public void identifyLandmark_noImage_throwsForbidden() throws Exception {
+  //     try {
+  //       appUnderTest.identifyLandmark(PRIVATE_LANDMARK_URI, MAX_RESULTS);
+  //       fail("Expected IOException");
+  //     } catch (IOException expected) {
+  //       assertThat(expected.getMessage()).named("IOException message").contains("permission");
+  //     }
+  //   }
 }

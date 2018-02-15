@@ -22,18 +22,21 @@ limitations under the License.
   <artifactId>spark</artifactId>
   <version>1.0</version>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-flexible</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>1.3.1</appengine.maven.plugin>
+    <appengine.maven.plugin>1.3.2</appengine.maven.plugin>
     <app.stage.artifact>${project.build.directory}/spark-1.0-jar-with-dependencies.jar</app.stage.artifact>
   </properties>
 
@@ -41,7 +44,7 @@ limitations under the License.
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.7.0</version>
+      <version>2.7.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -61,7 +64,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.8.0</version>
+      <version>1.16.0</version>
     </dependency>
   </dependencies>
   <build>
