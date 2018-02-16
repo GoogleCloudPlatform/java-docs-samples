@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.google.cloud.devtools.containeranalysis.v1alpha1.Sampl
+ eApp
+
