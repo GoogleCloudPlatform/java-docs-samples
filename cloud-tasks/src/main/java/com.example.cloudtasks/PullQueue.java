@@ -113,8 +113,11 @@ public class PullQueue {
     // Create the Cloud Tasks Client
     CloudTasks client = createAuthorizedClient();
 
-    // Create the PullTasksRequest
-    LeaseTasksRequest request = new LeaseTasksRequest().setMaxTasks(1).setLeaseDuration("600s");
+    // Create the LeaseTasksRequest
+    LeaseTasksRequest request = new LeaseTasksRequest()
+        .setMaxTasks(1)
+        .setLeaseDuration("600s")
+        .setResponseView("FULL");
 
     //Execute the request and return the pulled task
     LeaseTasksResponse response = client
