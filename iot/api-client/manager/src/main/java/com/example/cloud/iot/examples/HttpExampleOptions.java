@@ -33,8 +33,8 @@ public class HttpExampleOptions {
   String cloudRegion = "us-central1";
   int numMessages = 100;
   int tokenExpMins = 20;
-  String httpBridgeAddress = "https://cloudiot-device.googleapis.com";
-  String apiVersion = "v1beta1";
+  String httpBridgeAddress = "https://cloudiotdevice.googleapis.com";
+  String apiVersion = "v1";
   String messageType = "event";
 
   /** Construct an HttpExampleOptions class from command line flags. */
