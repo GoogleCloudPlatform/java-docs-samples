@@ -24,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Properties;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -157,6 +159,10 @@ public class MqttExample {
     // explictly set this. If you don't set MQTT version, the server will immediately close its
     // connection to your device.
     connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
+
+    Properties sslProps = new Properties();
+    sslProps.setProperty("com.ibm.ssl.protocol", "TLSv1.2");
+    connectOptions.setSSLProperties(sslProps);
 
     // With Google Cloud IoT Core, the username field is ignored, however it must be set for the
     // Paho client library to send the password field. The password field is used to transmit a JWT
