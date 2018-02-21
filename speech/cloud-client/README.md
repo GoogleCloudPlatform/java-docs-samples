@@ -67,19 +67,6 @@ Asynchronously transcribe a remote audio file and print word offsets
     com.example.speech.Recognize wordoffsets gs://cloud-samples-tests/speech/vr.flac
 ```
 
-## Transcribe and punctuate a audio file
-Synchronously transcribe and punctuate a remote audio file
-```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize punctuation ./resources/audio.raw
-```
-
-Asynchronously transcribe and punctuate an audio file hosted on GCS
-```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize punctuation gs://cloud-samples-tests/speech/brooklyn.flac
-```
-
 ## Transcribe a video file
 Synchronously transcribe a video file
 ```
