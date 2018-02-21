@@ -1,5 +1,5 @@
 /*
-  Copyright 2017, Google Inc.
+  Copyright 2018, Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,17 +16,15 @@
 
 package com.example.speech;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.ApiStreamObserver;
 import com.google.api.gax.rpc.BidiStreamingCallable;
-import com.google.api.gax.rpc.OperationFuture;
-import com.google.cloud.speech.v1_1beta1.SpeechClient;
+import com.google.cloud.speech.v1p1beta1.SpeechClient;
 import com.google.cloud.speech.v1p1beta1.LongRunningRecognizeMetadata;
 import com.google.cloud.speech.v1p1beta1.LongRunningRecognizeResponse;
 import com.google.cloud.speech.v1p1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1p1beta1.RecognitionConfig.AudioEncoding;
-import com.google.cloud.speech.v1p1beta1.RecognitionMetadata;
-import com.google.cloud.speech.v1p1beta1.RecognitionMetadata.OriginalMediaType;
 import com.google.cloud.speech.v1p1beta1.RecognizeResponse;
 import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1p1beta1.SpeechRecognitionResult;
@@ -36,7 +34,6 @@ import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
 import com.google.cloud.speech.v1p1beta1.WordInfo;
 import com.google.common.util.concurrent.SettableFuture;
-import com.google.longrunning.Operation;
 import com.google.protobuf.ByteString;
 
 import java.io.IOException;
@@ -86,12 +83,6 @@ public class Recognize {
       }
     } else if (command.equals("streamrecognize")) {
       streamingRecognizeFile(path);
-    } else if (command.equals("punctuation")) {
-      if (path.startsWith("gs://")) {
-        transcribeGcsWithAutomaticPunctuation(path);
-      } else {
-        transcribeFileWithAutomaticPunctuation(path);
-      }
     } else if (command.equals("video")) {
       if (path.startsWith("gs://")) {
         transcribeGcsVideoFile(path);
@@ -235,7 +226,7 @@ public class Recognize {
           .build();
 
       // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata, Operation> response =
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
           speech.longRunningRecognizeAsync(config, audio);
 
       while (!response.isDone()) {
@@ -276,8 +267,7 @@ public class Recognize {
           .build();
 
       // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata,
-          Operation> response =
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
           speech.longRunningRecognizeAsync(config, audio);
       while (!response.isDone()) {
         System.out.println("Waiting for response...");
@@ -324,7 +314,7 @@ public class Recognize {
           .build();
 
       // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata, Operation> response =
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
           speech.longRunningRecognizeAsync(config, audio);
       while (!response.isDone()) {
         System.out.println("Waiting for response...");
@@ -427,80 +417,7 @@ public class Recognize {
     speech.close();
   }
 
-
-  /**
-   * Performs transcription with automatic punctuation on raw PCM audio data.
-   *
-   * @param fileName the path to a PCM audio file to transcribe.
-   */
-  public static void transcribeFileWithAutomaticPunctuation(String fileName) throws Exception {
-    Path path = Paths.get(fileName);
-    byte[] content = Files.readAllBytes(path);
-
-    // [START transcribe_file_with_automatic_punctuation]
-    try (SpeechClient speechClient = SpeechClient.create()) {
-      // Configure request with local raw PCM audio
-      RecognitionConfig recConfig = RecognitionConfig.newBuilder()
-          .setEncoding(AudioEncoding.LINEAR16)
-          .setLanguageCode("en-US")
-          .setSampleRateHertz(16000)
-          .setEnableAutomaticPunctuation(true)
-          .build();
-
-      RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
-          .setContent(ByteString.copyFrom(content))
-          .build();
-
-      RecognizeResponse recognizeResponse = speechClient.recognize(recConfig, recognitionAudio);
-      // Just print the first result here.
-      SpeechRecognitionResult result = recognizeResponse.getResultsList().get(0);
-      // There can be several alternative transcripts for a given chunk of speech. Just use the
-      // first (most likely) one here.
-      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-      System.out.printf("Transcript : %s\n", alternative.getTranscript());
-    }
-    // [END transcribe_file_with_automatic_punctuation]
-  }
-
-  /**
-   * Performs transcription on remote FLAC file and prints the transcription.
-   *
-   * @param gcsUri the path to the remote FLAC audio file to transcribe.
-   */
-  public static void transcribeGcsWithAutomaticPunctuation(String gcsUri) throws Exception {
-    // [START transcribe_gcs_with_automatic_punctuation]
-    try (SpeechClient speechClient = SpeechClient.create()) {
-
-      RecognitionConfig config = RecognitionConfig.newBuilder()
-          .setEncoding(AudioEncoding.FLAC)
-          .setLanguageCode("en-US")
-          .setSampleRateHertz(16000)
-          .setEnableAutomaticPunctuation(true)
-          .build();
-      RecognitionAudio audio = RecognitionAudio.newBuilder()
-          .setUri(gcsUri)
-          .build();
-
-      // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata, Operation> response =
-          speechClient.longRunningRecognizeAsync(config, audio);
-
-      while (!response.isDone()) {
-        System.out.println("Waiting for response...");
-        Thread.sleep(10000);
-      }
-
-      // Just print the first result here.
-      SpeechRecognitionResult result = response.get().getResultsList().get(0);
-
-      // There can be several alternative transcripts for a given chunk of speech. Just use the
-      // first (most likely) one here.
-      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-      System.out.printf("Transcript : %s\n", alternative.getTranscript());
-    }
-    // [START transcribe_gcs_with_automatic_punctuation]
-  }
-
+  // [START speech_transcribe_model_selection]
   /**
    * Performs transcription of the given audio file synchronously with
    * video as the original media type.
@@ -510,13 +427,7 @@ public class Recognize {
     Path path = Paths.get(fileName);
     byte[] content = Files.readAllBytes(path);
 
-    // [START transcribe_video_file]
     try (SpeechClient speech = SpeechClient.create()) {
-
-      RecognitionMetadata recognitionMetadata = RecognitionMetadata.newBuilder()
-          .setOriginalMediaType(OriginalMediaType.VIDEO)
-          .build();
-
       // Configure request with video media type
       RecognitionConfig recConfig = RecognitionConfig.newBuilder()
           // encoding may either be omitted or must match the value in the file header
@@ -524,7 +435,7 @@ public class Recognize {
           .setLanguageCode("en-US")
           // sample rate hertz may be either be omitted or must match the value in the file header
           .setSampleRateHertz(16000)
-          .setMetadata(recognitionMetadata)
+          .setModel("video")
           .build();
 
       RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
@@ -540,21 +451,17 @@ public class Recognize {
       SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
-    // [END transcribe_video_file]
+    // [END speech_transcribe_model_selection]
   }
 
+  // [START speech_transcribe_model_selection_gcs]
   /**
    * Performs transcription on remote video file and prints the transcription.
    *
    * @param gcsUri the path to the remote video file to transcribe.
    */
   public static void transcribeGcsVideoFile(String gcsUri) throws Exception {
-    // [START transcribe_video_gcs]
     try (SpeechClient speech = SpeechClient.create()) {
-
-      RecognitionMetadata recognitionMetadata = RecognitionMetadata.newBuilder()
-          .setOriginalMediaType(OriginalMediaType.VIDEO)
-          .build();
 
       // Configure request with video media type
       RecognitionConfig config = RecognitionConfig.newBuilder()
@@ -563,7 +470,7 @@ public class Recognize {
           .setLanguageCode("en-US")
           // sample rate hertz may be either be omitted or must match the value in the file header
           .setSampleRateHertz(16000)
-          .setMetadata(recognitionMetadata)
+          .setModel("video")
           .build();
 
       RecognitionAudio audio = RecognitionAudio.newBuilder()
@@ -571,7 +478,7 @@ public class Recognize {
           .build();
 
       // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata, Operation> response =
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
           speech.longRunningRecognizeAsync(config, audio);
 
       while (!response.isDone()) {
@@ -588,6 +495,6 @@ public class Recognize {
       SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
       System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
-    // [START transcribe_video_gcs]
+    // [END speech_transcribe_model_selection_gcs]
   }
 }

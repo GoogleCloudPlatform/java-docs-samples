@@ -1,5 +1,5 @@
 /*
-  Copyright 2017, Google, Inc.
+  Copyright 2018, Google, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -111,26 +111,11 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testAutomaticPunctuationFile() throws Exception {
-    Recognize.transcribeFileWithAutomaticPunctuation(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("How");
-    assertThat(got).contains("Bridge?");
-  }
-
-  @Test
-  public void testAutomaticPunctuationGcs() throws Exception {
-    Recognize.transcribeGcsWithAutomaticPunctuation(gcsAudioPath);
-    String got = bout.toString();
-    assertThat(got).contains("How");
-    assertThat(got).contains("Bridge?");
-  }
-
-  @Test
   public void testVideoTranscription() throws Exception {
     Recognize.transcribeVideoFile(videoFileName);
     String got = bout.toString();
     assertThat(got).contains("OK Google");
+    assertThat(got).contains("the weather outside is sunny");
   }
 
   @Test
@@ -138,5 +123,6 @@ public class RecognizeIT {
     Recognize.transcribeGcsVideoFile(gcsVideoPath);
     String got = bout.toString();
     assertThat(got).contains("OK Google");
+    assertThat(got).contains("the weather outside is sunny");
   }
 }

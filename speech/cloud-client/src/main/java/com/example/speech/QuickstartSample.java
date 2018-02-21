@@ -1,5 +1,5 @@
 /*
-  Copyright 2017, Google Inc.
+  Copyright 2018, Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.example.speech;
 
 // [START speech_quickstart]
 // Imports the Google Cloud client library
-import com.google.cloud.speech.v1_1beta1.SpeechClient;
+import com.google.cloud.speech.v1p1beta1.SpeechClient;
 import com.google.cloud.speech.v1p1beta1.RecognitionAudio;
 import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
 import com.google.cloud.speech.v1p1beta1.RecognitionConfig.AudioEncoding;
