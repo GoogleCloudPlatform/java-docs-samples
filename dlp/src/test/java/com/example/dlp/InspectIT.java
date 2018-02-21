@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,12 +24,15 @@ import java.io.File;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
+//CHECKSTYLE OFF: AbbreviationAsWordInName
 public class InspectIT {
+  //CHECKSTYLE ON: AbbreviationAsWordInName
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -68,6 +71,7 @@ public class InspectIT {
     assertTrue(output.contains("EMAIL_ADDRESS"));
   }
 
+  @Ignore // TODO: b/69461298
   @Test
   public void testImageFileInspectionReturnsInfoTypes() throws Exception {
     ClassLoader classLoader = getClass().getClassLoader();
@@ -87,7 +91,7 @@ public class InspectIT {
     assertTrue(output.contains("EMAIL_ADDRESS"));
   }
 
-  // Requires  a Datastore kind containing an entity
+  // Requires a Datastore kind containing an entity
   // with phone number and email address properties.
   @Test
   public void testDatastoreInspectionReturnsInfoTypes() throws Exception {
@@ -95,6 +99,17 @@ public class InspectIT {
     String output = bout.toString();
     assertTrue(output.contains("PHONE_NUMBER"));
     assertTrue(output.contains("EMAIL_ADDRESS"));
+  }
+
+  @Test
+  public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
+    Inspect.main(new String[] {
+        "-bq",
+        "-datasetId", "integration_tests_dlp",
+        "-tableId", "harmful"
+    });
+    String output = bout.toString();
+    assertTrue(output.contains("PHONE_NUMBER"));
   }
 
   @After

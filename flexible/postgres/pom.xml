@@ -20,11 +20,14 @@
   <groupId>com.example.flexible</groupId>
   <artifactId>flexible-postgres</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-flexible</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
 <!-- [START properties] -->
@@ -53,17 +56,17 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.22.0</version>
+      <version>1.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.22.0</version>
+      <version>1.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.22.0</version>
+      <version>1.23.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -76,13 +79,13 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.1.4.jre7</version>
+      <version>42.2.1</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.5</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

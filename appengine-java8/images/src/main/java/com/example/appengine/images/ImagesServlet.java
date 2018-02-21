@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.api.images.Transform;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
@@ -108,6 +109,16 @@ public class ImagesServlet extends HttpServlet {
         ByteBuffer.wrap(rotatedImage.getImageData()));
     //[END rotate]
 
+    // [START servingUrl]
+    // Create a fixed dedicated URL that points to the GCS hosted file
+    ServingUrlOptions options = ServingUrlOptions.Builder
+            .withGoogleStorageFileName("/gs/" + bucket + "/image.jpeg")
+            .imageSize(150)
+            .crop(true)
+            .secureUrl(true);
+    String url = imagesService.getServingUrl(options);
+    // [END servingUrl]
+
     // Output some simple HTML to display the images we wrote to Cloud Storage
     // in the browser.
     PrintWriter out = resp.getWriter();
@@ -118,6 +129,7 @@ public class ImagesServlet extends HttpServlet {
         + "/resizedImage.jpeg' alt='AppEngine logo resized' />");
     out.println("<img src='//storage.cloud.google.com/" + bucket
         + "/rotatedImage.jpeg' alt='AppEngine logo rotated' />");
+    out.println("<img src='" + url + "' alt='Hosted logo' />");
     out.println("</body></html>\n");
   }
 }

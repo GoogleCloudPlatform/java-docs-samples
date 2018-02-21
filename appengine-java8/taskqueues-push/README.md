@@ -1,5 +1,8 @@
 # A Java Task Queue example for Google App Engine
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/taskqueues-push/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use the [TaskQueue API][taskqueue-api] on [Google App
 Engine][ae-docs].
 

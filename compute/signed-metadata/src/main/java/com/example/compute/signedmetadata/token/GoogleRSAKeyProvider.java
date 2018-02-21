@@ -1,16 +1,19 @@
-// Copyright 2017 Google Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-//     Unless required by applicable law or agreed to in writing, software
-//     distributed under the License is distributed on an "AS IS" BASIS,
-//     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//     See the License for the specific language governing permissions and
-//     limitations under the License.
+/*
+ * Copyright 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.compute.signedmetadata.token;
 
 import com.auth0.jwt.exceptions.AlgorithmMismatchException;
@@ -18,7 +21,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.google.common.base.Suppliers;
 import com.google.gson.Gson;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +35,14 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+//CHECKSTYLE OFF: AbbreviationAsWordInName
 class GoogleRSAKeyProvider implements RSAKeyProvider {
+  //CHECKSTYLE ON: AbbreviationAsWordInName
 
   private static final String GOOGLEAPIS_CERTS = "https://www.googleapis.com/oauth2/v1/certs";
 
-  private final Supplier<Map<String, String>> cachedSignedCertificates = Suppliers.memoizeWithExpiration(
-      this::getNewCertificate,1, TimeUnit.HOURS);
+  private final Supplier<Map<String, String>> cachedSignedCertificates
+      = Suppliers.memoizeWithExpiration(this::getNewCertificate,1, TimeUnit.HOURS);
 
   @SuppressWarnings("unchecked")
   private Map<String, String> getNewCertificate() {
@@ -60,7 +64,7 @@ class GoogleRSAKeyProvider implements RSAKeyProvider {
           "Cannot verify without kid, we need to know which certificate should we use.");
     }
     String certificate = cachedSignedCertificates.get().get(kid);
-    return transformPEMCertificateToRSAKey(certificate);
+    return transformPemCertificateToRsaKey(certificate);
   }
 
   @Override
@@ -73,12 +77,12 @@ class GoogleRSAKeyProvider implements RSAKeyProvider {
     throw new UnsupportedOperationException("This class is used to decode certificates only.");
   }
 
-  private RSAPublicKey transformPEMCertificateToRSAKey(String cert) {
+  private RSAPublicKey transformPemCertificateToRsaKey(String cert) {
     try {
       InputStream is = new ByteArrayInputStream(cert.getBytes());
       Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(is);
       is.close();
-      return safelyCastToRSAPublicKey(certificate.getPublicKey());
+      return safelyCastToRsaPublicKey(certificate.getPublicKey());
     } catch (CertificateException e) {
       throw new JWTVerificationException("Could not extract RSA key from certificate String.",e);
     } catch (IOException e) {
@@ -87,7 +91,7 @@ class GoogleRSAKeyProvider implements RSAKeyProvider {
     }
   }
 
-  private RSAPublicKey safelyCastToRSAPublicKey(PublicKey publicKey) {
+  private RSAPublicKey safelyCastToRsaPublicKey(PublicKey publicKey) {
     if (publicKey instanceof RSAPublicKey) {
       return (RSAPublicKey) publicKey;
     } else {

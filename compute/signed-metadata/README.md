@@ -1,5 +1,8 @@
 # Verify instance identity Java sample for Google Compute Engine
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=compute/signed-metadata/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This repository contains example code in Java that downloads and verifies JWT
 provided by metadata endpoint, which is available on Compute Engine instances in
 GCP.

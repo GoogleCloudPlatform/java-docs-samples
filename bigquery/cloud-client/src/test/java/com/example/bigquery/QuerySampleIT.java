@@ -1,18 +1,18 @@
 /*
-  Copyright 2016, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.bigquery;
 
@@ -22,15 +22,14 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 /** Tests for query sample. */
 @RunWith(JUnit4.class)
@@ -73,7 +72,7 @@ public class QuerySampleIT {
 
   @Test
   public void testSimpleQuery() throws Exception {
-    QuerySample.main(new String[]{"--query", LEGACY_SQL_QUERY, "--runSimpleQuery"});
+    QuerySample.main(new String[]{"--query", STANDARD_SQL_QUERY, "--runSimpleQuery"});
     String got = bout.toString();
     assertThat(got).contains(CORPUS_NAME);
   }
@@ -87,7 +86,7 @@ public class QuerySampleIT {
 
   @Test
   public void testUncachedQuery() throws Exception {
-    QuerySample.main(new String[]{"--query", LEGACY_SQL_QUERY, "--runSimpleQuery"});
+    QuerySample.main(new String[]{"--query", STANDARD_SQL_QUERY, "--runSimpleQuery"});
     String got = bout.toString();
     assertThat(got).contains(CORPUS_NAME);
   }
@@ -98,7 +97,7 @@ public class QuerySampleIT {
   // See: https://cloud.google.com/bigquery/querying-data#interactive-batch
   @Ignore
   public void testBatchQuery() throws Exception {
-    QuerySample.main(new String[]{"--query", LEGACY_SQL_QUERY, "--runBatchQuery"});
+    QuerySample.main(new String[]{"--query", STANDARD_SQL_QUERY, "--runBatchQuery"});
     String got = bout.toString();
     assertThat(got).contains(CORPUS_NAME);
   }
@@ -112,7 +111,7 @@ public class QuerySampleIT {
     QuerySample.main(
         new String[]{
             "--query",
-            LEGACY_SQL_QUERY,
+            STANDARD_SQL_QUERY,
             "--runPermanentTableQuery",
             "--destDataset",
             TEST_DATASET,

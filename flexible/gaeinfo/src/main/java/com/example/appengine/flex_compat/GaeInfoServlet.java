@@ -1,18 +1,24 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
+//CHECKSTYLE OFF: PackageName
+
 package com.example.appengine.flex_compat;
+
+//CHECKSTYLE ON: PackageName
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
@@ -22,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import java.io.IOException;
+import java.lang.Exception;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
@@ -54,16 +61,16 @@ public class GaeInfoServlet extends HttpServlet {
       "/computeMetadata/v1/instance/service-accounts/default/aliases",
       "/computeMetadata/v1/instance/service-accounts/default/",
       "/computeMetadata/v1/instance/service-accounts/default/scopes",
-// Tokens work - but are a security risk to display
-//      "/computeMetadata/v1/instance/service-accounts/default/token"
+      // Tokens work - but are a security risk to display
+      //      "/computeMetadata/v1/instance/service-accounts/default/token"
   };
 
   final String[] metaServiceAcct = {
       "/computeMetadata/v1/instance/service-accounts/{account}/aliases",
       "/computeMetadata/v1/instance/service-accounts/{account}/email",
       "/computeMetadata/v1/instance/service-accounts/{account}/scopes",
-// Tokens work - but are a security risk to display
-//     "/computeMetadata/v1/instance/service-accounts/{account}/token"
+      // Tokens work - but are a security risk to display
+      //     "/computeMetadata/v1/instance/service-accounts/{account}/token"
   };
 
   private final String metadata = "http://metadata.google.internal";
@@ -83,27 +90,38 @@ public class GaeInfoServlet extends HttpServlet {
 
   // Fetch Metadata
   String fetchMetadata(String key) throws IOException {
-    Request request = new Request.Builder()
-        .url(metadata + key)
-        .addHeader("Metadata-Flavor", "Google")
-        .get()
-        .build();
+    try {
+      Request request = new Request.Builder()
+          .url(metadata + key)
+          .addHeader("Metadata-Flavor", "Google")
+          .get()
+          .build();
 
-    Response response = ok.newCall(request).execute();
-    return response.body().string();
+      Response response = ok.newCall(request).execute();
+      return response.body().string();
+    } catch (Exception e) {
+      log("fetchMetadata - " + metadata + key + ": ", e);
+    }
+    return "";
   }
 
   String fetchJsonMetadata(String prefix) throws IOException {
-    Request request = new Request.Builder()
-        .url(metadata + prefix )
-        .addHeader("Metadata-Flavor", "Google")
-        .get()
-        .build();
+    String json = "";
+    try {
+      Request request = new Request.Builder()
+          .url(metadata + prefix)
+          .addHeader("Metadata-Flavor", "Google")
+          .get()
+          .build();
 
-    Response response = ok.newCall(request).execute();
-
-    // Convert json to prety json
-    return gson.toJson(jp.parse(response.body().string()));
+      Response response = ok.newCall(request).execute();
+      // Convert json to prety json
+      json = response.body().string();
+      return gson.toJson(jp.parse(json));
+    } catch (Exception e) {
+      log("fetchJsonMetadata - " + metadata + prefix + " : ", e);
+    }
+    return "{}";
   }
 
   @Override
@@ -127,7 +145,7 @@ public class GaeInfoServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String key ="";
+    String key = "";
     final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
     WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
 

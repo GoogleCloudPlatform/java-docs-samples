@@ -18,15 +18,14 @@ package com.example.cloud.translate.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Unit tests for {@link TranslateText}.
@@ -94,7 +93,9 @@ public class TranslateTextTest {
     // Assert
     String got = bout.toString();
     for (String language : languages) {
-      assertThat(got).contains(language);
+      bout.reset();
+      out.print(language);
+      assertThat(got).contains(bout.toString());
     }
   }
 

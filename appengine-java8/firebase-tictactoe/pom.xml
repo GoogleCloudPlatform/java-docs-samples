@@ -20,30 +20,26 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-firebase-tictactoe-j8</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>appengine-java8-samples</artifactId>
-      <version>1.0.0</version>
-      <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
-      <objectify.version>5.1.21</objectify.version>
-
-      <gson.version>2.7</gson.version>
-      <guava.version>20.0</guava.version>
-      <google-api-client.version>1.22.0</google-api-client.version>
-      <junit.version>4.12</junit.version>
-      <mockito.version>1.10.19</mockito.version>
-      <google-truth.version>0.34</google-truth.version>
-      <appengine-maven.version>1.3.1</appengine-maven.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.62</version>
     </dependency>
 
     <dependency>
@@ -57,22 +53,22 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.1</version>
+      <version>2.8.2</version>
     </dependency>
     <dependency>
         <groupId>com.googlecode.objectify</groupId>
         <artifactId>objectify</artifactId>
-        <version>${objectify.version}</version>
+        <version>5.1.21</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
+      <version>23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>${google-api-client.version}</version>
+      <version>1.23.0</version>
     </dependency>
 
 
@@ -80,37 +76,37 @@
     <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
+        <version>4.12</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>${mockito.version}</version>
+        <version>1.10.19</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-testing</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.62</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-api-stubs</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.62</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-tools-sdk</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.62</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.truth</groupId>
         <artifactId>truth</artifactId>
-        <version>${google-truth.version}</version>
+        <version>0.39</version>
         <scope>test</scope>
     </dependency>
   </dependencies>
@@ -121,7 +117,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine-maven.version}</version>
+        <version>1.3.2</version>
       </plugin>
     </plugins>
   </build>

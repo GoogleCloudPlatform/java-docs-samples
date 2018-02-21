@@ -1,5 +1,8 @@
 # Getting Started with Cloud Pub/Sub and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=pubsub/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Pub/Sub][pubsub] is a fully-managed real-time messaging service that allows you to
 send and receive messages between independent applications.
 This sample Java application demonstrates how to access the Pub/Sub API using
@@ -31,7 +34,7 @@ For more samples, see the samples in
 
 #### Create a subscription
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic-id my-sub"
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic my-sub"
 ```
 
 #### Publish messages

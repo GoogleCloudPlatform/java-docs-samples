@@ -19,18 +19,19 @@
   <artifactId>monitoring-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
-  <!-- Parent defines config for testing & linting. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <!-- Workaround for issue : https://github.com/GoogleCloudPlatform/google-cloud-java/issues/2192 -->
@@ -39,12 +40,12 @@
       <dependency>
         <groupId>com.google.auth</groupId>
         <artifactId>google-auth-library-credentials</artifactId>
-        <version>0.7.1</version>
+        <version>0.9.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.auth</groupId>
         <artifactId>google-auth-library-oauth2-http</artifactId>
-        <version>0.7.1</version>
+        <version>0.9.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -54,7 +55,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.21.1-alpha</version>
+      <version>0.34.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -72,7 +73,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.34</version>
+      <version>0.39</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,4 +1,8 @@
 # Cloud Data Loss Prevention (DLP) API Samples
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=dlp/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 The [Data Loss Prevention API](https://cloud.google.com/dlp/docs/) provides programmatic access to 
 a powerful detection engine for personally identifiable information and other privacy-sensitive data
  in unstructured data streams.
@@ -6,8 +10,10 @@ a powerful detection engine for personally identifiable information and other pr
 ## Setup
 - A Google Cloud project with billing enabled
 - [Enable](https://console.cloud.google.com/launcher/details/google/dlp.googleapis.com) the DLP API.
-- (Local testing)[Create a service account](https://cloud.google.com/docs/authentication/getting-started)
+- (Local testing) [Create a service account](https://cloud.google.com/docs/authentication/getting-started)
 and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to the downloaded credentials file.
+- (Local testing) Set the `DLP_DEID_WRAPPED_KEY` environment variable to an AES-256 key encrypted ('wrapped') [with a Cloud Key Management Service (KMS) key](https://cloud.google.com/kms/docs/encrypt-decrypt).
+- (Local testing) Set the `DLP_DEID_KEY_NAME` environment variable to the path-name of the Cloud KMS key you wrapped `DLP_DEID_WRAPPED_KEY` with.
 
 ## Build
 This project uses the [Assembly Plugin](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html) to build an uber jar.

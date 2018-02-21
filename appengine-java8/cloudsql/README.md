@@ -1,5 +1,9 @@
 # Cloud SQL sample for Google App Engine
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/cloudsql/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/cloudsql/) on Google App
 Engine standard Java 8
 

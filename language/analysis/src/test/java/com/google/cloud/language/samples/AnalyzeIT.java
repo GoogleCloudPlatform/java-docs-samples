@@ -18,19 +18,19 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.language.v1.Entity;
-import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.PartOfSpeech.Tag;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Token;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Integration (system) tests for {@link Analyze}.
@@ -38,122 +38,142 @@ import java.util.stream.Collectors;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AnalyzeIT {
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BUCKET = PROJECT_ID;
 
-  private Analyze analyzeApp;
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
 
-  @Before public void setup() throws Exception {
-    analyzeApp = new Analyze(LanguageServiceClient.create());
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
   }
 
-  @Test public void analyzeEntities_withEntities_returnsLarryPage() throws Exception {
-    // Act
-    List<Entity> entities =
-        analyzeApp.analyzeEntitiesText(
-            "Larry Page, Google's co-founder, once described the 'perfect search engine' as"
+  @Test
+  public void analyzeCategoriesInTextReturnsExpectedResult() throws Exception {
+    Analyze.classifyText("Android is a mobile operating system developed by Google, "
+        + "based on the Linux kernel and designed primarily for touchscreen "
+        + "mobile devices such as smartphones and tablets.");
+    String got = bout.toString();
+    assertThat(got).contains("Computers & Electronics");
+  }
+
+  @Test
+  public void analyzeCategoriesInFileReturnsExpectedResult() throws Exception {
+    String gcsFile = "gs://" + PROJECT_ID + "/natural-language/android_text.txt";
+    Analyze.classifyFile(gcsFile);
+    String got = bout.toString();
+    assertThat(got).contains("Computers & Electronics");
+  }
+
+  @Test
+  public void analyzeEntities_withEntities_returnsLarryPage() throws Exception {
+    Analyze.analyzeEntitiesText(
+        "Larry Page, Google's co-founder, once described the 'perfect search engine' as"
             + " something that 'understands exactly what you mean and gives you back exactly what"
             + " you want.' Since he spoke those words Google has grown to offer products beyond"
             + " search, but the spirit of what he said remains.");
-    List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
-
-    // Assert
-    assertThat(got).named("entity names").contains("Larry Page");
+    String got = bout.toString();
+    assertThat(got).contains("Larry Page");
   }
 
-  @Test public void analyzeEntities_withEntitiesFile_containsGod() throws Exception {
-    // Act
-    List<Entity> entities =
-        analyzeApp.analyzeEntitiesFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
-    List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
-
-    // Assert
-    assertThat(got).named("entity names").contains("God");
+  @Test
+  public void analyzeEntities_withEntitiesFile_containsGod() throws Exception {
+    Analyze.analyzeEntitiesFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
+    String got = bout.toString();
+    assertThat(got).contains("God");
   }
 
-  @Test public void analyzeSentimentText_returnPositive() throws Exception {
-    // Act
-    Sentiment sentiment =
-        analyzeApp.analyzeSentimentText(
-            "Tom Cruise is one of the finest actors in hollywood and a great star!");
-
-    // Assert
-    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+  @Test
+  public void analyzeSentimentText_returnPositive() throws Exception {
+    Sentiment sentiment = Analyze.analyzeSentimentText(
+        "Tom Cruise is one of the finest actors in hollywood and a great star!");
+    assertThat(sentiment.getMagnitude()).isGreaterThan(0.0F);
+    assertThat(sentiment.getScore()).isGreaterThan(0.0F);
   }
 
-  @Test public void analyzeSentimentFile_returnPositiveFile() throws Exception {
-    // Act
-    Sentiment sentiment =
-        analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
+  @Test
+  public void analyzeSentimentFile_returnPositiveFile() throws Exception {
+    Sentiment sentiment = Analyze.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
         + "sentiment/bladerunner-pos.txt");
-
-    // Assert
-    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+    assertThat(sentiment.getMagnitude()).isGreaterThan(0.0F);
+    assertThat(sentiment.getScore()).isGreaterThan(0.0F);
   }
 
-  @Test public void analyzeSentiment_returnNegative() throws Exception {
-    // Act
-    Sentiment sentiment =
-        analyzeApp.analyzeSentimentText(
-            "That was the worst performance I've seen in awhile.");
-
-    // Assert
-    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getScore()).isLessThan(0.0);
+  @Test
+  public void analyzeSentimentText_returnNegative() throws Exception {
+    Sentiment sentiment = Analyze.analyzeSentimentText(
+        "That was the worst performance I've seen in a while.");
+    assertThat(sentiment.getMagnitude()).isGreaterThan(0.0F);
+    assertThat(sentiment.getScore()).isLessThan(0.0F);
   }
 
-  @Test public void analyzeSentiment_returnNegativeFile() throws Exception {
-    // Act
-    Sentiment sentiment =
-        analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
+  @Test
+  public void analyzeSentiment_returnNegative() throws Exception {
+    Sentiment sentiment = Analyze.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
         + "sentiment/bladerunner-neg.txt");
-
-    // Assert
-    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getScore()).isLessThan(0.0);
+    assertThat(sentiment.getMagnitude()).isGreaterThan(0.0F);
+    assertThat(sentiment.getScore()).isLessThan(0.0F);
   }
 
-  @Test public void analyzeSentiment_returnNeutralFile() throws Exception {
-    // Act
-    Sentiment sentiment =
-        analyzeApp.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
+  @Test
+  public void analyzeSentiment_returnNeutralFile() throws Exception {
+    Sentiment sentiment = Analyze.analyzeSentimentFile("gs://" + BUCKET + "/natural-language/"
         + "sentiment/bladerunner-neutral.txt");
-
-    // Assert
-    assertThat((double)sentiment.getMagnitude()).isGreaterThan(1.0);
-// TODO sentiment score for netural sample appears to be zero now.
-//    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+    assertThat(sentiment.getMagnitude()).isGreaterThan(1.0F);
+    // TODO sentiment score for netural sample appears to be zero now.
+    // assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
   }
 
-  @Test public void analyzeSyntax_partOfSpeech() throws Exception {
-    // Act
-    List<Token> token =
-        analyzeApp.analyzeSyntaxText(
-            "President Obama was elected for the second term");
+  @Test
+  public void analyzeSyntax_partOfSpeech() throws Exception {
+    List<Token> tokens = Analyze
+        .analyzeSyntaxText("President Obama was elected for the second term");
 
-    List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
+    List<Tag> got = tokens.stream().map(e -> e.getPartOfSpeech().getTag())
         .collect(Collectors.toList());
 
-    // Assert
     assertThat(got).containsExactly(Tag.NOUN, Tag.NOUN, Tag.VERB,
         Tag.VERB, Tag.ADP, Tag.DET, Tag.ADJ, Tag.NOUN).inOrder();
   }
 
-  @Test public void analyzeSyntax_partOfSpeechFile() throws Exception {
-    // Act
-    List<Token> token =
-        analyzeApp.analyzeSyntaxFile("gs://" + BUCKET + "/natural-language/"
-                + "sentiment/bladerunner-neutral.txt");
+  @Test
+  public void analyzeSyntax_partOfSpeechFile() throws Exception {
+    List<Token> token = Analyze.analyzeSyntaxFile("gs://" + BUCKET + "/natural-language/"
+        + "sentiment/bladerunner-neutral.txt");
 
     List<Tag> got = token.stream().map(e -> e.getPartOfSpeech().getTag())
         .collect(Collectors.toList());
 
-    // Assert
     assertThat(got).containsExactly(Tag.PRON, Tag.CONJ, Tag.VERB, Tag.CONJ, Tag.VERB,
         Tag.DET, Tag.NOUN, Tag.PUNCT, Tag.NOUN, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.CONJ,
         Tag.ADV, Tag.PRON, Tag.VERB, Tag.VERB, Tag.VERB, Tag.ADJ, Tag.PUNCT, Tag.DET,
-        Tag.NOUN, Tag.VERB, Tag.ADV, Tag.ADJ,Tag.PUNCT).inOrder();
+        Tag.NOUN, Tag.VERB, Tag.ADV, Tag.ADJ, Tag.PUNCT).inOrder();
   }
+
+  @Test
+  public void analyzeEntitySentimentTextReturnsExpectedResult() throws Exception {
+    Analyze.entitySentimentText("Oranges, grapes, and apples can be "
+        + "found in the cafeterias located in Mountain View, Seattle, and London.");
+    String got = bout.toString();
+    assertThat(got).contains("Seattle");
+  }
+
+  @Test
+  public void analyzeEntitySentimentTextEncodedReturnsExpectedResult() throws Exception {
+    Analyze.entitySentimentText("foo→bar");
+    String got = bout.toString();
+    assertThat(got).contains("offset: 4");
+  }
+
+  @Test
+  public void analyzeEntitySentimenFileReturnsExpectedResult() throws Exception {
+    Analyze.entitySentimentFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
+    String got = bout.toString();
+    assertThat(got).contains("God");
+  }
+
 }

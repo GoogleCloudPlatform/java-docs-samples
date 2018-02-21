@@ -1,4 +1,8 @@
 # Stackdriver sample for Google Compute Engine
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=compute/error-reporting/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use [Stackdriver](https://cloud.google.com/error-reporting/) on Google Compute Engine
 ## Running on Compute Engine
 1. Create a compute instance on the Google Cloud Platform Developer's Console

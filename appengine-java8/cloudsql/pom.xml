@@ -20,11 +20,14 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-cloudsql-j8</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>appengine-java8-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
   </parent>
 
 <!-- [START properties] -->
@@ -45,11 +48,10 @@
 <!-- [END properties] -->
 
   <dependencies>
-    <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.54</version>
+      <version>1.9.62</version>
     </dependency>
 
     <dependency>
@@ -63,7 +65,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.22.0</version>
+      <version>1.23.0</version>
     </dependency>
 
     <!-- [START dependencies] -->
@@ -75,8 +77,9 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
-      <artifactId>mysql-socket-factory</artifactId> <!-- mysql-socket-factory-connector-j-6 if using 6.x.x -->
-      <version>1.0.3</version>
+      <!-- If using MySQL 6.x driver, use mysql-socket-factory-connector-j-6 instead -->
+      <artifactId>mysql-socket-factory</artifactId>
+      <version>1.0.5</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@ package com.example.compute.mailjet;
 
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

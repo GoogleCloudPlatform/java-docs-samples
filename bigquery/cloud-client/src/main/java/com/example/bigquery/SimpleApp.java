@@ -1,49 +1,50 @@
 /*
-  Copyright 2016, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.bigquery;
 
-// [START all]
-// [START imports]
+// [START bigquery_simple_app_all]
+// [START bigquery_simple_app_deps]
+
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.FieldValue;
+import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryResponse;
-import com.google.cloud.bigquery.QueryResult;
-
-import java.util.List;
+import com.google.cloud.bigquery.TableResult;
 import java.util.UUID;
-// [END imports]
+// [END bigquery_simple_app_deps]
 
 public class SimpleApp {
   public static void main(String... args) throws Exception {
-    // [START create_client]
+    // [START bigquery_simple_app_client]
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-    // [END create_client]
-    // [START run_query]
+    // [END bigquery_simple_app_client]
+    // [START bigquery_simple_app_query]
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(
-                "SELECT "
-                    + "APPROX_TOP_COUNT(corpus, 10) as title, "
-                    + "COUNT(*) as unique_words "
-                    + "FROM `publicdata.samples.shakespeare`;")
+          "SELECT "
+              + "CONCAT('https://stackoverflow.com/questions/', CAST(id as STRING)) as url, "
+              + "view_count "
+              + "FROM `bigquery-public-data.stackoverflow.posts_questions` "
+              + "WHERE tags like '%google-bigquery%' "
+              + "ORDER BY favorite_count DESC LIMIT 10")
             // Use standard SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
@@ -64,34 +65,21 @@ public class SimpleApp {
       // errors, not just the latest one.
       throw new RuntimeException(queryJob.getStatus().getError().toString());
     }
+    // [END bigquery_simple_app_query]
 
+    // [START bigquery_simple_app_print]
     // Get the results.
     QueryResponse response = bigquery.getQueryResults(jobId);
-    // [END run_query]
 
-    // [START print_results]
-    QueryResult result = response.getResult();
+    TableResult result = queryJob.getQueryResults();
 
     // Print all pages of the results.
-    while (result != null) {
-      for (List<FieldValue> row : result.iterateAll()) {
-        List<FieldValue> titles = row.get(0).getRepeatedValue();
-        System.out.println("titles:");
-
-        for (FieldValue titleValue : titles) {
-          List<FieldValue> titleRecord = titleValue.getRecordValue();
-          String title = titleRecord.get(0).getStringValue();
-          long uniqueWords = titleRecord.get(1).getLongValue();
-          System.out.printf("\t%s: %d\n", title, uniqueWords);
-        }
-
-        long uniqueWords = row.get(1).getLongValue();
-        System.out.printf("total unique words: %d\n", uniqueWords);
-      }
-
-      result = result.getNextPage();
+    for (FieldValueList row : result.iterateAll()) {
+      String url = row.get("url").getStringValue();
+      long viewCount = row.get("view_count").getLongValue();
+      System.out.printf("url: %s views: %d%n", url, viewCount);
     }
-    // [END print_results]
+    // [END bigquery_simple_app_print]
   }
 }
-// [END all]
+// [END bigquery_simple_app_all]

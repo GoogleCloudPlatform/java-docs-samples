@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,12 +25,15 @@ import java.io.File;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
+//CHECKSTYLE OFF: AbbreviationAsWordInName
 public class RedactIT {
+  //CHECKSTYLE ON: AbbreviationAsWordInName
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -51,6 +54,7 @@ public class RedactIT {
     assertTrue(output.contains("My phone number is _REDACTED_ and my email address is _REDACTED_"));
   }
 
+  @Ignore // TODO: b/69461298
   @Test
   public void testInfoTypesInImageAreReplaced() throws Exception {
     ClassLoader classLoader = getClass().getClassLoader();

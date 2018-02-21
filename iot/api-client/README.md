@@ -1,38 +1,24 @@
 # Cloud IoT Core Java Samples
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=iot/api-client/manager/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This folder contains Java samples that demonstrate an overview of the
 Google Cloud IoT Core platform.
 
 ## Quickstart
 
-1. Install the gCloud CLI as described in [the device manager guide](https://cloud.google.com/iot/docs/device_manager_guide).
-2. Create a PubSub topic:
-
-    gcloud beta pubsub topics create projects/my-iot-project/topics/device-events
-
-3. Add the special account `cloud-iot@system.gserviceaccount.com` to that
-PubSub topic from the [Cloud Developer Console](https://console.cloud.google.com)
-or by using the helper script in the [/scripts](./scripts) folder.
-
-4. Create a registry:
-
-    gcloud alpha iot registries create my-registry \
-        --project=my-iot-project \
-        --region=us-central1 \
-        --pubsub-topic=projects/my-iot-project/topics/device-events
-
-5. Use the [`generate_keys.sh`](generate_keys.sh) script to generate your signing keys:
+1. From the [Google Cloud IoT Core section](https://console.cloud.google.com/iot/)
+   of the Google Cloud console, create a device registry.
+2. Use the [`generate_keys.sh`](generate_keys.sh) script to generate your signing keys:
 
     ./generate_keys.sh
 
-6. Create a device.
+3. Add a device using the file `rsa_cert.pem`, specifying RS256_X509 and using the
+  text copy of the public key starting with the ----START---- block of the certificate.
 
-    gcloud alpha iot devices create my-java-device \
-        --project=my-iot-project \
-        --region=us-central1 \
-        --registry=my-registry \
-        --public-key path=rsa_cert.pem,type=rs256
+    cat rsa_cert.pem
 
-7. Connect a sample device using the sample app in the [`mqtt_example`](./mqtt_example) folder.
-8. Learn how to manage devices programatically with the sample app in the
-`manager` folder.
+4. Connect a device using the HTTP or MQTT device samples in the [manager](./manager) folder.
 
+5. Programmattically control device configuration and using the device manager sample in the [manager](./manager) folder.

@@ -72,24 +72,24 @@ public class AuthorizeServlet extends HttpServlet {
     String auth =
         pusher.authenticate(socketId, channelId, new PresenceUser(currentUserId, userInfo));
     // if successful, returns authorization in the format
-    //    {
-    //      "auth":"49e26cb8e9dde3dfc009:a8cf1d3deefbb1bdc6a9d1547640d49d94b4b512320e2597c257a740edd1788f",
-    //      "channel_data":"{\"user_id\":\"23423435252\",\"user_info\":{\"displayName\":\"John Doe\"}}"
-    //    }
+    //{
+    //  "auth":"49e26cb8e9dde3dfc009:a8cf1d3deefbb1bdc6a9d1547640d49d94b4b512320e2597c257a740edd17",
+    //  "channel_data":"{\"user_id\":\"23423435252\",\"user_info\":{\"displayName\":\"John Doe\"}}"
+    //}
 
     response.getWriter().append(auth);
   }
 
   private static Map<String, String> splitQuery(String query) throws UnsupportedEncodingException {
-    Map<String, String> query_pairs = new HashMap<>();
+    Map<String, String> queryPairs = new HashMap<>();
     String[] pairs = query.split("&");
     for (String pair : pairs) {
       int idx = pair.indexOf("=");
-      query_pairs.put(
+      queryPairs.put(
           URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
           URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
     }
-    return query_pairs;
+    return queryPairs;
   }
 }
 // [END pusher_authorize]

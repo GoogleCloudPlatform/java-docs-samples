@@ -26,7 +26,6 @@ import com.google.cloud.speech.v1p1beta1.RecognizeResponse;
 import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1p1beta1.SpeechRecognitionResult;
 import com.google.protobuf.ByteString;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

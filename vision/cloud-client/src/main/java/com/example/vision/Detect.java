@@ -1,16 +1,19 @@
-/**
- * Copyright 2017, Google, Inc.
+/*
+ * Copyright 2017 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.vision;
 
 import com.google.cloud.vision.v1.AnnotateImageRequest;
@@ -27,6 +30,7 @@ import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
+import com.google.cloud.vision.v1.ImageContext;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.LocationInfo;
 import com.google.cloud.vision.v1.Page;
@@ -37,20 +41,24 @@ import com.google.cloud.vision.v1.TextAnnotation;
 import com.google.cloud.vision.v1.WebDetection;
 import com.google.cloud.vision.v1.WebDetection.WebEntity;
 import com.google.cloud.vision.v1.WebDetection.WebImage;
+import com.google.cloud.vision.v1.WebDetection.WebLabel;
 import com.google.cloud.vision.v1.WebDetection.WebPage;
+import com.google.cloud.vision.v1.WebDetectionParams;
 import com.google.cloud.vision.v1.Word;
+
 import com.google.protobuf.ByteString;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Detect {
 
   /**
-   * Detects entities,sentiment and syntax in a document using the Natural Language API.
+   * Detects entities, sentiment, and syntax in a document using the Vision API.
    *
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -69,19 +77,17 @@ public class Detect {
     if (args.length < 1) {
       out.println("Usage:");
       out.printf(
-          "\tjava %s \"<command>\" \"<path-to-image>\"\n"
+          "\tmvn exec:java -DDetect -Dexec.args=\"<command> <path-to-image>\"\n"
               + "Commands:\n"
               + "\tfaces | labels | landmarks | logos | text | safe-search | properties"
-              + "| web | crop \n"
+              + "| web | web-entities | web-entities-include-geo | crop \n"
               + "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
-              + "resource (gs://...)\n",
-          Detect.class.getCanonicalName());
+              + "resource (gs://...)\n");
       return;
     }
     String command = args[0];
     String path = args.length > 1 ? args[1] : "";
 
-    Detect app = new Detect();
     if (command.equals("faces")) {
       if (path.startsWith("gs://")) {
         detectFacesGcs(path, out);
@@ -132,6 +138,18 @@ public class Detect {
       } else {
         detectWebDetections(path, out);
       }
+    } else if (command.equals("web-entities")) {
+      if (path.startsWith("gs://")) {
+        detectWebEntitiesGcs(path, out);
+      } else {
+        detectWebEntities(path, out);
+      }
+    } else if (command.equals("web-entities-include-geo")) {
+      if (path.startsWith("gs://")) {
+        detectWebEntitiesIncludeGeoResultsGcs(path, out);
+      } else {
+        detectWebEntitiesIncludeGeoResults(path, out);
+      }
     } else if (command.equals("crop")) {
       if (path.startsWith("gs://")) {
         detectCropHintsGcs(path, out);
@@ -145,14 +163,6 @@ public class Detect {
         detectDocumentText(path, out);
       }
     }
-  }
-
-  /**
-   * Constructs a {@link Detect} which connects to the Cloud Vision API.
-   *
-   * @param client The Vision API client.
-   */
-  public Detect() {
   }
 
   /**
@@ -198,9 +208,10 @@ public class Detect {
   }
 
   /**
-   * Detects faces in the specified remote image.
+   * Detects faces in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform face detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform face detection
+   *                on.
    * @param out A {@link PrintStream} to write detected features to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -278,9 +289,10 @@ public class Detect {
   }
 
   /**
-   * Detects labels in the specified remote image.
+   * Detects labels in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform label detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform label detection
+   *                on.
    * @param out A {@link PrintStream} to write detected features to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -356,16 +368,16 @@ public class Detect {
   /**
    * Detects landmarks in the specified URI.
    *
-   * @param url The path to the file to perform landmark detection on.
+   * @param uri The path to the file to perform landmark detection on.
    * @param out A {@link PrintStream} to write detected landmarks to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectLandmarksUrl(String url, PrintStream out) throws Exception,
+  public static void detectLandmarksUrl(String uri, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    ImageSource imgSource = ImageSource.newBuilder().setImageUri(url).build();
+    ImageSource imgSource = ImageSource.newBuilder().setImageUri(uri).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feat = Feature.newBuilder().setType(Type.LANDMARK_DETECTION).build();
     AnnotateImageRequest request =
@@ -392,9 +404,10 @@ public class Detect {
   }
 
   /**
-   * Detects landmarks in the specified remote image.
+   * Detects landmarks in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform landmark detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform landmark
+   *                detection on.
    * @param out A {@link PrintStream} to write detected landmarks to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -467,9 +480,10 @@ public class Detect {
   }
 
   /**
-   * Detects logos in the specified remote image.
+   * Detects logos in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to perform logo detection on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to perform logo detection
+   *                on.
    * @param out A {@link PrintStream} to write detected logos to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -542,9 +556,9 @@ public class Detect {
   }
 
   /**
-   * Detects text in the specified remote image.
+   * Detects text in the specified remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect text in.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect text in.
    * @param out A {@link PrintStream} to write the detected text to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -623,9 +637,10 @@ public class Detect {
   }
 
   /**
-   * Detects image properties such as color frequency from the specified remote image.
+   * Detects image properties such as color frequency from the specified remote image on Google
+   * Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect properties on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect properties on.
    * @param out A {@link PrintStream} to write
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -665,6 +680,7 @@ public class Detect {
     }
   }
 
+  // [START vision_detect_safe_search]
   /**
    * Detects whether the specified image has features you would want to moderate.
    *
@@ -698,19 +714,23 @@ public class Detect {
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
         out.printf(
-            "adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\n",
+            "adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\nracy: %s\n",
             annotation.getAdult(),
             annotation.getMedical(),
             annotation.getSpoof(),
-            annotation.getViolence());
+            annotation.getViolence(),
+            annotation.getRacy());
       }
     }
   }
+  // [END vision_detect_safe_search]
 
+  // [START vision_detect_safe_search_uri]
   /**
-   * Detects whether the specified remote image has features you would want to moderate.
+   * Detects whether the specified image on Google Cloud Storage has features you would want
+   * to moderate.
    *
-   * @param gcsPath The path to the remote file to detect safe-search on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect safe-search on.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -739,15 +759,18 @@ public class Detect {
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
         out.printf(
-            "adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\n",
+            "adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\nracy: %s\n",
             annotation.getAdult(),
             annotation.getMedical(),
             annotation.getSpoof(),
-            annotation.getViolence());
+            annotation.getViolence(),
+            annotation.getRacy());
       }
     }
   }
+  // [END vision_detect_safe_search_uri]
 
+  // [START vision_detect_web]
   /**
    * Finds references to the specified image on the web.
    *
@@ -788,6 +811,9 @@ public class Detect {
           out.println(entity.getDescription() + " : " + entity.getEntityId() + " : "
               + entity.getScore());
         }
+        for (WebLabel label : annotation.getBestGuessLabelsList()) {
+          out.format("\nBest guess label: %s", label.getLabel());
+        }
         out.println("\nPages with matching images: Score\n==");
         for (WebPage page : annotation.getPagesWithMatchingImagesList()) {
           out.println(page.getUrl() + " : " + page.getScore());
@@ -800,14 +826,21 @@ public class Detect {
         for (WebImage image : annotation.getFullMatchingImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
+        out.println("\nPages with visually similar images: Score\n==");
+        for (WebImage image : annotation.getVisuallySimilarImagesList()) {
+          out.println(image.getUrl() + " : " + image.getScore());
+        }
       }
     }
   }
+  // [END vision_detect_web]
 
+  // [START vision_detect_web_uri]
   /**
-   * Detects whether the specified remote image has features you would want to moderate.
+   * Detects whether the remote image on Google Cloud Storage has features you would want to
+   * moderate.
    *
-   * @param gcsPath The path to the remote file to detect safe-search on.
+   * @param gcsPath The path to the remote on Google Cloud Storage file to detect web annotations.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -843,6 +876,9 @@ public class Detect {
           out.println(entity.getDescription() + " : " + entity.getEntityId() + " : "
               + entity.getScore());
         }
+        for (WebLabel label : annotation.getBestGuessLabelsList()) {
+          out.format("\nBest guess label: %s", label.getLabel());
+        }
         out.println("\nPages with matching images: Score\n==");
         for (WebPage page : annotation.getPagesWithMatchingImagesList()) {
           out.println(page.getUrl() + " : " + page.getScore());
@@ -855,9 +891,187 @@ public class Detect {
         for (WebImage image : annotation.getFullMatchingImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
+        out.println("\nPages with visually similar images: Score\n==");
+        for (WebImage image : annotation.getVisuallySimilarImagesList()) {
+          out.println(image.getUrl() + " : " + image.getScore());
+        }
       }
     }
   }
+  // [END vision_detect_web_uri]
+
+  /**
+   * Find web entities given a local image.
+   * @param filePath The path of the image to detect.
+   * @param out A {@link PrintStream} to write the results to.
+   * @throws Exception on errors while closing the client.
+   * @throws IOException on Input/Output errors.
+   */
+  public static void detectWebEntities(String filePath, PrintStream out) throws Exception,
+      IOException {
+    // Instantiates a client
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // Read in the local image
+      ByteString contents = ByteString.readFrom(new FileInputStream(filePath));
+
+      // Build the image
+      Image image = Image.newBuilder().setContent(contents).build();
+
+      // Create the request with the image and the specified feature: web detection
+      AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
+          .addFeatures(Feature.newBuilder().setType(Type.WEB_DETECTION))
+          .setImage(image)
+          .build();
+
+      // Perform the request
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
+
+      // Display the results
+      response.getResponsesList().stream()
+          .forEach(r -> r.getWebDetection().getWebEntitiesList().stream()
+              .forEach(entity -> {
+                out.format("Description: %s\n", entity.getDescription());
+                out.format("Score: %f\n", entity.getScore());
+              }));
+    }
+  }
+
+  /**
+   * Find web entities given the remote image on Google Cloud Storage.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect web entities.
+   * @param out A {@link PrintStream} to write the results to.
+   * @throws Exception on errors while closing the client.
+   * @throws IOException on Input/Output errors.
+   */
+  public static void detectWebEntitiesGcs(String gcsPath, PrintStream out) throws Exception,
+      IOException {
+    // Instantiates a client
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // Set the image source to the given gs uri
+      ImageSource imageSource = ImageSource.newBuilder()
+          .setGcsImageUri(gcsPath)
+          .build();
+      // Build the image
+      Image image = Image.newBuilder().setSource(imageSource).build();
+
+      // Create the request with the image and the specified feature: web detection
+      AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
+          .addFeatures(Feature.newBuilder().setType(Type.WEB_DETECTION))
+          .setImage(image)
+          .build();
+
+      // Perform the request
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
+
+      // Display the results
+      response.getResponsesList().stream()
+          .forEach(r -> r.getWebDetection().getWebEntitiesList().stream()
+              .forEach(entity -> {
+                System.out.format("Description: %s\n", entity.getDescription());
+                System.out.format("Score: %f\n", entity.getScore());
+              }));
+    }
+  }
+
+  // [START vision_web_entities_include_geo_results]
+  /**
+   * Find web entities given a local image.
+   * @param filePath The path of the image to detect.
+   * @param out A {@link PrintStream} to write the results to.
+   * @throws Exception on errors while closing the client.
+   * @throws IOException on Input/Output errors.
+   */
+  public static void detectWebEntitiesIncludeGeoResults(String filePath, PrintStream out) throws
+      Exception, IOException {
+    // Instantiates a client
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // Read in the local image
+      ByteString contents = ByteString.readFrom(new FileInputStream(filePath));
+
+      // Build the image
+      Image image = Image.newBuilder().setContent(contents).build();
+
+      // Enable `IncludeGeoResults`
+      WebDetectionParams webDetectionParams = WebDetectionParams.newBuilder()
+          .setIncludeGeoResults(true)
+          .build();
+
+      // Set the parameters for the image
+      ImageContext imageContext = ImageContext.newBuilder()
+          .setWebDetectionParams(webDetectionParams)
+          .build();
+
+      // Create the request with the image, imageContext, and the specified feature: web detection
+      AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
+          .addFeatures(Feature.newBuilder().setType(Type.WEB_DETECTION))
+          .setImage(image)
+          .setImageContext(imageContext)
+          .build();
+
+      // Perform the request
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
+
+      // Display the results
+      response.getResponsesList().stream()
+          .forEach(r -> r.getWebDetection().getWebEntitiesList().stream()
+              .forEach(entity -> {
+                out.format("Description: %s\n", entity.getDescription());
+                out.format("Score: %f\n", entity.getScore());
+              }));
+    }
+  }
+  // [END vision_web_entities_include_geo_results]
+
+  // [START vision_web_entities_include_geo_results_uri]
+  /**
+   * Find web entities given the remote image on Google Cloud Storage.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect web entities with
+   *                geo results.
+   * @param out A {@link PrintStream} to write the results to.
+   * @throws Exception on errors while closing the client.
+   * @throws IOException on Input/Output errors.
+   */
+  public static void detectWebEntitiesIncludeGeoResultsGcs(String gcsPath, PrintStream out) throws
+      Exception, IOException {
+    // Instantiates a client
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // Set the image source to the given gs uri
+      ImageSource imageSource = ImageSource.newBuilder()
+          .setGcsImageUri(gcsPath)
+          .build();
+      // Build the image
+      Image image = Image.newBuilder().setSource(imageSource).build();
+
+      // Enable `IncludeGeoResults`
+      WebDetectionParams webDetectionParams = WebDetectionParams.newBuilder()
+          .setIncludeGeoResults(true)
+          .build();
+
+      // Set the parameters for the image
+      ImageContext imageContext = ImageContext.newBuilder()
+          .setWebDetectionParams(webDetectionParams)
+          .build();
+
+      // Create the request with the image, imageContext, and the specified feature: web detection
+      AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
+          .addFeatures(Feature.newBuilder().setType(Type.WEB_DETECTION))
+          .setImage(image)
+          .setImageContext(imageContext)
+          .build();
+
+      // Perform the request
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
+
+      // Display the results
+      response.getResponsesList().stream()
+          .forEach(r -> r.getWebDetection().getWebEntitiesList().stream()
+              .forEach(entity -> {
+                out.format("Description: %s\n", entity.getDescription());
+                out.format("Score: %f\n", entity.getScore());
+              }));
+    }
+  }
+  // [END vision_web_entities_include_geo_results_uri]
 
   /**
    * Suggests a region to crop to for a local file.
@@ -899,9 +1113,9 @@ public class Detect {
   }
 
   /**
-   * Suggests a region to crop to for a remote file.
+   * Suggests a region to crop to for a remote file on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect safe-search on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect safe-search on.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -936,6 +1150,7 @@ public class Detect {
     }
   }
 
+  // [START vision_detect_document]
   /**
    * Performs document text detection on a local image file.
    *
@@ -979,26 +1194,32 @@ public class Detect {
                 String wordText = "";
                 for (Symbol symbol: word.getSymbolsList()) {
                   wordText = wordText + symbol.getText();
+                  out.format("Symbol text: %s (confidence: %f)\n", symbol.getText(),
+                      symbol.getConfidence());
                 }
-                paraText = paraText + wordText;
+                out.format("Word text: %s (confidence: %f)\n\n", wordText, word.getConfidence());
+                paraText = String.format("%s %s", paraText, wordText);
               }
               // Output Example using Paragraph:
-              out.println("Paragraph: \n" + paraText);
-              out.println("Bounds: \n" + para.getBoundingBox() + "\n");
+              out.println("\nParagraph: \n" + paraText);
+              out.format("Paragraph Confidence: %f\n", para.getConfidence());
               blockText = blockText + paraText;
             }
             pageText = pageText + blockText;
           }
         }
+        out.println("\nComplete annotation:");
         out.println(annotation.getText());
       }
     }
   }
+  // [END vision_detect_document]
 
+  // [START vision_detect_document_uri]
   /**
-   * Performs document text detection on a local image file.
+   * Performs document text detection on a remote image on Google Cloud Storage.
    *
-   * @param gcsPath The path to the remote file to detect document text on.
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect document text on.
    * @param out A {@link PrintStream} to write the results to.
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
@@ -1036,19 +1257,24 @@ public class Detect {
                 String wordText = "";
                 for (Symbol symbol: word.getSymbolsList()) {
                   wordText = wordText + symbol.getText();
+                  out.format("Symbol text: %s (confidence: %f)\n", symbol.getText(),
+                      symbol.getConfidence());
                 }
-                paraText = paraText + wordText;
+                out.format("Word text: %s (confidence: %f)\n\n", wordText, word.getConfidence());
+                paraText = String.format("%s %s", paraText, wordText);
               }
               // Output Example using Paragraph:
-              out.println("Paragraph: \n" + paraText);
-              out.println("Bounds: \n" + para.getBoundingBox() + "\n");
+              out.println("\nParagraph: \n" + paraText);
+              out.format("Paragraph Confidence: %f\n", para.getConfidence());
               blockText = blockText + paraText;
             }
             pageText = pageText + blockText;
           }
         }
+        out.println("\nComplete annotation:");
         out.println(annotation.getText());
       }
     }
   }
+  // [END vision_detect_document_uri]
 }

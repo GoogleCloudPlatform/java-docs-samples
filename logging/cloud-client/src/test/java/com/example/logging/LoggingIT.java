@@ -1,18 +1,18 @@
 /*
-  Copyright 2017 Google Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2017 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.logging;
 
@@ -39,6 +39,9 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class LoggingIT {
 
+  private static final String QUICKSTART_LOG = "my-log";
+  private static final String TEST_WRITE_LOG = "test-log";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private Logging logging = LoggingOptions.getDefaultInstance().getService();
@@ -56,37 +59,36 @@ public class LoggingIT {
 
   @After
   public void tearDown() {
+    // Clean up created logs
+    deleteLog(QUICKSTART_LOG);
+    deleteLog(TEST_WRITE_LOG);
+
     System.setOut(null);
   }
 
   @Test
   public void testQuickstart() throws Exception {
-    String logName = "my-log";
-    deleteLog(logName);
-    QuickstartSample.main(logName);
+    QuickstartSample.main(QUICKSTART_LOG);
     String got = bout.toString();
     assertThat(got).contains("Logged: Hello, world!");
-    deleteLog(logName);
   }
 
-  @Test(timeout = 10000)
+  @Test(timeout = 60000)
   public void testWriteAndListLogs() throws Exception {
-    String logName = "test-log";
-    deleteLog(logName);
     // write a log entry
     LogEntry entry = LogEntry.newBuilder(StringPayload.of("Hello world again"))
-        .setLogName(logName)
+        .setLogName(TEST_WRITE_LOG)
         .setResource(MonitoredResource.newBuilder("global").build())
         .build();
     logging.write(Collections.singleton(entry));
     // flush out log immediately
     logging.flush();
     bout.reset();
+    // Check if the log is listed yet
     while (bout.toString().isEmpty()) {
-      ListLogs.main(logName);
-      Thread.sleep(1000);
+      ListLogs.main(TEST_WRITE_LOG);
+      Thread.sleep(5000);
     }
     assertThat(bout.toString().contains("Hello world again")).isTrue();
-    deleteLog(logName);
   }
 }

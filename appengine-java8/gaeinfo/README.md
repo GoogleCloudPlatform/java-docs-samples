@@ -1,5 +1,8 @@
 # Google App Engine Information
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/gaeinfo/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample displays what's going on in your app. It dumps the environment and lots more.
 
 See the [Google App Engine standard environment documentation][ae-docs] for more

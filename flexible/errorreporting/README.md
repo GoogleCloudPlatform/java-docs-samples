@@ -1,5 +1,8 @@
 # Error reporting sample for Google App Engine Flexible
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/errorreporting/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Stackdriver Error Reporting][error-reporting] Stackdriver Error Reporting counts, analyzes and aggregates the crashes in your running cloud services.
 A [centralized error management interface](https://console.cloud.google.com/errors) displays the results with sorting and filtering capabilities.
 
@@ -24,10 +27,9 @@ Build your project with:
 ```
 
 ## Local testing
-1. Authorize the local environment
-```
-   gcloud auth application-default login
-```
+[Create a service account](https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account)
+and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
+
 For local testing, we will be using the [Jetty Maven plugin](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html).
 Run:
 ```

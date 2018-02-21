@@ -20,14 +20,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
-
+import java.io.IOException;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link DetectLandmark}.
@@ -66,13 +64,13 @@ public class DetectLandmarkIT {
     }
   }
 
-// TODO(lesv): Currently we can access it, need to set better attributes.
-//   @Test public void identifyLandmark_noImage_throwsForbidden() throws Exception {
-//     try {
-//       appUnderTest.identifyLandmark(PRIVATE_LANDMARK_URI, MAX_RESULTS);
-//       fail("Expected IOException");
-//     } catch (IOException expected) {
-//       assertThat(expected.getMessage()).named("IOException message").contains("permission");
-//     }
-//   }
+  // TODO(lesv): Currently we can access it, need to set better attributes.
+  //   @Test public void identifyLandmark_noImage_throwsForbidden() throws Exception {
+  //     try {
+  //       appUnderTest.identifyLandmark(PRIVATE_LANDMARK_URI, MAX_RESULTS);
+  //       fail("Expected IOException");
+  //     } catch (IOException expected) {
+  //       assertThat(expected.getMessage()).named("IOException message").contains("permission");
+  //     }
+  //   }
 }

@@ -3,6 +3,10 @@
 This sample demonstrates how to use Google Cloud Endpoints Frameworks using
 Java on App Engine Standard.
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine/endpoints-frameworks-v2/backend/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 ## Build with Maven
 
 ### Adding the project ID to the sample API code
@@ -33,7 +37,7 @@ To build the project:
 
 To generate the required configuration file `openapi.json`:
 
-    mvn exec:java -DGetSwaggerDoc
+    mvn endpoints-framework:openApiDocs
 
 ### Deploying the sample API to App Engine
 
@@ -41,7 +45,7 @@ To deploy the sample API:
 
 0. Invoke the `gcloud` command to deploy the API configuration file:
 
-         gcloud service-management deploy openapi.json
+         gcloud endpoints services deploy target/openapi-docs/openapi.json
 
 0. Deploy the API implementation code by invoking:
 
@@ -119,7 +123,7 @@ To deploy the sample API:
 
 0. Invoke the `gcloud` command to deploy the API configuration file:
 
-         gcloud service-management deploy build/endpointsOpenApiDocs/openapi.json
+         gcloud endpoints services deploy build/endpointsOpenApiDocs/openapi.json
 
 0. Deploy the API implementation code by invoking:
 

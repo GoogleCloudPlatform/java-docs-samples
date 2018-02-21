@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +25,7 @@ import com.google.cloud.spanner.SpannerOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import org.junit.runners.JUnit4;
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
   private final String instanceId = System.getProperty("spanner.test.instance");
-  private final String databaseId = System.getProperty("spanner.sample.database");
+  private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
   private long lastUpdateDataTimeInMillis;
@@ -85,9 +86,9 @@ public class SpannerSampleIT {
     assertThat(out).contains("1 1 Total Junk");
     runSample("addmarketingbudget");
     
-    // wait for 10 seconds to elapse and then run an update, and query for stale data
+    // wait for 15 seconds to elapse and then run an update, and query for stale data
     lastUpdateDataTimeInMillis = System.currentTimeMillis();
-    while (System.currentTimeMillis() < lastUpdateDataTimeInMillis + 11000) {
+    while (System.currentTimeMillis() < lastUpdateDataTimeInMillis + 16000) {
       Thread.sleep(1000);
     }
     runSample("update");
@@ -115,5 +116,9 @@ public class SpannerSampleIT {
 
     out = runSample("readonlytransaction");
     assertThat(out.replaceAll("[\r\n]+", " ")).containsMatch("(Total Junk.*){2}");
+  }
+
+  private String formatForTest(String name) {
+    return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 }

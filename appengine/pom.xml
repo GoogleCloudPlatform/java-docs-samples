@@ -14,59 +14,47 @@
  limitations under the License.
 -->
 <project>
-    <modelVersion>4.0.0</modelVersion>
-    <version>1.0.0</version>
+  <modelVersion>4.0.0</modelVersion>
+  <version>1.0.0</version>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>appengine-doc-samples</artifactId>
+  <packaging>pom</packaging>
 
-    <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-doc-samples</artifactId>
-    <packaging>pom</packaging>
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.8</version>
+  </parent>
 
-    <!-- Parent POM defines common plugins and properties. -->
-    <parent>
-        <artifactId>doc-samples</artifactId>
-        <groupId>com.google.cloud</groupId>
-        <version>1.0.0</version>
-        <relativePath>..</relativePath>
-    </parent>
-
-    <properties>
-        <appengine.sdk.version>1.9.54</appengine.sdk.version>
-        <appengine.app.version>1</appengine.app.version>
-
-        <project.http.version>1.19.0</project.http.version>
-        <project.oauth.version>1.19.0</project.oauth.version>
-
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-    </properties>
-
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
 
     <modules>
         <!-- App Engine Standard -->
         <module>analytics</module>
         <module>appidentity</module>
-        <module>channel</module>
         <module>cloudsql</module>
         <module>datastore</module>
-        <module>datastore/indexes</module>
-        <module>datastore/indexes-exploding</module>
-        <module>datastore/indexes-perfect</module>
+
         <module>endpoints-frameworks-v2/backend</module>
         <module>endpoints-frameworks-v2/migration-example</module>
+        <module>endpoints-frameworks-v2/guice-example</module>
+
+        <module>endpoints-v1-helloworld</module>
+
         <module>firebase-event-proxy/gae-firebase-event-proxy</module>
         <module>firebase-tictactoe</module>
-
         <module>gaeinfo</module>
-
+        <!-- <module>guestbook-cloud-datastore</module> disabled see b/71755044 -->
         <module>guestbook-objectify</module>
         <module>helloworld</module>
         <module>helloworld-new-plugins</module>
         <module>iap</module>
         <module>images</module>
         <module>logs</module>
+        <module>mail</module>
         <module>mailgun</module>
         <module>mailjet</module>
         <module>memcache</module>
@@ -76,75 +64,16 @@
         <module>requests</module>
         <module>search</module>
         <module>sendgrid</module>
+
         <module>remote/remote-client</module>
         <module>remote/remote-server</module>
 
         <module>sockets</module>
-
         <module>static-files</module>
-
-        <module>taskqueue-push</module>
+        <module>taskqueue</module>
         <module>twilio</module>
         <module>urlfetch</module>
         <module>users</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-        <!-- Compile/runtime dependencies -->
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.sdk.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.8.47</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-matchers</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-testing</artifactId>
-            <version>${appengine.sdk.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.sdk.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <build>
-    <plugins> <!-- DISABLE ErrorProne - until we move to Java 8 -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
-        <configuration combine.self="override" />
-      </plugin>
-    </plugins>
-  </build>
 </project>

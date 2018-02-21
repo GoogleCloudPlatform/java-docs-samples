@@ -47,7 +47,7 @@ This sample annotates an image with labels based on its content.
 This sample identifies faces within an image.
 
 - [Quickstart Walkthrough](https://cloud.google.com/vision/docs/face-tutorial)
-- [Java Code](face_detection)
+- [Java Code](face-detection)
 
 ### Landmark Detection Using Google Cloud Storage
 
@@ -67,4 +67,3 @@ queried to find images that match a given set of words, and to list text that
 was found in each matching image.
 
 [Documentation and Java Code](text)
-

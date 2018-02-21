@@ -26,7 +26,9 @@
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
 
-   <env-variables>
+    <!-- [START env_variables] -->
+    <env-variables>
         <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />
     </env-variables>
+    <!-- [END env_variables] -->
 </appengine-web-app>

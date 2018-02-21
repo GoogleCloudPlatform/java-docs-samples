@@ -1,15 +1,17 @@
 /*
- * Copyright (c) 2017 Google Inc.
+ * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example;
@@ -20,7 +22,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudkms.v1.CloudKMS;
-import com.google.api.services.cloudkms.v1.CloudKMS.Projects.Locations.KeyRings.CryptoKeys.UpdatePrimaryVersion;
 import com.google.api.services.cloudkms.v1.CloudKMSScopes;
 import com.google.api.services.cloudkms.v1.model.Binding;
 import com.google.api.services.cloudkms.v1.model.CryptoKey;
@@ -31,6 +32,7 @@ import com.google.api.services.cloudkms.v1.model.ListCryptoKeyVersionsResponse;
 import com.google.api.services.cloudkms.v1.model.ListCryptoKeysResponse;
 import com.google.api.services.cloudkms.v1.model.ListKeyRingsResponse;
 import com.google.api.services.cloudkms.v1.model.Policy;
+import com.google.api.services.cloudkms.v1.model.RestoreCryptoKeyVersionRequest;
 import com.google.api.services.cloudkms.v1.model.SetIamPolicyRequest;
 import com.google.api.services.cloudkms.v1.model.UpdateCryptoKeyPrimaryVersionRequest;
 import java.io.IOException;
@@ -178,6 +180,35 @@ public class Snippets {
   }
   // [END kms_disable_cryptokey_version]
 
+  // [START kms_enable_cryptokey_version]
+  /**
+   * Enables the given version of the crypto key.
+   */
+  public static CryptoKeyVersion enableCryptoKeyVersion(
+      String projectId, String locationId, String keyRingId, String cryptoKeyId, String version)
+      throws IOException {
+    // Create the Cloud KMS client.
+    CloudKMS kms = createAuthorizedClient();
+
+    // The resource name of the cryptoKey version
+    String cryptoKeyVersion = String.format(
+        "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s",
+        projectId, locationId, keyRingId, cryptoKeyId, version);
+
+    CryptoKeyVersion newVersionState = new CryptoKeyVersion()
+        .setState("ENABLED");
+
+    CryptoKeyVersion response = kms.projects().locations().keyRings().cryptoKeys()
+        .cryptoKeyVersions()
+        .patch(cryptoKeyVersion, newVersionState)
+        .setUpdateMask("state")
+        .execute();
+
+    System.out.println(response);
+    return response;
+  }
+  // [END kms_enable_cryptokey_version]
+
   // [START kms_destroy_cryptokey_version]
 
   /**
@@ -205,6 +236,34 @@ public class Snippets {
     return destroyed;
   }
   // [END kms_destroy_cryptokey_version]
+
+  // [START kms_restore_cryptokey_version]
+
+  /**
+   * Restores the given version of a crypto key that is currently scheduled for destruction.
+   */
+  public static CryptoKeyVersion restoreCryptoKeyVersion(
+      String projectId, String locationId, String keyRingId, String cryptoKeyId, String version)
+      throws IOException {
+    // Create the Cloud KMS client.
+    CloudKMS kms = createAuthorizedClient();
+
+    // The resource name of the cryptoKey version
+    String cryptoKeyVersion = String.format(
+        "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s",
+        projectId, locationId, keyRingId, cryptoKeyId, version);
+
+    RestoreCryptoKeyVersionRequest restoreRequest = new RestoreCryptoKeyVersionRequest();
+
+    CryptoKeyVersion restored = kms.projects().locations().keyRings().cryptoKeys()
+        .cryptoKeyVersions()
+        .restore(cryptoKeyVersion, restoreRequest)
+        .execute();
+
+    System.out.println(restored);
+    return restored;
+  }
+  // [END kms_restore_cryptokey_version]
 
   // [START kms_get_cryptokey_policy]
 
@@ -493,14 +552,18 @@ public class Snippets {
         "projects/%s/locations/%s/keyRings/%s",
         projectId, locationId, keyRingId);
 
-    ListCryptoKeysResponse cryptoKeys = kms.projects().locations().keyRings()
-        .cryptoKeys()
-        .list(keyRingPath)
-        .execute();
+    ListCryptoKeysResponse cryptoKeys = null;
+    do { // Print every page of keys
+      cryptoKeys = kms.projects().locations().keyRings()
+          .cryptoKeys()
+          .list(keyRingPath)
+          .setPageToken(cryptoKeys != null ? cryptoKeys.getNextPageToken() : null)
+          .execute();
 
-    for (CryptoKey key : cryptoKeys.getCryptoKeys()) {
-      System.out.println(key);
-    }
+      for (CryptoKey key : cryptoKeys.getCryptoKeys()) {
+        System.out.println(key);
+      }
+    } while (cryptoKeys.getNextPageToken() != null);
   }
 
   /**
@@ -516,6 +579,7 @@ public class Snippets {
     String cryptoKeys = String.format(
         "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s",
         projectId, locationId, keyRingId, cryptoKeyId);
+
 
     ListCryptoKeyVersionsResponse versions = kms.projects().locations().keyRings().cryptoKeys()
         .cryptoKeyVersions()

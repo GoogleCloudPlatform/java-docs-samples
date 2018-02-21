@@ -24,7 +24,6 @@ import com.google.cloud.translate.Translate.TranslateOption;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import com.google.common.collect.ImmutableList;
-
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Optional;

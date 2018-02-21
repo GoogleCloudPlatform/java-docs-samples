@@ -1,18 +1,14 @@
 # java-docs-samples
 
-[![Circle-CI Build Status](https://circleci.com/gh/GoogleCloudPlatform/java-docs-samples.svg?style=shield&circle-token=117b41ead030b212fc7d519519ee9262c4f3480b)](https://circleci.com/gh/GoogleCloudPlatform/java-docs-samples)
-[![ghit.me](https://ghit.me/badge.svg?repo=GoogleCloudPlatform/java-docs-samples)](https://ghit.me/repo/GoogleCloudPlatform/java-docs-samples)
+![Kokoro Build Status](https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples.png)
 [![Coverage Status](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples/branch/master/graph/badge.svg)](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples)
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+While this library is still supported, we suggest trying the newer [Cloud Client Library](https://developers.google.com/api-client-library/java/apis/vision/v1) for Google Cloud Vision, especially for new projects. For more information, please see the notice on the [API Client Library Page](https://developers.google.com/api-client-library/java/apis/vision/v1).
+
 This is a repository that contains java code snippets on [Cloud Platform Documentation](https://cloud.google.com/docs/).
-
-The repo is organized as follows:
-
-* [App Engine Standard](appengine)
-  * [TaskQueue](taskqueue) <!-- shouldn't this be in appengien ?? -->
-  * [Unit Tests](unittests)
-* [App Engine Flexible](flexible)
-* [Compute Engine](compute)
 
 Technology Samples:
 

@@ -1,5 +1,8 @@
 # Video Feature Detection Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=video/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Video Intelligence API][video] provides feature detection for
 videos. This API is part of the larger collection of Cloud Machine Learning
 APIs.
@@ -36,7 +39,7 @@ After you have authorized, you can analyze videos.
 Detect Faces
 ```
 java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.video.Detect faces gs://cloudmleap/video/next/volleyball_court.mp4
+    com.example.video.Detect faces gs://demomaker/google_gmail.mp4
 ```
 
 Detect Labels
@@ -48,19 +51,19 @@ java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
     com.example.video.Detect labels-file ./resources/cat.mp4
 ```
 
-Detect Safe Search annotations
+Detect Explicit content annotations
 ```
 java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.video.Detect safesearch gs://demomaker/cat.mp4
+    com.example.video.Detect explicit-content gs://demomaker/gbikes_dinosaur.mp4
 ```
 
 Detect Shots
 ```
 java -cp target/video-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.video.Detect shots gs://cloudmleap/video/next/gbikes_dinosaur.mp4
+    com.example.video.Detect shots gs://demomaker/gbikes_dinosaur.mp4
 ```
 
-From Windows, you may need to supply your classpath diferently, for example:
+From Windows, you may need to supply your classpath differently, for example:
 ```
 java -cp target\\video-google-cloud-samples-1.0.0-jar-with-dependencies.jar com.example.video.Detect labels gs://demomaker/cat.mp4
 ```

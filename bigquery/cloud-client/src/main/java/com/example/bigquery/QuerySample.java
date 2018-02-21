@@ -1,18 +1,18 @@
 /*
-  Copyright 2016, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.bigquery;
 
@@ -23,9 +23,12 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.QueryResponse;
-import com.google.cloud.bigquery.QueryResult;
 import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.TableResult;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -33,11 +36,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeoutException;
 
 /** Runs a query against BigQuery. */
 public class QuerySample {
@@ -56,8 +54,8 @@ public class QuerySample {
       throws TimeoutException, InterruptedException {
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(queryString)
-            // To use standard SQL syntax, set useLegacySql to false.
-            // See: https://cloud.google.com/bigquery/sql-reference/
+            // To use standard SQL syntax, set useLegacySql to false. See:
+            // https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql
             .setUseLegacySql(false)
             .build();
 
@@ -73,12 +71,12 @@ public class QuerySample {
       boolean allowLargeResults) throws TimeoutException, InterruptedException {
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(queryString)
-            // Save the results of the query to a permanent table.
-            // See: https://cloud.google.com/bigquery/querying-data#permanent-table
+            // Save the results of the query to a permanent table. See:
+            // https://cloud.google.com/bigquery/docs/writing-results#permanent-table
             .setDestinationTable(TableId.of(destinationDataset, destinationTable))
             // Allow results larger than the maximum response size.
-            // If true, a destination table must be set.
-            // See: https://cloud.google.com/bigquery/querying-data#large-results
+            // If true, a destination table must be set. See: 
+            // https://cloud.google.com/bigquery/docs/writing-results#large-results
             .setAllowLargeResults(allowLargeResults)
             .build();
 
@@ -91,8 +89,8 @@ public class QuerySample {
       throws TimeoutException, InterruptedException {
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(queryString)
-            // Do not use the query cache. Force live query evaluation.
-            // See: https://cloud.google.com/bigquery/querying-data#query-caching
+            // Do not use the query cache. Force live query evaluation. See:
+            // https://cloud.google.com/bigquery/docs/cached-results#disabling_retrieval_of_cached_results
             .setUseQueryCache(false)
             .build();
 
@@ -106,8 +104,8 @@ public class QuerySample {
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(queryString)
             // Run at batch priority, which won't count toward concurrent rate
-            // limit.
-            // See: https://cloud.google.com/bigquery/querying-data#interactive-batch
+            // limit. See:
+            // https://cloud.google.com/bigquery/docs/running-queries#batch
             .setPriority(QueryJobConfiguration.Priority.BATCH)
             .build();
 
@@ -138,8 +136,7 @@ public class QuerySample {
     }
 
     // Get the results.
-    QueryResponse response = bigquery.getQueryResults(jobId);
-    QueryResult result = response.getResult();
+    TableResult result = queryJob.getQueryResults();
 
     // Print all pages of the results.
     while (result != null) {
@@ -158,8 +155,9 @@ public class QuerySample {
   /** Prompts the user for the required parameters to perform a query. */
   public static void main(final String[] args)
       throws IOException, InterruptedException, TimeoutException, ParseException {
+    //CHECKSTYLE OFF: VariableDeclarationUsageDistance - improves readability
     Options options = new Options();
-
+    //CHECKSTLYE ON: VariableDeclarationUsageDistance
     // Use an OptionsGroup to choose which sample to run.
     OptionGroup samples = new OptionGroup();
     samples.addOption(Option.builder().longOpt("runSimpleQuery").build());

@@ -1,5 +1,9 @@
 # Google Cloud Natural Language API Entity Recognition Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=language/analysis/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This sample demonstrates the use of the [Google Cloud Natural Language API][NL-Docs]
 for entity recognition.
 
@@ -32,14 +36,14 @@ mvn clean compile assembly:single
 ```
 
 We can then run the assembled JAR file with the `java` command. The variable $COMMAND takes
-three values `entities`, `sentiment`, or `syntax`.
+three values `entities`, `entities-sentiment`, `sentiment`, or `syntax`.
 
 ## Basic usage:
 
 ```
 java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     com.google.cloud.language.samples.Analyze \
-    <entities | sentiment | syntax> \
+    <entities | entities-sentiment | sentiment | syntax> \
     <text | GCS path>
 ```
 
@@ -61,12 +65,33 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     "The quick brown fox jumped over the lazy dog."
 ```
 
+Analyze entity sentiment
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.Analyze entities-sentiment \
+  "There's nothing better than searching for ice cream on Google."
+```
+
 Analyze syntax
 ```
 java -cp target/language-entities-1.0-jar-with-dependencies.jar \
     com.google.cloud.language.samples.Analyze \
     syntax \
     "The quick brown fox jumped over the lazy dog."
+```
+
+Analyze categories in text
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.Analyze classify \
+  "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."
+```
+
+Analyze categories in GCS file
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.Analyze classify \
+  "gs://cloud-samples-tests/natural-language/android-text.txt"
 ```
 
 Included with the sample are `demo.sh` and `demo.bat` which show additional
@@ -92,11 +117,18 @@ java -cp target/language-entities-1.0-jar-with-dependencies.jar \
   "Der schnelle braune Fuchs sprang über den faulen Hund."
 ```
 
-Analyze entity sentiment Beta
+Analyze categories in text Beta
 ```
 java -cp target/language-entities-1.0-jar-with-dependencies.jar \
-  com.google.cloud.language.samples.AnalyzeBeta entities-sentiment \
-  "There's nothing better than searching for ice cream on Google."
+  com.google.cloud.language.samples.AnalyzeBeta classify \
+  "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."
+```
+
+Analyze categories in GCS file Beta
+```
+java -cp target/language-entities-1.0-jar-with-dependencies.jar \
+  com.google.cloud.language.samples.AnalyzeBeta classify \
+  "gs://cloud-samples-tests/natural-language/android-text.txt"
 ```
 
 Run beta demo from *nix or OSX

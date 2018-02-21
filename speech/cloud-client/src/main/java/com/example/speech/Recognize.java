@@ -35,7 +35,6 @@ import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
 import com.google.cloud.speech.v1p1beta1.WordInfo;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.protobuf.ByteString;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

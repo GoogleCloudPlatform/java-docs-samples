@@ -1,5 +1,8 @@
 # Google Cloud Translate Sample
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=translate/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates the use of [Google Cloud Translate
 API][Translate-Docs] for translating and detecting language text.
 
@@ -75,7 +78,7 @@ Translate API Features:
  * Detect input text language
    ```
    java -jar $JAR_FILE detect "$INPUT"
-  ```
+   ```
 
  * Translate input text (with options)
    ```

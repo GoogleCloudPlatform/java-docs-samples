@@ -17,6 +17,7 @@
 package com.google.cloud.vision.samples.facedetect;
 
 // [BEGIN import_libraries]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -32,7 +33,6 @@ import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.api.services.vision.v1.model.Vertex;
 import com.google.common.collect.ImmutableList;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -44,7 +44,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 // [END import_libraries]
 

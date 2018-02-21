@@ -1,26 +1,27 @@
 /*
- * Copyright (c) 2017 Google Inc.
+ * Copyright 2017 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example;
 
+import java.io.IOException;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.SubCommand;
 import org.kohsuke.args4j.spi.SubCommandHandler;
 import org.kohsuke.args4j.spi.SubCommands;
-
-import java.io.IOException;
 
 /**
  * Defines the different sub-commands and their parameters, for command-line invocation.
@@ -103,9 +104,21 @@ class SnippetCommands {
     }
   }
 
+  public static class EnableCryptoKeyVersionCommand extends KeyVersionArgs implements Command {
+    public void run() throws IOException {
+      Snippets.enableCryptoKeyVersion(projectId, locationId, keyRingId, cryptoKeyId, version);
+    }
+  }
+
   public static class DestroyCryptoKeyVersionCommand extends KeyVersionArgs implements Command {
     public void run() throws IOException {
       Snippets.destroyCryptoKeyVersion(projectId, locationId, keyRingId, cryptoKeyId, version);
+    }
+  }
+
+  public static class RestoreCryptoKeyVersionCommand extends KeyVersionArgs implements Command {
+    public void run() throws IOException {
+      Snippets.restoreCryptoKeyVersion(projectId, locationId, keyRingId, cryptoKeyId, version);
     }
   }
 
@@ -205,7 +218,9 @@ class SnippetCommands {
       @SubCommand(name = "listCryptoKeys", impl = ListCryptoKeysCommand.class),
       @SubCommand(name = "listCryptoKeyVersions", impl = ListCryptoKeyVersionsCommand.class),
       @SubCommand(name = "disableCryptoKeyVersion", impl = DisableCryptoKeyVersionCommand.class),
+      @SubCommand(name = "enableCryptoKeyVersion", impl = EnableCryptoKeyVersionCommand.class),
       @SubCommand(name = "destroyCryptoKeyVersion", impl = DestroyCryptoKeyVersionCommand.class),
+      @SubCommand(name = "restoreCryptoKeyVersion", impl = RestoreCryptoKeyVersionCommand.class),
       @SubCommand(name = "getKeyRingPolicy", impl = GetKeyRingPolicyCommand.class),
       @SubCommand(name = "getCryptoKeyPolicy", impl = GetCryptoKeyPolicyCommand.class),
       @SubCommand(name = "setPrimaryVersion", impl = SetPrimaryVersionCommand.class),

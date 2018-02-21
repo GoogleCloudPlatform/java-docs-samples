@@ -18,18 +18,14 @@ package com.google.cloud.language.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.language.v1beta2.Entity;
-import com.google.cloud.language.v1beta2.EntityMention;
-import com.google.cloud.language.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Sentiment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Integration (system) tests for {@link Analyze}.
@@ -37,52 +33,42 @@ import java.util.stream.Collectors;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AnalyzeBetaIT {
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BUCKET = PROJECT_ID;
 
-  private AnalyzeBeta analyzeApp;
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
 
-  @Before public void setup() throws Exception {
-    analyzeApp = new AnalyzeBeta(LanguageServiceClient.create());
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
   }
 
-  @Test public void analyzeSentiment_returnPositiveGerman() throws Exception {
-    // Act
-    Sentiment sentiment =
-        analyzeApp.analyzeSentimentText(
-            "Ich hatte die schönste Erfahrung mit euch allen.", "DE");
-
-    // Assert
-    assertThat((double)sentiment.getMagnitude()).isGreaterThan(0.0);
-    assertThat((double)sentiment.getScore()).isGreaterThan(0.0);
+  @Test
+  public void analyzeSentiment_returnPositiveGerman() throws Exception {
+    Sentiment sentiment = AnalyzeBeta.analyzeSentimentText(
+        "Ich hatte die schönste Erfahrung mit euch allen.", "DE");
+    assertThat(sentiment.getMagnitude()).isGreaterThan(0.0F);
+    assertThat(sentiment.getScore()).isGreaterThan(0.0F);
   }
 
-  @Test public void analyzeSyntax_entitySentimentText() throws Exception {
-    List<Entity> entities = analyzeApp.entitySentimentText("Oranges, grapes, and apples can be "
-        + "found in the cafeterias located in Mountain View, Seattle, and London.");
-
-    List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
-
-    // Assert
-    assertThat(got).named("entity names").contains("Seattle");
+  @Test
+  public void analyzeCategoriesInTextReturnsExpectedResult() throws Exception {
+    AnalyzeBeta.classifyText("Android is a mobile operating system developed by Google, "
+        + "based on the Linux kernel and designed primarily for touchscreen "
+        + "mobile devices such as smartphones and tablets.");
+    String got = bout.toString();
+    assertThat(got).contains("Computers & Electronics");
   }
 
-  @Test public void analyzeSyntax_entitySentimentTextEncoded() throws Exception {
-    List<Entity> entities = analyzeApp.entitySentimentText("foo→bar");
-
-    List<EntityMention> mentions = entities.listIterator().next().getMentionsList();
-
-    // Assert
-    assertThat(mentions.get(0).getText().getBeginOffset()).isEqualTo(4);
-  }
-
-  @Test public void analyzeSyntax_entitySentimentFile() throws Exception {
-    List<Entity> entities =
-        analyzeApp.entitySentimentFile("gs://" + BUCKET + "/natural-language/gettysburg.txt");
-
-    List<String> got = entities.stream().map(e -> e.getName()).collect(Collectors.toList());
-
-    // Assert
-    assertThat(got).named("entity names").contains("God");
+  @Test
+  public void analyzeCategoriesInFileReturnsExpectedResult() throws Exception {
+    String gcsFile = "gs://" + PROJECT_ID + "/natural-language/android_text.txt";
+    AnalyzeBeta.classifyFile(gcsFile);
+    String got = bout.toString();
+    assertThat(got).contains("Computers & Electronics");
   }
 }

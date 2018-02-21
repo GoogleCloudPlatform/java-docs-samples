@@ -1,5 +1,8 @@
 # appengine/guestbook-cloud-datastore
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/guestbook-cloud-datastore/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 An App Engine guestbook using Java, Maven, and the Cloud Datastore API via
 [google-cloud-java](https://github.com/GoogleCloudPlatform/google-cloud-java).
 
