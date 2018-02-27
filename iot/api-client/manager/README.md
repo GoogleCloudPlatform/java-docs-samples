@@ -8,6 +8,10 @@ This sample app demonstrates device management for Google Cloud IoT Core.
 Note that before you can run the sample, you must configure a Google Cloud
 PubSub topic for Cloud IoT as described in [the parent README](../README.md).
 
+Before running the samples, you can set the `GCLOUD_PROJECT` and
+`GOOGLE_APPLICATION_CREDENTIALS` environment variables to avoid passing them to
+the sample every time you run it.
+
 ## Setup
 Run the following command to install the libraries and build the sample with
 Maven:
@@ -24,7 +28,7 @@ The following description summarizes the sample usage:
 
     Cloud IoT Core Commandline Example (Device / Registry management):
 
-    --cloud_region <arg>           GCP cloud region.
+    --cloud_region <arg>           GCP cloud region (default us-central1).
     --command <arg>                Command to run:
                                    create-iot-topic
                                    create-rsa
@@ -68,6 +72,7 @@ Create an ES device:
     java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
         com.example.cloud.iot.examples.DeviceRegistryExample \
         -project_id=blue-jet-123 -pubsub_topic=hello-java \
+        -cloud_region=us-central1
         -registry_name=hello-java -ec_public_key_file ../ec_public.pem \
         -device_id="java-device-0" -command=create-es
 
@@ -169,9 +174,9 @@ The following command summarizes the sample usage:
                      -algorithm=<RS256|ES256>"
 ```
 
-For example, if your project ID is `blue-jet-123`, your service account
-credentials are stored in your home folder in creds.json and you have generated
-your credentials using the [`generate_keys.sh`](../generate_keys.sh) script
+For example, if your project ID is `blue-jet-123`, the Cloud region associated
+with your device registry is europe-west1, and you have generated your
+credentials using the [`generate_keys.sh`](../generate_keys.sh) script
 provided in the parent folder, you can run the sample as:
 
 ```
@@ -179,6 +184,7 @@ provided in the parent folder, you can run the sample as:
         -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
+                     -cloud_region=europe-west1 \
                      -device_id=my-java-device \
                      -private_key_file=../rsa_private_pkcs8 \
                      -algorithm=RS256"
@@ -191,6 +197,7 @@ To publish state messages, run the sample as follows:
         -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
+                     -cloud_region=us-central1 \
                      -device_id=my-java-device \
                      -private_key_file=../rsa_private_pkcs8 \
                      -message_type=state \
@@ -238,19 +245,21 @@ The following command summarizes the sample usage:
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
         -Dexec.args="-project_id=my-iot-project \
                      -registry_id=my-registry \
+                     -cloud_region=us-central1 \
                      -device_id=my-device \
                      -private_key_file=rsa_private_pkcs8 \
                      -algorithm=RS256"
 
-For example, if your project ID is `blue-jet-123`, your service account
-credentials are stored in your home folder in creds.json and you have generated
-your credentials using the [`generate_keys.sh`](../generate_keys.sh) script
+For example, if your project ID is `blue-jet-123`, your device registry is
+located in the `asia-east1` region, and you have generated your
+credentials using the [`generate_keys.sh`](../generate_keys.sh) script
 provided in the parent folder, you can run the sample as:
 
     mvn exec:java \
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
+                     -cloud_region=asia-east1 \
                      -device_id=my-device \
                      -private_key_file=../rsa_private_pkcs8 \
                      -algorithm=RS256"
