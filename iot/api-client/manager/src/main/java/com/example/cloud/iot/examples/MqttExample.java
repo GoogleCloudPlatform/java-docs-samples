@@ -16,7 +16,7 @@
 
 package com.example.cloud.iot.examples;
 
-// [START cloudiotcore_mqtt_imports]
+// [START iot_mqtt_includes]
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,7 +34,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
-// [END cloudiotcore_mqtt_imports]
+// [END iot_mqtt_includes]
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
@@ -61,7 +61,7 @@ import org.joda.time.DateTime;
  * </pre>
  */
 public class MqttExample {
-  // [START cloudiotcore_mqtt_createjwt]
+  // [START iot_mqtt_jwt]
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
     DateTime now = new DateTime();
@@ -99,9 +99,9 @@ public class MqttExample {
 
     return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
-  // [END cloudiotcore_mqtt_createjwt]
+  // [END iot_mqtt_jwt]
 
-  // [START cloudiotcore_mqtt_configcallback]
+  // [START iot_mqtt_configcallback]
   static MqttCallback mCallback;
 
   /** Attaches the callback used when configuration changes occur. */
@@ -130,11 +130,11 @@ public class MqttExample {
 
     client.setCallback(mCallback);
   }
-  // [END cloudiotcore_mqtt_configcallback]
+  // [END iot_mqtt_configcallback]
 
   /** Parse arguments, configure MQTT, and publish messages. */
   public static void main(String[] args) throws Exception {
-    // [START cloudiotcore_mqtt_configuremqtt]
+    // [START iot_mqtt_configuremqtt]
     MqttExampleOptions options = MqttExampleOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
@@ -180,9 +180,9 @@ public class MqttExample {
       throw new IllegalArgumentException(
           "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
-    // [END cloudiotcore_mqtt_configuremqtt]
+    // [END iot_mqtt_configuremqtt]
 
-    // [START cloudiotcore_mqtt_publish]
+    // [START iot_mqtt_publish]
     // Create a client, and connect to the Google MQTT bridge.
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
 
@@ -238,7 +238,7 @@ public class MqttExample {
           options.messageType, i, options.numMessages, payload);
 
       // Refresh the connection credentials before the JWT expires.
-      // [START cloudiotcore_mqtt_jwt_refresh]
+      // [START iot_mqtt_jwt_refresh]
       long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
       if (secsSinceRefresh > (options.tokenExpMins * 60)) {
         System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
@@ -258,7 +258,7 @@ public class MqttExample {
         client.connect();
         attachCallback(client, options.deviceId);
       }
-      // [END cloudiotcore_mqtt_jwt_refresh]
+      // [END iot_mqtt_jwt_refresh]
 
       // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
       // also supports qos=0 for at most once delivery.
@@ -281,6 +281,6 @@ public class MqttExample {
     }
 
     System.out.println("Finished loop successfully. Goodbye!");
-    // [END cloudiotcore_mqtt_publish]
+    // [END iot_mqtt_publish]
   }
 }

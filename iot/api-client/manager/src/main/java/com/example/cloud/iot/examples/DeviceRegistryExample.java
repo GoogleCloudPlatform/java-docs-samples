@@ -110,6 +110,7 @@ public class DeviceRegistryExample {
     }
   }
 
+  // [START iot_create_registry]
   /** Create a registry for Cloud IoT. */
   public static void createRegistry(String cloudRegion, String projectId, String registryName,
                                     String pubsubTopicPath)
@@ -137,7 +138,9 @@ public class DeviceRegistryExample {
         registry).execute();
     System.out.println("Created registry: " + reg.getName());
   }
+  // [END iot_create_registry]
 
+  // [START iot_delete_registry]
   /** Delete this registry from Cloud IoT. */
   public static void deleteRegistry(String cloudRegion, String projectId, String registryName)
       throws GeneralSecurityException, IOException {
@@ -155,7 +158,9 @@ public class DeviceRegistryExample {
     System.out.println("Deleting: " + registryPath);
     service.projects().locations().registries().delete(registryPath).execute();
   }
+  // [END iot_delete_registry]
 
+  // [START iot_list_devices]
   /** Print all of the devices in this registry to standard out. */
   public static void listDevices(String projectId, String cloudRegion, String registryName) throws
       GeneralSecurityException, IOException {
@@ -194,7 +199,9 @@ public class DeviceRegistryExample {
       System.out.println("Registry has no devices.");
     }
   }
+  // [END iot_list_devices]
 
+  // [START iot_create_es_device]
   /** Create a device that is authenticated using ES256. */
   public static void createDeviceWithEs256(String deviceId, String publicKeyFilePath,
       String projectId, String cloudRegion, String registryName)
@@ -234,7 +241,9 @@ public class DeviceRegistryExample {
 
     System.out.println("Created device: " + createdDevice.toPrettyString());
   }
+  // [END iot_create_es_device]
 
+  // [START iot_create_rsa_device]
   /** Create a device that is authenticated using RS256. */
   public static void createDeviceWithRs256(String deviceId, String certificateFilePath,
                                            String projectId, String cloudRegion,
@@ -274,7 +283,9 @@ public class DeviceRegistryExample {
 
     System.out.println("Created device: " + createdDevice.toPrettyString());
   }
+  // [END iot_create_rsa_device]
 
+  // [START iot_create_unauth_device]
   /**
    * Create a device that has no credentials.
    *
@@ -310,7 +321,9 @@ public class DeviceRegistryExample {
 
     System.out.println("Created device: " + createdDevice.toPrettyString());
   }
+  // [END iot_create_unauth_device]
 
+  // [START iot_delete_device]
   /** Delete the given device from the registry. */
   public static void deleteDevice(String deviceId, String projectId, String cloudRegion,
                                   String registryName)
@@ -329,7 +342,9 @@ public class DeviceRegistryExample {
     System.out.println("Deleting device " + devicePath);
     service.projects().locations().registries().devices().delete(devicePath).execute();
   }
+  // [END iot_delete_device]
 
+  // [START iot_get_device]
   /** Retrieves device metadata from a registry. **/
   public static Device getDevice(String deviceId, String projectId, String cloudRegion,
                                  String registryName) throws GeneralSecurityException, IOException {
@@ -347,7 +362,9 @@ public class DeviceRegistryExample {
     System.out.println("Retrieving device " + devicePath);
     return service.projects().locations().registries().devices().get(devicePath).execute();
   }
+  // [END iot_get_device]
 
+  // [START iot_get_device_state]
   /** Retrieves device metadata from a registry. **/
   public static List<DeviceState> getDeviceStates(
       String deviceId, String projectId, String cloudRegion, String registryName)
@@ -375,7 +392,9 @@ public class DeviceRegistryExample {
 
     return resp.getDeviceStates();
   }
+  // [END iot_get_device_state]
 
+  // [START iot_get_registry]
   /** Retrieves registry metadata from a project. **/
   public static DeviceRegistry getRegistry(
       String projectId, String cloudRegion, String registryName)
@@ -393,7 +412,9 @@ public class DeviceRegistryExample {
 
     return service.projects().locations().registries().get(registryPath).execute();
   }
+  // [END iot_get_registry]
 
+  // [START iot_get_device_config]
   /** List all of the configs for the given device. */
   public static void listDeviceConfigs(
       String deviceId, String projectId, String cloudRegion, String registryName)
@@ -427,7 +448,9 @@ public class DeviceRegistryExample {
       System.out.println();
     }
   }
+  // [END iot_get_device_config]
 
+  // [START iot_list_registries]
   /** Lists all of the registries associated with the given project. */
   public static void listRegistries(String projectId, String cloudRegion)
       throws GeneralSecurityException, IOException {
@@ -464,7 +487,9 @@ public class DeviceRegistryExample {
       System.out.println("Project has no registries.");
     }
   }
+  // [END iot_list_registries]
 
+  // [START iot_patch_es]
   /** Patch the device to add an ES256 key for authentication. */
   public static void patchEs256ForAuth(String deviceId, String publicKeyFilePath, String projectId,
                                        String cloudRegion, String registryName)
@@ -503,7 +528,9 @@ public class DeviceRegistryExample {
 
     System.out.println("Patched device is " + patchedDevice.toPrettyString());
   }
+  // [END iot_patch_es]
 
+  // [START iot_patch_rsa]
   /** Patch the device to add an RSA256 key for authentication. */
   public static void patchRsa256ForAuth(String deviceId, String publicKeyFilePath, String projectId,
                                         String cloudRegion,
@@ -543,7 +570,9 @@ public class DeviceRegistryExample {
 
     System.out.println("Patched device is " + patchedDevice.toPrettyString());
   }
+  // [END iot_patch_rsa]
 
+  // [START iot_set_device_config]
   /** Set a device configuration to the specified data (string, JSON) and version (0 for latest). */
   public static void setDeviceConfiguration(
       String deviceId, String projectId, String cloudRegion, String registryName,
@@ -578,7 +607,9 @@ public class DeviceRegistryExample {
 
     System.out.println("Updated: " + config.getVersion());
   }
+  // [END iot_set_device_config]
 
+  // [START iot_get_iam_policy]
   /** Retrieves IAM permissions for the given registry. */
   public static void getIamPermissions(
       String projectId, String cloudRegion, String registryName)
@@ -615,7 +646,9 @@ public class DeviceRegistryExample {
       System.out.println(String.format("No policy bindings for %s", registryName));
     }
   }
+  // [END iot_get_iam_policy]
 
+  // [START iot_set_iam_policy]
   /** Sets IAM permissions for the given registry. */
   public static void setIamPermissions(
       String projectId, String cloudRegion, String registryName,
@@ -686,6 +719,7 @@ public class DeviceRegistryExample {
       }
     }
   }
+  // [END iot_set_iam_policy]
 
   /** Entry poit for CLI. */
   public static void main(String[] args) throws Exception {
