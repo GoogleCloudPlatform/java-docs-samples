@@ -414,7 +414,7 @@ public class DeviceRegistryExample {
   }
   // [END iot_get_registry]
 
-  // [START iot_get_device_config]
+  // [START iot_get_device_configs]
   /** List all of the configs for the given device. */
   public static void listDeviceConfigs(
       String deviceId, String projectId, String cloudRegion, String registryName)
@@ -448,7 +448,7 @@ public class DeviceRegistryExample {
       System.out.println();
     }
   }
-  // [END iot_get_device_config]
+  // [END iot_get_device_configs]
 
   // [START iot_list_registries]
   /** Lists all of the registries associated with the given project. */
