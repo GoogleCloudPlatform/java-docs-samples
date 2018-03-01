@@ -21,7 +21,7 @@ package com.example.bigquerydatatransfer;
 import com.google.cloud.bigquery.datatransfer.v1.DataSource;
 import com.google.cloud.bigquery.datatransfer.v1.DataTransferServiceClient;
 import com.google.cloud.bigquery.datatransfer.v1.ListDataSourcesRequest;
-import com.google.cloud.bigquery.datatransfer.v1.PagedResponseWrappers.ListDataSourcesPagedResponse;
+import com.google.cloud.bigquery.datatransfer.v1.DataTransferServiceClient.ListDataSourcesPagedResponse;
 
 public class QuickstartSample {
   /**
