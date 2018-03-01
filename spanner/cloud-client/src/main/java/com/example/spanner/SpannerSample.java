@@ -84,7 +84,7 @@ public class SpannerSample {
     }
   }
 
-  // [START write]
+  // [START spanner_insert_data]
   static final List<Singer> SINGERS =
       Arrays.asList(
           new Singer(1, "Marc", "Richards"),
@@ -100,8 +100,9 @@ public class SpannerSample {
           new Album(2, 1, "Green"),
           new Album(2, 2, "Forever Hold Your Peace"),
           new Album(2, 3, "Terrified"));
-  // [END write]
+  // [END spanner_insert_data]
 
+  // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
     Operation<Database, CreateDatabaseMetadata> op = dbAdminClient
         .createDatabase(
@@ -123,8 +124,9 @@ public class SpannerSample {
     Database db = op.waitFor().getResult();
     System.out.println("Created database [" + db.getId() + "]");
   }
+  // [END spanner_create_database]
 
-  // [START write]
+  // [START spanner_insert_data]
   static void writeExampleData(DatabaseClient dbClient) {
     List<Mutation> mutations = new ArrayList<>();
     for (Singer singer : SINGERS) {
@@ -151,9 +153,9 @@ public class SpannerSample {
     }
     dbClient.write(mutations);
   }
-  // [END write]
+  // [END spanner_insert_data]
 
-  // [START query]
+  // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
     // singleUse() can be used to execute a single read or query against Cloud Spanner.
     ResultSet resultSet =
@@ -165,9 +167,9 @@ public class SpannerSample {
           "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
     }
   }
-  // [END query]
+  // [END spanner_query_data]
 
-  // [START read]
+  // [START spanner_read_data]
   static void read(DatabaseClient dbClient) {
     ResultSet resultSet =
         dbClient
@@ -182,9 +184,9 @@ public class SpannerSample {
           "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
     }
   }
-  // [END read]
+  // [END spanner_read_data]
 
-  // [START add_marketing_budget]
+  // [START spanner_add_column]
   static void addMarketingBudget(DatabaseAdminClient adminClient, DatabaseId dbId) {
     adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
         dbId.getDatabase(),
@@ -192,11 +194,11 @@ public class SpannerSample {
         null).waitFor();
     System.out.println("Added MarketingBudget column");
   }
-  // [END add_marketing_budget]
+  // [END spanner_add_column]
 
   // Before executing this method, a new column MarketingBudget has to be added to the Albums
   // table by applying the DDL statement "ALTER TABLE Albums ADD COLUMN MarketingBudget INT64".
-  // [START update]
+  // [START spanner_update_data]
   static void update(DatabaseClient dbClient) {
     // Mutation can be used to update/insert/delete a single row in a table. Here we use
     // newUpdateBuilder to create update mutations.
@@ -221,9 +223,9 @@ public class SpannerSample {
     // This writes all the mutations to Cloud Spanner atomically.
     dbClient.write(mutations);
   }
-  // [END update]
+  // [END spanner_update_data]
 
-  // [START transaction]
+  // [START spanner_read_write_transaction]
   static void writeWithTransaction(DatabaseClient dbClient) {
     dbClient
         .readWriteTransaction()
@@ -270,9 +272,9 @@ public class SpannerSample {
               }
             });
   }
-  // [END transaction]
+  // [END spanner_read_write_transaction]
 
-  // [START query_new_column]
+  // [START spanner_query_with_new_column]
   static void queryMarketingBudget(DatabaseClient dbClient) {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
     // null.
@@ -290,9 +292,9 @@ public class SpannerSample {
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
   }
-  // [END query_new_column]
+  // [END spanner_query_with_new_column]
 
-  // [START add_index]
+  // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
     adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
         dbId.getDatabase(),
@@ -300,11 +302,11 @@ public class SpannerSample {
         null).waitFor();
     System.out.println("Added AlbumsByAlbumTitle index");
   }
-  // [END add_index]
+  // [END spanner_create_index]
 
   // Before running this example, add the index AlbumsByAlbumTitle by applying the DDL statement
   // "CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)".
-  // [START query_index]
+  // [START spanner_query_data_with_index]
   static void queryUsingIndex(DatabaseClient dbClient) {
     Statement statement = Statement
         // We use FORCE_INDEX hint to specify which index to use. For more details see
@@ -327,9 +329,9 @@ public class SpannerSample {
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
   }
-  // [END query_index]
+  // [END spanner_query_data_with_index]
 
-  // [START read_index]
+  // [START spanner_read_data_with_index]
   static void readUsingIndex(DatabaseClient dbClient) {
     ResultSet resultSet =
         dbClient
@@ -343,9 +345,9 @@ public class SpannerSample {
       System.out.printf("%d %s\n", resultSet.getLong(0), resultSet.getString(1));
     }
   }
-  // [END read_index]
+  // [END spanner_read_data_with_index]
 
-  // [START add_storing_index]
+  // [START spanner_create_storing_index]
   static void addStoringIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
     adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
         dbId.getDatabase(),
@@ -354,11 +356,11 @@ public class SpannerSample {
         null).waitFor();
     System.out.println("Added AlbumsByAlbumTitle2 index");
   }
-  // [END add_storing_index]
+  // [END spanner_create_storing_index]
 
   // Before running this example, create a storing index AlbumsByAlbumTitle2 by applying the DDL
   // statement "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)".
-  // [START read_storing_index]
+  // [START spanner_read_data_with_storing_index]
   static void readStoringIndex(DatabaseClient dbClient) {
     // We can read MarketingBudget also from the index since it stores a copy of MarketingBudget.
     ResultSet resultSet =
@@ -377,9 +379,9 @@ public class SpannerSample {
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
   }
-  // [END read_storing_index]
+  // [END spanner_read_data_with_storing_index]
 
-  // [START read_only_transaction]
+  // [START spanner_read_only_transaction]
   static void readOnlyTransaction(DatabaseClient dbClient) {
     // ReadOnlyTransaction must be closed by calling close() on it to release resources held by it.
     // We use a try-with-resource block to automatically do so.
@@ -402,9 +404,9 @@ public class SpannerSample {
       }
     }
   }
-  // [END read_only_transaction]
+  // [END spanner_read_only_transaction]
 
-  // [START read_stale_data]
+  // [START spanner_read_stale_data]
   static void readStaleData(DatabaseClient dbClient) {
     ResultSet resultSet =
         dbClient
@@ -418,7 +420,7 @@ public class SpannerSample {
           resultSet.isNull(2) ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
   }
-  // [END read_stale_data]
+  // [END spanner_read_stale_data]
 
   static void run(DatabaseClient dbClient, DatabaseAdminClient dbAdminClient, String command,
       DatabaseId database) {
