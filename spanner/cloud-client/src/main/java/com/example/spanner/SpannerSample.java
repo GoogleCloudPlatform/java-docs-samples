@@ -274,7 +274,7 @@ public class SpannerSample {
   }
   // [END spanner_read_write_transaction]
 
-  // [START spanner_query_with_new_column]
+  // [START spanner_query_data_with_new_column]
   static void queryMarketingBudget(DatabaseClient dbClient) {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
     // null.
@@ -292,7 +292,7 @@ public class SpannerSample {
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
   }
-  // [END spanner_query_with_new_column]
+  // [END spanner_query_data_with_new_column]
 
   // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
