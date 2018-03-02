@@ -33,8 +33,8 @@ import com.google.containeranalysis.v1alpha1.VulnerabilityType.VulnerabilityDeta
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
-import com.google.pubsub.v1.SubscriptionName;
-import com.google.pubsub.v1.TopicName;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
 
 /**
  * API usage samples
@@ -292,7 +292,8 @@ public class Samples {
 
     try {
       // subscribe to the requested pubsub channel
-      SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+      ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
+          projectId, subscriptionId);
       subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
       subscriber.startAsync().awaitRunning();
       // listen to messages for 'listenTimeout' seconds
@@ -339,9 +340,11 @@ public class Samples {
     String topicId = "resource-notes-occurrences-v1alpha1";
     try (SubscriptionAdminClient client = SubscriptionAdminClient.create()) {
       PushConfig config = PushConfig.getDefaultInstance();
-      TopicName topicName = TopicName.of(projectId, topicId);
-      SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
-      Subscription sub = client.createSubscription(subscriptionName, topicName, config, 0);
+      ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+      ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
+          projectId, subscriptionId);
+      Subscription sub = client.createSubscription(
+          subscriptionName, topicName, config, 0);
       return sub;
     }
   }
