@@ -47,12 +47,12 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.62</version>
+            <version>1.9.63</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-endpoints</artifactId>
-            <version>1.9.62</version>
+            <version>1.9.63</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -82,13 +82,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.62</version>
+            <version>1.9.63</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.62</version>
+            <version>1.9.63</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
