@@ -30,7 +30,6 @@ import com.google.monitoring.v3.ListTimeSeriesRequest;
 import com.google.monitoring.v3.MetricDescriptorName;
 import com.google.monitoring.v3.MonitoredResourceDescriptorName;
 import com.google.monitoring.v3.Point;
-import com.google.monitoring.v3.ProjectName;
 import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
@@ -396,7 +395,7 @@ public class Snippets {
     String projectId = System.getProperty("projectId");
 
     final MetricServiceClient client = MetricServiceClient.create();
-    MonitoredResourceDescriptorName name = MonitoredResourceDescriptorName.create(projectId, type);
+    MonitoredResourceDescriptorName name = MonitoredResourceDescriptorName.of(projectId, type);
     MonitoredResourceDescriptor response = client.getMonitoredResourceDescriptor(name);
 
     System.out.println("Printing monitored resource descriptor: ");

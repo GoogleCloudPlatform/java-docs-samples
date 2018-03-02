@@ -24,7 +24,6 @@ import com.google.api.MonitoredResource;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.monitoring.v3.CreateTimeSeriesRequest;
 import com.google.monitoring.v3.Point;
-import com.google.monitoring.v3.ProjectName;
 import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
@@ -65,8 +64,6 @@ public class QuickstartSample {
     List<Point> pointList = new ArrayList<>();
     pointList.add(point);
 
-    ProjectName name = ProjectName.create(projectId);
-
     // Prepares the metric descriptor
     Map<String, String> metricLabels = new HashMap<String, String>();
     metricLabels.put("store_id", "Pittsburg");
@@ -93,7 +90,7 @@ public class QuickstartSample {
     timeSeriesList.add(timeSeries);
 
     CreateTimeSeriesRequest request = CreateTimeSeriesRequest.newBuilder()
-        .setNameWithProjectName(name)
+        .setName(projectId)
         .addAllTimeSeries(timeSeriesList)
         .build();
 
