@@ -18,10 +18,11 @@ package com.example.pubsub;
 
 // [START pubsub_quickstart_create_topic]
 // Imports the Google Cloud client library
+
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.pubsub.v1.TopicName;
+import com.google.pubsub.v1.ProjectTopicName;
 
 public class CreateTopicExample {
 
@@ -40,7 +41,7 @@ public class CreateTopicExample {
     String topicId = args[0];
 
     // Create a new topic
-    TopicName topic = TopicName.of(projectId, topicId);
+    ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.createTopic(topic);
     } catch (ApiException e) {
