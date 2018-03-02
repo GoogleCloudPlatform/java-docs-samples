@@ -21,6 +21,7 @@ import com.google.api.MetricDescriptor;
 import com.google.api.MonitoredResource;
 import com.google.api.MonitoredResourceDescriptor;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.cloud.monitoring.v3.PagedResponseWrappers;
 import com.google.monitoring.v3.Aggregation;
 import com.google.monitoring.v3.CreateMetricDescriptorRequest;
 import com.google.monitoring.v3.CreateTimeSeriesRequest;
@@ -30,6 +31,7 @@ import com.google.monitoring.v3.ListTimeSeriesRequest;
 import com.google.monitoring.v3.MetricDescriptorName;
 import com.google.monitoring.v3.MonitoredResourceDescriptorName;
 import com.google.monitoring.v3.Point;
+import com.google.monitoring.v3.ProjectName;
 import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
@@ -90,6 +92,7 @@ public class Snippets {
     String metricType = CUSTOM_METRIC_DOMAIN + "/" + type;
 
     final MetricServiceClient client = MetricServiceClient.create();
+    ProjectName name = ProjectName.create(projectId);
 
     MetricDescriptor descriptor = MetricDescriptor.newBuilder()
         .setType(metricType)
@@ -99,7 +102,7 @@ public class Snippets {
         .build();
 
     CreateMetricDescriptorRequest request = CreateMetricDescriptorRequest.newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .setMetricDescriptor(descriptor)
         .build();
 
@@ -116,7 +119,7 @@ public class Snippets {
     // [START monitoring_delete_metric]
     String projectId = System.getProperty("projectId");
     final MetricServiceClient client = MetricServiceClient.create();
-    MetricDescriptorName metricName = MetricDescriptorName.of(projectId, name);
+    MetricDescriptorName metricName = MetricDescriptorName.create(projectId, name);
     client.deleteMetricDescriptor(metricName);
     System.out.println("Deleted descriptor " + name);
     // [END monitoring_delete_metric]
@@ -152,6 +155,8 @@ public class Snippets {
     List<Point> pointList = new ArrayList<>();
     pointList.add(point);
 
+    ProjectName name = ProjectName.create(projectId);
+
     // Prepares the metric descriptor
     Map<String, String> metricLabels = new HashMap<String, String>();
     Metric metric = Metric.newBuilder()
@@ -180,7 +185,7 @@ public class Snippets {
     timeSeriesList.add(timeSeries);
 
     CreateTimeSeriesRequest request = CreateTimeSeriesRequest.newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .addAllTimeSeries(timeSeriesList)
         .build();
 
@@ -198,6 +203,7 @@ public class Snippets {
     // [START monitoring_read_timeseries_fields]
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
+    ProjectName name = ProjectName.create(projectId);
 
     // Restrict time to last 20 minutes
     long startMillis = System.currentTimeMillis() - ((60 * 20) * 1000);
@@ -207,14 +213,14 @@ public class Snippets {
         .build();
 
     ListTimeSeriesRequest.Builder requestBuilder = ListTimeSeriesRequest.newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .setFilter("metric.type=\"compute.googleapis.com/instance/cpu/utilization\"")
         .setInterval(interval)
         .setView(ListTimeSeriesRequest.TimeSeriesView.HEADERS);
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    MetricServiceClient.ListTimeSeriesPagedResponse response = metricServiceClient
+    PagedResponseWrappers.ListTimeSeriesPagedResponse response = metricServiceClient
         .listTimeSeries(request);
 
     System.out.println("Got timeseries headers: ");
@@ -231,6 +237,7 @@ public class Snippets {
     // [START monitoring_read_timeseries_simple]
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
+    ProjectName name = ProjectName.create(projectId);
 
     // Restrict time to last 20 minutes
     long startMillis = System.currentTimeMillis() - ((60 * 20) * 1000);
@@ -240,13 +247,13 @@ public class Snippets {
         .build();
 
     ListTimeSeriesRequest.Builder requestBuilder = ListTimeSeriesRequest.newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .setFilter(filter)
         .setInterval(interval);
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    MetricServiceClient.ListTimeSeriesPagedResponse response = metricServiceClient
+    PagedResponseWrappers.ListTimeSeriesPagedResponse response = metricServiceClient
         .listTimeSeries(request);
 
     System.out.println("Got timeseries: ");
@@ -263,6 +270,7 @@ public class Snippets {
     // [START monitoring_read_timeseries_align]
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
+    ProjectName name = ProjectName.create(projectId);
 
     // Restrict time to last 20 minutes
     long startMillis = System.currentTimeMillis() - ((60 * 20) * 1000);
@@ -277,14 +285,14 @@ public class Snippets {
         .build();
 
     ListTimeSeriesRequest.Builder requestBuilder = ListTimeSeriesRequest.newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .setFilter("metric.type=\"compute.googleapis.com/instance/cpu/utilization\"")
         .setInterval(interval)
         .setAggregation(aggregation);
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    MetricServiceClient.ListTimeSeriesPagedResponse response = metricServiceClient
+    PagedResponseWrappers.ListTimeSeriesPagedResponse response = metricServiceClient
         .listTimeSeries(request);
 
     System.out.println("Got timeseries: ");
@@ -301,6 +309,7 @@ public class Snippets {
     // [START monitoring_read_timeseries_reduce]
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
+    ProjectName name = ProjectName.create(projectId);
 
     // Restrict time to last 20 minutes
     long startMillis = System.currentTimeMillis() - ((60 * 20) * 1000);
@@ -316,14 +325,14 @@ public class Snippets {
         .build();
 
     ListTimeSeriesRequest.Builder requestBuilder = ListTimeSeriesRequest.newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .setFilter("metric.type=\"compute.googleapis.com/instance/cpu/utilization\"")
         .setInterval(interval)
         .setAggregation(aggregation);
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    MetricServiceClient.ListTimeSeriesPagedResponse response = metricServiceClient
+    PagedResponseWrappers.ListTimeSeriesPagedResponse response = metricServiceClient
         .listTimeSeries(request);
 
     System.out.println("Got timeseries: ");
@@ -342,12 +351,13 @@ public class Snippets {
     String projectId = System.getProperty("projectId");
 
     final MetricServiceClient client = MetricServiceClient.create();
+    ProjectName name = ProjectName.create(projectId);
 
     ListMetricDescriptorsRequest request = ListMetricDescriptorsRequest
         .newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .build();
-    MetricServiceClient.ListMetricDescriptorsPagedResponse response =
+    PagedResponseWrappers.ListMetricDescriptorsPagedResponse response =
         client.listMetricDescriptors(request);
 
     System.out.println("Listing descriptors: ");
@@ -367,15 +377,16 @@ public class Snippets {
     String projectId = System.getProperty("projectId");
 
     final MetricServiceClient client = MetricServiceClient.create();
+    ProjectName name = ProjectName.create(projectId);
 
     ListMonitoredResourceDescriptorsRequest request = ListMonitoredResourceDescriptorsRequest
         .newBuilder()
-        .setName(projectId)
+        .setNameWithProjectName(name)
         .build();
 
     System.out.println("Listing monitored resource descriptors: ");
 
-    MetricServiceClient.ListMonitoredResourceDescriptorsPagedResponse response = client
+    PagedResponseWrappers.ListMonitoredResourceDescriptorsPagedResponse response = client
         .listMonitoredResourceDescriptors(request);
 
     for (MonitoredResourceDescriptor d : response.iterateAll()) {
@@ -395,7 +406,7 @@ public class Snippets {
     String projectId = System.getProperty("projectId");
 
     final MetricServiceClient client = MetricServiceClient.create();
-    MonitoredResourceDescriptorName name = MonitoredResourceDescriptorName.of(projectId, type);
+    MonitoredResourceDescriptorName name = MonitoredResourceDescriptorName.create(projectId, type);
     MonitoredResourceDescriptor response = client.getMonitoredResourceDescriptor(name);
 
     System.out.println("Printing monitored resource descriptor: ");
