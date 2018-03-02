@@ -82,4 +82,5 @@ do
 done
 
 # Return test results
+set -e
 exit $RESULTS
