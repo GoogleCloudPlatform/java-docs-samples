@@ -40,20 +40,19 @@ gcloud auth activate-service-account\
 echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
 # Diff to find out what has changed from master
 cd github/java-docs-samples
-set +e
-RESULTS=0
 find * -name pom.xml -print0 | sort -z | while read -d $'\0' file
 do
     # Navigate to project
     file=$(dirname "$file")
     pushd "$file" > /dev/null
 
-
+    set +e
     # Only tests changed projects
     git diff --quiet master.. .
     CHANGED=$?
     # Only test leafs to prevent testing twice
     PARENT=$(grep "<modules>" pom.xml -c)
+    set -e
 
     # Check for changes to the current folder
     if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ]; then
@@ -66,21 +65,10 @@ do
            -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
            -Dmaven.test.redirectTestOutputToFile=true \
            -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-           -Dbigtable.instanceID=instance \
-
-        # Determine test results
-        if [ "$?" -ne 0 ]; then
-            echo -e "\n Tests failed. \n"
-            RESULTS=1
-        else
-            echo -e "\n Tests passed. \n"
-        fi
+           -Dbigtable.instanceID=instance
+        echo -e "\n Tests complete. \n"
     fi
 
     popd > /dev/null
 
 done
-
-# Return test results
-set -e
-exit $RESULTS
