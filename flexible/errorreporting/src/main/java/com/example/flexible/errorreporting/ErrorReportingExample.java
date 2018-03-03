@@ -24,8 +24,6 @@ import com.google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent;
 
 import com.google.devtools.clouderrorreporting.v1beta1.SourceLocation;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -72,7 +70,7 @@ public class ErrorReportingExample extends HttpServlet {
           .build();
 
       // default project id
-      ProjectName projectName = ProjectName.create(ServiceOptions.getDefaultProjectId());
+      ProjectName projectName = ProjectName.of(ServiceOptions.getDefaultProjectId());
       reportErrorsServiceClient.reportErrorEvent(projectName, customErrorEvent);
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Exception encountered logging custom event", e);

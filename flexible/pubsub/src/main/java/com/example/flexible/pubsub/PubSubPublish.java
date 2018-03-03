@@ -19,8 +19,8 @@ package com.example.flexible.pubsub;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,7 +42,7 @@ public class PubSubPublish extends HttpServlet {
       // create a publisher on the topic
       if (publisher == null) {
         publisher = Publisher.newBuilder(
-            TopicName.of(ServiceOptions.getDefaultProjectId(), topicId))
+            ProjectTopicName.of(ServiceOptions.getDefaultProjectId(), topicId))
             .build();
       }
       // construct a pubsub message from the payload

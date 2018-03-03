@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.62</version>
+      <version>1.9.63</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -53,12 +53,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
-      <version>0.34.0-beta</version>
+      <version>0.37.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.34.0-beta</version>
+      <version>0.37.0-beta</version>
     </dependency>
     <!-- [END dependencies ] -->
 
@@ -77,13 +77,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.62</version>
+      <version>1.9.63</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.62</version>
+      <version>1.9.63</version>
       <scope>test</scope>
     </dependency>
 
@@ -102,7 +102,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.62</version>
+      <version>1.9.63</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -18,10 +18,11 @@ package com.example.bigquerydatatransfer;
 
 // [START bigquery_datatransfer_quickstart]
 // Imports the Google Cloud client library
+
 import com.google.cloud.bigquery.datatransfer.v1.DataSource;
 import com.google.cloud.bigquery.datatransfer.v1.DataTransferServiceClient;
+import com.google.cloud.bigquery.datatransfer.v1.DataTransferServiceClient.ListDataSourcesPagedResponse;
 import com.google.cloud.bigquery.datatransfer.v1.ListDataSourcesRequest;
-import com.google.cloud.bigquery.datatransfer.v1.PagedResponseWrappers.ListDataSourcesPagedResponse;
 
 public class QuickstartSample {
   /**

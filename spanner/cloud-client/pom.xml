@@ -33,7 +33,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <opencensus.version>0.12.0</opencensus.version>
+    <opencensus.version>0.12.2</opencensus.version>
   </properties>
 
   <dependencies>
@@ -128,7 +128,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>google-cloud-bom</artifactId>
-        <version>0.34.0-alpha</version>
+        <version>0.37.0-alpha</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

@@ -24,8 +24,8 @@ import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.TopicName;
 
 public class PublisherExample {
 
@@ -39,7 +39,7 @@ public class PublisherExample {
     // topic id, eg. "my-topic"
     String topicId = args[0];
     int messageCount = Integer.parseInt(args[1]);
-    TopicName topicName = TopicName.of(PROJECT_ID, topicId);
+    ProjectTopicName topicName = ProjectTopicName.of(PROJECT_ID, topicId);
     Publisher publisher = null;
     try {
       // Create a publisher instance with default settings bound to the topic

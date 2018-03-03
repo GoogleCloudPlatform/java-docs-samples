@@ -20,8 +20,8 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -56,7 +56,10 @@ public class PubSubPublish extends HttpServlet {
     // create a publisher on the topic
     if (publisher == null) {
       this.publisher = publisher = Publisher.newBuilder(
-          TopicName.of(ServiceOptions.getDefaultProjectId(), topicId))
+          ProjectTopicName.newBuilder()
+              .setProject(ServiceOptions.getDefaultProjectId())
+              .setTopic(topicId)
+              .build())
           .build();
     }
 
