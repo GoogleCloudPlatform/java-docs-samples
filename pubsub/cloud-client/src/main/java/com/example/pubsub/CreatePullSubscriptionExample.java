@@ -17,13 +17,14 @@
 package com.example.pubsub;
 
 // [START pubsub_quickstart_create_subscription]
+
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
-import com.google.pubsub.v1.SubscriptionName;
-import com.google.pubsub.v1.TopicName;
 
 public class CreatePullSubscriptionExample {
 
@@ -44,10 +45,11 @@ public class CreatePullSubscriptionExample {
     // Your subscription ID eg. "my-sub"
     String subscriptionId = args[1];
 
-    TopicName topicName = TopicName.of(projectId, topicId);
+    ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
 
     // Create a new subscription
-    SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+    ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
+        projectId, subscriptionId);
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       // create a pull subscription with default acknowledgement deadline (= 10 seconds)
       Subscription subscription =

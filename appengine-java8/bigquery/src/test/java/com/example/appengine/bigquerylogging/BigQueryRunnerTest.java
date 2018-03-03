@@ -27,7 +27,7 @@ import com.google.api.MetricDescriptor;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
-import com.google.cloud.monitoring.v3.PagedResponseWrappers.ListMetricDescriptorsPagedResponse;
+import com.google.cloud.monitoring.v3.MetricServiceClient.ListMetricDescriptorsPagedResponse;
 import com.google.cloud.monitoring.v3.stub.MetricServiceStub;
 import com.google.monitoring.v3.CreateMetricDescriptorRequest;
 import com.google.monitoring.v3.CreateTimeSeriesRequest;
