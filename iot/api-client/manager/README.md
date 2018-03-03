@@ -8,7 +8,7 @@ This sample app demonstrates device management for Google Cloud IoT Core.
 Note that before you can run the sample, you must configure a Google Cloud
 PubSub topic for Cloud IoT as described in [the parent README](../README.md).
 
-Before running the samples, you can set the `GCLOUD_PROJECT` and
+Before running the samples, you can set the `GOOGLE_CLOUD_PROJECT` and
 `GOOGLE_APPLICATION_CREDENTIALS` environment variables to avoid passing them to
 the sample every time you run it.
 
@@ -62,86 +62,109 @@ run the sample as:
 Create a PubSub topic, `hello-java`, for the project, `blue-jet-123`:
 
     mvn exec:java \
-        -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-        -Dexec.args="-project_id=blue-jet-123 \
-                     -command=create-iot-topic \
-                     -pubsub_topic=hello-java "
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -command=create-iot-topic \
+                   -pubsub_topic=hello-java"
 
 Create an ES device:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -cloud_region=us-central1
-        -registry_name=hello-java -ec_public_key_file ../ec_public.pem \
-        -device_id="java-device-0" -command=create-es
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -cloud_region=us-central1 \
+                   -registry_name=hello-java \
+                   -ec_public_key_file ../ec_public.pem \
+                   -device_id=java-device-0 \
+                   -command=create-es"
 
 Create an RSA device:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -rsa_certificate_file ../rsa_cert.pem \
-        -device_id="java-device-1" -command=create-rsa
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -rsa_certificate_file ../rsa_cert.pem \
+                   -device_id=java-device-1 \
+                   -command=create-rsa"
 
 Create a device without authorization:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -device_id="java-device-3" \
-        -command=create-unauth
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -device_id=java-device-3 \
+                   -command=create-unauth"
 
 Create a device registry:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -command=create-registry
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -command=create-registry"
 
 Delete a device registry:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -command=delete-registry
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -command=delete-registry"
 
 Get a device registry:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -command=get-registry
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -command=get-registry"
 
 List devices:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -command=list-devices
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -command=list-devices"
 
 List device registries:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -command=list-registries
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -command=list-registries"
 
 Patch a device with ES:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -ec_public_key_file ../ec_public.pem \
-        -device_id="java-device-1" -command=patch-device-es
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -ec_public_key_file ../ec_public.pem \
+                   -device_id=java-device-1 -command=patch-device-es"
 
 Patch a device with RSA:
 
-    java -cp target/cloudiot-manager-demo-1.0-jar-with-dependencies.jar \
-        com.example.cloud.iot.examples.DeviceRegistryExample \
-        -project_id=blue-jet-123 -pubsub_topic=hello-java \
-        -registry_name=hello-java -rsa_certificate_file ../rsa_cert.pem \
-        -device_id="java-device-0" -command=patch-device-rsa
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -pubsub_topic=hello-java \
+                   -registry_name=hello-java \
+                   -rsa_certificate_file ../rsa_cert.pem \
+                   -device_id=java-device-0 \
+                   -command=patch-device-rsa"
 
 
 # Cloud IoT Core Java HTTP example
