@@ -21,8 +21,8 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.pubsub.v1.SubscriptionName;
-import com.google.pubsub.v1.TopicName;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -133,7 +133,7 @@ public class QuickStartIT {
 
   private void deleteTestTopic() throws Exception {
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(TopicName.of(projectId, topicId));
+      topicAdminClient.deleteTopic(ProjectTopicName.of(projectId, topicId));
     } catch (IOException e) {
       System.err.println("Error deleting topic " + e.getMessage());
     }
@@ -142,7 +142,7 @@ public class QuickStartIT {
   private void deleteTestSubscription() throws Exception {
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       subscriptionAdminClient.deleteSubscription(
-          SubscriptionName.of(projectId, subscriptionId));
+          ProjectSubscriptionName.of(projectId, subscriptionId));
     } catch (IOException e) {
       System.err.println("Error deleting subscription " + e.getMessage());
     }

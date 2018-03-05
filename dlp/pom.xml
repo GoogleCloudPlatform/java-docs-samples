@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dlp</artifactId>
-      <version>0.34.0-beta</version>
+      <version>0.37.0-beta</version>
     </dependency>
     <!-- [END dlp_maven] -->
     <dependency>

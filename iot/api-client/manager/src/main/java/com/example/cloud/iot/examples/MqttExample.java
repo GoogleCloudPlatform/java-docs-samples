@@ -16,7 +16,7 @@
 
 package com.example.cloud.iot.examples;
 
-// [START cloudiotcore_mqtt_imports]
+// [START iot_mqtt_includes]
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Properties;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -32,7 +34,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
-// [END cloudiotcore_mqtt_imports]
+// [END iot_mqtt_includes]
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
@@ -59,7 +61,7 @@ import org.joda.time.DateTime;
  * </pre>
  */
 public class MqttExample {
-  // [START cloudiotcore_mqtt_createjwt]
+  // [START iot_mqtt_jwt]
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
     DateTime now = new DateTime();
@@ -97,9 +99,9 @@ public class MqttExample {
 
     return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
-  // [END cloudiotcore_mqtt_createjwt]
+  // [END iot_mqtt_jwt]
 
-  // [START cloudiotcore_mqtt_configcallback]
+  // [START iot_mqtt_configcallback]
   static MqttCallback mCallback;
 
   /** Attaches the callback used when configuration changes occur. */
@@ -128,11 +130,11 @@ public class MqttExample {
 
     client.setCallback(mCallback);
   }
-  // [END cloudiotcore_mqtt_configcallback]
+  // [END iot_mqtt_configcallback]
 
   /** Parse arguments, configure MQTT, and publish messages. */
   public static void main(String[] args) throws Exception {
-    // [START cloudiotcore_mqtt_configuremqtt]
+    // [START iot_mqtt_configuremqtt]
     MqttExampleOptions options = MqttExampleOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
@@ -153,10 +155,14 @@ public class MqttExample {
             options.projectId, options.cloudRegion, options.registryId, options.deviceId);
 
     MqttConnectOptions connectOptions = new MqttConnectOptions();
-    // Note that the the Google Cloud IoT Core only supports MQTT 3.1.1, and Paho requires that we
+    // Note that the Google Cloud IoT Core only supports MQTT 3.1.1, and Paho requires that we
     // explictly set this. If you don't set MQTT version, the server will immediately close its
     // connection to your device.
     connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
+
+    Properties sslProps = new Properties();
+    sslProps.setProperty("com.ibm.ssl.protocol", "TLSv1.2");
+    connectOptions.setSSLProperties(sslProps);
 
     // With Google Cloud IoT Core, the username field is ignored, however it must be set for the
     // Paho client library to send the password field. The password field is used to transmit a JWT
@@ -174,72 +180,107 @@ public class MqttExample {
       throw new IllegalArgumentException(
           "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
-    // [END cloudiotcore_mqtt_configuremqtt]
+    // [END iot_mqtt_configuremqtt]
 
-    // [START cloudiotcore_mqtt_publish]
+    // [START iot_mqtt_publish]
     // Create a client, and connect to the Google MQTT bridge.
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
-    try {
-      client.connect(connectOptions);
-      attachCallback(client, options.deviceId);
 
-      // Publish to the events or state topic based on the flag.
-      String subTopic = options.messageType.equals("event") ? "events" : options.messageType;
+    // Both connect and publish operations may fail. If they do, allow retries but with an
+    // exponential backoff time period.
+    long initialConnectIntervalMillis = 500L;
+    long maxConnectIntervalMillis = 6000L;
+    long maxConnectRetryTimeElapsedMillis = 900000L;
+    float intervalMultiplier = 1.5f;
 
-      // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
-      // required to be in the format below. Note that this is not the same as the device registry's
-      // Cloud Pub/Sub topic.
-      String mqttTopic = String.format("/devices/%s/%s", options.deviceId, subTopic);
+    long retryIntervalMs = initialConnectIntervalMillis;
+    long totalRetryTimeMs = 0;
 
-      // Publish numMessages messages to the MQTT bridge, at a rate of 1 per second.
-      for (int i = 1; i <= options.numMessages; ++i) {
-        String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
-        System.out.format(
-            "Publishing %s message %d/%d: '%s'\n",
-            options.messageType, i, options.numMessages, payload);
+    while (!client.isConnected() && totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) {
+      try {
+        client.connect(connectOptions);
+      } catch (MqttException e) {
+        int reason = e.getReasonCode();
 
-        // Refresh the connection credentials before the JWT expires.
-        // [START cloudiotcore_mqtt_jwt_refresh]
-        long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
-        if (secsSinceRefresh > (options.tokenExpMins * 60)) {
-          System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
-          iat = new DateTime();
-          if (options.algorithm.equals("RS256")) {
-            connectOptions.setPassword(
-                createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
-          } else if (options.algorithm.equals("ES256")) {
-            connectOptions.setPassword(
-                createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
-          } else {
-            throw new IllegalArgumentException(
-                "Invalid algorithm " + options.algorithm
-                    + ". Should be one of 'RS256' or 'ES256'.");
+        // If the connection is lost or if the server cannot be connected, allow retries, but with
+        // exponential backoff.
+        System.out.println("An error occurred: " + e.getMessage());
+        if (reason == MqttException.REASON_CODE_CONNECTION_LOST
+            || reason == MqttException.REASON_CODE_SERVER_CONNECT_ERROR) {
+          System.out.println("Retrying in " + retryIntervalMs / 1000.0 + " seconds.");
+          Thread.sleep(retryIntervalMs);
+          totalRetryTimeMs += retryIntervalMs;
+          retryIntervalMs *= intervalMultiplier;
+          if (retryIntervalMs > maxConnectIntervalMillis) {
+            retryIntervalMs = maxConnectIntervalMillis;
           }
-          client.disconnect();
-          client.connect();
-          attachCallback(client, options.deviceId);
-        }
-        // [END cloudiotcore_mqtt_jwt_refresh]
-
-        // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
-        // also supports qos=0 for at most once delivery.
-        MqttMessage message = new MqttMessage(payload.getBytes());
-        message.setQos(1);
-        client.publish(mqttTopic, message);
-
-        if (options.messageType.equals("event")) {
-          // Send telemetry events every second
-          Thread.sleep(1000);
         } else {
-          // Note: Update Device state less frequently than with telemetry events
-          Thread.sleep(5000);
+          throw e;
         }
       }
-    } finally {
-      // Disconnect the client and finish the run.
+    }
+
+    attachCallback(client, options.deviceId);
+
+    // Publish to the events or state topic based on the flag.
+    String subTopic = options.messageType.equals("event") ? "events" : options.messageType;
+
+    // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
+    // required to be in the format below. Note that this is not the same as the device registry's
+    // Cloud Pub/Sub topic.
+    String mqttTopic = String.format("/devices/%s/%s", options.deviceId, subTopic);
+
+    // Publish numMessages messages to the MQTT bridge, at a rate of 1 per second.
+    for (int i = 1; i <= options.numMessages; ++i) {
+      String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
+      System.out.format(
+          "Publishing %s message %d/%d: '%s'\n",
+          options.messageType, i, options.numMessages, payload);
+
+      // Refresh the connection credentials before the JWT expires.
+      // [START iot_mqtt_jwt_refresh]
+      long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
+      if (secsSinceRefresh > (options.tokenExpMins * 60)) {
+        System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+        iat = new DateTime();
+        if (options.algorithm.equals("RS256")) {
+          connectOptions.setPassword(
+              createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
+        } else if (options.algorithm.equals("ES256")) {
+          connectOptions.setPassword(
+              createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
+        } else {
+          throw new IllegalArgumentException(
+              "Invalid algorithm " + options.algorithm
+                  + ". Should be one of 'RS256' or 'ES256'.");
+        }
+        client.disconnect();
+        client.connect();
+        attachCallback(client, options.deviceId);
+      }
+      // [END iot_mqtt_jwt_refresh]
+
+      // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
+      // also supports qos=0 for at most once delivery.
+      MqttMessage message = new MqttMessage(payload.getBytes());
+      message.setQos(1);
+      client.publish(mqttTopic, message);
+
+      if (options.messageType.equals("event")) {
+        // Send telemetry events every second
+        Thread.sleep(1000);
+      } else {
+        // Note: Update Device state less frequently than with telemetry events
+        Thread.sleep(5000);
+      }
+    }
+
+    // Disconnect the client if still connected, and finish the run.
+    if (client.isConnected()) {
       client.disconnect();
     }
+
     System.out.println("Finished loop successfully. Goodbye!");
-    // [END cloudiotcore_mqtt_publish]
+    // [END iot_mqtt_publish]
   }
 }

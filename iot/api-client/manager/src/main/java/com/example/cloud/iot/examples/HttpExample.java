@@ -16,7 +16,7 @@
 
 package com.example.cloud.iot.examples;
 
-// [START cloudiotcore_http_imports]
+// [START iot_http_includes]
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
@@ -51,7 +51,7 @@ import java.util.Base64;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
-// [END cloudiotcore_http_imports]
+// [END iot_http_includes]
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via HTTP, using JWT.
@@ -68,7 +68,7 @@ public class HttpExample {
   static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
-  // [START cloudiotcore_http_createjwt]
+  // [START iot_http_jwt]
   /** Create a RSA-based JWT for the given project id, signed with the given private key. */
   private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
     DateTime now = new DateTime();
@@ -102,13 +102,13 @@ public class HttpExample {
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-    KeyFactory kf = KeyFactory.getInstance("ES256");
+    KeyFactory kf = KeyFactory.getInstance("EC");
 
     return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
-  // [END cloudiotcore_http_createjwt]
+  // [END iot_http_jwt]
 
-  // [START cloudiotcore_http_getconfig]
+  // [START iot_http_getconfig]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
   public static void getConfig(String urlPath, String token, String projectId,
       String cloudRegion, String registryId, String deviceId, String version)
@@ -151,9 +151,9 @@ public class HttpExample {
 
     System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)));
   }
-  // [END cloudiotcore_http_getconfig]
+  // [END iot_http_getconfig]
 
-  // [START cloudiotcore_http_publishmessage]
+  // [START iot_http_publish]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
   public static void publishMessage(String payload, String urlPath, String messageType,
       String token, String projectId, String cloudRegion, String registryId, String deviceId)
@@ -216,9 +216,9 @@ public class HttpExample {
     System.out.println(res.getStatusCode());
     System.out.println(res.getStatusMessage());
   }
-  // [END cloudiotcore_http_publishmessage]
+  // [END iot_http_publish]
 
-  // [START cloudiotcore_http_run]
+  // [START iot_http_run]
   /** Parse arguments and publish messages. */
   public static void main(String[] args) throws Exception {
     HttpExampleOptions options = HttpExampleOptions.fromFlags(args);
@@ -280,5 +280,5 @@ public class HttpExample {
     }
     System.out.println("Finished loop successfully. Goodbye!");
   }
-  // [END cloudiotcore_http_run]
+  // [END iot_http_run]
 }

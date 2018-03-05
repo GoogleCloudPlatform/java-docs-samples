@@ -64,7 +64,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.16.0</version>
+      <version>1.19.0</version>
     </dependency>
   </dependencies>
   <build>
