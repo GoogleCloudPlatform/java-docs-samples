@@ -115,7 +115,7 @@ and [SDK](https://cloud.google.com/sdk/) configured.
     gcloud container clusters create my-cluster
     ```
 
-1. Edit `deployment.yaml`. Replace `SERVICE_NAME`, and `GCLOUD_PROJECT` with your values.
+1. Edit `deployment.yaml`. Replace `SERVICE_NAME` and `GCLOUD_PROJECT` with your values.
 
 1. Deploy to GKE
 
