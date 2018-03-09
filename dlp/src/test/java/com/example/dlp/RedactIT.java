@@ -31,9 +31,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-//CHECKSTYLE OFF: AbbreviationAsWordInName
+// CHECKSTYLE OFF: AbbreviationAsWordInName
 public class RedactIT {
-  //CHECKSTYLE ON: AbbreviationAsWordInName
+
+  // CHECKSTYLE ON: AbbreviationAsWordInName
   private ByteArrayOutputStream bout;
   private PrintStream out;
 

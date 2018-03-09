@@ -16,15 +16,17 @@
 
 package com.example.dlp;
 
-import com.google.cloud.dlp.v2beta1.DlpServiceClient;
-import com.google.privacy.dlp.v2beta1.ContentItem;
-import com.google.privacy.dlp.v2beta1.Finding;
-import com.google.privacy.dlp.v2beta1.InfoType;
-import com.google.privacy.dlp.v2beta1.InspectConfig;
-import com.google.privacy.dlp.v2beta1.InspectContentRequest;
-import com.google.privacy.dlp.v2beta1.InspectContentResponse;
-import com.google.privacy.dlp.v2beta1.InspectResult;
-import com.google.privacy.dlp.v2beta1.Likelihood;
+import com.google.cloud.dlp.v2.DlpServiceClient;
+import com.google.privacy.dlp.v2.ByteContentItem;
+import com.google.privacy.dlp.v2.ContentItem;
+import com.google.privacy.dlp.v2.Finding;
+import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectContentRequest;
+import com.google.privacy.dlp.v2.InspectContentResponse;
+import com.google.privacy.dlp.v2.InspectResult;
+import com.google.privacy.dlp.v2.Likelihood;
+import com.google.protobuf.ByteString;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,40 +58,45 @@ public class QuickStart {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
+      InspectConfig.FindingLimits findingLimits =
+          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerItem(maxFindings).build();
+
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
               .addAllInfoTypes(infoTypes)
               .setMinLikelihood(minLikelihood)
-              .setMaxFindings(maxFindings)
+              .setLimits(findingLimits)
               .setIncludeQuote(includeQuote)
               .build();
 
-      ContentItem contentItem =
-          ContentItem.newBuilder().setType("text/plain").setValue(text).build();
+      ByteContentItem byteContentItem =
+          ByteContentItem.newBuilder()
+              .setType(ByteContentItem.BytesType.TEXT_UTF8)
+              .setData(ByteString.copyFromUtf8(text))
+              .build();
+      ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
 
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
               .setInspectConfig(inspectConfig)
-              .addItems(contentItem)
+              .setItem(contentItem)
               .build();
 
       // Inspect the text for info types
       InspectContentResponse response = dlpServiceClient.inspectContent(request);
 
-      // Print the response
-      for (InspectResult result : response.getResultsList()) {
-        if (result.getFindingsCount() > 0) {
-          System.out.println("Findings: ");
-          for (Finding finding : result.getFindingsList()) {
-            if (includeQuote) {
-              System.out.print("Quote: " + finding.getQuote());
-            }
-            System.out.print("\tInfo type: " + finding.getInfoType().getName());
-            System.out.println("\tLikelihood: " + finding.getLikelihood());
+      InspectResult result = response.getResult();
+      if (result.getFindingsCount() > 0) {
+        System.out.println("Findings: ");
+        for (Finding finding : result.getFindingsList()) {
+          if (includeQuote) {
+            System.out.print("Quote: " + finding.getQuote());
           }
-        } else {
-          System.out.println("No findings.");
+          System.out.print("\tInfo type: " + finding.getInfoType().getName());
+          System.out.println("\tLikelihood: " + finding.getLikelihood());
         }
+      } else {
+        System.out.println("No findings.");
       }
     } catch (Exception e) {
       System.out.println("Error in inspectString: " + e.getMessage());

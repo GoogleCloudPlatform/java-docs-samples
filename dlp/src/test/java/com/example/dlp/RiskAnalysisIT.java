@@ -29,9 +29,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-//CHECKSTYLE OFF: AbbreviationAsWordInName
+// CHECKSTYLE OFF: AbbreviationAsWordInName
 public class RiskAnalysisIT {
-  //CHECKSTYLE ON: AbbreviationAsWordInName
+
+  // CHECKSTYLE ON: AbbreviationAsWordInName
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -47,40 +48,46 @@ public class RiskAnalysisIT {
 
   @Test
   public void testNumericalStats() throws Exception {
-    RiskAnalysis.main(new String[] {
-        "-n",
-        "-datasetId", "integration_tests_dlp",
-        "-tableId", "harmful",
-        "-columnName", "Age"
-    });
+    RiskAnalysis.main(
+        new String[] {
+          "-n", "-datasetId", "integration_tests_dlp", "-tableId", "harmful", "-columnName", "Age"
+        });
     String output = bout.toString();
-    assertTrue(Pattern.compile(
-        "Value at 0% quantile: integer_value: \\d{2}").matcher(output).find());
-    assertTrue(Pattern.compile(
-        "Value at \\d{2}% quantile: integer_value: \\d{2}").matcher(output).find());
+    assertTrue(
+        Pattern.compile("Value at 0% quantile: integer_value: \\d{2}").matcher(output).find());
+    assertTrue(
+        Pattern.compile("Value at \\d{2}% quantile: integer_value: \\d{2}").matcher(output).find());
   }
 
   @Test
   public void testCategoricalStats() throws Exception {
-    RiskAnalysis.main(new String[] {
-        "-c",
-        "-datasetId", "integration_tests_dlp",
-        "-tableId", "harmful",
-        "-columnName", "Mystery"
-    });
+    RiskAnalysis.main(
+        new String[] {
+          "-c",
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-columnName",
+          "Mystery"
+        });
     String output = bout.toString();
-    assertTrue(Pattern.compile(
-        "Most common value occurs \\d time\\(s\\)").matcher(output).find());
+    assertTrue(Pattern.compile("Most common value occurs \\d time\\(s\\)").matcher(output).find());
   }
 
   @Test
   public void testKAnonymity() throws Exception {
-    RiskAnalysis.main(new String[] {
-        "-k",
-        "-datasetId", "integration_tests_dlp",
-        "-tableId", "harmful",
-        "-quasiIdColumnNames", "Age", "Mystery"
-    });
+    RiskAnalysis.main(
+        new String[] {
+          "-k",
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-quasiIdColumnNames",
+          "Age",
+          "Mystery"
+        });
     String output = bout.toString();
     assertTrue(Pattern.compile("Bucket size range: \\[\\d, \\d\\]").matcher(output).find());
     assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
@@ -89,13 +96,19 @@ public class RiskAnalysisIT {
 
   @Test
   public void testLDiversity() throws Exception {
-    RiskAnalysis.main(new String[] {
-        "-l",
-        "-datasetId", "integration_tests_dlp",
-        "-tableId", "harmful",
-        "-sensitiveAttribute", "Name",
-        "-quasiIdColumnNames", "Age", "Mystery"
-    });
+    RiskAnalysis.main(
+        new String[] {
+          "-l",
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-sensitiveAttribute",
+          "Name",
+          "-quasiIdColumnNames",
+          "Age",
+          "Mystery"
+        });
     String output = bout.toString();
     assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
     assertTrue(output.contains("Class size: 1"));
