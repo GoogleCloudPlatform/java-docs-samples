@@ -35,6 +35,7 @@ import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2.KmsWrappedCryptoKey;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
+import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RecordTransformations;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Value;
@@ -131,7 +132,7 @@ public class DeIdentification {
       // Create the deidentification request object
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(String.format("projects/%s", projectId))
+              .setParent(ProjectName.of(projectId).toString())
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(contentItem)
               .build();
@@ -223,7 +224,7 @@ public class DeIdentification {
 
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(String.format("projects/%s", projectId))
+              .setParent(ProjectName.of(projectId).toString())
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(contentItem)
               .build();
@@ -352,7 +353,7 @@ public class DeIdentification {
 
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(String.format("projects/%s", projectId))
+              .setParent(ProjectName.of(projectId).toString())
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(tableItem)
               .build();
