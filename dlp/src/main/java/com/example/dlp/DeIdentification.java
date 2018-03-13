@@ -77,9 +77,7 @@ public class DeIdentification {
    * @param projectId ID of Google Cloud project to run the API under.
    */
   private static void deIdentifyWithMask(
-      String string,
-      Character maskingCharacter,
-      int numberToMask) {
+      String string, Character maskingCharacter, int numberToMask, String projectId) {
     // [START dlp_deidentify_masking]
     /**
      * Deidentify a string by masking sensitive information with a character using the DLP API.
@@ -95,7 +93,6 @@ public class DeIdentification {
       // string = "My SSN is 372819127";
       // numberToMask = 5;
       // maskingCharacter = 'x';
-
       ByteContentItem byteContentItem =
           ByteContentItem.newBuilder()
               .setType(ByteContentItem.BytesType.TEXT_UTF8)
@@ -112,7 +109,9 @@ public class DeIdentification {
 
       // Create the deidentification transformation configuration
       PrimitiveTransformation primitiveTransformation =
-          PrimitiveTransformation.newBuilder().setCharacterMaskConfig(characterMaskConfig).build();
+          PrimitiveTransformation.newBuilder()
+              .setCharacterMaskConfig(characterMaskConfig)
+              .build();
 
       InfoTypeTransformation infoTypeTransformationObject =
           InfoTypeTransformation.newBuilder()
@@ -124,15 +123,15 @@ public class DeIdentification {
               .addTransformations(infoTypeTransformationObject)
               .build();
 
-      // Create the deidentification request object
       DeidentifyConfig deidentifyConfig =
           DeidentifyConfig.newBuilder()
               .setInfoTypeTransformations(infoTypeTransformationArray)
               .build();
 
+      // Create the deidentification request object
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(String.format("projects/%s", projectId))
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(contentItem)
               .build();
@@ -142,10 +141,11 @@ public class DeIdentification {
 
       // Print the character-masked input value
       // e.g. "My SSN is 123456789" --> "My SSN is *********"
-      ContentItem item = response.getItem();
-      System.out.println(item.getValue());
+      String result = response.getItem().getByteItem().getData().toStringUtf8();
+      System.out.println(result);
     } catch (Exception e) {
       System.out.println("Error in deidentifyWithMask: " + e.getMessage());
+      System.out.println(e.getStackTrace());
     }
   }
   // [END dlp_deidentify_mask]
@@ -223,7 +223,7 @@ public class DeIdentification {
 
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(String.format("projects/%s", projectId))
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(contentItem)
               .build();
@@ -233,8 +233,8 @@ public class DeIdentification {
 
       // Print the deidentified input value
       // e.g. "My SSN is 123456789" --> "My SSN is 7261298621"
-      ContentItem item = response.getItem();
-      System.out.println(item.getValue());
+      String result = response.getItem().getByteItem().getData().toStringUtf8();
+      System.out.println(result);
     } catch (Exception e) {
       System.out.println("Error in deidentifyWithFpe: " + e.getMessage());
     }
@@ -292,7 +292,7 @@ public class DeIdentification {
         KmsWrappedCryptoKey kmsWrappedCryptoKey =
             KmsWrappedCryptoKey.newBuilder()
                 .setCryptoKeyName(keyName)
-                .setWrappedKey(ByteString.copyFromUtf8(wrappedKey))
+                .setWrappedKey(ByteString.copyFrom(BaseEncoding.base64().decode(wrappedKey)))
                 .build();
         dateShiftConfigBuilder.setCryptoKey(
             CryptoKey.newBuilder().setKmsWrapped(kmsWrappedCryptoKey).build());
@@ -352,7 +352,7 @@ public class DeIdentification {
 
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(String.format("projects/%s", projectId))
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(tableItem)
               .build();
@@ -369,7 +369,7 @@ public class DeIdentification {
 
       File outputFile = outputCsvPath.toFile();
       if (!outputFile.exists()) {
-        outputFile.mkdirs();
+        outputFile.getParentFile().mkdirs();
         outputFile.createNewFile();
       }
       BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
@@ -379,27 +379,19 @@ public class DeIdentification {
 
       // write out each row
       for (Table.Row outputRow : outputRows) {
-        String row =
-            outputRow
-                .getValuesList()
-                .stream()
-                .map(
-                    value ->
-                        (value.getDateValue() != null)
-                            ? (String.valueOf(value.getDateValue().getMonth())
-                                + "/"
-                                + String.valueOf(value.getDateValue().getDay())
-                                + "/"
-                                + String.valueOf(value.getDateValue().getYear()))
-                            : value.getStringValue())
-                .collect(Collectors.joining(","));
+        String row = outputRow.getValuesList()
+            .stream()
+            .map(value -> value.getStringValue())
+            .collect(Collectors.joining(","));
         bufferedWriter.append(row + "\n");
       }
 
       bufferedWriter.flush();
       bufferedWriter.close();
 
-      System.out.println("Successfully saved date-shift output to:" + outputCsvPath.getFileName());
+      System.out.println("Successfully saved date-shift output to: " + outputCsvPath.getFileName());
+    } catch (Exception e) {
+      System.out.println("Error in deidentifyWithDateShift: " + e.getMessage());
     }
   }
 
@@ -446,15 +438,16 @@ public class DeIdentification {
     optionsGroup.setRequired(true);
 
     Option deidentifyMaskingOption =
-        new Option("m", "mask", true, "Deidentify with character masking");
+        new Option("m", "mask", true, "Deidentify with character masking.");
     optionsGroup.addOption(deidentifyMaskingOption);
 
-    Option deidentifyFpeOption = new Option("f", "fpe", true, "Deidentify with FFX FPE");
+    Option deidentifyFpeOption =
+        new Option("f", "fpe", true, "Deidentify with FFX FPE.");
     optionsGroup.addOption(deidentifyFpeOption);
 
     Option deidentifyDateShiftOption =
-        new Option(
-            "d", "date", true, "Deidentify dates in a CSV file by pseudorandomly shifting them.");
+        new Option("d", "date", false, "Deidentify dates in a CSV file.");
+    optionsGroup.addOption(deidentifyDateShiftOption);
 
     Options commandLineOptions = new Options();
     commandLineOptions.addOptionGroup(optionsGroup);
@@ -533,8 +526,8 @@ public class DeIdentification {
               cmd.getOptionValue(
                   alphabetOption.getOpt(), FfxCommonNativeAlphabet.ALPHA_NUMERIC.name()));
       deIdentifyWithFpe(val, alphabet, keyName, wrappedKey, projectId);
-    } // deidentify with date shift
-    else if (cmd.hasOption("d")) {
+    } else if (cmd.hasOption("d")) {
+      //deidentify with date shift
       String inputCsv = cmd.getOptionValue(inputCsvPathOption.getOpt());
       String outputCsv = cmd.getOptionValue(outputCsvPathOption.getOpt());
 
