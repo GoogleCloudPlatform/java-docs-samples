@@ -49,7 +49,7 @@ public class References {
    */
   public DocumentReference getADocumentRef() {
     // [START fs_document_ref]
-    // Reference to a document with id "alovelace" in the collection "employees"
+    // Reference to a document with id "alovelace" in the collection "users"
     DocumentReference document = db.collection("users").document("alovelace");
     // [END fs_document_ref]
     return document;
@@ -62,7 +62,7 @@ public class References {
    */
   public DocumentReference getADocumentRefUsingPath() {
     // [START fs_document_path_ref]
-    // Reference to a document with id "alovelace" in the collection "employees"
+    // Reference to a document with id "alovelace" in the collection "users"
     DocumentReference document = db.document("users/alovelace");
     // [END fs_document_path_ref]
     return document;
