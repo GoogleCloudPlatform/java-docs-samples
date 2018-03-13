@@ -29,6 +29,7 @@ import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.values.PCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,9 +213,13 @@ public class SpannerWrite {
             .withDatabaseId(databaseId));
 
     // Read albums from a tab-delimited file
-    p.apply("ReadAlbums", TextIO.read().from(options.getAlbumsFilename()))
+    PCollection<Album> albums = p
+        .apply("ReadAlbums", TextIO.read().from(options.getAlbumsFilename()))
         // Parse the tab-delimited lines into Album objects
-        .apply("ParseAlbums", ParDo.of(new ParseAlbum()))
+        .apply("ParseAlbums", ParDo.of(new ParseAlbum()));
+
+    // [START spanner_dataflow_write]
+    albums
         // Spanner expects a Mutation object, so create it using the Album's data
         .apply("CreateAlbumMutation", ParDo.of(new DoFn<Album, Mutation>() {
           @ProcessElement
@@ -227,10 +232,11 @@ public class SpannerWrite {
                 .build());
           }
         }))
-        // Finally write the Mutations to Spanner
+        // Write mutations to Spanner
         .apply("WriteAlbums", SpannerIO.write()
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId));
+    // [END spanner_dataflow_write]
 
     p.run().waitUntilFinish();
   }

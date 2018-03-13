@@ -87,49 +87,6 @@ public class SpannerRead {
     void setOutput(String value);
   }
 
-  /**
-   * Estimates the size of a Spanner row. For simplicity, arrays and structs aren't supported.
-   */
-  public static class EstimateStructSizeFn extends DoFn<Struct, Long> {
-
-    @ProcessElement
-    public void processElement(ProcessContext c) throws Exception {
-      Struct row = c.element();
-      long sum = 0;
-      for (int i = 0; i < row.getColumnCount(); i++) {
-        if (row.isNull(i)) {
-          continue;
-        }
-
-        switch (row.getColumnType(i).getCode()) {
-          case BOOL:
-            sum += 1;
-            break;
-          case INT64:
-          case FLOAT64:
-            sum += 8;
-            break;
-          case TIMESTAMP:
-          case DATE:
-            sum += 12;
-            break;
-          case BYTES:
-            sum += row.getBytes(i).length();
-            break;
-          case STRING:
-            sum += row.getString(i).length();
-            break;
-          case ARRAY:
-            throw new IllegalArgumentException("Arrays are not supported :(");
-          case STRUCT:
-            throw new IllegalArgumentException("Structs are not supported :(");
-          default:
-            throw new IllegalArgumentException("Unsupported type :(");
-        }
-      }
-      c.output(sum);
-    }
-  }
 
   public static void main(String[] args) {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
@@ -137,16 +94,19 @@ public class SpannerRead {
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
-    String query = "SELECT * FROM " + options.getTable();
-
-    PCollection<Long> tableEstimatedSize = p
-        // Query for all the columns and rows in the specified Spanner table
-        .apply(SpannerIO.read()
+    // [START spanner_dataflow_read]
+    // Query for all the columns and rows in the specified Spanner table
+    PCollection<Struct> records = p.apply(
+        SpannerIO.read()
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId)
-            .withQuery(query))
+            .withQuery("SELECT * FROM " + options.getTable()));
+    // [START spanner_dataflow_read]
+
+
+    PCollection<Long> tableEstimatedSize = records
         // Estimate the size of every row
-        .apply(ParDo.of(new EstimateStructSizeFn()))
+        .apply(EstimateSize.create())
         // Sum all the row sizes to get the total estimated size of the table
         .apply(Sum.longsGlobally());
 
