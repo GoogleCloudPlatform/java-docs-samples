@@ -20,6 +20,8 @@ import com.google.api.core.SettableApiFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.privacy.dlp.v2.ProjectName;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.BigQueryOptions;
 import com.google.privacy.dlp.v2.BigQueryTable;
@@ -44,8 +46,11 @@ import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.PartitionId;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.protobuf.ByteString;
-import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.TopicName;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +81,8 @@ public class Inspect {
       Likelihood minLikelihood,
       int maxFindings,
       List<InfoType> infoTypes,
-      boolean includeQuote) {
+      boolean includeQuote,
+      String projectId) {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       InspectConfig.FindingLimits findingLimits =
@@ -101,6 +107,7 @@ public class Inspect {
 
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectConfig(inspectConfig)
               .setItem(contentItem)
               .build();
@@ -138,7 +145,8 @@ public class Inspect {
       Likelihood minLikelihood,
       int maxFindings,
       List<InfoType> infoTypes,
-      boolean includeQuote) {
+      boolean includeQuote,
+      String projectId) {
     // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       // detect file mime type, default to application/octet-stream
@@ -146,6 +154,7 @@ public class Inspect {
       if (mimeType == null) {
         mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
       }
+
       ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.TEXT_UTF8;
 
       switch (mimeType) {
@@ -163,7 +172,11 @@ public class Inspect {
           break;
       }
 
-      ByteContentItem byteContentItem = ByteContentItem.newBuilder().setType(bytesType).build();
+      byte[] data = Files.readAllBytes(Paths.get(filePath));
+      ByteContentItem byteContentItem = ByteContentItem.newBuilder()
+          .setType(bytesType)
+          .setData(ByteString.copyFrom(data))
+          .build();
       ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
 
       InspectConfig.FindingLimits findingLimits =
@@ -179,6 +192,7 @@ public class Inspect {
 
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectConfig(inspectConfig)
               .setItem(contentItem)
               .build();
@@ -270,7 +284,7 @@ public class Inspect {
       // asynchronously submit an inspect job, and wait on results
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectJob(inspectJobConfig)
               .build();
 
@@ -397,7 +411,7 @@ public class Inspect {
       // asynchronously submit an inspect job, and wait on results
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectJob(inspectJobConfig)
               .build();
 
@@ -476,9 +490,11 @@ public class Inspect {
               .setLimits(findingLimits)
               .build();
 
-      String pubSubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
+      ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
       Action.PublishToPubSub publishToPubSub =
-          Action.PublishToPubSub.newBuilder().setTopic(pubSubTopic).build();
+          Action.PublishToPubSub.newBuilder()
+              .setTopic(topic.toString())
+              .build();
 
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
@@ -492,7 +508,7 @@ public class Inspect {
       // asynchronously submit an inspect job, and wait on results
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectJob(inspectJobConfig)
               .build();
 
@@ -631,10 +647,10 @@ public class Inspect {
     // string inspection
     if (cmd.hasOption("s")) {
       String val = cmd.getOptionValue(stringOption.getOpt());
-      inspectString(val, minLikelihood, maxFindings, infoTypesList, includeQuote);
+      inspectString(val, minLikelihood, maxFindings, infoTypesList, includeQuote, projectId);
     } else if (cmd.hasOption("f")) {
       String filePath = cmd.getOptionValue(fileOption.getOpt());
-      inspectFile(filePath, minLikelihood, maxFindings, infoTypesList, includeQuote);
+      inspectFile(filePath, minLikelihood, maxFindings, infoTypesList, includeQuote, projectId);
       // gcs file inspection
     } else if (cmd.hasOption("gcs")) {
       String bucketName = cmd.getOptionValue(bucketNameOption.getOpt());

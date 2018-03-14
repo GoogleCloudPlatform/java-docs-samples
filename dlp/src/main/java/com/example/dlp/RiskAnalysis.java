@@ -43,7 +43,6 @@ import com.google.privacy.dlp.v2.PrivacyMetric.NumericalStatsConfig;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.privacy.dlp.v2.Value;
 import com.google.privacy.dlp.v2.ValueFrequency;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -151,7 +150,7 @@ public class RiskAnalysis {
     // wait for job completion
     final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-    // setup a Pub/Sub subscriber to listen on the job completion status
+/*  TODO  // setup a Pub/Sub subscriber to listen on the job completion status
     Subscriber subscriber =
         Subscriber.newBuilder(
                 ProjectSubscriptionName.newBuilder()
@@ -166,7 +165,7 @@ public class RiskAnalysis {
                     done.set(true);
                   }
                 })
-            .build();
+            .build();*/
 
     // wait for job completion
     done.get();

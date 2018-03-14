@@ -50,21 +50,22 @@ public class Metadata {
     // [END dlp_list_info_types]
   }
 
-  private static void listRootCategories(String languageCode) throws Exception {
-    // [START dlp_list_categories]
-    // Instantiate a DLP client
-    try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
-      // The BCP-47 language code to use, e.g. 'en-US'
-      // languageCode = 'en-US'
-      ListRootCategoriesResponse rootCategoriesResponse =
-          dlpClient.listRootCategories(languageCode);
-      for (CategoryDescription categoryDescription : rootCategoriesResponse.getCategoriesList()) {
-        System.out.println("Name : " + categoryDescription.getName());
-        System.out.println("Display name : " + categoryDescription.getDisplayName());
-      }
-    }
-    // [END dlp_list_categories]
-  }
+  // TODO
+  // private static void listRootCategories(String languageCode) throws Exception {
+  //   // [START dlp_list_categories]
+  //   // Instantiate a DLP client
+  //   try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
+  //     // The BCP-47 language code to use, e.g. 'en-US'
+  //     // languageCode = 'en-US'
+  //     ListRootCategoriesResponse rootCategoriesResponse =
+  //         dlpClient.listRootCategories(languageCode);
+  //     for (CategoryDescription categoryDescription : rootCategoriesResponse.getCategoriesList()) {
+  //       System.out.println("Name : " + categoryDescription.getName());
+  //       System.out.println("Display name : " + categoryDescription.getDisplayName());
+  //     }
+  //   }
+  //  // [END dlp_list_categories]
+  // }
 
   /** Retrieve infoTypes. */
   public static void main(String[] args) throws Exception {
