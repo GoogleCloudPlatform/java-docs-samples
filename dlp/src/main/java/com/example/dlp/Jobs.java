@@ -19,8 +19,10 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.DeleteDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.DlpJobName;
 import com.google.privacy.dlp.v2.DlpJobType;
 import com.google.privacy.dlp.v2.ListDlpJobsRequest;
+import com.google.privacy.dlp.v2.ProjectName;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -32,10 +34,10 @@ import org.apache.commons.cli.ParseException;
 
 public class Jobs {
 
+  // [START dlp_list_jobs]
   private static void listJobs(String projectId, String filter, DlpJobType jobType)
       throws Exception {
     /**
-     * [START dlp_list_jobs]
      *
      * List DLP jobs
      *
@@ -47,54 +49,55 @@ public class Jobs {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       ListDlpJobsRequest listDlpJobsRequest =
           ListDlpJobsRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .setFilter(filter)
               .setType(jobType)
               .build();
       DlpServiceClient.ListDlpJobsPagedResponse response =
           dlpServiceClient.listDlpJobs(listDlpJobsRequest);
       for (DlpJob dlpJob : response.getPage().getValues()) {
-        System.out.println("Job name: " + dlpJob.getState());
-        System.out.println("Job state: " + dlpJob.getState());
+        System.out.println(dlpJob.getName() + " -- " + dlpJob.getState());
       }
     }
   }
   // [END dlp_list_jobs]
 
   /**
-   * [START dlp_delete_job]
    *
    * Delete a DLP Job
    *
    * @param projectId Google Cloud ProjectID
    * @param jobId DLP Job ID
    */
+  // [START dlp_delete_job]
   private static void deleteJob(String projectId, String jobId) {
 
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       // construct complete job name
-      String jobName = String.format("projects/%s/dlpJobs/%s", projectId, jobId);
+      DlpJobName job = DlpJobName.of(projectId, jobId);
 
       DeleteDlpJobRequest deleteDlpJobRequest =
-          DeleteDlpJobRequest.newBuilder().setName(jobName).build();
+          DeleteDlpJobRequest.newBuilder().setName(job.toString()).build();
 
       // submit job deletion request
       dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+
+      System.out.println("Job deleted successfully.");
     } catch (Exception e) {
       System.err.println("Error deleting DLP job: " + e.getMessage());
     }
-    // [END dlp_delete_job]
   }
+  // [END dlp_delete_job]
 
   /** Command line application to list and delete DLP jobs the Data Loss Prevention API. */
   public static void main(String[] args) throws Exception {
 
     OptionGroup optionsGroup = new OptionGroup();
     optionsGroup.setRequired(true);
-    Option listOption = new Option("l", "list", true, "List DLP Jobs");
+    Option listOption = new Option("l", "list", false, "List DLP Jobs");
     optionsGroup.addOption(listOption);
 
-    Option deleteOption = new Option("d", "delete", true, "Delete DLP Jobs");
+    Option deleteOption = new Option("d", "delete", false, "Delete DLP Jobs");
     optionsGroup.addOption(deleteOption);
 
     Options commandLineOptions = new Options();
