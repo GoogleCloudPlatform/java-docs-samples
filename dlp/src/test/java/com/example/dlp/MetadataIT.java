@@ -43,23 +43,20 @@ public class MetadataIT {
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
   }
 
-  @Test
-  public void testRootCategoriesAreRetrieved() throws Exception {
-    Metadata.main(new String[] {});
-    String output = bout.toString();
-    assertTrue(output.contains("GOVERNMENT"));
-    assertTrue(output.contains("HEALTH"));
+  @After
+  public void tearDown() {
+    System.setOut(null);
+    bout.reset();
   }
 
   @Test
-  public void testInfoTypesAreRetrieved() throws Exception {
-    Metadata.main(new String[] {"-category", "GOVERNMENT"});
+  public void testListInfoTypes() throws Exception {
+    Metadata.main(new String[] {
+        "-language", "en-US",
+        "-filter", "supported_by=INSPECT"
+    });
     String output = bout.toString();
     assertTrue(output.contains("Name") && output.contains("Display name"));
   }
 
-  @After
-  public void tearDown() {
-    System.setOut(null);
-  }
 }

@@ -38,8 +38,10 @@ public class Metadata {
       // The category of info types to list, e.g. category = 'GOVERNMENT';
       // Optional BCP-47 language code for localized info type friendly names, e.g. 'en-US'
       // filter supported_by=INSPECT
-      ListInfoTypesRequest listInfoTypesRequest =
-          ListInfoTypesRequest.newBuilder().setFilter(filter).setLanguageCode(languageCode).build();
+      ListInfoTypesRequest listInfoTypesRequest = ListInfoTypesRequest.newBuilder()
+          .setFilter(filter)
+          .setLanguageCode(languageCode)
+          .build();
       ListInfoTypesResponse infoTypesResponse = dlpClient.listInfoTypes(listInfoTypesRequest);
       List<InfoTypeDescription> infoTypeDescriptions = infoTypesResponse.getInfoTypesList();
       for (InfoTypeDescription infoTypeDescription : infoTypeDescriptions) {
@@ -50,27 +52,10 @@ public class Metadata {
     // [END dlp_list_info_types]
   }
 
-  // TODO
-  // private static void listRootCategories(String languageCode) throws Exception {
-  //   // [START dlp_list_categories]
-  //   // Instantiate a DLP client
-  //   try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
-  //     // The BCP-47 language code to use, e.g. 'en-US'
-  //     // languageCode = 'en-US'
-  //     ListRootCategoriesResponse rootCategoriesResponse =
-  //         dlpClient.listRootCategories(languageCode);
-  //     for (CategoryDescription categoryDescription : rootCategoriesResponse.getCategoriesList()) {
-  //       System.out.println("Name : " + categoryDescription.getName());
-  //       System.out.println("Display name : " + categoryDescription.getDisplayName());
-  //     }
-  //   }
-  //  // [END dlp_list_categories]
-  // }
-
   /** Retrieve infoTypes. */
   public static void main(String[] args) throws Exception {
     Options options = new Options();
-    Option languageCodeOption = Option.builder("language").hasArg(true).required(true).build();
+    Option languageCodeOption = Option.builder("language").hasArg(true).required(false).build();
     options.addOption(languageCodeOption);
 
     Option filterOption = Option.builder("filter").hasArg(true).required(false).build();
@@ -90,6 +75,6 @@ public class Metadata {
     String languageCode = cmd.getOptionValue(languageCodeOption.getOpt(), "en-US");
     String filter = cmd.getOptionValue(filterOption.getOpt(), "");
 
-    listInfoTypes(languageCode, filter);
+    listInfoTypes(filter, languageCode);
   }
 }
