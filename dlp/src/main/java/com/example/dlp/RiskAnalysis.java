@@ -40,9 +40,12 @@ import com.google.privacy.dlp.v2.PrivacyMetric.CategoricalStatsConfig;
 import com.google.privacy.dlp.v2.PrivacyMetric.KAnonymityConfig;
 import com.google.privacy.dlp.v2.PrivacyMetric.LDiversityConfig;
 import com.google.privacy.dlp.v2.PrivacyMetric.NumericalStatsConfig;
+import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.privacy.dlp.v2.Value;
 import com.google.privacy.dlp.v2.ValueFrequency;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -112,8 +115,8 @@ public class RiskAnalysis {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setRiskJob(riskAnalysisJobConfig)
-              .setParent(projectId)
               .build();
 
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
@@ -143,34 +146,35 @@ public class RiskAnalysis {
     }
   }
 
+  // [START wait_on_dlp_job_completion]
+  // wait on receiving a job status update over a Google Cloud Pub/Sub subscriber
   private static void waitOnJobCompletion(
       String projectId, String subscriptionId, String dlpJobName)
       throws InterruptedException, ExecutionException {
-    // [START wait_on_dlp_job_completion]
     // wait for job completion
     final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-/*  TODO  // setup a Pub/Sub subscriber to listen on the job completion status
+    // setup a Pub/Sub subscriber to listen on the job completion status
     Subscriber subscriber =
         Subscriber.newBuilder(
-                ProjectSubscriptionName.newBuilder()
-                    .setProject(projectId)
-                    .setSubscription(subscriptionId)
-                    .build(),
-                (pubsubMessage, ackReplyConsumer) -> {
-                  ackReplyConsumer.ack();
-                  if (pubsubMessage.getAttributesCount() > 0
-                      && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                    // notify job completion
-                    done.set(true);
-                  }
-                })
-            .build();*/
+            ProjectSubscriptionName.newBuilder()
+                .setProject(projectId)
+                .setSubscription(subscriptionId)
+                .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              ackReplyConsumer.ack();
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+              }
+            })
+            .build();
 
     // wait for job completion
     done.get();
-    // [END wait_on_dlp_job_completion]
   }
+  // [END wait_on_dlp_job_completion]
 
   private static void calculateCategoricalStats(
       String projectId,
@@ -213,9 +217,11 @@ public class RiskAnalysis {
       PrivacyMetric privacyMetric =
           PrivacyMetric.newBuilder().setCategoricalStatsConfig(categoricalStatsConfig).build();
 
-      String topicName = String.format("projects/%s/topics/%s", projectId, topicId);
+      ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
 
-      PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
+      PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder()
+          .setTopic(topicName.toString())
+          .build();
 
       // create /action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
@@ -229,8 +235,8 @@ public class RiskAnalysis {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setRiskJob(riskAnalysisJobConfig)
-              .setParent(projectId)
               .build();
 
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
@@ -329,8 +335,8 @@ public class RiskAnalysis {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setRiskJob(riskAnalysisJobConfig)
-              .setParent(projectId)
               .build();
 
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
@@ -438,8 +444,8 @@ public class RiskAnalysis {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setRiskJob(riskAnalysisJobConfig)
-              .setParent(projectId)
               .build();
 
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
