@@ -16,7 +16,6 @@
 
 package com.example.dlp;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -38,7 +37,6 @@ public class RiskAnalysisIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  private String bucketName = System.getenv("GOOGLE_CLOUD_PROJECT") + "/dlp";
   private String topicId = "dlp-tests";
   private String subscriptionId = "dlp-test";
 
@@ -46,7 +44,6 @@ public class RiskAnalysisIT {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    System.setOut(out); // TODO(b/64541432) DLP currently doesn't support GOOGLE DEFAULT AUTH
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
     assertNotNull(System.getenv("DLP_DEID_WRAPPED_KEY"));
     assertNotNull(System.getenv("DLP_DEID_KEY_NAME"));

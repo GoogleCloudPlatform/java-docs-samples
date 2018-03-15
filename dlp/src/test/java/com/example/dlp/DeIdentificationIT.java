@@ -89,7 +89,7 @@ public class DeIdentificationIT {
             "-d",
             "-inputCsvPath", "src/test/resources/dates.csv",
             "-outputCsvPath", "src/test/resources/results.temp.csv",
-           "-dateFields", "birth_date,register_date",
+            "-dateFields", "birth_date,register_date",
             "-lowerBoundDays", "5",
             "-upperBoundDays", "5",
             "-contextField", "name",

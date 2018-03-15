@@ -20,8 +20,6 @@ import com.google.api.core.SettableApiFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.privacy.dlp.v2.ProjectName;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.BigQueryOptions;
 import com.google.privacy.dlp.v2.BigQueryTable;
@@ -44,10 +42,11 @@ import com.google.privacy.dlp.v2.InspectResult;
 import com.google.privacy.dlp.v2.KindExpression;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.PartitionId;
+import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
-import com.google.pubsub.v1.TopicName;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -157,19 +156,14 @@ public class Inspect {
 
       ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.TEXT_UTF8;
 
-      switch (mimeType) {
-        case "image/jpeg":
-          bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
-          break;
-        case "image/bmp":
-          bytesType = ByteContentItem.BytesType.IMAGE_BMP;
-          break;
-        case "image/png":
-          bytesType = ByteContentItem.BytesType.IMAGE_PNG;
-          break;
-        case "image/svg":
-          bytesType = ByteContentItem.BytesType.IMAGE_SVG;
-          break;
+      if (mimeType.equals("image/jpeg")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
+      } else if (mimeType.equals("image/bmp")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_BMP;
+      } else if (mimeType.equals("image/png")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_PNG;
+      } else if (mimeType.equals("image/svg")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_SVG;
       }
 
       byte[] data = Files.readAllBytes(Paths.get(filePath));
@@ -325,18 +319,18 @@ public class Inspect {
     // setup a Pub/Sub subscriber to listen on the job completion status
     Subscriber subscriber =
         Subscriber.newBuilder(
-                ProjectSubscriptionName.newBuilder()
-                    .setProject(projectId)
-                    .setSubscription(subscriptionId)
-                    .build(),
-                (pubsubMessage, ackReplyConsumer) -> {
-                  ackReplyConsumer.ack();
-                  if (pubsubMessage.getAttributesCount() > 0
-                      && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                    // notify job completion
-                    done.set(true);
-                  }
-                })
+            ProjectSubscriptionName.newBuilder()
+                .setProject(projectId)
+                .setSubscription(subscriptionId)
+                .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              ackReplyConsumer.ack();
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+              }
+            })
             .build();
 
     // wait for job completion
@@ -356,8 +350,7 @@ public class Inspect {
    * @param maxFindings max number of findings
    * @param topicId Google Cloud Pub/Sub topic to notify job status updates
    * @param subscriptionId Google Cloud Pub/Sub subscription to above topic to receive status
-   *     updates
-   * @throws Exception
+   *        updates
    */
   private static void inspectDatastore(
       String projectId,
@@ -367,8 +360,7 @@ public class Inspect {
       List<InfoType> infoTypes,
       int maxFindings,
       String topicId,
-      String subscriptionId)
-      throws Exception {
+      String subscriptionId) {
     // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
@@ -437,6 +429,8 @@ public class Inspect {
       } else {
         System.out.println("No findings.");
       }
+    } catch (Exception e) {
+      System.out.println("inspectDatastore Problems: " + e.getMessage());
     }
   }
   // [END dlp_inspect_datastore]
@@ -449,10 +443,9 @@ public class Inspect {
    * @param tableId The ID of the table to inspect, e.g. 'my_table'
    * @param minLikelihood The minimum likelihood required before returning a match
    * @param infoTypes The infoTypes of information to match
-   * @param maxFindings
-   * @param topicId
-   * @param subscriptionId
-   * @throws Exception
+   * @param maxFindings The maximum number of findings to report (0 = server maximum)
+   * @param topicId Topic ID for pubsub.
+   * @param subscriptionId Subscription ID for pubsub.
    */
   private static void inspectBigquery(
       String projectId,
@@ -462,8 +455,7 @@ public class Inspect {
       List<InfoType> infoTypes,
       int maxFindings,
       String topicId,
-      String subscriptionId)
-      throws Exception {
+      String subscriptionId) {
     // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       // Reference to the BigQuery table
@@ -535,6 +527,8 @@ public class Inspect {
       } else {
         System.out.println("No findings.");
       }
+    } catch (Exception e) {
+      System.out.println("inspectBigquery Problems: " + e.getMessage());
     }
   }
   // [END dlp_inspect_bigquery]

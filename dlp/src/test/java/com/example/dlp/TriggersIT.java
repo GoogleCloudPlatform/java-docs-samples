@@ -35,7 +35,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
 public class TriggersIT {
-  // CHECKSTYLE ON: AbbreviationAsWordInName
+
+  //CHECKSTYLE ON: AbbreviationAsWordInName
 
   private ByteArrayOutputStream bout;
   private PrintStream out;

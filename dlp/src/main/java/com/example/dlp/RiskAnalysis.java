@@ -352,9 +352,9 @@ public class RiskAnalysis {
       System.out.println("Job status: " + completedJob.getState());
       AnalyzeDataSourceRiskDetails riskDetails = completedJob.getRiskDetails();
 
-      KAnonymityResult kAnonymityResult = riskDetails.getKAnonymityResult();
+      KAnonymityResult kanonymityResult = riskDetails.getKAnonymityResult();
       for (KAnonymityHistogramBucket result :
-          kAnonymityResult.getEquivalenceClassHistogramBucketsList()) {
+          kanonymityResult.getEquivalenceClassHistogramBucketsList()) {
         System.out.println(
             "Bucket size range: ["
                 + result.getEquivalenceClassSizeLowerBound()
@@ -461,9 +461,9 @@ public class RiskAnalysis {
       System.out.println("Job status: " + completedJob.getState());
       AnalyzeDataSourceRiskDetails riskDetails = completedJob.getRiskDetails();
 
-      LDiversityResult lDiversityResult = riskDetails.getLDiversityResult();
+      LDiversityResult ldiversityResult = riskDetails.getLDiversityResult();
       for (LDiversityHistogramBucket result :
-          lDiversityResult.getSensitiveValueFrequencyHistogramBucketsList()) {
+          ldiversityResult.getSensitiveValueFrequencyHistogramBucketsList()) {
         for (LDiversityEquivalenceClass bucket : result.getBucketValuesList()) {
           List<String> quasiIdValues =
               bucket

@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -32,8 +31,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
 public class InspectIT {
-
   // CHECKSTYLE ON: AbbreviationAsWordInName
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -50,7 +49,8 @@ public class InspectIT {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    System.setOut(out); // TODO(b/64541432) DLP currently doesn't support GOOGLE DEFAULT AUTH
+    System.setOut(out);
+    // TODO(b/64541432) DLP currently doesn't support GOOGLE DEFAULT AUTH
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
   }
 

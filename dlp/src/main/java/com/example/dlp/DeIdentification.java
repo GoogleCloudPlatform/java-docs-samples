@@ -280,7 +280,7 @@ public class DeIdentification {
       // (Optional) The name of the Cloud KMS key used to encrypt ('wrap') the AES-256 key
       // If this is specified, then 'wrappedKey' and 'contextFieldId' must also be set
       // String keyName =
-      // 'projects/YOUR_GCLOUD_PROJECT/locations/YOUR_LOCATION/keyRings/YOUR_KEYRING_NAME/cryptoKeys/YOUR_KEY_NAME';
+      // 'projects/PROJECT/locations/LOCATION/keyRings/YOUR_KEYRING_NAME/cryptoKeys/YOUR_KEY_NAME';
 
       // (Optional) The encrypted ('wrapped') AES-256 key to use when shifting dates
       // This key should be encrypted using the Cloud KMS key specified above
@@ -302,8 +302,6 @@ public class DeIdentification {
         throw new IllegalArgumentException(
             "You must set either ALL or NONE of {contextFieldId, keyName, wrappedKey}!");
       }
-
-      DateShiftConfig dateShiftConfig = dateShiftConfigBuilder.build();
 
       // Read and parse the CSV file
       // The first row of the file must specify column names, and all other rows
@@ -333,6 +331,8 @@ public class DeIdentification {
           Arrays.stream(dateFields)
               .map(field -> FieldId.newBuilder().setName(field).build())
               .collect(Collectors.toList());
+
+      DateShiftConfig dateShiftConfig = dateShiftConfigBuilder.build();
 
       FieldTransformation fieldTransformation =
           FieldTransformation.newBuilder()

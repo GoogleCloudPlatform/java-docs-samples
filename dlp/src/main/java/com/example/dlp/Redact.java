@@ -62,20 +62,16 @@ public class Redact {
       }
       ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.BYTES_TYPE_UNSPECIFIED;
 
-      switch (mimeType) {
-        case "image/jpeg":
-          bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
-          break;
-        case "image/bmp":
-          bytesType = ByteContentItem.BytesType.IMAGE_BMP;
-          break;
-        case "image/png":
-          bytesType = ByteContentItem.BytesType.IMAGE_PNG;
-          break;
-        case "image/svg":
-          bytesType = ByteContentItem.BytesType.IMAGE_SVG;
-          break;
+      if (mimeType.equals("image/jpeg")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
+      } else if (mimeType.equals("image/bmp")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_BMP;
+      } else if (mimeType.equals("image/png")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_PNG;
+      } else if (mimeType.equals("image/svg")) {
+        bytesType = ByteContentItem.BytesType.IMAGE_SVG;
       }
+      
       byte[] data = Files.readAllBytes(Paths.get(filePath));
 
       // The minimum likelihood required before redacting a match

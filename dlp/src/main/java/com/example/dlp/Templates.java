@@ -1,15 +1,19 @@
-/**
- * Copyright 2018, Google, Inc. Licensed under the Apache License, Version 2.0 (the "License"); you
- * may not use this file except in compliance with the License. You may obtain a copy of the License
- * at
+/*
+ * Copyright 2018 Google Inc.
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.dlp;
 
 import com.google.cloud.ServiceOptions;
@@ -162,9 +166,6 @@ public class Templates {
   /** Command line application to create, list and delete DLP inspect templates. */
   public static void main(String[] args) throws Exception {
 
-    Options commandLineOptions = new Options();
-
-    Option projectIdOption = Option.builder("projectId").hasArg(true).required(false).build();
 
     OptionGroup optionsGroup = new OptionGroup();
     optionsGroup.setRequired(true);
@@ -178,11 +179,14 @@ public class Templates {
     Option deleteOption = new Option("d", "delete", false, "Delete inspect template");
     optionsGroup.addOption(deleteOption);
 
+    Options commandLineOptions = new Options();
     commandLineOptions.addOptionGroup(optionsGroup);
+
+    Option projectIdOption = Option.builder("projectId").hasArg(true).required(false).build();
+    commandLineOptions.addOption(projectIdOption);
 
     Option minLikelihoodOption =
         Option.builder("minLikelihood").hasArg(true).required(false).build();
-
     commandLineOptions.addOption(minLikelihoodOption);
 
     Option infoTypesOption = Option.builder("infoTypes").hasArg(true).required(false).build();
