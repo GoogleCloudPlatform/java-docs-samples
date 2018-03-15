@@ -25,6 +25,7 @@ import com.google.privacy.dlp.v2.InspectTemplate;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.ListInspectTemplatesRequest;
 import com.google.privacy.dlp.v2.ListInspectTemplatesResponse;
+import com.google.privacy.dlp.v2.ProjectName;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
@@ -41,20 +42,19 @@ public class Templates {
   /**
    * [START dlp_create_template]
    *
+   * @param displayName (Optional) The human-readable name to give the template
    * @param projectId Google Cloud Project ID to call the API under
    * @param templateId (Optional) The name of the template to be created
-   * @param displayName (Optional) The human-readable name to give the template
    * @param infoTypeList The infoTypes of information to match
-   * @param includeQuote Whether to include the matching string
    * @param minLikelihood The minimum likelihood required before returning a match
    * @param maxFindings The maximum number of findings to report per request (0 = server maximum)
    */
   private static void createInspectTemplate(
-      String projectId,
-      String templateId,
       String displayName,
+      String templateId,
+      String description,
+      String projectId,
       List<InfoType> infoTypeList,
-      boolean includeQuote,
       Likelihood minLikelihood,
       int maxFindings) {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -67,7 +67,6 @@ public class Templates {
           InspectConfig.newBuilder()
               .addAllInfoTypes(infoTypeList)
               .setMinLikelihood(minLikelihood)
-              .setIncludeQuote(includeQuote)
               .setLimits(findingLimits)
               .build();
 
@@ -75,11 +74,12 @@ public class Templates {
           InspectTemplate.newBuilder()
               .setInspectConfig(inspectConfig)
               .setDisplayName(displayName)
+              .setDescription(description)
               .build();
 
       CreateInspectTemplateRequest createInspectTemplateRequest =
           CreateInspectTemplateRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectTemplate(inspectTemplate)
               .setTemplateId(templateId)
               .build();
@@ -105,18 +105,20 @@ public class Templates {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       ListInspectTemplatesRequest request =
-          ListInspectTemplatesRequest.newBuilder().setParent(projectId).setPageSize(1).build();
+          ListInspectTemplatesRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
+              .setPageSize(1).build();
 
       ListInspectTemplatesPagedResponse response = dlpServiceClient.listInspectTemplates(request);
       ListInspectTemplatesPage page = response.getPage();
       ListInspectTemplatesResponse templatesResponse = page.getResponse();
 
       for (InspectTemplate template : templatesResponse.getInspectTemplatesList()) {
-        System.out.printf("Template name: %s", template.getName());
+        System.out.printf("Template name: %s\n", template.getName());
         if (template.getDisplayName() != null) {
-          System.out.printf("Template display name: %s", template.getDisplayName());
-          System.out.printf("Template create time: %s", template.getCreateTime());
-          System.out.printf("Template update time: %s", template.getUpdateTime());
+          System.out.printf("Template display name: %s \n", template.getDisplayName());
+          System.out.printf("Template create time: %s \n", template.getCreateTime());
+          System.out.printf("Template update time: %s \n", template.getUpdateTime());
 
           // print inspection config
           InspectConfig inspectConfig = template.getInspectConfig();
@@ -167,13 +169,13 @@ public class Templates {
     OptionGroup optionsGroup = new OptionGroup();
     optionsGroup.setRequired(true);
 
-    Option createOption = new Option("c", "create", true, "Create inspect template");
+    Option createOption = new Option("c", "create", false, "Create inspect template");
     optionsGroup.addOption(createOption);
 
-    Option listOption = new Option("l", "list", true, "List inspect templates");
+    Option listOption = new Option("l", "list", false, "List inspect templates");
     optionsGroup.addOption(listOption);
 
-    Option deleteOption = new Option("d", "delete", true, "Delete inspect template");
+    Option deleteOption = new Option("d", "delete", false, "Delete inspect template");
     optionsGroup.addOption(deleteOption);
 
     commandLineOptions.addOptionGroup(optionsGroup);
@@ -189,6 +191,9 @@ public class Templates {
 
     Option templateIdOption = Option.builder("templateId").hasArg(true).required(false).build();
     commandLineOptions.addOption(templateIdOption);
+
+    Option templateDescription = Option.builder("description").hasArg(true).required(false).build();
+    commandLineOptions.addOption(templateDescription);
 
     Option templateDisplayNameOption =
         Option.builder("displayName").hasArg(true).required(false).build();
@@ -219,6 +224,7 @@ public class Templates {
     if (cmd.hasOption(createOption.getOpt())) {
       String templateId = cmd.getOptionValue(templateIdOption.getOpt());
       String displayName = cmd.getOptionValue(templateDisplayNameOption.getOpt());
+      String description = cmd.getOptionValue(templateDescription.getOpt());
 
       Likelihood minLikelihood =
           Likelihood.valueOf(
@@ -232,17 +238,10 @@ public class Templates {
           infoTypesList.add(InfoType.newBuilder().setName(infoType).build());
         }
       }
-      Boolean includeQuote =
-          Boolean.valueOf(cmd.getOptionValue(includeQuoteOption.getOpt(), "false"));
-      int maxFindings = Integer.valueOf(maxFindingsOption.getOpt(), 0);
+      int maxFindings = Integer.valueOf(cmd.getOptionValue(maxFindingsOption.getOpt(), "0"));
       createInspectTemplate(
-          projectId,
-          templateId,
-          displayName,
-          infoTypesList,
-          includeQuote,
-          minLikelihood,
-          maxFindings);
+          displayName, templateId, description, projectId,
+          infoTypesList, minLikelihood, maxFindings);
 
     } else if (cmd.hasOption(listOption.getOpt())) {
       listInspectTemplates(projectId);
