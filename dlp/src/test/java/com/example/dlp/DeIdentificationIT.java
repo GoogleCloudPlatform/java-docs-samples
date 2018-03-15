@@ -47,7 +47,7 @@ public class DeIdentificationIT {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    System.setOut(out); // TODO(b/64541432) DLP currently doesn't support GOOGLE DEFAULT AUTH
+    System.setOut(out);
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
     assertNotNull(System.getenv("DLP_DEID_WRAPPED_KEY"));
     assertNotNull(System.getenv("DLP_DEID_KEY_NAME"));

@@ -49,6 +49,8 @@ import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -141,7 +143,7 @@ public class RiskAnalysis {
       int percent = 1;
       for (Value quantileValue : result.getQuantileValuesList()) {
         System.out.printf(
-            "Value at %d \\% quantile : %.3f", percent, quantileValue.getFloatValue());
+            "Value at %s %% quantile : %.3f", percent, quantileValue.getFloatValue());
       }
     }
   }
@@ -150,7 +152,7 @@ public class RiskAnalysis {
   // wait on receiving a job status update over a Google Cloud Pub/Sub subscriber
   private static void waitOnJobCompletion(
       String projectId, String subscriptionId, String dlpJobName)
-      throws InterruptedException, ExecutionException {
+      throws Exception {
     // wait for job completion
     final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
@@ -162,17 +164,21 @@ public class RiskAnalysis {
                 .setSubscription(subscriptionId)
                 .build(),
             (pubsubMessage, ackReplyConsumer) -> {
-              ackReplyConsumer.ack();
               if (pubsubMessage.getAttributesCount() > 0
                   && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
                 // notify job completion
                 done.set(true);
+                ackReplyConsumer.ack();
               }
             })
             .build();
-
+    subscriber.startAsync();
     // wait for job completion
-    done.get();
+    try{
+      done.get(30, TimeUnit.SECONDS);
+    } catch (TimeoutException e) {
+      System.out.println("Unable to verify job complete.");
+    }
   }
   // [END wait_on_dlp_job_completion]
 
@@ -182,8 +188,7 @@ public class RiskAnalysis {
       String tableId,
       String columnName,
       String topicId,
-      String subscriptionId)
-      throws Exception {
+      String subscriptionId){
     // [START dlp_categorical_stats]
     /**
      * Calculate categorical statistics for a column in a BigQuery table using the DLP API.

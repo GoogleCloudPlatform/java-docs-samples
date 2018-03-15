@@ -16,7 +16,9 @@
 
 package com.example.dlp;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -50,7 +52,6 @@ public class InspectIT {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    // TODO(b/64541432) DLP currently doesn't support GOOGLE DEFAULT AUTH
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
   }
 
@@ -63,8 +64,9 @@ public class InspectIT {
         "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
     });
     String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
+
+    assertThat(output, containsString("PHONE_NUMBER"));
+    assertThat(output, containsString("EMAIL_ADDRESS"));
   }
 
   @Test
@@ -74,8 +76,8 @@ public class InspectIT {
         "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
     });
     String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
+    assertThat(output, containsString("PHONE_NUMBER"));
+    assertThat(output, containsString("EMAIL_ADDRESS"));
   }
 
   @Test
@@ -85,13 +87,13 @@ public class InspectIT {
         "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
     });
     String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
+    assertThat(output, containsString("PHONE_NUMBER"));
+    assertThat(output, containsString("EMAIL_ADDRESS"));
   }
 
   // Requires that bucket by the specified name exists
   @Test
-  @Ignore // TODO: Fix Pubsub
+  @Ignore // Pubsub tests are flakey when run consecutively
   public void testGcsFileInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-gcs",
@@ -102,14 +104,14 @@ public class InspectIT {
         "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
     });
     String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
+    assertThat(output, containsString("PHONE_NUMBER"));
+    assertThat(output, containsString("EMAIL_ADDRESS"));
   }
 
   // Requires a Datastore kind containing an entity
   // with phone number and email address properties.
   @Test
-  @Ignore // TODO: Fix Pubsub
+  @Ignore // Pubsub tests are flakey when run consecutively
   public void testDatastoreInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-ds",
@@ -119,12 +121,12 @@ public class InspectIT {
         "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
     });
     String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
+    assertThat(output, containsString("PHONE_NUMBER"));
+    assertThat(output, containsString("EMAIL_ADDRESS"));
   }
 
   @Test
-  @Ignore // TODO: Fix Pubsub
+  @Ignore // Pubsub tests are flakey when run consecutively 
   public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-bq",
@@ -135,7 +137,7 @@ public class InspectIT {
         "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
     });
     String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
+    assertThat(output, containsString("PHONE_NUMBER"));
   }
 
   @After

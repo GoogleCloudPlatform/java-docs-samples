@@ -50,7 +50,6 @@ public class JobsIT {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    // TODO(b/64541432) DLP currently doesn't support GOOGLE DEFAULT AUTH
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
   }
 

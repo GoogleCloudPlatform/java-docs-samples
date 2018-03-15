@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import javax.activation.MimetypesFileTypeMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -310,31 +311,31 @@ public class Inspect {
 
   // [START wait_on_dlp_job_completion]
   // wait on receiving a job status update over a Google Cloud Pub/Sub subscriber
-  private static void waitOnJobCompletion(
-      String projectId, String subscriptionId, String dlpJobName)
-      throws InterruptedException, ExecutionException {
+  private static void waitOnJobCompletion (
+      String projectId, String subscriptionId, String dlpJobName) throws Exception{
     // wait for job completion
     final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
     // setup a Pub/Sub subscriber to listen on the job completion status
     Subscriber subscriber =
         Subscriber.newBuilder(
-            ProjectSubscriptionName.newBuilder()
-                .setProject(projectId)
-                .setSubscription(subscriptionId)
-                .build(),
+            ProjectSubscriptionName.of(projectId, subscriptionId),
             (pubsubMessage, ackReplyConsumer) -> {
-              ackReplyConsumer.ack();
               if (pubsubMessage.getAttributesCount() > 0
                   && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
                 // notify job completion
                 done.set(true);
+                ackReplyConsumer.ack();
               }
             })
             .build();
-
+    subscriber.startAsync();
     // wait for job completion
-    done.get();
+    try{
+      done.get(30, TimeUnit.SECONDS);
+    } catch (Exception e){
+      System.out.println("Unable to verify job complete.");
+    }
   }
   // [END wait_on_dlp_job_completion]
 
@@ -509,7 +510,7 @@ public class Inspect {
       System.out.println("Job created with ID:" + dlpJob.getName());
 
       // wait on completion
-      waitOnJobCompletion(dlpJob.getName(), projectId, subscriptionId);
+      waitOnJobCompletion(projectId, subscriptionId, dlpJob.getName());
 
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(
