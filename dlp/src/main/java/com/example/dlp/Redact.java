@@ -22,6 +22,7 @@ import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.Likelihood;
+import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RedactImageRequest;
 import com.google.privacy.dlp.v2.RedactImageResponse;
 import com.google.protobuf.ByteString;
@@ -110,7 +111,7 @@ public class Redact {
 
       RedactImageRequest redactImageRequest =
           RedactImageRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .addAllImageRedactionConfigs(imageRedactionConfigs)
               .setByteItem(byteContentItem)
               .setInspectConfig(inspectConfig)
@@ -142,11 +143,12 @@ public class Redact {
     commandLineOptions.addOption(infoTypesOption);
 
     Option inputFilePathOption =
-        Option.builder("o").hasArg(true).longOpt("inputFilePath").required(false).build();
+        Option.builder("f").hasArg(true).longOpt("inputFilePath").required(false).build();
     commandLineOptions.addOption(inputFilePathOption);
 
     Option outputFilePathOption =
         Option.builder("o").hasArg(true).longOpt("outputFilePath").required(false).build();
+
     commandLineOptions.addOption(outputFilePathOption);
 
     Option projectIdOption = Option.builder("projectId").hasArg(true).required(false).build();
