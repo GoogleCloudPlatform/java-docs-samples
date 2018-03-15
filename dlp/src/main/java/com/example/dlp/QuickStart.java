@@ -16,6 +16,7 @@
 
 package com.example.dlp;
 
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ContentItem;
@@ -26,6 +27,7 @@ import com.google.privacy.dlp.v2.InspectContentRequest;
 import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.InspectResult;
 import com.google.privacy.dlp.v2.Likelihood;
+import com.google.privacy.dlp.v2.ProjectName;
 import com.google.protobuf.ByteString;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +61,9 @@ public class QuickStart {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerItem(maxFindings).build();
+          InspectConfig.FindingLimits.newBuilder()
+              .setMaxFindingsPerItem(maxFindings)
+              .build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
@@ -76,8 +80,10 @@ public class QuickStart {
               .build();
       ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
 
+      String projectId = ServiceOptions.getDefaultProjectId();
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
               .setInspectConfig(inspectConfig)
               .setItem(contentItem)
               .build();

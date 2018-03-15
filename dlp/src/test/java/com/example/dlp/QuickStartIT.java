@@ -16,7 +16,9 @@
 
 package com.example.dlp;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -47,7 +49,8 @@ public class QuickStartIT {
   public void testQuickStart() throws Exception {
     QuickStart.main(new String[] {});
     String output = bout.toString();
-    assertTrue(output.contains("US_MALE_NAME"));
+
+    assertThat(output, containsString("US_MALE_NAME"));
   }
 
   @After
