@@ -16,6 +16,7 @@
 
 package com.example.dlp;
 
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CreateJobTriggerRequest;
@@ -26,6 +27,8 @@ import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.JobTrigger;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.ListJobTriggersRequest;
+import com.google.privacy.dlp.v2.ProjectJobTriggerName;
+import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.Schedule;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.protobuf.Duration;
@@ -50,7 +53,6 @@ public class Triggers {
    * @param triggerId (Optional) name of the trigger to be created
    * @param displayName (Optional) display name for the trigger to be created
    * @param description (Optional) description for the trigger to be created
-   * @param gcsUrl URL path to GCS bucket, eg. gs://my-bucket-name
    * @param scanPeriod How often to wait between scans, in days (minimum = 1 day)
    * @param infoTypes infoTypes of information to match eg. InfoType.PHONE_NUMBER,
    *     InfoType.EMAIL_ADDRESS
@@ -62,21 +64,24 @@ public class Triggers {
       String triggerId,
       String displayName,
       String description,
-      String gcsUrl,
+      String bucketName,
+      String fileName,
       int scanPeriod,
       List<InfoType> infoTypes,
       Likelihood minLikelihood,
       int maxFindings,
-      String projectId) {
+      String projectId) throws Exception {
 
     // instantiate a client
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+    DlpServiceClient dlpServiceClient = DlpServiceClient.create();
+    try  {
 
-      CloudStorageOptions.FileSet fileSet =
-          CloudStorageOptions.FileSet.newBuilder().setUrl(gcsUrl).build();
       CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
-
+          CloudStorageOptions.newBuilder()
+              .setFileSet(
+                  CloudStorageOptions.FileSet.newBuilder()
+                      .setUrl("gs://" + bucketName + "/" + fileName))
+              .build();
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
@@ -110,16 +115,17 @@ public class Triggers {
               .addTriggers(trigger)
               .build();
 
+      System.out.println("Pause");
       // Create scan request
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
-              .setParent(projectId)
+              .setParent(ProjectName.of(projectId).toString())
               .setJobTrigger(jobTrigger)
               .build();
 
       JobTrigger createdJobTrigger = dlpServiceClient.createJobTrigger(createJobTriggerRequest);
 
-      System.out.println("Created Trigger: " + createdJobTrigger.getDisplayName());
+      System.out.println("Created Trigger: " + createdJobTrigger.getName());
     } catch (Exception e) {
       System.out.println("Error creating trigger :" + e.getMessage());
     }
@@ -135,7 +141,8 @@ public class Triggers {
     // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       ListJobTriggersRequest listJobTriggersRequest =
-          ListJobTriggersRequest.newBuilder().setParent(projectId).build();
+          ListJobTriggersRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString()).build();
       DlpServiceClient.ListJobTriggersPagedResponse response =
           dlpServiceClient.listJobTriggers(listJobTriggersRequest);
       response
@@ -172,11 +179,14 @@ public class Triggers {
   private static void deleteTrigger(String projectId, String triggerId) {
     // Instantiates a client
     // triggerName to provided as projects/project-id/jobTriggers/triggerId
-    String triggerName = String.format("projects/%s/jobTriggers/%s", projectId, triggerId);
+
+    ProjectJobTriggerName triggerName = ProjectJobTriggerName.of(projectId, triggerId);
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       DeleteJobTriggerRequest deleteJobTriggerRequest =
-          DeleteJobTriggerRequest.newBuilder().setName(triggerName).build();
+          DeleteJobTriggerRequest.newBuilder().setName(triggerName.toString()).build();
       dlpServiceClient.deleteJobTrigger(deleteJobTriggerRequest);
+
+      System.out.println("Trigger deleted: " + triggerName.toString());
     } catch (Exception e) {
       System.out.println("Error deleting trigger :" + e.getMessage());
     }
@@ -191,20 +201,23 @@ public class Triggers {
     optionsGroup.setRequired(true);
 
     Option createTriggerOption =
-        new Option("c", "create", true, "Create trigger to scan a GCS bucket");
+        new Option("c", "create", false, "Create trigger to scan a GCS bucket");
     optionsGroup.addOption(createTriggerOption);
 
-    Option listTriggersOption = new Option("l", "list", true, "List triggers");
+    Option listTriggersOption = new Option("l", "list", false, "List triggers");
     optionsGroup.addOption(listTriggersOption);
 
-    Option deleteTriggerOption = new Option("d", "delete", true, "Delete trigger");
+    Option deleteTriggerOption = new Option("d", "delete", false, "Delete trigger");
     optionsGroup.addOption(deleteTriggerOption);
 
     Options commandLineOptions = new Options();
     commandLineOptions.addOptionGroup(optionsGroup);
 
-    Option gcsUrlOption = Option.builder("gcsUrl").hasArg(true).required(false).build();
-    commandLineOptions.addOption(gcsUrlOption);
+    Option bucketNameOption = Option.builder("bucketName").hasArg(true).required(false).build();
+    commandLineOptions.addOption(bucketNameOption);
+
+    Option gcsFileNameOption = Option.builder("fileName").hasArg(true).required(false).build();
+    commandLineOptions.addOption(gcsFileNameOption);
 
     Option minLikelihoodOption =
         Option.builder("minLikelihood").hasArg(true).required(false).build();
@@ -223,10 +236,14 @@ public class Triggers {
     commandLineOptions.addOption(projectIdOption);
 
     Option triggerIdOption = Option.builder("triggerId").hasArg(true).required(false).build();
+    commandLineOptions.addOption(triggerIdOption);
     Option displayNameOption = Option.builder("displayName").hasArg(true).required(false).build();
+    commandLineOptions.addOption(displayNameOption);
     Option descriptionOption = Option.builder("description").hasArg(true).required(false).build();
+    commandLineOptions.addOption(descriptionOption);
 
     Option scanPeriodOption = Option.builder("scanPeriod").hasArg(true).required(false).build();
+    commandLineOptions.addOption(scanPeriodOption);
 
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
@@ -241,7 +258,8 @@ public class Triggers {
       return;
     }
 
-    String projectId = cmd.getOptionValue(projectIdOption.getOpt());
+    String projectId =
+        cmd.getOptionValue(projectIdOption.getOpt(), ServiceOptions.getDefaultProjectId());
     if (cmd.hasOption("c")) {
       Likelihood minLikelihood =
           Likelihood.valueOf(
@@ -251,7 +269,8 @@ public class Triggers {
       String triggerId = cmd.getOptionValue(triggerIdOption.getOpt());
       String displayName = cmd.getOptionValue(displayNameOption.getOpt(), "");
       String description = cmd.getOptionValue(descriptionOption.getOpt(), "");
-      String gcsUrl = cmd.getOptionValue(gcsUrlOption.getOpt());
+      String bucketName = cmd.getOptionValue(bucketNameOption.getOpt());
+      String fileName = cmd.getOptionValue(gcsFileNameOption.getOpt());
       int scanPeriod = Integer.valueOf(cmd.getOptionValue(scanPeriodOption.getOpt()));
       List<InfoType> infoTypesList = new ArrayList<>();
       if (cmd.hasOption(infoTypesOption.getOpt())) {
@@ -265,7 +284,8 @@ public class Triggers {
           triggerId,
           displayName,
           description,
-          gcsUrl,
+          bucketName,
+          fileName,
           scanPeriod,
           infoTypesList,
           minLikelihood,
