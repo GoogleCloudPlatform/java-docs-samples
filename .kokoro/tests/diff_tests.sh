@@ -38,12 +38,12 @@ gcloud auth activate-service-account\
     --project=$GOOGLE_CLOUD_PROJECT
 
 echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
-# Diff to find out what has changed from master
 set +e
+# Diff to find out what has changed from master
 RESULT=0
 cd github/java-docs-samples
-find * -name pom.xml -print0 | sort -z | while read -d $'\0' file
-do
+# For every pom.xml (may break on whitespace)
+for file in **/pom.xml; do
     # Navigate to project
     file=$(dirname "$file")
     pushd "$file" > /dev/null
@@ -70,17 +70,15 @@ do
         EXIT=$?
         
         if [ $EXIT -ne 0 ]; then
-            echo "TEST FAILED"
+            echo -e "\n Tests failed. \n"
             RESULT=1
+        else
+            echo -e "\n Tests complete. \n"
         fi
-        echo $RESULT
-        echo -e "\n Tests complete. \n"
     fi
 
     popd > /dev/null
 
 done
 
-set -e
-echo $RESULT
 exit $RESULT
