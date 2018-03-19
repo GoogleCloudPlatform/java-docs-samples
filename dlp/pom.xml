@@ -43,12 +43,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dlp</artifactId>
-      <version>0.38.1-beta-SNAPSHOT</version>       <!-- TODO: update with release version -->
+      <version>0.40.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>0.38.0-beta</version>       <!-- TODO: update with release version -->
+      <version>0.40.0-beta</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
