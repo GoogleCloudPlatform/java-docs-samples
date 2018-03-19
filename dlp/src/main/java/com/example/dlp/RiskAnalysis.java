@@ -63,6 +63,18 @@ import org.apache.commons.cli.ParseException;
 
 public class RiskAnalysis {
 
+  // [START dlp_numerical_stats]
+  /**
+   * Calculate numerical statistics for a column in a BigQuery table using the DLP API.
+   *
+   * @param projectId The Google Cloud Platform project ID to run the API call under.
+   * @param datasetId The BigQuery dataset to analyze.
+   * @param tableId The BigQuery table to analyze.
+   * @param columnName The name of the column to analyze, which must contain only numerical data.
+   * @param topicId The name of the Pub/Sub topic to notify once the job completes
+   * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
+   *     completion status.
+   */
   private static void calculateNumericalStats(
       String projectId,
       String datasetId,
@@ -71,18 +83,6 @@ public class RiskAnalysis {
       String topicId,
       String subscriptionId)
       throws Exception {
-    // [START dlp_numerical_stats]
-    /**
-     * Calculate numerical statistics for a column in a BigQuery table using the DLP API.
-     *
-     * @param projectId The Google Cloud Platform project ID to run the API call under.
-     * @param datasetId The BigQuery dataset to analyze.
-     * @param tableId The BigQuery table to analyze.
-     * @param columnName The name of the column to analyze, which must contain only numerical data.
-     * @param topicId The name of the Pub/Sub topic to notify once the job completes
-     * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
-     *     completion status.
-     */
 
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -105,7 +105,7 @@ public class RiskAnalysis {
 
       PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
 
-      // create /action to publish job status notifications over Google Cloud Pub/Sub
+      // create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -147,6 +147,7 @@ public class RiskAnalysis {
       }
     }
   }
+  // [END dlp_numerical_stats]
 
   // [START wait_on_dlp_job_completion]
   // wait on receiving a job status update over a Google Cloud Pub/Sub subscriber
@@ -182,6 +183,18 @@ public class RiskAnalysis {
   }
   // [END wait_on_dlp_job_completion]
 
+  // [START dlp_categorical_stats]
+  /**
+   * Calculate categorical statistics for a column in a BigQuery table using the DLP API.
+   *
+   * @param projectId The Google Cloud Platform project ID to run the API call under.
+   * @param datasetId The BigQuery dataset to analyze.
+   * @param tableId The BigQuery table to analyze.
+   * @param columnName The name of the column to analyze, which need not contain numerical data.
+   * @param topicId The name of the Pub/Sub topic to notify once the job completes
+   * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
+   *     completion status.
+   */
   private static void calculateCategoricalStats(
       String projectId,
       String datasetId,
@@ -189,23 +202,9 @@ public class RiskAnalysis {
       String columnName,
       String topicId,
       String subscriptionId){
-    // [START dlp_categorical_stats]
-    /**
-     * Calculate categorical statistics for a column in a BigQuery table using the DLP API.
-     *
-     * @param projectId The Google Cloud Platform project ID to run the API call under.
-     * @param datasetId The BigQuery dataset to analyze.
-     * @param tableId The BigQuery table to analyze.
-     * @param columnName The name of the column to analyze, which need not contain numerical data.
-     */
 
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-      // projectId = process.env.GCLOUD_PROJECT;
-      // datasetId = "my_dataset";
-      // tableId = "my_table";
-      // columnName = "firstName";
 
       FieldId fieldId = FieldId.newBuilder().setName(columnName).build();
 
@@ -228,7 +227,7 @@ public class RiskAnalysis {
           .setTopic(topicName.toString())
           .build();
 
-      // create /action to publish job status notifications over Google Cloud Pub/Sub
+      // create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -278,7 +277,7 @@ public class RiskAnalysis {
       System.out.println("Error in categoricalStatsAnalysis: " + e.getMessage());
     }
   }
-  // [END dlp_categorical_stats_analysis]
+  // [END dlp_categorical_stats]
 
   // [START dlp_k_anonymity]
   /**
@@ -288,6 +287,9 @@ public class RiskAnalysis {
    * @param datasetId The BigQuery dataset to analyze.
    * @param tableId The BigQuery table to analyze.
    * @param quasiIds The names of columns that form a composite key ('quasi-identifiers').
+   * @param topicId The name of the Pub/Sub topic to notify once the job completes
+   * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
+   *     completion status.
    */
   private static void calculateKAnonymity(
       String projectId,
@@ -299,11 +301,6 @@ public class RiskAnalysis {
       throws Exception {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-      // projectId = process.env.GCLOUD_PROJECT;
-      // datasetId = 'my_dataset';
-      // tableId = 'my_table';
-      // quasiIds = [{ columnName: 'age' }, { columnName: 'city' }];
 
       List<FieldId> quasiIdFields =
           quasiIds
@@ -328,7 +325,7 @@ public class RiskAnalysis {
 
       PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
 
-      // create /action to publish job status notifications over Google Cloud Pub/Sub
+      // create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -388,13 +385,16 @@ public class RiskAnalysis {
   /**
    * [START dlp_l_diversity]
    *
-   * <p>Calculate l-diversity for an attribute relative to quasi-identifiers in a BigQuery table.
+   * Calculate l-diversity for an attribute relative to quasi-identifiers in a BigQuery table.
    *
    * @param projectId The Google Cloud Platform project ID to run the API call under.
    * @param datasetId The BigQuery dataset to analyze.
    * @param tableId The BigQuery table to analyze.
    * @param sensitiveAttribute The name of the attribute to compare the quasi-ID against
    * @param quasiIds A set of column names that form a composite key ('quasi-identifiers').
+   * @param topicId The name of the Pub/Sub topic to notify once the job completes
+   * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
+   *     completion status.
    */
   private static void calculateLDiversity(
       String projectId,
@@ -437,7 +437,7 @@ public class RiskAnalysis {
 
       PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
 
-      // create /action to publish job status notifications over Google Cloud Pub/Sub
+      // create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =

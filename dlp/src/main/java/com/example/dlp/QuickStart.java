@@ -51,8 +51,8 @@ public class QuickStart {
     // The infoTypes of information to match
     List<InfoType> infoTypes =
         Arrays.asList(
-            InfoType.newBuilder().setName("US_MALE_NAME").build(),
-            InfoType.newBuilder().setName("US_FEMALE_NAME").build());
+            InfoType.newBuilder().setName("PERSON_NAME").build(),
+            InfoType.newBuilder().setName("US_STATE").build());
 
     // Whether to include the matching string
     boolean includeQuote = true;
@@ -96,7 +96,7 @@ public class QuickStart {
         System.out.println("Findings: ");
         for (Finding finding : result.getFindingsList()) {
           if (includeQuote) {
-            System.out.print("Quote: " + finding.getQuote());
+            System.out.print("\tQuote: " + finding.getQuote());
           }
           System.out.print("\tInfo type: " + finding.getInfoType().getName());
           System.out.println("\tLikelihood: " + finding.getLikelihood());

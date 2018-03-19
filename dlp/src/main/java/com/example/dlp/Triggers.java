@@ -45,10 +45,9 @@ import org.apache.commons.cli.ParseException;
 
 public class Triggers {
 
+  // [START dlp_create_trigger]
   /**
-   * [START dlp_create_trigger]
-   *
-   * <p>Schedule a DLP inspection trigger for a GCS location.
+   * Schedule a DLP inspection trigger for a GCS location.
    *
    * @param triggerId (Optional) name of the trigger to be created
    * @param displayName (Optional) display name for the trigger to be created
@@ -101,7 +100,7 @@ public class Triggers {
               .setStorageConfig(storageConfig)
               .build();
 
-      // Schedule scan of GCS bucket every scanPeriod number of days
+      // Schedule scan of GCS bucket every scanPeriod number of days (minimum = 1 day)
       Duration duration = Duration.newBuilder().setSeconds(scanPeriod * 24 * 3600).build();
       Schedule schedule = Schedule.newBuilder().setRecurrencePeriodDuration(duration).build();
       JobTrigger.Trigger trigger = JobTrigger.Trigger.newBuilder().setSchedule(schedule).build();
@@ -115,7 +114,6 @@ public class Triggers {
               .addTriggers(trigger)
               .build();
 
-      System.out.println("Pause");
       // Create scan request
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
@@ -127,13 +125,14 @@ public class Triggers {
 
       System.out.println("Created Trigger: " + createdJobTrigger.getName());
     } catch (Exception e) {
-      System.out.println("Error creating trigger :" + e.getMessage());
+      System.out.println("Error creating trigger: " + e.getMessage());
     }
   }
   // [END dlp_create_trigger]
 
+  // [START dlp_list_triggers]
   /**
-   * [START dlp_list_triggers] List all DLP triggers for a given project.
+   * List all DLP triggers for a given project.
    *
    * @param projectId The project ID to run the API call under.
    */
@@ -151,34 +150,32 @@ public class Triggers {
           .forEach(
               trigger -> {
                 System.out.println("Trigger: " + trigger.getName());
-                System.out.println("Created: " + trigger.getCreateTime());
-                System.out.println("Updated: " + trigger.getUpdateTime());
+                System.out.println("\tCreated: " + trigger.getCreateTime());
+                System.out.println("\tUpdated: " + trigger.getUpdateTime());
                 if (trigger.getDisplayName() != null) {
-                  System.out.println("Display name: " + trigger.getDisplayName());
+                  System.out.println("\tDisplay name: " + trigger.getDisplayName());
                 }
                 if (trigger.getDescription() != null) {
-                  System.out.println("Description: " + trigger.getDescription());
+                  System.out.println("\tDescription: " + trigger.getDescription());
                 }
-                System.out.println("Status: " + trigger.getStatus());
-                System.out.println("Error count: " + trigger.getErrorsCount());
+                System.out.println("\tStatus: " + trigger.getStatus());
+                System.out.println("\tError count: " + trigger.getErrorsCount());
               });
     } catch (Exception e) {
       System.out.println("Error listing triggers :" + e.getMessage());
     }
   }
-  // [END dlp_list_trigger]
+  // [END dlp_list_triggers]
 
+  // [START dlp_delete_trigger]
   /**
-   * [START dlp_delete_trigger]
    *
-   * <p>Delete a DLP trigger in a project.
+   * Delete a DLP trigger in a project.
    *
    * @param projectId The project ID to run the API call under.
    * @param triggerId Trigger ID
    */
   private static void deleteTrigger(String projectId, String triggerId) {
-    // Instantiates a client
-    // triggerName to provided as projects/project-id/jobTriggers/triggerId
 
     ProjectJobTriggerName triggerName = ProjectJobTriggerName.of(projectId, triggerId);
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -191,7 +188,6 @@ public class Triggers {
       System.out.println("Error deleting trigger :" + e.getMessage());
     }
   }
-
   // [END dlp_delete_trigger]
 
   /** Command line application to crate, list and delete triggers. */

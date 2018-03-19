@@ -75,6 +75,7 @@ public class Inspect {
    * @param maxFindings The maximum number of findings to report (0 = server maximum)
    * @param infoTypes The infoTypes of information to match
    * @param includeQuote Whether to include the matching string
+   * @param projectId Google Cloud project ID
    */
   private static void inspectString(
       String string,
@@ -95,8 +96,6 @@ public class Inspect {
               .setIncludeQuote(includeQuote)
               .build();
 
-      // The string to inspect
-      // string = 'My name is Gary and my email is gary@example.com';
       ByteContentItem byteContentItem =
           ByteContentItem.newBuilder()
               .setType(ByteContentItem.BytesType.TEXT_UTF8)
@@ -117,7 +116,7 @@ public class Inspect {
         System.out.println("Findings: ");
         for (Finding finding : response.getResult().getFindingsList()) {
           if (includeQuote) {
-            System.out.print("Quote: " + finding.getQuote());
+            System.out.print("\tQuote: " + finding.getQuote());
           }
           System.out.print("\tInfo type: " + finding.getInfoType().getName());
           System.out.println("\tLikelihood: " + finding.getLikelihood());
@@ -139,6 +138,7 @@ public class Inspect {
    * @param maxFindings The maximum number of findings to report (0 = server maximum)
    * @param infoTypes The infoTypes of information to match
    * @param includeQuote Whether to include the matching string
+   * @param projectId Google Cloud project ID
    */
   private static void inspectFile(
       String filePath,
@@ -155,7 +155,7 @@ public class Inspect {
         mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
       }
 
-      ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.TEXT_UTF8;
+      ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.BYTES_TYPE_UNSPECIFIED;
 
       if (mimeType.equals("image/jpeg")) {
         bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
@@ -199,7 +199,7 @@ public class Inspect {
         System.out.println("Findings: ");
         for (Finding finding : result.getFindingsList()) {
           if (includeQuote) {
-            System.out.print("Quote: " + finding.getQuote());
+            System.out.print("\tQuote: " + finding.getQuote());
           }
           System.out.print("\tInfo type: " + finding.getInfoType().getName());
           System.out.println("\tLikelihood: " + finding.getLikelihood());
@@ -215,9 +215,9 @@ public class Inspect {
   // [END dlp_inspect_file]
 
   /**
-   * [START inspect_gcs_file]
+   * [START dlp_inspect_gcs]
    *
-   * <p>Inspect GCS file for Info types and wait on job completion using Google Cloud Pub/Sub
+   * Inspect GCS file for Info types and wait on job completion using Google Cloud Pub/Sub
    * notification
    *
    * @param bucketName The name of the bucket where the file resides.
@@ -334,7 +334,7 @@ public class Inspect {
     try{
       done.get(30, TimeUnit.SECONDS);
     } catch (Exception e){
-      System.out.println("Unable to verify job complete.");
+      System.out.println("Unable to verify job completion.");
     }
   }
   // [END wait_on_dlp_job_completion]

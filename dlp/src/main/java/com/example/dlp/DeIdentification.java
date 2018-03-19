@@ -66,10 +66,9 @@ import org.apache.commons.cli.ParseException;
 
 public class DeIdentification {
 
+  // [START dlp_deidentify_masking]
   /**
-   * [START dlp_deidentify_mask]
-   *
-   * <p>Deidentify a string by masking sensitive information with a character using the DLP API.
+   * Deidentify a string by masking sensitive information with a character using the DLP API.
    *
    * @param string The string to deidentify.
    * @param maskingCharacter (Optional) The character to mask sensitive data with.
@@ -79,21 +78,10 @@ public class DeIdentification {
    */
   private static void deIdentifyWithMask(
       String string, Character maskingCharacter, int numberToMask, String projectId) {
-    // [START dlp_deidentify_masking]
-    /**
-     * Deidentify a string by masking sensitive information with a character using the DLP API.
-     * @param string The string to deidentify.
-     * @param maskingCharacter (Optional) The character to mask sensitive data with.
-     * @param numberToMask (Optional) The number of characters' worth of sensitive data to mask.
-     *                     Omitting this value or setting it to 0 masks all sensitive chars.
-     */
 
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      // string = "My SSN is 372819127";
-      // numberToMask = 5;
-      // maskingCharacter = 'x';
       ByteContentItem byteContentItem =
           ByteContentItem.newBuilder()
               .setType(ByteContentItem.BytesType.TEXT_UTF8)
@@ -151,10 +139,9 @@ public class DeIdentification {
   }
   // [END dlp_deidentify_mask]
 
+  // [START dlp_deidentify_fpe]
   /**
-   * [START dlp_deidentify_fpe]
-   *
-   * <p>Deidentify a string by encrypting sensitive information while preserving format.
+   * Deidentify a string by encrypting sensitive information while preserving format.
    *
    * @param string The string to deidentify.
    * @param alphabet The set of characters to use when encrypting the input. For more information,
@@ -171,11 +158,6 @@ public class DeIdentification {
       String projectId) {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-      // string = "My SSN is 372819127";
-      // alphabet = FfxCommonNativeAlphabet.ALPHA_NUMERIC;
-      // keyName = "projects/GCP_PROJECT/locations/REGION/keyRings/KEYRING_ID/cryptoKeys/KEY_NAME";
-      // wrappedKey = "YOUR_ENCRYPTED_AES_256_KEY"
 
       ByteContentItem byteContentItem =
           ByteContentItem.newBuilder()
@@ -277,17 +259,7 @@ public class DeIdentification {
               .setLowerBoundDays(lowerBoundDays)
               .setUpperBoundDays(upperBoundDays);
 
-      // (Optional) The name of the Cloud KMS key used to encrypt ('wrap') the AES-256 key
-      // If this is specified, then 'wrappedKey' and 'contextFieldId' must also be set
-      // String keyName =
-      // 'projects/PROJECT/locations/LOCATION/keyRings/YOUR_KEYRING_NAME/cryptoKeys/YOUR_KEY_NAME';
-
-      // (Optional) The encrypted ('wrapped') AES-256 key to use when shifting dates
-      // This key should be encrypted using the Cloud KMS key specified above
-      // If this is specified, then 'keyName' and 'contextFieldId' must also be set
-      // const wrappedKey = 'YOUR_ENCRYPTED_AES_256_KEY'
-
-      // If contextFieldId , keyName or wrappedKey is set : all three arguments must be valid
+      // If contextFieldId, keyName or wrappedKey is set: all three arguments must be valid
       if (contextFieldId != null && keyName != null && wrappedKey != null) {
         dateShiftConfigBuilder.setContext(FieldId.newBuilder().setName(contextFieldId).build());
         KmsWrappedCryptoKey kmsWrappedCryptoKey =
@@ -304,8 +276,6 @@ public class DeIdentification {
       }
 
       // Read and parse the CSV file
-      // The first row of the file must specify column names, and all other rows
-      // Path inputCsvFile = Paths.get("/path/to/file.csv");
       BufferedReader br = null;
       String line;
       List<Table.Row> rows = new ArrayList<>();
@@ -443,7 +413,7 @@ public class DeIdentification {
     optionsGroup.addOption(deidentifyMaskingOption);
 
     Option deidentifyFpeOption =
-        new Option("f", "fpe", true, "Deidentify with FFX FPE.");
+        new Option("f", "fpe", true, "Deidentify with format-preserving encryption.");
     optionsGroup.addOption(deidentifyFpeOption);
 
     Option deidentifyDateShiftOption =

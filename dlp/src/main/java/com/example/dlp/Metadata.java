@@ -31,13 +31,17 @@ import org.apache.commons.cli.ParseException;
 
 public class Metadata {
 
+  // [START dlp_list_info_types]
+  /*
+   * List the types of sensitive information the DLP API supports.
+   *
+   * @param filter The filter to use, e.g. "supported_by=INSPECT"
+   * @param languageCode The BCP-47 language code to use, e.g. 'en-US'
+   */
   private static void listInfoTypes(String filter, String languageCode) throws Exception {
-    // [START dlp_list_info_types]
+
     // Instantiate a DLP client
     try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
-      // The category of info types to list, e.g. category = 'GOVERNMENT';
-      // Optional BCP-47 language code for localized info type friendly names, e.g. 'en-US'
-      // filter supported_by=INSPECT
       ListInfoTypesRequest listInfoTypesRequest = ListInfoTypesRequest.newBuilder()
           .setFilter(filter)
           .setLanguageCode(languageCode)
@@ -49,8 +53,8 @@ public class Metadata {
         System.out.println("Display name : " + infoTypeDescription.getDisplayName());
       }
     }
-    // [END dlp_list_info_types]
   }
+  // [END dlp_list_info_types]
 
   /** Retrieve infoTypes. */
   public static void main(String[] args) throws Exception {

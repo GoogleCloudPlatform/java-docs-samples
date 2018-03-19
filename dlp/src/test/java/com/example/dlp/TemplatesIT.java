@@ -58,9 +58,9 @@ public class TemplatesIT {
   public void testCreateInspectTemplate() throws Exception {
     Templates.main(new String[] {
         "-c",
-        "-displayName", String.format("test-name-%s", new Date()),
-        "-templateId", String.format("template%s", System.currentTimeMillis()),
-        "-description", String.format("description-%s", new Date())
+        "-displayName", String.format("test-name-%s", UUID.randomUUID()),
+        "-templateId", String.format("template%s", UUID.randomUUID()),
+        "-description", String.format("description-%s", UUID.randomUUID())
     });
     String output = bout.toString();
     assertThat(output, containsString("Template created: "));

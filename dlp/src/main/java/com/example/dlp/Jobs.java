@@ -36,17 +36,16 @@ import org.apache.commons.cli.ParseException;
 public class Jobs {
 
   // [START dlp_list_jobs]
+  /*
+   * List DLP jobs
+   *
+   * @param projectId The project ID to run the API call under
+   * @param filter The filter expression to use, eg. state=DONE For more information on filter
+   *     syntax see https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs/list
+   * @param jobType The type of job to list (either 'INSPECT_JOB' or 'RISK_ANALYSIS_JOB')
+   */
   private static void listJobs(String projectId, String filter, DlpJobType jobType)
       throws Exception {
-    /**
-     *
-     * List DLP jobs
-     *
-     * @param projectId The project ID to run the API call under
-     * @param filter The filter expression to use, eg. state=DONE For more information on filter
-     *     syntax see https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs/list
-     * @param jobType The type of job to list (either 'INSPECT_JOB' or 'RISK_ANALYSIS_JOB')
-     */
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       ListDlpJobsRequest listDlpJobsRequest =
           ListDlpJobsRequest.newBuilder()
@@ -64,7 +63,6 @@ public class Jobs {
   // [END dlp_list_jobs]
 
   /**
-   *
    * Delete a DLP Job
    *
    * @param projectId Google Cloud ProjectID

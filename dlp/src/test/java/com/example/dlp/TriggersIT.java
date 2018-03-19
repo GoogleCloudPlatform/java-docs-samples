@@ -63,9 +63,9 @@ public class TriggersIT {
   public void testCreateTrigger() throws Exception {
     Triggers.main(new String[] {
         "-c",
-        "-displayName", String.format("trigger-name-%s", new Date()),
-        "-triggerId", String.format("trigger%s", System.currentTimeMillis()),
-        "-description", String.format("description-%s", new Date()),
+        "-displayName", String.format("trigger-name-%s", UUID.randomUUID()),
+        "-triggerId", String.format("trigger%s", UUID.randomUUID()),
+        "-description", String.format("description-%s", UUID.randomUUID()),
         "-bucketName", bucketName,
         "-fileName", "test.txt",
         "-scanPeriod", "1"

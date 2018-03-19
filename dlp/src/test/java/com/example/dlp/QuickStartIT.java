@@ -49,7 +49,7 @@ public class QuickStartIT {
     QuickStart.main(new String[] {});
     String output = bout.toString();
 
-    assertThat(output, containsString("US_MALE_NAME"));
+    assertThat(output, containsString("PERSON_NAME"));
   }
 
   @After

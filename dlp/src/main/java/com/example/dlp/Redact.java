@@ -44,6 +44,16 @@ import org.apache.commons.cli.ParseException;
 
 public class Redact {
 
+  // [START dlp_redact_image]
+  /*
+   * Redact sensitive data from an image using the Data Loss Prevention API.
+   *
+   * @param filePath The path to a local file to inspect. Can be a JPG or PNG image file.
+   * @param minLikelihood The minimum likelihood required before redacting a match.
+   * @param infoTypes The infoTypes of information to redact.
+   * @param outputPath The local path to save the resulting image to.
+   * @param projectId The project ID to run the API call under.
+   */
   private static void redactImage(
       String filePath,
       Likelihood minLikelihood,
@@ -51,11 +61,9 @@ public class Redact {
       String outputPath,
       String projectId)
       throws Exception {
-    // [START dlp_redact_image]
+
     // Instantiate the DLP client
     try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
-      // The path to a local file to inspect. Can be a JPG or PNG image file.
-      //  filePath = 'path/to/image.png'
       String mimeType = URLConnection.guessContentTypeFromName(filePath);
       if (mimeType == null) {
         mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
@@ -71,17 +79,8 @@ public class Redact {
       } else if (mimeType.equals("image/svg")) {
         bytesType = ByteContentItem.BytesType.IMAGE_SVG;
       }
-      
+
       byte[] data = Files.readAllBytes(Paths.get(filePath));
-
-      // The minimum likelihood required before redacting a match
-      //  minLikelihood = 'LIKELIHOOD_UNSPECIFIED'
-
-      // The infoTypes of information to redact
-      // infoTypes = [{ name: 'EMAIL_ADDRESS' }, { name: 'PHONE_NUMBER' }]
-
-      // The local path to save the resulting image to.
-      // outputPath = 'result.png'
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
@@ -121,8 +120,8 @@ public class Redact {
       outputStream.write(redactedImageData.toByteArray());
       outputStream.close();
     }
-    // [END dlp_redact_image]
   }
+  // [END dlp_redact_image]
 
   /** Command line application to redact strings, images using the Data Loss Prevention API. */
   public static void main(String[] args) throws Exception {

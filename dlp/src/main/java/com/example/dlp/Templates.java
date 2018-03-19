@@ -44,7 +44,7 @@ import org.apache.commons.cli.ParseException;
 public class Templates {
 
   /**
-   * [START dlp_create_template]
+   * [START dlp_create_inspect_template]
    *
    * @param displayName (Optional) The human-readable name to give the template
    * @param projectId Google Cloud Project ID to call the API under
@@ -95,12 +95,11 @@ public class Templates {
       System.out.printf("Error creating template: %s", e.getMessage());
     }
   }
-  // [END dlp_create_template]
+  // [END dlp_create_inspect_template]
 
+  // [START dlp_list_inspect_templates]
   /**
-   * [START dlp_list_templates]
-   *
-   * <p>List DLP inspection templates created in a given project
+   * List DLP inspection templates created in a given project
    *
    * @param projectId Google Cloud Project ID
    */
@@ -120,27 +119,28 @@ public class Templates {
       for (InspectTemplate template : templatesResponse.getInspectTemplatesList()) {
         System.out.printf("Template name: %s\n", template.getName());
         if (template.getDisplayName() != null) {
-          System.out.printf("Template display name: %s \n", template.getDisplayName());
-          System.out.printf("Template create time: %s \n", template.getCreateTime());
-          System.out.printf("Template update time: %s \n", template.getUpdateTime());
+          System.out.printf("\tDisplay name: %s \n", template.getDisplayName());
+          System.out.printf("\tCreate time: %s \n", template.getCreateTime());
+          System.out.printf("\tUpdate time: %s \n", template.getUpdateTime());
 
           // print inspection config
           InspectConfig inspectConfig = template.getInspectConfig();
           for (InfoType infoType : inspectConfig.getInfoTypesList()) {
-            System.out.printf("InfoType: %s\n", infoType.getName());
+            System.out.printf("\tInfoType: %s\n", infoType.getName());
           }
-          System.out.printf("Min likelihood: %s\n", inspectConfig.getMinLikelihood());
-          System.out.printf("Limits: %s\n", inspectConfig.getLimits().getMaxFindingsPerRequest());
+          System.out.printf("\tMin likelihood: %s\n", inspectConfig.getMinLikelihood());
+          System.out.printf("\tLimits: %s\n", inspectConfig.getLimits().getMaxFindingsPerRequest());
         }
       }
     } catch (Exception e) {
       System.out.printf("Error creating template: %s", e.getMessage());
     }
   }
-  // [END dlp_list_templates]
+  // [END dlp_list_inspect_templates]
 
+  // [START dlp_delete_inspect_template]
   /**
-   * [START dlp_delete_template]
+   * Delete the DLP inspection configuration template with the specified name.
    *
    * @param projectId Google Cloud Project ID
    * @param templateId Template ID to be deleted
@@ -161,7 +161,7 @@ public class Templates {
       System.err.printf("Error deleting template: %s\n", templateName);
     }
   }
-  // [END dlp_delete_template]
+  // [END dlp_delete_inspect_template]
 
   /** Command line application to create, list and delete DLP inspect templates. */
   public static void main(String[] args) throws Exception {
