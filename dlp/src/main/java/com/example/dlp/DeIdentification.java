@@ -134,7 +134,6 @@ public class DeIdentification {
       System.out.println(result);
     } catch (Exception e) {
       System.out.println("Error in deidentifyWithMask: " + e.getMessage());
-      System.out.println(e.getStackTrace());
     }
   }
   // [END dlp_deidentify_mask]
