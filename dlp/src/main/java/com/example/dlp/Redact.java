@@ -68,16 +68,24 @@ public class Redact {
       if (mimeType == null) {
         mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
       }
-      ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.BYTES_TYPE_UNSPECIFIED;
 
-      if (mimeType.equals("image/jpeg")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
-      } else if (mimeType.equals("image/bmp")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_BMP;
-      } else if (mimeType.equals("image/png")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_PNG;
-      } else if (mimeType.equals("image/svg")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_SVG;
+      ByteContentItem.BytesType bytesType;
+      switch (mimeType) {
+        case "image/jpeg":
+          bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
+          break;
+        case "image/bmp":
+          bytesType = ByteContentItem.BytesType.IMAGE_BMP;
+          break;
+        case "image/png":
+          bytesType = ByteContentItem.BytesType.IMAGE_PNG;
+          break;
+        case "image/svg":
+          bytesType = ByteContentItem.BytesType.IMAGE_SVG;
+          break;
+        default:
+          bytesType = ByteContentItem.BytesType.BYTES_TYPE_UNSPECIFIED;
+          break;
       }
 
       byte[] data = Files.readAllBytes(Paths.get(filePath));

@@ -20,14 +20,20 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+
+import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
@@ -67,28 +73,32 @@ public class DeIdentificationIT {
   }
 
   @Test
-  public void testDeidStringPerformsFpe() throws Exception {
+  public void testDeidReidFpe() throws Exception {
+
+    // Test DeID
     String text = "\"My SSN is 372819127\"";
     DeIdentification.main(
         new String[] {
           "-f", text,
           "-wrappedKey", wrappedKey,
-          "-keyName", keyName
+          "-keyName", keyName,
+          "-commonAlphabet", "NUMERIC",
         });
     String output = bout.toString();
     assertFalse(
         "Response contains original SSN.",
         output.contains("372819127"));
-    assertThat(output, containsString("My SSN is "));
+    assertTrue(output.matches("My SSN is \\d+\n"));
   }
 
   @Test
   public void testDeidentifyWithDateShift() throws Exception {
+    String outputPath = "src/test/resources/results.temp.csv";
     DeIdentification.main(
         new String[] {
             "-d",
             "-inputCsvPath", "src/test/resources/dates.csv",
-            "-outputCsvPath", "src/test/resources/results.temp.csv",
+            "-outputCsvPath", outputPath,
             "-dateFields", "birth_date,register_date",
             "-lowerBoundDays", "5",
             "-upperBoundDays", "5",
@@ -99,6 +109,13 @@ public class DeIdentificationIT {
     String output = bout.toString();
     assertThat(
         output, containsString("Successfully saved date-shift output to: results.temp.csv"));
+
+    // Compare the result against an expected output file
+    byte[] resultCsv = Files.readAllBytes(Paths.get(outputPath));
+    byte[] correctCsv = Files.readAllBytes(Paths.get(
+        "src/test/resources/results.correct.csv"));
+
+    assertTrue(Arrays.equals(resultCsv, correctCsv));
   }
 
   @After

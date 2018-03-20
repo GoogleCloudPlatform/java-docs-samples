@@ -53,7 +53,6 @@ public class RiskAnalysisIT {
   }
 
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively
   public void testNumericalStats() throws Exception {
     RiskAnalysis.main(
         new String[] {
@@ -68,7 +67,6 @@ public class RiskAnalysisIT {
   }
 
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively
   public void testCategoricalStats() throws Exception {
     RiskAnalysis.main(
         new String[] {
@@ -81,11 +79,11 @@ public class RiskAnalysisIT {
         });
     String output = bout.toString();
 
-    assertThat(output, containsString("Most common value occurs"));
+    assertTrue(Pattern.compile("Most common value occurs \\d time").matcher(output).find());
+    assertTrue(Pattern.compile("Least common value occurs \\d time").matcher(output).find());
   }
 
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively
   public void testKAnonymity() throws Exception {
     RiskAnalysis.main(new String[]{
         "-k",
@@ -102,7 +100,6 @@ public class RiskAnalysisIT {
   }
 
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively
   public void testLDiversity() throws Exception {
     RiskAnalysis.main(
         new String[] {

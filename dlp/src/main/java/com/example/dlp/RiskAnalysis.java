@@ -48,7 +48,6 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -75,7 +74,7 @@ public class RiskAnalysis {
    * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
    *     completion status.
    */
-  private static void calculateNumericalStats(
+  private static void numericalStatsAnalysis(
       String projectId,
       String datasetId,
       String tableId,
@@ -124,8 +123,33 @@ public class RiskAnalysis {
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
       String dlpJobName = dlpJob.getName();
 
-      // wait on job completion
-      waitOnJobCompletion(projectId, subscriptionId, dlpJobName);
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.newBuilder()
+                  .setProject(projectId)
+                  .setSubscription(subscriptionId)
+                  .build(),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // wait for job completion
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
       // retrieve completed job status
       DlpJob completedJob =
@@ -141,47 +165,18 @@ public class RiskAnalysis {
           result.getMinValue().getFloatValue(), result.getMaxValue().getFloatValue());
 
       int percent = 1;
+      Double lastValue = null;
       for (Value quantileValue : result.getQuantileValuesList()) {
-        System.out.printf(
-            "Value at %s %% quantile : %.3f", percent, quantileValue.getFloatValue());
+        Double currentValue = quantileValue.getFloatValue();
+        if (lastValue == null || !lastValue.equals(currentValue)) {
+          System.out.printf(
+              "Value at %s %% quantile : %.3f", percent, currentValue);
+        }
+        lastValue = currentValue;
       }
     }
   }
   // [END dlp_numerical_stats]
-
-  // [START wait_on_dlp_job_completion]
-  // wait on receiving a job status update over a Google Cloud Pub/Sub subscriber
-  private static void waitOnJobCompletion(
-      String projectId, String subscriptionId, String dlpJobName)
-      throws Exception {
-    // wait for job completion
-    final SettableApiFuture<Boolean> done = SettableApiFuture.create();
-
-    // setup a Pub/Sub subscriber to listen on the job completion status
-    Subscriber subscriber =
-        Subscriber.newBuilder(
-            ProjectSubscriptionName.newBuilder()
-                .setProject(projectId)
-                .setSubscription(subscriptionId)
-                .build(),
-            (pubsubMessage, ackReplyConsumer) -> {
-              if (pubsubMessage.getAttributesCount() > 0
-                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                // notify job completion
-                done.set(true);
-                ackReplyConsumer.ack();
-              }
-            })
-            .build();
-    subscriber.startAsync();
-    // wait for job completion
-    try{
-      done.get(30, TimeUnit.SECONDS);
-    } catch (TimeoutException e) {
-      System.out.println("Unable to verify job complete.");
-    }
-  }
-  // [END wait_on_dlp_job_completion]
 
   // [START dlp_categorical_stats]
   /**
@@ -195,7 +190,7 @@ public class RiskAnalysis {
    * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
    *     completion status.
    */
-  private static void calculateCategoricalStats(
+  private static void categoricalStatsAnalysis(
       String projectId,
       String datasetId,
       String tableId,
@@ -246,8 +241,33 @@ public class RiskAnalysis {
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
       String dlpJobName = dlpJob.getName();
 
-      // wait on job completion
-      waitOnJobCompletion(projectId, subscriptionId, dlpJobName);
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.newBuilder()
+                  .setProject(projectId)
+                  .setSubscription(subscriptionId)
+                  .build(),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // wait for job completion
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
       // retrieve completed job status
       DlpJob completedJob =
@@ -260,17 +280,14 @@ public class RiskAnalysis {
 
       for (CategoricalStatsHistogramBucket bucket :
           result.getValueFrequencyHistogramBucketsList()) {
-        System.out.println(
-            "Most common value occurs " + bucket.getValueFrequencyUpperBound() + " time(s)");
-        System.out.println(
-            "Least common value occurs " + bucket.getValueFrequencyLowerBound() + " time(s)");
+        System.out.printf("Most common value occurs %d time(s).\n",
+            bucket.getValueFrequencyUpperBound());
+        System.out.printf("Least common value occurs %d time(s).\n",
+            bucket.getValueFrequencyLowerBound());
         for (ValueFrequency valueFrequency : bucket.getBucketValuesList()) {
-          System.out.println(
-              "Value "
-                  + valueFrequency.getValue().toString()
-                  + " occurs "
-                  + valueFrequency.getCount()
-                  + " time(s).");
+          System.out.printf("Value %s occurs %d time(s).\n",
+              valueFrequency.getValue().toString(),
+              valueFrequency.getCount());
         }
       }
     } catch (Exception e) {
@@ -344,8 +361,33 @@ public class RiskAnalysis {
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
       String dlpJobName = dlpJob.getName();
 
-      // wait on job completion
-      waitOnJobCompletion(projectId, subscriptionId, dlpJobName);
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.newBuilder()
+                  .setProject(projectId)
+                  .setSubscription(subscriptionId)
+                  .build(),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // wait for job completion
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
       // retrieve completed job status
       DlpJob completedJob =
@@ -357,12 +399,9 @@ public class RiskAnalysis {
       KAnonymityResult kanonymityResult = riskDetails.getKAnonymityResult();
       for (KAnonymityHistogramBucket result :
           kanonymityResult.getEquivalenceClassHistogramBucketsList()) {
-        System.out.println(
-            "Bucket size range: ["
-                + result.getEquivalenceClassSizeLowerBound()
-                + ", "
-                + result.getEquivalenceClassSizeUpperBound()
-                + "]");
+        System.out.printf("Bucket size range: [%d, %d]\n",
+            result.getEquivalenceClassSizeLowerBound(),
+            result.getEquivalenceClassSizeUpperBound());
 
         for (KAnonymityEquivalenceClass bucket : result.getBucketValuesList()) {
           List<String> quasiIdValues =
@@ -456,8 +495,33 @@ public class RiskAnalysis {
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
       String dlpJobName = dlpJob.getName();
 
-      // wait on job completion
-      waitOnJobCompletion(projectId, subscriptionId, dlpJobName);
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.newBuilder()
+                  .setProject(projectId)
+                  .setSubscription(subscriptionId)
+                  .build(),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // wait for job completion
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
       // retrieve completed job status
       DlpJob completedJob =
@@ -481,12 +545,9 @@ public class RiskAnalysis {
           System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
 
           for (ValueFrequency valueFrequency : bucket.getTopSensitiveValuesList()) {
-            System.out.println(
-                "\t\tSensitive value "
-                    + valueFrequency.getValue().toString()
-                    + " occurs "
-                    + valueFrequency.getCount()
-                    + " time(s).");
+            System.out.printf("\t\tSensitive value %s occurs %d time(s).\n",
+                valueFrequency.getValue().toString(),
+                valueFrequency.getCount());
           }
         }
       }
@@ -572,11 +633,11 @@ public class RiskAnalysis {
     if (cmd.hasOption("n")) {
       // numerical stats analysis
       String columnName = cmd.getOptionValue(columnNameOption.getOpt());
-      calculateNumericalStats(projectId, datasetId, tableId, columnName, topicId, subscriptionId);
+      numericalStatsAnalysis(projectId, datasetId, tableId, columnName, topicId, subscriptionId);
     } else if (cmd.hasOption("c")) {
       // categorical stats analysis
       String columnName = cmd.getOptionValue(columnNameOption.getOpt());
-      calculateCategoricalStats(projectId, datasetId, tableId, columnName, topicId, subscriptionId);
+      categoricalStatsAnalysis(projectId, datasetId, tableId, columnName, topicId, subscriptionId);
     } else if (cmd.hasOption("k")) {
       // k-anonymity analysis
       List<String> quasiIdColumnNames =

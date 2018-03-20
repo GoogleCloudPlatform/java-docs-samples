@@ -93,7 +93,6 @@ public class InspectIT {
 
   // Requires that bucket by the specified name exists
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively
   public void testGcsFileInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-gcs",
@@ -111,7 +110,6 @@ public class InspectIT {
   // Requires a Datastore kind containing an entity
   // with phone number and email address properties.
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively
   public void testDatastoreInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-ds",
@@ -126,7 +124,6 @@ public class InspectIT {
   }
 
   @Test
-  @Ignore // Pubsub tests are flakey when run consecutively 
   public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(new String[] {
         "-bq",

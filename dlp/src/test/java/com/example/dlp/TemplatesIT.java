@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.After;
@@ -31,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.util.UUID;
 
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
@@ -80,7 +80,7 @@ public class TemplatesIT {
     // Extract a Template ID
     Templates.main(new String[] { "-l" });
     String output = bout.toString();
-    Matcher templateIds = Pattern.compile("template[0-9]+").matcher(output);
+    Matcher templateIds = Pattern.compile("template(\\w|\\-)+").matcher(output);
     assertTrue(templateIds.find());
     String templateId = templateIds.group(0);
     bout.reset();

@@ -161,7 +161,6 @@ public class DeIdentification {
 
       ByteContentItem byteContentItem =
           ByteContentItem.newBuilder()
-              .setType(ByteContentItem.BytesType.TEXT_UTF8)
               .setData(ByteString.copyFrom(string, StandardCharsets.UTF_8))
               .build();
 
@@ -224,8 +223,8 @@ public class DeIdentification {
   }
   // [END dlp_deidentify_fpe]
 
+  // [START dlp_deidentify_date_shift]
   /**
-   * [START dlp_deidentify_date_shift]
    *
    * @param inputCsvPath The path to the CSV file to deidentify
    * @param outputCsvPath (Optional) path to the output CSV file
@@ -340,7 +339,6 @@ public class DeIdentification {
 
       File outputFile = outputCsvPath.toFile();
       if (!outputFile.exists()) {
-        outputFile.getParentFile().mkdirs();
         outputFile.createNewFile();
       }
       BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));

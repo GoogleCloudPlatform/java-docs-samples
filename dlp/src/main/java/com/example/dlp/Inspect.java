@@ -34,6 +34,7 @@ import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectConfig.FindingLimits;
 import com.google.privacy.dlp.v2.InspectContentRequest;
 import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
@@ -65,6 +66,7 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+
 public class Inspect {
 
   /**
@@ -86,8 +88,8 @@ public class Inspect {
       String projectId) {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-      InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
+      FindingLimits findingLimits =
+          FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
               .addAllInfoTypes(infoTypes)
@@ -155,16 +157,23 @@ public class Inspect {
         mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(filePath);
       }
 
-      ByteContentItem.BytesType bytesType = ByteContentItem.BytesType.BYTES_TYPE_UNSPECIFIED;
-
-      if (mimeType.equals("image/jpeg")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
-      } else if (mimeType.equals("image/bmp")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_BMP;
-      } else if (mimeType.equals("image/png")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_PNG;
-      } else if (mimeType.equals("image/svg")) {
-        bytesType = ByteContentItem.BytesType.IMAGE_SVG;
+      ByteContentItem.BytesType bytesType;
+      switch (mimeType) {
+        case "image/jpeg":
+          bytesType = ByteContentItem.BytesType.IMAGE_JPEG;
+          break;
+        case "image/bmp":
+          bytesType = ByteContentItem.BytesType.IMAGE_BMP;
+          break;
+        case "image/png":
+          bytesType = ByteContentItem.BytesType.IMAGE_PNG;
+          break;
+        case "image/svg":
+          bytesType = ByteContentItem.BytesType.IMAGE_SVG;
+          break;
+        default:
+          bytesType = ByteContentItem.BytesType.BYTES_TYPE_UNSPECIFIED;
+          break;
       }
 
       byte[] data = Files.readAllBytes(Paths.get(filePath));
@@ -174,8 +183,8 @@ public class Inspect {
           .build();
       ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
 
-      InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
+      FindingLimits findingLimits =
+          FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
@@ -253,8 +262,8 @@ public class Inspect {
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
-      InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
+      FindingLimits findingLimits =
+          FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
@@ -287,7 +296,30 @@ public class Inspect {
 
       System.out.println("Job created with ID:" + dlpJob.getName());
 
-      waitOnJobCompletion(projectId, subscriptionId, dlpJob.getName());
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.of(projectId, subscriptionId),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJob.getName())) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // wait for job completion
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (Exception e){
+        System.out.println("Unable to verify job completion.");
+      }
 
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(
@@ -308,36 +340,6 @@ public class Inspect {
     }
     // [END dlp_inspect_gcs]
   }
-
-  // [START wait_on_dlp_job_completion]
-  // wait on receiving a job status update over a Google Cloud Pub/Sub subscriber
-  private static void waitOnJobCompletion (
-      String projectId, String subscriptionId, String dlpJobName) throws Exception{
-    // wait for job completion
-    final SettableApiFuture<Boolean> done = SettableApiFuture.create();
-
-    // setup a Pub/Sub subscriber to listen on the job completion status
-    Subscriber subscriber =
-        Subscriber.newBuilder(
-            ProjectSubscriptionName.of(projectId, subscriptionId),
-            (pubsubMessage, ackReplyConsumer) -> {
-              if (pubsubMessage.getAttributesCount() > 0
-                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                // notify job completion
-                done.set(true);
-                ackReplyConsumer.ack();
-              }
-            })
-            .build();
-    subscriber.startAsync();
-    // wait for job completion
-    try{
-      done.get(30, TimeUnit.SECONDS);
-    } catch (Exception e){
-      System.out.println("Unable to verify job completion.");
-    }
-  }
-  // [END wait_on_dlp_job_completion]
 
   // [START dlp_inspect_datastore]
   /**
@@ -378,8 +380,8 @@ public class Inspect {
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setDatastoreOptions(datastoreOptions).build();
 
-      InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
+      FindingLimits findingLimits =
+          FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
@@ -411,8 +413,32 @@ public class Inspect {
       DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
 
       System.out.println("Job created with ID:" + dlpJob.getName());
-      // asynchronously submit an inspect job, and wait on results
-      waitOnJobCompletion(projectId, subscriptionId, dlpJob.getName());
+
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.of(projectId, subscriptionId),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJob.getName())) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // wait for job completion
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (Exception e){
+        System.out.println("Unable to verify job completion.");
+      }
+
 
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(
@@ -473,8 +499,8 @@ public class Inspect {
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setBigQueryOptions(bigQueryOptions).build();
 
-      InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
+      FindingLimits findingLimits =
+          FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
@@ -509,8 +535,31 @@ public class Inspect {
 
       System.out.println("Job created with ID:" + dlpJob.getName());
 
-      // wait on completion
-      waitOnJobCompletion(projectId, subscriptionId, dlpJob.getName());
+      // wait on job completion
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // setup a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.of(projectId, subscriptionId),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJob.getName())) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500);
+      } catch (Exception e){
+        System.out.println("Unable to verify job completion.");
+      }
+
 
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(

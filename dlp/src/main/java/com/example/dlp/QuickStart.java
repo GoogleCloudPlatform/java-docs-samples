@@ -39,11 +39,11 @@ public class QuickStart {
   public static void main(String[] args) throws Exception {
 
     // string to inspect
-    String text = "Robert Frost";
+    String text = "His name was Robert Frost";
 
     // The minimum likelihood required before returning a match:
     // LIKELIHOOD_UNSPECIFIED, VERY_UNLIKELY, UNLIKELY, POSSIBLE, LIKELY, VERY_LIKELY, UNRECOGNIZED
-    Likelihood minLikelihood = Likelihood.VERY_LIKELY;
+    Likelihood minLikelihood = Likelihood.POSSIBLE;
 
     // The maximum number of findings to report (0 = server maximum)
     int maxFindings = 0;
