@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.dataflow;
 
 import com.google.cloud.Timestamp;
@@ -23,13 +24,18 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.MutationGroup;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
-import org.apache.beam.sdk.options.*;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Description;
+import org.apache.beam.sdk.options.PipelineOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.values.PCollection;
 
 /**
- * This sample demonstrates how to group together mutations when writing to the Cloud Spanner database.
+ * This sample demonstrates how to group together mutations when writing to the Cloud Spanner
+ * database.
  */
 public class SpannerGroupWrite {
   public interface Options extends PipelineOptions {
@@ -53,6 +59,7 @@ public class SpannerGroupWrite {
     void setSuspiciousUserFile(String value);
 
   }
+
   public static void main(String[] args) {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline p = Pipeline.create(options);
@@ -67,32 +74,34 @@ public class SpannerGroupWrite {
     final Timestamp timestamp = Timestamp.now();
 
     // [START spanner_dataflow_writegroup]
-    PCollection<MutationGroup> mutations = suspiciousUserIds.apply(MapElements.via(new SimpleFunction<String, MutationGroup>() {
-      @Override
-      public MutationGroup apply(String userId) {
-        // Immediately block the user.
-        Mutation userMutation = Mutation.newUpdateBuilder("Users")
-            .set("id").to(userId)
-            .set("state").to("BLOCKED")
-            .build();
-        long generatedId = Hashing.sha1().newHasher()
-            .putString(userId, Charsets.UTF_8)
-            .putLong(timestamp.getSeconds())
-            .putLong(timestamp.getNanos())
-            .hash()
-            .asLong();
+    PCollection<MutationGroup> mutations = suspiciousUserIds
+        .apply(MapElements.via(new SimpleFunction<String, MutationGroup>() {
 
-        // Add an entry to pending review requests.
-        Mutation pendingReview = Mutation.newInsertOrUpdateBuilder("PendingReviews")
-            .set("id").to(generatedId)  // Must be deterministically generated.
-            .set("userId").to(userId)
-            .set("action").to("REVIEW ACCOUNT")
-            .set("node").to("Suspicious activity detected.")
-            .build();
+          @Override
+          public MutationGroup apply(String userId) {
+            // Immediately block the user.
+            Mutation userMutation = Mutation.newUpdateBuilder("Users")
+                .set("id").to(userId)
+                .set("state").to("BLOCKED")
+                .build();
+            long generatedId = Hashing.sha1().newHasher()
+                .putString(userId, Charsets.UTF_8)
+                .putLong(timestamp.getSeconds())
+                .putLong(timestamp.getNanos())
+                .hash()
+                .asLong();
 
-        return MutationGroup.create(userMutation, pendingReview);
-      }
-    }));
+            // Add an entry to pending review requests.
+            Mutation pendingReview = Mutation.newInsertOrUpdateBuilder("PendingReviews")
+                .set("id").to(generatedId)  // Must be deterministically generated.
+                .set("userId").to(userId)
+                .set("action").to("REVIEW ACCOUNT")
+                .set("node").to("Suspicious activity detected.")
+                .build();
+
+            return MutationGroup.create(userMutation, pendingReview);
+          }
+        }));
 
     mutations.apply(SpannerIO.write()
         .withInstanceId(instanceId)
