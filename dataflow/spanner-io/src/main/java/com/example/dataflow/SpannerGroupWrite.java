@@ -54,9 +54,10 @@ public class SpannerGroupWrite {
 
     @Description("Singers output filename in the format: singer_id\tfirst_name\tlast_name")
     @Default.String("data/usersids.txt")
+    @Validation.Required
     String getSuspiciousUsersFile();
 
-    void setSuspiciousUserFile(String value);
+    void setSuspiciousUsersFile(String value);
 
   }
 
@@ -96,7 +97,7 @@ public class SpannerGroupWrite {
                 .set("id").to(generatedId)  // Must be deterministically generated.
                 .set("userId").to(userId)
                 .set("action").to("REVIEW ACCOUNT")
-                .set("node").to("Suspicious activity detected.")
+                .set("note").to("Suspicious activity detected.")
                 .build();
 
             return MutationGroup.create(userMutation, pendingReview);
@@ -108,6 +109,8 @@ public class SpannerGroupWrite {
         .withDatabaseId(databaseId)
         .grouped());
     // [END spanner_dataflow_writegroup]
+
+    p.run().waitUntilFinish();
 
   }
 

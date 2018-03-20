@@ -84,13 +84,6 @@
       <version>${apache_beam.version}</version>
     </dependency>
 
-    <!-- Google Cloud -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner</artifactId>
-      <version>0.34.0-beta</version>
-    </dependency>
-
     <!-- Misc -->
     <dependency>
       <groupId>org.slf4j</groupId>
