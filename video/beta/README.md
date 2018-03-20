@@ -36,32 +36,20 @@ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
 
 After you have authorized, you can analyze videos.
 
-Detect Labels
+Detect Faces' Bounding Boxes
 ```
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect labels gs://demomaker/cat.mp4
-
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect labels-file ./resources/cat.mp4
+java -cp target/video-google-cloud-samples-beta-1.0.8-jar-with-dependencies.jar \
+    com.example.video.Detect faces-bounding-boxes gs://YOUR_BUCKET/YOUR_VIDEO.mp4
 ```
 
-Detect Explicit content annotations
+Detect Faces' Emotions
 ```
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect explicit-content gs://demomaker/gbikes_dinosaur.mp4
-```
-
-Detect Shots
-```
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect shots gs://demomaker/gbikes_dinosaur.mp4
+java -cp target/video-google-cloud-samples-beta-1.0.8-jar-with-dependencies.jar \
+    com.example.video.Detect faces-emotions gs://YOUR_BUCKET/YOUR_VIDEO.mp4
 ```
 
-From Windows, you may need to supply your classpath differently, for example:
+Video Transcription
 ```
-java -cp target\\video-google-cloud-samples-1.0.8-jar-with-dependencies.jar com.example.video.Detect labels gs://demomaker/cat.mp4
-```
-or
-```
-java -cp target\\video-google-cloud-samples-1.0.8-jar-with-dependencies.jar com.example.video.Detect labels-file resources\\cat.mp4
+java -cp target/video-google-cloud-samples-beta-1.0.8-jar-with-dependencies.jar \
+    com.example.video.Detect speech-transcription gs://YOUR_BUCKET/YOUR_VIDEO.mp4
 ```
