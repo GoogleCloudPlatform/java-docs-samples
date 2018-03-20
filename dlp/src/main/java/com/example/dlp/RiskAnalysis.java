@@ -52,10 +52,10 @@ import com.google.privacy.dlp.v2.Value;
 import com.google.privacy.dlp.v2.ValueFrequency;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -68,7 +68,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import java.util.Iterator;
 
 public class RiskAnalysis {
 
@@ -138,24 +137,24 @@ public class RiskAnalysis {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.newBuilder()
-                  .setProject(projectId)
-                  .setSubscription(subscriptionId)
-                  .build(),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.newBuilder()
+                      .setProject(projectId)
+                      .setSubscription(subscriptionId)
+                      .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
@@ -180,8 +179,7 @@ public class RiskAnalysis {
       for (Value quantileValue : result.getQuantileValuesList()) {
         Double currentValue = quantileValue.getFloatValue();
         if (lastValue == null || !lastValue.equals(currentValue)) {
-          System.out.printf(
-              "Value at %s %% quantile : %.3f", percent, currentValue);
+          System.out.printf("Value at %s %% quantile : %.3f", percent, currentValue);
         }
         lastValue = currentValue;
       }
@@ -209,7 +207,7 @@ public class RiskAnalysis {
       String tableId,
       String columnName,
       String topicId,
-      String subscriptionId){
+      String subscriptionId) {
 
     // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -231,9 +229,8 @@ public class RiskAnalysis {
 
       ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
 
-      PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder()
-          .setTopic(topicName.toString())
-          .build();
+      PublishToPubSub publishToPubSub =
+          PublishToPubSub.newBuilder().setTopic(topicName.toString()).build();
 
       // Create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
@@ -259,24 +256,24 @@ public class RiskAnalysis {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.newBuilder()
-                  .setProject(projectId)
-                  .setSubscription(subscriptionId)
-                  .build(),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.newBuilder()
+                      .setProject(projectId)
+                      .setSubscription(subscriptionId)
+                      .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
@@ -294,14 +291,14 @@ public class RiskAnalysis {
 
       for (CategoricalStatsHistogramBucket bucket :
           result.getValueFrequencyHistogramBucketsList()) {
-        System.out.printf("Most common value occurs %d time(s).\n",
-            bucket.getValueFrequencyUpperBound());
-        System.out.printf("Least common value occurs %d time(s).\n",
-            bucket.getValueFrequencyLowerBound());
+        System.out.printf(
+            "Most common value occurs %d time(s).\n", bucket.getValueFrequencyUpperBound());
+        System.out.printf(
+            "Least common value occurs %d time(s).\n", bucket.getValueFrequencyLowerBound());
         for (ValueFrequency valueFrequency : bucket.getBucketValuesList()) {
-          System.out.printf("Value %s occurs %d time(s).\n",
-              valueFrequency.getValue().toString(),
-              valueFrequency.getCount());
+          System.out.printf(
+              "Value %s occurs %d time(s).\n",
+              valueFrequency.getValue().toString(), valueFrequency.getCount());
         }
       }
     } catch (Exception e) {
@@ -380,24 +377,24 @@ public class RiskAnalysis {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.newBuilder()
-                  .setProject(projectId)
-                  .setSubscription(subscriptionId)
-                  .build(),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.newBuilder()
+                      .setProject(projectId)
+                      .setSubscription(subscriptionId)
+                      .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
@@ -414,9 +411,9 @@ public class RiskAnalysis {
       KAnonymityResult kanonymityResult = riskDetails.getKAnonymityResult();
       for (KAnonymityHistogramBucket result :
           kanonymityResult.getEquivalenceClassHistogramBucketsList()) {
-        System.out.printf("Bucket size range: [%d, %d]\n",
-            result.getEquivalenceClassSizeLowerBound(),
-            result.getEquivalenceClassSizeUpperBound());
+        System.out.printf(
+            "Bucket size range: [%d, %d]\n",
+            result.getEquivalenceClassSizeLowerBound(), result.getEquivalenceClassSizeUpperBound());
 
         for (KAnonymityEquivalenceClass bucket : result.getBucketValuesList()) {
           List<String> quasiIdValues =
@@ -514,24 +511,24 @@ public class RiskAnalysis {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.newBuilder()
-                  .setProject(projectId)
-                  .setSubscription(subscriptionId)
-                  .build(),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.newBuilder()
+                      .setProject(projectId)
+                      .setSubscription(subscriptionId)
+                      .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
@@ -560,9 +557,9 @@ public class RiskAnalysis {
           System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
 
           for (ValueFrequency valueFrequency : bucket.getTopSensitiveValuesList()) {
-            System.out.printf("\t\tSensitive value %s occurs %d time(s).\n",
-                valueFrequency.getValue().toString(),
-                valueFrequency.getCount());
+            System.out.printf(
+                "\t\tSensitive value %s occurs %d time(s).\n",
+                valueFrequency.getValue().toString(), valueFrequency.getCount());
           }
         }
       }
@@ -574,7 +571,8 @@ public class RiskAnalysis {
 
   // [START dlp_k_map]
   /**
-   * Calculate k-map risk estimation for an attribute relative to quasi-identifiers in a BigQuery table.
+   * Calculate k-map risk estimation for an attribute relative to quasi-identifiers in a BigQuery
+   * table.
    *
    * @param projectId The Google Cloud Platform project ID to run the API call under.
    * @param datasetId The BigQuery dataset to analyze.
@@ -610,10 +608,11 @@ public class RiskAnalysis {
       ArrayList<TaggedField> taggedFields = new ArrayList();
 
       while (quasiIdsIterator.hasNext() || infoTypesIterator.hasNext()) {
-        taggedFields.add(TaggedField.newBuilder()
-            .setField(FieldId.newBuilder().setName(quasiIdsIterator.next()).build())
-            .setInfoType(infoTypesIterator.next())
-            .build());
+        taggedFields.add(
+            TaggedField.newBuilder()
+                .setField(FieldId.newBuilder().setName(quasiIdsIterator.next()).build())
+                .setInfoType(infoTypesIterator.next())
+                .build());
       }
 
       KMapEstimationConfig kmapConfig =
@@ -660,24 +659,24 @@ public class RiskAnalysis {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.newBuilder()
-                  .setProject(projectId)
-                  .setSubscription(subscriptionId)
-                  .build(),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.newBuilder()
+                      .setProject(projectId)
+                      .setSubscription(subscriptionId)
+                      .build(),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
@@ -692,12 +691,10 @@ public class RiskAnalysis {
       AnalyzeDataSourceRiskDetails riskDetails = completedJob.getRiskDetails();
 
       KMapEstimationResult kmapResult = riskDetails.getKMapEstimationResult();
-      for (KMapEstimationHistogramBucket result :
-          kmapResult.getKMapEstimationHistogramList()) {
+      for (KMapEstimationHistogramBucket result : kmapResult.getKMapEstimationHistogramList()) {
 
-        System.out.printf("\tAnonymity range: [%d, %d]\n",
-            result.getMinAnonymity(),
-            result.getMaxAnonymity());
+        System.out.printf(
+            "\tAnonymity range: [%d, %d]\n", result.getMinAnonymity(), result.getMaxAnonymity());
         System.out.printf("\tSize: %d\n", result.getBucketSize());
 
         for (KMapEstimationQuasiIdValues valueBucket : result.getBucketValuesList()) {
@@ -705,16 +702,16 @@ public class RiskAnalysis {
               valueBucket
                   .getQuasiIdsValuesList()
                   .stream()
-                  .map(v -> {
-                    String s = v.toString();
-                    return s.substring(s.indexOf(':') + 1).trim();
-                  })
+                  .map(
+                      v -> {
+                        String s = v.toString();
+                        return s.substring(s.indexOf(':') + 1).trim();
+                      })
                   .collect(Collectors.joining(", "));
 
-
           System.out.printf("\tValues: {%s}\n", quasiIdValues);
-          System.out.printf("\tEstimated k-map anonymity: %d\n",
-              valueBucket.getEstimatedAnonymity());
+          System.out.printf(
+              "\tEstimated k-map anonymity: %d\n", valueBucket.getEstimatedAnonymity());
         }
       }
     } catch (Exception e) {
@@ -773,8 +770,7 @@ public class RiskAnalysis {
         Option.builder("sensitiveAttribute").hasArg(true).required(false).build();
     commandLineOptions.addOption(sensitiveAttributeOption);
 
-    Option regionCodeOption =
-        Option.builder("regionCode").hasArg(true).required(false).build();
+    Option regionCodeOption = Option.builder("regionCode").hasArg(true).required(false).build();
     commandLineOptions.addOption(regionCodeOption);
 
     Option quasiIdColumnNamesOption =
@@ -837,7 +833,15 @@ public class RiskAnalysis {
       // k-map analysis
       List<String> quasiIdColumnNames =
           Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
-      calculateKMap(projectId, datasetId, tableId, quasiIdColumnNames, infoTypesList, regionCode, topicId, subscriptionId);
+      calculateKMap(
+          projectId,
+          datasetId,
+          tableId,
+          quasiIdColumnNames,
+          infoTypesList,
+          regionCode,
+          topicId,
+          subscriptionId);
     } else if (cmd.hasOption("l")) {
       // l-diversity analysis
       String sensitiveAttribute = cmd.getOptionValue(sensitiveAttributeOption.getOpt());

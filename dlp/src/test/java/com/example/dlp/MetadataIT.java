@@ -51,12 +51,12 @@ public class MetadataIT {
 
   @Test
   public void testListInfoTypes() throws Exception {
-    Metadata.main(new String[] {
-        "-language", "en-US",
-        "-filter", "supported_by=INSPECT"
-    });
+    Metadata.main(
+        new String[] {
+          "-language", "en-US",
+          "-filter", "supported_by=INSPECT"
+        });
     String output = bout.toString();
     assertTrue(output.contains("Name") && output.contains("Display name"));
   }
-
 }

@@ -86,10 +86,7 @@ public class DeIdentification {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      ContentItem contentItem =
-          ContentItem.newBuilder()
-              .setValue(string)
-              .build();
+      ContentItem contentItem = ContentItem.newBuilder().setValue(string).build();
 
       CharacterMaskConfig characterMaskConfig =
           CharacterMaskConfig.newBuilder()
@@ -99,9 +96,7 @@ public class DeIdentification {
 
       // Create the deidentification transformation configuration
       PrimitiveTransformation primitiveTransformation =
-          PrimitiveTransformation.newBuilder()
-              .setCharacterMaskConfig(characterMaskConfig)
-              .build();
+          PrimitiveTransformation.newBuilder().setCharacterMaskConfig(characterMaskConfig).build();
 
       InfoTypeTransformation infoTypeTransformationObject =
           InfoTypeTransformation.newBuilder()
@@ -224,13 +219,13 @@ public class DeIdentification {
    * Reidentify a string by encrypting sensitive information while preserving format.
    *
    * @param string The string to reidentify.
-   * @param alphabet The set of characters used when encrypting the input. For more information,
-   *     see cloud.google.com/dlp/docs/reference/rest/v2/content/deidentify
+   * @param alphabet The set of characters used when encrypting the input. For more information, see
+   *     cloud.google.com/dlp/docs/reference/rest/v2/content/deidentify
    * @param keyName The name of the Cloud KMS key to use when decrypting the wrapped key.
    * @param wrappedKey The encrypted (or "wrapped") AES-256 encryption key.
    * @param projectId ID of Google Cloud project to run the API under.
-   * @param surrogateType The name of the surrogate custom info type to used
-   *        during the encryption process.
+   * @param surrogateType The name of the surrogate custom info type to used during the encryption
+   *     process.
    */
   private static void reIdentifyWithFpe(
       String string,
@@ -243,10 +238,7 @@ public class DeIdentification {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       ContentItem contentItem = ContentItem.newBuilder().setValue(string).build();
 
-
-      InfoType surrogateTypeObject = InfoType.newBuilder()
-          .setName(surrogateType)
-          .build();
+      InfoType surrogateTypeObject = InfoType.newBuilder().setName(surrogateType).build();
 
       // Create the format-preserving encryption (FPE) configuration
       KmsWrappedCryptoKey kmsWrappedCryptoKey =
@@ -282,14 +274,14 @@ public class DeIdentification {
               .build();
 
       // Create the inspection config
-      CustomInfoType customInfoType = CustomInfoType.newBuilder()
-          .setInfoType(surrogateTypeObject)
-          .setSurrogateType(SurrogateType.newBuilder().build())
-          .build();
+      CustomInfoType customInfoType =
+          CustomInfoType.newBuilder()
+              .setInfoType(surrogateTypeObject)
+              .setSurrogateType(SurrogateType.newBuilder().build())
+              .build();
 
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder()
-            .addCustomInfoTypes(customInfoType).build();
+          InspectConfig.newBuilder().addCustomInfoTypes(customInfoType).build();
 
       // Create the reidentification request object
       DeidentifyConfig reidentifyConfig =
@@ -320,7 +312,6 @@ public class DeIdentification {
 
   // [START dlp_deidentify_date_shift]
   /**
-   *
    * @param inputCsvPath The path to the CSV file to deidentify
    * @param outputCsvPath (Optional) path to the output CSV file
    * @param dateFields The list of (date) fields in the CSV file to date shift
@@ -443,10 +434,12 @@ public class DeIdentification {
 
       // write out each row
       for (Table.Row outputRow : outputRows) {
-        String row = outputRow.getValuesList()
-            .stream()
-            .map(value -> value.getStringValue())
-            .collect(Collectors.joining(","));
+        String row =
+            outputRow
+                .getValuesList()
+                .stream()
+                .map(value -> value.getStringValue())
+                .collect(Collectors.joining(","));
         bufferedWriter.append(row + "\n");
       }
 

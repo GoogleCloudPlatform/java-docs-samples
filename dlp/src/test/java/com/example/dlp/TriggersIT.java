@@ -61,42 +61,46 @@ public class TriggersIT {
 
   @Test
   public void testCreateTrigger() throws Exception {
-    Triggers.main(new String[] {
-        "-c",
-        "-displayName", String.format("trigger-name-%s", UUID.randomUUID()),
-        "-triggerId", String.format("trigger%s", UUID.randomUUID()),
-        "-description", String.format("description-%s", UUID.randomUUID()),
-        "-bucketName", bucketName,
-        "-fileName", "test.txt",
-        "-scanPeriod", "1"
-    });
+    Triggers.main(
+        new String[] {
+          "-c",
+          "-displayName",
+          String.format("trigger-name-%s", UUID.randomUUID()),
+          "-triggerId",
+          String.format("trigger%s", UUID.randomUUID()),
+          "-description",
+          String.format("description-%s", UUID.randomUUID()),
+          "-bucketName",
+          bucketName,
+          "-fileName",
+          "test.txt",
+          "-scanPeriod",
+          "1"
+        });
     String output = bout.toString();
     assertThat(output, containsString("Created Trigger:"));
   }
 
   @Test
   public void testListTrigger() throws Exception {
-    Triggers.main(new String[] {
-        "-l"
-    });
+    Triggers.main(new String[] {"-l"});
     String output = bout.toString();
     assertThat(output, containsString("Trigger:"));
   }
 
   @Test
   public void testDeleteTrigger() throws Exception {
-    Triggers.main(new String[] { "-l" });
+    Triggers.main(new String[] {"-l"});
     String output = bout.toString();
     Matcher templateIds = Pattern.compile("(?<=jobTriggers/)[0-9]+").matcher(output);
     assertTrue(templateIds.find());
     String triggerId = templateIds.group(0);
     bout.reset();
-    Triggers.main(new String[] {
-        "-d",
-        "-triggerId", triggerId,
-    });
+    Triggers.main(
+        new String[] {
+          "-d", "-triggerId", triggerId,
+        });
     output = bout.toString();
     assertThat(output, containsString("Trigger deleted:"));
   }
-
 }

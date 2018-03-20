@@ -61,9 +61,7 @@ public class QuickStart {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       InspectConfig.FindingLimits findingLimits =
-          InspectConfig.FindingLimits.newBuilder()
-              .setMaxFindingsPerItem(maxFindings)
-              .build();
+          InspectConfig.FindingLimits.newBuilder().setMaxFindingsPerItem(maxFindings).build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()

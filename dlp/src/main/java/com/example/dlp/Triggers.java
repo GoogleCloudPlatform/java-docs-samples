@@ -69,11 +69,12 @@ public class Triggers {
       List<InfoType> infoTypes,
       Likelihood minLikelihood,
       int maxFindings,
-      String projectId) throws Exception {
+      String projectId)
+      throws Exception {
 
     // instantiate a client
     DlpServiceClient dlpServiceClient = DlpServiceClient.create();
-    try  {
+    try {
 
       CloudStorageOptions cloudStorageOptions =
           CloudStorageOptions.newBuilder()
@@ -141,7 +142,8 @@ public class Triggers {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       ListJobTriggersRequest listJobTriggersRequest =
           ListJobTriggersRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString()).build();
+              .setParent(ProjectName.of(projectId).toString())
+              .build();
       DlpServiceClient.ListJobTriggersPagedResponse response =
           dlpServiceClient.listJobTriggers(listJobTriggersRequest);
       response
@@ -169,7 +171,6 @@ public class Triggers {
 
   // [START dlp_delete_trigger]
   /**
-   *
    * Delete a DLP trigger in a project.
    *
    * @param projectId The project ID to run the API call under.

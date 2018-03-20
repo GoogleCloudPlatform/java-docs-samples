@@ -111,7 +111,8 @@ public class Templates {
       ListInspectTemplatesRequest request =
           ListInspectTemplatesRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
-              .setPageSize(1).build();
+              .setPageSize(1)
+              .build();
 
       ListInspectTemplatesPagedResponse response = dlpServiceClient.listInspectTemplates(request);
       ListInspectTemplatesPage page = response.getPage();
@@ -166,7 +167,6 @@ public class Templates {
 
   /** Command line application to create, list and delete DLP inspect templates. */
   public static void main(String[] args) throws Exception {
-
 
     OptionGroup optionsGroup = new OptionGroup();
     optionsGroup.setRequired(true);
@@ -245,8 +245,13 @@ public class Templates {
       }
       int maxFindings = Integer.valueOf(cmd.getOptionValue(maxFindingsOption.getOpt(), "0"));
       createInspectTemplate(
-          displayName, templateId, description, projectId,
-          infoTypesList, minLikelihood, maxFindings);
+          displayName,
+          templateId,
+          description,
+          projectId,
+          infoTypesList,
+          minLikelihood,
+          maxFindings);
 
     } else if (cmd.hasOption(listOption.getOpt())) {
       listInspectTemplates(projectId);

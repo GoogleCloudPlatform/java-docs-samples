@@ -42,10 +42,8 @@ public class Metadata {
 
     // Instantiate a DLP client
     try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
-      ListInfoTypesRequest listInfoTypesRequest = ListInfoTypesRequest.newBuilder()
-          .setFilter(filter)
-          .setLanguageCode(languageCode)
-          .build();
+      ListInfoTypesRequest listInfoTypesRequest =
+          ListInfoTypesRequest.newBuilder().setFilter(filter).setLanguageCode(languageCode).build();
       ListInfoTypesResponse infoTypesResponse = dlpClient.listInfoTypes(listInfoTypesRequest);
       List<InfoTypeDescription> infoTypeDescriptions = infoTypesResponse.getInfoTypesList();
       for (InfoTypeDescription infoTypeDescription : infoTypeDescriptions) {

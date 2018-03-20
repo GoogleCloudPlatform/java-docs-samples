@@ -26,7 +26,6 @@ import java.io.PrintStream;
 import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -56,11 +55,17 @@ public class RiskAnalysisIT {
   public void testNumericalStats() throws Exception {
     RiskAnalysis.main(
         new String[] {
-            "-n", "-datasetId", "integration_tests_dlp",
-            "-tableId", "harmful",
-            "-columnName", "Age",
-            "-topicId", topicId,
-            "-subscriptionId", subscriptionId
+          "-n",
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-columnName",
+          "Age",
+          "-topicId",
+          topicId,
+          "-subscriptionId",
+          subscriptionId
         });
     String output = bout.toString();
     assertThat(output, containsString("Value at "));
@@ -71,11 +76,16 @@ public class RiskAnalysisIT {
     RiskAnalysis.main(
         new String[] {
           "-c",
-          "-datasetId", "integration_tests_dlp",
-          "-tableId", "harmful",
-          "-columnName", "Mystery",
-          "-topicId", topicId,
-          "-subscriptionId", subscriptionId
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-columnName",
+          "Mystery",
+          "-topicId",
+          topicId,
+          "-subscriptionId",
+          subscriptionId
         });
     String output = bout.toString();
 
@@ -85,14 +95,21 @@ public class RiskAnalysisIT {
 
   @Test
   public void testKAnonymity() throws Exception {
-    RiskAnalysis.main(new String[]{
-        "-a",
-        "-datasetId", "integration_tests_dlp",
-        "-tableId", "harmful",
-        "-quasiIdColumnNames", "Age", "Mystery",
-        "-topicId", topicId,
-        "-subscriptionId", subscriptionId
-    });
+    RiskAnalysis.main(
+        new String[] {
+          "-a",
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-quasiIdColumnNames",
+          "Age",
+          "Mystery",
+          "-topicId",
+          topicId,
+          "-subscriptionId",
+          subscriptionId
+        });
     String output = bout.toString();
     assertTrue(Pattern.compile("Bucket size range: \\[\\d, \\d\\]").matcher(output).find());
     assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
@@ -104,12 +121,19 @@ public class RiskAnalysisIT {
     RiskAnalysis.main(
         new String[] {
           "-l",
-          "-datasetId", "integration_tests_dlp",
-          "-tableId", "harmful",
-          "-sensitiveAttribute", "Name",
-          "-quasiIdColumnNames", "Age", "Mystery",
-          "-topicId", topicId,
-          "-subscriptionId", subscriptionId
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-sensitiveAttribute",
+          "Name",
+          "-quasiIdColumnNames",
+          "Age",
+          "Mystery",
+          "-topicId",
+          topicId,
+          "-subscriptionId",
+          subscriptionId
         });
     String output = bout.toString();
     assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
@@ -121,14 +145,23 @@ public class RiskAnalysisIT {
   public void testKMap() throws Exception {
     RiskAnalysis.main(
         new String[] {
-            "-m",
-            "-datasetId", "integration_tests_dlp",
-            "-tableId", "harmful",
-            "-topicId", topicId,
-            "-subscriptionId", subscriptionId,
-            "-regionCode", "US",
-            "-quasiIdColumnNames", "Age", "Gender",
-            "-infoTypes", "AGE", "GENDER"
+          "-m",
+          "-datasetId",
+          "integration_tests_dlp",
+          "-tableId",
+          "harmful",
+          "-topicId",
+          topicId,
+          "-subscriptionId",
+          subscriptionId,
+          "-regionCode",
+          "US",
+          "-quasiIdColumnNames",
+          "Age",
+          "Gender",
+          "-infoTypes",
+          "AGE",
+          "GENDER"
         });
     String output = bout.toString();
 

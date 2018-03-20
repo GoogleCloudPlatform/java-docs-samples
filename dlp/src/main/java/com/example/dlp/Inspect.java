@@ -54,7 +54,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import javax.activation.MimetypesFileTypeMap;
 import org.apache.commons.cli.CommandLine;
@@ -65,7 +64,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
 
 public class Inspect {
 
@@ -178,10 +176,11 @@ public class Inspect {
       }
 
       byte[] data = Files.readAllBytes(Paths.get(filePath));
-      ByteContentItem byteContentItem = ByteContentItem.newBuilder()
-          .setType(bytesType)
-          .setData(ByteString.copyFrom(data))
-          .build();
+      ByteContentItem byteContentItem =
+          ByteContentItem.newBuilder()
+              .setType(bytesType)
+              .setData(ByteString.copyFrom(data))
+              .build();
       ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
 
       FindingLimits findingLimits =
@@ -300,24 +299,27 @@ public class Inspect {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.of(projectId, subscriptionId),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJob.getName())) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.of(projectId, subscriptionId),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage
+                      .getAttributesMap()
+                      .get("DlpJobName")
+                      .equals(dlpJob.getName())) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
-      } catch (Exception e){
+      } catch (Exception e) {
         System.out.println("Unable to verify job completion.");
       }
 
@@ -353,7 +355,7 @@ public class Inspect {
    * @param maxFindings max number of findings
    * @param topicId Google Cloud Pub/Sub topic to notify job status updates
    * @param subscriptionId Google Cloud Pub/Sub subscription to above topic to receive status
-   *        updates
+   *     updates
    */
   private static void inspectDatastore(
       String projectId,
@@ -419,27 +421,29 @@ public class Inspect {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.of(projectId, subscriptionId),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJob.getName())) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.of(projectId, subscriptionId),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage
+                      .getAttributesMap()
+                      .get("DlpJobName")
+                      .equals(dlpJob.getName())) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
-      } catch (Exception e){
+      } catch (Exception e) {
         System.out.println("Unable to verify job completion.");
       }
-
 
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(
@@ -513,9 +517,7 @@ public class Inspect {
 
       ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
       Action.PublishToPubSub publishToPubSub =
-          Action.PublishToPubSub.newBuilder()
-              .setTopic(topic.toString())
-              .build();
+          Action.PublishToPubSub.newBuilder().setTopic(topic.toString()).build();
 
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
@@ -544,25 +546,27 @@ public class Inspect {
       // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
-              ProjectSubscriptionName.of(projectId, subscriptionId),
-              (pubsubMessage, ackReplyConsumer) -> {
-                if (pubsubMessage.getAttributesCount() > 0
-                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJob.getName())) {
-                  // notify job completion
-                  done.set(true);
-                  ackReplyConsumer.ack();
-                }
-              })
+                  ProjectSubscriptionName.of(projectId, subscriptionId),
+            (pubsubMessage, ackReplyConsumer) -> {
+              if (pubsubMessage.getAttributesCount() > 0
+                  && pubsubMessage
+                      .getAttributesMap()
+                      .get("DlpJobName")
+                      .equals(dlpJob.getName())) {
+                // notify job completion
+                done.set(true);
+                ackReplyConsumer.ack();
+              }
+            })
               .build();
       subscriber.startAsync();
 
-      try{
+      try {
         done.get(1, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
-      } catch (Exception e){
+      } catch (Exception e) {
         System.out.println("Unable to verify job completion.");
       }
-
 
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(

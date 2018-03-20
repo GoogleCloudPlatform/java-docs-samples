@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.After;
@@ -30,7 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import java.util.UUID;
 
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
@@ -56,21 +56,23 @@ public class TemplatesIT {
 
   @Test
   public void testCreateInspectTemplate() throws Exception {
-    Templates.main(new String[] {
-        "-c",
-        "-displayName", String.format("test-name-%s", UUID.randomUUID()),
-        "-templateId", String.format("template%s", UUID.randomUUID()),
-        "-description", String.format("description-%s", UUID.randomUUID())
-    });
+    Templates.main(
+        new String[] {
+          "-c",
+          "-displayName",
+          String.format("test-name-%s", UUID.randomUUID()),
+          "-templateId",
+          String.format("template%s", UUID.randomUUID()),
+          "-description",
+          String.format("description-%s", UUID.randomUUID())
+        });
     String output = bout.toString();
     assertThat(output, containsString("Template created: "));
   }
 
   @Test
   public void testListInspectemplate() throws Exception {
-    Templates.main(new String[] {
-        "-l"
-    });
+    Templates.main(new String[] {"-l"});
     String output = bout.toString();
     assertThat(output, containsString("Template name:"));
   }
@@ -78,18 +80,14 @@ public class TemplatesIT {
   @Test
   public void testDeleteInspectTemplate() throws Exception {
     // Extract a Template ID
-    Templates.main(new String[] { "-l" });
+    Templates.main(new String[] {"-l"});
     String output = bout.toString();
     Matcher templateIds = Pattern.compile("template(\\w|\\-)+").matcher(output);
     assertTrue(templateIds.find());
     String templateId = templateIds.group(0);
     bout.reset();
-    Templates.main(new String[] {
-        "-d",
-        "-templateId", templateId
-    });
+    Templates.main(new String[] {"-d", "-templateId", templateId});
     output = bout.toString();
     assertThat(output, containsString("Deleted template:"));
   }
-
 }

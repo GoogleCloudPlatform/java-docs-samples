@@ -53,17 +53,15 @@ public class RedactIT {
     // Restrict phone number, but not email
     Redact.main(
         new String[] {
-            "-f", "src/test/resources/test.png",
-            "-infoTypes", "PHONE_NUMBER",
-            "-o", outputFilePath
+          "-f", "src/test/resources/test.png",
+          "-infoTypes", "PHONE_NUMBER",
+          "-o", outputFilePath
         });
     bout.reset();
 
     // Verify that phone_number is missing but email is present
-    Inspect.main(new String[] {
-        "-f", outputFilePath,
-        "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"
-    });
+    Inspect.main(
+        new String[] {"-f", outputFilePath, "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"});
     String output = bout.toString();
     assertThat(output, not(containsString("PHONE_NUMBER")));
     assertThat(output, containsString("EMAIL_ADDRESS"));

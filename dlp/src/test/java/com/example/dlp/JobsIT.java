@@ -44,7 +44,6 @@ public class JobsIT {
   // Update to Google Cloud Storage path containing test.txt
   private String bucketName = System.getenv("GOOGLE_CLOUD_PROJECT") + "/dlp";
 
-
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
@@ -59,37 +58,28 @@ public class JobsIT {
     bout.reset();
   }
 
-
   @Test
   public void testListJobs() throws Exception {
-    Jobs.main(new String[] {
-        "-l",
-        "-filter", "state=DONE"
-    });
+    Jobs.main(new String[] {"-l", "-filter", "state=DONE"});
     String output = bout.toString();
     Matcher matcher = jobIdPattern.matcher(bout.toString());
-    assertTrue("List must contain results.",  matcher.find());
+    assertTrue("List must contain results.", matcher.find());
   }
 
   @Test
   public void testDeleteJobs() throws Exception {
     // Get a list of JobIds, and extract one to delete
-    Jobs.main(new String[] { "-l", "-filter", "state=DONE"});
+    Jobs.main(new String[] {"-l", "-filter", "state=DONE"});
     String jobList = bout.toString();
     Matcher matcher = jobIdPattern.matcher(jobList);
-    assertTrue("List must contain results.",  matcher.find());
+    assertTrue("List must contain results.", matcher.find());
     // Extract just the ID
     String jobId = matcher.group(0).split("/")[3];
     bout.reset();
 
     // Delete the Job
-    Jobs.main(new String[] {
-        "-d",
-        "-jobId", jobId
-    });
+    Jobs.main(new String[] {"-d", "-jobId", jobId});
     String output = bout.toString();
     assertThat(output, containsString("Job deleted successfully."));
   }
-
-
 }

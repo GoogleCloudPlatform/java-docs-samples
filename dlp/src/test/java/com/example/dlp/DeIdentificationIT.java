@@ -25,15 +25,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
-
-import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
@@ -79,27 +77,35 @@ public class DeIdentificationIT {
     String text = "My SSN is 372819127";
     DeIdentification.main(
         new String[] {
-          "-f", "\"" + text + "\"",
-          "-wrappedKey", wrappedKey,
-          "-keyName", keyName,
-          "-commonAlphabet", "NUMERIC",
-          "-surrogateType", "SSN_TOKEN"
+          "-f",
+          "\"" + text + "\"",
+          "-wrappedKey",
+          wrappedKey,
+          "-keyName",
+          keyName,
+          "-commonAlphabet",
+          "NUMERIC",
+          "-surrogateType",
+          "SSN_TOKEN"
         });
     String deidOutput = bout.toString();
-    assertFalse(
-        "Response contains original SSN.",
-        deidOutput.contains("372819127"));
+    assertFalse("Response contains original SSN.", deidOutput.contains("372819127"));
     assertTrue(deidOutput.matches("My SSN is SSN_TOKEN\\(9\\):\\d+\n"));
 
     // Test ReID
     bout.flush();
     DeIdentification.main(
         new String[] {
-            "-r", deidOutput.toString().trim(),
-            "-wrappedKey", wrappedKey,
-            "-keyName", keyName,
-            "-commonAlphabet", "NUMERIC",
-            "-surrogateType", "SSN_TOKEN"
+          "-r",
+          deidOutput.toString().trim(),
+          "-wrappedKey",
+          wrappedKey,
+          "-keyName",
+          keyName,
+          "-commonAlphabet",
+          "NUMERIC",
+          "-surrogateType",
+          "SSN_TOKEN"
         });
     String reidOutput = bout.toString();
     assertThat(reidOutput, containsString(text));
@@ -110,24 +116,30 @@ public class DeIdentificationIT {
     String outputPath = "src/test/resources/results.temp.csv";
     DeIdentification.main(
         new String[] {
-            "-d",
-            "-inputCsvPath", "src/test/resources/dates.csv",
-            "-outputCsvPath", outputPath,
-            "-dateFields", "birth_date,register_date",
-            "-lowerBoundDays", "5",
-            "-upperBoundDays", "5",
-            "-contextField", "name",
-            "-wrappedKey", wrappedKey,
-            "-keyName", keyName
+          "-d",
+          "-inputCsvPath",
+          "src/test/resources/dates.csv",
+          "-outputCsvPath",
+          outputPath,
+          "-dateFields",
+          "birth_date,register_date",
+          "-lowerBoundDays",
+          "5",
+          "-upperBoundDays",
+          "5",
+          "-contextField",
+          "name",
+          "-wrappedKey",
+          wrappedKey,
+          "-keyName",
+          keyName
         });
     String output = bout.toString();
-    assertThat(
-        output, containsString("Successfully saved date-shift output to: results.temp.csv"));
+    assertThat(output, containsString("Successfully saved date-shift output to: results.temp.csv"));
 
     // Compare the result against an expected output file
     byte[] resultCsv = Files.readAllBytes(Paths.get(outputPath));
-    byte[] correctCsv = Files.readAllBytes(Paths.get(
-        "src/test/resources/results.correct.csv"));
+    byte[] correctCsv = Files.readAllBytes(Paths.get("src/test/resources/results.correct.csv"));
 
     assertTrue(Arrays.equals(resultCsv, correctCsv));
   }
