@@ -27,6 +27,9 @@ import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.CategoricalStatsRe
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityEquivalenceClass;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult.KMapEstimationHistogramBucket;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult.KMapEstimationQuasiIdValues;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult.LDiversityEquivalenceClass;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult.LDiversityHistogramBucket;
@@ -35,9 +38,12 @@ import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.PrivacyMetric;
 import com.google.privacy.dlp.v2.PrivacyMetric.CategoricalStatsConfig;
 import com.google.privacy.dlp.v2.PrivacyMetric.KAnonymityConfig;
+import com.google.privacy.dlp.v2.PrivacyMetric.KMapEstimationConfig;
+import com.google.privacy.dlp.v2.PrivacyMetric.KMapEstimationConfig.TaggedField;
 import com.google.privacy.dlp.v2.PrivacyMetric.LDiversityConfig;
 import com.google.privacy.dlp.v2.PrivacyMetric.NumericalStatsConfig;
 import com.google.privacy.dlp.v2.ProjectName;
@@ -46,7 +52,10 @@ import com.google.privacy.dlp.v2.Value;
 import com.google.privacy.dlp.v2.ValueFrequency;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -59,6 +68,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import java.util.Iterator;
 
 public class RiskAnalysis {
 
@@ -175,6 +185,8 @@ public class RiskAnalysis {
         }
         lastValue = currentValue;
       }
+    } catch (Exception e) {
+      System.out.println("Error in categoricalStatsAnalysis: " + e.getMessage());
     }
   }
   // [END dlp_numerical_stats]
@@ -419,7 +431,7 @@ public class RiskAnalysis {
         }
       }
     } catch (Exception e) {
-      System.out.println("Error in kAnonymityAnalysis: " + e.getMessage());
+      System.out.println("Error in calculateKAnonymity: " + e.getMessage());
     }
   }
   // [END dlp_k_anonymity]
@@ -555,10 +567,161 @@ public class RiskAnalysis {
         }
       }
     } catch (Exception e) {
-      System.out.println("Error in lDiversityAnalysis: " + e.getMessage());
+      System.out.println("Error in calculateLDiversity: " + e.getMessage());
     }
   }
   // [END dlp_l_diversity]
+
+  // [START dlp_k_map]
+  /**
+   * Calculate k-map risk estimation for an attribute relative to quasi-identifiers in a BigQuery table.
+   *
+   * @param projectId The Google Cloud Platform project ID to run the API call under.
+   * @param datasetId The BigQuery dataset to analyze.
+   * @param tableId The BigQuery table to analyze.
+   * @param quasiIds A set of column names that form a composite key ('quasi-identifiers').
+   * @param infoTypes The infoTypes corresponding to each quasi-id column
+   * @param regionCode An ISO-3166-1 region code specifying the k-map distribution region
+   * @param topicId The name of the Pub/Sub topic to notify once the job completes
+   * @param subscriptionId The name of the Pub/Sub subscription to use when listening for job
+   *     completion status.
+   */
+  private static void calculateKMap(
+      String projectId,
+      String datasetId,
+      String tableId,
+      List<String> quasiIds,
+      List<InfoType> infoTypes,
+      String regionCode,
+      String topicId,
+      String subscriptionId)
+      throws Exception {
+
+    // Instantiates a client
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+
+      Iterator<String> quasiIdsIterator = quasiIds.iterator();
+      Iterator<InfoType> infoTypesIterator = infoTypes.iterator();
+
+      if (quasiIds.size() != infoTypes.size()) {
+        throw new IllegalArgumentException("The numbers of quasi-IDs and infoTypes must be equal!");
+      }
+
+      ArrayList<TaggedField> taggedFields = new ArrayList();
+
+      while (quasiIdsIterator.hasNext() || infoTypesIterator.hasNext()) {
+        taggedFields.add(TaggedField.newBuilder()
+            .setField(FieldId.newBuilder().setName(quasiIdsIterator.next()).build())
+            .setInfoType(infoTypesIterator.next())
+            .build());
+      }
+
+      KMapEstimationConfig kmapConfig =
+          KMapEstimationConfig.newBuilder()
+              .addAllQuasiIds(taggedFields)
+              .setRegionCode(regionCode)
+              .build();
+
+      BigQueryTable bigQueryTable =
+          BigQueryTable.newBuilder()
+              .setProjectId(projectId)
+              .setDatasetId(datasetId)
+              .setTableId(tableId)
+              .build();
+
+      PrivacyMetric privacyMetric =
+          PrivacyMetric.newBuilder().setKMapEstimationConfig(kmapConfig).build();
+
+      String topicName = String.format("projects/%s/topics/%s", projectId, topicId);
+
+      PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
+
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
+      Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
+
+      RiskAnalysisJobConfig riskAnalysisJobConfig =
+          RiskAnalysisJobConfig.newBuilder()
+              .setSourceTable(bigQueryTable)
+              .setPrivacyMetric(privacyMetric)
+              .addActions(action)
+              .build();
+
+      CreateDlpJobRequest createDlpJobRequest =
+          CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
+              .setRiskJob(riskAnalysisJobConfig)
+              .build();
+
+      DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
+      String dlpJobName = dlpJob.getName();
+
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+
+      // Set up a Pub/Sub subscriber to listen on the job completion status
+      Subscriber subscriber =
+          Subscriber.newBuilder(
+              ProjectSubscriptionName.newBuilder()
+                  .setProject(projectId)
+                  .setSubscription(subscriptionId)
+                  .build(),
+              (pubsubMessage, ackReplyConsumer) -> {
+                if (pubsubMessage.getAttributesCount() > 0
+                    && pubsubMessage.getAttributesMap().get("DlpJobName").equals(dlpJobName)) {
+                  // notify job completion
+                  done.set(true);
+                  ackReplyConsumer.ack();
+                }
+              })
+              .build();
+      subscriber.startAsync();
+
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
+      try{
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500); // Wait for the job to become available
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
+
+      // retrieve completed job status
+      DlpJob completedJob =
+          dlpServiceClient.getDlpJob(GetDlpJobRequest.newBuilder().setName(dlpJobName).build());
+
+      System.out.println("Job status: " + completedJob.getState());
+      AnalyzeDataSourceRiskDetails riskDetails = completedJob.getRiskDetails();
+
+      KMapEstimationResult kmapResult = riskDetails.getKMapEstimationResult();
+      for (KMapEstimationHistogramBucket result :
+          kmapResult.getKMapEstimationHistogramList()) {
+
+        System.out.printf("\tAnonymity range: [%d, %d]\n",
+            result.getMinAnonymity(),
+            result.getMaxAnonymity());
+        System.out.printf("\tSize: %d\n", result.getBucketSize());
+
+        for (KMapEstimationQuasiIdValues valueBucket : result.getBucketValuesList()) {
+          String quasiIdValues =
+              valueBucket
+                  .getQuasiIdsValuesList()
+                  .stream()
+                  .map(v -> {
+                    String s = v.toString();
+                    return s.substring(s.indexOf(':') + 1).trim();
+                  })
+                  .collect(Collectors.joining(", "));
+
+
+          System.out.printf("\tValues: {%s}\n", quasiIdValues);
+          System.out.printf("\tEstimated k-map anonymity: %d\n",
+              valueBucket.getEstimatedAnonymity());
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("Error in calculateKMap: " + e.getMessage());
+    }
+  }
+  // [END dlp_k_map]
 
   /**
    * Command line application to perform risk analysis using the Data Loss Prevention API. Supported
@@ -575,8 +738,11 @@ public class RiskAnalysis {
     Option categoricalAnalysisOption = new Option("c", "categorical");
     optionsGroup.addOption(categoricalAnalysisOption);
 
-    Option kanonymityOption = new Option("k", "kAnonymity");
+    Option kanonymityOption = new Option("a", "kAnonymity");
     optionsGroup.addOption(kanonymityOption);
+
+    Option kmapOption = new Option("m", "kAnonymity");
+    optionsGroup.addOption(kmapOption);
 
     Option ldiversityOption = new Option("l", "lDiversity");
     optionsGroup.addOption(ldiversityOption);
@@ -607,9 +773,18 @@ public class RiskAnalysis {
         Option.builder("sensitiveAttribute").hasArg(true).required(false).build();
     commandLineOptions.addOption(sensitiveAttributeOption);
 
+    Option regionCodeOption =
+        Option.builder("regionCode").hasArg(true).required(false).build();
+    commandLineOptions.addOption(regionCodeOption);
+
     Option quasiIdColumnNamesOption =
         Option.builder("quasiIdColumnNames").hasArg(true).required(false).build();
+    quasiIdColumnNamesOption.setArgs(Option.UNLIMITED_VALUES);
     commandLineOptions.addOption(quasiIdColumnNamesOption);
+
+    Option infoTypesOption = Option.builder("infoTypes").hasArg(true).required(false).build();
+    infoTypesOption.setArgs(Option.UNLIMITED_VALUES);
+    commandLineOptions.addOption(infoTypesOption);
 
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
@@ -630,8 +805,19 @@ public class RiskAnalysis {
     String projectId =
         cmd.getOptionValue(projectIdOption.getOpt(), ServiceOptions.getDefaultProjectId());
 
+    String regionCode = cmd.getOptionValue(regionCodeOption.getOpt(), "US");
+
     String topicId = cmd.getOptionValue(topicIdOption.getOpt());
     String subscriptionId = cmd.getOptionValue(subscriptionIdOption.getOpt());
+
+    List<InfoType> infoTypesList = Collections.emptyList();
+    if (cmd.hasOption(infoTypesOption.getOpt())) {
+      infoTypesList = new ArrayList<>();
+      String[] infoTypes = cmd.getOptionValues(infoTypesOption.getOpt());
+      for (String infoType : infoTypes) {
+        infoTypesList.add(InfoType.newBuilder().setName(infoType).build());
+      }
+    }
 
     if (cmd.hasOption("n")) {
       // numerical stats analysis
@@ -641,12 +827,17 @@ public class RiskAnalysis {
       // categorical stats analysis
       String columnName = cmd.getOptionValue(columnNameOption.getOpt());
       categoricalStatsAnalysis(projectId, datasetId, tableId, columnName, topicId, subscriptionId);
-    } else if (cmd.hasOption("k")) {
+    } else if (cmd.hasOption("a")) {
       // k-anonymity analysis
       List<String> quasiIdColumnNames =
           Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
       calculateKAnonymity(
           projectId, datasetId, tableId, quasiIdColumnNames, topicId, subscriptionId);
+    } else if (cmd.hasOption("m")) {
+      // k-map analysis
+      List<String> quasiIdColumnNames =
+          Arrays.asList(cmd.getOptionValues(quasiIdColumnNamesOption.getOpt()));
+      calculateKMap(projectId, datasetId, tableId, quasiIdColumnNames, infoTypesList, regionCode, topicId, subscriptionId);
     } else if (cmd.hasOption("l")) {
       // l-diversity analysis
       String sensitiveAttribute = cmd.getOptionValue(sensitiveAttributeOption.getOpt());

@@ -86,7 +86,7 @@ public class RiskAnalysisIT {
   @Test
   public void testKAnonymity() throws Exception {
     RiskAnalysis.main(new String[]{
-        "-k",
+        "-a",
         "-datasetId", "integration_tests_dlp",
         "-tableId", "harmful",
         "-quasiIdColumnNames", "Age", "Mystery",
@@ -115,6 +115,26 @@ public class RiskAnalysisIT {
     assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
     assertTrue(output.contains("Class size: 1"));
     assertTrue(output.contains("Sensitive value string_value: \"James\""));
+  }
+
+  @Test
+  public void testKMap() throws Exception {
+    RiskAnalysis.main(
+        new String[] {
+            "-m",
+            "-datasetId", "integration_tests_dlp",
+            "-tableId", "harmful",
+            "-topicId", topicId,
+            "-subscriptionId", subscriptionId,
+            "-regionCode", "US",
+            "-quasiIdColumnNames", "Age", "Gender",
+            "-infoTypes", "AGE", "GENDER"
+        });
+    String output = bout.toString();
+
+    assertTrue(Pattern.compile("Anonymity range: \\[\\d, \\d]").matcher(output).find());
+    assertTrue(Pattern.compile("Size: \\d").matcher(output).find());
+    assertTrue(Pattern.compile("Values: \\{\\d{2}, \"Female\"\\}").matcher(output).find());
   }
 
   @After
