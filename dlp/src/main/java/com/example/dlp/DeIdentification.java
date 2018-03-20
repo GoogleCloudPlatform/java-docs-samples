@@ -19,24 +19,29 @@ package com.example.dlp;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.io.BaseEncoding;
-import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.CharacterMaskConfig;
 import com.google.privacy.dlp.v2.ContentItem;
 import com.google.privacy.dlp.v2.CryptoKey;
 import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig;
 import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
+import com.google.privacy.dlp.v2.CustomInfoType;
+import com.google.privacy.dlp.v2.CustomInfoType.SurrogateType;
 import com.google.privacy.dlp.v2.DateShiftConfig;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
 import com.google.privacy.dlp.v2.DeidentifyContentRequest;
 import com.google.privacy.dlp.v2.DeidentifyContentResponse;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.FieldTransformation;
+import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
+import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.KmsWrappedCryptoKey;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RecordTransformations;
+import com.google.privacy.dlp.v2.ReidentifyContentRequest;
+import com.google.privacy.dlp.v2.ReidentifyContentResponse;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Value;
 import com.google.protobuf.ByteString;
@@ -46,7 +51,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -82,13 +86,10 @@ public class DeIdentification {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-      ByteContentItem byteContentItem =
-          ByteContentItem.newBuilder()
-              .setType(ByteContentItem.BytesType.TEXT_UTF8)
-              .setData(ByteString.copyFrom(string, StandardCharsets.UTF_8))
+      ContentItem contentItem =
+          ContentItem.newBuilder()
+              .setValue(string)
               .build();
-
-      ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
 
       CharacterMaskConfig characterMaskConfig =
           CharacterMaskConfig.newBuilder()
@@ -130,7 +131,7 @@ public class DeIdentification {
 
       // Print the character-masked input value
       // e.g. "My SSN is 123456789" --> "My SSN is *********"
-      String result = response.getItem().getByteItem().getData().toStringUtf8();
+      String result = response.getItem().getValue();
       System.out.println(result);
     } catch (Exception e) {
       System.out.println("Error in deidentifyWithMask: " + e.getMessage());
@@ -154,16 +155,11 @@ public class DeIdentification {
       FfxCommonNativeAlphabet alphabet,
       String keyName,
       String wrappedKey,
-      String projectId) {
+      String projectId,
+      String surrogateType) {
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-      ByteContentItem byteContentItem =
-          ByteContentItem.newBuilder()
-              .setData(ByteString.copyFrom(string, StandardCharsets.UTF_8))
-              .build();
-
-      ContentItem contentItem = ContentItem.newBuilder().setByteItem(byteContentItem).build();
+      ContentItem contentItem = ContentItem.newBuilder().setValue(string).build();
 
       // Create the format-preserving encryption (FPE) configuration
       KmsWrappedCryptoKey kmsWrappedCryptoKey =
@@ -178,6 +174,7 @@ public class DeIdentification {
           CryptoReplaceFfxFpeConfig.newBuilder()
               .setCryptoKey(cryptoKey)
               .setCommonAlphabet(alphabet)
+              .setSurrogateInfoType(InfoType.newBuilder().setName(surrogateType).build())
               .build();
 
       // Create the deidentification transformation configuration
@@ -214,13 +211,112 @@ public class DeIdentification {
 
       // Print the deidentified input value
       // e.g. "My SSN is 123456789" --> "My SSN is 7261298621"
-      String result = response.getItem().getByteItem().getData().toStringUtf8();
+      String result = response.getItem().getValue();
       System.out.println(result);
     } catch (Exception e) {
       System.out.println("Error in deidentifyWithFpe: " + e.getMessage());
     }
   }
   // [END dlp_deidentify_fpe]
+
+  // [START dlp_reidentify_fpe]
+  /**
+   * Reidentify a string by encrypting sensitive information while preserving format.
+   *
+   * @param string The string to reidentify.
+   * @param alphabet The set of characters used when encrypting the input. For more information,
+   *     see cloud.google.com/dlp/docs/reference/rest/v2/content/deidentify
+   * @param keyName The name of the Cloud KMS key to use when decrypting the wrapped key.
+   * @param wrappedKey The encrypted (or "wrapped") AES-256 encryption key.
+   * @param projectId ID of Google Cloud project to run the API under.
+   * @param surrogateType The name of the surrogate custom info type to used
+   *        during the encryption process.
+   */
+  private static void reIdentifyWithFpe(
+      String string,
+      FfxCommonNativeAlphabet alphabet,
+      String keyName,
+      String wrappedKey,
+      String projectId,
+      String surrogateType) {
+    // instantiate a client
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      ContentItem contentItem = ContentItem.newBuilder().setValue(string).build();
+
+
+      InfoType surrogateTypeObject = InfoType.newBuilder()
+          .setName(surrogateType)
+          .build();
+
+      // Create the format-preserving encryption (FPE) configuration
+      KmsWrappedCryptoKey kmsWrappedCryptoKey =
+          KmsWrappedCryptoKey.newBuilder()
+              .setWrappedKey(ByteString.copyFrom(BaseEncoding.base64().decode(wrappedKey)))
+              .setCryptoKeyName(keyName)
+              .build();
+
+      CryptoKey cryptoKey = CryptoKey.newBuilder().setKmsWrapped(kmsWrappedCryptoKey).build();
+
+      CryptoReplaceFfxFpeConfig cryptoReplaceFfxFpeConfig =
+          CryptoReplaceFfxFpeConfig.newBuilder()
+              .setCryptoKey(cryptoKey)
+              .setCommonAlphabet(alphabet)
+              .setSurrogateInfoType(surrogateTypeObject)
+              .build();
+
+      // Create the deidentification transformation configuration
+      PrimitiveTransformation primitiveTransformation =
+          PrimitiveTransformation.newBuilder()
+              .setCryptoReplaceFfxFpeConfig(cryptoReplaceFfxFpeConfig)
+              .build();
+
+      InfoTypeTransformation infoTypeTransformationObject =
+          InfoTypeTransformation.newBuilder()
+              .setPrimitiveTransformation(primitiveTransformation)
+              .addInfoTypes(surrogateTypeObject)
+              .build();
+
+      InfoTypeTransformations infoTypeTransformationArray =
+          InfoTypeTransformations.newBuilder()
+              .addTransformations(infoTypeTransformationObject)
+              .build();
+
+      // Create the inspection config
+      CustomInfoType customInfoType = CustomInfoType.newBuilder()
+          .setInfoType(surrogateTypeObject)
+          .setSurrogateType(SurrogateType.newBuilder().build())
+          .build();
+
+      InspectConfig inspectConfig =
+          InspectConfig.newBuilder()
+            .addCustomInfoTypes(customInfoType).build();
+
+      // Create the reidentification request object
+      DeidentifyConfig reidentifyConfig =
+          DeidentifyConfig.newBuilder()
+              .setInfoTypeTransformations(infoTypeTransformationArray)
+              .build();
+
+      ReidentifyContentRequest request =
+          ReidentifyContentRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
+              .setReidentifyConfig(reidentifyConfig)
+              .setInspectConfig(inspectConfig)
+              .setItem(contentItem)
+              .build();
+
+      // Execute the deidentification request
+      ReidentifyContentResponse response = dlpServiceClient.reidentifyContent(request);
+
+      // Print the reidentified input value
+      // e.g. "My SSN is 7261298621" --> "My SSN is 123456789"
+      String result = response.getItem().getValue();
+      System.out.println(result);
+    } catch (Exception e) {
+      System.out.println("Error in reidentifyWithFpe: " + e.getMessage());
+    }
+  }
+  // [END dlp_reidentify_fpe]
 
   // [START dlp_deidentify_date_shift]
   /**
@@ -413,6 +509,10 @@ public class DeIdentification {
         new Option("f", "fpe", true, "Deidentify with format-preserving encryption.");
     optionsGroup.addOption(deidentifyFpeOption);
 
+    Option reidentifyFpeOption =
+        new Option("r", "reid", true, "Reidentify with format-preserving encryption.");
+    optionsGroup.addOption(reidentifyFpeOption);
+
     Option deidentifyDateShiftOption =
         new Option("d", "date", false, "Deidentify dates in a CSV file.");
     optionsGroup.addOption(deidentifyDateShiftOption);
@@ -423,6 +523,10 @@ public class DeIdentification {
     Option maskingCharacterOption =
         Option.builder("maskingCharacter").hasArg(true).required(false).build();
     commandLineOptions.addOption(maskingCharacterOption);
+
+    Option surrogateTypeOption =
+        Option.builder("surrogateType").hasArg(true).required(false).build();
+    commandLineOptions.addOption(surrogateTypeOption);
 
     Option numberToMaskOption = Option.builder("numberToMask").hasArg(true).required(false).build();
     commandLineOptions.addOption(numberToMaskOption);
@@ -489,11 +593,12 @@ public class DeIdentification {
       String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
       String keyName = cmd.getOptionValue(keyNameOption.getOpt());
       String val = cmd.getOptionValue(deidentifyFpeOption.getOpt());
+      String surrogateType = cmd.getOptionValue(surrogateTypeOption.getOpt());
       FfxCommonNativeAlphabet alphabet =
           FfxCommonNativeAlphabet.valueOf(
               cmd.getOptionValue(
                   alphabetOption.getOpt(), FfxCommonNativeAlphabet.ALPHA_NUMERIC.name()));
-      deIdentifyWithFpe(val, alphabet, keyName, wrappedKey, projectId);
+      deIdentifyWithFpe(val, alphabet, keyName, wrappedKey, projectId, surrogateType);
     } else if (cmd.hasOption("d")) {
       //deidentify with date shift
       String inputCsv = cmd.getOptionValue(inputCsvPathOption.getOpt());
@@ -518,6 +623,17 @@ public class DeIdentification {
           wrappedKey,
           keyName,
           projectId);
+    } else if (cmd.hasOption("r")) {
+      // reidentification with FPE
+      String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
+      String keyName = cmd.getOptionValue(keyNameOption.getOpt());
+      String val = cmd.getOptionValue(reidentifyFpeOption.getOpt());
+      String surrogateType = cmd.getOptionValue(surrogateTypeOption.getOpt());
+      FfxCommonNativeAlphabet alphabet =
+          FfxCommonNativeAlphabet.valueOf(
+              cmd.getOptionValue(
+                  alphabetOption.getOpt(), FfxCommonNativeAlphabet.ALPHA_NUMERIC.name()));
+      reIdentifyWithFpe(val, alphabet, keyName, wrappedKey, projectId, surrogateType);
     }
   }
 }

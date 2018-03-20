@@ -76,19 +76,33 @@ public class DeIdentificationIT {
   public void testDeidReidFpe() throws Exception {
 
     // Test DeID
-    String text = "\"My SSN is 372819127\"";
+    String text = "My SSN is 372819127";
     DeIdentification.main(
         new String[] {
-          "-f", text,
+          "-f", "\"" + text + "\"",
           "-wrappedKey", wrappedKey,
           "-keyName", keyName,
           "-commonAlphabet", "NUMERIC",
+          "-surrogateType", "SSN_TOKEN"
         });
-    String output = bout.toString();
+    String deidOutput = bout.toString();
     assertFalse(
         "Response contains original SSN.",
-        output.contains("372819127"));
-    assertTrue(output.matches("My SSN is \\d+\n"));
+        deidOutput.contains("372819127"));
+    assertTrue(deidOutput.matches("My SSN is SSN_TOKEN\\(9\\):\\d+\n"));
+
+    // Test ReID
+    bout.flush();
+    DeIdentification.main(
+        new String[] {
+            "-r", deidOutput.toString().trim(),
+            "-wrappedKey", wrappedKey,
+            "-keyName", keyName,
+            "-commonAlphabet", "NUMERIC",
+            "-surrogateType", "SSN_TOKEN"
+        });
+    String reidOutput = bout.toString();
+    assertThat(reidOutput, containsString(text));
   }
 
   @Test
