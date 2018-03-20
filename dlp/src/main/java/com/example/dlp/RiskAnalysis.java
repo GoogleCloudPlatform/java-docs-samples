@@ -83,7 +83,7 @@ public class RiskAnalysis {
       String subscriptionId)
       throws Exception {
 
-    // instantiate a client
+    // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       BigQueryTable bigQueryTable =
           BigQueryTable.newBuilder()
@@ -104,7 +104,7 @@ public class RiskAnalysis {
 
       PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
 
-      // create action to publish job status notifications over Google Cloud Pub/Sub
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -125,7 +125,7 @@ public class RiskAnalysis {
 
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.newBuilder()
@@ -143,15 +143,16 @@ public class RiskAnalysis {
               .build();
       subscriber.startAsync();
 
-      // wait for job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
         System.out.println("Unable to verify job completion.");
       }
 
-      // retrieve completed job status
+      // Retrieve completed job status
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(GetDlpJobRequest.newBuilder().setName(dlpJobName).build());
 
@@ -198,7 +199,7 @@ public class RiskAnalysis {
       String topicId,
       String subscriptionId){
 
-    // instantiate a client
+    // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       FieldId fieldId = FieldId.newBuilder().setName(columnName).build();
@@ -222,7 +223,7 @@ public class RiskAnalysis {
           .setTopic(topicName.toString())
           .build();
 
-      // create action to publish job status notifications over Google Cloud Pub/Sub
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -243,7 +244,7 @@ public class RiskAnalysis {
 
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.newBuilder()
@@ -261,15 +262,16 @@ public class RiskAnalysis {
               .build();
       subscriber.startAsync();
 
-      // wait for job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
         System.out.println("Unable to verify job completion.");
       }
 
-      // retrieve completed job status
+      // Retrieve completed job status
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(GetDlpJobRequest.newBuilder().setName(dlpJobName).build());
 
@@ -316,7 +318,7 @@ public class RiskAnalysis {
       String topicId,
       String subscriptionId)
       throws Exception {
-    // instantiate a client
+    // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       List<FieldId> quasiIdFields =
@@ -342,7 +344,7 @@ public class RiskAnalysis {
 
       PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
 
-      // create action to publish job status notifications over Google Cloud Pub/Sub
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -363,7 +365,7 @@ public class RiskAnalysis {
 
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.newBuilder()
@@ -381,15 +383,16 @@ public class RiskAnalysis {
               .build();
       subscriber.startAsync();
 
-      // wait for job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
         System.out.println("Unable to verify job completion.");
       }
 
-      // retrieve completed job status
+      // Retrieve completed job status
       DlpJob completedJob =
           dlpServiceClient.getDlpJob(GetDlpJobRequest.newBuilder().setName(dlpJobName).build());
 
@@ -421,9 +424,8 @@ public class RiskAnalysis {
   }
   // [END dlp_k_anonymity]
 
+  // [START dlp_l_diversity]
   /**
-   * [START dlp_l_diversity]
-   *
    * Calculate l-diversity for an attribute relative to quasi-identifiers in a BigQuery table.
    *
    * @param projectId The Google Cloud Platform project ID to run the API call under.
@@ -445,7 +447,7 @@ public class RiskAnalysis {
       String subscriptionId)
       throws Exception {
 
-    // instantiate a client
+    // Instantiates a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       FieldId sensitiveAttributeField = FieldId.newBuilder().setName(sensitiveAttribute).build();
@@ -476,7 +478,7 @@ public class RiskAnalysis {
 
       PublishToPubSub publishToPubSub = PublishToPubSub.newBuilder().setTopic(topicName).build();
 
-      // create action to publish job status notifications over Google Cloud Pub/Sub
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
       Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
       RiskAnalysisJobConfig riskAnalysisJobConfig =
@@ -497,7 +499,7 @@ public class RiskAnalysis {
 
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.newBuilder()
@@ -515,10 +517,11 @@ public class RiskAnalysis {
               .build();
       subscriber.startAsync();
 
-      // wait for job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
         System.out.println("Unable to verify job completion.");
       }
@@ -554,8 +557,8 @@ public class RiskAnalysis {
     } catch (Exception e) {
       System.out.println("Error in lDiversityAnalysis: " + e.getMessage());
     }
-    // [END dlp_l_diversity]
   }
+  // [END dlp_l_diversity]
 
   /**
    * Command line application to perform risk analysis using the Data Loss Prevention API. Supported

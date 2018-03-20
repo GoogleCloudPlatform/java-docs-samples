@@ -43,8 +43,9 @@ import org.apache.commons.cli.ParseException;
 
 public class Templates {
 
+  // [START dlp_create_inspect_template]
   /**
-   * [START dlp_create_inspect_template]
+   * Create a new DLP inspection configuration template.
    *
    * @param displayName (Optional) The human-readable name to give the template
    * @param projectId Google Cloud Project ID to call the API under

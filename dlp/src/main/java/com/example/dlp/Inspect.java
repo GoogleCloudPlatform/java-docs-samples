@@ -132,8 +132,9 @@ public class Inspect {
   }
   // [END dlp_inspect_string]
 
+  // [START dlp_inspect_file]
   /**
-   * [START dlp_inspect_file]
+   * Inspect a local file
    *
    * @param filePath The path to a local file to inspect. Can be a text, JPG, or PNG file.
    * @param minLikelihood The minimum likelihood required before returning a match
@@ -217,15 +218,13 @@ public class Inspect {
         System.out.println("No findings.");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       System.out.println("Error in inspectFile: " + e.getMessage());
     }
   }
   // [END dlp_inspect_file]
 
+  // [START dlp_inspect_gcs]
   /**
-   * [START dlp_inspect_gcs]
-   *
    * Inspect GCS file for Info types and wait on job completion using Google Cloud Pub/Sub
    * notification
    *
@@ -285,7 +284,7 @@ public class Inspect {
               .addActions(action)
               .build();
 
-      // asynchronously submit an inspect job, and wait on results
+      // Semi-synchronously submit an inspect job, and wait on results
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
@@ -298,7 +297,7 @@ public class Inspect {
 
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.of(projectId, subscriptionId),
@@ -313,10 +312,11 @@ public class Inspect {
               .build();
       subscriber.startAsync();
 
-      // wait for job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (Exception e){
         System.out.println("Unable to verify job completion.");
       }
@@ -338,8 +338,8 @@ public class Inspect {
         System.out.println("No findings.");
       }
     }
-    // [END dlp_inspect_gcs]
   }
+  // [END dlp_inspect_gcs]
 
   // [START dlp_inspect_datastore]
   /**
@@ -403,7 +403,7 @@ public class Inspect {
               .addActions(action)
               .build();
 
-      // asynchronously submit an inspect job, and wait on results
+      // Asynchronously submit an inspect job, and wait on results
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
@@ -416,7 +416,7 @@ public class Inspect {
 
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.of(projectId, subscriptionId),
@@ -431,10 +431,11 @@ public class Inspect {
               .build();
       subscriber.startAsync();
 
-      // wait for job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (Exception e){
         System.out.println("Unable to verify job completion.");
       }
@@ -462,8 +463,9 @@ public class Inspect {
   }
   // [END dlp_inspect_datastore]
 
+  // [START dlp_inspect_bigquery]
   /**
-   * [START dlp_inspect_bigquery]
+   * Inspect a BigQuery table
    *
    * @param projectId The project ID to run the API call under
    * @param datasetId The ID of the dataset to inspect, e.g. 'my_dataset'
@@ -524,7 +526,7 @@ public class Inspect {
               .addActions(action)
               .build();
 
-      // asynchronously submit an inspect job, and wait on results
+      // Asynchronously submit an inspect job, and wait on results
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
@@ -535,10 +537,11 @@ public class Inspect {
 
       System.out.println("Job created with ID:" + dlpJob.getName());
 
-      // wait on job completion
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-      // setup a Pub/Sub subscriber to listen on the job completion status
+      // Set up a Pub/Sub subscriber to listen on the job completion status
       Subscriber subscriber =
           Subscriber.newBuilder(
               ProjectSubscriptionName.of(projectId, subscriptionId),
@@ -555,7 +558,7 @@ public class Inspect {
 
       try{
         done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500);
+        Thread.sleep(500); // Wait for the job to become available
       } catch (Exception e){
         System.out.println("Unable to verify job completion.");
       }
