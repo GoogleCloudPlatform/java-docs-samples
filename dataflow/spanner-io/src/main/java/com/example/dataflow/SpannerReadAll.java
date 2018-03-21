@@ -81,7 +81,8 @@ public class SpannerReadAll {
     PCollection<Long> dbEstimatedSize = allRecords.apply(EstimateSize.create())
         .apply(Sum.longsGlobally());
 
-    dbEstimatedSize.apply(ToString.elements()).apply(TextIO.write().to(options.getOutput()).withoutSharding());
+    dbEstimatedSize.apply(ToString.elements()).apply(TextIO.write().to(options.getOutput())
+        .withoutSharding());
 
     p.run().waitUntilFinish();
   }

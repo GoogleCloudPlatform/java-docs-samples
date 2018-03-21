@@ -91,7 +91,7 @@ public class SpannerWrite {
     String getDatabaseId();
 
     void setDatabaseId(String value);
-    }
+  }
 
   @DefaultCoder(AvroCoder.class)
   static class Singer {
