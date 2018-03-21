@@ -43,8 +43,8 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerWriteIT {
 
-  final String instanceId = "mairbek-deleteme";
-  final String databaseId = "test2";
+  String instanceId;
+  String databaseId;
 
   Path singersPath;
   Path albumsPath;
@@ -53,6 +53,9 @@ public class SpannerWriteIT {
 
   @Before
   public void setUp() throws Exception {
+
+    instanceId = System.getProperty("spanner.test.instance");
+    databaseId = "df-spanner-write-it";
 
     spannerOptions = SpannerOptions.getDefaultInstance();
     spanner = spannerOptions.getService();

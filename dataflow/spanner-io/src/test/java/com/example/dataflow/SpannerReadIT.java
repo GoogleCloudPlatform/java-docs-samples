@@ -43,14 +43,16 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerReadIT {
 
-  final String instanceId = "mairbek-deleteme";
-  final String databaseId = "test2";
+  String instanceId;
+  String databaseId;
 
   Spanner spanner;
   SpannerOptions spannerOptions;
 
   @Before
   public void setUp() throws Exception {
+    instanceId = System.getProperty("spanner.test.instance");
+    databaseId = "df-spanner-read-it";
 
     spannerOptions = SpannerOptions.getDefaultInstance();
     spanner = spannerOptions.getService();

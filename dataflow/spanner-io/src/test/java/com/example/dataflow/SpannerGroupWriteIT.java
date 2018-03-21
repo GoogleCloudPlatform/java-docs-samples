@@ -49,8 +49,8 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerGroupWriteIT {
 
-  final String instanceId = "mairbek-deleteme";
-  final String databaseId = "test2";
+  String instanceId;
+  String databaseId;
 
   Path tempPath;
   Spanner spanner;
@@ -58,6 +58,8 @@ public class SpannerGroupWriteIT {
 
   @Before
   public void setUp() throws Exception {
+    instanceId = System.getProperty("spanner.test.instance");
+    databaseId = "df-spanner-groupwrite-it";
 
     spannerOptions = SpannerOptions.getDefaultInstance();
     spanner = spannerOptions.getService();
