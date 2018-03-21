@@ -97,7 +97,7 @@ public class SpannerRead {
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId)
             .withQuery("SELECT * FROM " + options.getTable()));
-    // [START spanner_dataflow_read]
+    // [END spanner_dataflow_read]
 
 
     PCollection<Long> tableEstimatedSize = records
