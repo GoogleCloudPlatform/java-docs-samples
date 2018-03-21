@@ -53,7 +53,6 @@ public class SpannerGroupWrite {
     void setDatabaseId(String value);
 
     @Description("Singers output filename in the format: singer_id\tfirst_name\tlast_name")
-    @Default.String("data/usersids.txt")
     @Validation.Required
     String getSuspiciousUsersFile();
 

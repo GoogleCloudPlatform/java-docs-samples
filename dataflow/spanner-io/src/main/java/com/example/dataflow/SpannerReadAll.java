@@ -20,6 +20,7 @@ import com.google.cloud.spanner.Struct;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.ReadOperation;
+import org.apache.beam.sdk.io.gcp.spanner.SpannerConfig;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
@@ -62,21 +63,25 @@ public class SpannerReadAll {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline p = Pipeline.create(options);
 
+    SpannerConfig spannerConfig = SpannerConfig.create()
+        .withInstanceId(options.getInstanceId())
+        .withDatabaseId(options.getDatabaseId());
     // [START spanner_dataflow_readall]
-    PCollection<Struct> allRecords = p.apply(SpannerIO.read().withQuery(
-        "SELECT t.table_name FROM information_schema.tables AS t WHERE t"
+    PCollection<Struct> allRecords = p.apply(SpannerIO.read()
+        .withSpannerConfig(spannerConfig)
+        .withQuery("SELECT t.table_name FROM information_schema.tables AS t WHERE t"
             + ".table_catalog = '' AND t.table_schema = ''")).apply(
         MapElements.into(TypeDescriptor.of(ReadOperation.class))
             .via((SerializableFunction<Struct, ReadOperation>) input -> {
               String tableName = input.getString(0);
               return ReadOperation.create().withQuery("SELECT * FROM " + tableName);
-            })).apply(SpannerIO.readAll());
+            })).apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
     // [END spanner_dataflow_readall]
 
     PCollection<Long> dbEstimatedSize = allRecords.apply(EstimateSize.create())
         .apply(Sum.longsGlobally());
 
-    dbEstimatedSize.apply(ToString.elements()).apply(TextIO.write().to(options.getOutput()));
+    dbEstimatedSize.apply(ToString.elements()).apply(TextIO.write().to(options.getOutput()).withoutSharding());
 
     p.run().waitUntilFinish();
   }

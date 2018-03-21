@@ -22,7 +22,6 @@ import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
-import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -62,9 +61,7 @@ mvn compile
 mvn exec:java \
     -Dexec.mainClass=com.example.dataflow.SpannerWrite \
     -Dexec.args="--instanceId=my-instance-id \
-                 --databaseId=my-database-id \
-                 --singersTable=my_singers_table \
-                 --albumsTable=my_albums_table"
+                 --databaseId=my-database-id
 */
 
 public class SpannerWrite {
@@ -74,13 +71,11 @@ public class SpannerWrite {
   public interface Options extends PipelineOptions {
 
     @Description("Singers filename in the format: singer_id\tfirst_name\tlast_name")
-    @Default.String("data/singers.txt")
     String getSingersFilename();
 
     void setSingersFilename(String value);
 
     @Description("Albums filename in the format: singer_id\talbum_id\talbum_title")
-    @Default.String("data/albums.txt")
     String getAlbumsFilename();
 
     void setAlbumsFilename(String value);
@@ -96,19 +91,7 @@ public class SpannerWrite {
     String getDatabaseId();
 
     void setDatabaseId(String value);
-
-    @Description("Spanner singers table name to write to")
-    @Validation.Required
-    String getSingersTable();
-
-    void setSingersTable(String value);
-
-    @Description("Spanner albums table name to write to")
-    @Validation.Required
-    String getAlbumsTable();
-
-    void setAlbumsTable(String value);
-  }
+    }
 
   @DefaultCoder(AvroCoder.class)
   static class Singer {
@@ -188,8 +171,6 @@ public class SpannerWrite {
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
-    String singersTable = options.getSingersTable();
-    String albumsTable = options.getAlbumsTable();
 
     // Read singers from a tab-delimited file
     p.apply("ReadSingers", TextIO.read().from(options.getSingersFilename()))
@@ -200,7 +181,7 @@ public class SpannerWrite {
           @ProcessElement
           public void processElement(ProcessContext c) {
             Singer singer = c.element();
-            c.output(Mutation.newInsertOrUpdateBuilder(singersTable)
+            c.output(Mutation.newInsertOrUpdateBuilder("singers")
                 .set("singerId").to(singer.singerId)
                 .set("firstName").to(singer.firstName)
                 .set("lastName").to(singer.lastName)
@@ -225,7 +206,7 @@ public class SpannerWrite {
           @ProcessElement
           public void processElement(ProcessContext c) {
             Album album = c.element();
-            c.output(Mutation.newInsertOrUpdateBuilder(albumsTable)
+            c.output(Mutation.newInsertOrUpdateBuilder("albums")
                 .set("singerId").to(album.singerId)
                 .set("albumId").to(album.albumId)
                 .set("albumTitle").to(album.albumTitle)

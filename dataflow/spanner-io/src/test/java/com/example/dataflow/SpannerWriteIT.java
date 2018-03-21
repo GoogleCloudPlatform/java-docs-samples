@@ -27,16 +27,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SpannerGroupWriteIT {
+public class SpannerWriteIT {
 
   final String instanceId = "mairbek-deleteme";
   final String databaseId = "test2";
 
-  Path tempPath;
+  Path singersPath;
+  Path albumsPath;
   Spanner spanner;
   SpannerOptions spannerOptions;
 
@@ -55,35 +57,24 @@ public class SpannerGroupWriteIT {
     }
 
     Operation<Database, CreateDatabaseMetadata> op = adminClient
-        .createDatabase(instanceId, databaseId, Arrays.asList("CREATE TABLE users ("
-                + "id STRING(MAX) NOT NULL, state STRING(MAX) NOT NULL) PRIMARY KEY (id)",
-            "CREATE TABLE PendingReviews (id INT64, action STRING(MAX), note STRING(MAX), userId STRING(MAX),) PRIMARY KEY (id)"));
+        .createDatabase(instanceId, databaseId, Arrays.asList("CREATE TABLE Singers (singerId INT64 NOT NULL, firstName STRING(MAX) NOT NULL, lastName STRING(MAX) NOT NULL,) PRIMARY KEY (singerId)",
+            "CREATE TABLE Albums (singerId INT64 NOT NULL, albumId INT64 NOT NULL, albumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (singerId, albumId)"));
 
     op.waitFor();
 
-    DatabaseClient dbClient = getDbClient();
-
-    List<Mutation> mutations = new ArrayList<>();
-    for (int i = 0; i < 20; i++) {
-      mutations.add(
-          Mutation.newInsertBuilder("users").set("id").to(Integer.toString(i)).set("state")
-              .to("ACTIVE").build());
-    }
-    TransactionRunner runner = dbClient.readWriteTransaction();
-    runner.run(new TransactionRunner.TransactionCallable<Void>() {
-
-      @Nullable
-      @Override
-      public Void run(TransactionContext tx) throws Exception {
-        tx.buffer(mutations);
-        return null;
-      }
-    });
-
-    String content = IntStream.range(0, 10).mapToObj(Integer::toString)
+    String singers = Stream
+        .of("1\tJohn\tLennon", "2\tPaul\tMccartney", "3\tGeorge\tHarrison", "4\tRingo\tStarr")
         .collect(Collectors.joining("\n"));
-    tempPath = Files.createTempFile("suspicious-ids", "txt");
-    Files.write(tempPath, content.getBytes());
+    singersPath = Files.createTempFile("singers", "txt");
+    Files.write(singersPath, singers.getBytes());
+
+    String albums = Stream
+        .of("1\t1\tImagine", "2\t1\tPipes of Peace", "3\t1\tDark Horse")
+        .collect(Collectors.joining("\n"));
+    albumsPath = Files.createTempFile("albums", "txt");
+    Files.write(albumsPath, albums.getBytes());
+
+
   }
 
   @After
@@ -100,25 +91,22 @@ public class SpannerGroupWriteIT {
 
   @Test
   public void testEndToEnd() throws Exception {
-    SpannerGroupWrite.main(
-        new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
-            "--suspiciousUsersFile=" + tempPath, "--runner=DirectRunner" });
+    SpannerWrite.main(new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
+        "--singersFilename=" + singersPath, "--albumsFilename=" + albumsPath,
+        "--runner=DirectRunner" });
 
     DatabaseClient dbClient = getDbClient();
     try (ReadContext context = dbClient.singleUse()) {
       ResultSet rs = context.executeQuery(
-          Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state").bind("state")
-              .to("BLOCKED").build());
+          Statement.of("SELECT COUNT(*) FROM singers"));
       assertTrue(rs.next());
-      assertEquals(10, rs.getLong(0));
+      assertEquals(4, rs.getLong(0));
 
     }
     try (ReadContext context = dbClient.singleUse()) {
-      ResultSet rs = context.executeQuery(
-          Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action")
-              .bind("action").to("REVIEW ACCOUNT").build());
+      ResultSet rs = context.executeQuery(Statement.of("SELECT COUNT(*) FROM albums"));
       assertTrue(rs.next());
-      assertEquals(10, rs.getLong(0));
+      assertEquals(3, rs.getLong(0));
     }
   }
 

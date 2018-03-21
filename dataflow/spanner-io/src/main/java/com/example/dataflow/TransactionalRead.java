@@ -26,7 +26,6 @@ import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerConfig;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
 import org.apache.beam.sdk.io.gcp.spanner.Transaction;
-import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -55,13 +54,11 @@ public class TransactionalRead {
     void setDatabaseId(String value);
 
     @Description("Singers output filename in the format: singer_id\tfirst_name\tlast_name")
-    @Default.String("data/singers.txt")
     String getSingersFilename();
 
     void setSingersFilename(String value);
 
     @Description("Albums output filename in the format: singer_id\talbum_id\talbum_title")
-    @Default.String("data/albums.txt")
     String getAlbumsFilename();
 
     void setAlbumsFilename(String value);
@@ -132,7 +129,7 @@ public class TransactionalRead {
       public String apply(Struct input) {
         return Joiner.on(DELIMITER).join(input.getLong(0), input.getString(1), input.getString(2));
       }
-    })).apply(TextIO.write().to(options.getSingersFilename()));
+    })).apply(TextIO.write().to(options.getSingersFilename()).withoutSharding());
 
     albums.apply(MapElements.via(new SimpleFunction<Struct, String>() {
 
@@ -140,7 +137,7 @@ public class TransactionalRead {
       public String apply(Struct input) {
         return Joiner.on(DELIMITER).join(input.getLong(0), input.getLong(1), input.getString(2));
       }
-    })).apply(TextIO.write().to(options.getAlbumsFilename()));
+    })).apply(TextIO.write().to(options.getAlbumsFilename()).withoutSharding());
 
     p.run().waitUntilFinish();
 
