@@ -69,7 +69,7 @@ public class SpannerReadApi {
             .withDatabaseId(databaseId)
             .withTable("Singers")
             .withColumns("singerId", "firstName", "lastName"));
-    // [START spanner_dataflow_readapi]
+    // [END spanner_dataflow_readapi]
 
 
     PCollection<Long> tableEstimatedSize = records
