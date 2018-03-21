@@ -15,45 +15,36 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
-import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SpannerIT {
+public class SpannerGroupWriteIT {
 
-  private String runSample(Consumer<Void> main) throws Exception {
-    PrintStream stdOut = System.out;
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
-    System.setOut(out);
-    main.accept(null);
-    System.setOut(stdOut);
-    return bout.toString();
-  }
+  private final String instanceId = "mairbek-deleteme";
+  private final String databaseId = "test2";
 
-  @Test
-  public void testSpannerGroupWrite() throws Exception {
-    Path tempPath = Files.createTempFile("suspicious-ids", "txt");
+  Path tempPath;
+  Spanner spanner;
+  SpannerOptions spannerOptions;
 
-    String instanceId = "mairbek-deleteme";
-    String databaseId  = "test2";
+  @Before
+  public void setUp() throws Exception {
 
-    SpannerOptions options = SpannerOptions.getDefaultInstance();
-    Spanner spanner = options.getService();
+    spannerOptions = SpannerOptions.getDefaultInstance();
+    spanner = spannerOptions.getService();
 
     DatabaseAdminClient adminClient = spanner.getDatabaseAdminClient();
 
@@ -70,14 +61,17 @@ public class SpannerIT {
 
     op.waitFor();
 
-    DatabaseClient dbClient = spanner.getDatabaseClient(DatabaseId.of(options.getProjectId(), instanceId, databaseId));
+    DatabaseClient dbClient = getDbClient();
 
     List<Mutation> mutations = new ArrayList<>();
-    for (int i = 0; i< 10; i++) {
-      mutations.add(Mutation.newInsertBuilder("users").set("id").to(Integer.toString(i)).set("state").to("ACTIVE").build());
+    for (int i = 0; i < 20; i++) {
+      mutations.add(
+          Mutation.newInsertBuilder("users").set("id").to(Integer.toString(i)).set("state")
+              .to("ACTIVE").build());
     }
     TransactionRunner runner = dbClient.readWriteTransaction();
     runner.run(new TransactionRunner.TransactionCallable<Void>() {
+
       @Nullable
       @Override
       public Void run(TransactionContext tx) throws Exception {
@@ -88,27 +82,49 @@ public class SpannerIT {
 
     String content = IntStream.range(0, 10).mapToObj(Integer::toString)
         .collect(Collectors.joining("\n"));
+    tempPath = Files.createTempFile("suspicious-ids", "txt");
     Files.write(tempPath, content.getBytes());
+  }
 
+  @After
+  public void tearDown() throws Exception {
+    DatabaseAdminClient adminClient = spanner.getDatabaseAdminClient();
+    try {
+      adminClient.dropDatabase(instanceId, databaseId);
+    } catch (SpannerException e) {
+      // Failed to cleanup.
+    }
 
-    String out = runSample(v -> SpannerGroupWrite.main(new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
-          "--suspiciousUsersFile=" + tempPath, "--runner=DirectRunner" }));
+    spanner.close();
+  }
 
-    System.out.println(out);
+  @Test
+  public void testEndToEnd() throws Exception {
+    SpannerGroupWrite.main(
+        new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
+            "--suspiciousUsersFile=" + tempPath, "--runner=DirectRunner" });
 
+    DatabaseClient dbClient = getDbClient();
     try (ReadContext context = dbClient.singleUse()) {
       ResultSet rs = context.executeQuery(
-          Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state").bind("state").to("BLOCKED")
-              .build());
+          Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state").bind("state")
+              .to("BLOCKED").build());
       assertTrue(rs.next());
       assertEquals(10, rs.getLong(0));
 
     }
     try (ReadContext context = dbClient.singleUse()) {
       ResultSet rs = context.executeQuery(
-          Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action").bind("action").to("REVIEW ACCOUNT").build());
+          Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action")
+              .bind("action").to("REVIEW ACCOUNT").build());
       assertTrue(rs.next());
       assertEquals(10, rs.getLong(0));
     }
   }
+
+  private DatabaseClient getDbClient() {
+    return spanner
+        .getDatabaseClient(DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId));
+  }
+
 }
