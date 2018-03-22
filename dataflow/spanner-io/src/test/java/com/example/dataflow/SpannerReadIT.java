@@ -157,6 +157,17 @@ public class SpannerReadIT {
   }
 
   @Test
+  public void readApiEndToEnd() throws Exception {
+    Path outPath = Files.createTempFile("out", "txt");
+    SpannerReadApi.main(new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
+        "--output=" + outPath, "--runner=DirectRunner" });
+
+    String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
+
+    assertEquals("79", content);
+  }
+
+  @Test
   public void reaTransactionalReadEndToEnd() throws Exception {
     Path singersPath = Files.createTempFile("singers", "txt");
     Path albumsPath = Files.createTempFile("albums", "txt");
