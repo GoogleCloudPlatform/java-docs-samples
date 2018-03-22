@@ -48,6 +48,16 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.19.1</version>
+        <configuration>
+          <systemPropertyVariables>
+            <spanner.test.instance>default-instance</spanner.test.instance>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -82,13 +92,6 @@
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
-    </dependency>
-
-    <!-- Google Cloud -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner</artifactId>
-      <version>0.34.0-beta</version>
     </dependency>
 
     <!-- Misc -->
