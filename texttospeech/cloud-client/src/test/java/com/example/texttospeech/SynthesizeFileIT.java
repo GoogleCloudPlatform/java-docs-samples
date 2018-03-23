@@ -18,9 +18,12 @@ package com.example.texttospeech;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
+import java.io.PrintStream;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -36,7 +39,16 @@ public class SynthesizeFileIT {
   private static String TEXT_FILE = "resources/hello.txt";
   private static String SSML_FILE = "resources/hello.ssml";
 
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
   private File outputFile;
+
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
 
   @After
   public void tearDown() {
@@ -51,6 +63,8 @@ public class SynthesizeFileIT {
     // Assert
     outputFile = new File(OUTPUT);
     assertThat(outputFile.isFile()).isTrue();
+    String got = bout.toString();
+    assertThat(got).contains("Audio content written to file \"output.mp3\"");
   }
 
   @Test
@@ -61,5 +75,7 @@ public class SynthesizeFileIT {
     // Assert
     outputFile = new File(OUTPUT);
     assertThat(outputFile.isFile()).isTrue();
+    String got = bout.toString();
+    assertThat(got).contains("Audio content written to file \"output.mp3\"");
   }
 }

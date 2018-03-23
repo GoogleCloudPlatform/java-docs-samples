@@ -60,7 +60,7 @@ public class ListAllSupportedVoicesIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("en-US");
-    assertThat(got).contains("SSML gender: MALE");
-    assertThat(got).contains("SSML gender: FEMALE");
+    assertThat(got).contains("SSML Voice Gender: MALE");
+    assertThat(got).contains("SSML Voice Gender: FEMALE");
   }
 }

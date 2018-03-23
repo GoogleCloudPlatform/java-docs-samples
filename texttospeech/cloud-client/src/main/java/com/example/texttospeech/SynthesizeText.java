@@ -91,14 +91,7 @@ public class SynthesizeText {
    * Demonstrates using the Text to Speech client to synthesize text or ssml.
    *
    * Note: ssml must be well-formed according to: (https://www.w3.org/TR/speech-synthesis/
-   * Example:
-   * <?xml version="1.0"?>
-   *   <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
-   *   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   *   xsi:schemaLocation="http://www.w3.org/2001/10/synthesis
-   *   http://www.w3.org/TR/speech-synthesis/synthesis.xsd" xml:lang="en-US">
-   *   Hello there.
-   * </speak>
+   * Example: <speak>Hello there.</speak>
    * @param ssml the ssml document to be synthesized. (e.g., "<?xml...")
    * @throws Exception on TextToSpeechClient Errors.
    */

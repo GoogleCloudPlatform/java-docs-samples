@@ -18,9 +18,12 @@ package com.example.texttospeech;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
+import java.io.PrintStream;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -34,15 +37,18 @@ public class SynthesizeTextIT {
 
   private static String OUTPUT = "output.mp3";
   private static String TEXT = "Hello there.";
-  private static String SSML = "<?xml version=\"1.0\"?>\n"
-      + "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\"\n"
-      + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-      + "xsi:schemaLocation=\"http://www.w3.org/2001/10/synthesis\n"
-      + "http://www.w3.org/TR/speech-synthesis/synthesis.xsd\" xml:lang=\"en-US\">\n"
-      + "Hello there.\n"
-      + "</speak>";
+  private static String SSML = "<speak>Hello there.</speak>";
 
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
   private File outputFile;
+
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
 
   @After
   public void tearDown() {
@@ -57,6 +63,8 @@ public class SynthesizeTextIT {
     // Assert
     outputFile = new File(OUTPUT);
     assertThat(outputFile.isFile()).isTrue();
+    String got = bout.toString();
+    assertThat(got).contains("Audio content written to file \"output.mp3\"");
   }
 
   @Test
@@ -67,5 +75,7 @@ public class SynthesizeTextIT {
     // Assert
     outputFile = new File(OUTPUT);
     assertThat(outputFile.isFile()).isTrue();
+    String got = bout.toString();
+    assertThat(got).contains("Audio content written to file \"output.mp3\"");
   }
 }
