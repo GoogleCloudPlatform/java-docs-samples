@@ -80,6 +80,7 @@ public class SynthesizeText {
       // Write the response to the output file.
       try (OutputStream out = new FileOutputStream("output.mp3")) {
         out.write(audioContents.toByteArray());
+        System.out.println("Audio content written to file \"output.mp3\"");
       }
     }
   }
@@ -134,6 +135,7 @@ public class SynthesizeText {
       // Write the response to the output file.
       try (OutputStream out = new FileOutputStream("output.mp3")) {
         out.write(audioContents.toByteArray());
+        System.out.println("Audio content written to file \"output.mp3\"");
       }
     }
   }
