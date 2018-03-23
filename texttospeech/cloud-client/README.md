@@ -6,7 +6,7 @@ customize synthesized speech from text or SSML.
 These samples show how to list all supported voices, synthesize raw
 text, and synthesize a file.
 
-[texttospeech]: https://cloud.google.com/texttospeech/
+[texttospeech]: https://cloud.google.com/text-to-speech/
 [google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java
 
 ## Prerequisites
