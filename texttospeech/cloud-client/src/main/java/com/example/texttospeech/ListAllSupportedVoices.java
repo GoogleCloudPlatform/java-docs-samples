@@ -58,8 +58,8 @@ public class ListAllSupportedVoices {
           System.out.format("Supported Language: %s\n", languageCode.toStringUtf8());
         }
 
-        // Display the supported ssml-gender for this voice. Example: FEMALE
-        System.out.format("SSML gender: %s\n", voice.getSsmlGender());
+        // Display the SSML Voice Gender
+        System.out.format("SSML Voice Gender: %s\n", voice.getSsmlGender());
 
         // Display the natural sample rate hertz for this voice. Example: 24000
         System.out.format("Natural Sample Rate Hertz: %s\n\n",
