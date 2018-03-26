@@ -20,7 +20,7 @@ Install [Maven](http://maven.apache.org/).
 Build your project with:
 
 ```
-mvn clean compile assembly:single
+mvn clean package -DskipTests
 ```
 
 ### Analyze a video
