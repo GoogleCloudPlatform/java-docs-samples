@@ -73,6 +73,7 @@
         <module>mlengine/online-prediction</module>
 
         <module>monitoring/cloud-client</module>
+        <module>monitoring/v3</module>
 
         <module>pubsub/cloud-client</module>
 
