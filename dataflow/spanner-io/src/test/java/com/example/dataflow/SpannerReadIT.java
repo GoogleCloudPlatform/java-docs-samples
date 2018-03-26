@@ -43,14 +43,14 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerReadIT {
 
-  String instanceId;
-  String databaseId;
+  private String instanceId;
+  private String databaseId;
 
-  Spanner spanner;
-  SpannerOptions spannerOptions;
+  private Spanner spanner;
+  private SpannerOptions spannerOptions;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     instanceId = System.getProperty("spanner.test.instance");
     databaseId = "df-spanner-read-it";
 
@@ -115,7 +115,7 @@ public class SpannerReadIT {
     runner.run(new TransactionRunner.TransactionCallable<Void>() {
       @Nullable
       @Override
-      public Void run(TransactionContext tx) throws Exception {
+      public Void run(TransactionContext tx) {
         tx.buffer(mutations);
         return null;
       }
@@ -123,7 +123,7 @@ public class SpannerReadIT {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     DatabaseAdminClient adminClient = spanner.getDatabaseAdminClient();
     try {
       adminClient.dropDatabase(instanceId, databaseId);

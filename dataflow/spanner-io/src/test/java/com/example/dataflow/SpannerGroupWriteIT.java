@@ -49,12 +49,12 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerGroupWriteIT {
 
-  String instanceId;
-  String databaseId;
+  private String instanceId;
+  private String databaseId;
 
-  Path tempPath;
-  Spanner spanner;
-  SpannerOptions spannerOptions;
+  private Path tempPath;
+  private Spanner spanner;
+  private SpannerOptions spannerOptions;
 
   @Before
   public void setUp() throws Exception {
@@ -93,7 +93,7 @@ public class SpannerGroupWriteIT {
 
       @Nullable
       @Override
-      public Void run(TransactionContext tx) throws Exception {
+      public Void run(TransactionContext tx) {
         tx.buffer(mutations);
         return null;
       }
@@ -106,7 +106,7 @@ public class SpannerGroupWriteIT {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     DatabaseAdminClient adminClient = spanner.getDatabaseAdminClient();
     try {
       adminClient.dropDatabase(instanceId, databaseId);
@@ -118,7 +118,7 @@ public class SpannerGroupWriteIT {
   }
 
   @Test
-  public void testEndToEnd() throws Exception {
+  public void testEndToEnd() {
     SpannerGroupWrite.main(
         new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
             "--suspiciousUsersFile=" + tempPath, "--runner=DirectRunner" });

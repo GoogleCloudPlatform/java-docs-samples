@@ -43,13 +43,13 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerWriteIT {
 
-  String instanceId;
-  String databaseId;
+  private String instanceId;
+  private String databaseId;
 
-  Path singersPath;
-  Path albumsPath;
-  Spanner spanner;
-  SpannerOptions spannerOptions;
+  private Path singersPath;
+  private Path albumsPath;
+  private Spanner spanner;
+  private SpannerOptions spannerOptions;
 
   @Before
   public void setUp() throws Exception {
@@ -95,7 +95,7 @@ public class SpannerWriteIT {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     DatabaseAdminClient adminClient = spanner.getDatabaseAdminClient();
     try {
       adminClient.dropDatabase(instanceId, databaseId);
@@ -107,7 +107,7 @@ public class SpannerWriteIT {
   }
 
   @Test
-  public void testEndToEnd() throws Exception {
+  public void testEndToEnd() {
     SpannerWrite.main(new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
         "--singersFilename=" + singersPath, "--albumsFilename=" + albumsPath,
         "--runner=DirectRunner" });
