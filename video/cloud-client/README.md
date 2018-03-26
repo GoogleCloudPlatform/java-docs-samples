@@ -38,30 +38,26 @@ After you have authorized, you can analyze videos.
 
 Detect Labels
 ```
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect labels gs://demomaker/cat.mp4
+mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"
 
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect labels-file ./resources/cat.mp4
+mvn exec:java -DDetect -Dexec.args="labels-file ./resources/cat.mp4"
 ```
 
 Detect Explicit content annotations
 ```
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect explicit-content gs://demomaker/gbikes_dinosaur.mp4
+mvn exec:java -DDetect -Dexec.args="explicit-content gs://demomaker/gbikes_dinosaur.mp4"
 ```
 
 Detect Shots
 ```
-java -cp target/video-google-cloud-samples-1.0.8-jar-with-dependencies.jar \
-    com.example.video.Detect shots gs://demomaker/gbikes_dinosaur.mp4
+mvn exec:java -DDetect -Dexec.args="shots gs://demomaker/gbikes_dinosaur.mp4"
 ```
 
 From Windows, you may need to supply your classpath differently, for example:
 ```
-java -cp target\\video-google-cloud-samples-1.0.8-jar-with-dependencies.jar com.example.video.Detect labels gs://demomaker/cat.mp4
+mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"
 ```
 or
 ```
-java -cp target\\video-google-cloud-samples-1.0.8-jar-with-dependencies.jar com.example.video.Detect labels-file resources\\cat.mp4
+mvn exec:java -DDetect -Dexec.args="labels-file resources\\cat.mp4"
 ```
