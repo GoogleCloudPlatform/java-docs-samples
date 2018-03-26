@@ -35,6 +35,7 @@ import com.google.cloud.videointelligence.v1p1beta1.VideoContext;
 import com.google.cloud.videointelligence.v1p1beta1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1p1beta1.WordInfo;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class Detect {
   /**
@@ -117,7 +118,8 @@ public class Detect {
       System.out.println("Waiting for operation to complete...");
       boolean faceFound = false;
       // Display the results
-      for (VideoAnnotationResults results : response.get().getAnnotationResultsList()) {
+      for (VideoAnnotationResults results : response.get(900, TimeUnit.SECONDS)
+          .getAnnotationResultsList()) {
         int faceCount = 0;
         // Display the results for each face
         for (FaceDetectionAnnotation faceAnnotation : results.getFaceDetectionAnnotationsList()) {
@@ -194,7 +196,8 @@ public class Detect {
       System.out.println("Waiting for operation to complete...");
       boolean faceFound = false;
       // Display the results
-      for (VideoAnnotationResults results : response.get().getAnnotationResultsList()) {
+      for (VideoAnnotationResults results : response.get(600, TimeUnit.SECONDS)
+          .getAnnotationResultsList()) {
         int faceCount = 0;
         // Display the results for each face
         for (FaceDetectionAnnotation faceAnnotation : results.getFaceDetectionAnnotationsList()) {
@@ -271,7 +274,8 @@ public class Detect {
 
       System.out.println("Waiting for operation to complete...");
       // Display the results
-      for (VideoAnnotationResults results : response.get().getAnnotationResultsList()) {
+      for (VideoAnnotationResults results : response.get(180, TimeUnit.SECONDS)
+          .getAnnotationResultsList()) {
         for (SpeechTranscription speechTranscription : results.getSpeechTranscriptionsList()) {
           try {
             // Print the transcription
