@@ -115,12 +115,9 @@ public class SynthesizeFile {
           .setSsmlGender(SsmlVoiceGender.FEMALE) // ssmlVoiceGender = SsmlVoiceGender.FEMALE
           .build();
 
-      // Returns [google.rpc.Code.INVALID_ARGUMENT] when not specified.
-      AudioEncoding audioEncoding = AudioEncoding.MP3; // MP3 audio.
-
       // Select the type of audio file you want returned
       AudioConfig audioConfig = AudioConfig.newBuilder()
-          .setAudioEncoding(audioEncoding)
+          .setAudioEncoding(AudioEncoding.MP3) // MP3 audio.
           .build();
 
       // Perform the text-to-speech request
