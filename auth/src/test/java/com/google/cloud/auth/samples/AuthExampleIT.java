@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,49 +14,48 @@
  * limitations under the License.
  */
 
-package com.example.dlp;
+package com.google.cloud.auth.samples;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-// CHECKSTYLE OFF: AbbreviationAsWordInName
-public class MetadataIT {
-  // CHECKSTYLE ON: AbbreviationAsWordInName
-
+//CHECKSTYLE OFF: AbbreviationAsWordInName
+public class AuthExampleIT {
+  //CHECKSTYLE ON: AbbreviationAsWordInName
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private String credentials;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
-  }
-
-  @After
-  public void tearDown() {
-    System.setOut(null);
-    bout.reset();
+    credentials = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
+    assertNotNull(credentials);
   }
 
   @Test
-  public void testListInfoTypes() throws Exception {
-    Metadata.main(
-        new String[] {
-          "-language", "en-US",
-          "-filter", "supported_by=INSPECT"
-        });
+  public void testAuthImplicit() throws IOException {
+    AuthExample.main(new String[] {});
     String output = bout.toString();
-    assertTrue(output.contains("Name") && output.contains("Display name"));
+    assertTrue(output.contains("Buckets:"));
+  }
+
+  @Test
+  public void testAuthExplicitNoPath() throws IOException {
+    AuthExample.main(new String[] {"explicit", credentials});
+    String output = bout.toString();
+    assertTrue(output.contains("Buckets:"));
   }
 }
