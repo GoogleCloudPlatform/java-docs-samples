@@ -1,5 +1,5 @@
 <!--
-  Copyright 2017 Google Inc.
+  Copyright 2018 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.video</groupId>
-  <artifactId>video-google-cloud-samples</artifactId>
+  <artifactId>video-google-cloud-samples-beta</artifactId>
   <packaging>jar</packaging>
 
   <!--
