@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DetectIT {
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  static final String LABEL_FILE_LOCATION = "gs://demomaker/cat.mp4";
-  static final String SHOTS_FILE_LOCATION = "gs://demomaker/gbikes_dinosaur.mp4";
-  static final String EXPLICIT_CONTENT_LOCATION =  "gs://demomaker/cat.mp4";
+  static final String FACES_FILE_LOCATION =
+      "gs://java-docs-samples-testing/video/googlework_short.mp4";
 
   @Before
   public void setUp() {
@@ -50,28 +50,29 @@ public class DetectIT {
   }
 
   @Test
-  public void testLabels() throws Exception {
-    String[] args = {"labels", LABEL_FILE_LOCATION};
+  public void testFacesBoundingBoxes() throws Exception {
+    String[] args = {"faces-bounding-boxes", FACES_FILE_LOCATION};
     Detect.argsHelper(args);
     String got = bout.toString();
-    // Test that the video with a cat has the whiskers label (may change).
-    assertThat(got.toUpperCase()).contains("WHISKERS");
+
+    assertThat(got).contains("Top:");
   }
 
   @Test
-  public void testExplicitContent() throws Exception {
-    String[] args = {"explicit-content", EXPLICIT_CONTENT_LOCATION};
+  public void testFacesEmotions() throws Exception {
+    String[] args = {"faces-emotions", FACES_FILE_LOCATION};
     Detect.argsHelper(args);
     String got = bout.toString();
-    assertThat(got).contains("Adult: VERY_UNLIKELY");
+
+    assertThat(got).contains("CONCENTRATION");
   }
 
   @Test
-  public void testShots() throws Exception {
-    String[] args = {"shots", SHOTS_FILE_LOCATION};
+  public void testSpeechTranscription() throws Exception {
+    String[] args = {"speech-transcription", FACES_FILE_LOCATION};
     Detect.argsHelper(args);
     String got = bout.toString();
-    assertThat(got).contains("Shots:");
-    assertThat(got).contains("Location: 0");
+
+    assertThat(got).contains("cultural");
   }
 }

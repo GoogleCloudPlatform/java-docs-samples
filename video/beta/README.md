@@ -36,28 +36,17 @@ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
 
 After you have authorized, you can analyze videos.
 
-Detect Labels
+Detect Faces' Bounding Boxes
 ```
-mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"
-
-mvn exec:java -DDetect -Dexec.args="labels-file ./resources/cat.mp4"
+mvn exec:java -DDetect -Dexec.args="faces-bounding-boxes gs://YOUR_BUCKET/YOUR_VIDEO.mp4"
 ```
 
-Detect Explicit content annotations
+Detect Faces' Emotions
 ```
-mvn exec:java -DDetect -Dexec.args="explicit-content gs://demomaker/gbikes_dinosaur.mp4"
-```
-
-Detect Shots
-```
-mvn exec:java -DDetect -Dexec.args="shots gs://demomaker/gbikes_dinosaur.mp4"
+mvn exec:java -DDetect -Dexec.args="faces-emotions gs://YOUR_BUCKET/YOUR_VIDEO.mp4"
 ```
 
-From Windows, you may need to supply your classpath differently, for example:
+Video Transcription
 ```
-mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"
-```
-or
-```
-mvn exec:java -DDetect -Dexec.args="labels-file resources\\cat.mp4"
+mvn exec:java -DDetect -Dexec.args="speech-transcription gs://YOUR_BUCKET/YOUR_VIDEO.mp4"
 ```
