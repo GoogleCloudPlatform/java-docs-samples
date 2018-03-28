@@ -22,13 +22,13 @@ import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
-import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.values.PCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +61,7 @@ mvn compile
 mvn exec:java \
     -Dexec.mainClass=com.example.dataflow.SpannerWrite \
     -Dexec.args="--instanceId=my-instance-id \
-                 --databaseId=my-database-id \
-                 --singersTable=my_singers_table \
-                 --albumsTable=my_albums_table"
+                 --databaseId=my-database-id
 */
 
 public class SpannerWrite {
@@ -73,13 +71,11 @@ public class SpannerWrite {
   public interface Options extends PipelineOptions {
 
     @Description("Singers filename in the format: singer_id\tfirst_name\tlast_name")
-    @Default.String("data/singers.txt")
     String getSingersFilename();
 
     void setSingersFilename(String value);
 
     @Description("Albums filename in the format: singer_id\talbum_id\talbum_title")
-    @Default.String("data/albums.txt")
     String getAlbumsFilename();
 
     void setAlbumsFilename(String value);
@@ -95,18 +91,6 @@ public class SpannerWrite {
     String getDatabaseId();
 
     void setDatabaseId(String value);
-
-    @Description("Spanner singers table name to write to")
-    @Validation.Required
-    String getSingersTable();
-
-    void setSingersTable(String value);
-
-    @Description("Spanner albums table name to write to")
-    @Validation.Required
-    String getAlbumsTable();
-
-    void setAlbumsTable(String value);
   }
 
   @DefaultCoder(AvroCoder.class)
@@ -187,8 +171,6 @@ public class SpannerWrite {
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
-    String singersTable = options.getSingersTable();
-    String albumsTable = options.getAlbumsTable();
 
     // Read singers from a tab-delimited file
     p.apply("ReadSingers", TextIO.read().from(options.getSingersFilename()))
@@ -199,7 +181,7 @@ public class SpannerWrite {
           @ProcessElement
           public void processElement(ProcessContext c) {
             Singer singer = c.element();
-            c.output(Mutation.newInsertOrUpdateBuilder(singersTable)
+            c.output(Mutation.newInsertOrUpdateBuilder("singers")
                 .set("singerId").to(singer.singerId)
                 .set("firstName").to(singer.firstName)
                 .set("lastName").to(singer.lastName)
@@ -212,25 +194,30 @@ public class SpannerWrite {
             .withDatabaseId(databaseId));
 
     // Read albums from a tab-delimited file
-    p.apply("ReadAlbums", TextIO.read().from(options.getAlbumsFilename()))
+    PCollection<Album> albums = p
+        .apply("ReadAlbums", TextIO.read().from(options.getAlbumsFilename()))
         // Parse the tab-delimited lines into Album objects
-        .apply("ParseAlbums", ParDo.of(new ParseAlbum()))
+        .apply("ParseAlbums", ParDo.of(new ParseAlbum()));
+
+    // [START spanner_dataflow_write]
+    albums
         // Spanner expects a Mutation object, so create it using the Album's data
         .apply("CreateAlbumMutation", ParDo.of(new DoFn<Album, Mutation>() {
           @ProcessElement
           public void processElement(ProcessContext c) {
             Album album = c.element();
-            c.output(Mutation.newInsertOrUpdateBuilder(albumsTable)
+            c.output(Mutation.newInsertOrUpdateBuilder("albums")
                 .set("singerId").to(album.singerId)
                 .set("albumId").to(album.albumId)
                 .set("albumTitle").to(album.albumTitle)
                 .build());
           }
         }))
-        // Finally write the Mutations to Spanner
+        // Write mutations to Spanner
         .apply("WriteAlbums", SpannerIO.write()
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId));
+    // [END spanner_dataflow_write]
 
     p.run().waitUntilFinish();
   }

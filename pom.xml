@@ -39,6 +39,7 @@
         <!-- App Engine Standard -->
         <module>appengine</module>
         <module>appengine-java8</module>
+        <module>auth</module>
         <module>flexible</module>
 
         <module>bigquery/cloud-client</module>
@@ -73,6 +74,7 @@
         <module>mlengine/online-prediction</module>
 
         <module>monitoring/cloud-client</module>
+        <module>monitoring/v3</module>
 
         <module>pubsub/cloud-client</module>
 
@@ -86,10 +88,12 @@
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
 
+        <module>texttospeech/cloud-client</module>
         <module>translate</module>
         <module>translate/cloud-client</module>
 
         <module>unittests</module>
+        <module>video/beta</module>
         <module>video/cloud-client</module>
         <module>vision/beta/cloud-client</module>
         <module>vision/cloud-client</module>

@@ -16,24 +16,24 @@
 
 package com.example.dlp;
 
-import static junit.framework.TestCase.assertFalse;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-//CHECKSTYLE OFF: AbbreviationAsWordInName
+// CHECKSTYLE OFF: AbbreviationAsWordInName
 public class RedactIT {
-  //CHECKSTYLE ON: AbbreviationAsWordInName
+
+  // CHECKSTYLE ON: AbbreviationAsWordInName
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -46,36 +46,25 @@ public class RedactIT {
   }
 
   @Test
-  public void testInfoTypesInStringAreReplaced() throws Exception {
-    String text =
-        "\"My phone number is (234) 456-7890 and my email address is gary@somedomain.com\"";
-    Redact.main(new String[] {"-s", text, "-r", "_REDACTED_"});
-    String output = bout.toString();
-    assertTrue(output.contains("My phone number is _REDACTED_ and my email address is _REDACTED_"));
-  }
+  public void testRedactImage() throws Exception {
+    // InspectIT Tests verify original has PII present
+    String outputFilePath = "src/test/resources/output.png";
 
-  @Ignore // TODO: b/69461298
-  @Test
-  public void testInfoTypesInImageAreReplaced() throws Exception {
-    ClassLoader classLoader = getClass().getClassLoader();
-    // confirm that current data contains info types
-    File file = new File(classLoader.getResource("test.png").getFile());
-    Inspect.main(new String[] {"-f", file.getAbsolutePath()});
-    String output = bout.toString();
-    assertTrue(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
-    bout.reset();
-
-    String outputFilePath = "output.png";
-
+    // Restrict phone number, but not email
     Redact.main(
         new String[] {
-          "-f", file.getAbsolutePath(), "-infoTypes", "PHONE_NUMBER", "-o", outputFilePath
+          "-f", "src/test/resources/test.png",
+          "-infoTypes", "PHONE_NUMBER",
+          "-o", outputFilePath
         });
-    Inspect.main(new String[] {"-f", outputFilePath});
-    output = bout.toString();
-    assertFalse(output.contains("PHONE_NUMBER"));
-    assertTrue(output.contains("EMAIL_ADDRESS"));
+    bout.reset();
+
+    // Verify that phone_number is missing but email is present
+    Inspect.main(
+        new String[] {"-f", outputFilePath, "-infoTypes", "PHONE_NUMBER", "EMAIL_ADDRESS"});
+    String output = bout.toString();
+    assertThat(output, not(containsString("PHONE_NUMBER")));
+    assertThat(output, containsString("EMAIL_ADDRESS"));
   }
 
   @After
