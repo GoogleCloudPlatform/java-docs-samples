@@ -25,7 +25,7 @@ import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.containeranalysis.v1alpha1.Note;
 import com.google.containeranalysis.v1alpha1.Occurrence;
 import com.google.containeranalysis.v1alpha1.VulnerabilityType.VulnerabilityDetails;
-import com.google.pubsub.v1.SubscriptionName;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
@@ -194,7 +194,7 @@ public class SamplesTests {
     int newCount;
     int tries;
     String subscriptionId = "drydockOccurrences";
-    SubscriptionName subscriptionName = SubscriptionName.of(PROJECT_ID, subscriptionId);
+    ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(PROJECT_ID, subscriptionId);
 
     Samples.createOccurrenceSubscription(subscriptionId, PROJECT_ID);
     Subscriber subscriber = null;
