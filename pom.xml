@@ -98,6 +98,7 @@
         <module>vision/beta/cloud-client</module>
         <module>vision/cloud-client</module>
         <module>vision/face-detection</module>
+        <module>vision/v1p2beta1</module>
         <module>vision/label</module>
         <module>vision/landmark-detection</module>
         <module>vision/text</module>

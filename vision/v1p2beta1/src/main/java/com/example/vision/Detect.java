@@ -18,11 +18,13 @@ package com.example.vision;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Blob.BlobSourceOption;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.vision.v1p2beta1.AnnotateFileResponse;
+import com.google.cloud.vision.v1p2beta1.AnnotateFileResponse.Builder;
 import com.google.cloud.vision.v1p2beta1.AnnotateImageResponse;
 import com.google.cloud.vision.v1p2beta1.AsyncAnnotateFileRequest;
 import com.google.cloud.vision.v1p2beta1.AsyncAnnotateFileResponse;
@@ -36,9 +38,14 @@ import com.google.cloud.vision.v1p2beta1.InputConfig;
 import com.google.cloud.vision.v1p2beta1.OperationMetadata;
 import com.google.cloud.vision.v1p2beta1.OutputConfig;
 
+import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.JsonFormat.Parser;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -118,7 +125,7 @@ public class Detect {
       // Create the configuration for the output with the batch size.
       // The batch size sets how many pages should be grouped into each json output file.
       OutputConfig outputConfig = OutputConfig.newBuilder()
-          .setBatchSize(2)
+          .setBatchSize(1)
           .setGcsDestination(gcsDestination)
           .build();
 
@@ -142,7 +149,7 @@ public class Detect {
 
       // Wait for the request to finish. (The result is not used, since the API saves the result to
       // the specified location on GCS.)
-      List<AsyncAnnotateFileResponse> result = response.get(90, TimeUnit.SECONDS)
+      List<AsyncAnnotateFileResponse> result = response.get(180, TimeUnit.SECONDS)
           .getResponsesList();
 
       // Once the request has completed and the output has been
@@ -180,9 +187,12 @@ public class Detect {
         // object. If the Blob is small read all its content in one request
         // (Note: the file is a .json file)
         // Storage guide: https://cloud.google.com/storage/docs/downloading-objects
-        AnnotateFileResponse annotateFileResponse = AnnotateFileResponse.newBuilder()
-            .mergeFrom(firstOutputFile.getContent())
-            .build();
+        String jsonContents = new String(firstOutputFile.getContent());
+        Builder builder = AnnotateFileResponse.newBuilder();
+        JsonFormat.parser().merge(jsonContents, builder);
+
+        // Build the AnnotateFileResponse object
+        AnnotateFileResponse annotateFileResponse = builder.build();
 
         // Parse through the object to get the actual response for the first page of the input file.
         AnnotateImageResponse annotateImageResponse = annotateFileResponse.getResponses(0);
@@ -191,7 +201,7 @@ public class Detect {
         // The response contains more information:
         // annotation/pages/blocks/paragraphs/words/symbols
         // including confidence score and bounding boxes
-        System.out.format("\nText: %s\n", annotateImageResponse.getFullTextAnnotation());
+        System.out.format("\nText: %s\n", annotateImageResponse.getFullTextAnnotation().getText());
       } else {
         System.out.println("No MATCH");
       }
