@@ -34,7 +34,9 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
+import com.google.cloud.spanner.Value;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
+import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +50,7 @@ import java.util.concurrent.TimeUnit;
  * <li> Writing, reading and executing SQL queries.
  * <li> Writing data using a read-write transaction.
  * <li> Using an index to read and execute SQL queries over data.
+ * <li> Using commit timestamp for tracking when a record was last updated.
  * </ul>
  */
 public class SpannerSample {
@@ -84,6 +87,24 @@ public class SpannerSample {
     }
   }
 
+  /**
+  * Class to contain performance sample data.
+  */
+  static class Performance {
+
+    final long singerId;
+    final long venueId;
+    final String eventDate;
+    final long revenue;
+
+    Performance(long singerId, long venueId, String eventDate, long revenue) {
+      this.singerId = singerId;
+      this.venueId = venueId;
+      this.eventDate = eventDate;
+      this.revenue = revenue;
+    }
+  }
+
   // [START spanner_insert_data]
   static final List<Singer> SINGERS =
       Arrays.asList(
@@ -101,6 +122,14 @@ public class SpannerSample {
           new Album(2, 2, "Forever Hold Your Peace"),
           new Album(2, 3, "Terrified"));
   // [END spanner_insert_data]
+
+  // [START spanner_insert_data_with_timestamp_column]
+  static final List<Performance> PERFORMANCES =
+      Arrays.asList(
+          new Performance(1, 4, "2017-10-05", 11000),
+          new Performance(1, 19, "2017-11-02", 15000),
+          new Performance(2, 42, "2017-12-23", 7000));
+  // [END spanner_insert_data_with_timestamp_column]
 
   // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
@@ -125,6 +154,48 @@ public class SpannerSample {
     System.out.println("Created database [" + db.getId() + "]");
   }
   // [END spanner_create_database]
+
+  // [START spanner_create_table_with_timestamp_column]
+  static void createTableWithTimestamp(DatabaseAdminClient dbAdminClient, DatabaseId id) {
+    Operation<Void, UpdateDatabaseDdlMetadata> op = dbAdminClient
+        .updateDatabaseDdl(
+            id.getInstanceId().getInstance(),
+            id.getDatabase(),
+            Arrays.asList(
+                "CREATE TABLE Performances (\n"
+                    + "  SingerId     INT64 NOT NULL,\n"
+                    + "  VenueId      INT64 NOT NULL,\n"
+                    + "  EventDate    Date,\n"
+                    + "  Revenue      INT64, \n"
+                    + "  LastUpdateTime TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true)\n"
+                    + ") PRIMARY KEY (SingerId, VenueId, EventDate),\n"
+                    + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"), null);
+    op.waitFor().getResult();
+    System.out.println("Created Performances table in database: [" + id + "]");
+  }
+  // [END spanner_create_table_with_timestamp_column]
+
+  // [START spanner_insert_data_with_timestamp_column]
+  static void writeExampleDataWithTimestamp(DatabaseClient dbClient) {
+    List<Mutation> mutations = new ArrayList<>();
+    for (Performance performance : PERFORMANCES) {
+      mutations.add(
+          Mutation.newInsertBuilder("Performances")
+              .set("SingerId")
+              .to(performance.singerId)
+              .set("VenueId")
+              .to(performance.venueId)
+              .set("EventDate")
+              .to(performance.eventDate)
+              .set("Revenue")
+              .to(performance.revenue)
+              .set("LastUpdateTime")
+              .to(Value.COMMIT_TIMESTAMP)
+              .build());
+    }
+    dbClient.write(mutations);
+  }
+  // [END spanner_insert_data_with_timestamp_column]
 
   // [START spanner_insert_data]
   static void writeExampleData(DatabaseClient dbClient) {
@@ -422,6 +493,98 @@ public class SpannerSample {
   }
   // [END spanner_read_stale_data]
 
+  // [START spanner_add_timestamp_column]
+  static void addCommitTimestamp(DatabaseAdminClient adminClient, DatabaseId dbId) {
+    adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
+        dbId.getDatabase(),
+        Arrays.asList(
+            "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
+            + "OPTIONS (allow_commit_timestamp=true)"),
+        null).waitFor();
+    System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+  }
+  // [END spanner_add_timestamp_column]
+
+  // Before executing this method, a new column MarketingBudget has to be added to the Albums
+  // table by applying the DDL statement "ALTER TABLE Albums ADD COLUMN MarketingBudget INT64".
+  // In addition this update expects the LastUpdateTime column added by applying the DDL statement
+  // "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP OPTIONS (allow_commit_timestamp=true)"
+  // [START spanner_update_data_with_timestamp_column]
+  static void updateWithTimestamp(DatabaseClient dbClient) {
+    // Mutation can be used to update/insert/delete a single row in a table. Here we use
+    // newUpdateBuilder to create update mutations.
+    List<Mutation> mutations =
+        Arrays.asList(
+            Mutation.newUpdateBuilder("Albums")
+                .set("SingerId")
+                .to(1)
+                .set("AlbumId")
+                .to(1)
+                .set("MarketingBudget")
+                .to(1000000)
+                .set("LastUpdateTime")
+                .to(Value.COMMIT_TIMESTAMP)
+                .build(),
+            Mutation.newUpdateBuilder("Albums")
+                .set("SingerId")
+                .to(2)
+                .set("AlbumId")
+                .to(2)
+                .set("MarketingBudget")
+                .to(750000)
+                .set("LastUpdateTime")
+                .to(Value.COMMIT_TIMESTAMP)
+                .build());
+    // This writes all the mutations to Cloud Spanner atomically.
+    dbClient.write(mutations);
+  }
+  // [END spanner_update_data_with_timestamp_column]
+
+  // [START spanner_query_data_with_timestamp_column]
+  static void queryMarketingBudgetWithTimestamp(DatabaseClient dbClient) {
+    // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
+    // null.
+    ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(Statement.of(
+                "SELECT SingerId, AlbumId, MarketingBudget, LastUpdateTime FROM Albums"
+                + " ORDER BY LastUpdateTime DESC"));
+    while (resultSet.next()) {
+      System.out.printf(
+          "%d %d %s %s\n",
+          resultSet.getLong("SingerId"),
+          resultSet.getLong("AlbumId"),
+          // We check that the value is non null. ResultSet getters can only be used to retrieve
+          // non null values.
+          resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"),
+          resultSet.isNull("LastUpdateTime") ? "NULL" : resultSet.getTimestamp("LastUpdateTime"));
+    }
+  }
+  // [END spanner_query_data_with_timestamp_column]
+
+  static void queryPerformancesTable(DatabaseClient dbClient) {
+    // Rows without an explicit value for Revenue will have a Revenue equal to
+    // null.
+    ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(Statement.of(
+                "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime FROM Performances"
+                + " ORDER BY LastUpdateTime DESC"));
+    while (resultSet.next()) {
+      System.out.printf(
+          "%d %d %s %s %s\n",
+          resultSet.getLong("SingerId"),
+          resultSet.getLong("VenueId"),
+          resultSet.getDate("EventDate"),
+          // We check that the value is non null. ResultSet getters can only be used to retrieve
+          // non null values.
+          resultSet.isNull("Revenue") ? "NULL" : resultSet.getLong("Revenue"),
+          resultSet.getTimestamp("LastUpdateTime"));
+    }
+  }
+
   static void run(DatabaseClient dbClient, DatabaseAdminClient dbAdminClient, String command,
       DatabaseId database) {
     switch (command) {
@@ -470,6 +633,24 @@ public class SpannerSample {
       case "readstaledata":
         readStaleData(dbClient);
         break;
+      case "addcommittimestamp":
+        addCommitTimestamp(dbAdminClient, database);
+        break;
+      case "updatewithtimestamp":
+        updateWithTimestamp(dbClient);
+        break;
+      case "querywithtimestamp":
+        queryMarketingBudgetWithTimestamp(dbClient);
+        break;
+      case "createtablewithtimestamp":
+        createTableWithTimestamp(dbAdminClient, database);
+        break;
+      case "writewithtimestamp":
+        writeExampleDataWithTimestamp(dbClient);
+        break;
+      case "queryperformancestable":
+        queryPerformancesTable(dbClient);
+        break;
       default:
         printUsageAndExit();
     }
@@ -484,6 +665,44 @@ public class SpannerSample {
         "    SpannerExample createdatabase my-instance example-db");
     System.err.println(
         "    SpannerExample write my-instance example-db");
+    System.err.println(
+        "    SpannerExample query my-instance example-db");
+    System.err.println(
+        "    SpannerExample read my-instance example-db");
+    System.err.println(
+        "    SpannerExample addmarketingbudget my-instance example-db");
+    System.err.println(
+        "    SpannerExample update my-instance example-db");
+    System.err.println(
+        "    SpannerExample writetransaction my-instance example-db");
+    System.err.println(
+        "    SpannerExample querymarketingbudget my-instance example-db");
+    System.err.println(
+        "    SpannerExample addindex my-instance example-db");
+    System.err.println(
+        "    SpannerExample readindex my-instance example-db");
+    System.err.println(
+        "    SpannerExample queryindex my-instance example-db");
+    System.err.println(
+        "    SpannerExample addstoringindex my-instance example-db");
+    System.err.println(
+        "    SpannerExample readstoringindex my-instance example-db");
+    System.err.println(
+        "    SpannerExample readonlytransaction my-instance example-db");
+    System.err.println(
+        "    SpannerExample readstaledata my-instance example-db");
+    System.err.println(
+        "    SpannerExample addcommittimestamp my-instance example-db");
+    System.err.println(
+        "    SpannerExample updatewithtimestamp my-instance example-db");
+    System.err.println(
+        "    SpannerExample querywithtimestamp my-instance example-db");
+    System.err.println(
+        "    SpannerExample createtablewithtimestamp my-instance example-db");
+    System.err.println(
+        "    SpannerExample writewithtimestamp my-instance example-db");
+    System.err.println(
+        "    SpannerExample queryperformancestable my-instance example-db");
     System.exit(1);
   }
 

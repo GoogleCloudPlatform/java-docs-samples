@@ -19,63 +19,54 @@ Install [Maven](http://maven.apache.org/).
 Build your project with:
 
 ```
-mvn clean compile assembly:single
+mvn clean package
 ```
 
 ## Quickstart
 Transcribe a local audio file
 ```
-java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-com.example.speech.QuickstartSample
+mvn exec:java -DQuickstart
 ```
 
 ## Transcribe a audio file
 Transcribe a local audio file
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize syncrecognize ./resources/audio.raw
+mvn exec:java -DRecognize -Dexec.args="syncrecognize ./resources/audio.raw"
 ```
 
 Asynchronously transcribe a local audio file
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize asyncrecognize ./resources/audio.raw
+mvn exec:java -DRecognize -Dexec.args="asyncrecognize ./resources/audio.raw"
 ```
 
 Transcribe a remote audio file
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize syncrecognize gs://cloud-samples-tests/speech/brooklyn.flac
+mvn exec:java -DRecognize -Dexec.args="syncrecognize gs://cloud-samples-tests/speech/brooklyn.flac"
 ```
 
 Asynchronously transcribe a remote audio file
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize asyncrecognize gs://cloud-samples-tests/speech/vr.flac
+mvn exec:java -DRecognize -Dexec.args="asyncrecognize gs://cloud-samples-tests/speech/vr.flac"
 ```
 
 ## Transcribe a audio file and print word offsets
 Synchronously transcribe an audio file and print word offsets
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize wordoffsets ./resources/audio.raw
+mvn exec:java -DRecognize -Dexec.args="wordoffsets ./resources/audio.raw"
 ```
 
 Asynchronously transcribe a remote audio file and print word offsets
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize wordoffsets gs://cloud-samples-tests/speech/vr.flac
+mvn exec:java -DRecognize -Dexec.args="wordoffsets gs://cloud-samples-tests/speech/vr.flac"
 ```
 
-## Transcribe a video file
-Synchronously transcribe a video file
+## Model Selection
+Synchronously transcribe a audio file
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize video ./resources/Google_Gnome.wav
+mvn exec:java -DRecognize -Dexec.args="model-selection ./resources/Google_Gnome.wav"
 ```
 
-Asynchronously transcribe a video file hosted on GCS
+Asynchronously transcribe a audio file hosted on GCS
 ```
-    java -cp target/speech-google-cloud-samples-1.0.0-jar-with-dependencies.jar \
-    com.example.speech.Recognize video gs://cloud-samples-tests/speech/Google_Gnome.wav
+mvn exec:java -DRecognize -Dexec.args="model-selection gs://cloud-samples-tests/speech/Google_Gnome.wav"
 ```
