@@ -590,6 +590,7 @@ public class Recognize {
   }
   // [END speech_async_recognize_gcs_punctuation]
 
+  // [START speech_stream_recognize_punctuation]
   /**
    * Performs streaming speech recognition on raw PCM audio data.
    *
@@ -676,4 +677,5 @@ public class Recognize {
       }
     }
   }
+  // [END speech_stream_recognize_punctuation]
 }
