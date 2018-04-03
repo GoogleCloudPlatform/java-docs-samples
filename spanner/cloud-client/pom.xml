@@ -119,7 +119,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.39</version>
+      <version>0.40</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
