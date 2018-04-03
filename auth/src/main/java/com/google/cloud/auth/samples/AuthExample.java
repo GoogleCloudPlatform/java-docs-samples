@@ -17,12 +17,12 @@
 package com.google.cloud.auth.samples;
 
 import com.google.api.gax.paging.Page;
+import com.google.auth.appengine.AppEngineCredentials;
 import com.google.auth.oauth2.ComputeEngineCredentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.io.FileInputStream;
@@ -63,7 +63,7 @@ public class AuthExample {
   // [END auth_cloud_explicit]
 
   // [START auth_cloud_explicit_compute_engine]
-  static void authComputeExplicit() {
+  static void authCompute() {
     // Explicitly request service account credentials from the compute engine instance.
     GoogleCredentials credentials = ComputeEngineCredentials.create();
     Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
@@ -75,6 +75,20 @@ public class AuthExample {
     }
   }
   // [END auth_cloud_explicit_compute_engine]
+
+  // [START auth_cloud_explicit_app_engine]
+  static void authAppEngineStandard() throws IOException {
+    // Explicitly request service account credentials from the app engine standard instance.
+    GoogleCredentials credentials = AppEngineCredentials.getApplicationDefault();
+    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+
+    System.out.println("Buckets:");
+    Page<Bucket> buckets = storage.list();
+    for (Bucket bucket : buckets.iterateAll()) {
+      System.out.println(bucket.toString());
+    }
+  }
+  // [END auth_cloud_explicit_app_engine]
 
   public static void main(String[] args) throws IOException {
     if (args.length == 0) {
@@ -90,7 +104,11 @@ public class AuthExample {
       return;
     }
     if ("compute".equals(args[0])) {
-      authComputeExplicit();
+      authCompute();
+      return;
+    }
+    if ("appengine".equals(args[0])) {
+      authAppEngineStandard();
       return;
     }
     authImplicit();
