@@ -1340,7 +1340,7 @@ public class Detect {
       // Create the configuration for the output with the batch size.
       // The batch size sets how many pages should be grouped into each json output file.
       OutputConfig outputConfig = OutputConfig.newBuilder()
-          .setBatchSize(1)
+          .setBatchSize(2)
           .setGcsDestination(gcsDestination)
           .build();
 
