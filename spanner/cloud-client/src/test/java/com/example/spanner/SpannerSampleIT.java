@@ -85,7 +85,7 @@ public class SpannerSampleIT {
     out = runSample("query");
     assertThat(out).contains("1 1 Total Junk");
     runSample("addmarketingbudget");
-    
+
     // wait for 15 seconds to elapse and then run an update, and query for stale data
     lastUpdateDataTimeInMillis = System.currentTimeMillis();
     while (System.currentTimeMillis() < lastUpdateDataTimeInMillis + 16000) {
@@ -116,6 +116,23 @@ public class SpannerSampleIT {
 
     out = runSample("readonlytransaction");
     assertThat(out.replaceAll("[\r\n]+", " ")).containsMatch("(Total Junk.*){2}");
+
+    out = runSample("addcommittimestamp");
+    assertThat(out).contains("Added LastUpdateTime as a commit timestamp column");
+
+    runSample("updatewithtimestamp");
+    out = runSample("querywithtimestamp");
+    assertThat(out).contains("1 1 1000000");
+    assertThat(out).contains("2 2 750000");
+
+    out = runSample("createtablewithtimestamp");
+    assertThat(out).contains("Created Performances table in database");
+
+    runSample("writewithtimestamp");
+    out = runSample("queryperformancestable");
+    assertThat(out).contains("1 4 2017-10-05 11000");
+    assertThat(out).contains("1 19 2017-11-02 15000");
+    assertThat(out).contains("2 42 2017-12-23 7000");
   }
 
   private String formatForTest(String name) {
