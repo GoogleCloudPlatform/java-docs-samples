@@ -61,12 +61,33 @@ mvn exec:java -DRecognize -Dexec.args="wordoffsets gs://cloud-samples-tests/spee
 ```
 
 ## Model Selection
-Synchronously transcribe a audio file
+Synchronously transcribe an audio file
 ```
 mvn exec:java -DRecognize -Dexec.args="model-selection ./resources/Google_Gnome.wav"
 ```
 
-Asynchronously transcribe a audio file hosted on GCS
+Asynchronously transcribe an audio file hosted on GCS
 ```
 mvn exec:java -DRecognize -Dexec.args="model-selection gs://cloud-samples-tests/speech/Google_Gnome.wav"
+```
+
+Perform streaming speech transcription on an audio file
+```
+mvn exec:java -DRecognize -Dexec.args="streamrecognize ./resources/Google_Gnome.wav"
+```
+
+## Auto Punctuation
+Synchronously transcribe and punctuate an audio file
+```
+mvn exec:java -DRecognize -Dexec.args="auto-punctuation ./resources/audio.raw"
+```
+
+Asynchronously transcribe and punctuate an audio file hosted on GCS
+```
+mvn exec:java -DRecognize -Dexec.args="auto-punctuation gs://cloud-samples-tests/speech/brooklyn.flac"
+```
+
+Performing streaming speech transcription and punctuation on an audio file
+```
+mvn exec:java -DRecognize -Dexec.args="stream-punctuation ./resources/audio.raw"
 ```
