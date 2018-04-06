@@ -36,15 +36,6 @@ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
 
 After you have authorized, you can analyze videos.
 
-Detect Faces' Bounding Boxes
-```
-mvn exec:java -DDetect -Dexec.args="faces-bounding-boxes gs://YOUR_BUCKET/YOUR_VIDEO.mp4"
-```
-
-Detect Faces' Emotions
-```
-mvn exec:java -DDetect -Dexec.args="faces-emotions gs://YOUR_BUCKET/YOUR_VIDEO.mp4"
-```
 
 Video Transcription
 ```
