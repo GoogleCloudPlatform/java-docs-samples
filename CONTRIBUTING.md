@@ -40,7 +40,7 @@ accept your pull requests.
 
 ## Contributing a new sample
 
-1. App Engine Standard samples all go into `/appengine` (java 7) or `/java8-appengine` (Java 8) (if your contributing a group of samples,
+1. App Engine Standard samples all go into `/appengine` (java 7) or `/java8-appengine` (Java 8) (if you're contributing a group of samples,
 please put the App Engine Standard sample into `/appengine` and provide a link in both `README.md`'s for
 the project for the additional sample.
 
