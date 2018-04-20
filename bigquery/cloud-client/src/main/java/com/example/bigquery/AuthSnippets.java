@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 public class AuthSnippets {
 
-  // [START default_credentials]
+  // [START bigquery_client_default_credentials]
   public static void implicit() {
     // Instantiate a client. If you don't specify credentials when constructing a client, the
     // client library will look for credentials in the environment, such as the
@@ -45,9 +45,9 @@ public class AuthSnippets {
       System.out.printf("%s%n", dataset.getDatasetId().getDataset());
     }
   }
-  // [END default_credentials]
+  // [END bigquery_client_default_credentials]
 
-  // [START explicit_service_account]
+  // [START bigquery_client_json_credentials]
   public static void explicit() throws IOException {
     // Load credentials from JSON key file. If you can't set the GOOGLE_APPLICATION_CREDENTIALS
     // environment variable, you can explicitly load the credentials file to construct the
@@ -68,7 +68,7 @@ public class AuthSnippets {
       System.out.printf("%s%n", dataset.getDatasetId().getDataset());
     }
   }
-  // [END explicit_service_account]
+  // [END bigquery_client_json_credentials]
 
   public static void main(String... args) throws IOException {
     boolean validArgs = args.length == 1;
