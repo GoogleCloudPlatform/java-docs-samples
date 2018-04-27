@@ -48,6 +48,10 @@ tags
 
 # Gradle
 out/
+.gradle/
+
+# VS Code
+.vscode/
 
 # OSX
 .DS_Store
