@@ -25,6 +25,10 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PublisherExample {
 
   // use the default project id
