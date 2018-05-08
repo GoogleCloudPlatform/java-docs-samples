@@ -76,6 +76,8 @@
         <module>monitoring/cloud-client</module>
         <module>monitoring/v3</module>
 
+        <module>memorystore/redis</module>
+
         <module>pubsub/cloud-client</module>
 
         <module>spanner/cloud-client</module>
