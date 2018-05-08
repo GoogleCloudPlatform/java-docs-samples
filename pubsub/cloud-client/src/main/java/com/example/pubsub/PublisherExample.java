@@ -67,7 +67,7 @@ public class PublisherExample {
       List<String> messageIds = ApiFutures.allAsList(futures).get();
 
       for (String messageId : messageIds) {
-        System.out.println("messageId");
+        System.out.println(messageId);
       }
 
       if (publisher != null) {
