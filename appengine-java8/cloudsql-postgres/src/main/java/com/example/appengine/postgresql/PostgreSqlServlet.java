@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "PostgreSQL",
-    description = "PostgreSQL: Write timestamps of visitors to PostgreSQL",
+    description = "PostgreSQL: Write low order IP address to PostgreSQL",
     urlPatterns = "/postgresql")
 public class PostgreSqlServlet extends HttpServlet {
 
@@ -84,7 +84,7 @@ public class PostgreSqlServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
-    String url = System.getProperty("postgresql");
+    String url = System.getProperty("cloudsql");
     log("connecting to: " + url);
     try {
       conn = DriverManager.getConnection(url);
