@@ -91,22 +91,12 @@ public class CloudSqlServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
+    String url = System.getProperty("cloudsql");
+    log("connecting to: " + url);
     try {
-      ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();
-      Map<String,Object> attr = env.getAttributes();
-      String hostname = (String) attr.get("com.google.appengine.runtime.default_version_hostname");
-
-      String url = hostname.contains("localhost:")
-          ? System.getProperty("cloudsql-local") : System.getProperty("cloudsql");
-      log("connecting to: " + url);
-      try {
-        conn = DriverManager.getConnection(url);
-      } catch (SQLException e) {
-        throw new ServletException("Unable to connect to Cloud SQL", e);
-      }
-
-    } finally {
-      // Nothing really to do here.
+      conn = DriverManager.getConnection(url);
+    } catch (SQLException e) {
+      throw new ServletException("Unable to connect to Cloud SQL", e);
     }
   }
 }

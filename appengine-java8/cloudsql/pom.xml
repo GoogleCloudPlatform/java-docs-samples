@@ -30,22 +30,25 @@
     <version>1.0.9</version>
   </parent>
 
-<!-- [START properties] -->
+  <!-- [START properties] -->
   <properties>
-<!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
-     or gcloud sql instances describe <instance>
-     project:region:instance for Cloud SQL 2nd Generation or
-     project:instance        for Cloud SQL 1st Generation
--->
-    <INSTANCE_CONNECTION_NAME></INSTANCE_CONNECTION_NAME>
+    <!--
+      INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
+      or gcloud sql instances describe <instance>
+      project:region:instance for Cloud SQL 2nd Generation or
+      project:instance        for Cloud SQL 1st Generation
+    -->
+    <INSTANCE_CONNECTION_NAME>project:region:instance</INSTANCE_CONNECTION_NAME>
     <user>root</user>
     <password>myPassword</password>
-    <database>sqldemo</database>
+    <database>myDatabase</database>
 
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <!-- [START_EXCLUDE] -->
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <maven.compiler.source>1.8</maven.compiler.source>
+    <!-- [END_EXCLUDE] -->
   </properties>
-<!-- [END properties] -->
+  <!-- [END properties] -->
 
   <dependencies>
     <dependency>
@@ -69,17 +72,15 @@
     </dependency>
 
     <!-- [START dependencies] -->
-    <!-- Driver injected at runtime by the use of <use-google-connector-j> in appengine-web.xml -->
     <dependency> <!-- Only used locally -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.42</version>  <!-- v5.x.x is for production, v6.x.x EAP X DevAPI -->
+      <version>5.1.42</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
-      <!-- If using MySQL 6.x driver, use mysql-socket-factory-connector-j-6 instead -->
       <artifactId>mysql-socket-factory</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.8</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
