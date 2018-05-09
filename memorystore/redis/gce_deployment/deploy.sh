@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  Copyright 2018 Google Inc.
+#  Copyright 2018 Google LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-# [START deploy_sh]
+# [START memorystore_deploy_sh]
 if [ -z "$GCS_APP_LOCATION" ]; then
   if [ -z "$BUCKET"]; then
     echo "Must set \$BUCKET. For example: BUCKET=my-bucket-name"
@@ -43,7 +43,7 @@ cd gce_deployment
 
 # Create an instance
 gcloud compute instances create my-instance \
-    --image-family=debian-8 \
+    --image-family=debian-9 \
     --image-project=debian-cloud \
     --machine-type=g1-small \
     --scopes cloud-platform \
@@ -57,4 +57,4 @@ gcloud compute firewall-rules create allow-http-server-8080 \
     --source-ranges 0.0.0.0/0 \
     --target-tags http-server \
     --description "Allow port 8080 access to http-server"
-# [END deploy_sh]
+# [END memorystore_deploy_sh]

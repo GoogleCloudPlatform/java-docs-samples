@@ -1,5 +1,5 @@
 <!--
-  Copyright 2018 Google Inc.
+  Copyright 2018 Google LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -27,19 +27,18 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.10</version>
   </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <jetty>9.4.4.v20170414</jetty>
+    <jetty>9.4.10.v20180503</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
-  <!-- [START dependencies] -->
+  <!-- [START memorystore_dependencies] -->
   <dependencies>
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -53,7 +52,7 @@
       <version>2.9.0</version>
     </dependency>
   </dependencies>
-  <!-- [END dependencies] -->
+  <!-- [END memorystore_dependencies] -->
 
   <build>
     <!-- for hot reload of the web application -->
@@ -65,14 +64,14 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty}</version>
       </plugin>
-      <!-- [START appengine_maven_plugin]  -->
+      <!-- [START memorystore_appengine_maven_plugin]  -->
       <!-- Deployment plugin for App Engine Flexible -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>1.3.2</version>
      </plugin>
-     <!-- [END appengine_maven_plugin] -->
+     <!-- [END memorystore_appengine_maven_plugin] -->
     </plugins>
   </build>
 </project>

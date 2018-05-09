@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#  Copyright 2018 Google Inc.
+#  Copyright 2018 Google LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-# [START startup_script_sh]
+# [START memorystore_startup_script_sh]
 set -ex
 
 # Talk to the metadata server to get the project id and location of application binary.
@@ -25,8 +25,7 @@ gsutil cp "$GCS_APP_LOCATION"** .
 
 # Install dependencies from apt
 apt-get update
-apt install -t jessie-backports -yq openjdk-8-jre-headless ca-certificates-java
-apt install -t jessie-backports -yq openjdk-8-jdk
+apt-get install -qq openjdk-8-jdk-headless
 
 # Make Java8 the default
 update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
@@ -36,7 +35,7 @@ mkdir -p /opt/jetty/temp
 mkdir -p /var/log/jetty
 
 # Get Jetty
-curl -L https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.4.v20170414/jetty-distribution-9.4.4.v20170414.tar.gz -o jetty9.tgz
+curl -L https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.10.v20180503/jetty-distribution-9.4.10.v20180503.tar.gz -o jetty9.tgz
 tar xf jetty9.tgz  --strip-components=1 -C /opt/jetty
 
 # Add a Jetty User
@@ -75,4 +74,4 @@ service jetty start
 service jetty check
 
 echo "Startup Complete"
-# [END startup_script_sh]
+# [END memorystore_startup_script_sh]

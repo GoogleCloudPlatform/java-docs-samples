@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class AppServletContextListener implements ServletContextListener {
         Thread.currentThread()
             .getContextClassLoader()
             .getResourceAsStream("application.properties"));
-    host = config.getProperty("redis.host", "127.0.0.1");
+    host = config.getProperty("redis.host");
     port = Integer.valueOf(config.getProperty("redis.port", "6379"));
 
     JedisPoolConfig poolConfig = new JedisPoolConfig();
