@@ -84,7 +84,7 @@ public class PostgreSqlServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
-    String url = System.getProperty("postgresql");
+    String url = System.getProperty("cloudsql");
     log("connecting to: " + url);
     try {
       conn = DriverManager.getConnection(url);
