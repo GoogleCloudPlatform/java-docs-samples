@@ -46,7 +46,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudtasks</artifactId>
-      <version>v2beta2-rev39-1.23.0</version>
+      <version>v2beta2-rev42-1.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
