@@ -33,7 +33,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <opencensus.version>0.12.2</opencensus.version>
+    <opencensus.version>0.13.2</opencensus.version>
   </properties>
 
   <dependencies>
@@ -119,7 +119,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.39</version>
+      <version>0.40</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

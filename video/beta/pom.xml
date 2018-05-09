@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.43.0-beta</version>
+      <version>0.47.0-beta</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.39</version>
+      <version>0.40</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

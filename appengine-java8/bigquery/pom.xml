@@ -53,12 +53,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
-      <version>1.22.0</version>
+      <version>1.29.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>0.40.0-beta</version>
+      <version>0.47.0-beta</version>
     </dependency>
     <!-- [END dependencies ] -->
 
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.16.0</version>
+      <version>2.18.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -108,7 +108,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.39</version>
+      <version>0.40</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
