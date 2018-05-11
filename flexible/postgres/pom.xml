@@ -90,12 +90,14 @@
     <!-- [END dependencies] -->
   </dependencies>
   <build>
+    <!-- [START resources] -->
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
+    <!-- [END resources] -->
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
