@@ -50,12 +50,14 @@ public class TranslateText {
    * @param sourceText source text to be translated
    * @param out print stream
    */
+  //[START translate_translate_text]
   public static void translateText(String sourceText, PrintStream out) {
     Translate translate = createTranslateService();
     Translation translation = translate.translate(sourceText);
     out.printf("Source Text:\n\t%s\n", sourceText);
     out.printf("Translated Text:\n\t%s\n", translation.getTranslatedText());
   }
+  //[END translate_translate_text]
 
   /**
    * Translate the source text from source to target language.
