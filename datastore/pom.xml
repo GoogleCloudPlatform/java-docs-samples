@@ -57,10 +57,10 @@
   </dependencies>
   <build>
     <plugins>
-<!-- // [START maven]-->
+<!-- // [START datastore_maven]-->
 
-<!-- // [END maven]-->
-<!-- // [START exec] -->
+<!-- // [END datastore_maven]-->
+<!-- // [START datastore_exec] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -69,7 +69,7 @@
           <mainClass>com.google.datastore.snippets.TaskList</mainClass>
         </configuration>
       </plugin>
-<!-- // [END exec] -->
+<!-- // [END datastore_exec] -->
     </plugins>
   </build>
 </project>
