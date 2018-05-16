@@ -68,6 +68,7 @@ public class TranslateText {
    * @param targetLang target language of translated text
    * @param out print stream
    */
+  [START translate_text_with_model]
   public static void translateTextWithOptionsAndModel(
       String sourceText,
       String sourceLang,
@@ -86,6 +87,7 @@ public class TranslateText {
     out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
         translation.getTranslatedText());
   }
+  [END translate_text_with_model]
 
 
   /**
