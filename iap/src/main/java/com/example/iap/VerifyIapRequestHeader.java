@@ -15,7 +15,7 @@
  */
 
 package com.example.iap;
-// [START verify_iap_request]
+// [START iap_validate_jwt]
 
 import com.google.api.client.http.HttpRequest;
 import com.google.common.base.Preconditions;
@@ -130,4 +130,4 @@ public class VerifyIapRequestHeader {
     return signedJwt.verify(jwsVerifier);
   }
 }
-// [END verify_iap_request]
+// [END iap_validate_jwt]
