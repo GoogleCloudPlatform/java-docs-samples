@@ -35,6 +35,7 @@ public class TranslateText {
    * @param sourceText source text to be detected for language
    * @param out print stream
    */
+  //[START translate_detect_language]
   public static void detectLanguage(String sourceText, PrintStream out) {
     Translate translate = createTranslateService();
     List<Detection> detections = translate.detect(ImmutableList.of(sourceText));
@@ -43,6 +44,7 @@ public class TranslateText {
       out.printf("\t%s\n", detection);
     }
   }
+  //[END translate_detect_language]
 
   /**
    * Translates the source text in any language to English.
