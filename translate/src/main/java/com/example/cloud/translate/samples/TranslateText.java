@@ -120,6 +120,7 @@ public class TranslateText {
    * @param out print stream
    * @param tgtLang optional target language
    */
+  [START translate_list_codes]
   public static void displaySupportedLanguages(PrintStream out, Optional<String> tgtLang) {
     Translate translate = createTranslateService();
     LanguageListOption target = LanguageListOption.targetLanguage(tgtLang.orElse("en"));
@@ -129,6 +130,7 @@ public class TranslateText {
       out.printf("Name: %s, Code: %s\n", language.getName(), language.getCode());
     }
   }
+  [END translate_list_codes]
 
   /**
    * Create Google Translate API Service.
