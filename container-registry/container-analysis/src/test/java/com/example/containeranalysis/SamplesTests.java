@@ -166,6 +166,7 @@ public class SamplesTests {
     do {
       newCount = Samples.getOccurrencesForImage(imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME);
+      tries += 1;
     } while (newCount != 1 && tries < TRY_LIMIT);
     assertEquals(1, newCount);
     assertEquals(0, origCount);
@@ -183,6 +184,7 @@ public class SamplesTests {
     do {
       newCount = Samples.getOccurrencesForNote(noteId, PROJECT_ID);
       sleep(SLEEP_TIME);
+      tries += 1;
     } while (newCount != 1 && tries < TRY_LIMIT);
     assertEquals(0, origCount);
     assertEquals(1, newCount);
@@ -195,14 +197,14 @@ public class SamplesTests {
   public void testPubSub() throws Exception {
     int newCount;
     int tries;
-    String subscriptionId = "drydockOccurrences";
-    ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(PROJECT_ID, subscriptionId);
+    String subId = "drydockOccurrences";
+    ProjectSubscriptionName subName = ProjectSubscriptionName.of(PROJECT_ID, subId);
 
-    Samples.createOccurrenceSubscription(subscriptionId, PROJECT_ID);
+    Samples.createOccurrenceSubscription(subId, PROJECT_ID);
     Subscriber subscriber = null;
     Samples.MessageReceiverExample receiver = new Samples.MessageReceiverExample();
     try {
-      subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
+      subscriber = Subscriber.newBuilder(subName, receiver).build();
       subscriber.startAsync().awaitRunning();
       // sleep so any messages in the queue can go through and be counted before we start the test
       sleep(SLEEP_TIME);
@@ -231,7 +233,7 @@ public class SamplesTests {
       }
       //delete subscription now that we're done with it
       try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
-        subscriptionAdminClient.deleteSubscription(subscriptionName);
+        subscriptionAdminClient.deleteSubscription(subName);
       }
     }
 

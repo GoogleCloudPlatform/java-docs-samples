@@ -161,7 +161,7 @@ public class Samples {
 
   // [START get_occurrence]
   /**
-   * Retrieves an occurrence based on it's name
+   * Retrieves an occurrence based on its name
    *
    * @param occurrenceName the name of the occurrence to delete
    *                       format: "projects/{projectId}/occurrences/{occurrence_id}"
@@ -177,7 +177,7 @@ public class Samples {
 
   // [START get_note]
   /**
-   * Retrieves a note based on it's noteId and projectId
+   * Retrieves a note based on its noteId and projectId
    *
    * @param noteId the note's unique identifier
    * @param projectId the project's unique identifier
@@ -280,22 +280,22 @@ public class Samples {
   // [START pubsub]
   /**
    * Handle incoming occurrences using a pubsub subscription
-   * @param subscriptionId the user-specified identifier for the pubsub subscription
+   * @param subId the user-specified identifier for the pubsub subscription
    * @param timeout the amount of time to listen for pubsub messages (in seconds)
    * @param projectId the project's unique identifier
    * @return number of occurrence pubsub messages received
    * @throws Exception on errors with the subscription client
    */
-  public static int pubSub(String subscriptionId, int timeout, String projectId) throws Exception {
+  public static int pubSub(String subId, int timeout, String projectId) throws Exception {
     Subscriber subscriber = null;
     MessageReceiverExample receiver = new MessageReceiverExample();
 
     try {
       // subscribe to the requested pubsub channel
-      ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
-      subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
+      ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
+      subscriber = Subscriber.newBuilder(subName, receiver).build();
       subscriber.startAsync().awaitRunning();
-      // listen to messages for 'listenTimeout' seconds
+      // listen to messages for 'timeout' seconds
       for (int i = 0; i < timeout; i++) {
         sleep(1000);
       }
@@ -330,18 +330,18 @@ public class Samples {
 
   /**
    * Creates and returns a pubsub subscription object listening to the occurrence topic
-   * @param subscriptionId the identifier you want to associate with the subscription
+   * @param subId the identifier you want to associate with the subscription
    * @param projectId the project's unique identifier
    * @throws Exception on errors with the subscription client
    */
-  public static Subscription createOccurrenceSubscription(String subscriptionId, String projectId)
+  public static Subscription createOccurrenceSubscription(String subId, String projectId)
       throws Exception {
     String topicId = "resource-notes-occurrences-v1alpha1";
     try (SubscriptionAdminClient client = SubscriptionAdminClient.create()) {
       PushConfig config = PushConfig.getDefaultInstance();
       ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
-      ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(projectId, subscriptionId);
-      Subscription sub = client.createSubscription(subscriptionName, topicName, config, 0);
+      ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
+      Subscription sub = client.createSubscription(subName, topicName, config, 0);
       return sub;
     }
   }
