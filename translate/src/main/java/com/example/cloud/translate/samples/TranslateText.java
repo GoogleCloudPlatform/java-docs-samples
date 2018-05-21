@@ -35,6 +35,7 @@ public class TranslateText {
    * @param sourceText source text to be detected for language
    * @param out print stream
    */
+  //[START translate_detect_language]
   public static void detectLanguage(String sourceText, PrintStream out) {
     Translate translate = createTranslateService();
     List<Detection> detections = translate.detect(ImmutableList.of(sourceText));
@@ -43,6 +44,7 @@ public class TranslateText {
       out.printf("\t%s\n", detection);
     }
   }
+  //[END translate_detect_language]
 
   /**
    * Translates the source text in any language to English.
@@ -50,12 +52,14 @@ public class TranslateText {
    * @param sourceText source text to be translated
    * @param out print stream
    */
+  //[START translate_translate_text]
   public static void translateText(String sourceText, PrintStream out) {
     Translate translate = createTranslateService();
     Translation translation = translate.translate(sourceText);
     out.printf("Source Text:\n\t%s\n", sourceText);
     out.printf("Translated Text:\n\t%s\n", translation.getTranslatedText());
   }
+  //[END translate_translate_text]
 
   /**
    * Translate the source text from source to target language.
@@ -66,6 +70,7 @@ public class TranslateText {
    * @param targetLang target language of translated text
    * @param out print stream
    */
+  //[START translate_text_with_model]
   public static void translateTextWithOptionsAndModel(
       String sourceText,
       String sourceLang,
@@ -84,6 +89,7 @@ public class TranslateText {
     out.printf("TranslatedText:\n\tLang: %s, Text: %s\n", targetLang,
         translation.getTranslatedText());
   }
+  //[END translate_text_with_model]
 
 
   /**
@@ -116,6 +122,8 @@ public class TranslateText {
    * @param out print stream
    * @param tgtLang optional target language
    */
+  //[START translate_list_language_names]
+  //[START translate_list_codes]
   public static void displaySupportedLanguages(PrintStream out, Optional<String> tgtLang) {
     Translate translate = createTranslateService();
     LanguageListOption target = LanguageListOption.targetLanguage(tgtLang.orElse("en"));
@@ -125,6 +133,8 @@ public class TranslateText {
       out.printf("Name: %s, Code: %s\n", language.getName(), language.getCode());
     }
   }
+  //[END translate_list_codes]
+  //[END translate_list_language_names]
 
   /**
    * Create Google Translate API Service.
