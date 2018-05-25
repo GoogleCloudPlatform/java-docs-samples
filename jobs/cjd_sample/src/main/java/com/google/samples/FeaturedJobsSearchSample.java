@@ -36,7 +36,7 @@ import java.util.Random;
  */
 public final class FeaturedJobsSearchSample {
 
-  private static JobService jobService = JobServiceUtils.getJobService();
+  private static JobService jobService = JobServiceQuickstart.getJobService();
 
   // [START featured_job]
 

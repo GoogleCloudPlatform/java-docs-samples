@@ -54,7 +54,7 @@ import java.util.List;
  */
 public final class GeneralSearchSample {
 
-  private static JobService jobService = JobServiceUtils.getJobService();
+  private static JobService jobService = JobServiceQuickstart.getJobService();r
 
   //[START basic_keyword_search]
 
@@ -106,7 +106,7 @@ public final class GeneralSearchSample {
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
 
-    JobQuery jobQuery = new JobQuery();
+    JobQuery jobQuery = new JobQuery().setCategories(categories);
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
@@ -186,38 +186,6 @@ public final class GeneralSearchSample {
     System.out.println(response);
   }
   // [END date_range_filter]
-
-  // [START tenant_jobs_filter]
-
-  /**
-   * Search on tenant jobs.
-   */
-  public static void tenantJobsSearch(String companyName) throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            // Make sure to hash your userID
-            .setUserId("HashedUserId")
-            // Make sure to hash the sessionID
-            .setSessionId("HashedSessionID")
-            // Domain of the website where the search is conducted
-            .setDomain("www.google.com");
-
-    JobFilters jobFilters = new JobFilters().setTenantJobOnly(true);
-    if (companyName != null) {
-      jobFilters.setCompanyNames(Arrays.asList(companyName));
-    }
-
-    SearchJobsRequest request =
-        new SearchJobsRequest()
-            .setRequestMetadata(requestMetadata)
-            .setFilters(jobFilters) // Set the actual search term as defined in the jobQurey
-            .setMode("JOB_SEARCH"); // Set the search mode to a regular searchrch
-
-    SearchJobsResponse response = jobService.jobs().search(request).execute();
-    System.out.println(response);
-  }
-  // [END tenant_jobs_filter]
 
   // [START language_code_filter]
 
@@ -354,7 +322,6 @@ public final class GeneralSearchSample {
     categoryFilterSearch(companyName, Arrays.asList("COMPUTER_AND_IT"));
     dateRangeSearch(companyName, "PAST_24_HOURS");
     employmentTypesSearch(companyName, Arrays.asList("FULL_TIME", "CONTRACTOR", "PER_DIEM"));
-    tenantJobsSearch(companyName);
     companyDisplayNameSearch(companyName, Arrays.asList("Google"));
     compensationSearch(companyName);
     languageCodeSearch(companyName, Arrays.asList("pt-BR", "en-US"));

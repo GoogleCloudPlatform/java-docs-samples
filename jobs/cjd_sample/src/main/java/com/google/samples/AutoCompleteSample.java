@@ -20,19 +20,8 @@ import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.JobService.V2.Complete;
 import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.CompleteQueryResponse;
-import com.google.api.services.jobs.v2.model.CompletionResult;
-import com.google.api.services.jobs.v2.model.CreateJobRequest;
-import com.google.api.services.jobs.v2.model.HistogramFacets;
 import com.google.api.services.jobs.v2.model.Job;
-import com.google.api.services.jobs.v2.model.JobQuery;
-import com.google.api.services.jobs.v2.model.MatchingJob;
-import com.google.api.services.jobs.v2.model.RequestMetadata;
-import com.google.api.services.jobs.v2.model.SearchJobsRequest;
-import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The samples in this file introduced how to do the auto complete, including:
@@ -43,7 +32,7 @@ import java.util.List;
  */
 public final class AutoCompleteSample {
 
-  private static JobService jobService = JobServiceUtils.getJobService();
+  private static JobService jobService = JobServiceQuickstart.getJobService();
 
   //[START auto_complete_job_title]
 
