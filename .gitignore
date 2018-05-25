@@ -55,3 +55,6 @@ out/
 
 # OSX
 .DS_Store
+
+# Jobs
+*.json
