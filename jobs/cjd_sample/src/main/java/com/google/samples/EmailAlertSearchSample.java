@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright 2018 Google LLC
  *
@@ -20,14 +21,25 @@ import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.Job;
 import com.google.api.services.jobs.v2.model.JobQuery;
+=======
+package com.google.samples;
+
+import com.google.api.services.jobs.v2.JobService;
+>>>>>>> cjd samples
 import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.Arrays;
 
 /**
  * The sample in this file introduce how to do a email alert search.
+=======
+
+/**
+ * Search for alerts.
+>>>>>>> cjd samples
  */
 public final class EmailAlertSearchSample {
 
@@ -38,6 +50,7 @@ public final class EmailAlertSearchSample {
   /**
    * Search jobs for alert.
    */
+<<<<<<< HEAD
   public static void searchForAlerts(String companyName) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -48,14 +61,26 @@ public final class EmailAlertSearchSample {
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
+=======
+  public static void searchForAlerts() throws IOException {
+    // Make sure to set the requestMetadata the same as the associated search request
+    RequestMetadata requestMetadata =
+        new RequestMetadata()
+            .setUserId("HashedUserId") // Make sure to hash the userID
+            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
+            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+>>>>>>> cjd samples
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
+<<<<<<< HEAD
     if (companyName != null) {
       request.setQuery(new JobQuery().setCompanyNames(Arrays.asList(companyName)));
     }
+=======
+>>>>>>> cjd samples
 
     SearchJobsResponse response = jobService.jobs().searchForAlert(request).execute();
     System.out.println(response);
@@ -63,6 +88,7 @@ public final class EmailAlertSearchSample {
   // [END search_for_alerts]
 
   public static void main(String... args) throws Exception {
+<<<<<<< HEAD
     Company companyToBeCreated = BasicCompanySample.generateCompany();
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
@@ -75,5 +101,8 @@ public final class EmailAlertSearchSample {
 
     BasicJobSample.deleteJob(jobName);
     BasicCompanySample.deleteCompany(companyName);
+=======
+    searchForAlerts();
+>>>>>>> cjd samples
   }
 }

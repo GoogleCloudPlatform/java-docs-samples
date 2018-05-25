@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright 2018 Google LLC
  *
@@ -14,6 +15,8 @@
  * limitations under the License.
  */
 
+=======
+>>>>>>> cjd samples
 package com.google.samples;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -27,9 +30,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
 
+<<<<<<< HEAD
 /**
  * The Util helps to generate credential and create Google JobService
  */
+=======
+>>>>>>> cjd samples
 public class JobServiceUtils {
 
   // [START instantiate]
@@ -51,11 +57,17 @@ public class JobServiceUtils {
 
   private static GoogleCredential generateCredential() {
     try {
+<<<<<<< HEAD
       // Credentials could be downloaded after creating service account
       // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
       // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
       return GoogleCredential
           .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
+=======
+      ClassLoader classLoader = JobServiceUtils.class.getClassLoader();
+      // Credentials could be downloaded after creating service account
+      return GoogleCredential.getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
+>>>>>>> cjd samples
           .createScoped(Collections.singleton(SCOPES));
     } catch (Exception e) {
       System.out.print("Error in generating credential");
