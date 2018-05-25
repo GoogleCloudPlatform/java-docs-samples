@@ -16,7 +16,6 @@ This sample Java application demonstrates how to access the Cloud Job Discovery 
 1. [Enable](https://console.cloud.google.com/apis/api/jobs.googleapis.com/overview) Cloud Job Discovery API.
 
 ## Build
-
 Build your project with:
 ```
    mvn clean package
