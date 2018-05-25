@@ -16,7 +16,6 @@ This sample Java application demonstrates how to access the Cloud Job Discovery 
 1. [Enable](https://console.cloud.google.com/apis/api/jobs.googleapis.com/overview) Cloud Job Discovery API.
 
 ## Build
-
 Build your project with:
 ```
 	mvn clean package
@@ -25,7 +24,10 @@ Build your project with:
 ## Local testing
 
 1. [Create a service account](https://cloud.google.com/docs/authentication/getting-started#creating_the_service_account)
-and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
+and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
+```
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
+```
 2. Run all samples with command:
 ```
    mvn -Dtest=SampleTests test
