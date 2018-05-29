@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START visit_servlet]
+// [START memorystore_visit_servlet]
 
 package com.example.redis;
 
@@ -50,4 +50,4 @@ public class VisitCounterServlet extends HttpServlet {
     }
   }
 }
-// [END visit_servlet]
+// [END memorystore_visit_servlet]
