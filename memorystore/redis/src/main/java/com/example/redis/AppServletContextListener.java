@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START web_listener]
+// [START memorystore_web_listener]
 
 package com.example.redis;
 
@@ -70,4 +70,4 @@ public class AppServletContextListener implements ServletContextListener {
     }
   }
 }
-// [END web_listener]
+// [END memorystore_web_listener]
