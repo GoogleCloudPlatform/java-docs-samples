@@ -55,6 +55,7 @@ import com.google.pubsub.v1.ProjectTopicName;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -727,12 +728,15 @@ public class Inspect {
             CustomInfoType
                 .newBuilder()
                 .setInfoType(InfoType.newBuilder().setName(String.format("CUSTOM_DICTIONARY_%s", i)))
-                .setDictionary(Dictionary.newBuilder().setWordList(WordList.newBuilder().addAllWords(dictionaryWords)))
+                .setDictionary(
+                    Dictionary
+                        .newBuilder()
+                        .setWordList(WordList.newBuilder().addAllWords(Arrays.<String>asList(dictionaryWords))))
                 .build();
         customInfoTypesList.add(customInfoType);
       }
     }
-    if (cmd.hasOption(customRegexOptions.getOpt())) {
+    if (cmd.hasOption(customRegexesOption.getOpt())) {
       String[] patterns = cmd.getOptionValues(customRegexesOption.getOpt());
       for (int i = 0; i < patterns.length; i++) {
         CustomInfoType customInfoType =
@@ -748,7 +752,7 @@ public class Inspect {
     // string inspection
     if (cmd.hasOption("s")) {
       String val = cmd.getOptionValue(stringOption.getOpt());
-      inspectString(val, minLikelihood, maxFindings, infoTypesList, includeQuote, projectId);
+      inspectString(val, minLikelihood, maxFindings, infoTypesList, customInfoTypesList, includeQuote, projectId);
     } else if (cmd.hasOption("f")) {
       String filePath = cmd.getOptionValue(fileOption.getOpt());
       inspectFile(filePath, minLikelihood, maxFindings, infoTypesList, customInfoTypesList, includeQuote, projectId);
