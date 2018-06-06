@@ -70,7 +70,7 @@ public class InspectIT {
         "\"My phone number is (234) 456-7890 and my email address is gary@somedomain.com\"";
     Inspect.main(
         new String[] {
-          "-s", text, "-customDictionaries", "gary@somedomain.com", "-customRegexes", "(\\d{3}) \\d{3}-\\d{4}"
+          "-s", text, "-customDictionaries", "gary@somedomain.com", "-customRegexes", "\(\\d{3}\) \\d{3}-\\d{4}"
         });
     String output = bout.toString();
 
@@ -98,7 +98,7 @@ public class InspectIT {
           "-customDictionaries",
           "gary@somedomain.com",
           "-customRegexes",
-          "(\\d{3}) \\d{3}-\\d{4}"
+          "\(\\d{3}\) \\d{3}-\\d{4}"
         });
     String output = bout.toString();
     assertThat(output, containsString("CUSTOM_DICTIONARY_0"));
