@@ -644,11 +644,13 @@ public class Inspect {
     infoTypesOption.setArgs(Option.UNLIMITED_VALUES);
     commandLineOptions.addOption(infoTypesOption);
 
-    Option customDictionariesOption = Option.builder("customDictionaries").hasArg(true).required(false).build();
+    Option customDictionariesOption =
+        Option.builder("customDictionaries").hasArg(true).required(false).build();
     customDictionariesOption.setArgs(Option.UNLIMITED_VALUES);
     commandLineOptions.addOption(customDictionariesOption);
 
-    Option customRegexesOption = Option.builder("customRegexes").hasArg(true).required(false).build();
+    Option customRegexesOption =
+        Option.builder("customRegexes").hasArg(true).required(false).build();
     customRegexesOption.setArgs(Option.UNLIMITED_VALUES);
     commandLineOptions.addOption(customRegexesOption);
 
@@ -727,11 +729,15 @@ public class Inspect {
         CustomInfoType customInfoType =
             CustomInfoType
                 .newBuilder()
-                .setInfoType(InfoType.newBuilder().setName(String.format("CUSTOM_DICTIONARY_%s", i)))
+                .setInfoType(
+                    InfoType.newBuilder().setName(String.format("CUSTOM_DICTIONARY_%s", i)))
                 .setDictionary(
                     Dictionary
                         .newBuilder()
-                        .setWordList(WordList.newBuilder().addAllWords(Arrays.<String>asList(dictionaryWords))))
+                        .setWordList(
+                            WordList
+                                .newBuilder()
+                                .addAllWords(Arrays.<String>asList(dictionaryWords))))
                 .build();
         customInfoTypesList.add(customInfoType);
       }
@@ -752,10 +758,24 @@ public class Inspect {
     // string inspection
     if (cmd.hasOption("s")) {
       String val = cmd.getOptionValue(stringOption.getOpt());
-      inspectString(val, minLikelihood, maxFindings, infoTypesList, customInfoTypesList, includeQuote, projectId);
+      inspectString(
+          val,
+          minLikelihood,
+          maxFindings,
+          infoTypesList,
+          customInfoTypesList,
+          includeQuote,
+          projectId);
     } else if (cmd.hasOption("f")) {
       String filePath = cmd.getOptionValue(fileOption.getOpt());
-      inspectFile(filePath, minLikelihood, maxFindings, infoTypesList, customInfoTypesList, includeQuote, projectId);
+      inspectFile(
+          filePath,
+          minLikelihood,
+          maxFindings,
+          infoTypesList,
+          customInfoTypesList,
+          includeQuote,
+          projectId);
       // gcs file inspection
     } else if (cmd.hasOption("gcs")) {
       String bucketName = cmd.getOptionValue(bucketNameOption.getOpt());
