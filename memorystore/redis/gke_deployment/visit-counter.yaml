@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+# [START memorystore_visitcounter_yaml]
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -28,12 +28,6 @@ spec:
       containers:
       - name: visit-counter
         image: "gcr.io/<PROJECT_ID>/visit-counter:v1"
-        env:
-        - name: REDISHOST
-          valueFrom:
-            configMapKeyRef:
-              name: redishost
-              key: REDISHOST
         ports:
         - name: http
           containerPort: 8080
@@ -50,3 +44,4 @@ spec:
   - port: 80
     targetPort: 8080
     protocol: TCP
+# [END memorystore_visitcounter_yaml]
