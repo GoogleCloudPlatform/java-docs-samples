@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.63</version>
+            <version>1.9.64</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
