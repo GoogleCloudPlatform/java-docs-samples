@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright 2018 Google LLC
  *
@@ -15,8 +14,6 @@
  * limitations under the License.
  */
 
-=======
->>>>>>> cjd samples
 package com.google.samples;
 
 import com.google.api.client.googleapis.batch.BatchRequest;
@@ -33,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-<<<<<<< HEAD
 
 /**
  * The samples in this file introduce how to do batch operation in CJD. Including:
@@ -46,46 +42,21 @@ import java.util.List;
  *
  * For simplicity, the samples always use the same kind of requests in each batch. In a real case ,
  * you might put different kinds of request in one batch.
-=======
-import java.util.Random;
-
-/**
- * Batch operations for job create, update and delete.
->>>>>>> cjd samples
  */
 public final class BatchOperationSample {
 
   private static JobService jobService = JobServiceQuickstart.getJobService();
 
-<<<<<<< HEAD
   // [START batch_job_create]
   public static List<Job> batchCreateJobs(String companyName) throws IOException {
-=======
-  // [START batch_operation]
-
-  /**
-   * Batch operations for job create, update and delete.
-   */
-  public static void batchOperations() throws IOException {
-    String companyName = jobService.companies().create(
-        new Company().setDisplayName("BatchOperationSample")
-            .setDistributorCompanyId(
-                "BatchOperationSample:" + String.valueOf(new Random().nextLong()))).execute()
-        .getName();
-
->>>>>>> cjd samples
     List<Job> createdJobs = new ArrayList<>();
 
     // Callback for batch create
     JsonBatchCallback<Job> createCallback =
         new JsonBatchCallback<Job>() {
           @Override
-<<<<<<< HEAD
           public void onFailure(GoogleJsonError e,
               HttpHeaders responseHeaders) {
-=======
-          public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) {
->>>>>>> cjd samples
             System.out.println("Create Error Message: " + e.getMessage());
           }
 
@@ -102,12 +73,8 @@ public final class BatchOperationSample {
             .setRequisitionId("123456")
             .setJobTitle("Software Engineer")
             .setApplicationUrls(Arrays.asList("http://careers.google.com"))
-<<<<<<< HEAD
             .setDescription(
                 "Design, develop, test, deploy, maintain and improve software.");
-=======
-            .setDescription("Design, develop, test, deploy, maintain and improve software.");
->>>>>>> cjd samples
     Job hardwareEngineerJob =
         new Job()
             .setCompanyName(companyName)
@@ -133,43 +100,29 @@ public final class BatchOperationSample {
 
     // Executes batch request
     batchCreate.execute();
-<<<<<<< HEAD
     return createdJobs;
   }
   // [END batch_job_create]
 
   // [START batch_job_update]
   public static List<Job> batchJobUpdate(List<Job> jobsToBeUpdate) throws IOException {
-=======
-
-    // Batch update jobs
->>>>>>> cjd samples
     List<Job> updatedJobs = new ArrayList<>();
 
     JsonBatchCallback<Job> updateCallback =
         new JsonBatchCallback<Job>() {
           @Override
-<<<<<<< HEAD
           public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) {
-=======
-          public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) throws IOException {
->>>>>>> cjd samples
             System.out.println("Update Error Message: " + e.getMessage());
           }
 
           @Override
-<<<<<<< HEAD
           public void onSuccess(Job job, HttpHeaders responseHeaders) {
-=======
-          public void onSuccess(Job job, HttpHeaders responseHeaders) throws IOException {
->>>>>>> cjd samples
             System.out.println("Update Job: " + job);
             updatedJobs.add(job);
           }
         };
 
     BatchRequest batchUpdate = jobService.batch();
-<<<<<<< HEAD
     // You might use Job entity with all fields filled in to do the update
     for (int i = 0; i < jobsToBeUpdate.size(); i += 2) {
       Job toBeUpdated = jobsToBeUpdate.get(i);
@@ -186,20 +139,11 @@ public final class BatchOperationSample {
       jobService
           .jobs()
           .patch(toBeUpdated.getName(),
-=======
-    for (Job toBeUpdated : createdJobs) {
-      toBeUpdated.setJobTitle("Engineer in Mountain View");
-      jobService
-          .jobs()
-          .patch(
-              toBeUpdated.getName(),
->>>>>>> cjd samples
               new UpdateJobRequest().setJob(toBeUpdated).setUpdateJobFields("jobTitle"))
           .queue(batchUpdate, updateCallback);
     }
     batchUpdate.execute();
 
-<<<<<<< HEAD
     return updatedJobs;
   }
 
@@ -209,11 +153,6 @@ public final class BatchOperationSample {
   public static void batchDeleteJobs(List<Job> jobsToBeDeleted) throws IOException {
     BatchRequest batchDelete = jobService.batch();
     for (Job job : jobsToBeDeleted) {
-=======
-    // Batch delete jobs
-    BatchRequest batchDelete = jobService.batch();
-    for (Job job : updatedJobs) {
->>>>>>> cjd samples
       jobService
           .jobs()
           .delete(job.getName())
@@ -221,18 +160,12 @@ public final class BatchOperationSample {
               batchDelete,
               new JsonBatchCallback<Empty>() {
                 @Override
-<<<<<<< HEAD
                 public void onFailure(GoogleJsonError e,
                     HttpHeaders responseHeaders) {
-=======
-                public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders)
-                    throws IOException {
->>>>>>> cjd samples
                   System.out.println("Delete Error Message: " + e.getMessage());
                 }
 
                 @Override
-<<<<<<< HEAD
                 public void onSuccess(Empty empty, HttpHeaders responseHeaders) {
                   System.out.println("Job deleted");
                 }
@@ -256,21 +189,5 @@ public final class BatchOperationSample {
     batchDeleteJobs(updatedJobs);
 
     BasicCompanySample.deleteCompany(company.getName());
-=======
-                public void onSuccess(Empty empty, HttpHeaders responseHeaders)
-                    throws IOException {
-                  System.out.println("Company deleted");
-                }
-              });
-    }
-    batchDelete.execute();
-
-    jobService.companies().delete(companyName).execute();
-  }
-  // [END batch_operation]
-
-  public static void main(String... args) throws Exception {
-    batchOperations();
->>>>>>> cjd samples
   }
 }

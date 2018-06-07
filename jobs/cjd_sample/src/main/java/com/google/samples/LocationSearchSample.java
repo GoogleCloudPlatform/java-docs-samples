@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright 2018 Google LLC
  *
@@ -20,11 +19,6 @@ package com.google.samples;
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.Job;
-=======
-package com.google.samples;
-
-import com.google.api.services.jobs.v2.JobService;
->>>>>>> cjd samples
 import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.LocationFilter;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
@@ -33,7 +27,6 @@ import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-<<<<<<< HEAD
 /**
  * The samples in this file introduce how to do a search with location filter, including:
  *
@@ -47,15 +40,11 @@ import java.util.Arrays;
  *
  * - Location filter of multiple locations
  */
-=======
-/** Location Search */
->>>>>>> cjd samples
 public final class LocationSearchSample {
 
   private static JobService jobService = JobServiceQuickstart.getJobService();
 
   // [START basic_location_search]
-<<<<<<< HEAD
 
   /**
    * Basic location Search
@@ -79,19 +68,6 @@ public final class LocationSearchSample {
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
-=======
-  /** Basic location Search */
-  public static void basicLocationSearch() throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
-    LocationFilter locationFilter =
-        new LocationFilter().setName("Mountain View, CA").setDistanceInMiles(0.5);
-    JobQuery jobQuery = new JobQuery().setLocationFilters(Arrays.asList(locationFilter));
->>>>>>> cjd samples
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -103,7 +79,6 @@ public final class LocationSearchSample {
   // [END basic_location_search]
 
   // [START keyword_location_search]
-<<<<<<< HEAD
 
   /**
    * Keyword location Search
@@ -130,22 +105,6 @@ public final class LocationSearchSample {
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
-=======
-  /** Keyword location Search */
-  public static void keywordLocationSearch() throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
-    LocationFilter locationFilter =
-        new LocationFilter().setName("Mountain View, CA").setDistanceInMiles(0.5);
-    JobQuery jobQuery =
-        new JobQuery()
-            .setQuery("Software Engineer")
-            .setLocationFilters(Arrays.asList(locationFilter));
->>>>>>> cjd samples
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -157,7 +116,6 @@ public final class LocationSearchSample {
   // [END keyword_location_search]
 
   // [START city_location_search]
-<<<<<<< HEAD
 
   /**
    * City location Search
@@ -179,18 +137,6 @@ public final class LocationSearchSample {
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
-=======
-  /** City location Search */
-  public static void cityLocationSearch() throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
-    LocationFilter locationFilter = new LocationFilter().setName("Mountain View, CA");
-    JobQuery jobQuery = new JobQuery().setLocationFilters(Arrays.asList(locationFilter));
->>>>>>> cjd samples
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -202,7 +148,6 @@ public final class LocationSearchSample {
   // [END city_location_search]
 
   // [START multi_locations_search]
-<<<<<<< HEAD
 
   /**
    * Multiple locations Search
@@ -219,30 +164,15 @@ public final class LocationSearchSample {
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
-=======
-  /** Multiple locations Search */
-  public static void multiLocationsSearch() throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
->>>>>>> cjd samples
     JobQuery jobQuery =
         new JobQuery()
             .setLocationFilters(
                 Arrays.asList(
-<<<<<<< HEAD
                     new LocationFilter().setName(location1).setDistanceInMiles(distance1),
                     new LocationFilter().setName(location2)));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
-=======
-                    new LocationFilter().setName("Mountain View, CA"),
-                    new LocationFilter().setName("Sunnyvale, CA")));
->>>>>>> cjd samples
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -254,7 +184,6 @@ public final class LocationSearchSample {
   // [END multi_locations_search]
 
   // [START broadening_location_search]
-<<<<<<< HEAD
 
   /**
    * Broadening location Search
@@ -277,19 +206,6 @@ public final class LocationSearchSample {
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
-=======
-  /** Broadening location Search */
-  public static void broadeningLocationsSearch() throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
-    JobQuery jobQuery =
-        new JobQuery()
-            .setLocationFilters(Arrays.asList(new LocationFilter().setName("Mountain View, CA")));
->>>>>>> cjd samples
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -302,7 +218,6 @@ public final class LocationSearchSample {
   // [END broadening_location_search]
 
   public static void main(String... args) throws Exception {
-<<<<<<< HEAD
     String location = args.length >= 1 ? args[0] : "Mountain View, CA";
     double distance = args.length >= 2 ? Double.parseDouble(args[1]) : 0.5;
     String keyword = args.length >= 3 ? args[2] : "Software Engineer";
@@ -329,12 +244,5 @@ public final class LocationSearchSample {
     BasicJobSample.deleteJob(jobName);
     BasicJobSample.deleteJob(jobName2);
     BasicCompanySample.deleteCompany(companyName);
-=======
-    basicLocationSearch();
-    broadeningLocationsSearch();
-    cityLocationSearch();
-    keywordLocationSearch();
-    multiLocationsSearch();
->>>>>>> cjd samples
   }
 }

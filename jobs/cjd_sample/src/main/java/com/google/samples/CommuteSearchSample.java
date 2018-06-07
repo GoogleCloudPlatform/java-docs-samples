@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright 2018 Google LLC
  *
@@ -15,24 +14,18 @@
  * limitations under the License.
  */
 
-=======
->>>>>>> cjd samples
 package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.CommutePreference;
-<<<<<<< HEAD
 import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.Job;
-=======
->>>>>>> cjd samples
 import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.LatLng;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
-<<<<<<< HEAD
 import java.util.Arrays;
 
 /**
@@ -40,11 +33,6 @@ import java.util.Arrays;
  *
  * Note: Commute Search is different from location search. It only take latitude and longitude as
  * the start location.
-=======
-
-/**
- * Commute Search
->>>>>>> cjd samples
  */
 public final class CommuteSearchSample {
 
@@ -52,7 +40,6 @@ public final class CommuteSearchSample {
 
   // [START commute_search]
 
-<<<<<<< HEAD
   public static void commuteSearch(String companyName) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -63,18 +50,6 @@ public final class CommuteSearchSample {
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
-=======
-  /**
-   * Commute search
-   */
-  public static void commuteSearch() throws IOException {
-    // Make sure to set the requestMetadata the same as the associated search request
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
->>>>>>> cjd samples
     JobQuery jobQuery =
         new JobQuery()
             .setCommuteFilter(
@@ -83,15 +58,11 @@ public final class CommuteSearchSample {
                     .setMethod("TRANSIT")
                     .setTravelTime("1000s")
                     .setStartLocation(
-<<<<<<< HEAD
                         new LatLng().setLatitude(37.422408)
                             .setLongitude(-122.085609)));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
-=======
-                        new LatLng().setLatitude(37.422408).setLongitude(-122.085609)));
->>>>>>> cjd samples
     SearchJobsRequest searchJobsRequest =
         new SearchJobsRequest()
             .setQuery(jobQuery)
@@ -104,7 +75,6 @@ public final class CommuteSearchSample {
   // [END commute_search]
 
   public static void main(String... args) throws Exception {
-<<<<<<< HEAD
     Company companyToBeCreated = BasicCompanySample.generateCompany();
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
@@ -118,8 +88,5 @@ public final class CommuteSearchSample {
 
     BasicJobSample.deleteJob(jobName);
     BasicCompanySample.deleteCompany(companyName);
-=======
-    commuteSearch();
->>>>>>> cjd samples
   }
 }
