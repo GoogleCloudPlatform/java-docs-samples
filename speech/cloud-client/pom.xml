@@ -57,6 +57,22 @@
       <version>0.40</version>
       <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>21.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -129,6 +145,35 @@
             </executions>
             <configuration>
               <mainClass>com.example.speech.Recognize</mainClass>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>MicStreamRecognize</id>
+      <activation>
+        <property>
+          <name>MicStreamRecognize</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.example.speech.MicStreamRecognize</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </plugin>
