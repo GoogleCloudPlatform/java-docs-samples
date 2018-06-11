@@ -27,7 +27,7 @@
     <parent>
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
-        <version>1.0.9</version>
+        <version>1.0.10</version>
     </parent>
 
     <properties>
@@ -39,12 +39,20 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-monitoring</artifactId>
-            <version>0.47.0-beta</version>
+            <version>0.50.0-beta</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -66,12 +66,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>0.47.0-beta</version>
+      <version>1.32.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.29.0</version>
+      <version>1.32.0</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -79,13 +79,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
 
