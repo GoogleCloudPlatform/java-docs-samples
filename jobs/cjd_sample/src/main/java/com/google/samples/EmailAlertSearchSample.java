@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,16 +38,21 @@ public final class EmailAlertSearchSample {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com");
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
-    SearchJobsResponse response = jobService.jobs().searchForAlert(request).execute();
+    SearchJobsResponse response = jobService.jobs().searchForAlert(request)
+        .execute();
     System.out.println(response);
   }
   // [END search_for_alerts]

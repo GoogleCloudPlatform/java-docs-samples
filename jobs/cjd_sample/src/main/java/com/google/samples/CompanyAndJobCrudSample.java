@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.google.samples;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.CreateJobRequest;
@@ -41,9 +42,10 @@ public final class CompanyAndJobCrudSample {
   /**
    * Generate a company
    */
-  public static Company generateCompany() throws IOException {
+  public static Company generateCompany() {
     // distributor company id should be a unique Id in your system.
-    String distributorCompanyId = "company:" + String.valueOf(new Random().nextLong());
+    String distributorCompanyId =
+        "company:" + String.valueOf(new Random().nextLong());
 
     Company company =
         new Company()
@@ -61,9 +63,15 @@ public final class CompanyAndJobCrudSample {
    * Create a company.
    */
   public static Company createCompany(Company companyToBeCreated) throws IOException {
-    Company companyCreated = jobService.companies().create(companyToBeCreated).execute();
-    System.out.println("Company created: " + companyCreated);
-    return companyCreated;
+    try {
+      Company companyCreated = jobService.companies().create(companyToBeCreated)
+          .execute();
+      System.out.println("Company created: " + companyCreated);
+      return companyCreated;
+    } catch (IOException e) {
+      System.out.println("Got exception while creating company");
+      throw e;
+    }
   }
   // [END create_company]
 
@@ -73,9 +81,14 @@ public final class CompanyAndJobCrudSample {
    * Get a company.
    */
   public static Company getCompany(String companyName) throws IOException {
-    Company companyExisted = jobService.companies().get(companyName).execute();
-    System.out.println("Company existed: " + companyExisted);
-    return companyExisted;
+    try {
+      Company companyExisted = jobService.companies().get(companyName).execute();
+      System.out.println("Company existed: " + companyExisted);
+      return companyExisted;
+    } catch (IOException e) {
+      System.out.println("Got exception while getting company");
+      throw e;
+    }
   }
   // [END get_company]
 
@@ -84,12 +97,19 @@ public final class CompanyAndJobCrudSample {
   /**
    * Updates a company.
    */
-  public static Company updateCompany(String companyName, Company companyToBeUpdated)
+  public static Company updateCompany(String companyName,
+      Company companyToBeUpdated)
       throws IOException {
-    Company companyUpdated = jobService.companies().patch(companyName, companyToBeUpdated)
-        .execute();
-    System.out.println("Company updated: " + companyUpdated);
-    return companyUpdated;
+    try {
+      Company companyUpdated = jobService.companies()
+          .patch(companyName, companyToBeUpdated)
+          .execute();
+      System.out.println("Company updated: " + companyUpdated);
+      return companyUpdated;
+    } catch (IOException e) {
+      System.out.println("Got exception while updating company");
+      throw e;
+    }
   }
   // [END update_company]
 
@@ -99,8 +119,14 @@ public final class CompanyAndJobCrudSample {
    * Delete a company.
    */
   public static void deleteCompany(String companyName) throws IOException {
-    jobService.companies().delete(companyName).execute();
-    System.out.println("Company deleted");
+    try {
+
+      jobService.companies().delete(companyName).execute();
+      System.out.println("Company deleted");
+    } catch (IOException e) {
+      System.out.println("Got exception while deleting company");
+      throw e;
+    }
   }
   // [END delete_company]
 
@@ -109,9 +135,10 @@ public final class CompanyAndJobCrudSample {
   /**
    * Generate a basic job with given companyName.
    */
-  public static Job generateJobWithRequiredFields(String companyName) throws IOException {
+  public static Job generateJobWithRequiredFields(String companyName) {
     // requisition id should be a unique Id in your system.
-    String requisitionId = "jobWithRequiredFields:" + String.valueOf(new Random().nextLong());
+    String requisitionId =
+        "jobWithRequiredFields:" + String.valueOf(new Random().nextLong());
 
     Job job =
         new Job()
@@ -119,7 +146,8 @@ public final class CompanyAndJobCrudSample {
             .setJobTitle("Software Engineer")
             .setCompanyName(companyName)
             .setApplicationUrls(Arrays.asList("http://careers.google.com"))
-            .setDescription("Design, develop, test, deploy, maintain and improve software.");
+            .setDescription(
+                "Design, develop, test, deploy, maintain and improve software.");
     System.out.println("Job generated: " + job);
     return job;
   }
@@ -130,16 +158,18 @@ public final class CompanyAndJobCrudSample {
   /**
    * Generate a job with a custom attribute.
    */
-  public static Job generateJobWithACustomAttribute(String companyName) throws IOException {
+  public static Job generateJobWithACustomAttribute(String companyName) {
     // requisition id should be a unique Id in your system.
-    String requisitionId = "jobWithACustomAttribute:" + String.valueOf(new Random().nextLong());
+    String requisitionId =
+        "jobWithACustomAttribute:" + String.valueOf(new Random().nextLong());
 
     // Constructs custom attributes map
     Map<String, CustomAttribute> customAttributes = new HashMap<>();
     customAttributes.put(
         "some_field_name",
         new CustomAttribute()
-            .setStringValues(new StringValues().setValues(Arrays.asList("value1")))
+            .setStringValues(
+                new StringValues().setValues(Arrays.asList("value1")))
             .setFilterable(true));
 
     // Creates job with custom attributes
@@ -149,7 +179,8 @@ public final class CompanyAndJobCrudSample {
             .setRequisitionId(requisitionId)
             .setJobTitle("Software Engineer")
             .setApplicationUrls(Arrays.asList("http://careers.google.com"))
-            .setDescription("Design, develop, test, deploy, maintain and improve software.")
+            .setDescription(
+                "Design, develop, test, deploy, maintain and improve software.")
             .setCustomAttributes(customAttributes);
     System.out.println("Job generated: " + job);
     return job;
@@ -162,10 +193,16 @@ public final class CompanyAndJobCrudSample {
    * Create a job.
    */
   public static Job createJob(Job jobToBeCreated) throws IOException {
-    CreateJobRequest createJobRequest = new CreateJobRequest().setJob(jobToBeCreated);
-    Job jobCreated = jobService.jobs().create(createJobRequest).execute();
-    System.out.println("Job created: " + jobCreated);
-    return jobCreated;
+    try {
+      CreateJobRequest createJobRequest = new CreateJobRequest()
+          .setJob(jobToBeCreated);
+      Job jobCreated = jobService.jobs().create(createJobRequest).execute();
+      System.out.println("Job created: " + jobCreated);
+      return jobCreated;
+    } catch (IOException e) {
+      System.out.println("Got exception while creating job");
+      throw e;
+    }
   }
   // [END create_job]
 
@@ -175,9 +212,14 @@ public final class CompanyAndJobCrudSample {
    * Get a job.
    */
   public static Job getJob(String jobName) throws IOException {
-    Job jobExisted = jobService.jobs().get(jobName).execute();
-    System.out.println("Job existed: " + jobExisted);
-    return jobExisted;
+    try {
+      Job jobExisted = jobService.jobs().get(jobName).execute();
+      System.out.println("Job existed: " + jobExisted);
+      return jobExisted;
+    } catch (IOException e) {
+      System.out.println("Got exception while getting job");
+      throw e;
+    }
   }
   // [END get_job]
 
@@ -186,11 +228,19 @@ public final class CompanyAndJobCrudSample {
   /**
    * Update a job.
    */
-  public static Job updateJob(String jobName, Job jobToBeUpdated) throws IOException {
-    UpdateJobRequest updateJobRequest = new UpdateJobRequest().setJob(jobToBeUpdated);
-    Job jobUpdated = jobService.jobs().patch(jobName, updateJobRequest).execute();
-    System.out.println("Job updated: " + jobUpdated);
-    return jobUpdated;
+  public static Job updateJob(String jobName, Job jobToBeUpdated)
+      throws IOException {
+    try {
+      UpdateJobRequest updateJobRequest = new UpdateJobRequest()
+          .setJob(jobToBeUpdated);
+      Job jobUpdated = jobService.jobs().patch(jobName, updateJobRequest)
+          .execute();
+      System.out.println("Job updated: " + jobUpdated);
+      return jobUpdated;
+    } catch (IOException e) {
+      System.out.println("Got exception while updating job");
+      throw e;
+    }
   }
   // [END update_job]
 
@@ -200,8 +250,13 @@ public final class CompanyAndJobCrudSample {
    * Delete a job.
    */
   public static void deleteJob(String jobName) throws IOException {
-    jobService.jobs().delete(jobName).execute();
-    System.out.println("Job deleted");
+    try {
+      jobService.jobs().delete(jobName).execute();
+      System.out.println("Job deleted");
+    } catch (IOException e) {
+      System.out.println("Got exception while deleting job");
+      throw e;
+    }
   }
   // [END delete_job]
 
@@ -210,7 +265,8 @@ public final class CompanyAndJobCrudSample {
     Company companyCreated = createCompany(companyToBeCreated);
     String companyName = companyCreated.getName();
     getCompany(companyName);
-    Company companyToBeUpdated = companyCreated.setWebsite("https://elgoog.im/");
+    Company companyToBeUpdated = companyCreated
+        .setWebsite("https://elgoog.im/");
     updateCompany(companyName, companyToBeUpdated);
 
     Job jobToBeCreated = generateJobWithRequiredFields(companyName);
@@ -225,7 +281,8 @@ public final class CompanyAndJobCrudSample {
     Job jobCreated1 = createJob(jobToBeCreated1);
     String jobName1 = jobCreated1.getName();
     getJob(jobName1);
-    Job jobToBeUpdated1 = jobCreated1.setDescription("Updated dummy description");
+    Job jobToBeUpdated1 = jobCreated1
+        .setDescription("Updated dummy description");
     updateJob(jobName1, jobToBeUpdated1);
     deleteJob(jobName1);
 

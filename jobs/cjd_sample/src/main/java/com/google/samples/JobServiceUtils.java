@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,8 @@ public class JobServiceUtils {
     try {
       ClassLoader classLoader = JobServiceUtils.class.getClassLoader();
       // Credentials could be downloaded after creating service account
-      return GoogleCredential.getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
+      return GoogleCredential
+          .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
           .createScoped(Collections.singleton(SCOPES));
     } catch (Exception e) {
       System.out.print("Error in generating credential");

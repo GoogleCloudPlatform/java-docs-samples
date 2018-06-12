@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,13 @@ public final class CommuteSearchSample {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com");
     JobQuery jobQuery =
         new JobQuery()
             .setCommuteFilter(
@@ -52,14 +56,16 @@ public final class CommuteSearchSample {
                     .setMethod("TRANSIT")
                     .setTravelTime("1000s")
                     .setStartLocation(
-                        new LatLng().setLatitude(37.422408).setLongitude(-122.085609)));
+                        new LatLng().setLatitude(37.422408)
+                            .setLongitude(-122.085609)));
     SearchJobsRequest searchJobsRequest =
         new SearchJobsRequest()
             .setQuery(jobQuery)
             .setRequestMetadata(requestMetadata)
             .setJobView("FULL")
             .setEnablePreciseResultSize(true);
-    SearchJobsResponse response = jobService.jobs().search(searchJobsRequest).execute();
+    SearchJobsResponse response = jobService.jobs().search(searchJobsRequest)
+        .execute();
     System.out.println(response);
   }
   // [END commute_search]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,8 @@ public final class HistogramSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash the userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // This is the domain of the website where the search is
+            .setDomain(
+                "www.google.com"); // This is the domain of the website where the search is
     // conducted.
     SearchJobsRequest request =
         new SearchJobsRequest()

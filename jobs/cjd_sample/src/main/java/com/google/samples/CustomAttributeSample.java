@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,8 @@ public final class CustomAttributeSample {
   /**
    * Creates a new job with advanced custom fields (both numeric and string).
    */
-  public static Job createJobWithNumericAndStringCustomFields(String companyName)
+  public static Job createJobWithNumericAndStringCustomFields(
+      String companyName)
       throws IOException {
     Map<String, CustomAttribute> customAttributeMap = new HashMap<>();
     customAttributeMap.put(
@@ -52,27 +53,31 @@ public final class CustomAttributeSample {
             .setStringValues(
                 new StringValues()
                     .setValues(
-                        Arrays.asList("team management", "personal organization and risk control")))
+                        Arrays.asList("team management",
+                            "personal organization and risk control")))
             .setFilterable(true));
     customAttributeMap.put(
-        "target_bonus_rate", new CustomAttribute().setLongValue(15L).setFilterable(true));
+        "target_bonus_rate",
+        new CustomAttribute().setLongValue(15L).setFilterable(true));
     customAttributeMap.put(
         "additional_info",
         new CustomAttribute()
             .setStringValues(
                 new StringValues()
-                    .setValues(Arrays.asList("some additional information not searchable"))));
+                    .setValues(Arrays.asList(
+                        "some additional information not searchable"))));
     Job job =
         new Job()
             .setCompanyName(companyName)
             .setRequisitionId("123456")
             .setJobTitle("Software Engineer")
             .setApplicationUrls(Arrays.asList("http://careers.google.com"))
-            .setDescription("Design, develop, test, deploy, maintain and improve software.")
+            .setDescription(
+                "Design, develop, test, deploy, maintain and improve software.")
             .setCustomAttributes(customAttributeMap);
     CreateJobRequest createJobRequest = new CreateJobRequest().setJob(job);
     Job createdJob = jobService.jobs().create(createJobRequest).execute();
-    System.out.println(createdJob.getName());
+    System.out.println("Job created:" + createdJob);
     return createdJob;
   }
   // [END multiple_custom_attributes_job]
@@ -84,12 +89,14 @@ public final class CustomAttributeSample {
 
     // [START custom_attribute_example_1]
     String salaryCustomAttributeFilter = "(100000 <= salary) AND (salary <= 200000)";
-    JobQuery salaryJobQuery = new JobQuery().setCustomAttributeFilter(salaryCustomAttributeFilter);
+    JobQuery salaryJobQuery = new JobQuery()
+        .setCustomAttributeFilter(salaryCustomAttributeFilter);
     // [END custom_attribute_example_1]
 
     // [START custom_attribute_example_2]
     String sponsoredJobFilter = "(NOT EMPTY(is_sponsored_job)) AND (is_sponsored_job = \"true\")";
-    JobQuery sponsorJobQuery = new JobQuery().setCustomAttributeFilter(sponsoredJobFilter);
+    JobQuery sponsorJobQuery = new JobQuery()
+        .setCustomAttributeFilter(sponsoredJobFilter);
     // [END custom_attribute_example_2]
 
     // [START custom_attribute_example_3]
@@ -117,20 +124,23 @@ public final class CustomAttributeSample {
             + " AND "
             + " (NOT EMPTY(visa_required)";
     JobQuery crossFieldFilterQuery =
-        new JobQuery().setQuery("Program Manager").setCustomAttributeFilter(filter);
+        new JobQuery().setQuery("Program Manager")
+            .setCustomAttributeFilter(filter);
     // [END custom_attribute_example_4]
   }
 
   /**
    * Filters pn custom fields.
    */
-  public static void filtersOnCustomFields(String companyName) throws IOException {
+  public static void filtersOnCustomFields(String companyName)
+      throws IOException {
 
     // [START custom_field_job]
     // Creates a new job with existing id based custom fields (only string allowed)
     Map<String, CustomField> customFieldMap = new HashMap<>();
     customFieldMap.put(
-        "1", new CustomField().setValues(Arrays.asList("team management", "risk control")));
+        "1", new CustomField()
+            .setValues(Arrays.asList("team management", "risk control")));
     Job job =
         new Job()
             .setCompanyName(companyName)
@@ -155,7 +165,8 @@ public final class CustomAttributeSample {
             .setType("AND")
             .setQueries(Arrays.asList("team management", "risk control")));
     JobFilters customFieldAndFilter =
-        new JobFilters().setQuery("Program Manager").setCustomFieldFilters(customFieldAndFilterMap);
+        new JobFilters().setQuery("Program Manager")
+            .setCustomFieldFilters(customFieldAndFilterMap);
     // [END custom_field_example_1]
 
     // [START custom_field_example_2]
@@ -167,7 +178,8 @@ public final class CustomAttributeSample {
             .setType("OR")
             .setQueries(Arrays.asList("team management", "risk control")));
     JobFilters customFieldOrFilter =
-        new JobFilters().setQuery("Program Manager").setCustomFieldFilters(customFieldOrFilterMap);
+        new JobFilters().setQuery("Program Manager")
+            .setCustomFieldFilters(customFieldOrFilterMap);
     // [END custom_field_example_2]
 
     // [START custom_field_example_3]
@@ -179,7 +191,8 @@ public final class CustomAttributeSample {
             .setType("OR")
             .setQueries(Arrays.asList("team management", "risk control")));
     customFieldCompositeFilterMap.put(
-        "2", new CustomFieldFilter().setType("NOT").setQueries(Arrays.asList("blabla")));
+        "2", new CustomFieldFilter().setType("NOT")
+            .setQueries(Arrays.asList("blabla")));
     JobFilters customFieldCompositeFilter =
         new JobFilters()
             .setQuery("Program Manager")

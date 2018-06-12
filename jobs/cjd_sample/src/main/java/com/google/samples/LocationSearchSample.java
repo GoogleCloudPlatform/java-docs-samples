@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,23 +25,33 @@ import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-/** Location Search */
+/**
+ * Location Search
+ */
 public final class LocationSearchSample {
 
   private static JobService jobService = JobServiceUtils.getJobService();
 
   // [START basic_location_search]
-  /** Basic location Search */
-  public static void basicLocationSearch() throws IOException {
+
+  /**
+   * Basic location Search
+   */
+  public static void basicLocationSearch(String location, double distance) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            // Make sure to hash the userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain("www.google.com");
     LocationFilter locationFilter =
-        new LocationFilter().setName("Mountain View, CA").setDistanceInMiles(0.5);
-    JobQuery jobQuery = new JobQuery().setLocationFilters(Arrays.asList(locationFilter));
+        new LocationFilter().setName(location)
+            .setDistanceInMiles(distance);
+    JobQuery jobQuery = new JobQuery()
+        .setLocationFilters(Arrays.asList(locationFilter));
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -53,16 +63,23 @@ public final class LocationSearchSample {
   // [END basic_location_search]
 
   // [START keyword_location_search]
-  /** Keyword location Search */
-  public static void keywordLocationSearch() throws IOException {
+
+  /**
+   * Keyword location Search
+   */
+  public static void keywordLocationSearch(String location, double distance) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            // Make sure to hash the userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain("www.google.com");
     LocationFilter locationFilter =
-        new LocationFilter().setName("Mountain View, CA").setDistanceInMiles(0.5);
+        new LocationFilter().setName(location)
+            .setDistanceInMiles(distance);
     JobQuery jobQuery =
         new JobQuery()
             .setQuery("Software Engineer")
@@ -78,16 +95,24 @@ public final class LocationSearchSample {
   // [END keyword_location_search]
 
   // [START city_location_search]
-  /** City location Search */
-  public static void cityLocationSearch() throws IOException {
+
+  /**
+   * City location Search
+   */
+  public static void cityLocationSearch(String location) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
-    LocationFilter locationFilter = new LocationFilter().setName("Mountain View, CA");
-    JobQuery jobQuery = new JobQuery().setLocationFilters(Arrays.asList(locationFilter));
+            // Make sure to hash the userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain("www.google.com");
+    LocationFilter locationFilter = new LocationFilter()
+        .setName(location);
+    JobQuery jobQuery = new JobQuery()
+        .setLocationFilters(Arrays.asList(locationFilter));
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -99,19 +124,25 @@ public final class LocationSearchSample {
   // [END city_location_search]
 
   // [START multi_locations_search]
-  /** Multiple locations Search */
-  public static void multiLocationsSearch() throws IOException {
+
+  /**
+   * Multiple locations Search
+   */
+  public static void multiLocationsSearch(String location, double distance) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            // Make sure to hash the userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain("www.google.com");
     JobQuery jobQuery =
         new JobQuery()
             .setLocationFilters(
                 Arrays.asList(
-                    new LocationFilter().setName("Mountain View, CA"),
+                    new LocationFilter().setName(location).setDistanceInMiles(distance),
                     new LocationFilter().setName("Sunnyvale, CA")));
     SearchJobsRequest request =
         new SearchJobsRequest()
@@ -124,17 +155,25 @@ public final class LocationSearchSample {
   // [END multi_locations_search]
 
   // [START broadening_location_search]
-  /** Broadening location Search */
-  public static void broadeningLocationsSearch() throws IOException {
+
+  /**
+   * Broadening location Search
+   */
+  public static void broadeningLocationsSearch(String location)
+      throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            // Make sure to hash the userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain("www.google.com");
     JobQuery jobQuery =
         new JobQuery()
-            .setLocationFilters(Arrays.asList(new LocationFilter().setName("Mountain View, CA")));
+            .setLocationFilters(Arrays
+                .asList(new LocationFilter().setName(location)));
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -147,10 +186,13 @@ public final class LocationSearchSample {
   // [END broadening_location_search]
 
   public static void main(String... args) throws Exception {
-    basicLocationSearch();
-    broadeningLocationsSearch();
-    cityLocationSearch();
-    keywordLocationSearch();
-    multiLocationsSearch();
+    String location = args.length >= 1 ? args[0] : "Mountain View, CA";
+    double distance = args.length >= 2 ? Double.parseDouble(args[1]) : 0.5;
+
+    basicLocationSearch(location, distance);
+    broadeningLocationsSearch(location);
+    cityLocationSearch(location);
+    keywordLocationSearch(location, distance);
+    multiLocationsSearch(location, distance);
   }
 }
