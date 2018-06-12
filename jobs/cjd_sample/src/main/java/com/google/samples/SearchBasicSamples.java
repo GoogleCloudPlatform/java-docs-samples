@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,13 @@ public final class SearchBasicSamples {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash your userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
             .setDomain(
-                "www.google.com"); // Domain of the website where the search is conducted
+                "www.google.com");
 
     // Perform a search for analyst related jobs
     JobQuery jobQuery = new JobQuery().setQuery("analyst");
@@ -54,8 +57,10 @@ public final class SearchBasicSamples {
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
-            .setMode("JOB_SEARCH"); // Set the search mode to a regular search
+            // Set the actual search term as defined in the jobQurey
+            .setQuery(jobQuery)
+            // Set the search mode to a regular search
+            .setMode("JOB_SEARCH");
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
 
@@ -80,10 +85,13 @@ public final class SearchBasicSamples {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash your userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // This is the domain of the website on which the search is
             .setDomain(
-                "www.google.com"); // This is the domain of the website on which the search is
+                "www.google.com");
     // conducted
     LocationFilter locationFilter =
         new LocationFilter()
@@ -112,15 +120,19 @@ public final class SearchBasicSamples {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash your userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
             .setDomain(
-                "www.google.com"); // Domain of the website where the search is conducted
+                "www.google.com");
     List<LocationFilter> locationFilters =
         Arrays.asList(
             new LocationFilter().setName("Mountain View, CA"),
             new LocationFilter().setName("Sunnyvale, CA"));
-    JobQuery jobQuery = new JobQuery().setQuery("Analyst").setLocationFilters(locationFilters);
+    JobQuery jobQuery = new JobQuery().setQuery("Analyst")
+        .setLocationFilters(locationFilters);
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -140,13 +152,16 @@ public final class SearchBasicSamples {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash your userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain(
-                "www.google.com"); // This is the domain of the website on which the search is
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // This is the domain of the website on which the search is
+            .setDomain("www.google.com");
     // conducted
     JobQuery jobQuery =
-        new JobQuery().setQuery("Analyst").setEmploymentTypes(Arrays.asList("FULL_TIME", "INTERN"));
+        new JobQuery().setQuery("Analyst")
+            .setEmploymentTypes(Arrays.asList("FULL_TIME", "INTERN"));
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)

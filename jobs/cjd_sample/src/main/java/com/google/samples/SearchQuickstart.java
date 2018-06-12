@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.JobService.V2.Complete;
+import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.CompleteQueryResponse;
 import com.google.api.services.jobs.v2.model.CompletionResult;
 import com.google.api.services.jobs.v2.model.CreateJobRequest;
@@ -29,6 +30,7 @@ import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +46,8 @@ public final class SearchQuickstart {
   // [START create_jobs]
   public static final Job JOB_SAMPLE_1 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "Financial Analysts ensure that Google makes sound financial decisions. As a "
                   + "Financial Analyst, your work, whether it's modeling business scenarios or "
@@ -59,7 +62,8 @@ public final class SearchQuickstart {
   // Below job matches the job category of ADMINISTRATIVE_AND_OFFICE.
   public static final Job JOB_SAMPLE_2 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "We are seeking an energetic, friendly and ambitious professional to handle multiple "
                   + "administrative and customer service related responsibilities.")
@@ -70,7 +74,8 @@ public final class SearchQuickstart {
   // Below job matches the job category of ADVERTISING_AND_MARKETING.
   public static final Job JOB_SAMPLE_3 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "As a Marketing Manager, you'll create experiences and tentpole moments that bring "
                   + "to life the passion of the YouTube audience for our platform, and that build "
@@ -87,7 +92,8 @@ public final class SearchQuickstart {
   // Below job matches the job category of ANIMAL_CARE.
   public static final Job JOB_SAMPLE_4 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "We're making things better for pets, people and the planet. This job is composed "
                   + "of a variety of different tasks that are covered by operational guidelines, "
@@ -100,7 +106,8 @@ public final class SearchQuickstart {
   // Below job matches the job category of ART_FASHION_AND_DESIGN.
   public static final Job JOB_SAMPLE_5 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "As a Graphic Designer, you will help create the visual elements (such as art, "
                   + "graphics, and photography) used in the production of marketing materials, "
@@ -113,7 +120,8 @@ public final class SearchQuickstart {
   // Below job matches the job category of BUSINESS_OPERATIONS.
   public static final Job JOB_SAMPLE_6 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "The Business Strategy & Operations organization provides business critical insights "
                   + "using analytics, ensures cross functional alignment of goals and execution, "
@@ -128,7 +136,8 @@ public final class SearchQuickstart {
   // Below job matches the job category of CLEANING_AND_FACILITIES.
   public static final Job JOB_SAMPLE_7 =
       new Job()
-          .setApplicationInstruction("Apply to this job on www.careers.google.com. ")
+          .setApplicationInstruction(
+              "Apply to this job on www.careers.google.com. ")
           .setDescription(
               "As a Room Attendant, your contribution helps ensure guests an enjoyable and "
                   + "comfortable stay. As Housekeeper, you will Clean, dust, polish and vacuum "
@@ -150,17 +159,21 @@ public final class SearchQuickstart {
   /**
    * Insert sample jobs with given companyName.
    */
-  public static void insert(String companyName) throws IOException {
+  public static List<Job> insert(String companyName) throws IOException {
+    List<Job> jobCreated = new ArrayList<>();
     for (Job job : JOBS) {
       job.setCompanyName(companyName);
       Job returnJob =
           jobService
               .jobs()
-              .create(new CreateJobRequest().setDisableStreetAddressResolution(true).setJob(job))
+              .create(
+                  new CreateJobRequest().setDisableStreetAddressResolution(true)
+                      .setJob(job))
               .execute();
-      String jobName = returnJob.getName();
-      System.out.println(jobName);
+      jobCreated.add(returnJob);
+      System.out.println(returnJob.getName());
     }
+    return jobCreated;
   }
   //[END create_jobs]
 
@@ -170,14 +183,16 @@ public final class SearchQuickstart {
    * Simple search jobs with keyword.
    */
   public static void basicSearcJobs() throws IOException {
-    // Make sure to set the requestMetadata to reflect the unique jobb seeker. Obfuscate these fields.
+    // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
             .setDomain(
-                "www.google.com"); // This is the domain of the website on which the search is
-    // conducted
+                "www.google.com");
 
     // Perform a search for analyst  related jobs
     JobQuery jobQuery = new JobQuery().setQuery("analyst");
@@ -185,7 +200,8 @@ public final class SearchQuickstart {
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -211,14 +227,17 @@ public final class SearchQuickstart {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash your userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
             .setDomain(
-                "www.google.com"); // This is the domain of the website on which the search is
-    // conducted
+                "www.google.com");
 
     HistogramFacets histogramFacets =
-        new HistogramFacets().setSimpleHistogramFacets(Arrays.asList("CATEGORY", "CITY"));
+        new HistogramFacets()
+            .setSimpleHistogramFacets(Arrays.asList("CATEGORY", "CITY"));
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
@@ -235,11 +254,13 @@ public final class SearchQuickstart {
   /**
    * Auto completes job titles within given companyName.
    */
-  public static void jobTitleAutoComplete(String companyName) throws IOException {
+  public static void jobTitleAutoComplete(String companyName)
+      throws IOException {
     Complete complete = jobService
         .v2()
         .complete()
-        .setQuery("ana") // First few characters in a search for analyst (auto complete)
+        .setQuery(
+            "ana") // First few characters in a search for analyst (auto complete)
         .setLanguageCode("en-US")
         .setPageSize(10);
     if (companyName != null) {
@@ -255,8 +276,16 @@ public final class SearchQuickstart {
   // [END auto_complete]
 
   public static void main(String... args) throws Exception {
+    Company company = CompanyAndJobCrudSample
+        .createCompany(CompanyAndJobCrudSample.generateCompany());
+    final List<Job> jobsCreated = insert(company.getName());
+
     basicSearcJobs();
     histogramSearchJobs();
     jobTitleAutoComplete(null);
+    jobTitleAutoComplete(company.getName());
+
+    BatchOperationSample.batchDeleteJobs(jobsCreated);
+    CompanyAndJobCrudSample.deleteCompany(company.getName());
   }
 }

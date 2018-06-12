@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,18 +48,21 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery =
         new JobQuery()
             .setCategories(
                 Arrays.asList(
-                    "FARMING_AND_OUTDOORS", "ANIMAL_CARE", "SPORTS_FITNESS_AND_RECREATION"));
+                    "FARMING_AND_OUTDOORS", "ANIMAL_CARE",
+                    "SPORTS_FITNESS_AND_RECREATION"));
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -78,15 +81,18 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery =
-        new JobQuery().setEmploymentTypes(Arrays.asList("FULL_TIME", "CONTRACTOR", "PER_DIEM"));
+        new JobQuery().setEmploymentTypes(
+            Arrays.asList("FULL_TIME", "CONTRACTOR", "PER_DIEM"));
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -99,20 +105,23 @@ public final class SearchFiltersSample {
   /**
    * Search on company name.
    */
-  public static void companyNameSearch(List<String> companyNames) throws IOException {
+  public static void companyNameSearch(List<String> companyNames)
+      throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery = new JobQuery().setCompanyNames(companyNames);
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -131,14 +140,16 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery = new JobQuery().setPublishDateRange("PAST_3_DAYS");
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -157,14 +168,16 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery = new JobQuery().setTenantJobOnly(true);
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -183,14 +196,17 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
-    JobQuery jobQuery = new JobQuery().setLanguageCodes(Arrays.asList("pt-BR", "en-US"));
+    JobQuery jobQuery = new JobQuery()
+        .setLanguageCodes(Arrays.asList("pt-BR", "en-US"));
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -209,15 +225,18 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery =
-        new JobQuery().setCompanyDisplayNames(Arrays.asList("Brown Group", "Blue Co", "Pink Inc"));
+        new JobQuery().setCompanyDisplayNames(
+            Arrays.asList("Brown Group", "Blue Co", "Pink Inc"));
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -236,7 +255,8 @@ public final class SearchFiltersSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash your userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     // Search jobs that pay between 10.50 and 15 USD per hour
     JobQuery jobQuery =
@@ -247,7 +267,8 @@ public final class SearchFiltersSample {
                     .setUnits(Arrays.asList("HOURLY"))
                     .setRange(
                         new CompensationRange()
-                            .setMax(new Money().setCurrencyCode("USD").setUnits(15L))
+                            .setMax(new Money().setCurrencyCode("USD")
+                                .setUnits(15L))
                             .setMin(
                                 new Money()
                                     .setCurrencyCode("USD")
@@ -257,7 +278,8 @@ public final class SearchFiltersSample {
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
 
     SearchJobsResponse response = jobService.jobs().search(request).execute();
@@ -277,7 +299,8 @@ public final class SearchFiltersSample {
     Company company = CompanyAndJobCrudSample
         .createCompany(CompanyAndJobCrudSample.generateCompany());
     Job job = CompanyAndJobCrudSample
-        .createJob(CompanyAndJobCrudSample.generateJobWithRequiredFields(company.getName()));
+        .createJob(CompanyAndJobCrudSample
+            .generateJobWithRequiredFields(company.getName()));
     companyNameSearch(Arrays.asList(company.getName()));
     CompanyAndJobCrudSample.deleteJob(job.getName());
     CompanyAndJobCrudSample.deleteCompany(company.getName());

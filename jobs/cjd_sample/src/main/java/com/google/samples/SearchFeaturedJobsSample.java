@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,8 @@ public final class SearchFeaturedJobsSample {
    */
   public static Job createFeaturedJob(String companyName) throws IOException {
     // requisition id should be a unique Id in your system.
-    String requisitionId = "jobWithRequiredFields:" + String.valueOf(new Random().nextLong());
+    String requisitionId =
+        "jobWithRequiredFields:" + String.valueOf(new Random().nextLong());
 
     Job job =
         new Job()
@@ -50,7 +51,8 @@ public final class SearchFeaturedJobsSample {
             .setJobTitle("Software Engineer")
             .setCompanyName(companyName)
             .setApplicationUrls(Arrays.asList("http://careers.google.com"))
-            .setDescription("Design, develop, test, deploy, maintain and improve software.")
+            .setDescription(
+                "Design, develop, test, deploy, maintain and improve software.")
             .setPromotionValue(2);
     CreateJobRequest createJobRequest = new CreateJobRequest().setJob(job);
     Job createdJob = jobService.jobs().create(createJobRequest).execute();
@@ -70,15 +72,18 @@ public final class SearchFeaturedJobsSample {
         new RequestMetadata()
             .setUserId("HashedUserId") // Make sure to hash the userID
             .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain("www.google.com"); // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com"); // Domain of the website where the search is conducted
 
     JobQuery jobQuery = new JobQuery().setQuery("Software Engineer");
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery) // Set the actual search term as defined in the jobQurey
-            .setMode("FEATURED_JOB_SEARCH"); // Set the search mode to a featured search
+            .setQuery(
+                jobQuery) // Set the actual search term as defined in the jobQurey
+            .setMode(
+                "FEATURED_JOB_SEARCH"); // Set the search mode to a featured search
     SearchJobsResponse response = jobService.jobs().search(request).execute();
     System.out.println(response);
   }
