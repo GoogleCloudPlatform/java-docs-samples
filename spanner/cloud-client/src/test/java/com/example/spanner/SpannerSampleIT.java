@@ -136,13 +136,13 @@ public class SpannerSampleIT {
 
     runSample("writestructdata");
     out = runSample("querywithstruct");
-    assertThat(out).contains("6");
+    assertThat(out).equals("6");
 
     out = runSample("querywitharrayofstruct");
-    assertThat(out).contains("6");
+    assertThat(out).equals("6\n7");
 
     out = runSample("querystructfield");
-    assertThat(out).contains("6");
+    assertThat(out).equals("6");
 
     out = runSample("querynestedstructfield");
     assertThat(out).contains("6 Imagination");
