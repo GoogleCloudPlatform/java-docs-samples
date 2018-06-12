@@ -17,6 +17,7 @@
 package com.example.spanner;
 
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
+import static com.google.cloud.spanner.Type.StructField;
 
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
@@ -34,6 +35,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
@@ -585,6 +587,141 @@ public class SpannerSample {
     }
   }
 
+  // [START spanner_write_data_for_struct_queries]
+  static void writeStructExampleData(DatabaseClient dbClient) {
+    final List<Singer> SINGERS =
+    Arrays.asList(
+          new Singer(6, "Elena", "Campbell"),
+          new Singer(7, "Gabriel", "Wright"),
+          new Singer(8, "Benjamin", "Martinez"),
+          new Singer(9, "Hannah", "Harris"));
+
+    List<Mutation> mutations = new ArrayList<>();
+      for (Singer singer : SINGERS) {
+        mutations.add(
+            Mutation.newInsertBuilder("Singers")
+                .set("SingerId")
+                .to(singer.singerId)
+                .set("FirstName")
+                .to(singer.firstName)
+                .set("LastName")
+                .to(singer.lastName)
+                .build());
+      }
+      dbClient.write(mutations);
+      System.out.println("Inserted example data for struct parameter queries.");
+  }
+  // [END spanner_write_data_for_struct_queries]
+
+  static void queryWithStruct(DatabaseClient dbClient) {
+  // [START spanner_create_struct_with_data]
+    Struct name = Struct.newBuilder()
+        .set("FirstName").to("Elena")
+        .set("LastName").to("Campbell").build();
+  // [END spanner_create_struct_with_data]
+
+  // [START spanner_query_data_with_struct]
+    Statement s = Statement.newBuilder(
+        "SELECT SingerId FROM Singers " +
+        "WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) = @name")
+        .bind("name")
+        .to(name)
+        .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+        System.out.printf(
+            "%d\n", resultSet.getLong("SingerId"));
+    }
+  // [END spanner_query_data_with_struct]
+  }
+
+  static void queryWithArrayOfStruct(DatabaseClient dbClient) {
+    // [START spanner_create_user_defined_struct]
+    Type nameType = Type.struct(Arrays.asList(
+        StructField.of("FirstName", Type.string()),
+        StructField.of("LastName", Type.string())));
+    // [END spanner_create_user_defined_struct]
+
+    // [START spanner_create_array_of_struct_with_data]
+    List<Struct> bandMembers = new ArrayList<>();
+    bandMembers.add(Struct.newBuilder()
+        .set("FirstName").to("Elena")
+        .set("LastName").to("Campbell").build());
+    bandMembers.add(Struct.newBuilder()
+        .set("FirstName").to("Gabriel")
+        .set("LastName").to("Wright").build());
+    bandMembers.add(Struct.newBuilder()
+        .set("FirstName").to("Benjamin")
+        .set("LastName").to("Martinez").build());
+    // [END spanner_create_array_of_struct_with_data]
+
+    // [START spanner_query_data_with_array_of_struct]
+    Statement s = Statement.newBuilder(
+	"SELECT SingerId FROM Singers " +
+        "WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) " +
+        "IN UNNEST(@names)")
+        .bind("names")
+        .toStructArray(nameType, bandMembers).build();
+
+        ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+        while (resultSet.next()) {
+            System.out.printf(
+                "%d\n", resultSet.getLong("SingerId"));
+        }
+    // [END spanner_query_data_with_array_of_struct]
+  }
+
+  // [START spanner_field_access_on_struct_parameters]
+  static void queryStructField(DatabaseClient dbClient) {
+    Statement s = Statement.newBuilder(
+        "SELECT SingerId FROM Singers WHERE FirstName = @name.FirstName")
+        .bind("name")
+        .to(Struct.newBuilder()
+        .set("FirstName").to("Elena")
+        .set("LastName").to("Campbell").build()).build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+        System.out.printf(
+              "%d\n", resultSet.getLong("SingerId"));
+    }
+  }
+  // [END spanner_field_access_on_struct_parameters]
+
+  // [START spanner_field_access_on_nested_struct_parameters]
+  static void queryNestedStructField(DatabaseClient dbClient) {
+    Type nameType = Type.struct(Arrays.asList(
+        StructField.of("FirstName", Type.string()),
+        StructField.of("LastName", Type.string())));
+
+    Struct songInfo = Struct.newBuilder().set("song_name").to("Imagination")
+      .set("artistNames")
+      .toStructArray(nameType,
+        Arrays.asList(Struct.newBuilder()
+                .set("FirstName").to("Elena")
+                .set("LastName").to("Campbell").build(),
+            Struct.newBuilder()
+                .set("FirstName").to("Hannah")
+                .set("LastName").to("Harris").build())).build();
+    Statement s = Statement.newBuilder(
+        "SELECT SingerId, @song_info.song_name " +
+        "FROM Singers WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) " +
+        "IN UNNEST(@song_info.artistNames)")
+        .bind("song_info")
+        .to(songInfo).build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+        System.out.printf(
+            "%d %s\n",
+            resultSet.getLong("SingerId"),
+            resultSet.getString(1));
+    }
+  }
+  // [END spanner_field_access_on_nested_struct_parameters]
+
+
   static void run(DatabaseClient dbClient, DatabaseAdminClient dbAdminClient, String command,
       DatabaseId database) {
     switch (command) {
@@ -651,6 +788,21 @@ public class SpannerSample {
       case "queryperformancestable":
         queryPerformancesTable(dbClient);
         break;
+      case "writestructdata":
+        writeStructExampleData(dbClient);
+        break;
+      case "querywithstruct":
+        queryWithStruct(dbClient);
+        break;
+      case "querywitharrayofstruct":
+        queryWithArrayOfStruct(dbClient);
+        break;
+      case "querystructfield":
+        queryStructField(dbClient);
+        break;
+      case "querynestedstructfield":
+        queryNestedStructField(dbClient);
+        break;
       default:
         printUsageAndExit();
     }
@@ -703,6 +855,16 @@ public class SpannerSample {
         "    SpannerExample writewithtimestamp my-instance example-db");
     System.err.println(
         "    SpannerExample queryperformancestable my-instance example-db");
+    System.err.println(
+        "    SpannerExample writestructdata my-instance example-db");
+    System.err.println(
+        "    SpannerExample querywithstruct my-instance example-db");
+    System.err.println(
+        "    SpannerExample querywitharrayofstruct my-instance example-db");
+    System.err.println(
+        "    SpannerExample querystructfield my-instance example-db");
+    System.err.println(
+        "    SpannerExample querynestedstructfield my-instance example-db");
     System.exit(1);
   }
 
