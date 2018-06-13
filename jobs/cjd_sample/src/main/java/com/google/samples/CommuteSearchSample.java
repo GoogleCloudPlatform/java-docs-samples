@@ -18,15 +18,21 @@ package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.CommutePreference;
+import com.google.api.services.jobs.v2.model.Company;
+import com.google.api.services.jobs.v2.model.Job;
 import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.LatLng;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * Commute Search
+ * The samples in this file introduce how to do a commute search.
+ *
+ * Note: Commute Search is different from location search. It only take latitude and longitude as
+ * the start location.
  */
 public final class CommuteSearchSample {
 
@@ -34,10 +40,7 @@ public final class CommuteSearchSample {
 
   // [START commute_search]
 
-  /**
-   * Commute search
-   */
-  public static void commuteSearch() throws IOException {
+  public static void commuteSearch(String companyName) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -46,8 +49,7 @@ public final class CommuteSearchSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain(
-                "www.google.com");
+            .setDomain("www.google.com");
     JobQuery jobQuery =
         new JobQuery()
             .setCommuteFilter(
@@ -58,19 +60,33 @@ public final class CommuteSearchSample {
                     .setStartLocation(
                         new LatLng().setLatitude(37.422408)
                             .setLongitude(-122.085609)));
+    if (companyName != null) {
+      jobQuery.setCompanyNames(Arrays.asList(companyName));
+    }
     SearchJobsRequest searchJobsRequest =
         new SearchJobsRequest()
             .setQuery(jobQuery)
             .setRequestMetadata(requestMetadata)
             .setJobView("FULL")
             .setEnablePreciseResultSize(true);
-    SearchJobsResponse response = jobService.jobs().search(searchJobsRequest)
-        .execute();
+    SearchJobsResponse response = jobService.jobs().search(searchJobsRequest).execute();
     System.out.println(response);
   }
   // [END commute_search]
 
   public static void main(String... args) throws Exception {
-    commuteSearch();
+    Company companyToBeCreated = BasicCompanySample.generateCompany();
+    String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
+
+    Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName)
+        .setLocations(Arrays.asList("1600 Amphitheatre Pkwy, Mountain View, CA 94043"));
+    String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
+
+    // Wait several seconds for post processing
+    Thread.sleep(10000);
+    commuteSearch(companyName);
+
+    BasicJobSample.deleteJob(jobName);
+    BasicCompanySample.deleteCompany(companyName);
   }
 }

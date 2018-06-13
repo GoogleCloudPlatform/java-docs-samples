@@ -30,10 +30,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
- * Batch operations for job create, update and delete.
+ * The samples in this file introduce how to do batch operation in CJD. Including:
+ *
+ * - Create job within batch
+ *
+ * - Update job within batch
+ *
+ * - Delete job within batch.
+ *
+ * For simplicity, the samples always use the same kind of requests in each batch. In a real case ,
+ * you might put different kinds of request in one batch.
  */
 public final class BatchOperationSample {
 
@@ -168,8 +176,8 @@ public final class BatchOperationSample {
   // [END batch_job_delete]
 
   public static void main(String... args) throws Exception {
-    Company company = CompanyAndJobCrudSample
-        .createCompany(CompanyAndJobCrudSample.generateCompany());
+    Company company = BasicCompanySample
+        .createCompany(BasicCompanySample.generateCompany());
 
     // Batch create jobs
     List<Job> createdJobs = batchCreateJobs(company.getName());
@@ -180,6 +188,6 @@ public final class BatchOperationSample {
     // Batch delete jobs
     batchDeleteJobs(updatedJobs);
 
-    CompanyAndJobCrudSample.deleteCompany(company.getName());
+    BasicCompanySample.deleteCompany(company.getName());
   }
 }

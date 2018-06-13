@@ -17,8 +17,11 @@
 package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
+import com.google.api.services.jobs.v2.model.Company;
 import com.google.api.services.jobs.v2.model.CustomAttributeHistogramRequest;
 import com.google.api.services.jobs.v2.model.HistogramFacets;
+import com.google.api.services.jobs.v2.model.Job;
+import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
@@ -26,7 +29,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Histogram search
+ * The sample in this file introduce how to do a histogram search.
  */
 public final class HistogramSample {
 
@@ -37,33 +40,54 @@ public final class HistogramSample {
   /**
    * Histogram search
    */
-  public static void histogramSearch() throws IOException {
+  public static void histogramSearch(String companyName) throws IOException {
+    // Make sure to set the requestMetadata the same as the associated search request
+    RequestMetadata requestMetadata =
+        new RequestMetadata()
+            // Make sure to hash your userID
+            .setUserId("HashedUserId")
+            // Make sure to hash the sessionID
+            .setSessionId("HashedSessionID")
+            // Domain of the website where the search is conducted
+            .setDomain(
+                "www.google.com");
+
     HistogramFacets histogramFacets =
         new HistogramFacets()
-            .setSimpleHistogramFacets(Arrays.asList("EMPLOYMENT_TYPE"))
+            .setSimpleHistogramFacets(Arrays.asList("COMPANY_DISPLAY_NAME"))
             .setCustomAttributeHistogramFacets(
                 Arrays.asList(
                     new CustomAttributeHistogramRequest()
-                        .setKey("Visa_Type")
+                        .setKey("someFieldName1")
                         .setStringValueHistogram(true)));
-    RequestMetadata requestMetadata =
-        new RequestMetadata()
-            .setUserId("HashedUserId") // Make sure to hash the userID
-            .setSessionId("HashedSessionID") // Make sure to hash the sessionID
-            .setDomain(
-                "www.google.com"); // This is the domain of the website where the search is
+
     // conducted.
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
             .setMode("JOB_SEARCH")
             .setHistogramFacets(histogramFacets);
+    if (companyName != null) {
+      request.setQuery(new JobQuery().setCompanyNames(Arrays.asList(companyName)));
+    }
+
     SearchJobsResponse response = jobService.jobs().search(request).execute();
     System.out.println(response);
   }
   // [END histogram_search]
 
   public static void main(String... args) throws Exception {
-    histogramSearch();
+    Company companyToBeCreated = BasicCompanySample.generateCompany();
+    String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
+
+    Job jobToBeCreated = CustomAttributeSample.generateJobWithACustomAttribute(companyName);
+    String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
+
+    // Wait several seconds for post processing
+    Thread.sleep(10000);
+    histogramSearch(companyName);
+
+    BasicJobSample.deleteJob(jobName);
+    BasicCompanySample.deleteCompany(companyName);
   }
 }

@@ -17,13 +17,17 @@
 package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
+import com.google.api.services.jobs.v2.model.Company;
+import com.google.api.services.jobs.v2.model.Job;
+import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * Search for alerts.
+ * The sample in this file introduce how to do a email alert search.
  */
 public final class EmailAlertSearchSample {
 
@@ -34,7 +38,7 @@ public final class EmailAlertSearchSample {
   /**
    * Search jobs for alert.
    */
-  public static void searchForAlerts() throws IOException {
+  public static void searchForAlerts(String companyName) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -43,21 +47,33 @@ public final class EmailAlertSearchSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain(
-                "www.google.com");
+            .setDomain("www.google.com");
 
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
             .setMode("JOB_SEARCH"); // Set the search mode to a regular search
+    if (companyName != null) {
+      request.setQuery(new JobQuery().setCompanyNames(Arrays.asList(companyName)));
+    }
 
-    SearchJobsResponse response = jobService.jobs().searchForAlert(request)
-        .execute();
+    SearchJobsResponse response = jobService.jobs().searchForAlert(request).execute();
     System.out.println(response);
   }
   // [END search_for_alerts]
 
   public static void main(String... args) throws Exception {
-    searchForAlerts();
+    Company companyToBeCreated = BasicCompanySample.generateCompany();
+    String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
+
+    Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName);
+    String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
+
+    // Wait several seconds for post processing
+    Thread.sleep(10000);
+    searchForAlerts(companyName);
+
+    BasicJobSample.deleteJob(jobName);
+    BasicCompanySample.deleteCompany(companyName);
   }
 }

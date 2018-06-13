@@ -16,17 +16,18 @@
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.samples.AutoCompleteSample;
+import com.google.samples.BasicCompanySample;
+import com.google.samples.BasicJobSample;
 import com.google.samples.BatchOperationSample;
 import com.google.samples.CommuteSearchSample;
-import com.google.samples.CompanyAndJobCrudSample;
 import com.google.samples.CustomAttributeSample;
+import com.google.samples.CustomFieldSample;
 import com.google.samples.EmailAlertSearchSample;
+import com.google.samples.FeaturedJobsSearchSample;
+import com.google.samples.GeneralSearchSample;
 import com.google.samples.HistogramSample;
 import com.google.samples.LocationSearchSample;
-import com.google.samples.SearchBasicSamples;
-import com.google.samples.SearchFeaturedJobsSample;
-import com.google.samples.SearchFiltersSample;
-import com.google.samples.SearchQuickstart;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Before;
@@ -48,61 +49,103 @@ public class SampleTests {
 
   @Test
   public void runAllSamples() throws Exception {
+    AutoCompleteSample.main();
+    assertThat(bout.toString()).containsMatch(
+        ".*completionResults.*\"suggestion\":\"Google\",\"type\":\"COMPANY_NAME\"}.*\n"
+            + ".*completionResults.*\"suggestion\":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n"
+            + ".*completionResults.*\"suggestion\":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n"
+    );
+    bout.reset();
+
+    BasicCompanySample.main();
+    assertThat(bout.toString()).containsMatch(
+        ".*Company generated:.*\n"
+            + ".*Company created:.*\n"
+            + ".*Company existed:.*\n"
+            + ".*Company updated:.*elgoog.*\n"
+            + ".*Company updated:.*changedTitle.*\n"
+            + ".*Company deleted.*\n"
+    );
+    bout.reset();
+
+    BasicJobSample.main();
+    assertThat(bout.toString()).containsMatch(
+        ".*Job generated:.*\n"
+            + ".*Job created:.*\n"
+            + ".*Job existed:.*\n"
+            + ".*Job updated:.*changedDescription.*\n"
+            + ".*Job updated:.*changedJobTitle.*\n"
+            + ".*Job deleted.*\n"
+    );
+    bout.reset();
+
     BatchOperationSample.main();
     assertThat(bout.toString()).containsMatch(".*"
         + "Company generated:.*\nCompany created:.*\n"
         + "Create Job:.*\nCreate Job:.*\n"
-        + "Update Job:.*\nUpdate Job:.*\n"
+        + "Update Job:.*Engineer in Mountain View.*\nUpdate Job:.*Engineer in Mountain View.*\n"
         + "Job deleted.*\nJob deleted.*\n"
         + "Company deleted.*\n"
     );
     bout.reset();
 
     CommuteSearchSample.main();
-    assertThat(bout.toString()).contains("appliedCommuteFilter");
+    assertThat(bout.toString())
+        .containsMatch(".*appliedCommuteFilter.*1600 Amphitheatre Pkwy.*");
     bout.reset();
 
-    CompanyAndJobCrudSample.main();
-    assertThat(bout.toString()).containsMatch(
-        ".*"
-            + "Company generated:.*\nCompany created:.*\nCompany existed:.*\nCompany updated:.*\n"
-            + "Job generated:.*\nJob created:.*\nJob existed:.*\nJob updated:.*\nJob deleted.*\n"
-            + "Job generated:.*\nJob created:.*\nJob existed:.*\nJob updated:.*\nJob deleted.*\n"
-            + "Company deleted.*\n"
-    );
-    bout.reset();
-
-    // TODO(xinyunh):need to improve the sample.
     CustomAttributeSample.main();
+    assertThat(bout.toString())
+        .containsMatch(
+            ".*Job created:.*jobWithACustomAttribute.*\n"
+                + ".*matchingJobs.*jobWithACustomAttribute.*\n"
+                + ".*matchingJobs.*jobWithACustomAttribute.*\n"
+                + ".*matchingJobs.*jobWithACustomAttribute.*\n");
+    bout.reset();
+
+    CustomFieldSample.main();
+    assertThat(bout.toString())
+        .containsMatch(
+            ".*Job created:.*jobWithACustomField.*\n"
+                + ".*matchingJobs.*jobWithACustomField.*\n"
+                + ".*matchingJobs.*jobWithACustomField.*\n"
+                + ".*matchingJobs.*jobWithACustomField.*\n");
+    bout.reset();
 
     EmailAlertSearchSample.main();
     assertThat(bout.toString()).contains("matchingJobs");
     bout.reset();
 
+    GeneralSearchSample.main();
+    assertThat(bout.toString())
+        .containsMatch(
+            ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n"
+                + ".*matchingJobs.*\n");
+    bout.reset();
+
+    FeaturedJobsSearchSample.main();
+    assertThat(bout.toString()).contains("matchingJobs");
+    bout.reset();
+
     HistogramSample.main();
-    assertThat(bout.toString()).contains("histogramResults");
+    assertThat(bout.toString()).contains("COMPANY_DISPLAY_NAME");
+    assertThat(bout.toString()).contains("someFieldName1");
     bout.reset();
 
     LocationSearchSample.main();
     assertThat(bout.toString()).containsMatch(
-        ".*appliedJobLocationFilters.*\n"
-            + ".*appliedJobLocationFilters.*\n"
-            + ".*appliedJobLocationFilters.*\n"
-            + ".*appliedJobLocationFilters.*\n"
-            + ".*appliedJobLocationFilters.*\n"
+        ".*appliedJobLocationFilters.*matchingJobs.*\n"
+            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
+            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
+            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
+            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
     );
     bout.reset();
-
-    // TODO(xinyunh):need to improve the sample.
-    SearchBasicSamples.main();
-
-    // TODO(xinyunh):need to improve the sample.
-    SearchFeaturedJobsSample.main();
-
-    // TODO(xinyunh):need to improve the sample.
-    SearchFiltersSample.main();
-
-    // TODO(xinyunh):need to improve the sample.
-    SearchQuickstart.main();
   }
 }

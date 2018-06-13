@@ -27,6 +27,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
 
+/**
+ * The Util helps to generate credential and create Google JobService
+ */
 public class JobServiceUtils {
 
   // [START instantiate]
@@ -48,8 +51,9 @@ public class JobServiceUtils {
 
   private static GoogleCredential generateCredential() {
     try {
-      ClassLoader classLoader = JobServiceUtils.class.getClassLoader();
       // Credentials could be downloaded after creating service account
+      // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
+      // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
       return GoogleCredential
           .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
           .createScoped(Collections.singleton(SCOPES));
