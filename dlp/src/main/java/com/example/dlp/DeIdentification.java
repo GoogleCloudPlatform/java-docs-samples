@@ -81,7 +81,11 @@ public class DeIdentification {
    * @param projectId ID of Google Cloud project to run the API under.
    */
   private static void deIdentifyWithMask(
-      String string, Character maskingCharacter, int numberToMask, String projectId) {
+      String string,
+      List<InfoType> infoTypes,
+      Character maskingCharacter,
+      int numberToMask,
+      String projectId) {
 
     // instantiate a client
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
@@ -108,6 +112,11 @@ public class DeIdentification {
               .addTransformations(infoTypeTransformationObject)
               .build();
 
+      InspectConfig inspectConfig =
+          InspectConfig.newBuilder()
+              .addAllInfoTypes(infoTypes)
+              .build();
+
       DeidentifyConfig deidentifyConfig =
           DeidentifyConfig.newBuilder()
               .setInfoTypeTransformations(infoTypeTransformationArray)
@@ -117,6 +126,7 @@ public class DeIdentification {
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
+              .setInspectConfig(inspectConfig)
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(contentItem)
               .build();
@@ -513,6 +523,10 @@ public class DeIdentification {
     Options commandLineOptions = new Options();
     commandLineOptions.addOptionGroup(optionsGroup);
 
+    Option infoTypesOption = Option.builder("infoTypes").hasArg(true).required(false).build();
+    infoTypesOption.setArgs(Option.UNLIMITED_VALUES);
+    commandLineOptions.addOption(infoTypesOption);
+
     Option maskingCharacterOption =
         Option.builder("maskingCharacter").hasArg(true).required(false).build();
     commandLineOptions.addOption(maskingCharacterOption);
@@ -575,12 +589,21 @@ public class DeIdentification {
     String projectId =
         cmd.getOptionValue(projectIdOption.getOpt(), ServiceOptions.getDefaultProjectId());
 
+    List<InfoType> infoTypesList = Collections.emptyList();
+    if (cmd.hasOption(infoTypesOption.getOpt())) {
+      infoTypesList = new ArrayList<>();
+      String[] infoTypes = cmd.getOptionValues(infoTypesOption.getOpt());
+      for (String infoType : infoTypes) {
+        infoTypesList.add(InfoType.newBuilder().setName(infoType).build());
+      }
+    }
+
     if (cmd.hasOption("m")) {
       // deidentification with character masking
       int numberToMask = Integer.parseInt(cmd.getOptionValue(numberToMaskOption.getOpt(), "0"));
       char maskingCharacter = cmd.getOptionValue(maskingCharacterOption.getOpt(), "*").charAt(0);
       String val = cmd.getOptionValue(deidentifyMaskingOption.getOpt());
-      deIdentifyWithMask(val, maskingCharacter, numberToMask, projectId);
+      deIdentifyWithMask(val, infoTypes, maskingCharacter, numberToMask, projectId);
     } else if (cmd.hasOption("f")) {
       // deidentification with FPE
       String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
