@@ -57,6 +57,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.cli.CommandLine;
@@ -157,6 +158,7 @@ public class DeIdentification {
    */
   private static void deIdentifyWithFpe(
       String string,
+      List<InfoType> infoTypes,
       FfxCommonNativeAlphabet alphabet,
       String keyName,
       String wrappedKey,
@@ -198,6 +200,11 @@ public class DeIdentification {
               .addTransformations(infoTypeTransformationObject)
               .build();
 
+      InspectConfig inspectConfig =
+          InspectConfig.newBuilder()
+              .addAllInfoTypes(infoTypes)
+              .build();
+
       // Create the deidentification request object
       DeidentifyConfig deidentifyConfig =
           DeidentifyConfig.newBuilder()
@@ -207,6 +214,7 @@ public class DeIdentification {
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
+              .setInspectConfig(inspectConfig)
               .setDeidentifyConfig(deidentifyConfig)
               .setItem(contentItem)
               .build();
@@ -603,7 +611,7 @@ public class DeIdentification {
       int numberToMask = Integer.parseInt(cmd.getOptionValue(numberToMaskOption.getOpt(), "0"));
       char maskingCharacter = cmd.getOptionValue(maskingCharacterOption.getOpt(), "*").charAt(0);
       String val = cmd.getOptionValue(deidentifyMaskingOption.getOpt());
-      deIdentifyWithMask(val, infoTypes, maskingCharacter, numberToMask, projectId);
+      deIdentifyWithMask(val, infoTypesList, maskingCharacter, numberToMask, projectId);
     } else if (cmd.hasOption("f")) {
       // deidentification with FPE
       String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
@@ -614,7 +622,8 @@ public class DeIdentification {
           FfxCommonNativeAlphabet.valueOf(
               cmd.getOptionValue(
                   alphabetOption.getOpt(), FfxCommonNativeAlphabet.ALPHA_NUMERIC.name()));
-      deIdentifyWithFpe(val, alphabet, keyName, wrappedKey, projectId, surrogateType);
+      deIdentifyWithFpe(
+          val, infoTypesList, alphabet, keyName, wrappedKey, projectId, surrogateType);
     } else if (cmd.hasOption("d")) {
       //deidentify with date shift
       String inputCsv = cmd.getOptionValue(inputCsvPathOption.getOpt());
