@@ -1,13 +1,16 @@
-# Format Transformations using Cloud Dataflow and Apache Beam
+# Data Format Transformations using Cloud Dataflow and Apache Beam
 
 Utility transforms to transform from one file format to another for a large number of files using
-[Apache Beam][apache_beam] running on [Google Cloud Dataflow][dataflow]. The supported transformations is CSV to Avro and
-Avro to CSV at this time.
+[Apache Beam][apache_beam] running on [Google Cloud Dataflow][dataflow].
+
+The transformations supported by this utility are:
+  - CSV to Avro
+  - Avro to CSV
 
 ## Setup
 
-Setup instructions assume you have an active Google Cloud Project and with an associated billing account. The following
-instructions will help you prepare your development environment.
+Setup instructions assume you have an active Google Cloud Project and with an associated billing account.
+The following instructions will help you prepare your development environment.
 
 1. Install [Cloud SDK][cloud_sdk].
 1. Setup Cloud SDK
@@ -23,16 +26,18 @@ instructions will help you prepare your development environment.
 
        git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 
-1. Move into sample code
+1. Navigate to the sample code directory
 
        cd dataflow/transforms
 
-## Required Permissions
+## Grant required permissions
 
-The examples are configured for Cloud Dataflow which run on Compute Engine and require the permissions
-`storage.objects.create`, `storage.objects.get`, and `storage.objects.create` granted to the Compute Engine default
-service account to read and write to the objects in your Google Cloud Storage bucket IAM policy. Learn more about
-[Cloud Storage IAM Roles][storage_iam_roles] and [Bucket-level IAM][bucket_iam].
+The examples are configured for Cloud Dataflow which run on Google Compute Engine.
+The Compute Engine default service account requires the permissions
+`storage.objects.create`, `storage.objects.get`, and `storage.objects.create` to read and write
+ objects in your Google Cloud Storage bucket IAM policy.
+
+Learn more about [Cloud Storage IAM Roles][storage_iam_roles] and [Bucket-level IAM][bucket_iam].
 
 The following steps are optional if:
 
@@ -67,9 +72,10 @@ The following steps are optional if:
    * Replace `[COMPUTE_DEFAULT_SERVICE_ACCOUNT]` with the Compute Engine default service account.
    * Replace `[BUCKET_NAME]` with the bucket you use to read and write your input and output data respectively.
 
-## Using Transformations
 
-### Avro to CSV
+## Using transformations
+
+### Avro to CSV transformation
 
 To transform Avro formatted files to Csv use the following command:
 
@@ -87,7 +93,7 @@ Full description of options can be found by using the following command:
 mvn compile exec:java -Dexec.mainClass=org.solution.example.AvroToCsv -Dexec.args="--help=org.solution.example.SampleOptions"
 ```
 
-### CSV to Avro
+### CSV to Avro transformation
 
 To transform CSV formatted files without a header to Avro use the following command:
 
@@ -109,7 +115,7 @@ Existing example does not support headers in a CSV files.
 
 ## Run Tests
 
-Tests will run locally using the DirectRunner.
+Tests can be run locally using the DirectRunner.
 
 
     mvn verify

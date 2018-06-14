@@ -37,7 +37,8 @@
     <google-clients.version>1.22.0</google-clients.version>
     <hamcrest.version>1.3</hamcrest.version>
     <junit.version>4.12</junit.version>
-    <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
@@ -47,16 +48,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

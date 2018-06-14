@@ -52,7 +52,7 @@
         <module>container-registry/container-analysis</module>
 
         <module>dataflow/spanner-io</module>
-        <module>dataflow/format-transforms</module>
+        <module>dataflow/transforms</module>
 
         <module>datastore</module>
         <module>datastore/cloud-client</module>
