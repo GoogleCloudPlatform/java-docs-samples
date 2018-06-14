@@ -23,7 +23,9 @@ instructions will help you prepare your development environment.
 
        git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 
-1. TODO: [Will update once in java-docs-samples PR.]
+1. Move into sample code
+
+       cd dataflow/transforms
 
 ## Required Permissions
 
