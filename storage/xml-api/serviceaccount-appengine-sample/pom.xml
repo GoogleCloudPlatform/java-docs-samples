@@ -41,7 +41,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-exec-maven-plugin-version>1.1</codehaus-exec-maven-plugin-version>
     <codehaus-findbugs-maven-plugin-version>3.0.5</codehaus-findbugs-maven-plugin-version>
-    <maven-war-plugin-version>3.2.0</maven-war-plugin-version>
+    <maven-war-plugin-version>3.2.1</maven-war-plugin-version>
   </properties>
 
   <build>
@@ -112,7 +112,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
     </dependency>
 
     <dependency>
