@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
-  private final String instanceId = "test-instance";//System.getProperty("spanner.test.instance");
+  private final String instanceId = System.getProperty("spanner.test.instance");
   private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
