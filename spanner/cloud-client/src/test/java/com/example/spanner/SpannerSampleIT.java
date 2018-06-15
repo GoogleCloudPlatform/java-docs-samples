@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
-  private final String instanceId = System.getProperty("spanner.test.instance");
+  private final String instanceId = "test-instance";//System.getProperty("spanner.test.instance");
   private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
@@ -136,17 +136,17 @@ public class SpannerSampleIT {
 
     runSample("writestructdata");
     out = runSample("querywithstruct");
-    assertThat(out).isEqualTo("6");
+    assertThat(out).startsWith("6\n");
 
     out = runSample("querywitharrayofstruct");
-    assertThat(out).isEqualTo("6\n7");
+    assertThat(out).startsWith("6\n7");
 
     out = runSample("querystructfield");
-    assertThat(out).isEqualTo("6");
+    assertThat(out).startsWith("6\n");
 
     out = runSample("querynestedstructfield");
-    assertThat(out).contains("6 Imagination");
-    assertThat(out).contains("9 Imagination");
+    assertThat(out).contains("6 Imagination\n");
+    assertThat(out).contains("9 Imagination\n");
   }
 
   private String formatForTest(String name) {
