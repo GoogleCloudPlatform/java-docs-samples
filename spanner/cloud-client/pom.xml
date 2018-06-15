@@ -40,8 +40,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <!-- TODO update w/ release version -->
-      <version>0.45.1-beta-SNAPSHOT</version>
+      <version>0.52.0-beta</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.guava</groupId>
