@@ -83,8 +83,7 @@ To transform Avro formatted files to Csv use the following command:
 # Example
 
 mvn compile exec:java -Dexec.mainClass=com.example.AvroToCsv \
-     -Dexec.args="--avroSchema=gs://gcs-bucket/schema.avsc --inputFile=gs://gcs-bucket/*.avro
-                  --output=gs://gcs-bucket/output_prefix   --csvDelimiter=, --runner=Dataflow"
+     -Dexec.args="--avroSchema=gs://bucket/schema.avsc --inputFile=gs://bucket/*.avro --output=gs://bucket/output --runner=Dataflow"
 ```
 
 Full description of options can be found by using the following command:
@@ -101,8 +100,7 @@ To transform CSV formatted files without a header to Avro use the following comm
 # Example
 
 mvn compile exec:java -Dexec.mainClass=com.example.CsvToAvro \
-     -Dexec.args="--avroSchema=gs://gcs-bucket/schema.avsc --inputFile=gs://gcs-bucket/*.csv
-                  --output=gs://gcs-bucket/output_prefix   --csvDelimiter=, --runner=Dataflow"
+     -Dexec.args="--avroSchema=gs://bucket/schema.avsc --inputFile=gs://bucket/*.csv --output=gs://bucket/output --runner=Dataflow"
 ```
 
 Full description of options can be found by using the following command:

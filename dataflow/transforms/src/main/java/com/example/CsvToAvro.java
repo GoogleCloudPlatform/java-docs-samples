@@ -82,7 +82,7 @@ public class CsvToAvro {
 
     @ProcessElement
     public void processElement(ProcessContext ctx) throws IllegalArgumentException {
-      // Split CSV row into using DELIMITER
+      // Split CSV row into using delimiter
       String[] rowValues = ctx.element().split(delimiter);
 
       Schema schema = new Schema.Parser().parse(schemaJson);
@@ -143,7 +143,7 @@ public class CsvToAvro {
             ParDo.of(new ConvertCsvToAvro(schemaJson, options.getCsvDelimiter())))
         .setCoder(AvroCoder.of(GenericRecord.class, schema))
         .apply("Write Avro formatted data", AvroIO.writeGenericRecords(schemaJson)
-            .to(options.getOutput()).withCodec(CodecFactory.bzip2Codec()).withSuffix(".avro"));
+            .to(options.getOutput()).withCodec(CodecFactory.snappyCodec()).withSuffix(".avro"));
 
     // Run the pipeline.
     pipeline.run().waitUntilFinish();
