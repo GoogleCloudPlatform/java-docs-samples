@@ -133,6 +133,20 @@ public class SpannerSampleIT {
     assertThat(out).contains("1 4 2017-10-05 11000");
     assertThat(out).contains("1 19 2017-11-02 15000");
     assertThat(out).contains("2 42 2017-12-23 7000");
+
+    runSample("writestructdata");
+    out = runSample("querywithstruct");
+    assertThat(out).startsWith("6\n");
+
+    out = runSample("querywitharrayofstruct");
+    assertThat(out).startsWith("6\n7");
+
+    out = runSample("querystructfield");
+    assertThat(out).startsWith("6\n");
+
+    out = runSample("querynestedstructfield");
+    assertThat(out).contains("6 Imagination\n");
+    assertThat(out).contains("9 Imagination\n");
   }
 
   private String formatForTest(String name) {
