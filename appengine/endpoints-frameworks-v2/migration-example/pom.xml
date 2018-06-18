@@ -32,6 +32,10 @@ limitations under the License.
         <version>1.0.9</version>
     </parent>
 
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
 
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>

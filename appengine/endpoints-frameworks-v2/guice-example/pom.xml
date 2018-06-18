@@ -31,6 +31,10 @@
         <version>1.0.9</version>
     </parent>
 
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

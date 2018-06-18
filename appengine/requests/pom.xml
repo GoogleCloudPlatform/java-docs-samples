@@ -37,15 +37,15 @@ Copyright 2016 Google Inc.
   </properties>
 
   <dependencies>
-   <dependency>
-    <groupId>com.google.appengine</groupId>
-    <artifactId>appengine-maven-plugin</artifactId>
-    <version>1.9.64</version>
-   </dependency>
-   <dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-maven-plugin</artifactId>
+      <version>1.9.64</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>25.1-android</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -100,7 +100,8 @@ Copyright 2016 Google Inc.
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->
-    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+    </outputDirectory>
     <plugins>
       <plugin>
         <groupId>com.google.appengine</groupId>
