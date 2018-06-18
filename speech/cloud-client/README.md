@@ -73,7 +73,7 @@ mvn exec:java -DRecognize -Dexec.args="model-selection gs://cloud-samples-tests/
 
 Perform streaming speech transcription on an audio file
 ```
-mvn exec:java -DRecognize -Dexec.args="streamrecognize ./resources/Google_Gnome.wav"
+mvn exec:java -DRecognize -Dexec.args="streamrecognize ./resources/audio.raw"
 ```
 
 ## Auto Punctuation
