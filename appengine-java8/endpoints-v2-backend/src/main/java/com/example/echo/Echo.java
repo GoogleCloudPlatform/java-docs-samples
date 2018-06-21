@@ -47,7 +47,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
             name = "firebase",
             issuer = "https://securetoken.google.com/YOUR-PROJECT-ID",
             jwksUri =
-                "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system"
+                "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system"
                     + ".gserviceaccount.com"
         )
     }
