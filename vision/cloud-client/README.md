@@ -93,3 +93,9 @@ mvn exec:java -DDetect -Dexec.args="web-entities-include-geo ./resources/landmar
 ```
 mvn exec:java -DDetect -Dexec.args="crop ./resources/landmark.jpg"
 ```
+
+#### OCR
+```
+mvn exec:java -DDetect -Dexec.args="ocr gs://java-docs-samples-testing/vision/HodgeConj.pdf \
+   gs://<BUCKET_ID>/"
+```

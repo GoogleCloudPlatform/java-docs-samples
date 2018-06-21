@@ -39,13 +39,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>25.1-android</version>
     </dependency>
 
     <dependency>
@@ -66,13 +66,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
 
@@ -91,13 +91,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.40</version>
+      <version>0.41</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -17,6 +17,7 @@
 package com.example.spanner;
 
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
+import static com.google.cloud.spanner.Type.StructField;
 
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
@@ -34,6 +35,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
+import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
@@ -43,21 +45,22 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Example code for using the Cloud Spanner API. This example demonstrates all the common
- * operations that can be done on Cloud Spanner. These are: <p>
+ * Example code for using the Cloud Spanner API. This example demonstrates all the common operations
+ * that can be done on Cloud Spanner. These are:
+ *
+ * <p>
+ *
  * <ul>
- * <li> Creating a Cloud Spanner database.
- * <li> Writing, reading and executing SQL queries.
- * <li> Writing data using a read-write transaction.
- * <li> Using an index to read and execute SQL queries over data.
- * <li> Using commit timestamp for tracking when a record was last updated.
+ *   <li>Creating a Cloud Spanner database.
+ *   <li>Writing, reading and executing SQL queries.
+ *   <li>Writing data using a read-write transaction.
+ *   <li>Using an index to read and execute SQL queries over data.
+ *   <li>Using commit timestamp for tracking when a record was last updated.
  * </ul>
  */
 public class SpannerSample {
 
-  /**
-   * Class to contain singer sample data.
-   */
+  /** Class to contain singer sample data. */
   static class Singer {
 
     final long singerId;
@@ -71,9 +74,7 @@ public class SpannerSample {
     }
   }
 
-  /**
-   * Class to contain album sample data.
-   */
+  /** Class to contain album sample data. */
   static class Album {
 
     final long singerId;
@@ -87,9 +88,7 @@ public class SpannerSample {
     }
   }
 
-  /**
-  * Class to contain performance sample data.
-  */
+  /** Class to contain performance sample data. */
   static class Performance {
 
     final long singerId;
@@ -133,8 +132,8 @@ public class SpannerSample {
 
   // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Database, CreateDatabaseMetadata> op = dbAdminClient
-        .createDatabase(
+    Operation<Database, CreateDatabaseMetadata> op =
+        dbAdminClient.createDatabase(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
             Arrays.asList(
@@ -157,8 +156,8 @@ public class SpannerSample {
 
   // [START spanner_create_table_with_timestamp_column]
   static void createTableWithTimestamp(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Void, UpdateDatabaseDdlMetadata> op = dbAdminClient
-        .updateDatabaseDdl(
+    Operation<Void, UpdateDatabaseDdlMetadata> op =
+        dbAdminClient.updateDatabaseDdl(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
             Arrays.asList(
@@ -169,7 +168,8 @@ public class SpannerSample {
                     + "  Revenue      INT64, \n"
                     + "  LastUpdateTime TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true)\n"
                     + ") PRIMARY KEY (SingerId, VenueId, EventDate),\n"
-                    + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"), null);
+                    + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"),
+            null);
     op.waitFor().getResult();
     System.out.println("Created Performances table in database: [" + id + "]");
   }
@@ -245,7 +245,8 @@ public class SpannerSample {
     ResultSet resultSet =
         dbClient
             .singleUse()
-            .read("Albums",
+            .read(
+                "Albums",
                 // KeySet.all() can be used to read all rows in a table. KeySet exposes other
                 // methods to read only a subset of the table.
                 KeySet.all(),
@@ -259,10 +260,13 @@ public class SpannerSample {
 
   // [START spanner_add_column]
   static void addMarketingBudget(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
-        dbId.getDatabase(),
-        Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
-        null).waitFor();
+    adminClient
+        .updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
+            null)
+        .waitFor();
     System.out.println("Added MarketingBudget column");
   }
   // [END spanner_add_column]
@@ -367,10 +371,13 @@ public class SpannerSample {
 
   // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
-        dbId.getDatabase(),
-        Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
-        null).waitFor();
+    adminClient
+        .updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
+            null)
+        .waitFor();
     System.out.println("Added AlbumsByAlbumTitle index");
   }
   // [END spanner_create_index]
@@ -379,17 +386,21 @@ public class SpannerSample {
   // "CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)".
   // [START spanner_query_data_with_index]
   static void queryUsingIndex(DatabaseClient dbClient) {
-    Statement statement = Statement
-        // We use FORCE_INDEX hint to specify which index to use. For more details see
-        // https://cloud.google.com/spanner/docs/query-syntax#from-clause
-        .newBuilder("SELECT AlbumId, AlbumTitle, MarketingBudget\n"
-            + "FROM Albums@{FORCE_INDEX=AlbumsByAlbumTitle}\n"
-            + "WHERE AlbumTitle >= @StartTitle AND AlbumTitle < @EndTitle")
-        // We use @BoundParameters to help speed up frequently executed queries.
-        //  For more details see https://cloud.google.com/spanner/docs/sql-best-practices
-        .bind("StartTitle").to("Aardvark")
-        .bind("EndTitle").to("Goo")
-        .build();
+    Statement statement =
+        Statement
+            // We use FORCE_INDEX hint to specify which index to use. For more details see
+            // https://cloud.google.com/spanner/docs/query-syntax#from-clause
+            .newBuilder(
+                "SELECT AlbumId, AlbumTitle, MarketingBudget\n"
+                    + "FROM Albums@{FORCE_INDEX=AlbumsByAlbumTitle}\n"
+                    + "WHERE AlbumTitle >= @StartTitle AND AlbumTitle < @EndTitle")
+            // We use @BoundParameters to help speed up frequently executed queries.
+            //  For more details see https://cloud.google.com/spanner/docs/sql-best-practices
+            .bind("StartTitle")
+            .to("Aardvark")
+            .bind("EndTitle")
+            .to("Goo")
+            .build();
 
     ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
     while (resultSet.next()) {
@@ -420,11 +431,14 @@ public class SpannerSample {
 
   // [START spanner_create_storing_index]
   static void addStoringIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
-        dbId.getDatabase(),
-        Arrays.asList(
-            "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)"),
-        null).waitFor();
+    adminClient
+        .updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList(
+                "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)"),
+            null)
+        .waitFor();
     System.out.println("Added AlbumsByAlbumTitle2 index");
   }
   // [END spanner_create_storing_index]
@@ -482,12 +496,12 @@ public class SpannerSample {
     ResultSet resultSet =
         dbClient
             .singleUse(TimestampBound.ofExactStaleness(15, TimeUnit.SECONDS))
-            .read("Albums",
-                KeySet.all(),
-                Arrays.asList("SingerId", "AlbumId", "MarketingBudget"));
+            .read("Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"));
     while (resultSet.next()) {
       System.out.printf(
-          "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1),
+          "%d %d %s\n",
+          resultSet.getLong(0),
+          resultSet.getLong(1),
           resultSet.isNull(2) ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
   }
@@ -495,12 +509,15 @@ public class SpannerSample {
 
   // [START spanner_add_timestamp_column]
   static void addCommitTimestamp(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient.updateDatabaseDdl(dbId.getInstanceId().getInstance(),
-        dbId.getDatabase(),
-        Arrays.asList(
-            "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
-            + "OPTIONS (allow_commit_timestamp=true)"),
-        null).waitFor();
+    adminClient
+        .updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList(
+                "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
+                    + "OPTIONS (allow_commit_timestamp=true)"),
+            null)
+        .waitFor();
     System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
   }
   // [END spanner_add_timestamp_column]
@@ -547,9 +564,10 @@ public class SpannerSample {
     ResultSet resultSet =
         dbClient
             .singleUse()
-            .executeQuery(Statement.of(
-                "SELECT SingerId, AlbumId, MarketingBudget, LastUpdateTime FROM Albums"
-                + " ORDER BY LastUpdateTime DESC"));
+            .executeQuery(
+                Statement.of(
+                    "SELECT SingerId, AlbumId, MarketingBudget, LastUpdateTime FROM Albums"
+                        + " ORDER BY LastUpdateTime DESC"));
     while (resultSet.next()) {
       System.out.printf(
           "%d %d %s %s\n",
@@ -569,9 +587,10 @@ public class SpannerSample {
     ResultSet resultSet =
         dbClient
             .singleUse()
-            .executeQuery(Statement.of(
-                "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime FROM Performances"
-                + " ORDER BY LastUpdateTime DESC"));
+            .executeQuery(
+                Statement.of(
+                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime FROM Performances"
+                        + " ORDER BY LastUpdateTime DESC"));
     while (resultSet.next()) {
       System.out.printf(
           "%d %d %s %s %s\n",
@@ -585,7 +604,162 @@ public class SpannerSample {
     }
   }
 
-  static void run(DatabaseClient dbClient, DatabaseAdminClient dbAdminClient, String command,
+  // [START spanner_write_data_for_struct_queries]
+  static void writeStructExampleData(DatabaseClient dbClient) {
+    final List<Singer> singers =
+        Arrays.asList(
+            new Singer(6, "Elena", "Campbell"),
+            new Singer(7, "Gabriel", "Wright"),
+            new Singer(8, "Benjamin", "Martinez"),
+            new Singer(9, "Hannah", "Harris"));
+
+    List<Mutation> mutations = new ArrayList<>();
+    for (Singer singer : singers) {
+      mutations.add(
+          Mutation.newInsertBuilder("Singers")
+              .set("SingerId")
+              .to(singer.singerId)
+              .set("FirstName")
+              .to(singer.firstName)
+              .set("LastName")
+              .to(singer.lastName)
+              .build());
+    }
+    dbClient.write(mutations);
+    System.out.println("Inserted example data for struct parameter queries.");
+  }
+  // [END spanner_write_data_for_struct_queries]
+
+  static void queryWithStruct(DatabaseClient dbClient) {
+    // [START spanner_create_struct_with_data]
+    Struct name =
+        Struct.newBuilder().set("FirstName").to("Elena").set("LastName").to("Campbell").build();
+    // [END spanner_create_struct_with_data]
+
+    // [START spanner_query_data_with_struct]
+    Statement s =
+        Statement.newBuilder(
+                "SELECT SingerId FROM Singers "
+                + "WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
+                + "= @name")
+            .bind("name")
+            .to(name)
+            .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+      System.out.printf("%d\n", resultSet.getLong("SingerId"));
+    }
+    // [END spanner_query_data_with_struct]
+  }
+
+  static void queryWithArrayOfStruct(DatabaseClient dbClient) {
+    // [START spanner_create_user_defined_struct]
+    Type nameType =
+        Type.struct(
+            Arrays.asList(
+                StructField.of("FirstName", Type.string()),
+                StructField.of("LastName", Type.string())));
+    // [END spanner_create_user_defined_struct]
+
+    // [START spanner_create_array_of_struct_with_data]
+    List<Struct> bandMembers = new ArrayList<>();
+    bandMembers.add(
+        Struct.newBuilder().set("FirstName").to("Elena").set("LastName").to("Campbell").build());
+    bandMembers.add(
+        Struct.newBuilder().set("FirstName").to("Gabriel").set("LastName").to("Wright").build());
+    bandMembers.add(
+        Struct.newBuilder().set("FirstName").to("Benjamin").set("LastName").to("Martinez").build());
+    // [END spanner_create_array_of_struct_with_data]
+
+    // [START spanner_query_data_with_array_of_struct]
+    Statement s =
+        Statement.newBuilder(
+                "SELECT SingerId FROM Singers WHERE "
+                + "STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
+                + "IN UNNEST(@names)")
+            .bind("names")
+            .toStructArray(nameType, bandMembers)
+            .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+      System.out.printf("%d\n", resultSet.getLong("SingerId"));
+    }
+    // [END spanner_query_data_with_array_of_struct]
+  }
+
+  // [START spanner_field_access_on_struct_parameters]
+  static void queryStructField(DatabaseClient dbClient) {
+    Statement s =
+        Statement.newBuilder("SELECT SingerId FROM Singers WHERE FirstName = @name.FirstName")
+            .bind("name")
+            .to(
+                Struct.newBuilder()
+                    .set("FirstName")
+                    .to("Elena")
+                    .set("LastName")
+                    .to("Campbell")
+                    .build())
+            .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+      System.out.printf("%d\n", resultSet.getLong("SingerId"));
+    }
+  }
+  // [END spanner_field_access_on_struct_parameters]
+
+  // [START spanner_field_access_on_nested_struct_parameters]
+  static void queryNestedStructField(DatabaseClient dbClient) {
+    Type nameType =
+        Type.struct(
+            Arrays.asList(
+                StructField.of("FirstName", Type.string()),
+                StructField.of("LastName", Type.string())));
+
+    Struct songInfo =
+        Struct.newBuilder()
+            .set("song_name")
+            .to("Imagination")
+            .set("artistNames")
+            .toStructArray(
+                nameType,
+                Arrays.asList(
+                    Struct.newBuilder()
+                        .set("FirstName")
+                        .to("Elena")
+                        .set("LastName")
+                        .to("Campbell")
+                        .build(),
+                    Struct.newBuilder()
+                        .set("FirstName")
+                        .to("Hannah")
+                        .set("LastName")
+                        .to("Harris")
+                        .build()))
+            .build();
+    Statement s =
+        Statement.newBuilder(
+                "SELECT SingerId, @song_info.song_name "
+                    + "FROM Singers WHERE "
+                    + "STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
+                    + "IN UNNEST(@song_info.artistNames)")
+            .bind("song_info")
+            .to(songInfo)
+            .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
+    while (resultSet.next()) {
+      System.out.printf("%d %s\n", resultSet.getLong("SingerId"), resultSet.getString(1));
+    }
+  }
+  // [END spanner_field_access_on_nested_struct_parameters]
+
+  static void run(
+      DatabaseClient dbClient,
+      DatabaseAdminClient dbAdminClient,
+      String command,
       DatabaseId database) {
     switch (command) {
       case "createdatabase":
@@ -651,6 +825,21 @@ public class SpannerSample {
       case "queryperformancestable":
         queryPerformancesTable(dbClient);
         break;
+      case "writestructdata":
+        writeStructExampleData(dbClient);
+        break;
+      case "querywithstruct":
+        queryWithStruct(dbClient);
+        break;
+      case "querywitharrayofstruct":
+        queryWithArrayOfStruct(dbClient);
+        break;
+      case "querystructfield":
+        queryStructField(dbClient);
+        break;
+      case "querynestedstructfield":
+        queryNestedStructField(dbClient);
+        break;
       default:
         printUsageAndExit();
     }
@@ -661,48 +850,32 @@ public class SpannerSample {
     System.err.println("    SpannerExample <command> <instance_id> <database_id>");
     System.err.println("");
     System.err.println("Examples:");
-    System.err.println(
-        "    SpannerExample createdatabase my-instance example-db");
-    System.err.println(
-        "    SpannerExample write my-instance example-db");
-    System.err.println(
-        "    SpannerExample query my-instance example-db");
-    System.err.println(
-        "    SpannerExample read my-instance example-db");
-    System.err.println(
-        "    SpannerExample addmarketingbudget my-instance example-db");
-    System.err.println(
-        "    SpannerExample update my-instance example-db");
-    System.err.println(
-        "    SpannerExample writetransaction my-instance example-db");
-    System.err.println(
-        "    SpannerExample querymarketingbudget my-instance example-db");
-    System.err.println(
-        "    SpannerExample addindex my-instance example-db");
-    System.err.println(
-        "    SpannerExample readindex my-instance example-db");
-    System.err.println(
-        "    SpannerExample queryindex my-instance example-db");
-    System.err.println(
-        "    SpannerExample addstoringindex my-instance example-db");
-    System.err.println(
-        "    SpannerExample readstoringindex my-instance example-db");
-    System.err.println(
-        "    SpannerExample readonlytransaction my-instance example-db");
-    System.err.println(
-        "    SpannerExample readstaledata my-instance example-db");
-    System.err.println(
-        "    SpannerExample addcommittimestamp my-instance example-db");
-    System.err.println(
-        "    SpannerExample updatewithtimestamp my-instance example-db");
-    System.err.println(
-        "    SpannerExample querywithtimestamp my-instance example-db");
-    System.err.println(
-        "    SpannerExample createtablewithtimestamp my-instance example-db");
-    System.err.println(
-        "    SpannerExample writewithtimestamp my-instance example-db");
-    System.err.println(
-        "    SpannerExample queryperformancestable my-instance example-db");
+    System.err.println("    SpannerExample createdatabase my-instance example-db");
+    System.err.println("    SpannerExample write my-instance example-db");
+    System.err.println("    SpannerExample query my-instance example-db");
+    System.err.println("    SpannerExample read my-instance example-db");
+    System.err.println("    SpannerExample addmarketingbudget my-instance example-db");
+    System.err.println("    SpannerExample update my-instance example-db");
+    System.err.println("    SpannerExample writetransaction my-instance example-db");
+    System.err.println("    SpannerExample querymarketingbudget my-instance example-db");
+    System.err.println("    SpannerExample addindex my-instance example-db");
+    System.err.println("    SpannerExample readindex my-instance example-db");
+    System.err.println("    SpannerExample queryindex my-instance example-db");
+    System.err.println("    SpannerExample addstoringindex my-instance example-db");
+    System.err.println("    SpannerExample readstoringindex my-instance example-db");
+    System.err.println("    SpannerExample readonlytransaction my-instance example-db");
+    System.err.println("    SpannerExample readstaledata my-instance example-db");
+    System.err.println("    SpannerExample addcommittimestamp my-instance example-db");
+    System.err.println("    SpannerExample updatewithtimestamp my-instance example-db");
+    System.err.println("    SpannerExample querywithtimestamp my-instance example-db");
+    System.err.println("    SpannerExample createtablewithtimestamp my-instance example-db");
+    System.err.println("    SpannerExample writewithtimestamp my-instance example-db");
+    System.err.println("    SpannerExample queryperformancestable my-instance example-db");
+    System.err.println("    SpannerExample writestructdata my-instance example-db");
+    System.err.println("    SpannerExample querywithstruct my-instance example-db");
+    System.err.println("    SpannerExample querywitharrayofstruct my-instance example-db");
+    System.err.println("    SpannerExample querystructfield my-instance example-db");
+    System.err.println("    SpannerExample querynestedstructfield my-instance example-db");
     System.exit(1);
   }
 
@@ -720,9 +893,10 @@ public class SpannerSample {
       // This will return the default project id based on the environment.
       String clientProject = spanner.getOptions().getProjectId();
       if (!db.getInstanceId().getProject().equals(clientProject)) {
-        System.err.println("Invalid project specified. Project in the database id should match"
-            + "the project name set in the environment variable GCLOUD_PROJECT. Expected: "
-            + clientProject);
+        System.err.println(
+            "Invalid project specified. Project in the database id should match"
+                + "the project name set in the environment variable GCLOUD_PROJECT. Expected: "
+                + clientProject);
         printUsageAndExit();
       }
       // [START init_client]
