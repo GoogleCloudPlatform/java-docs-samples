@@ -47,12 +47,13 @@ public class AuthExample {
   // [END auth_cloud_implicit]
 
   // [START auth_cloud_explicit]
-  static void authExplicit(String jsonPath) throws IOException {
+  static void authExplicit(String projectId, String jsonPath) throws IOException {
     // You can specify a credential file by providing a path to GoogleCredentials.
     // Otherwise credentials are read from the GOOGLE_APPLICATION_CREDENTIALS environment variable.
     GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(jsonPath))
           .createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
-    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+    Storage storage = StorageOptions.newBuilder().setCredentials(credentials)
+          .setProjectId(projectId).build().getService();
 
     System.out.println("Buckets:");
     Page<Bucket> buckets = storage.list();
@@ -95,19 +96,21 @@ public class AuthExample {
       authImplicit();
       return;
     }
-    if ("explicit".equals(args[0])) {
-      if (args.length >= 2) {
-        authExplicit(args[1]);
+    String suite = args[0];
+    if ("explicit".equals(suite)) {
+      if (args.length >= 3) {
+        authExplicit(args[1], args[2]);
       } else {
-        throw new IllegalArgumentException("Path to credential file required with 'explicit'.");
+        throw new IllegalArgumentException(
+          "Project ID and path to credential file required with 'explicit'.");
       }
       return;
     }
-    if ("compute".equals(args[0])) {
+    if ("compute".equals(suite)) {
       authCompute();
       return;
     }
-    if ("appengine".equals(args[0])) {
+    if ("appengine".equals(suite)) {
       authAppEngineStandard();
       return;
     }

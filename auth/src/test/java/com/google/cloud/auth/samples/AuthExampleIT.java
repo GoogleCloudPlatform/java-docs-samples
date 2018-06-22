@@ -35,6 +35,7 @@ public class AuthExampleIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private String credentials;
+  private String projectId;
 
   @Before
   public void setUp() {
@@ -42,7 +43,9 @@ public class AuthExampleIT {
     out = new PrintStream(bout);
     System.setOut(out);
     credentials = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
-    assertNotNull(credentials);
+    assertNotNull(credentials, "Please set the GOOGLE_APPLICATION_CREDENTIALS env var.");
+    projectId = System.getenv("GOOGLE_PROJECT_ID");
+    assertNotNull(projectId, "Please set the GOOGLE_PROJECT_ID env var.");
   }
 
   @Test
@@ -54,7 +57,7 @@ public class AuthExampleIT {
 
   @Test
   public void testAuthExplicitNoPath() throws IOException {
-    AuthExample.main(new String[] {"explicit", credentials});
+    AuthExample.main(new String[] {"explicit", projectId, credentials});
     String output = bout.toString();
     assertTrue(output.contains("Buckets:"));
   }
