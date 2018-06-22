@@ -96,24 +96,25 @@ public class AuthExample {
       authImplicit();
       return;
     }
-    String suite = args[0];
-    if ("explicit".equals(suite)) {
-      if (args.length >= 3) {
-        authExplicit(args[1], args[2]);
-      } else {
-        throw new IllegalArgumentException(
-          "Project ID and path to credential file required with 'explicit'.");
-      }
-      return;
+
+    switch (args[0]) {
+      case "explicit":
+        if (args.length >= 3) {
+          authExplicit(args[1], args[2]);
+        } else {
+          throw new IllegalArgumentException(
+            "Project ID and path to credential file required with 'explicit'.");
+        }
+        break;
+      case "compute":
+        authCompute();
+        break;
+      case "appengine":
+        authAppEngineStandard();
+        break;
+      default:
+        authImplicit();
+        break;
     }
-    if ("compute".equals(suite)) {
-      authCompute();
-      return;
-    }
-    if ("appengine".equals(suite)) {
-      authAppEngineStandard();
-      return;
-    }
-    authImplicit();
   }
 }
