@@ -18,6 +18,9 @@ package com.google.iam.snippets;
 
 import java.util.Random;
 
+import com.google.api.services.iam.v1.model.ServiceAccountKey;
+import com.google.common.util.concurrent.Service;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -35,9 +38,16 @@ public class ServiceAccountsIT {
         String email = name + "@" + projectId + ".iam.gserviceaccount.com";
 
         ServiceAccounts sa = new ServiceAccounts();
+        ServiceAccountKeys sak = new ServiceAccountKeys();
+
         sa.CreateServiceAccount(projectId, name, "Java Demo");
         sa.ListServiceAccounts(projectId);
         sa.RenameServiceAccount(email, "Java Demo (Updated!)");
+
+        ServiceAccountKey key = sak.CreateKey(email);
+        sak.ListKeys(email);
+        sak.DeleteKey(key.getName());
+
         sa.DeleteServiceAccount(email);        
     }
 }
