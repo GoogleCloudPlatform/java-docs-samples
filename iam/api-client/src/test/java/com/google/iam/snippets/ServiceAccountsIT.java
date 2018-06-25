@@ -19,7 +19,6 @@ package com.google.iam.snippets;
 import java.util.Random;
 
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
-import com.google.common.util.concurrent.Service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
