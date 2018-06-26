@@ -30,7 +30,7 @@ import com.google.samples.HistogramSample;
 import com.google.samples.LocationSearchSample;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -38,17 +38,17 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SampleTests {
 
-  private ByteArrayOutputStream bout;
+  private static ByteArrayOutputStream bout;
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void setUp() {
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
   }
 
   @Test
-  public void runAllSamples() throws Exception {
+  public void autoCompleteSampleTest() throws Exception {
     AutoCompleteSample.main();
     assertThat(bout.toString()).containsMatch(
         ".*completionResults.*\"suggestion\":\"Google\",\"type\":\"COMPANY_NAME\"}.*\n"
@@ -56,7 +56,10 @@ public class SampleTests {
             + ".*completionResults.*\"suggestion\":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n"
     );
     bout.reset();
+  }
 
+  @Test
+  public void basicCompanySampleTest() throws Exception {
     BasicCompanySample.main();
     assertThat(bout.toString()).containsMatch(
         ".*Company generated:.*\n"
@@ -67,7 +70,10 @@ public class SampleTests {
             + ".*Company deleted.*\n"
     );
     bout.reset();
+  }
 
+  @Test
+  public void basicJobSampleTest() throws Exception {
     BasicJobSample.main();
     assertThat(bout.toString()).containsMatch(
         ".*Job generated:.*\n"
@@ -78,7 +84,10 @@ public class SampleTests {
             + ".*Job deleted.*\n"
     );
     bout.reset();
+  }
 
+  @Test
+  public void batchOperationSampleTest() throws Exception {
     BatchOperationSample.main();
     assertThat(bout.toString()).containsMatch(".*"
         + "Company generated:.*\nCompany created:.*\n"
@@ -88,12 +97,18 @@ public class SampleTests {
         + "Company deleted.*\n"
     );
     bout.reset();
+  }
 
+  @Test
+  public void commuteSearchSampleTest() throws Exception {
     CommuteSearchSample.main();
     assertThat(bout.toString())
         .containsMatch(".*appliedCommuteFilter.*1600 Amphitheatre Pkwy.*");
     bout.reset();
+  }
 
+  @Test
+  public void customAttributeSampleTest() throws Exception {
     CustomAttributeSample.main();
     assertThat(bout.toString())
         .containsMatch(
@@ -102,7 +117,10 @@ public class SampleTests {
                 + ".*matchingJobs.*jobWithACustomAttribute.*\n"
                 + ".*matchingJobs.*jobWithACustomAttribute.*\n");
     bout.reset();
+  }
 
+  @Test
+  public void customFieldSampleTest() throws Exception {
     CustomFieldSample.main();
     assertThat(bout.toString())
         .containsMatch(
@@ -111,11 +129,24 @@ public class SampleTests {
                 + ".*matchingJobs.*jobWithACustomField.*\n"
                 + ".*matchingJobs.*jobWithACustomField.*\n");
     bout.reset();
+  }
 
+  @Test
+  public void emailAlertSearchSampleTest() throws Exception {
     EmailAlertSearchSample.main();
     assertThat(bout.toString()).contains("matchingJobs");
     bout.reset();
+  }
 
+  @Test
+  public void featuredJobSearchSampleTest() throws Exception {
+    FeaturedJobsSearchSample.main();
+    assertThat(bout.toString()).contains("matchingJobs");
+    bout.reset();
+  }
+
+  @Test
+  public void generalSearchSampleTest() throws Exception {
     GeneralSearchSample.main();
     assertThat(bout.toString())
         .containsMatch(
@@ -128,16 +159,18 @@ public class SampleTests {
                 + ".*matchingJobs.*\n"
                 + ".*matchingJobs.*\n");
     bout.reset();
+  }
 
-    FeaturedJobsSearchSample.main();
-    assertThat(bout.toString()).contains("matchingJobs");
-    bout.reset();
-
+  @Test
+  public void histogramSampleTest() throws Exception {
     HistogramSample.main();
     assertThat(bout.toString()).contains("COMPANY_DISPLAY_NAME");
     assertThat(bout.toString()).contains("someFieldName1");
     bout.reset();
+  }
 
+  @Test
+  public void locationSearchSampleTest() throws Exception {
     LocationSearchSample.main();
     assertThat(bout.toString()).containsMatch(
         ".*appliedJobLocationFilters.*matchingJobs.*\n"
