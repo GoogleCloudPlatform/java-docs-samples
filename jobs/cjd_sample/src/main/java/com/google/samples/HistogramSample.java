@@ -18,6 +18,8 @@ package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.Company;
+import com.google.api.services.jobs.v2.model.CustomAttributeHistogramRequest;
+import com.google.api.services.jobs.v2.model.HistogramFacets;
 import com.google.api.services.jobs.v2.model.Job;
 import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
@@ -25,50 +27,20 @@ import com.google.api.services.jobs.v2.model.SearchJobsRequest;
 import com.google.api.services.jobs.v2.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
- * The sample in this file introduce featured job, including:
- *
- * - Construct a featured job
- *
- * - Search featured job
+ * The sample in this file introduce how to do a histogram search.
  */
-public final class FeaturedJobsSearchSample {
+public final class HistogramSample {
 
   private static JobService jobService = JobServiceQuickstart.getJobService();
 
-  // [START featured_job]
+  // [START histogram_search]
 
   /**
-   * Creates a job as featured.
+   * Histogram search
    */
-  public static Job generateFeaturedJob(String companyName) throws IOException {
-    // requisition id should be a unique Id in your system.
-    String requisitionId =
-        "featuredJob:" + String.valueOf(new Random().nextLong());
-
-    Job job =
-        new Job()
-            .setRequisitionId(requisitionId)
-            .setJobTitle("Software Engineer")
-            .setCompanyName(companyName)
-            .setApplicationUrls(Arrays.asList("http://careers.google.com"))
-            .setDescription(
-                "Design, develop, test, deploy, maintain and improve software.")
-            // Featured job is the job with positive promotion value
-            .setPromotionValue(2);
-    System.out.println("Job generated: " + job);
-    return job;
-  }
-  // [END featured_job]
-
-  // [START search_featured_job]
-
-  /**
-   * Searches featured jobs.
-   */
-  public static void searchFeaturedJobs(String companyName) throws IOException {
+  public static void histogramSearch(String companyName) throws IOException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -77,35 +49,43 @@ public final class FeaturedJobsSearchSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain("www.google.com");
+            .setDomain(
+                "www.google.com");
 
-    JobQuery jobQuery = new JobQuery().setQuery("Software Engineer");
-    if (companyName != null) {
-      jobQuery.setCompanyNames(Arrays.asList(companyName));
-    }
+    HistogramFacets histogramFacets =
+        new HistogramFacets()
+            .setSimpleHistogramFacets(Arrays.asList("COMPANY_ID"))
+            .setCustomAttributeHistogramFacets(
+                Arrays.asList(
+                    new CustomAttributeHistogramRequest()
+                        .setKey("someFieldName1")
+                        .setStringValueHistogram(true)));
 
+    // conducted.
     SearchJobsRequest request =
         new SearchJobsRequest()
             .setRequestMetadata(requestMetadata)
-            .setQuery(jobQuery)
-            // Set the search mode to a featured search,
-            // which would only search the jobs with positive promotion value.
-            .setMode("FEATURED_JOB_SEARCH");
+            .setMode("JOB_SEARCH")
+            .setHistogramFacets(histogramFacets);
+    if (companyName != null) {
+      request.setQuery(new JobQuery().setCompanyNames(Arrays.asList(companyName)));
+    }
+
     SearchJobsResponse response = jobService.jobs().search(request).execute();
     System.out.println(response);
   }
-  // [END search_featured_job]
+  // [END histogram_search]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany();
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
-    Job jobToBeCreated = generateFeaturedJob(companyName);
+    Job jobToBeCreated = CustomAttributeSample.generateJobWithACustomAttribute(companyName);
     String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
 
     // Wait several seconds for post processing
     Thread.sleep(10000);
-    searchFeaturedJobs(companyName);
+    histogramSearch(companyName);
 
     BasicJobSample.deleteJob(jobName);
     BasicCompanySample.deleteCompany(companyName);
