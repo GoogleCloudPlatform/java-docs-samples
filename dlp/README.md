@@ -66,49 +66,50 @@ Options:
   -f, --maxFindings    [number] [default: 0]
                        maximum number of results to retrieve
   -q, --includeQuote   [boolean] [default: true] include matching string in results
-  -t, --infoTypes      restrict to limited set of infoTypes [ default: []]
-                       [ eg. PHONE_NUMBER US_PASSPORT]
+  -t, --infoTypes      set of infoTypes to search for [eg. PHONE_NUMBER US_PASSPORT]
+  -customDictionaries  set of comma-separated dictionary words to search for as customInfoTypes
+  -customRegexes       set of regex patterns to search for as customInfoTypes
 ```
 ### Examples
  - Inspect a string:
    ```
-   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com"
+   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" -customDictionaries me@somedomain.com -customRegexes "\(\d{3}\) \d{3}-\d{4}"
    ```
  - Inspect a local file (text / image):
    ```
-     java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f resources/test.txt
-     java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f resources/test.png
+     java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.txt --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+     java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.png --infoTypes PHONE_NUMBER EMAIL_ADDRESS
    ```
 - Inspect a file on Google Cloud Storage:
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -gcs -bucketName my-bucket -fileName my-file.txt
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -gcs -bucketName my-bucket -fileName my-file.txt --infoTypes PHONE_NUMBER EMAIL_ADDRESS
   ```
 - Inspect a Google Cloud Datastore kind:
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -ds -kind my-kind
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -ds -kind my-kind --infoTypes PHONE_NUMBER EMAIL_ADDRESS
   ```
 
-## Automatic redaction of sensitive data
-[Automatic redaction](https://cloud.google.com/dlp/docs/classification-redaction) produces an output with sensitive data matches removed.
+## Automatic redaction of sensitive data from images
+[Automatic redaction](https://cloud.google.com/dlp/docs/redacting-sensitive-data-images) produces an output image with sensitive data matches removed.
 
 ```
 Commands:
-  -s <string>                   Source input string
-  -r <replacement string>       String to replace detected info types
+  -f <string>                   Source image file
+  -o <string>                   Destination image file
  Options:
   --help               Show help
   -minLikelihood       choices: "LIKELIHOOD_UNSPECIFIED", "VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
                        [default: "LIKELIHOOD_UNSPECIFIED"]
                        specifies the minimum reporting likelihood threshold.
   
-  -infoTypes     restrict operation to limited set of info types [ default: []]
-                      [ eg. PHONE_NUMBER US_PASSPORT]
+  -infoTypes      set of infoTypes to search for [eg. PHONE_NUMBER US_PASSPORT]
 ```
 
 ### Example
-- Replace sensitive data in text with `_REDACTED_`:
+- Redact phone numbers and email addresses from `test.png`:
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" -r "_REDACTED_"
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -f src/test/resources/test.png -o test-redacted.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
   ```
 
 ## Integration tests

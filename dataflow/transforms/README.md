@@ -52,14 +52,14 @@ The following steps are optional if:
 
 1. Grant the `roles/storage.objectViewer` role to the bucket to get and list objects from a Dataflow job:
 
-       gsutil --debug iam ch serviceAccount:[COMPUTE_DEFAULT_SERVICE_ACCOUNT]:objectViewer gs://[BUCKET_NAME]
+       gsutil iam ch serviceAccount:[COMPUTE_DEFAULT_SERVICE_ACCOUNT]:objectViewer gs://[BUCKET_NAME]
 
    * Replace `[COMPUTE_DEFAULT_SERVICE_ACCOUNT]` with the Compute Engine default service account.
    * Replace `[BUCKET_NAME]` with the bucket you use to read your input data.
 
 1. Grant the `roles/storage.objectCreator` role to the bucket to create objects on output from a Dataflow job:
 
-       gsutil --debug iam ch serviceAccount:[COMPUTE_DEFAULT_SERVICE_ACCOUNT]:objectCreator gs://[BUCKET_NAME]
+       gsutil iam ch serviceAccount:[COMPUTE_DEFAULT_SERVICE_ACCOUNT]:objectCreator gs://[BUCKET_NAME]
 
    * Replace `[COMPUTE_DEFAULT_SERVICE_ACCOUNT]` with the Compute Engine default service account.
    * Replace `[BUCKET_NAME]` with the bucket you use to read your input data.
@@ -67,7 +67,7 @@ The following steps are optional if:
 1. If the bucket contains both input and output data, grant the `roles/storage.objectAdmin` role to the default service
    account using the gsutil:
 
-       gsutil --debug iam ch serviceAccount:[COMPUTE_DEFAULT_SERVICE_ACCOUNT]:objectAdmin gs://[BUCKET_NAME]
+       gsutil iam ch serviceAccount:[COMPUTE_DEFAULT_SERVICE_ACCOUNT]:objectAdmin gs://[BUCKET_NAME]
 
    * Replace `[COMPUTE_DEFAULT_SERVICE_ACCOUNT]` with the Compute Engine default service account.
    * Replace `[BUCKET_NAME]` with the bucket you use to read and write your input and output data respectively.
@@ -89,7 +89,7 @@ mvn compile exec:java -Dexec.mainClass=com.example.AvroToCsv \
 Full description of options can be found by using the following command:
 
 ```bash
-mvn compile exec:java -Dexec.mainClass=org.solution.example.AvroToCsv -Dexec.args="--help=org.solution.example.SampleOptions"
+mvn compile exec:java -Dexec.mainClass=com.example.AvroToCsv -Dexec.args="--help=com.example.SampleOptions"
 ```
 
 ### CSV to Avro transformation
@@ -106,7 +106,7 @@ mvn compile exec:java -Dexec.mainClass=com.example.CsvToAvro \
 Full description of options can be found by using the following command:
 
 ```bash
-mvn compile exec:java -Dexec.mainClass=org.solution.example.CsvToAvro -Dexec.args="--help=org.solution.example.SampleOptions"
+mvn compile exec:java -Dexec.mainClass=com.example.CsvToAvro -Dexec.args="--help=com.example.SampleOptions"
 ```
 
 Existing example does not support headers in a CSV files.
