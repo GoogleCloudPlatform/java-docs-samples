@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
     </dependency>
 
     <dependency>
@@ -80,7 +80,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory</artifactId>
-      <version>1.0.8</version>
+      <version>1.0.9</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
@@ -88,6 +88,7 @@
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
+      <!-- [START plugins] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -113,7 +114,7 @@
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>
       </plugin>
-
+      <!-- [END plugins] -->
     </plugins>
   </build>
 </project>

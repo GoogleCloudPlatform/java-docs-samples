@@ -52,6 +52,7 @@
         <module>container-registry/container-analysis</module>
 
         <module>dataflow/spanner-io</module>
+        <module>dataflow/transforms</module>
 
         <module>datastore</module>
         <module>datastore/cloud-client</module>
@@ -75,6 +76,8 @@
 
         <module>monitoring/cloud-client</module>
         <module>monitoring/v3</module>
+
+        <module>memorystore/redis</module>
 
         <module>pubsub/cloud-client</module>
 

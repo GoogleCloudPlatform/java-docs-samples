@@ -35,7 +35,7 @@
    <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.9.9</version>
+      <version>2.10</version>
     </dependency>
   </dependencies>
   <build>

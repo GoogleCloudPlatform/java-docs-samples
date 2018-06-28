@@ -15,7 +15,7 @@
  */
 
 package com.example.iap;
-// [START generate_iap_request]
+// [START iap_make_request]
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
@@ -150,4 +150,4 @@ public class BuildIapRequest {
         .setHeaders(httpHeaders);
   }
 }
-// [END generate_iap_request]
+// [END iap_make_request]
