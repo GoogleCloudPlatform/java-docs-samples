@@ -1,0 +1,8 @@
+Google3
+=======
+
+This is the root of the Google3 source tree.  Code in here is built by the
+Google3 build system.  Submissions are subject to review and approval by the
+OWNERS of each package.
+
+See README.md for more information.

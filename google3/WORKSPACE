@@ -1,0 +1,17 @@
+###########################################################################
+#                                                                         #
+# WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING #
+#                                                                         #
+# This file affects the entire depot.                                     #
+# Changes may be submitted only outside of MTV peak hours.                #
+#                                                                         #
+###########################################################################
+
+# Do not remove this file. Its existence indicates to Blaze that all builds
+# should be rooted at google3/.  See the design doc at go/blaze-multi-repo.
+
+# An identifier for this repository.
+workspace(name = "google3")
+
+# This allows rules written in skylark to locate apple build tools.
+bind(name = "xcrunwrapper", actual = "//tools/objc:xcrunwrapper")
