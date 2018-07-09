@@ -46,15 +46,13 @@ import java.util.List;
  *
  * - Filter on language codes
  *
- * - Filter on tenant jobs
- *
  * - Filter on company display names
  *
  * - Filter on compensations
  */
 public final class GeneralSearchSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();r
+  private static JobService jobService = JobServiceQuickstart.getJobService();
 
   //[START basic_keyword_search]
 
