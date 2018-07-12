@@ -38,6 +38,7 @@ public class SynthesizeTextIT {
   private static String OUTPUT = "output.mp3";
   private static String TEXT = "Hello there.";
   private static String SSML = "<speak>Hello there.</speak>";
+  private static String EFFECTSPROFILE = "telephony-class-application";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -58,7 +59,7 @@ public class SynthesizeTextIT {
   @Test
   public void testSynthesizeText() throws Exception {
     // Act
-    SynthesizeText.synthesizeText(TEXT);
+    SynthesizeText.synthesizeText(TEXT,EFFECTSPROFILE);
 
     // Assert
     outputFile = new File(OUTPUT);
@@ -70,7 +71,7 @@ public class SynthesizeTextIT {
   @Test
   public void testSynthesizeSsml() throws Exception {
     // Act
-    SynthesizeText.synthesizeText(SSML);
+    SynthesizeText.synthesizeSsml(SSML);
 
     // Assert
     outputFile = new File(OUTPUT);
