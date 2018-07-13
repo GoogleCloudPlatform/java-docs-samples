@@ -140,23 +140,25 @@ public class Quickstart {
   // [START cloud_tasks_lease_and_acknowledge_task]
   private static void pullAndAckTask(String projectId, String queueName, String location) {
     try (CloudTasksClient client = CloudTasksClient.create()) {
-      LeaseTasksRequest.Builder reqBuilder = LeaseTasksRequest.newBuilder()
+      LeaseTasksRequest leaseReq = LeaseTasksRequest.newBuilder()
           .setParent(QueueName.of(projectId, location, queueName).toString())
           .setLeaseDuration(Duration.newBuilder().setSeconds(600))
           .setMaxTasks(1)
-          .setResponseView(Task.View.FULL);
-      LeaseTasksResponse response = client.leaseTasks(reqBuilder.build());
+          .setResponseView(Task.View.FULL)
+          .build();
+      LeaseTasksResponse response = client.leaseTasks(leaseReq);
       if (response.getTasksCount() == 0) {
         System.out.println("No tasks found in queue.");
         return;
       }
       Task task = response.getTasksList().get(0);
       System.out.println("Leased task: " + task.getName());
-      client.acknowledgeTask(AcknowledgeTaskRequest
+      AcknowledgeTaskRequest ackRequest = AcknowledgeTaskRequest
           .newBuilder()
           .setName(task.getName())
           .setScheduleTime(task.getScheduleTime())
-          .build());
+          .build();
+      client.acknowledgeTask(ackRequest);
       System.out.println("Acknowledged task: " + task.getName());
     } catch (Exception e) {
       System.out.println("Exception during PullAndAckTask: " + e.getMessage());
