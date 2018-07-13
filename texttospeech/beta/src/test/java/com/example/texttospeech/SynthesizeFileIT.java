@@ -29,15 +29,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Tests for SynthesizeText sample.
+ * Tests for SynthesizeFile sample.
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class SynthesizeTextIT {
+public class SynthesizeFileIT {
 
   private static String OUTPUT = "output.mp3";
-  private static String TEXT = "Hello there.";
-  private static String SSML = "<speak>Hello there.</speak>";
+  private static String TEXT_FILE = "resources/hello.txt";
+  private static String SSML_FILE = "resources/hello.ssml";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -58,7 +58,7 @@ public class SynthesizeTextIT {
   @Test
   public void testSynthesizeText() throws Exception {
     // Act
-    SynthesizeText.synthesizeText(TEXT);
+    SynthesizeFile.synthesizeTextFile(TEXT_FILE);
 
     // Assert
     outputFile = new File(OUTPUT);
@@ -70,7 +70,7 @@ public class SynthesizeTextIT {
   @Test
   public void testSynthesizeSsml() throws Exception {
     // Act
-    SynthesizeText.synthesizeSsml(SSML);
+    SynthesizeFile.synthesizeSsmlFile(SSML_FILE);
 
     // Assert
     outputFile = new File(OUTPUT);

@@ -36,8 +36,8 @@ import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * Google Cloud TextToSpeech API sample application.
- * Example usage: mvn package exec:java -Dexec.mainClass='com.example.texttospeech.SynthesizeText'
- *                                      -Dexec.args='--text "hello"
+ * Example usage: mvn package exec:java-Dexec.mainClass='com.example.texttospeech.SynthesizeText'
+ *                                     -Dexec.args='--text "hello"'
  */
 public class SynthesizeText {
 
@@ -82,6 +82,52 @@ public class SynthesizeText {
     }
   }
   // [END tts_synthesize_text]
+
+  // [START tts_synthesize_text_with_audio_profile]
+  /**
+   * Demonstrates using the Text to Speech client to synthesize text or ssml.
+   *
+   * @param text the raw text to be synthesized. (e.g., "Hello there!")
+   * @param effectsprofile audio profile to be used for synthesis. (e.g.,
+   *     "telephony-class-application")
+   * @throws Exception on TextToSpeechClient Errors.
+   */
+  public static void synthesizeTextWithAudioProfile(String text, String effectsprofile)
+      throws Exception {
+    // Instantiates a client
+    try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+      // Set the text input to be synthesized
+      SynthesisInput input = SynthesisInput.newBuilder().setText(text).build();
+
+      // Build the voice request
+      VoiceSelectionParams voice =
+          VoiceSelectionParams.newBuilder()
+              .setLanguageCode("en-US") // languageCode = "en_us"
+              .setSsmlGender(SsmlVoiceGender.FEMALE) // ssmlVoiceGender = SsmlVoiceGender.FEMALE
+              .build();
+
+      // Select the type of audio file you want returned
+      AudioConfig audioConfig =
+          AudioConfig.newBuilder()
+              .setAudioEncoding(AudioEncoding.MP3) // MP3 audio.
+              .addEffectsProfileId(effectsprofile) // audio profile
+              .build();
+
+      // Perform the text-to-speech request
+      SynthesizeSpeechResponse response =
+          textToSpeechClient.synthesizeSpeech(input, voice, audioConfig);
+
+      // Get the audio contents from the response
+      ByteString audioContents = response.getAudioContent();
+
+      // Write the response to the output file.
+      try (OutputStream out = new FileOutputStream("output.mp3")) {
+        out.write(audioContents.toByteArray());
+        System.out.println("Audio content written to file \"output.mp3\"");
+      }
+    }
+  }
+  // [END tts_synthesize_text_with_audio_profile]
 
   // [START tts_synthesize_ssml]
   /**
@@ -134,21 +180,29 @@ public class SynthesizeText {
         ArgumentParsers.newFor("SynthesizeText")
             .build()
             .defaultHelp(true)
-            .description("Synthesize a text with audio effect profiles or ssml.");
+            .description("Synthesize a text, text with audio effect profiles or ssml.");
 
     MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup().required(true);
     group
         .addArgument("--text")
         .help("The text file from which to synthesize speech.")
-        .nargs(2)
-        .metavar("TEXT", "EFFECTSPROFILE");
+        .nargs("+")
+        .metavar("TEXT", "EFFECTSPROFILE(optional)");
     group.addArgument("--ssml").help("The ssml file from which to synthesize speech.");
 
     try {
       Namespace namespace = parser.parseArgs(args);
 
       if ((namespace.get("text") != null)) {
-        synthesizeText(namespace.getString("text"));
+        if (namespace.getList("text").size() == 2) {
+          synthesizeTextWithAudioProfile(
+              namespace.getList("text").get(0).toString(),
+              namespace.getList("text").get(1).toString());
+
+        } else {
+          synthesizeText(namespace.getString("text"));
+        }
+
       } else {
         synthesizeSsml(namespace.getString("ssml"));
       }
