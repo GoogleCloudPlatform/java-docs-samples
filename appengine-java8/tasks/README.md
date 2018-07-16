@@ -61,7 +61,7 @@ Set environment variables:
 First, your project ID:
 
 ```
-export PROJECT_ID=my-project-id
+export GOOGLE_CLOUD_PROJECT=my-project-id
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
@@ -81,11 +81,11 @@ location is "us-central1").
 export LOCATION_ID=us-central1
 ```
 
-Create a task, targeted at the `log_payload` endpoint, with a payload specified:
+Create a task, targeted at the `/tasks/create` endpoint, with a payload specified:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $PROJECT_ID --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
+    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
 ```
 
 The App Engine app serves as a target for the push requests. It has an
@@ -101,5 +101,5 @@ Create a task that will be scheduled for a time in the future using the
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $PROJECT_ID --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
+    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
 ```

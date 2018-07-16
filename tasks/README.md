@@ -43,7 +43,7 @@ mvn clean assembly:single
 Optionally, you can set up your settings as environment variables:
 
 ```
-export PROJECT_ID=<YOUR_PROJECT_ID>
+export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT_ID>
 export LOCATION_ID=<YOUR_ZONE>
 export QUEUE_ID=<YOUR_QUEUE_NAME>
 ```
@@ -52,13 +52,13 @@ Next, create a task for a queue:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.Quickstart" \
-    -Dexec.args="create-task --project $PROJECT_ID --queue $QUEUE_ID --location $LOCATION_ID"
+    -Dexec.args="create-task --project $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID"
 ```
 
 Finally, pull and acknowledge a task:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.Quickstart" \
-    -Dexec.args="lease-and-ack-task --project $PROJECT_ID --queue $QUEUE_ID --location $LOCATION_ID"
+    -Dexec.args="lease-and-ack-task --project $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID"
 ```
 Note that usually, there would be a processing step in between pulling a task and acknowledging it.
