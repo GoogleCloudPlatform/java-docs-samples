@@ -23,16 +23,19 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v2.JobService;
+import com.google.api.services.jobs.v2.model.Company;
+import com.google.api.services.jobs.v2.model.ListCompaniesResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Collections;
 
 /**
- * The Util helps to generate credential and create Google JobService
+ * The quickstart for Cloud Job Discovery
  */
-public class JobServiceUtils {
+public class JobServiceQuickstart {
 
-  // [START instantiate]
+  // [START quickstart]
 
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport NET_HTTP_TRANSPORT = new NetHttpTransport();
@@ -72,10 +75,25 @@ public class JobServiceUtils {
       request.setReadTimeout(1 * 60000); // 1 minute read timeout
     };
   }
-  // [END instantiate]
 
   public static JobService getJobService() {
     return jobService;
   }
 
+  public static void main(String... args) throws Exception {
+    try {
+      ListCompaniesResponse listCompaniesResponse = jobService.companies().list().execute();
+      System.out.println("Request Id is " + listCompaniesResponse.getMetadata().getRequestId());
+      if (listCompaniesResponse.getCompanies() != null) {
+        for (Company company : listCompaniesResponse.getCompanies()) {
+          System.out.println(company.getName());
+        }
+      }
+    } catch (IOException e) {
+      System.out.println("Got exception while listing companies");
+      throw e;
+    }
+  }
+
+  // [END quickstart]
 }
