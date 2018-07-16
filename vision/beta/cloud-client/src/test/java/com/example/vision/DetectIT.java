@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,6 +172,29 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("37%");
   }
+
+  @Test
+  public void testDetectLocalizedObjects() throws Exception {
+    // Act
+    String[] args = {"object-localizer", "./resources/puppies.jpg"};
+    Detect.argsHelper(args, out);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("Dog");
+  }
+
+  @Test
+  public void testDetectHandwrittenOcr() throws Exception {
+    // Act
+    String[] args = {"handwritten-ocr", "./resources/handwritten.jpg"};
+    Detect.argsHelper(args, out);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("Google Cloud Platform");
+  }
+
 
   @Test
   public void testTextGcs() throws Exception {
@@ -374,5 +397,31 @@ public class DetectIT {
     for (Blob blob : blobs.iterateAll()) {
       blob.delete();
     }
+  }
+
+  @Test
+  public void testDetectLocalizedObjectsGcs() throws Exception {
+    // Act
+    String[] args = {"object-localizer", "gs://cloud-samples-data/vision/puppies.jpg"};
+    Detect.argsHelper(args, out);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("Dog");
+  }
+
+  @Test
+  public void testDetectHandwrittenOcrGcs() throws Exception {
+    // Act
+    String[] args = {
+        "handwritten-ocr",
+        "gs://cloud-samples-data/vision/handwritten.jpg",
+    };
+    Detect.argsHelper(args, out);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("Google Cloud Platform");
+
   }
 }
