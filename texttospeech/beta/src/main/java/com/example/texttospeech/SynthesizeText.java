@@ -106,7 +106,7 @@ public class SynthesizeText {
               .setSsmlGender(SsmlVoiceGender.FEMALE) // ssmlVoiceGender = SsmlVoiceGender.FEMALE
               .build();
 
-      // Select the type of audio file you want returned
+      // Select the type of audio file you want returned and the audio profile
       AudioConfig audioConfig =
           AudioConfig.newBuilder()
               .setAudioEncoding(AudioEncoding.MP3) // MP3 audio.
