@@ -22,11 +22,11 @@ import com.google.samples.BasicJobSample;
 import com.google.samples.BatchOperationSample;
 import com.google.samples.CommuteSearchSample;
 import com.google.samples.CustomAttributeSample;
-import com.google.samples.CustomFieldSample;
 import com.google.samples.EmailAlertSearchSample;
 import com.google.samples.FeaturedJobsSearchSample;
 import com.google.samples.GeneralSearchSample;
 import com.google.samples.HistogramSample;
+import com.google.samples.JobServiceQuickstart;
 import com.google.samples.LocationSearchSample;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -120,18 +120,6 @@ public class SampleTests {
   }
 
   @Test
-  public void customFieldSampleTest() throws Exception {
-    CustomFieldSample.main();
-    assertThat(bout.toString())
-        .containsMatch(
-            ".*Job created:.*jobWithACustomField.*\n"
-                + ".*matchingJobs.*jobWithACustomField.*\n"
-                + ".*matchingJobs.*jobWithACustomField.*\n"
-                + ".*matchingJobs.*jobWithACustomField.*\n");
-    bout.reset();
-  }
-
-  @Test
   public void emailAlertSearchSampleTest() throws Exception {
     EmailAlertSearchSample.main();
     assertThat(bout.toString()).contains("matchingJobs");
@@ -156,7 +144,6 @@ public class SampleTests {
                 + ".*matchingJobs.*\n"
                 + ".*matchingJobs.*\n"
                 + ".*matchingJobs.*\n"
-                + ".*matchingJobs.*\n"
                 + ".*matchingJobs.*\n");
     bout.reset();
   }
@@ -164,8 +151,15 @@ public class SampleTests {
   @Test
   public void histogramSampleTest() throws Exception {
     HistogramSample.main();
-    assertThat(bout.toString()).contains("COMPANY_DISPLAY_NAME");
+    assertThat(bout.toString()).contains("COMPANY_ID");
     assertThat(bout.toString()).contains("someFieldName1");
+    bout.reset();
+  }
+
+  @Test
+  public void jobServiceQuickStartTest() throws Exception {
+    JobServiceQuickstart.main();
+    assertThat(bout.toString()).contains("Request Id is");
     bout.reset();
   }
 

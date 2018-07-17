@@ -18,12 +18,8 @@ package com.google.samples;
 
 import com.google.api.services.jobs.v2.JobService;
 import com.google.api.services.jobs.v2.model.Company;
-import com.google.api.services.jobs.v2.model.CreateJobRequest;
 import com.google.api.services.jobs.v2.model.CustomAttribute;
-import com.google.api.services.jobs.v2.model.CustomField;
-import com.google.api.services.jobs.v2.model.CustomFieldFilter;
 import com.google.api.services.jobs.v2.model.Job;
-import com.google.api.services.jobs.v2.model.JobFilters;
 import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
 import com.google.api.services.jobs.v2.model.SearchJobsRequest;
@@ -44,7 +40,7 @@ import java.util.Random;
  */
 public final class CustomAttributeSample {
 
-  private static JobService jobService = JobServiceUtils.getJobService();
+  private static JobService jobService = JobServiceQuickstart.getJobService();
 
   // [START custom_attribute_job]
 
