@@ -37,7 +37,7 @@ In this example, the queue will be named `my-pull-queue`.
 From the project folder, build your project with:
 
 ```
-mvn clean assembly:single
+mvn clean install
 ```
 
 Optionally, you can set up your settings as environment variables:
@@ -45,20 +45,22 @@ Optionally, you can set up your settings as environment variables:
 ```
 export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT_ID>
 export LOCATION_ID=<YOUR_ZONE>
-export QUEUE_ID=<YOUR_QUEUE_NAME>
+export QUEUE_ID=my-pull-queue
 ```
 
 Next, create a task for a queue:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.Quickstart" \
-    -Dexec.args="create-task --project $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID"
+    -Dexec.args="create-task \
+    --project $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID"
 ```
 
 Finally, pull and acknowledge a task:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.Quickstart" \
-    -Dexec.args="lease-and-ack-task --project $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID"
+    -Dexec.args="lease-and-ack-task \
+    --project $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID"
 ```
 Note that usually, there would be a processing step in between pulling a task and acknowledging it.

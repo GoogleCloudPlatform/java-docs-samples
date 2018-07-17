@@ -48,20 +48,14 @@ mvn appengine:run
 mvn appengine:deploy
 ```
 
-Verify the index page is serving:
-
-```
-gcloud app browse
-```
-
-## Running the Samples
+## Running the Sample
 
 Set environment variables:
 
 First, your project ID:
 
 ```
-export GOOGLE_CLOUD_PROJECT=my-project-id
+export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT_ID>
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
@@ -78,14 +72,15 @@ the "name" value (for instance, if the name is
 location is "us-central1").
 
 ```
-export LOCATION_ID=us-central1
+export LOCATION_ID=<YOUR_ZONE>
 ```
 
 Create a task, targeted at the `/tasks/create` endpoint, with a payload specified:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
+    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
+    --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
 ```
 
 The App Engine app serves as a target for the push requests. It has an
@@ -101,5 +96,6 @@ Create a task that will be scheduled for a time in the future using the
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
+    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
+    --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
 ```
