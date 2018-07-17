@@ -193,7 +193,6 @@ public class Detect {
       String destPath = args.length > 2 ? args[2] : "";
       detectDocumentsGcs(path, destPath);
     } else if (command.equals("object-localizer")) {
-      System.out.println("in here");
       if (path.startsWith("gs://")) {
         detectLocalizedObjectsGcs(path, out);
       } else {
@@ -1469,8 +1468,8 @@ public class Detect {
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       // Display the results
-      for (AnnotateImageResponse r : responses) {
-        for (LocalizedObjectAnnotation entity : r.getLocalizedObjectAnnotationsList()) {
+      for (AnnotateImageResponse res : responses) {
+        for (LocalizedObjectAnnotation entity : res.getLocalizedObjectAnnotationsList()) {
           out.format("Object name: %s\n", entity.getName());
           out.format("Confidence: %s\n", entity.getScore());
           out.format("Normalized Vertices:\n");
@@ -1513,8 +1512,8 @@ public class Detect {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       client.close();
       // Display the results
-      for (AnnotateImageResponse r : responses) {
-        for (LocalizedObjectAnnotation entity : r.getLocalizedObjectAnnotationsList()) {
+      for (AnnotateImageResponse res : responses) {
+        for (LocalizedObjectAnnotation entity : res.getLocalizedObjectAnnotationsList()) {
           out.format("Object name: %s\n", entity.getName());
           out.format("Confidence: %s\n", entity.getScore());
           out.format("Normalized Vertices:\n");
