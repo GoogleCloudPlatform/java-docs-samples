@@ -43,7 +43,6 @@ import com.google.cloud.vision.v1p3beta1.GcsDestination;
 import com.google.cloud.vision.v1p3beta1.GcsSource;
 import com.google.cloud.vision.v1p3beta1.Image;
 import com.google.cloud.vision.v1p3beta1.ImageAnnotatorClient;
-import com.google.cloud.vision.v1p3beta1.ImageAnnotatorSettings;
 import com.google.cloud.vision.v1p3beta1.ImageContext;
 import com.google.cloud.vision.v1p3beta1.ImageSource;
 import com.google.cloud.vision.v1p3beta1.InputConfig;
@@ -103,8 +102,8 @@ public class Detect {
               + "\n"
               + "Commands:\n"
               + "\tfaces | labels | landmarks | logos | text | safe-search | properties"
-              + "| web | web-entities | web-entities-include-geo | crop | ocr | object-localizer\n"
-              + "| handwritten-ocr\n"
+              + "| web | web-entities | web-entities-include-geo | crop | ocr\n"
+              + "| object-localization| handwritten-ocr\n"
               + "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
               + "resource (gs://...)\n"
               + "Path to File:\n\tA path to the remote file on Cloud Storage (gs://...)\n"
@@ -192,7 +191,7 @@ public class Detect {
     } else if (command.equals("ocr")) {
       String destPath = args.length > 2 ? args[2] : "";
       detectDocumentsGcs(path, destPath);
-    } else if (command.equals("object-localizer")) {
+    } else if (command.equals("object-localization")) {
       if (path.startsWith("gs://")) {
         detectLocalizedObjectsGcs(path, out);
       } else {
@@ -1506,6 +1505,7 @@ public class Detect {
             .setImage(img)
             .build();
     requests.add(request);
+
     // Perform the request
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
@@ -1543,7 +1543,7 @@ public class Detect {
 
     Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
-    // Set the parameters for the image
+    // Set the Language Hint codes for handwritten OCR
     ImageContext imageContext =
         ImageContext.newBuilder().addLanguageHints("en-t-i0-handwrit").build();
 

@@ -97,7 +97,7 @@ mvn exec:java -DDetect -Dexec.args="ocr gs://java-docs-samples-testing/vision/Ho
 
 #### Localized Objects
 ```
-mvn exec:java -DDetect -Dexec.args="object-localizer ./resources/puppies.jpg"
+mvn exec:java -DDetect -Dexec.args="object-localization ./resources/puppies.jpg"
 ```
 
 #### Hand-written OCR

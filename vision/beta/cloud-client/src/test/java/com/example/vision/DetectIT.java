@@ -176,7 +176,7 @@ public class DetectIT {
   @Test
   public void testDetectLocalizedObjects() throws Exception {
     // Act
-    String[] args = {"object-localizer", "./resources/puppies.jpg"};
+    String[] args = {"object-localization", "./resources/puppies.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -402,7 +402,7 @@ public class DetectIT {
   @Test
   public void testDetectLocalizedObjectsGcs() throws Exception {
     // Act
-    String[] args = {"object-localizer", "gs://cloud-samples-data/vision/puppies.jpg"};
+    String[] args = {"object-localization", "gs://cloud-samples-data/vision/puppies.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
