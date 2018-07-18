@@ -813,7 +813,7 @@ public class Recognize {
       RecognitionAudio recognitionAudio =
           RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
 
-      // Configure request to enable enhanced models
+      // Configure request to enable Speaker diarization
       RecognitionConfig config =
           RecognitionConfig.newBuilder()
               .setEncoding(AudioEncoding.LINEAR16)
@@ -821,8 +821,6 @@ public class Recognize {
               .setSampleRateHertz(8000)
               .setEnableSpeakerDiarization(true)
               .setDiarizationSpeakerCount(2)
-              .setEnableAutomaticPunctuation(true)
-              .setModel("phone_call")
               .build();
 
       // Perform the transcription request
@@ -834,11 +832,11 @@ public class Recognize {
         // use the first (most likely) one here.
         SpeechRecognitionAlternative alternative = result.getAlternatives(0);
         System.out.format("Transcript : %s\n", alternative.getTranscript());
-        System.out.format(
-            "Speaker Tag : %s \n",
-            alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag());
-        System.out.format(
-            "Word: %s\n\n", alternative.getWords((alternative.getWordsCount() - 1)).getWord());
+        // The words array contains the entire transcript up until that point.
+        //Referencing the last spoken word to get the associated Speaker tag
+        System.out.format("Speaker Tag %s:%s\n",
+            alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag(),
+            alternative.getTranscript());
       }
     }
   }
@@ -860,8 +858,6 @@ public class Recognize {
               .setSampleRateHertz(8000)
               .setEnableSpeakerDiarization(true)
               .setDiarizationSpeakerCount(2)
-              .setEnableAutomaticPunctuation(true)
-              .setModel("phone_call")
               .build();
 
       // Set the remote path for the audio file
@@ -880,13 +876,11 @@ public class Recognize {
         // There can be several alternative transcripts for a given chunk of speech. Just
         // use the first (most likely) one here.
         SpeechRecognitionAlternative alternative = result.getAlternatives(0);
-        System.out.format("Transcript : %s\n", alternative.getTranscript());
-        System.out.format(
-            "Speaker Tag : %s \n",
-            alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag());
-        System.out.format(
-            "Word: %s\n\n", alternative.getWords((alternative.getWordsCount() - 1)).getWord());
-
+        // The words array contains the entire transcript up until that point.
+        //Referencing the last spoken word to get the associated Speaker tag
+        System.out.format("Speaker Tag %s:%s\n",
+            alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag(),
+            alternative.getTranscript());
       }
     }
   }
@@ -917,7 +911,6 @@ public class Recognize {
               .setSampleRateHertz(44100)
               .setAudioChannelCount(2)
               .setEnableSeparateRecognitionPerChannel(true)
-              .setEnableAutomaticPunctuation(true)
               .build();
 
       // Perform the transcription request
@@ -954,7 +947,6 @@ public class Recognize {
               .setSampleRateHertz(44100)
               .setAudioChannelCount(2)
               .setEnableSeparateRecognitionPerChannel(true)
-              .setEnableAutomaticPunctuation(true)
               .build();
 
       // Set the remote path for the audio file
@@ -1087,7 +1079,7 @@ public class Recognize {
     try (SpeechClient speechClient = SpeechClient.create()) {
       RecognitionAudio recognitionAudio =
           RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
-      // Configure request to enable multiple channels
+      // Configure request to enable word level confidence
       RecognitionConfig config =
           RecognitionConfig.newBuilder()
               .setEncoding(AudioEncoding.LINEAR16)
@@ -1122,7 +1114,7 @@ public class Recognize {
   public static void transcribeWordLevelConfidenceGcs(String gcsUri) throws Exception {
     try (SpeechClient speechClient = SpeechClient.create()) {
 
-      // Configure request to enable multiple channels
+      // Configure request to enable word level confidence
       RecognitionConfig config =
           RecognitionConfig.newBuilder()
               .setEncoding(AudioEncoding.FLAC)

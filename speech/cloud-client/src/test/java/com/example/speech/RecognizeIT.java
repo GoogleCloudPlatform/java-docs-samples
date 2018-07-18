@@ -167,14 +167,14 @@ public class RecognizeIT {
   public void testTranscribeDiarization() throws Exception {
     Recognize.transcribeDiarization(recognitionAudioFile);
     String got = bout.toString();
-    assertThat(got).contains("Speaker Tag : 1");
+    assertThat(got).contains("Speaker Tag 2:");
   }
 
   @Test
   public void testTranscribeDiarizationGcs() throws Exception {
     Recognize.transcribeDiarizationGcs(gcsDiarizationAudioPath);
     String got = bout.toString();
-    assertThat(got).contains("Speaker Tag : 1");
+    assertThat(got).contains("Speaker Tag 2:");
   }
 
   @Test
