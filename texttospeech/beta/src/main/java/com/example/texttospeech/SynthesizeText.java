@@ -85,14 +85,14 @@ public class SynthesizeText {
 
   // [START tts_synthesize_text_with_audio_profile]
   /**
-   * Demonstrates using the Text to Speech client to synthesize text or ssml.
+   * Demonstrates using the Text to Speech client with audio profiles to synthesize text or ssml
    *
    * @param text the raw text to be synthesized. (e.g., "Hello there!")
-   * @param effectsprofile audio profile to be used for synthesis. (e.g.,
+   * @param effectsProfile audio profile to be used for synthesis. (e.g.,
    *     "telephony-class-application")
    * @throws Exception on TextToSpeechClient Errors.
    */
-  public static void synthesizeTextWithAudioProfile(String text, String effectsprofile)
+  public static void synthesizeTextWithAudioProfile(String text, String effectsProfile)
       throws Exception {
     // Instantiates a client
     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
@@ -110,7 +110,7 @@ public class SynthesizeText {
       AudioConfig audioConfig =
           AudioConfig.newBuilder()
               .setAudioEncoding(AudioEncoding.MP3) // MP3 audio.
-              .addEffectsProfileId(effectsprofile) // audio profile
+              .addEffectsProfileId(effectsProfile) // audio profile
               .build();
 
       // Perform the text-to-speech request

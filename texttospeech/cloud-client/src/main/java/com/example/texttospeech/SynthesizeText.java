@@ -141,13 +141,13 @@ public class SynthesizeText {
         .addArgument("--text")
         .help("The text file from which to synthesize speech.")
         .nargs(2)
-        .metavar("TEXT", "EFFECTSPROFILE");
+        .metavar("TEXT");
     group.addArgument("--ssml").help("The ssml file from which to synthesize speech.");
 
     try {
       Namespace namespace = parser.parseArgs(args);
 
-      if ((namespace.get("text") != null)) {
+      if (namespace.get("text") != null) {
         synthesizeText(namespace.getString("text"));
       } else {
         synthesizeSsml(namespace.getString("ssml"));
