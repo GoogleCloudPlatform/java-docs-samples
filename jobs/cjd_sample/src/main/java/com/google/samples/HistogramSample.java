@@ -33,7 +33,7 @@ import java.util.Arrays;
  */
 public final class HistogramSample {
 
-  private static JobService jobService = JobServiceUtils.getJobService();
+  private static JobService jobService = JobServiceQuickstart.getJobService();
 
   // [START histogram_search]
 
@@ -54,7 +54,7 @@ public final class HistogramSample {
 
     HistogramFacets histogramFacets =
         new HistogramFacets()
-            .setSimpleHistogramFacets(Arrays.asList("COMPANY_DISPLAY_NAME"))
+            .setSimpleHistogramFacets(Arrays.asList("COMPANY_ID"))
             .setCustomAttributeHistogramFacets(
                 Arrays.asList(
                     new CustomAttributeHistogramRequest()
