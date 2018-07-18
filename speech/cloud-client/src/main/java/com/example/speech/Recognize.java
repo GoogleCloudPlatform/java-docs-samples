@@ -834,7 +834,7 @@ public class Recognize {
         System.out.format("Transcript : %s\n", alternative.getTranscript());
         // The words array contains the entire transcript up until that point.
         //Referencing the last spoken word to get the associated Speaker tag
-        System.out.format("Speaker Tag %s:%s\n",
+        System.out.format("Speaker Tag %s: %s\n",
             alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag(),
             alternative.getTranscript());
       }
@@ -903,7 +903,7 @@ public class Recognize {
       RecognitionAudio recognitionAudio =
           RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
 
-      // Configure request to enable enhanced models
+      // Configure request to enable multiple channels
       RecognitionConfig config =
           RecognitionConfig.newBuilder()
               .setEncoding(AudioEncoding.LINEAR16)
