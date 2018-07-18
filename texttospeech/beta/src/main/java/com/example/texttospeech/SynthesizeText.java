@@ -180,7 +180,7 @@ public class SynthesizeText {
         ArgumentParsers.newFor("SynthesizeText")
             .build()
             .defaultHelp(true)
-            .description("Synthesize a text, text with audio effect profiles or ssml.");
+            .description("Synthesize a text, text with audio effect profiles, or ssml.");
 
     MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup().required(true);
     group

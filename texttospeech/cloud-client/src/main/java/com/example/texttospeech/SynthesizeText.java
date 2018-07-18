@@ -37,7 +37,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 /**
  * Google Cloud TextToSpeech API sample application.
  * Example usage: mvn package exec:java -Dexec.mainClass='com.example.texttospeech.SynthesizeText'
- *                                      -Dexec.args='--text "hello"
+ *                                      -Dexec.args='--text "hello"'
  */
 public class SynthesizeText {
 
@@ -134,14 +134,10 @@ public class SynthesizeText {
         ArgumentParsers.newFor("SynthesizeText")
             .build()
             .defaultHelp(true)
-            .description("Synthesize a text with audio effect profiles or ssml.");
+            .description("Synthesize a text or ssml.");
 
     MutuallyExclusiveGroup group = parser.addMutuallyExclusiveGroup().required(true);
-    group
-        .addArgument("--text")
-        .help("The text file from which to synthesize speech.")
-        .nargs(2)
-        .metavar("TEXT");
+    group.addArgument("--text").help("The text file from which to synthesize speech.");
     group.addArgument("--ssml").help("The ssml file from which to synthesize speech.");
 
     try {
