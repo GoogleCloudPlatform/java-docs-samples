@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 public final class AutoCompleteSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   //[START auto_complete_job_title]
 

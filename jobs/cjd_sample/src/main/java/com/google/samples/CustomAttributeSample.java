@@ -40,7 +40,7 @@ import java.util.Random;
  */
 public final class CustomAttributeSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START custom_attribute_job]
 

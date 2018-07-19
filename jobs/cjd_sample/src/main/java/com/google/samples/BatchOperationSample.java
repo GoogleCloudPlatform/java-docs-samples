@@ -45,7 +45,7 @@ import java.util.List;
  */
 public final class BatchOperationSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START batch_job_create]
   public static List<Job> batchCreateJobs(String companyName) throws IOException {

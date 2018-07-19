@@ -42,7 +42,7 @@ import java.util.Random;
  */
 public final class BasicJobSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START basic_job]
 

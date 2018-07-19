@@ -38,7 +38,7 @@ import java.util.Random;
  */
 public final class BasicCompanySample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START basic_company]
 

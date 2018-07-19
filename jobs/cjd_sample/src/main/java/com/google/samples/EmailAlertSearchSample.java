@@ -31,7 +31,7 @@ import java.util.Arrays;
  */
 public final class EmailAlertSearchSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START search_for_alerts]
 

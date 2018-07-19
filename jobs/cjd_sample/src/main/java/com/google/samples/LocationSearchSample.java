@@ -42,7 +42,7 @@ import java.util.Arrays;
  */
 public final class LocationSearchSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START basic_location_search]
 

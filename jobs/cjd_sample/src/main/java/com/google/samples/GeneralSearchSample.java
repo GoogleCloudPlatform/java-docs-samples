@@ -23,7 +23,6 @@ import com.google.api.services.jobs.v2.model.CompensationFilter;
 import com.google.api.services.jobs.v2.model.CompensationInfo;
 import com.google.api.services.jobs.v2.model.CompensationRange;
 import com.google.api.services.jobs.v2.model.Job;
-import com.google.api.services.jobs.v2.model.JobFilters;
 import com.google.api.services.jobs.v2.model.JobQuery;
 import com.google.api.services.jobs.v2.model.Money;
 import com.google.api.services.jobs.v2.model.RequestMetadata;
@@ -52,7 +51,7 @@ import java.util.List;
  */
 public final class GeneralSearchSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   //[START basic_keyword_search]
 

@@ -33,7 +33,7 @@ import java.util.Arrays;
  */
 public final class HistogramSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START histogram_search]
 

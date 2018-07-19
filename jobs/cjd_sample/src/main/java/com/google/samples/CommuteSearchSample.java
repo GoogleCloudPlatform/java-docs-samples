@@ -36,7 +36,7 @@ import java.util.Arrays;
  */
 public final class CommuteSearchSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static JobService jobService = null;
 
   // [START commute_search]
 
