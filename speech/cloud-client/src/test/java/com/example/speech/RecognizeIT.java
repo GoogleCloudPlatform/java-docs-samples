@@ -30,8 +30,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class RecognizeIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID;
+  private static final String BUCKET = "cloud-samples-tests";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
