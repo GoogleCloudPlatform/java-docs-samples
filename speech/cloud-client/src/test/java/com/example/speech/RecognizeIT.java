@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class RecognizeIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID;
+  private static final String BUCKET = "cloud-samples-tests";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
