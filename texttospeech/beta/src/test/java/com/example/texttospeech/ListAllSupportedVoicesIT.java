@@ -19,9 +19,8 @@ package com.example.texttospeech;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-
 import java.io.PrintStream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,53 +28,39 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Tests for SynthesizeText sample.
+ * Tests for ListAllSupportedVoices sample.
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class SynthesizeTextIT {
-
-  private static String OUTPUT = "output.mp3";
-  private static String TEXT = "Hello there.";
-  private static String SSML = "<speak>Hello there.</speak>";
+public class ListAllSupportedVoicesIT {
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private File outputFile;
+  private ListAllSupportedVoices listAllSupportedVoices;
+
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
+    listAllSupportedVoices = new ListAllSupportedVoices();
   }
 
   @After
   public void tearDown() {
-    outputFile.delete();
+    System.setOut(null);
   }
 
   @Test
-  public void testSynthesizeText() throws Exception {
+  public void testListAllSupportedVoices() throws Exception {
     // Act
-    SynthesizeText.synthesizeText(TEXT);
+    listAllSupportedVoices.listAllSupportedVoices();
 
     // Assert
-    outputFile = new File(OUTPUT);
-    assertThat(outputFile.isFile()).isTrue();
     String got = bout.toString();
-    assertThat(got).contains("Audio content written to file \"output.mp3\"");
-  }
-
-  @Test
-  public void testSynthesizeSsml() throws Exception {
-    // Act
-    SynthesizeText.synthesizeSsml(SSML);
-
-    // Assert
-    outputFile = new File(OUTPUT);
-    assertThat(outputFile.isFile()).isTrue();
-    String got = bout.toString();
-    assertThat(got).contains("Audio content written to file \"output.mp3\"");
+    assertThat(got).contains("en-US");
+    assertThat(got).contains("SSML Voice Gender: MALE");
+    assertThat(got).contains("SSML Voice Gender: FEMALE");
   }
 }
