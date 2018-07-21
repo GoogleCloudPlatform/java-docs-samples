@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import com.google.cloud.automl.v1beta1.ImageClassificationDatasetMetadata;
 import com.google.cloud.automl.v1beta1.InputConfig;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
-
 import com.google.cloud.automl.v1beta1.OutputConfig;
 import com.google.protobuf.Empty;
+
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -48,14 +48,14 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 public class DatasetApi {
 
   // [START automl_vision_create_dataset]
-
   /**
    * Demonstrates using the AutoML client to create a dataset
    *
    * @param projectId the Google Cloud Project ID.
    * @param computeRegion the Region name. (e.g., "us-central1")
    * @param datasetName the name of the dataset to be created.
-   * @param multiLabel the type of classification problem. Set to FALSE by default.
+   * @param multiLabel the type of classification problem. Set to FALSE by default. False -
+   *     MULTICLASS , True - MULTILABEL
    * @throws IOException on Input/Output errors.
    */
   public static void createDataset(
@@ -64,7 +64,7 @@ public class DatasetApi {
     // Instantiates a client
     AutoMlClient client = AutoMlClient.create();
 
-    // Resource representing the Google Cloud Platform location
+    // A resource that represents Google Cloud Platform location.
     LocationName projectLocation = LocationName.of(projectId, computeRegion);
 
     // Classification type assigned based on multiLabel value.
@@ -77,7 +77,7 @@ public class DatasetApi {
             .setClassificationType(classificationType)
             .build();
 
-    // Create a dataset with dataset name and set the dataset metadata.
+    // Set dataset with dataset name and set the dataset metadata.
     Dataset myDataset =
         Dataset.newBuilder()
             .setDisplayName(datasetName)
@@ -103,13 +103,13 @@ public class DatasetApi {
   }
   // [END automl_vision_create_dataset]
 
-  // [START automl_vision_listdatasets]
+  // [START automl_vision_list_datasets]
   /**
    * Demonstrates using the AutoML client to list all datasets.
    *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param filter - Filter expression.
+   * @param projectId the Id of the project.
+   * @param computeRegion the Region name.
+   * @param filter the Filter expression.
    * @throws IOException on Input/Output errors.
    */
   public static void listDatasets(String projectId, String computeRegion, String filter)
@@ -128,7 +128,7 @@ public class DatasetApi {
             .build();
 
     // List all the datasets available in the region by applying the filter.
-    System.out.println("List of datasets:");
+    System.out.print("List of datasets:");
     for (Dataset dataset : client.listDatasets(request).iterateAll()) {
       // Display the dataset information
       System.out.println(String.format("\nDataset name: %s", dataset.getName()));
@@ -145,15 +145,15 @@ public class DatasetApi {
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
     }
   }
-  // [END automl_vision_listdatasets]
+  // [END automl_vision_list_datasets]
 
-  // [START automl_vision_getdataset]
+  // [START automl_vision_get_dataset]
   /**
    * Demonstrates using the AutoML client to get a dataset by ID.
    *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param datasetId - Id of the dataset.
+   * @param projectId the Id of the project.
+   * @param computeRegion the Region name.
+   * @param datasetId the Id of the dataset.
    * @throws IOException on Input/Output errors.
    */
   public static void getDataset(String projectId, String computeRegion, String datasetId)
@@ -181,16 +181,16 @@ public class DatasetApi {
     System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
     System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
   }
-  // [END automl_vision_getdataset]
+  // [END automl_vision_get_dataset]
 
-  // [START automl_vision_importdata]
+  // [START automl_vision_import_data]
   /**
    * Demonstrates using the AutoML client to import labeled images.
    *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param datasetId - Id of the dataset to which the training data will be imported.
-   * @param path - Google Cloud Storage URIs. Target files must be in AutoML vision CSV format.
+   * @param projectId the Id of the project.
+   * @param computeRegion the Region name.
+   * @param datasetId the Id of the dataset to which the training data will be imported.
+   * @param path the Google Cloud Storage URIs. Target files must be in AutoML vision CSV format.
    * @throws Exception on AutoML Client errors
    */
   public static void importData(
@@ -209,22 +209,22 @@ public class DatasetApi {
       gcsSource.addInputUris(inputUri);
     }
 
-    // Import data
+    // Import data from the input URI
     InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
     System.out.println("Processing import...");
     Empty response = client.importDataAsync(datasetFullId.toString(), inputConfig).get();
     System.out.println(String.format("Dataset imported. %s", response));
   }
-  // [END automl_vision_importdata]
+  // [END automl_vision_import_data]
 
-  // [START automl_vision_exportdata]
+  // [START automl_vision_export_data]
   /**
    * Demonstrates using the AutoML client to export a dataset to a Google Cloud Storage bucket.
    *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param datasetId - Id of the dataset.
-   * @param gcsUri - Destination URI (Google Cloud Storage)
+   * @param projectId the Id of the project.
+   * @param computeRegion the Region name.
+   * @param datasetId the Id of the dataset.
+   * @param gcsUri the Destination URI (Google Cloud Storage)
    * @throws Exception on AutoML Client errors
    */
   public static void exportData(
@@ -245,15 +245,15 @@ public class DatasetApi {
     Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
     System.out.println(String.format("Dataset exported. %s", response));
   }
-  // [END automl_vision_exportdata]
+  // [END automl_vision_export_data]
 
-  // [START automl_vision_deletedataset]
+  // [START automl_vision_delete_dataset]
   /**
    * Delete a dataset.
    *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param datasetId - Id of the dataset.
+   * @param projectId the Id of the project.
+   * @param computeRegion the Region name.
+   * @param datasetId the Id of the dataset.
    * @throws Exception on AutoML Client errors
    */
   public static void deleteDataset(String projectId, String computeRegion, String datasetId)
@@ -269,16 +269,16 @@ public class DatasetApi {
 
     System.out.println(String.format("Dataset deleted. %s", response));
   }
-  // [END automl_vision_deleteDataset]
+  // [END automl_vision_delete_dataset]
 
   public static void main(String[] args) throws Exception {
-        DatasetApi datasetApi = new DatasetApi();
-        datasetApi.argsHelper(args, System.out);
-      }
+    DatasetApi datasetApi = new DatasetApi();
+    datasetApi.argsHelper(args, System.out);
+  }
 
-      public static void argsHelper(String[] args, PrintStream out) throws Exception {
+  public static void argsHelper(String[] args, PrintStream out) throws Exception {
     ArgumentParser parser =
-        ArgumentParsers.newFor("DatasetAPI")
+        ArgumentParsers.newFor("DatasetApi")
             .build()
             .defaultHelp(true)
             .description("Dataset API operations.");
