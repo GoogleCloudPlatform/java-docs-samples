@@ -43,7 +43,7 @@ mvn exec:java -Dexec.mainClass="com.google.cloud.translate.samples.DatasetApi" -
 
 #### Import data
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.translate.samples.DatasetApi" -Dexec.args="import_data gs://java-docs-samples-testing/flower_traindata.csv"
+mvn exec:java -Dexec.mainClass="com.google.cloud.translate.samples.DatasetApi" -Dexec.args="import_data gs://java-docs-samples-testing/en-ja.csv"
 ```
 
 ### Model API
@@ -80,7 +80,7 @@ mvn exec:java-Dexec.mainClass="com.google.cloud.translate.samples.ModelApi" -Dex
 ### Predict API
 
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.translate.samples.PredictApi" -Dexec.args="predict [model-id] ./resources/dandelion.jpg 0.7"
+mvn exec:java -Dexec.mainClass="com.google.cloud.translate.samples.PredictApi" -Dexec.args="predict [model-id] ./resources/input.txt"
 ```
 
 
