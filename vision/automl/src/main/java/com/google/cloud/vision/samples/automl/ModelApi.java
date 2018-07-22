@@ -37,7 +37,7 @@ import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -106,7 +106,7 @@ public class ModelApi {
   /**
    * Demonstrates using the AutoML client to get operation status.
    *
-   * @param operationFullId : Full name of a operation. For example, the name of your operation is
+   * @param operationFullId the complete name of a operation. For example, the name of your operation is
    *     projects/[projectId]/locations/us-central1/operations/[operationId].
    * @throws IOException on Input/Output errors.
    */
@@ -124,8 +124,8 @@ public class ModelApi {
   /**
    * Demonstrates using the AutoML client to list all models.
    *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
+   * @param projectId the Id of the project.
+   * @param computeRegion the Region name.
    * @param filter - Filter expression.
    * @throws IOException on Input/Output errors.
    */
@@ -137,14 +137,14 @@ public class ModelApi {
     LocationName projectLocation = LocationName.of(projectId, computeRegion);
 
     // Create list models request
-    ListModelsRequest listModlesRequest =
+    ListModelsRequest listModelsRequest =
         ListModelsRequest.newBuilder()
             .setParent(projectLocation.toString())
             .setFilter(filter)
             .build();
 
     System.out.println("List of models:");
-    for (Model model : client.listModels(listModlesRequest).iterateAll()) {
+    for (Model model : client.listModels(listModelsRequest).iterateAll()) {
       // Display the model information.
       System.out.println(String.format("Model name: %s", model.getName()));
       System.out.println(
@@ -278,7 +278,7 @@ public class ModelApi {
    * @param projectId the Id of the project.
    * @param computeRegion the Region name.
    * @param modelId the Id of the model.
-   * @param filter the Filter expression.
+   * @param filter the filter expression.
    * @throws IOException on Input/Output errors.
    */
   public static void displayEvaluation(
@@ -353,7 +353,7 @@ public class ModelApi {
    * @throws Exception on AutoML Client errors
    */
   public static void deleteModel(String projectId, String computeRegion, String modelId)
-      throws InterruptedException, ExecutionException, IOException {
+      throws Exception {
     AutoMlClient client = AutoMlClient.create();
 
     // Get the full path of the model.
@@ -367,13 +367,13 @@ public class ModelApi {
   // [END automl_vision_delete_model]
 
   public static void main(String[] args)
-      throws IOException, InterruptedException, ExecutionException {
+      throws Exception {
     ModelApi modelApi = new ModelApi();
     modelApi.argsHelper(args, System.out);
   }
 
   public static void argsHelper(String[] args, PrintStream out)
-      throws IOException, InterruptedException, ExecutionException {
+      throws Exception {
     ArgumentParser parser =
         ArgumentParsers.newFor("ModelApi")
             .build()
@@ -453,8 +453,6 @@ public class ModelApi {
       }
     } catch (ArgumentParserException e) {
       parser.handleError(e);
-    } catch (Exception e) {
-      System.out.println("Exception in Model create caught");
     }
   }
 }

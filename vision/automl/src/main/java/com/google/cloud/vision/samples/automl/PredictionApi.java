@@ -75,7 +75,7 @@ public class PredictionApi {
       String scoreThreshold)
       throws IOException {
 
-    // Create client for prediction service.
+    // Instantiate client for prediction service.
     PredictionServiceClient predictionClient = PredictionServiceClient.create();
 
     // Get the full path of the model.
