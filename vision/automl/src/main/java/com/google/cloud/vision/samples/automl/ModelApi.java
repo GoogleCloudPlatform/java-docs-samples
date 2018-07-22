@@ -106,8 +106,8 @@ public class ModelApi {
   /**
    * Demonstrates using the AutoML client to get operation status.
    *
-   * @param operationFullId the complete name of a operation. For example, the name of your operation is
-   *     projects/[projectId]/locations/us-central1/operations/[operationId].
+   * @param operationFullId the complete name of a operation. For example, the name of your
+   *     operation is projects/[projectId]/locations/us-central1/operations/[operationId].
    * @throws IOException on Input/Output errors.
    */
   public static void getOperationStatus(String operationFullId) throws IOException {
@@ -366,14 +366,12 @@ public class ModelApi {
   }
   // [END automl_vision_delete_model]
 
-  public static void main(String[] args)
-      throws Exception {
+  public static void main(String[] args) throws Exception {
     ModelApi modelApi = new ModelApi();
     modelApi.argsHelper(args, System.out);
   }
 
-  public static void argsHelper(String[] args, PrintStream out)
-      throws Exception {
+  public static void argsHelper(String[] args, PrintStream out) throws Exception {
     ArgumentParser parser =
         ArgumentParsers.newFor("ModelApi")
             .build()
