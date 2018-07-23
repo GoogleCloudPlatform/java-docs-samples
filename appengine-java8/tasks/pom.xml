@@ -37,7 +37,6 @@ Copyright 2018 Google LLC
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
   </properties>
 
   <dependencies>
@@ -86,7 +85,7 @@ Copyright 2018 Google LLC
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>${maven-exec-plugin.version}</version>
+        <version>1.6.0</version>
         <configuration>
           <mainClass>com.example.task.CreateTask</mainClass>
           <cleanupDaemonThreads>false</cleanupDaemonThreads>
