@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,8 @@ public class DetectIT {
   private PrintStream out;
   private Detect app;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID;
+  //private static final String BUCKET = PROJECT_ID;
+  private static final String BUCKET = "java-docs-samples-testing";
   private static final  String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT";
 
   @Before
