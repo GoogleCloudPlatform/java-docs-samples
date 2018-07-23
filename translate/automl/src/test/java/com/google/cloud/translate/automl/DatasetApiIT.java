@@ -35,7 +35,7 @@ public class DatasetApiIT {
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String BUCKET = PROJECT_ID + "-vcm";
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String DATASET_NAME = "test_dataset";
+  private static final String DATASET_NAME = "test_translate_dataset";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private DatasetApi app;
