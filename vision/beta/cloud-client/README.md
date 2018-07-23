@@ -94,3 +94,13 @@ mvn exec:java -DDetect -Dexec.args="crop ./resources/landmark.jpg"
 mvn exec:java -DDetect -Dexec.args="ocr gs://java-docs-samples-testing/vision/HodgeConj.pdf \
    gs://<BUCKET_ID>/"
 ```
+
+#### Localized Objects
+```
+mvn exec:java -DDetect -Dexec.args="object-localization ./resources/puppies.jpg"
+```
+
+#### Hand-written OCR
+```
+mvn exec:java -DDetect -Dexec.args="handwritten-ocr ./resources/handwritten.jpg"
+```
