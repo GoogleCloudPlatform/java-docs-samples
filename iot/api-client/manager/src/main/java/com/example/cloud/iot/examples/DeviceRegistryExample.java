@@ -74,7 +74,7 @@ import org.apache.commons.cli.HelpFormatter;
  * <code>
  * $ mvn clean compile assembly:single
  * $ mvn exec:java \
- *       -Dexec.mainClass="com.google.cloud.iot.examples.DeviceRegistryExample" \
+ *       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
  *       -Dexec.args="-project_id=my-project-id \
  *                    -pubsub_topic=projects/my-project-id/topics/my-topic-id \
  *                    -ec_public_key_file=/path/to/ec_public.pem \
