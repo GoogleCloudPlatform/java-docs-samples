@@ -131,7 +131,7 @@ public class ProductInProductSetManagement {
    * @param productSetId - Id of the product set.
    * @throws IOException - on I/O errors.
    */
-  public static void listProductsInProductSet1(
+  public static void listProductsInProductSet(
       String projectId, String computeRegion, String productSetId) throws IOException {
     ProductSearchClient client = ProductSearchClient.create();
 
@@ -231,7 +231,7 @@ public class ProductInProductSetManagement {
             projectId, computeRegion, ns.getString("productId"), ns.getString("productSetId"));
       }
       if (ns.get("command").equals("list_products_in_product_set")) {
-        listProductsInProductSet1(projectId, computeRegion, ns.getString("productSetId"));
+        listProductsInProductSet(projectId, computeRegion, ns.getString("productSetId"));
       }
 
     } catch (ArgumentParserException e) {
