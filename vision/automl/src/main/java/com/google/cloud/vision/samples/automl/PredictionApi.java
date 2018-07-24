@@ -89,7 +89,7 @@ public class PredictionApi {
     // Additional parameters that can be provided for prediction e.g. Score Threshold
     Map<String, String> params = new HashMap<>();
     if (scoreThreshold != null) {
-      params.put("scoreThreshold", scoreThreshold);
+      params.put("score_threshold", scoreThreshold);
     }
     // Perform the AutoML Prediction request
     PredictResponse response = predictionClient.predict(name, examplePayload, params);
