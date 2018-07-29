@@ -25,17 +25,10 @@ Run:
 ## Retrieve InfoTypes
 An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories) represents an element of sensitive data.
 
-[Info types](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current 
-info types for a given category. eg. HEALTH or GOVERNMENT.
+[InfoTypes](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current InfoTypes.
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata -category GOVERNMENT
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
   ``` 
-
-## Retrieve Categories
-[Categories](https://cloud.google.com/dlp/docs/infotypes-categories) provide a way to easily access a group of related InfoTypes.
-```
-  java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
-``` 
 
 ## Run the quickstart
 
@@ -45,7 +38,7 @@ The Quickstart demonstrates using the DLP API to identify an InfoType in a given
 ```
 
 ## Inspect data for sensitive elements
-Inspect strings, files locally and on Google Cloud Storage and Cloud Datastore kinds with the DLP API.
+Inspect strings, files locally and on Google Cloud Storage, Cloud Datastore, and BigQuery with the DLP API.
 
 Note: image scanning is not currently supported on Google Cloud Storage.
 For more information, refer to the [API documentation](https://cloud.google.com/dlp/docs). 
