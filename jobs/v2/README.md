@@ -7,7 +7,7 @@
 
 This sample Java application demonstrates how to access the Cloud Talent Solution API using the [Google Cloud Client Library for Java][google-cloud-java].
 
-[jobs]: https://cloud.google.com/talent-solution/
+[jobs]: https://cloud.google.com/talent-solution/job-search/docs
 [google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java
 
 ## Setup
