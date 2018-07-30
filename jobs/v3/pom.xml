@@ -34,13 +34,6 @@
       <artifactId>google-api-services-jobs</artifactId>
       <version>LATEST</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>cloud-talent-solution</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/src/main/resources/google-api-services-jobs-v3-revsnapshot-1.23.0.jar</systemPath>
-    </dependency>
     <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
