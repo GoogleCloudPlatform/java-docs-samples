@@ -4,10 +4,12 @@
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 [Google Cloud AutoML Vision API][vision] provides feature detection for images.
+
 This API is part of the larger collection of Cloud Machine Learning APIs.
 
 This sample Java application demonstrates how to access the Cloud Vision API
 using the [Google Cloud Client Library for Java][google-cloud-java].
+
 
 [vision]: https://cloud.google.com/vision/automl/docs/
 [google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java

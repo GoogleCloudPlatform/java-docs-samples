@@ -65,6 +65,7 @@ public class PredictionApi {
    */
   public static void predict(
       String projectId, String computeRegion, String modelId, String filePath) throws IOException {
+ 
     // Instantiate client for prediction service.
     PredictionServiceClient predictionClient = PredictionServiceClient.create();
 
@@ -100,6 +101,7 @@ public class PredictionApi {
             .build()
             .defaultHelp(true)
             .description("Prediction API Operation");
+
     Subparsers subparsers = parser.addSubparsers().dest("command");
 
     Subparser predictParser = subparsers.addParser("predict");
@@ -114,6 +116,7 @@ public class PredictionApi {
       ns = parser.parseArgs(args);
       if (ns.get("command").equals("predict")) {
         predict(projectId, computeRegion, ns.getString("modelId"), ns.getString("filePath"));
+
       }
     } catch (ArgumentParserException e) {
       parser.handleError(e);
