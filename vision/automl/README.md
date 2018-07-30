@@ -3,13 +3,15 @@
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=vision/beta/cloud-client/README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
-[Google Cloud Vision API][vision] provides feature detection for images.
+[Google Cloud AutoML Vision API][vision] provides feature detection for images.
+
 This API is part of the larger collection of Cloud Machine Learning APIs.
 
 This sample Java application demonstrates how to access the Cloud Vision API
 using the [Google Cloud Client Library for Java][google-cloud-java].
 
-[vision]: https://cloud.google.com/vision/docs/
+
+[vision]: https://cloud.google.com/vision/automl/docs/
 [google-cloud-java]: https://github.com/GoogleCloudPlatform/google-cloud-java
 
 ## Set the environment variables
@@ -45,14 +47,14 @@ mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetAp
 
 #### Import data
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="import_data gs://java-docs-samples-testing/flower_traindata.csv"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="import_data [dataset-id] gs://java-docs-samples-testing/flower_traindata.csv"
 ```
 
 ### Model API
 
 #### Create Model
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="create_model test_model"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="create_model [dataset-id] test_model [training-budget] "
 ```
 
 #### List Models
@@ -77,7 +79,7 @@ mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi"
 
 #### Delete Model
 ```
-mvn exec:java-Dexec.mainClass="com.google.cloud.vision.samples.automl.ModeltApi" -Dexec.args="delete_model [model-id]"
+mvn exec:java-Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="delete_model [model-id]"
 ```
 ### Predict API
 
