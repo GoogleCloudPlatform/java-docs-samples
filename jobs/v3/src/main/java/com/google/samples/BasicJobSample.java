@@ -50,50 +50,7 @@ import java.util.Random;
  */
 public final class BasicJobSample {
 
-  // [START setup]
-
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-  private static final NetHttpTransport NET_HTTP_TRANSPORT = new NetHttpTransport();
-  private static final String SCOPES = "https://www.googleapis.com/auth/jobs";
-  private static final String DEFAULT_PROJECT_ID =
-      "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
-
-  private static CloudTalentSolution talentSolutionClient = createTalentSolutionClient(
-      generateCredential());
-
-  private static CloudTalentSolution createTalentSolutionClient(GoogleCredential credential) {
-    String url = "https://integ-jobs.googleapis.com";
-    return new CloudTalentSolution.Builder(
-        NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(credential))
-        .setApplicationName("JobServiceClientSamples")
-        .setRootUrl(url)
-        .build();
-  }
-
-  private static GoogleCredential generateCredential() {
-    try {
-      // Credentials could be downloaded after creating service account
-      // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
-      // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
-      return GoogleCredential
-          .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
-          .createScoped(Collections.singleton(SCOPES));
-    } catch (Exception e) {
-      System.out.print("Error in generating credential");
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static HttpRequestInitializer setHttpTimeout(
-      final HttpRequestInitializer requestInitializer) {
-    return request -> {
-      requestInitializer.initialize(request);
-      request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
-      request.setConnectTimeout(1 * 60000); // 1 minute connect timeout
-      request.setReadTimeout(1 * 60000); // 1 minute read timeout
-    };
-  }
-  // [END setup]
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
 
   // [START basic_job]
 
