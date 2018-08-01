@@ -17,7 +17,6 @@
 package com.google.cloud.translate.automl;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.lang.Boolean.FALSE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -55,7 +54,7 @@ public class PredictionApiIT {
   @Test
   public void testPredict() throws Exception {
     // Act
-    PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, modelId, filePath,FALSE);
+    PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, modelId, filePath);
 
     // Assert
     String got = bout.toString();
