@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.vision</groupId>
+  <groupId>com.google.cloud.language.samples</groupId>
   <artifactId>language-automl</artifactId>
   <packaging>jar</packaging>
 
