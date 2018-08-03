@@ -73,7 +73,7 @@ mvn exec:java -DRecognize -Dexec.args="model-selection gs://cloud-samples-tests/
 
 Perform streaming speech transcription on an audio file
 ```
-mvn exec:java -DRecognize -Dexec.args="streamrecognize ./resources/Google_Gnome.wav"
+mvn exec:java -DRecognize -Dexec.args="streamrecognize ./resources/audio.raw"
 ```
 
 ## Auto Punctuation
@@ -103,3 +103,49 @@ Transcribe an audio file with recognition metadata
 ```
 mvn exec:java -DRecognize -Dexec.args="metadata ./resources/commercial_mono.wav"
 ```
+
+
+## Diarization
+Transcribe an audio file using diarization on an audio file
+```
+mvn exec:java -DRecognize -Dexec.args="diarization ./resources/commercial_mono.wav"
+```
+
+Transcribe an audio file using diarization on an audio file hosted on GCS
+```
+mvn exec:java -DRecognize -Dexec.args="diarization gs://cloud-samples-tests/speech/commercial_mono.wav"
+```
+
+## Multi-channel
+Transcribe an audio file with multiple channels
+```
+mvn exec:java -DRecognize -Dexec.args="multi-channel ./resources/commercial_stereo.wav"
+```
+
+Transcribe an audio file hosted on GCS with multiple channels
+```
+mvn exec:java -DRecognize -Dexec.args="multi-channel gs://cloud-samples-tests/speech/commercial_stereo.wav"
+```
+
+## Multi language
+Transcribe an audio file with multiple languages
+```
+mvn exec:java -DRecognize -Dexec.args="multi-language ./resources/Google_Gnome.wav"
+```
+
+Transcribe an audio file hosted on GCS with multiple languages
+```
+mvn exec:java -DRecognize -Dexec.args="multi-language gs://cloud-samples-tests/speech/Google_Gnome.wav"
+```
+
+## Word level confidence
+Transcribe an audio file with word level confidence
+```
+mvn exec:java -DRecognize -Dexec.args="word-level-conf ./resources/audio.raw"
+```
+
+Transcribe an audio file hosted on GCS with word level confidence
+```
+mvn exec:java -DRecognize -Dexec.args="word-level-conf gs://cloud-samples-tests/speech/brooklyn.flac"
+```
+

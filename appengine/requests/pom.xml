@@ -37,15 +37,15 @@ Copyright 2016 Google Inc.
   </properties>
 
   <dependencies>
-   <dependency>
-    <groupId>com.google.appengine</groupId>
-    <artifactId>appengine-maven-plugin</artifactId>
-    <version>1.9.63</version>
-   </dependency>
-   <dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-maven-plugin</artifactId>
+      <version>1.9.64</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>25.1-android</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -75,32 +75,33 @@ Copyright 2016 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.40</version>
+      <version>0.41</version>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->
-    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+    </outputDirectory>
     <plugins>
       <plugin>
         <groupId>com.google.appengine</groupId>

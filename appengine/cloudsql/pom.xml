@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
+      <version>1.9.64</version>
     </dependency>
 
     <dependency>
@@ -80,7 +80,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory</artifactId>
-      <version>1.0.8</version>
+      <version>1.0.9</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
