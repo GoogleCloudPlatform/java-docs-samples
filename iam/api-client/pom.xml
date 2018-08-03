@@ -69,7 +69,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
         <configuration>
-          <mainClass>com.google.iam.snippets.Quickstart</mainClass>
+          <mainClass>com.google.iam.snippets.GrantableRoles</mainClass>
         </configuration>
       </plugin>
     </plugins>

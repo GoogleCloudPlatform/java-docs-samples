@@ -12,68 +12,80 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START iam_quickstart]
 package com.google.iam.snippets;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.iam.v1.*;
-import com.google.api.services.iam.v1.model.*;
+import com.google.api.services.iam.v1.Iam;
+import com.google.api.services.iam.v1.IamScopes;
+import com.google.api.services.iam.v1.model.CreateServiceAccountKeyRequest;
+import com.google.api.services.iam.v1.model.ServiceAccountKey;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
-public class ServiceAccountKeys  {
+public class ServiceAccountKeys {
 
-    private final Iam service;
+  private final Iam service;
 
-    public ServiceAccountKeys() throws Exception {
-        GoogleCredential credential = GoogleCredential.getApplicationDefault()
-        .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-    
-        service = new Iam.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(), 
-            JacksonFactory.getDefaultInstance(), 
-            credential).build();
-    }
+  public ServiceAccountKeys() throws Exception {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
+            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
-    // [START iam_create_key]
-    public ServiceAccountKey CreateKey( String serviceAccountEmail ) 
-        throws IOException {
+    service =
+        new Iam.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance(),
+                credential)
+            .setApplicationName("service-account-keys")
+            .build();
+  }
 
-        ServiceAccountKey key = service.projects().serviceAccounts().keys().create(
-            "projects/-/serviceAccounts/" + serviceAccountEmail,
-            new CreateServiceAccountKeyRequest())
+  // [START iam_create_key]
+  public ServiceAccountKey createKey(String serviceAccountEmail) throws IOException {
+
+    ServiceAccountKey key =
+        service
+            .projects()
+            .serviceAccounts()
+            .keys()
+            .create(
+                "projects/-/serviceAccounts/" + serviceAccountEmail,
+                new CreateServiceAccountKeyRequest())
             .execute();
 
-        System.out.println("Created key: " + key.getName());
-        return key;
+    System.out.println("Created key: " + key.getName());
+    return key;
+  }
+  // [END iam_create_key]
+
+  // [START iam_list_keys]
+  public List<ServiceAccountKey> listKeys(String serviceAccountEmail) throws IOException {
+
+    List<ServiceAccountKey> keys =
+        service
+            .projects()
+            .serviceAccounts()
+            .keys()
+            .list("projects/-/serviceAccounts/" + serviceAccountEmail)
+            .execute()
+            .getKeys();
+
+    for (ServiceAccountKey key : keys) {
+      System.out.println("Key: " + key.getName());
     }
-    // [END iam_create_key]
+    return keys;
+  }
+  // [END iam_list_keys]
 
-    // [START iam_list_keys]
-    public List<ServiceAccountKey> ListKeys( String serviceAccountEmail ) 
-        throws IOException {
+  // [START iam_delete_key]
+  public void deleteKey(String fullKeyName) throws IOException {
 
-        List<ServiceAccountKey> keys = service.projects().serviceAccounts()
-            .keys().list("projects/-/serviceAccounts/" + serviceAccountEmail)
-            .execute().getKeys();
+    service.projects().serviceAccounts().keys().delete(fullKeyName).execute();
 
-        for (ServiceAccountKey key : keys) {
-            System.out.println("Key: " + key.getName());
-        }
-        return keys; 
-    }
-    // [END iam_list_keys]
-
-    // [START iam_delete_key]
-    public void DeleteKey( String fullKeyName ) throws IOException { 
-
-        service.projects().serviceAccounts().keys().delete(fullKeyName)
-            .execute();
-
-        System.out.println("Deleted key account: " + fullKeyName);
-    }
-    // [END iam_delete_key]
+    System.out.println("Deleted key account: " + fullKeyName);
+  }
+  // [END iam_delete_key]
 }

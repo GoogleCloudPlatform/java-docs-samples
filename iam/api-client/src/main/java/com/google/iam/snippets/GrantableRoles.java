@@ -14,40 +14,46 @@
 
 package com.google.iam.snippets;
 
-import java.util.Collections;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.iam.v1.*;
-import com.google.api.services.iam.v1.model.*;
+import com.google.api.services.iam.v1.Iam;
+import com.google.api.services.iam.v1.IamScopes;
+import com.google.api.services.iam.v1.model.QueryGrantableRolesRequest;
+import com.google.api.services.iam.v1.model.QueryGrantableRolesResponse;
+import com.google.api.services.iam.v1.model.Role;
+import java.util.Collections;
 
-public class GrantableRoles  {
+public class GrantableRoles {
 
-    public static void main( String[] args ) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        GoogleCredential credential = GoogleCredential.getApplicationDefault()
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-        
-        Iam service = new Iam.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(), 
-            JacksonFactory.getDefaultInstance(), 
-            credential).build();
 
-        String fullResourceName = args[0];
+    Iam service =
+        new Iam.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance(),
+                credential)
+            .setApplicationName("grantable-roles")
+            .build();
 
-        // [START iam_view_grantable_roles]
-        QueryGrantableRolesRequest request = new QueryGrantableRolesRequest();
-        request.setFullResourceName(fullResourceName);
-        
-        QueryGrantableRolesResponse response = service.roles()
-            .queryGrantableRoles(request).execute();
+    String fullResourceName = args[0];
 
-        for (Role role : response.getRoles()) {
-            System.out.println("Title: " + role.getTitle());
-            System.out.println("Name: " + role.getName());
-            System.out.println("Description: " + role.getDescription());
-            System.out.println();
-        }
-        // [START iam_view_grantable_roles]
+    // [START iam_view_grantable_roles]
+    QueryGrantableRolesRequest request = new QueryGrantableRolesRequest();
+    request.setFullResourceName(fullResourceName);
+
+    QueryGrantableRolesResponse response = service.roles().queryGrantableRoles(request).execute();
+
+    for (Role role : response.getRoles()) {
+      System.out.println("Title: " + role.getTitle());
+      System.out.println("Name: " + role.getName());
+      System.out.println("Description: " + role.getDescription());
+      System.out.println();
     }
+    // [START iam_view_grantable_roles]
+  }
 }

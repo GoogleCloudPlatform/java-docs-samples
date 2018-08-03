@@ -24,12 +24,11 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class GrantableRolesIT {
 
-    @Test
-    public void testQuickstart() throws Exception {
-        String project = System.getenv("GOOGLE_PROJECT_ID");
-        String resource = "//cloudresourcemanager.googleapis.com/projects/" +
-            project;
-             
-        GrantableRoles.main(new String[] { resource });
-    }
+  @Test
+  public void testQuickstart() throws Exception {
+    String project = System.getenv("GOOGLE_PROJECT_ID");
+    String resource = "//cloudresourcemanager.googleapis.com/projects/" + project;
+
+    GrantableRoles.main(new String[] {resource});
+  }
 }

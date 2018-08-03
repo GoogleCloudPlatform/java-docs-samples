@@ -13,40 +13,47 @@
 // limitations under the License.
 
 // [START iam_quickstart]
+
 package com.google.iam.snippets;
 
-import java.util.Collections;
-import java.util.List;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.iam.v1.*;
-import com.google.api.services.iam.v1.model.*;
+import com.google.api.services.iam.v1.Iam;
+import com.google.api.services.iam.v1.IamScopes;
+import com.google.api.services.iam.v1.model.ListRolesResponse;
+import com.google.api.services.iam.v1.model.Role;
+import java.util.Collections;
+import java.util.List;
 
-public class Quickstart  {
+public class Quickstart {
 
-    public static void main( String[] args ) throws Exception {
-    	// Get credentials
-        GoogleCredential credential = GoogleCredential.getApplicationDefault()
+  public static void main(String[] args) throws Exception {
+    // Get credentials
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-        
-        // Create the Cloud IAM service object
-        Iam service = new Iam.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(), 
-            JacksonFactory.getDefaultInstance(), 
-            credential).build();
 
-        // Call the Cloud IAM Roles API
-        ListRolesResponse respose = service.roles().list().execute();
-        List<Role> roles = respose.getRoles();
+    // Create the Cloud IAM service object
+    Iam service =
+        new Iam.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance(),
+                credential)
+            .setApplicationName("quickstart")
+            .build();
 
-        // Process the response
-        for (Role role : roles) {
-            System.out.println("Title: " + role.getTitle());
-            System.out.println("Name: " + role.getName());
-            System.out.println("Description: " + role.getDescription());
-            System.out.println();
-        }
+    // Call the Cloud IAM Roles API
+    ListRolesResponse respose = service.roles().list().execute();
+    List<Role> roles = respose.getRoles();
+
+    // Process the response
+    for (Role role : roles) {
+      System.out.println("Title: " + role.getTitle());
+      System.out.println("Name: " + role.getName());
+      System.out.println("Description: " + role.getDescription());
+      System.out.println();
     }
+  }
 }
 // [END iam_quickstart]

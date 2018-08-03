@@ -24,8 +24,8 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartIT {
 
-    @Test
-    public void testQuickstart() throws Exception {
-        Quickstart.main(new String[0]);
-    }
+  @Test
+  public void testQuickstart() throws Exception {
+    Quickstart.main(new String[0]);
+  }
 }

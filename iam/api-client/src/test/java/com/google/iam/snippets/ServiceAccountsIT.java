@@ -16,10 +16,8 @@
 
 package com.google.iam.snippets;
 
-import java.util.Random;
-
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
-
+import java.util.Random;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -28,25 +26,25 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ServiceAccountsIT {
 
-    @Test
-    public void testServiceAccounts() throws Exception {
+  @Test
+  public void testServiceAccounts() throws Exception {
 
-        String projectId = System.getenv("GCLOUD_PROJECT");
-        int rand = new Random().nextInt(1000);
-        String name = "java-test-" + rand;
-        String email = name + "@" + projectId + ".iam.gserviceaccount.com";
+    String projectId = System.getenv("GCLOUD_PROJECT");
+    int rand = new Random().nextInt(1000);
+    String name = "java-test-" + rand;
+    String email = name + "@" + projectId + ".iam.gserviceaccount.com";
 
-        ServiceAccounts sa = new ServiceAccounts();
-        ServiceAccountKeys sak = new ServiceAccountKeys();
+    ServiceAccounts sa = new ServiceAccounts();
+    ServiceAccountKeys sak = new ServiceAccountKeys();
 
-        sa.CreateServiceAccount(projectId, name, "Java Demo");
-        sa.ListServiceAccounts(projectId);
-        sa.RenameServiceAccount(email, "Java Demo (Updated!)");
+    sa.createServiceAccount(projectId, name, "Java Demo");
+    sa.listServiceAccounts(projectId);
+    sa.renameServiceAccount(email, "Java Demo (Updated!)");
 
-        ServiceAccountKey key = sak.CreateKey(email);
-        sak.ListKeys(email);
-        sak.DeleteKey(key.getName());
+    ServiceAccountKey key = sak.createKey(email);
+    sak.listKeys(email);
+    sak.deleteKey(key.getName());
 
-        sa.DeleteServiceAccount(email);        
-    }
+    sa.deleteServiceAccount(email);
+  }
 }
