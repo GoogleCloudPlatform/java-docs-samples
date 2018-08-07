@@ -56,17 +56,17 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.23.0</version>
+      <version>1.24.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.23.0</version>
+      <version>1.24.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.23.0</version>
+      <version>1.24.1</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -79,13 +79,13 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.2</version>
+      <version>42.2.4</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.0.9</version>
+      <version>1.0.10</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
