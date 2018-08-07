@@ -39,17 +39,17 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudtasks</artifactId>
-      <version>v2beta2-rev50-1.23.0</version>
+      <version>v2beta2-rev54-1.24.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.23.0</version>
+      <version>1.24.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.23.0</version>
+      <version>1.24.1</version>
     </dependency>
 
     <!-- parser dependency -->
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
+      <version>0.42</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
