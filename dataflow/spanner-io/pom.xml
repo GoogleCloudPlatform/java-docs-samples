@@ -38,7 +38,7 @@
     <java.version>1.8</java.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <apache_beam.version>2.3.0</apache_beam.version>
+    <apache_beam.version>2.6.0</apache_beam.version>
   </properties>
 
   <build>
