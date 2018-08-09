@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_sendgrid]
 @SuppressWarnings("serial")
 @WebServlet(name = "sendemail", value = "/send/email")
 public class SendEmailServlet extends HttpServlet {
@@ -63,4 +63,4 @@ public class SendEmailServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_flex_sendgrid]
