@@ -48,7 +48,7 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
+    <!-- [START gae_flex_mailgun_dependencies] -->
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-core</artifactId>
@@ -64,7 +64,7 @@
       <artifactId>jersey-multipart</artifactId>
       <version>1.19.4</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_flex_mailgun_dependencies] -->
   </dependencies>
 
   <build>
