@@ -1186,7 +1186,6 @@ public class Detect {
   }
   // [END vision_crop_hint_detection_gcs]
 
-  // [START vision_detect_document]
   /**
    * Performs document text detection on a local image file.
    *
@@ -1195,7 +1194,8 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectDocumentText(String filePath, PrintStream out) throws Exception,
+   // [START vision_fulltext_detection]
+   public static void detectDocumentText(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -1249,9 +1249,8 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_document]
+  // [END vision_fulltext_detection]
 
-  // [START vision_detect_document_uri]
   /**
    * Performs document text detection on a remote image on Google Cloud Storage.
    *
@@ -1260,7 +1259,8 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectDocumentTextGcs(String gcsPath, PrintStream out) throws Exception,
+   // [START vision_fulltext_detection_gcs]
+   public static void detectDocumentTextGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -1312,7 +1312,7 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_document_uri]
+  // [END vision_fulltext_detection_gcs]
 
   // [START vision_async_detect_document_ocr]
   /**
