@@ -57,6 +57,8 @@
         <module>datastore</module>
         <module>datastore/cloud-client</module>
 
+        <module>dialogflow/cloud-client</module>
+
         <module>dlp</module>
 
         <module>errorreporting</module>
