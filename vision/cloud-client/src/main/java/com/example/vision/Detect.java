@@ -728,7 +728,6 @@ public class Detect {
   }
   // [END vision_image_property_detection_gcs]
 
-  // [START vision_detect_safe_search]
   /**
    * Detects whether the specified image has features you would want to moderate.
    *
@@ -737,6 +736,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_safe_search_detection]
   public static void detectSafeSearch(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -771,9 +771,8 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_safe_search]
+  // [END vision_safe_search_detection]
 
-  // [START vision_detect_safe_search_uri]
   /**
    * Detects whether the specified image on Google Cloud Storage has features you would want
    * to moderate.
@@ -783,6 +782,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_safe_search_detection_gcs]
   public static void detectSafeSearchGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -816,7 +816,7 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_safe_search_uri]
+  // [END vision_safe_search_detection_gcs]
 
   // [START vision_detect_web]
   /**
