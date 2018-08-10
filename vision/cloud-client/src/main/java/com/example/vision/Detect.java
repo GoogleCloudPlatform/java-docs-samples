@@ -569,6 +569,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_text_detection]
   public static void detectText(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -598,6 +599,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_text_detection]
 
   /**
    * Detects text in the specified remote image on Google Cloud Storage.
@@ -607,6 +609,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_text_detection_gcs]
   public static void detectTextGcs(String gcsPath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -635,6 +638,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_text_detection_gcs]
 
   /**
    * Detects image properties such as color frequency from the specified local image.
