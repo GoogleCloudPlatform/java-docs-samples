@@ -201,6 +201,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_face_detection]
   public static void detectFaces(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -234,6 +235,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_face_detection]
 
   /**
    * Detects faces in the specified remote image on Google Cloud Storage.
@@ -244,6 +246,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_face_detection_gcs]
   public static void detectFacesGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -278,6 +281,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_face_detection_gcs]
 
   /**
    * Detects labels in the specified local image.
