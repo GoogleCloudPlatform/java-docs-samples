@@ -39,7 +39,7 @@ For more samples, see the samples in
 
 #### Publish messages
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args=my-topic
+  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args="my-topic 5"
 ```
 Publishes 5 messages to the topic `my-topic`.
 
