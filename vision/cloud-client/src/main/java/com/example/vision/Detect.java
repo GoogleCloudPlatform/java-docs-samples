@@ -822,7 +822,7 @@ public class Detect {
   }
   // [END vision_safe_search_detection_gcs]
 
-  // [START vision_detect_web]
+  // [START vision_web_detection]
   /**
    * Finds references to the specified image on the web.
    *
@@ -885,9 +885,9 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_web]
+  // [END vision_web_detection]
 
-  // [START vision_detect_web_uri]
+  // [START vision_web_detection_gcs]
   /**
    * Detects whether the remote image on Google Cloud Storage has features you would want to
    * moderate.
@@ -950,7 +950,7 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_web_uri]
+  // [END vision_web_detection_gcs]
 
   /**
    * Find web entities given a local image.
@@ -1025,7 +1025,7 @@ public class Detect {
     }
   }
 
-  // [START vision_web_entities_include_geo_results]
+  // [START vision_web_detection_include_geo]
   /**
    * Find web entities given a local image.
    * @param filePath The path of the image to detect.
@@ -1072,9 +1072,9 @@ public class Detect {
               }));
     }
   }
-  // [END vision_web_entities_include_geo_results]
+  // [END vision_web_detection_include_geo]
 
-  // [START vision_web_entities_include_geo_results_uri]
+  // [START vision_web_detection_include_geo_gcs]
   /**
    * Find web entities given the remote image on Google Cloud Storage.
    * @param gcsPath The path to the remote file on Google Cloud Storage to detect web entities with
@@ -1123,7 +1123,7 @@ public class Detect {
               }));
     }
   }
-  // [END vision_web_entities_include_geo_results_uri]
+  // [END vision_web_detection_include_geo_gcs]
 
   /**
    * Suggests a region to crop to for a local file.
