@@ -644,6 +644,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_image_property_detection]
   public static void detectProperties(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -679,6 +680,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_image_property_detection]
 
   /**
    * Detects image properties such as color frequency from the specified remote image on Google
@@ -689,6 +691,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_image_property_detection_gcs]
   public static void detectPropertiesGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -723,6 +726,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_image_property_detection_gcs]
 
   // [START vision_detect_safe_search]
   /**
