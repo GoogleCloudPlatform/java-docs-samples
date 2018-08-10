@@ -490,6 +490,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_logo_detection]
   public static void detectLogos(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -518,6 +519,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_logo_detection]
 
   /**
    * Detects logos in the specified remote image on Google Cloud Storage.
@@ -528,6 +530,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_logo_detection_gcs]
   public static void detectLogosGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -556,6 +559,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_logo_detection_gcs]
 
   /**
    * Detects text in the specified image.
