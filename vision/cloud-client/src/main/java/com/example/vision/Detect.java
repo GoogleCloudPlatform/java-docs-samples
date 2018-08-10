@@ -371,6 +371,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_landmark_detection]
   public static void detectLandmarks(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -400,6 +401,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_landmark_detection]
 
   /**
    * Detects landmarks in the specified URI.
@@ -448,6 +450,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_landmark_detection_gcs]
   public static void detectLandmarksGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -477,6 +480,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_landmark_detection_gcs]
 
   /**
    * Detects logos in the specified local image.
