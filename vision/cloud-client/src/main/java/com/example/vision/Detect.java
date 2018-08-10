@@ -1109,6 +1109,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_crop_hint_detection]
   public static void detectCropHints(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -1139,6 +1140,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_crop_hint_detection]
 
   /**
    * Suggests a region to crop to for a remote file on Google Cloud Storage.
@@ -1148,6 +1150,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_crop_hint_detection_gcs]
   public static void detectCropHintsGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -1177,6 +1180,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_crop_hint_detection_gcs]
 
   // [START vision_detect_document]
   /**
