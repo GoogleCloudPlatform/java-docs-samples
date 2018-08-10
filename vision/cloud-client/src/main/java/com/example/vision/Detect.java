@@ -291,6 +291,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_logo_detection]
   public static void detectLabels(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -319,6 +320,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_logo_detection]
 
   /**
    * Detects labels in the specified remote image on Google Cloud Storage.
@@ -329,6 +331,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_label_detection_gcs]
   public static void detectLabelsGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -358,6 +361,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_label_detection_gcs]
 
   /**
    * Detects landmarks in the specified local image.
