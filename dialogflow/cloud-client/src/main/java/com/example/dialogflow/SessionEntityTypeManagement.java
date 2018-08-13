@@ -1,22 +1,21 @@
 /*
-  Copyright 2017, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
-// [START dialogflow_import_libraries]
 // Imports the Google Cloud client library
 import com.google.cloud.dialogflow.v2.EntityType.Entity;
 import com.google.cloud.dialogflow.v2.SessionEntityType;
@@ -27,7 +26,6 @@ import com.google.cloud.dialogflow.v2.SessionName;
 
 import java.util.ArrayList;
 import java.util.List;
-// [END dialogflow_import_libraries]
 
 /**
  * DialogFlow API SessionEntityType sample.
@@ -107,7 +105,7 @@ public class SessionEntityTypeManagement {
    * @param sessionId Identifier of the DetectIntent session.
    * @param entityTypeDisplayName DISPLAY NAME of the entity type to be overridden in the session.
    */
-  public static void deleteSessionEntityType( String projectId, String sessionId,
+  public static void deleteSessionEntityType(String projectId, String sessionId,
       String entityTypeDisplayName) throws Exception {
     // Instantiates a client
     try (SessionEntityTypesClient sessionEntityTypesClient = SessionEntityTypesClient.create()) {
@@ -120,7 +118,6 @@ public class SessionEntityTypeManagement {
   }
   // [END dialogflow_delete_session_entity_type]
 
-  // [START run_application]
   public static void main(String[] args) throws Exception {
     String method = "";
     String sessionId = "";
@@ -205,5 +202,5 @@ public class SessionEntityTypeManagement {
       deleteSessionEntityType(projectId, sessionId, entityTypeDisplayName);
     }
   }
-  // [END run_application]
+
 }

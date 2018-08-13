@@ -1,40 +1,39 @@
 /*
-  Copyright 2017, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Integration (system) tests for {@link SessionEntityTypeManagement}.
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class SessionEntityTypeIT {
+public class SessionEntityTypeManagementIT {
   private static String SESSION_ID = "fake_session_for_testing";
   private static String ENTITY_TYPE_DISPLAY_NAME = "fake_display_name_for_testing";
   private static List<String> ENTITY_VALUES = Arrays.asList("fake_entity_value_1",
@@ -65,8 +64,6 @@ public class SessionEntityTypeIT {
   @Test
   public void testCreateDeleteSessionEntityType() throws Exception {
     // Create session entity type
-    String projectId = System.getenv().get("GOOGLE_CLOUD_PROJECT");
-
     entityTypeManagement.createEntityType(ENTITY_TYPE_DISPLAY_NAME, PROJECT_ID, "KIND_MAP");
 
     sessionEntityTypeManagement.createSessionEntityType(PROJECT_ID, SESSION_ID, ENTITY_VALUES,
@@ -95,10 +92,10 @@ public class SessionEntityTypeIT {
     }
 
     List<String> entityTypesIds = entityTypeManagement.getEntityTypeIds(ENTITY_TYPE_DISPLAY_NAME,
-        projectId);
+        PROJECT_ID);
 
     for (String entityTypeId : entityTypesIds) {
-      entityTypeManagement.deleteEntityType(entityTypeId, projectId);
+      entityTypeManagement.deleteEntityType(entityTypeId, PROJECT_ID);
     }
   }
 }

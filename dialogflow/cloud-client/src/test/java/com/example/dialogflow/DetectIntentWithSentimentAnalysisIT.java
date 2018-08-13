@@ -29,29 +29,27 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Integration (system) tests for {@link DetectIntentAudio}.
+ * Integration (system) tests for {@link DetectIntentWithSentimentAnalysis}.
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentAudioIT {
+public class DetectIntentWithSentimentAnalysisIT {
 
   private ByteArrayOutputStream bout;
+  private DetectIntentWithSentimentAnalysis detectIntentWithSentimentAnalysis;
   private PrintStream out;
-  private DetectIntentAudio detectIntentAudio;
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String SESSION_ID = "fake_session_for_testing";
   private static String LANGUAGE_CODE = "en-US";
-  private static List<String> AUDIOS = Arrays.asList(
-      "resources/book_a_room.wav",
-      "resources/mountain_view.wav",
-      "resources/today.wav");
+  private static List<String> TEXTS = Arrays.asList("hello", "book a meeting room", "Mountain View",
+      "tomorrow", "10 am", "2 hours", "10 people", "A", "yes");
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    detectIntentAudio = new DetectIntentAudio();
+    detectIntentWithSentimentAnalysis = new DetectIntentWithSentimentAnalysis();
   }
 
   @After
@@ -61,12 +59,11 @@ public class DetectIntentAudioIT {
 
   @Test
   public void testDetectIntent() throws Exception {
-    for (String audioFilePath : AUDIOS) {
-      detectIntentAudio.detectIntentAudio(PROJECT_ID, audioFilePath, SESSION_ID, LANGUAGE_CODE);
-    }
+    detectIntentWithSentimentAnalysis.detectIntentSentimentAnalysis(PROJECT_ID, TEXTS, SESSION_ID,
+        LANGUAGE_CODE);
 
     String got = bout.toString();
-    assertThat(got).contains("Fulfillment Text: 'What time will the meeting start?'");
+    assertThat(got).contains("Sentiment Score:");
   }
 
 }

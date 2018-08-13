@@ -1,18 +1,18 @@
 /*
-  Copyright 2018, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
@@ -21,7 +21,7 @@ import com.google.cloud.dialogflow.v2beta1.KnowledgeBaseName;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClient;
 import com.google.cloud.dialogflow.v2beta1.ProjectName;
 
-public class KnowledgebaseManagement {
+public class KnowledgeBaseManagement {
 
   // [START dialogflow_list_knowledge_base]
   /**
@@ -69,7 +69,6 @@ public class KnowledgebaseManagement {
   /**
    * @param knowledgeBaseId Knowledge base id.
    * @param projectId Project/agent id.
-   * @throws Exception
    */
   public static void getKnowledgeBase(String projectId, String knowledgeBaseId) throws Exception {
 
@@ -88,7 +87,6 @@ public class KnowledgebaseManagement {
   /**
    * @param knowledgeBaseId Knowledge base id.
    * @param projectId Project/agent id.
-   * @throws Exception
    */
   public static void deleteKnowledgeBase(String projectId, String knowledgeBaseId)
       throws Exception {
@@ -101,7 +99,7 @@ public class KnowledgebaseManagement {
   }
   // [END dialogflow_delete_knowledge_base]
 
-  // [START run_application]
+
   public static void main(String[] args) throws Exception {
     String method = "";
     String displayName = "";

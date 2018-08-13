@@ -1,22 +1,22 @@
 /*
-  Copyright 2017, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
-// [START dialogflow_import_libraries]
+
 // Imports the Google Cloud client library
 import com.google.cloud.dialogflow.v2.EntityType;
 import com.google.cloud.dialogflow.v2.EntityType.Kind;
@@ -26,7 +26,7 @@ import com.google.cloud.dialogflow.v2.ProjectAgentName;
 
 import java.util.ArrayList;
 import java.util.List;
-// [END dialogflow_import_libraries]
+
 
 /**
  * DialogFlow API EntityType sample.
@@ -117,7 +117,7 @@ public class EntityTypeManagement {
     return entityTypesIds;
   }
 
-  // [START run_application]
+
   public static void main(String[] args) throws Exception {
     String method = "";
     String entityTypeId = "";
@@ -186,5 +186,5 @@ public class EntityTypeManagement {
       deleteEntityType(entityTypeId, projectId);
     }
   }
-  // [END run_application]
+
 }

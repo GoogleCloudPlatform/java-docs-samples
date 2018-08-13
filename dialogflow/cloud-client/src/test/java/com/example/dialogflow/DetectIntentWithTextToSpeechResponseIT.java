@@ -1,38 +1,37 @@
 /*
-  Copyright 2018, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
-
-/** Integration (system) tests for {@link DetectIntentTTSResponses}. */
+/** Integration (system) tests for {@link DetectIntentWithTextToSpeechResponse}. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentTTSResponsesIT {
+public class DetectIntentWithTextToSpeechResponseIT {
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String SESSION_ID = "fake_session_for_testing";
@@ -49,7 +48,7 @@ public class DetectIntentTTSResponsesIT {
           "A",
           "yes");
   private ByteArrayOutputStream bout;
-  private DetectIntentTTSResponses detectIntentTTSResponses;
+  private DetectIntentWithTextToSpeechResponse detectIntentWithTextToSpeechResponse;
   private PrintStream out;
 
   @Before
@@ -57,7 +56,7 @@ public class DetectIntentTTSResponsesIT {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    detectIntentTTSResponses = new DetectIntentTTSResponses();
+    detectIntentWithTextToSpeechResponse = new DetectIntentWithTextToSpeechResponse();
   }
 
   @After
@@ -67,7 +66,7 @@ public class DetectIntentTTSResponsesIT {
 
   @Test
   public void testDetectIntent() throws Exception {
-    detectIntentTTSResponses.detectIntentWithTexttoSpeech(
+    detectIntentWithTextToSpeechResponse.detectIntentWithTexttoSpeech(
         PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE);
 
     String got = bout.toString();

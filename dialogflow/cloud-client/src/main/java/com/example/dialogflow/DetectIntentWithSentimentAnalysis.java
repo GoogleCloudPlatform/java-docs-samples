@@ -1,29 +1,29 @@
 /*
-  Copyright 2018, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
 import com.google.cloud.dialogflow.v2beta1.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentResponse;
-import com.google.cloud.dialogflow.v2beta1.SessionName;
-import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.QueryInput;
 import com.google.cloud.dialogflow.v2beta1.QueryParameters;
 import com.google.cloud.dialogflow.v2beta1.QueryResult;
 import com.google.cloud.dialogflow.v2beta1.SentimentAnalysisRequestConfig;
+import com.google.cloud.dialogflow.v2beta1.SessionName;
+import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.cloud.dialogflow.v2beta1.TextInput.Builder;
 
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class DetectIntentSentimentAnalysis {
+public class DetectIntentWithSentimentAnalysis {
 
   // [START dialogflow_detect_intent_with_sentiment_analysis]
   /**
@@ -96,7 +96,7 @@ public class DetectIntentSentimentAnalysis {
   }
   // [END dialogflow_detect_intent_with_sentiment_analysis]
 
-  // [START run_application]
+
   public static void main(String[] args) throws Exception {
     ArrayList<String> texts = new ArrayList<>();
     String projectId = "";
@@ -147,6 +147,6 @@ public class DetectIntentSentimentAnalysis {
 
     detectIntentSentimentAnalysis(projectId, texts, sessionId, languageCode);
   }
-  // [END run_application]
+
 
 }

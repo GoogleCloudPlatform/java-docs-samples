@@ -1,18 +1,18 @@
 /*
-  Copyright 2018, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
@@ -28,11 +28,9 @@ import com.google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata;
 public class DocumentManagement {
 
   //  [START dialogflow_list_document]
-
   /**
    * @param projectId Project/Agent id.
    * @param knowledgeBaseId Knowledge Base id.
-   * @throws Exception
    */
   public static void listDocuments(String projectId, String knowledgeBaseId) throws Exception {
     // Instantiates a client
@@ -50,11 +48,9 @@ public class DocumentManagement {
       }
     }
   }
-
   //  [END dialogflow_list_document]
 
   // [START dialogflow_create_document]
-
   /**
    * @param projectId Project/Agent id.
    * @param knowledgeBaseId Knowledge Base id.
@@ -62,7 +58,6 @@ public class DocumentManagement {
    * @param mimeType MIME type of the Document. e.g. text/csv, text/html
    * @param knowledgeType Knowledge Type of the Document. e.g. FAQ, EXTRACTIVE_QA
    * @param contentUri Uri of the Document. e.g. gs://path/mydoc.csv, http://mypage.com/faq.html
-   * @throws Exception
    */
   public static void createDocument(
       String projectId,
@@ -103,12 +98,10 @@ public class DocumentManagement {
   // [END dialogflow_create_document]
 
   // [START dialogflow_get_document]
-
   /**
    * @param projectId Project/Agent id.
    * @param knowledgeBaseId Knowledge Base id.
    * @param documentId Document Id.
-   * @throws Exception
    */
   public static void getDocument(String projectId, String knowledgeBaseId, String documentId)
       throws Exception {
@@ -130,12 +123,10 @@ public class DocumentManagement {
   // [END dialogflow_get_document]
 
   // [START dialogflow_delete_document]
-
   /**
    * @param projectId Project/Agent id.
    * @param knowledgeBaseId Knowledge Base id.
    * @param documentId Document Id.
-   * @throws Exception
    */
   public static void deleteDocument(String projectId, String knowledgeBaseId, String documentId)
       throws Exception {
@@ -147,7 +138,6 @@ public class DocumentManagement {
     }
   }
 
-  // [START run_application]
   public static void main(String[] args) throws Exception {
     String method = "";
     String knowledgeBaseId = "";
@@ -280,6 +270,4 @@ public class DocumentManagement {
       deleteDocument(projectId, knowledgeBaseId, documentId);
     }
   }
-  // [END run_application]
-
 }

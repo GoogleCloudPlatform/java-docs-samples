@@ -1,22 +1,22 @@
 /*
-  Copyright 2018, Google, Inc.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.dialogflow;
 
-// [START dialogflow_import_libraries]
+
 // Imports the Google Cloud client library
 import com.google.cloud.dialogflow.v2beta1.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentResponse;
@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// [END dialogflow_import_libraries]
 
 /** DialogFlow API Detect Intent sample with querying knowledge connector. */
 public class DetectIntentKnowledge {
@@ -51,7 +50,6 @@ public class DetectIntentKnowledge {
    * @param sessionId Identifier of the DetectIntent session.
    * @param languageCode Language code of the query.
    * @param texts The texts to be processed.
-   * @throws Exception
    */
   public static void detectIntentKnowledge(
       String projectId,
@@ -109,7 +107,7 @@ public class DetectIntentKnowledge {
 
   // [END dialogflow_detect_intent_knowledge]
 
-  // [START run_application]
+
   public static void main(String[] args) throws Exception {
     ArrayList<String> texts = new ArrayList<>();
     String projectId = "";
@@ -145,8 +143,8 @@ public class DetectIntentKnowledge {
       System.out.println("Usage:");
       System.out.println(
           "mvn exec:java -DDetectIntentKnowledge "
-              + "-Dexec.args=\"--projectId PROJECT_ID --knowledgeBaseId KNOWLEDGE_BASE_ID --sessionId SESSION_ID "
-              + "'Where can I find pricing information?\"\n");
+              + "-Dexec.args=\"--projectId PROJECT_ID --knowledgeBaseId KNOWLEDGE_BASE_ID "
+              + "--sessionId SESSION_ID 'Where can I find pricing information?\"\n");
       System.out.println("Commands: ");
       System.out.println("\t--projectId <projectId> - Project/Agent Id");
       System.out.println("\t--knowledgeBaseId <knowledgeBaseId> - KnowledgeBase Id ");
@@ -164,5 +162,5 @@ public class DetectIntentKnowledge {
 
     detectIntentKnowledge(projectId, knowledgeBaseId, sessionId, languageCode, texts);
   }
-  // [END run_application]
+
 }
