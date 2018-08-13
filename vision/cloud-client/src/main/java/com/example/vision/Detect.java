@@ -1334,7 +1334,7 @@ public class Detect {
   }
   // [END vision_fulltext_detection_gcs]
 
-  // [START vision_async_detect_document_ocr]
+  // [START vision_text_detection_pdf_gcs]
   /**
    * Performs document text OCR with PDF/TIFF as source files on Google Cloud Storage.
    *
@@ -1451,5 +1451,5 @@ public class Detect {
       }
     }
   }
-  // [END vision_async_detect_document_ocr]
+  // [END vision_text_detection_pdf_gcs]
 }
