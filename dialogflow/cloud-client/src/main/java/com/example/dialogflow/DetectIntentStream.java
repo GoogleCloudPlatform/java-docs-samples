@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 
 /**
@@ -160,45 +164,35 @@ public class DetectIntentStream {
   // [END dialogflow_detect_intent_streaming]
 
   public static void main(String[] args) throws Throwable {
-    String audioFilePath = "";
-    String projectId = "";
-    String sessionId = UUID.randomUUID().toString();
-    String languageCode = "en-US";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("DetectIntentStream")
+            .build()
+            .defaultHelp(true)
+            .description("Returns the result of detect intent with streaming audio as input.\n"
+                + "mvn exec:java -DDetectIntentStream -Dexec.args='--projectId PROJECT_ID "
+                + "--audioFilePath resources/book_a_room.wav --sessionId SESSION_ID'");
+
+    parser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    parser.addArgument("--audioFilePath")
+        .help("Path to the audio file")
+        .required(true);
+
+    parser.addArgument("--sessionId")
+        .help("Identifier of the DetectIntent session (Default: UUID.)")
+        .setDefault(UUID.randomUUID().toString());
+
+    parser.addArgument("--languageCode")
+        .help("Language Code of the query (Default: en-US")
+        .setDefault("en-US");
 
     try {
-      String command = args[0];
-      if (command.equals("--projectId")) {
-        projectId = args[1];
-      }
+      Namespace namespace = parser.parseArgs(args);
 
-      command = args[2];
-      if (command.equals("--audioFilePath")) {
-        audioFilePath = args[3];
-      }
-
-      for (int i = 4; i < args.length; i += 2) {
-        if (args[i].equals("--sessionId")) {
-          sessionId = args[i + 1];
-        } else if (args[i].equals("--languageCode")) {
-          languageCode = args[i + 1];
-        }
-      }
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println("mvn exec:java -DDetectIntentStream "
-          + "-Dexec.args='--projectId PROJECT_ID  --audioFilePath resources/book_a_room.wav "
-          + "--sessionId SESSION_ID'\n");
-
-      System.out.println("Commands: --audioFilePath");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t--audioFilePath <audioFilePath> - Path to the audio file");
-      System.out.println("Optional Commands:");
-      System.out.println("\t--languageCode <language-code> - Language Code of the query (Defaults "
-          + "to \"en-US\".)");
-      System.out.println("\t--sessionId <sessionId> - Identifier of the DetectIntent session "
-          + "(Defaults to a random UUID.)");
+      detectIntentStream(namespace.get("projectId"), namespace.get("audioFilePath"),
+          namespace.get("sessionId"), namespace.get("languageCode"));
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
-
-    detectIntentStream(projectId, audioFilePath, sessionId, languageCode);
   }
 }

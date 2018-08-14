@@ -30,6 +30,12 @@ import com.google.cloud.dialogflow.v2.ProjectAgentName;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 
 /**
@@ -154,80 +160,61 @@ public class IntentManagement {
   }
 
   public static void main(String[] args) throws Exception {
-    String method = "";
-    String displayName = "";
-    String intentId = "";
-    List<String> messageTexts = new ArrayList<>();
-    List<String> trainingPhrasesParts = new ArrayList<>();
-    String projectId = "";
+
+
+    ArgumentParser parser =
+        ArgumentParsers.newFor("IntentManagement")
+            .build()
+            .defaultHelp(true)
+            .description("Create / List / Delete a Intent.");
+
+    Subparsers subparsers = parser.addSubparsers().dest("command").title("Commands");
+
+    Subparser listParser = subparsers.addParser("list")
+        .help("mvn exec:java -DIntentManagement -Dexec.args='list --projectId PROJECT_ID'");
+    listParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    Subparser createParser = subparsers.addParser("create")
+        .help("mvn exec:java -DIntentManagement -Dexec.args='create DISPLAY_NAME "
+            + "--projectId PROJECT_ID --trainingPhrasesParts \"cancel\" \"cancellation\" "
+            + "--messageTexts \"Are you sure you want to cancel?\" \"Cancelled.\"'");
+    createParser.addArgument("displayName")
+        .help("The display name of the intent.").required(true);
+    createParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    createParser.addArgument("--trainingPhrasesParts")
+        .help("Training phrases.").nargs("+");
+    createParser.addArgument("--messageTexts").nargs("+")
+        .help("Message texts for the agent's response when the intent is detected.");
+
+    Subparser deleteParser = subparsers.addParser("delete")
+        .help("mvn exec:java -DIntentManagement -Dexec.args='delete INTENT_ID "
+            + "--projectId PROJECT_ID'");
+    deleteParser.addArgument("intentId")
+        .help("The ID of the intent.").required(true);
+    deleteParser.addArgument("--projectId").help("Project/Agent Id").required(true);
 
     try {
-      method = args[0];
-      String command = args[1];
-      if (method.equals("list")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
+      Namespace namespace = parser.parseArgs(args);
+
+      if (namespace.get("command").equals("list")) {
+        listIntents(namespace.get("projectId"));
+      } else if (namespace.get("command").equals("create")) {
+        ArrayList<String> trainingPhrasesParts = new ArrayList<>();
+        ArrayList<String> messageTexts = new ArrayList<>();
+        if (namespace.get("trainingPhrasesParts") != null) {
+          trainingPhrasesParts = namespace.get("trainingPhrasesParts");
         }
-      } else if (method.equals("create")) {
-        displayName = args[1];
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
+        if (namespace.get("messageTexts") != null) {
+          messageTexts = namespace.get("messageTexts");
         }
 
-        for (int i = 4; i < args.length; i += 2) {
-          if (args[i].equals("--messageTexts")) {
-            while ((i + 1) < args.length && !args[(i + 1)].contains("--")) {
-              messageTexts.add(args[++i]);
-            }
-          } else if (args[i].equals("--trainingPhrasesParts")) {
-            while ((i + 1) < args.length && !args[(i + 1)].contains("--")) {
-              trainingPhrasesParts.add(args[++i]);
-            }
-          }
-        }
-      } else if (method.equals("delete")) {
-        intentId = args[1];
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
+        createIntent(namespace.get("displayName"), namespace.get("projectId"), trainingPhrasesParts,
+            messageTexts);
+      } else if (namespace.get("command").equals("delete")) {
+        deleteIntent(namespace.get("intentId"), namespace.get("projectId"));
       }
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println("mvn exec:java -DIntentManagement "
-          + "-Dexec.args='list --projectId PROJECT_ID'\n");
-
-      System.out.println("mvn exec:java -DIntentManagement "
-          + "-Dexec.args='create \"room.cancellation - yes\" --projectId PROJECT_ID "
-          + "--trainingPhrasesParts \"cancel\" \"cancellation\""
-          + "--messageTexts \"Are you sure you want to cancel?\" \"Cancelled.\"'\n");
-
-      System.out.println("mvn exec:java -DIntentManagement "
-          + "-Dexec.args='delete INTENT_ID --projectId PROJECT_ID'\n");
-
-      System.out.println("Commands: list");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-
-      System.out.println("Commands: create");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t<displayName> - [For create] The display name of the intent.");
-      System.out.println("\nOptional Commands [For create]:");
-      System.out.println("\t--trainingPhrasesParts <trainingPhrasesParts> - Training phrases.");
-      System.out.println("\t--messageTexts <messageTexts> - Message texts for the agent's "
-          + "response when the intent is detected.");
-
-      System.out.println("Commands: delete");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t<intentId> - [For delete] The id of the intent.");
-    }
-
-    if (method.equals("list")) {
-      listIntents(projectId);
-    } else if (method.equals("create")) {
-      createIntent(displayName, projectId, trainingPhrasesParts, messageTexts);
-    } else if (method.equals("delete")) {
-      deleteIntent(intentId, projectId);
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
   }
 }

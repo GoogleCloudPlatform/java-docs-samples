@@ -29,7 +29,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <projectId>PROJECT_ID</projectId> <!-- TODO SET PROJECT_ID -->
+        <projectId>java-docs-samples-testing</projectId> <!-- TODO SET PROJECT_ID -->
         <sessionId>SESSION_ID</sessionId> <!-- TODO SET SESSION_ID -->
         <contextId>CONTEXT_ID</contextId> <!-- TODO SET CONTEXT_ID -->
     </properties>
@@ -39,6 +39,11 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-dialogflow</artifactId>
             <version>0.55.1-alpha</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.argparse4j</groupId>
+            <artifactId>argparse4j</artifactId>
+            <version>0.8.1</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -643,10 +648,10 @@
 
         <!--DetectIntentWithTextToSpeechResponse-->
         <profile>
-            <id>DetectIntentTTSResponses</id>
+            <id>DetectIntentWithTTSResponses</id>
             <activation>
                 <property>
-                    <name>DetectIntentTTSResponses</name>
+                    <name>DetectIntentWithTTSResponses</name>
                 </property>
             </activation>
             <build>
@@ -1237,10 +1242,10 @@
 
         <!--KnowledgeManagement-->
         <profile>
-            <id>KnowledgebaseManagement</id>
+            <id>KnowledgeBaseManagement</id>
             <activation>
                 <property>
-                    <name>KnowledgebaseManagement</name>
+                    <name>KnowledgeBaseManagement</name>
                 </property>
             </activation>
             <build>

@@ -26,6 +26,12 @@ import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 
 /**
@@ -112,78 +118,60 @@ public class EntityManagement {
   // [END dialogflow_delete_entity]
 
   public static void main(String[] args) throws Exception {
-    String method = "";
-    String entityTypeId = "";
-    String entityValue = "";
-    List<String> synonyms = new ArrayList<>();
-    String projectId = "";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("EntityManagement")
+            .build()
+            .defaultHelp(true)
+            .description("Create / List / Delete a Entity.");
+
+    Subparsers subparsers = parser.addSubparsers().dest("command").title("Commands");
+
+    Subparser listParser = subparsers.addParser("list")
+        .help("mvn exec:java -DEntityManagement -Dexec.args='list --projectId PROJECT_ID "
+            + "--entityTypeId ENTITY_TYPE_ID'");
+    listParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    listParser.addArgument("--entityTypeId")
+        .help("The id of the entityType to which to add an entity.").required(true);
+
+    Subparser createParser = subparsers.addParser("create")
+        .help("mvn exec:java -DEntityManagement -Dexec.args='create ENTITY_VALUE "
+            + "--projectId PROJECT_ID --entityTypeId ENTITY_TYPE_ID "
+            + "--synonyms basement cellar'");
+    createParser.addArgument("entityValue")
+        .help("The entity value to be added.").required(true);
+    createParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    createParser.addArgument("--entityTypeId")
+        .help("The id of the entityType to which to add an entity.").required(true);
+    createParser.addArgument("--synonyms").nargs("+")
+        .help("The synonyms that will map to the provided entity value");
+
+    Subparser deleteParser = subparsers.addParser("delete")
+        .help("mvn exec:java -DEntityManagement -Dexec.args='delete ENTITY_VALUE "
+            + "--projectId PROJECT_ID  --entityTypeId ENTITY_TYPE_ID'");
+    deleteParser.addArgument("entityValue")
+        .help("The entity value to be added.").required(true);
+    deleteParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    deleteParser.addArgument("--entityTypeId")
+        .help("The id of the entityType to delete.").required(true);
 
     try {
-      method = args[0];
-      String command = args[1];
-      if (method.equals("list")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
+      Namespace namespace = parser.parseArgs(args);
 
-        command = args[3];
-        if (command.equals("--entityTypeId")) {
-          entityTypeId = args[4];
+      if (namespace.get("command").equals("list")) {
+        listEntities(namespace.get("projectId"), namespace.get("entityTypeId"));
+      } else if (namespace.get("command").equals("create")) {
+        ArrayList<String> synonyms = new ArrayList<>();
+        if (namespace.get("synonyms") == null) {
+          synonyms = namespace.get("synonyms");
         }
-      } else if (method.equals("create") || method.equals("delete")) {
-        entityValue = command;
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
-
-        command = args[4];
-        if (command.equals("--entityTypeId")) {
-          entityTypeId = args[5];
-        }
-
-        if (method.equals("create") && args.length > 5) {
-          command = args[6];
-          if (command.equals("--synonyms")) {
-            for (int i = 7; i < args.length; i++) {
-              synonyms.add(args[i]);
-            }
-          }
-        }
+        createEntity(namespace.get("projectId"), namespace.get("entityTypeId"),
+            namespace.get("entityValue"), synonyms);
+      } else if (namespace.get("command").equals("delete")) {
+        deleteEntity(namespace.get("projectId"), namespace.get("entityTypeId"),
+            namespace.get("entityValue"));
       }
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println("mvn exec:java -DEntityManagement "
-          + "-Dexec.args='list --projectId PROJECT_ID "
-          + "--entityTypeId e57238e2-e692-44ea-9216-6be1b2332e2a'\n");
-
-      System.out.print("mvn exec:java -DEntityManagement "
-          + "-Dexec.args='create new_room --projectId PROJECT_ID "
-          + "--entityTypeId e57238e2-e692-44ea-9216-6be1b2332e2a"
-          + "--synonyms basement cellar'\n");
-
-      System.out.print("mvn exec:java -DEntityManagement "
-          + "-Dexec.args='delete new_room --projectId PROJECT_ID "
-          + "--entityTypeId e57238e2-e692-44ea-9216-6be1b2332e2a'\n");
-
-      System.out.println("Commands: list");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\nCommands:  create | delete");
-      System.out.println("\t<entityValue> - The entity value to be added.");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t--entityTypeId <entityTypeId> - [For create | delete] The id of the "
-          + "entityType to which to add an entity.");
-      System.out.println("\nOptional Commands [For create]:");
-      System.out.println("\t--synonyms <synonyms> - The synonyms that will map to the provided "
-          + "entity value.");
-    }
-
-    if (method.equals("list")) {
-      listEntities(projectId, entityTypeId);
-    } else if (method.equals("create")) {
-      createEntity(projectId, entityTypeId, entityValue, synonyms);
-    } else if (method.equals("delete")) {
-      deleteEntity(projectId, entityTypeId, entityValue);
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
   }
 }

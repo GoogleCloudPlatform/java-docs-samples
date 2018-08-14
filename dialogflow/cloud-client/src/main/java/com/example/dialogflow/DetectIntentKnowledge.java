@@ -31,9 +31,12 @@ import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.cloud.dialogflow.v2beta1.TextInput.Builder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 
 /** DialogFlow API Detect Intent sample with querying knowledge connector. */
@@ -104,63 +107,45 @@ public class DetectIntentKnowledge {
       }
     }
   }
-
   // [END dialogflow_detect_intent_knowledge]
 
-
   public static void main(String[] args) throws Exception {
-    ArrayList<String> texts = new ArrayList<>();
-    String projectId = "";
-    String sessionId = UUID.randomUUID().toString();
-    String languageCode = "en-US";
-    String knowledgeBaseId = "";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("DetectIntentKnowledge")
+            .build()
+            .defaultHelp(true)
+            .description("Returns the result of detect intent with text as input for a Knowledge "
+                + "Base.\n"
+                + "mvn exec:java -DDetectIntentKnowledge -Dexec.args=\"--projectId PROJECT_ID "
+                + "--knowledgeBaseId KNOWLEDGE_BASE_ID -sessionId SESSION_ID "
+                + "'Where can I find pricing information?'\"\n");
+
+    parser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    parser.addArgument("--knowledgeBaseId")
+        .help("The ID of the Knowledge Base")
+        .required(true);
+
+    parser.addArgument("--sessionId")
+        .help("Identifier of the DetectIntent session (Default: UUID.)")
+        .setDefault(UUID.randomUUID().toString());
+
+    parser.addArgument("--languageCode")
+        .help("Language Code of the query (Default: en-US")
+        .setDefault("en-US");
+
+    parser.addArgument("texts")
+        .nargs("+")
+        .help("Text: 'Where can I find pricing information?'")
+        .required(true);
 
     try {
-      String command = args[0];
-      if (command.equals("--projectId")) {
-        projectId = args[1];
-      }
-      command = args[2];
-      if (command.equals("--knowledgeBaseId")) {
-        knowledgeBaseId = args[3];
-      }
+      Namespace namespace = parser.parseArgs(args);
 
-      for (int i = 4; i < args.length; i++) {
-        switch (args[i]) {
-          case "--sessionId":
-            sessionId = args[++i];
-            break;
-          case "--languageCode":
-            languageCode = args[++i];
-            break;
-          default:
-            texts.add(args[i]);
-            break;
-        }
-      }
-
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println(
-          "mvn exec:java -DDetectIntentKnowledge "
-              + "-Dexec.args=\"--projectId PROJECT_ID --knowledgeBaseId KNOWLEDGE_BASE_ID "
-              + "--sessionId SESSION_ID 'Where can I find pricing information?\"\n");
-      System.out.println("Commands: ");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t--knowledgeBaseId <knowledgeBaseId> - KnowledgeBase Id ");
-      System.out.println(
-          "\tText: \"hello\" \"book a meeting room\" \"Mountain View\" \"tomorrow\" "
-              + "\"10am\" \"2 hours\" \"10 people\" \"A\" \"yes\"");
-      System.out.println("Optional Commands:");
-      System.out.println(
-          "\t--languageCode <languageCode> - Language Code of the query (Defaults "
-              + "to \"en-US\".)");
-      System.out.println(
-          "\t--sessionId <sessionId> - Identifier of the DetectIntent session "
-              + "(Defaults to a random UUID.)");
+      detectIntentKnowledge(namespace.get("projectId"), namespace.get("knowledgeBaseId"),
+          namespace.get("sessionId"), namespace.get("languageCode"), namespace.get("texts"));
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
-
-    detectIntentKnowledge(projectId, knowledgeBaseId, sessionId, languageCode, texts);
   }
-
 }

@@ -27,9 +27,12 @@ import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.cloud.dialogflow.v2beta1.TextInput.Builder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 public class DetectIntentWithTextToSpeechResponse {
 
@@ -99,54 +102,39 @@ public class DetectIntentWithTextToSpeechResponse {
 
 
   public static void main(String[] args) throws Exception {
-    ArrayList<String> texts = new ArrayList<>();
-    String projectId = "";
-    String sessionId = UUID.randomUUID().toString();
-    String languageCode = "en-US";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("DetectIntentWithTextToSpeechResponse")
+            .build()
+            .defaultHelp(true)
+            .description("Returns the result of detect intent with text as input"
+                + "Base.\n"
+                + "mvn exec:java -DDetectIntentWithTTSResponses -Dexec.args=\"--projectId "
+                + "PROJECT_ID --sessionId SESSION_ID 'hello' 'book a meeting room' 'Mountain View' "
+                + "'tomorrow' '10 am' '2 hours' '10 people' 'A' 'yes'\"\n");
+
+    parser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    parser.addArgument("--sessionId")
+        .help("Identifier of the DetectIntent session (Default: UUID.)")
+        .setDefault(UUID.randomUUID().toString());
+
+    parser.addArgument("--languageCode")
+        .help("Language Code of the query (Default: en-US")
+        .setDefault("en-US");
+
+    parser.addArgument("texts")
+        .nargs("+")
+        .help("Text: 'Where can I find pricing information?'")
+        .required(true);
 
     try {
-      String command = args[0];
-      if (command.equals("--projectId")) {
-        projectId = args[1];
-      }
+      Namespace namespace = parser.parseArgs(args);
 
-      for (int i = 2; i < args.length; i++) {
-        switch (args[i]) {
-          case "--sessionId":
-            sessionId = args[++i];
-            break;
-          case "--languageCode":
-            languageCode = args[++i];
-            break;
-          default:
-            texts.add(args[i]);
-            break;
-        }
-      }
-
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println(
-          "mvn exec:java -DDetectIntentWithTTSResponses "
-              + "-Dexec.args=\"--projectId PROJECT_ID --sessionId SESSION_ID "
-              + "'hello' 'book a meeting room' 'Mountain View' 'tomorrow' '10 am' '2 hours' "
-              + "'10 people' 'A' 'yes'\"\n");
-
-      System.out.println("Commands: text");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println(
-          "\tText: \"hello\" \"book a meeting room\" \"Mountain View\" \"tomorrow\" "
-              + "\"10am\" \"2 hours\" \"10 people\" \"A\" \"yes\"");
-      System.out.println("Optional Commands:");
-      System.out.println(
-          "\t--languageCode <languageCode> - Language Code of the query (Defaults "
-              + "to \"en-US\".)");
-      System.out.println(
-          "\t--sessionId <sessionId> - Identifier of the DetectIntent session "
-              + "(Defaults to a random UUID.)");
+      detectIntentWithTexttoSpeech(namespace.get("projectId"), namespace.get("texts"),
+          namespace.get("sessionId"), namespace.get("languageCode"));
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
-
-    detectIntentWithTexttoSpeech(projectId, texts, sessionId, languageCode);
   }
 
 

@@ -24,6 +24,12 @@ import com.google.cloud.dialogflow.v2beta1.DocumentName;
 import com.google.cloud.dialogflow.v2beta1.DocumentsClient;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBaseName;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 public class DocumentManagement {
 
@@ -139,135 +145,76 @@ public class DocumentManagement {
   }
 
   public static void main(String[] args) throws Exception {
-    String method = "";
-    String knowledgeBaseId = "";
-    String displayName = "";
-    String mimeType = "";
-    String knowledgeType = "";
-    String contentUri = "";
-    String projectId = "";
-    String documentId = "";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("DocumentManagement")
+            .build()
+            .defaultHelp(true)
+            .description("Create / List / Delete a Document.");
+
+    Subparsers subparsers = parser.addSubparsers().dest("command").title("Commands");
+
+    Subparser listParser = subparsers.addParser("list")
+        .help("mvn exec:java -DDocumentManagement -Dexec.args='list --projectId PROJECT_ID "
+            + "--knowledgeBaseId KNOWLEDGE_BASE_ID'");
+    listParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    listParser.addArgument("--knowledgeBaseId")
+        .help("The id of the Knowledge Base to list the Documents").required(true);
+
+    Subparser createParser = subparsers.addParser("create")
+        .help("mvn exec:java -DDocumentManagement -Dexec.args='create --projectId PROJECT_ID "
+                + "--knowledgeBaseId KNOWLEDGE_BASE_ID --displayName DISPLAY_NAME "
+                + "--mimeType text/html --knowledgeType FAQ "
+                + "--contentUri https://cloud.google.com/storage/docs/faq'");
+    createParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    createParser.addArgument("--knowledgeBaseId")
+        .help("The ID of the Knowledge Base to list the Documents").required(true);
+    createParser.addArgument("--displayName")
+        .help("The display name of the Document").required(true);
+    createParser.addArgument("--mimeType")
+        .help("The mime-type of the Document, e.g. text/csv, text/html, text/plain, text/pdf etc.")
+        .required(true);
+    createParser.addArgument("--knowledgeType")
+        .help("The knowledge-type of the Document, e.g. FAQ, EXTRACTIVE_QA.").required(true);
+    createParser.addArgument("--contentUri")
+        .help("The uri of the Document, e.g. gs://path/mydoc.csv, http://mypage.com/faq.html")
+        .required(true);
+
+    Subparser getParser = subparsers.addParser("get")
+        .help("mvn exec:java -DDocumentManagement -Dexec.args='get --projectId PROJECT_ID "
+            + "--knowledgeBaseId KNOWLEDGE_BASE_ID --documentId DOCUMENT_ID'");
+    getParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    getParser.addArgument("--knowledgeBaseId")
+        .help("The ID of the Knowledge Base to list the Documents").required(true);
+    getParser.addArgument("--documentId")
+        .help("The ID of the Document you want to delete").required(true);
+
+    Subparser deleteParser = subparsers.addParser("delete")
+        .help("mvn exec:java -DDocumentManagement -Dexec.args='delete --projectId PROJECT_ID "
+            + "--knowledgeBaseId KNOWLEDGE_BASE_ID --documentId DOCUMENT_ID'");
+    deleteParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    deleteParser.addArgument("--knowledgeBaseId")
+        .help("The ID of the Knowledge Base to list the Documents").required(true);
+    deleteParser.addArgument("--documentId")
+        .help("The ID of the Document you want to delete").required(true);
 
     try {
-      method = args[0];
-      String command = args[1];
-      if (method.equals("list")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
-        command = args[3];
-        if (command.equals("--knowledgeBaseId")) {
-          knowledgeBaseId = args[4];
-        }
-      } else if (method.equals("create")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
-        command = args[3];
-        if (command.equals("--knowledgeBaseId")) {
-          knowledgeBaseId = args[4];
-        }
-        command = args[5];
-        if (command.equals("--displayName")) {
-          displayName = args[6];
-        }
-        command = args[7];
-        if (command.equals("--mimeType")) {
-          mimeType = args[8];
-        }
-        command = args[9];
-        if (command.equals("--knowledgeType")) {
-          knowledgeType = args[10];
-        }
-        command = args[11];
-        if (command.equals("--contentUri")) {
-          contentUri = args[12];
-        }
-      } else if (method.equals("get")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
-        command = args[3];
-        if (command.equals("--knowledgeBaseId")) {
-          knowledgeBaseId = args[4];
-        }
-        command = args[5];
-        if (command.equals("--documentId")) {
-          documentId = args[6];
-        }
-      } else if (method.equals("delete")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
-        command = args[3];
-        if (command.equals("--knowledgeBaseId")) {
-          knowledgeBaseId = args[4];
-        }
-        command = args[5];
-        if (command.equals("--documentId")) {
-          documentId = args[6];
-        }
+      Namespace namespace = parser.parseArgs(args);
+
+      if (namespace.get("command").equals("list")) {
+        listDocuments(namespace.get("projectId"), namespace.get("knowledgeBaseId"));
+      } else if (namespace.get("command").equals("create")) {
+        createDocument(namespace.get("projectId"), namespace.get("knowledgeBaseId"),
+            namespace.get("displayName"), namespace.get("mimeType"), namespace.get("knowledgeType"),
+            namespace.get("contentUri"));
+      } else if (namespace.get("command").equals("get")) {
+        getDocument(namespace.get("projectId"), namespace.get("knowledgeBaseId"),
+            namespace.get("documentId"));
+      } else if (namespace.get("command").equals("delete")) {
+        deleteDocument(namespace.get("projectId"), namespace.get("knowledgeBaseId"),
+            namespace.get("documentId"));
       }
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println(
-          "mvn exec:java -DDocumentManagement "
-              + "-Dexec.args='list --projectId PROJECT_ID "
-              + "--knowledgeBaseId MTc5NjM0NTE1Mzg2OTczNTUyNjQ'\n");
-
-      System.out.print(
-          "mvn exec:java -DDocumentManagement "
-              + "-Dexec.args='create --projectId PROJECT_ID "
-              + "--knowledgeBaseId MTc5NjM0NTE1Mzg2OTczNTUyNjQ"
-              + "--displayName test_doc'\n"
-              + "--mimeType text/html'\n"
-              + "--knowledgeType FAQ'\n"
-              + "--contentUri https://cloud.google.com/storage/docs/faq'\n");
-
-      System.out.print(
-          "mvn exec:java -DDocumentManagement "
-              + "-Dexec.args='get --projectId PROJECT_ID "
-              + "--knowledgeBaseId MTc5NjM0NTE1Mzg2OTczNTUyNjQ'\n"
-              + "--documentId MTE2OTcxMTQ4Njk2NzYzNzYwNjQ");
-
-      System.out.print(
-          "mvn exec:java -DDocumentManagement "
-              + "-Dexec.args='delete --projectId PROJECT_ID "
-              + "--knowledgeBaseId MTc5NjM0NTE1Mzg2OTczNTUyNjQ'\n"
-              + "--documentId MTE2OTcxMTQ4Njk2NzYzNzYwNjQ");
-
-      System.out.println("Commands: list");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-
-      System.out.println("\nCommands:  create");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println(
-          "\t--knowledgeBaseId <knowledgeBaseId> - [For create] The id of the "
-              + "Knowledge Base to add the Document");
-      System.out.println(
-          "\t--displayName <displayName> - [For create] The display name of the Document");
-      System.out.println("\t--mimeType <mimeType> - [For create] The MIME Type of the Document");
-      System.out.println(
-          "\t--knowledgeType <knowledgeType> - [For create] The Knowledge Type of the "
-              + "Document");
-      System.out.println("\t--contentUri <contentUri> - [For create] The Uri of the  Document");
-
-      System.out.println("\nCommands:  get | delete");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println(
-          "\t--knowledgeBaseId <knowledgeBaseId> - [For get | delete] The id of the "
-              + "Knowledge Base to add the Document");
-      System.out.println("\t--documentId <documentId> - [For get | delete] The id of the Document");
-    }
-
-    if (method.equals("list")) {
-      listDocuments(projectId, knowledgeBaseId);
-    } else if (method.equals("create")) {
-      createDocument(projectId, knowledgeBaseId, displayName, mimeType, knowledgeType, contentUri);
-    } else if (method.equals("get")) {
-      getDocument(projectId, knowledgeBaseId, documentId);
-    } else if (method.equals("delete")) {
-      deleteDocument(projectId, knowledgeBaseId, documentId);
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
   }
 }

@@ -26,6 +26,12 @@ import com.google.cloud.dialogflow.v2.SessionName;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * DialogFlow API SessionEntityType sample.
@@ -119,88 +125,68 @@ public class SessionEntityTypeManagement {
   // [END dialogflow_delete_session_entity_type]
 
   public static void main(String[] args) throws Exception {
-    String method = "";
-    String sessionId = "";
-    List<String> entityValues = new ArrayList<>();
-    String entityTypeDisplayName = "";
-    int entityOverrideMode = 1;
-    String projectId = "";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("SessionEntityTypeManagement")
+            .build()
+            .defaultHelp(true)
+            .description("Create / List / Delete a SessionEntityType.");
+
+    Subparsers subparsers = parser.addSubparsers().dest("command").title("Commands");
+
+    Subparser listParser = subparsers.addParser("list")
+        .help("mvn exec:java -DSessionEntityTypeManagement -Dexec.args='list "
+            + "--projectId PROJECT_ID --sessionId SESSION_ID '");
+    listParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    listParser.addArgument("--sessionId")
+        .help("Identifier of the DetectIntent session").required(true);
+
+    Subparser createParser = subparsers.addParser("create")
+        .help("mvn exec:java -DSessionEntityTypeManagement -Dexec.args='create "
+            + "--projectId PROJECT_ID --sessionId SESSION_ID "
+            + "--entityTypeDisplayName ENTITY_TYPE_DISPLAY_NAME "
+            + "--entityOverrideMode ENTITY_OVERRIDE_MODE_OVERRIDE "
+            + "--entityValues C D E F'");
+    createParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    createParser.addArgument("--sessionId")
+        .help("Identifier of the DetectIntent session").required(true);
+    createParser.addArgument("--entityTypeDisplayName")
+        .help("The DISPLAY NAME of the entity type to be overridden in the session.t")
+        .required(true);
+    createParser.addArgument("--entityOverrideMode")
+        .help("ENTITY_OVERRIDE_MODE_OVERRIDE (default) or ENTITY_OVERRIDE_MODE_SUPPLEMENT")
+        .setDefault(1);
+    createParser.addArgument("--entityValues").nargs("+")
+        .help("The entity values of the session entity type.");
+
+    Subparser deleteParser = subparsers.addParser("delete")
+        .help("mvn exec:java -DSessionEntityTypeManagement -Dexec.args='delete "
+            + "--sessionId SESSION_ID --projectId PROJECT_ID --contextId CONTEXT_ID'");
+    deleteParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    deleteParser.addArgument("--sessionId")
+        .help("Identifier of the DetectIntent session").required(true);
+    deleteParser.addArgument("--entityTypeDisplayName")
+        .help("The DISPLAY NAME of the entity type to be overridden in the session.t")
+        .required(true);
 
     try {
-      method = args[0];
-      String command = args[1];
-      if (command.equals("--projectId")) {
-        projectId = args[2];
-      }
-      command = args[3];
-      if (command.equals("--sessionId")) {
-        sessionId = args[4];
-      }
+      Namespace namespace = parser.parseArgs(args);
 
-      if (method.equals("create")) {
-        command = args[5];
-        if (command.equals("--entityTypeDisplayName")) {
-          entityTypeDisplayName = args[6];
+      if (namespace.get("command").equals("list")) {
+        listSessionEntityTypes(namespace.get("projectId"), namespace.get("sessionId"));
+      } else if (namespace.get("command").equals("create")) {
+        ArrayList<String> entityValues = new ArrayList<>();
+        if (namespace.get("entityValues") != null) {
+          entityValues = namespace.get("entityValues");
         }
-
-        for (int i = 7; i < args.length; i += 2) {
-          if (args[i].equals("--entityOverrideMode")) {
-            entityOverrideMode = Integer.valueOf(args[i + 1]);
-          } else if (args[i].equals("--entityValues")) {
-            while ((i + 1) < args.length && !args[(i + 1)].contains("--")) {
-              entityValues.add(args[++i]);
-            }
-          }
-        }
-      } else if (method.equals("delete")) {
-        command = args[5];
-        if (command.equals("--entityTypeDisplayName")) {
-          entityTypeDisplayName = args[6];
-        }
+        createSessionEntityType(namespace.get("projectId"), namespace.get("sessionId"),
+            entityValues, namespace.get("entityTypeDisplayName"),
+            namespace.get("entityOverrideMode"));
+      } else if (namespace.get("command").equals("delete")) {
+        deleteSessionEntityType(namespace.get("projectId"), namespace.get("sessionId"),
+            namespace.get("entityTypeDisplayName"));
       }
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println("mvn exec:java -DSessionEntityTypeManagement "
-          + "-Dexec.args='list --projectId PROJECT_ID --sessionId SESSION_ID'\n");
-
-      System.out.println("mvn exec:java -DSessionEntityTypeManagement "
-          + "-Dexec.args='create create  --projectId PROJECT_ID --sessionId SESSION_ID "
-          + "--entityTypeDisplayName room --entityValues C D E F'\n");
-
-      System.out.println("mvn exec:java -DSessionEntityTypeManagement "
-          + "-Dexec.args='delete --projectId PROJECT_ID --sessionId SESSION_ID "
-          + "--entityTypeDisplayName room'\n");
-
-      System.out.println("Commands: list | create | delete");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t--sessionId <sessionId> - Identifier of the DetectIntent session");
-
-      System.out.println("Commands: create");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t--sessionId <sessionId> - Identifier of the DetectIntent session");
-      System.out.println("\t--entityTypeDisplayName <entityTypeDisplayName> - "
-          + "The DISPLAY NAME of the entity type to be overridden in the session.");
-      System.out.println("\nOptional Commands [For create]:");
-      System.out.println("\t--entityOverrideMode <entityOverrideMode> - "
-          + "ENTITY_OVERRIDE_MODE_OVERRIDE (default) or ENTITY_OVERRIDE_MODE_SUPPLEMENT");
-      System.out.println("\t--entityValues <entityValues> - "
-          + "The entity values of the session entity type.");
-
-      System.out.println("Commands: delete");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\t--sessionId <sessionId> - Identifier of the DetectIntent session");
-      System.out.println("\t--entityTypeDisplayName <entityTypeDisplayName> - "
-          + "The DISPLAY NAME of the entity type to be overridden in the session.");
-    }
-
-    if (method.equals("list")) {
-      listSessionEntityTypes(projectId, sessionId);
-    } else if (method.equals("create")) {
-      createSessionEntityType(projectId, sessionId, entityValues, entityTypeDisplayName,
-          entityOverrideMode);
-    } else if (method.equals("delete")) {
-      deleteSessionEntityType(projectId, sessionId, entityTypeDisplayName);
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
   }
-
 }

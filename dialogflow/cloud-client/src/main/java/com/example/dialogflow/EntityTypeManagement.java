@@ -26,6 +26,12 @@ import com.google.cloud.dialogflow.v2.ProjectAgentName;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 
 /**
@@ -119,72 +125,49 @@ public class EntityTypeManagement {
 
 
   public static void main(String[] args) throws Exception {
-    String method = "";
-    String entityTypeId = "";
-    String displayName = "";
-    String kind = "KIND_MAP";
-    String projectId = "";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("EntityTypeManagement")
+            .build()
+            .defaultHelp(true)
+            .description("Create / List / Delete a Entity Type.");
+
+    Subparsers subparsers = parser.addSubparsers().dest("command").title("Commands");
+
+    Subparser listParser = subparsers.addParser("list")
+        .help("mvn exec:java -DEntityTypeManagement -Dexec.args='list --projectId PROJECT_ID'");
+    listParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    Subparser createParser = subparsers.addParser("create")
+        .help("mvn exec:java -DEntityTypeManagement -Dexec.args='create DISPLAY_NAME "
+            + "--projectId PROJECT_ID --entityTypeId ENTITY_TYPE_ID "
+            + "--synonyms basement cellar'");
+    createParser.addArgument("displayName")
+        .help("The display name of the entity.").required(true);
+    createParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    createParser.addArgument("--kind")
+        .help("The kind of entity. KIND_MAP (default) or KIND_LIST.").setDefault("KIND_MAP");
+
+    Subparser deleteParser = subparsers.addParser("delete")
+        .help("mvn exec:java -DEntityTypeManagement -Dexec.args='delete ENTITY_TYPE_ID "
+            + "--projectId PROJECT_ID'");
+    deleteParser.addArgument("entityTypeId")
+        .help("The id of the entityType to delete.").required(true);
+    deleteParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
 
     try {
-      method = args[0];
-      String command;
-      if (method.equals("list")) {
-        command = args[1];
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
-      } else if (method.equals("create")) {
-        displayName = args[1];
+      Namespace namespace = parser.parseArgs(args);
 
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
-
-        if (args.length > 4) {
-          command = args[4];
-          if (command.equals("--kind")) {
-            kind = args[5];
-          }
-        }
-      } else if (method.equals("delete")) {
-        entityTypeId = args[1];
-
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
+      if (namespace.get("command").equals("list")) {
+        listEntityTypes(namespace.get("projectId"));
+      } else if (namespace.get("command").equals("create")) {
+        createEntityType(namespace.get("displayName"), namespace.get("projectId"),
+            namespace.get("kind"));
+      } else if (namespace.get("command").equals("delete")) {
+        deleteEntityType(namespace.get("entityTypeId"), namespace.get("projectId"));
       }
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println("mvn exec:java -DEntityTypeManagement "
-          + "-Dexec.args='list --projectId PROJECT_ID'\n");
-
-      System.out.println("mvn exec:java -DEntityTypeManagement "
-          + "-Dexec.args='create employee --projectId PROJECT_ID'\n");
-
-      System.out.println("mvn exec:java -DEntityTypeManagement "
-          + "-Dexec.args='delete ENTITY_TYPE_ID --projectId PROJECT_ID'\n");
-
-      System.out.println("Commands: list");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("Commands: create");
-      System.out.println("\t<displayName> - The display name of the entity.");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-      System.out.println("\nOptional Commands [For create]:");
-      System.out.println("\t--kind <kind> - The kind of entity. KIND_MAP (default) or KIND_LIST.");
-      System.out.println("Commands: delete");
-      System.out.println("\t<entityTypeId> - [The id of the entity_type.");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-    }
-
-    if (method.equals("list")) {
-      listEntityTypes(projectId);
-    } else if (method.equals("create")) {
-      createEntityType(displayName, projectId, kind);
-    } else if (method.equals("delete")) {
-      deleteEntityType(entityTypeId, projectId);
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
   }
-
 }

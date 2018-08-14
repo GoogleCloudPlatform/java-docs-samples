@@ -71,7 +71,7 @@ Import the sample agent (RoomReservation.zip) from the resources directory to yo
 DialogFlow API Detect Intent sample with text inputs.
 
 ```
-mvn exec:java -DDetectIntentTexts
+mvn exec:java -DDetectIntentText
 ```
 
 ### Detect Intent Audio
@@ -106,6 +106,30 @@ mvn exec:java -DDetectIntentStreamBookARoom
 ```
 ```
 mvn exec:java -DDetectIntentStreamMountainView
+```
+
+### Detect Intent With Model Selection
+DialogFlow API Detect Intent sample with model selection
+```
+mvn exec:java -DDetectIntentWithModelSelection -Dexec.args='--projectId PROJECT_ID --audioFilePath resources/book_a_room.wav --sessionId SESSION_ID'
+```
+
+### Detect Intent With Sentiment Analysis
+DialogFlow API Detect Intent sample with sentiment analysis
+```
+mvn exec:java -DDetectIntentWithSentimentAnalysis -Dexec.args="--projectId PROJECT_ID -sessionId SESSION_ID 'hello'"
+```
+
+### Detect Intent With Text-to-Speech
+DialogFlow API Detect Intent sample with Text-to-Speech
+```
+mvn exec:java -DetectIntentTTSResponse
+```
+
+### Detect Intent Knowledge
+DialogFlow API Detect Intent sample with querying knowledge connector.
+```
+mvn exec:java -DDetectIntentKnowledge -Dexec.args="--projectId PROJECT_ID --knowledgeBaseId KNOWLEDGE_BASE_ID -sessionId SESSION_ID 'Where can I find pricing information?'"
 ```
 
 ### Context Management
@@ -186,4 +210,40 @@ mvn exec:java -DSessionEntityTypeManagementCreate
 Delete session entity type
 ```
 mvn exec:java -DSessionEntityTypeManagementDelete
+```
+
+### Knowledge Base Management
+DialogFlow API KnowledgeBaseManagement sample
+
+List knowledge base
+```
+mvn exec:java -DKnowledgeBaseManagement -Dexec.args='list --projectId PROJECT_ID'
+```
+Create knowledge base
+```
+mvn exec:java -DKnowledgeBaseManagement -Dexec.args='create DISPLAY_NAME --projectId PROJECT_ID'
+```
+Delete knowledge base
+```
+mvn exec:java -DKnowledgeBaseManagement -Dexec.args='delete KNOWLEDGE_BASE_ID --projectId PROJECT_ID'
+```
+
+### Document Management
+DialogFlow API DocumentManagement sample
+
+List documents
+```
+mvn exec:java -DDocumentManagement -Dexec.args='list --projectId PROJECT_ID --knowledgeBaseId KNOWLEDGE_BASE_ID'
+```
+Create doucment
+```
+mvn exec:java -DDocumentManagement -Dexec.args='create KNOWLEDGE_BASE_ID --projectId PROJECT_ID
+   --displayName DISPLAY_NAME
+   --mimeType text/html
+   --knowledgeType FAQ'
+   --contentUri https://cloud.google.com/storage/docs/faq'
+```
+Delete doucment
+```
+mvn exec:java -DDocumentManagement -Dexec.args='delete KNOWLEDGE_BASE_ID --projectId PROJECT_ID --documentId DOCUMENT_ID
 ```

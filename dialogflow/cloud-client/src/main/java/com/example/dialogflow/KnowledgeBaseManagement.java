@@ -20,6 +20,12 @@ import com.google.cloud.dialogflow.v2beta1.KnowledgeBase;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBaseName;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClient;
 import com.google.cloud.dialogflow.v2beta1.ProjectName;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+import net.sourceforge.argparse4j.inf.Subparsers;
 
 public class KnowledgeBaseManagement {
 
@@ -101,72 +107,53 @@ public class KnowledgeBaseManagement {
 
 
   public static void main(String[] args) throws Exception {
-    String method = "";
-    String displayName = "";
-    String knowledgeBaseId = "";
-    String projectId = "";
+    ArgumentParser parser =
+        ArgumentParsers.newFor("KnowledgeBaseManagement")
+            .build()
+            .defaultHelp(true)
+            .description("Create / List / Delete a Knowledge Base.");
+
+    Subparsers subparsers = parser.addSubparsers().dest("command").title("Commands");
+
+    Subparser listParser = subparsers.addParser("list")
+        .help("mvn exec:java -DKnowledgeManagement -Dexec.args='list --projectId PROJECT_ID'");
+    listParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    Subparser createParser = subparsers.addParser("create")
+        .help("mvn exec:java -DKnowledgeManagement -Dexec.args='create DISPLAY_NAME "
+            + "--projectId PROJECT_ID'");
+    createParser.addArgument("displayName")
+        .help("The display name of the Document").required(true);
+    createParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    Subparser getParser = subparsers.addParser("get")
+        .help("mvn exec:java -DKnowledgeManagement -Dexec.args='get KNOWLEDGE_BASE_ID "
+            + "--projectId PROJECT_ID'");
+    getParser.addArgument("knowledgeBaseId")
+        .help("The ID of the Knowledge Base to list the Documents").required(true);
+    getParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+
+    Subparser deleteParser = subparsers.addParser("delete")
+        .help("mvn exec:java -DKnowledgeManagement -Dexec.args='delete KNOWLEDGE_BASE_ID "
+            + "--projectId PROJECT_ID'");
+    deleteParser.addArgument("--projectId").help("Project/Agent Id").required(true);
+    deleteParser.addArgument("--knowledgeBaseId")
+        .help("The ID of the Knowledge Base to list the Documents").required(true);
 
     try {
-      method = args[0];
-      String command = args[1];
-      if (method.equals("list")) {
-        if (command.equals("--projectId")) {
-          projectId = args[2];
-        }
-      } else if (method.equals("create")) {
-        displayName = args[1];
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
+      Namespace namespace = parser.parseArgs(args);
 
-      } else if (method.equals("get")) {
-        knowledgeBaseId = args[1];
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
-      } else if (method.equals("delete")) {
-        knowledgeBaseId = args[1];
-        command = args[2];
-        if (command.equals("--projectId")) {
-          projectId = args[3];
-        }
+      if (namespace.get("command").equals("list")) {
+        listKnowledgeBases(namespace.get("projectId"));
+      } else if (namespace.get("command").equals("create")) {
+        createKnowledgeBase(namespace.get("projectId"), namespace.get("displayName"));
+      } else if (namespace.get("command").equals("get")) {
+        getKnowledgeBase(namespace.get("projectId"), namespace.get("knowledgeBaseId"));
+      } else if (namespace.get("command").equals("delete")) {
+        deleteKnowledgeBase(namespace.get("projectId"), namespace.get("knowledgeBaseId"));
       }
-
-    } catch (Exception e) {
-      System.out.println("Usage:");
-      System.out.println(
-          "mvn exec:java -DKnowledgeManagement "
-              + "-Dexec.args='list --projectId PROJECT_ID'\n"
-              + "-Dexec.args='create test_create --projectId PROJECT_ID'\n"
-              + "-Dexec.args='get KNOWLEDGE_BASE_ID --projectId PROJECT_ID'\n"
-              + "-Dexec.args='delete KNOWLEDGE_BASE_ID --projectId PROJECT_ID'\n");
-
-      System.out.println("Commands: list");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-
-      System.out.println("Commands: create");
-      System.out.println("\t<displayName> - [For create] The display name of the knowledge base.");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-
-      System.out.println("Commands: get");
-      System.out.println("\t<knowledgeBaseId> - [For get] The id of the knowledge base.");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-
-      System.out.println("Commands: delete");
-      System.out.println("\t<knowledgeBaseId> - [For delete] The id of the knowledge base.");
-      System.out.println("\t--projectId <projectId> - Project/Agent Id");
-    }
-
-    if (method.equals("list")) {
-      listKnowledgeBases(projectId);
-    } else if (method.equals("create")) {
-      createKnowledgeBase(projectId,displayName);
-    } else if (method.equals("get")) {
-      getKnowledgeBase(projectId,knowledgeBaseId);
-    } else if (method.equals("delete")) {
-      deleteKnowledgeBase(projectId, knowledgeBaseId);
+    } catch (ArgumentParserException e) {
+      parser.handleError(e);
     }
   }
 }
