@@ -16,7 +16,11 @@
 
 package com.example.vision;
 
-// [START product_search_import]
+// [START vision_product_search_create_product_set]
+// [START vision_product_search_add_product_to_product_set]
+// [START vision_product_search_delete_product_set]
+// [START vision_product_search_list_product_sets]
+// [START vision_product_search_get_product_set]
 import com.google.cloud.vision.v1p3beta1.CreateProductSetRequest;
 import com.google.cloud.vision.v1p3beta1.LocationName;
 import com.google.cloud.vision.v1p3beta1.Product;
@@ -28,13 +32,17 @@ import com.google.cloud.vision.v1p3beta1.ProductSetName;
 import java.io.IOException;
 import java.io.PrintStream;
 
+// [END vision_product_search_create_product_set]
+// [END vision_product_search_add_product_to_product_set]
+// [END vision_product_search_delete_product_set]
+// [END vision_product_search_list_product_sets]
+// [END vision_product_search_get_product_set]
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-// [END product_search_import]
 
 /**
  * This application demonstrates how to perform basic operations on Product Sets.
@@ -45,7 +53,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 public class ProductSetManagement {
 
-  // [START product_search_create_product_set]
+  // [START vision_product_search_create_product_set]
   /**
    * Create a product set
    *
@@ -76,9 +84,9 @@ public class ProductSetManagement {
     // Display the product set information
     System.out.println(String.format("Product set name: %s", productSet.getName()));
   }
-  // [END product_search_create_product_set]
+  // [END vision_product_search_create_product_set]
 
-  // [START product_search_list_product_sets]
+  // [START vision_product_search_list_product_sets]
   /**
    * List all product sets
    *
@@ -107,9 +115,9 @@ public class ProductSetManagement {
       System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
     }
   }
-  // [END product_search_list_product_sets]
+  // [END vision_product_search_list_product_sets]
 
-  // [START product_search_get_product_set]
+  // [START vision_product_search_get_product_set]
   /**
    * Get info about the product set.
    *
@@ -139,43 +147,9 @@ public class ProductSetManagement {
     System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
     System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
   }
-  // [END product_search_get_product_set]
+  // [END vision_product_search_get_product_set]
 
-  // [START product_search_list_products_in_product_set]
-  /**
-   * List all products in a product set.
-   *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param productSetId - Id of the product set.
-   * @throws IOException - on I/O errors.
-   */
-  public static void listProductsInSet(String projectId, String computeRegion, String productSetId)
-      throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
-
-    // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
-
-    // List all the products available in the product set.
-    for (Product product :
-        client.listProductsInProductSet(productSetPath.toString()).iterateAll()) {
-      // Display the product information
-      System.out.println(String.format("Product name: %s", product.getName()));
-      System.out.println(
-          String.format(
-              "Product id: %s",
-              product.getName().substring(product.getName().lastIndexOf('/') + 1)));
-      System.out.println(String.format("Product display name: %s", product.getDisplayName()));
-      System.out.println(String.format("Product description: %s", product.getDescription()));
-      System.out.println(String.format("Product category: %s", product.getProductCategory()));
-      System.out.println(
-          String.format("Product labels: %s\n", product.getProductLabelsList().toString()));
-    }
-  }
-  // [END product_search_list_products_in_product_set]
-
-  // [START product_search_add_product_to_product_set]
+  // [START vision_product_search_add_product_to_product_set]
   /**
    * Add a product to a product set.
    *
@@ -201,9 +175,9 @@ public class ProductSetManagement {
 
     System.out.println(String.format("Product added to product set."));
   }
-  // [END product_search_add_product_to_product_set]
+  // [END vision_product_search_add_product_to_product_set]
 
-  // [START product_search_delete_product_set]
+  // [START vision_product_search_delete_product_set]
   /**
    * Delete a product set.
    *
@@ -224,7 +198,7 @@ public class ProductSetManagement {
 
     System.out.println(String.format("Product set deleted"));
   }
-  // [END product_search_delete_product_set]
+  // [END vision_product_search_delete_product_set]
 
   public static void main(String[] args) throws Exception {
     ProductSetManagement productSetManagement = new ProductSetManagement();
@@ -276,9 +250,6 @@ public class ProductSetManagement {
       if (ns.get("command").equals("add_product_to_product_set")) {
         addProductToSet(
             projectId, computeRegion, ns.getString("productId"), ns.getString("productSetId"));
-      }
-      if (ns.get("command").equals("list_products_in_product_set")) {
-        listProductsInSet(projectId, computeRegion, ns.getString("productSetId"));
       }
       if (ns.get("command").equals("delete_product_set")) {
         deleteProductSet(projectId, computeRegion, ns.getString("productSetId"));

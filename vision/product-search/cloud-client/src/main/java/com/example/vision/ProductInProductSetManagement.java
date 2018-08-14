@@ -16,7 +16,9 @@
 
 package com.example.vision;
 
-// [START product_search_import]
+// [START vision_product_search_remove_product_from_product_set]
+// [START vision_product_search_list_products]
+// [START vision_product_search_update_product_set]
 import com.google.cloud.vision.v1p3beta1.LocationName;
 import com.google.cloud.vision.v1p3beta1.Product;
 import com.google.cloud.vision.v1p3beta1.ProductName;
@@ -29,13 +31,15 @@ import com.google.protobuf.FieldMask;
 import java.io.IOException;
 import java.io.PrintStream;
 
+// [END vision_product_search_remove_product_from_product_set]
+// [END vision_product_search_list_products]
+// [END vision_product_search_update_product_set]
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-// [END product_search_import]
 
 /**
  * This application demonstrates how to perform basic operations with Products in a Product Set.
@@ -46,7 +50,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 public class ProductInProductSetManagement {
 
-  // [START product_search_add_product_to_product_set]
+  // [START vision_product_search_update_product_set]
   /**
    * Update a product set.
    *
@@ -56,7 +60,7 @@ public class ProductInProductSetManagement {
    * @param productSetDisplayName - Display name of the product set.
    * @throws IOException - on I/O errors.
    */
-  public static void addProductToProductSet(
+  public static void updateProductSet(
       String projectId, String computeRegion, String productSetId, String productSetDisplayName)
       throws IOException {
     ProductSearchClient client = ProductSearchClient.create();
@@ -92,9 +96,9 @@ public class ProductInProductSetManagement {
     System.out.println(
         String.format("Updated product set display name: %s", updatedProductSet.getDisplayName()));
   }
-  // [END product_search_add_product_to_product_set]
+  // [END vision_product_search_update_product_set]
 
-  // [START product_search_remove_product_from_product_set]
+  // [START vision_product_search_remove_product_from_product_set]
   /**
    * Remove a product from a product set.
    *
@@ -120,9 +124,9 @@ public class ProductInProductSetManagement {
 
     System.out.println(String.format("Product removed from product set."));
   }
-  // [END product_search_remove_product_from_product_set]
+  // [END vision_product_search_remove_product_from_product_set]
 
-  // [START product_search_list_products_in_product_set]
+  // [START vision_product_search_list_products_in_product_set]
   /**
    * List all products in a product set.
    *
@@ -154,9 +158,9 @@ public class ProductInProductSetManagement {
           String.format("Product labels: %s\n", product.getProductLabelsList().toString()));
     }
   }
-  // [END product_search_list_products_in_product_set]
+  // [END vision_product_search_list_products_in_product_set]
 
-  // [START product_search_list_products]
+  // [START vision_product_search_list_products]
   /**
    * List all products.
    *
@@ -185,7 +189,7 @@ public class ProductInProductSetManagement {
           String.format("Product labels: %s", product.getProductLabelsList().toString()));
     }
   }
-  // [END product_search_list_products]
+  // [END vision_product_search_list_products]
 
   public static void main(String[] args) throws Exception {
     ProductInProductSetManagement productInProductSetManagement =
@@ -220,7 +224,7 @@ public class ProductInProductSetManagement {
         listProducts(projectId, computeRegion);
       }
       if (ns.get("command").equals("update_product_set")) {
-        addProductToProductSet(
+        updateProductSet(
             projectId,
             computeRegion,
             ns.getString("productSetId"),

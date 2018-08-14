@@ -17,7 +17,10 @@
 
 package com.example.vision;
 
-// [START product_search_import]
+// [START vision_product_search_create_reference_image]
+// [START vision_product_search_delete_reference_image]
+// [START vision_product_search_list_reference_images]
+// [START vision_product_search_get_reference_image]
 import com.google.cloud.vision.v1p3beta1.ProductName;
 import com.google.cloud.vision.v1p3beta1.ProductSearchClient;
 import com.google.cloud.vision.v1p3beta1.ReferenceImage;
@@ -26,13 +29,16 @@ import com.google.cloud.vision.v1p3beta1.ReferenceImageName;
 import java.io.IOException;
 import java.io.PrintStream;
 
+// [END vision_product_search_create_reference_image]
+// [END vision_product_search_delete_reference_image]
+// [END vision_product_search_list_reference_images]
+// [END vision_product_search_get_reference_image]
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-// [END product_search_import]
 
 /**
  * This application demonstrates how to perform basic operations on Reference Images in Cloud Vision
@@ -44,7 +50,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 public class ReferenceImageManagement {
 
-  // [START product_search_create_reference_image]
+  // [START vision_product_search_create_reference_image]
   /**
    * Create a reference image.
    *
@@ -76,9 +82,9 @@ public class ReferenceImageManagement {
     System.out.println(String.format("Reference image name: %s", image.getName()));
     System.out.println(String.format("Reference image uri: %s", image.getUri()));
   }
-  // [END product_search_create_reference_image]
+  // [END vision_product_search_create_reference_image]
 
-  // [START product_search_list_reference_images]
+  // [START vision_product_search_list_reference_images]
   /**
    * List all images in a product.
    *
@@ -107,9 +113,9 @@ public class ReferenceImageManagement {
               "Reference image bounding polygons: %s \n", image.getBoundingPolysList().toString()));
     }
   }
-  // [END product_search_list_reference_images]
+  // [END vision_product_search_list_reference_images]
 
-  // [START product_search_get_reference_image]
+  // [START vision_product_search_get_reference_image]
   /**
    * Get info about a reference image.
    *
@@ -142,9 +148,9 @@ public class ReferenceImageManagement {
         String.format(
             "Reference image bounding polygons: %s \n", image.getBoundingPolysList().toString()));
   }
-  // [END product_search_get_reference_image]
+  // [END vision_product_search_get_reference_image]
 
-  // [START product_search_delete_reference_image]
+  // [START vision_product_search_delete_reference_image]
   /**
    * Delete a reference image.
    *
@@ -167,7 +173,7 @@ public class ReferenceImageManagement {
     client.deleteReferenceImage(referenceImagePath.toString());
     System.out.println("Reference image deleted from product.");
   }
-  // [END product_search_delete_reference_image]
+  // [END vision_product_search_delete_reference_image]
 
   public static void main(String[] args) throws Exception {
     ReferenceImageManagement referenceImageManagement = new ReferenceImageManagement();
