@@ -291,7 +291,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  // [START vision_logo_detection]
+  // [START vision_label_detection]
   public static void detectLabels(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -320,7 +320,7 @@ public class Detect {
       }
     }
   }
-  // [END vision_logo_detection]
+  // [END vision_label_detection]
 
   /**
    * Detects labels in the specified remote image on Google Cloud Storage.
