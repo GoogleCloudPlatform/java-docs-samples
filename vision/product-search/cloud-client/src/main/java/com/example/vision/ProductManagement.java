@@ -90,6 +90,37 @@ public class ProductManagement {
   }
   // [END vision_product_search_create_product]
 
+  // [START vision_product_search_list_products]
+  /**
+   * List all products.
+   *
+   * @param projectId - Id of the project.
+   * @param computeRegion - Region name.
+   * @throws IOException - on I/O errors.
+   */
+  public static void listProducts(String projectId, String computeRegion) throws IOException {
+    ProductSearchClient client = ProductSearchClient.create();
+
+    // A resource that represents Google Cloud Platform location.
+    LocationName projectLocation = LocationName.of(projectId, computeRegion);
+
+    // List all the products available in the region.
+    for (Product product : client.listProducts(projectLocation).iterateAll()) {
+      // Display the product information
+      System.out.println(String.format("\nProduct name: %s", product.getName()));
+      System.out.println(
+          String.format(
+              "Product id: %s",
+              product.getName().substring(product.getName().lastIndexOf('/') + 1)));
+      System.out.println(String.format("Product display name: %s", product.getDisplayName()));
+      System.out.println(String.format("Product category: %s", product.getProductCategory()));
+      System.out.println("Product labels:");
+      System.out.println(
+          String.format("Product labels: %s", product.getProductLabelsList().toString()));
+    }
+  }
+  // [END vision_product_search_list_products]
+
   // [START vision_product_search_get_product]
   /**
    * Get information about a product.
@@ -233,6 +264,9 @@ public class ProductManagement {
             ns.getString("productCategory"),
             ns.getString("productDescription"),
             ns.getString("productLabels"));
+      }
+      if (ns.get("command").equals("list_products")) {
+        listProducts(projectId, computeRegion);
       }
       if (ns.get("command").equals("get_product")) {
         getProduct(projectId, computeRegion, ns.getString("productId"));

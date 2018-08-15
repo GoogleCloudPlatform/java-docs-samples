@@ -139,34 +139,6 @@ public class ProductSetManagement {
   }
   // [END vision_product_search_get_product_set]
 
-  // [START vision_product_search_add_product_to_product_set]
-  /**
-   * Add a product to a product set.
-   *
-   * @param projectId - Id of the project.
-   * @param computeRegion - Region name.
-   * @param productId - Id of the product.
-   * @param productSetId - Id of the product set.
-   * @throws IOException - on I/O errors.
-   */
-  public static void addProductToSet(
-      String projectId, String computeRegion, String productId, String productSetId)
-      throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
-
-    // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
-
-    // Get the full path of the product.
-    String productPath = ProductName.of(projectId, computeRegion, productId).toString();
-
-    // Add the product to the product set.
-    client.addProductToProductSet(productSetPath, productPath);
-
-    System.out.println(String.format("Product added to product set."));
-  }
-  // [END vision_product_search_add_product_to_product_set]
-
   // [START vision_product_search_delete_product_set]
   /**
    * Delete a product set.
@@ -203,17 +175,10 @@ public class ProductSetManagement {
     createProductSetParser.addArgument("productSetId");
     createProductSetParser.addArgument("productSetDisplayName");
 
-    Subparser addProductParser = subparsers.addParser("add_product_to_product_set");
-    addProductParser.addArgument("productSetId");
-    addProductParser.addArgument("productId");
-
     subparsers.addParser("list_product_sets");
 
     Subparser getProductSetParser = subparsers.addParser("get_product_set");
     getProductSetParser.addArgument("productSetId");
-
-    Subparser listProductsInProductSetParser = subparsers.addParser("list_products_in_product_set");
-    listProductsInProductSetParser.addArgument("productSetId");
 
     Subparser deleteProductSetParser = subparsers.addParser("delete_product_set");
     deleteProductSetParser.addArgument("productSetId");
@@ -236,10 +201,6 @@ public class ProductSetManagement {
       }
       if (ns.get("command").equals("get_product_set")) {
         getProductSet(projectId, computeRegion, ns.getString("productSetId"));
-      }
-      if (ns.get("command").equals("add_product_to_product_set")) {
-        addProductToSet(
-            projectId, computeRegion, ns.getString("productId"), ns.getString("productSetId"));
       }
       if (ns.get("command").equals("delete_product_set")) {
         deleteProductSet(projectId, computeRegion, ns.getString("productSetId"));
