@@ -26,7 +26,7 @@ public class GrantableRolesIT {
 
   @Test
   public void testQuickstart() throws Exception {
-    String project = System.getenv("GOOGLE_PROJECT_ID");
+    String project = System.getenv("GOOGLE_CLOUD_PROJECT");
     String resource = "//cloudresourcemanager.googleapis.com/projects/" + project;
 
     GrantableRoles.main(new String[] {resource});
