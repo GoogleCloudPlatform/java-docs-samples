@@ -29,7 +29,7 @@ public class ServiceAccountsIT {
   @Test
   public void testServiceAccounts() throws Exception {
 
-    String projectId = System.getenv("GCLOUD_PROJECT");
+    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     int rand = new Random().nextInt(1000);
     String name = "java-test-" + rand;
     String email = name + "@" + projectId + ".iam.gserviceaccount.com";
