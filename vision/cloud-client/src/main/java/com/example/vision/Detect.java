@@ -1214,9 +1214,9 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-   // [START vision_fulltext_detection]
-   public static void detectDocumentText(String filePath, PrintStream out) throws Exception,
-      IOException {
+  // [START vision_fulltext_detection]
+  public static void detectDocumentText(String filePath, PrintStream out) throws Exception,
+       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -1279,8 +1279,8 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-   // [START vision_fulltext_detection_gcs]
-   public static void detectDocumentTextGcs(String gcsPath, PrintStream out) throws Exception,
+  // [START vision_fulltext_detection_gcs]
+  public static void detectDocumentTextGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
