@@ -17,10 +17,6 @@
 
 package com.example.vision;
 
-// [START vision_product_search_create_reference_image]
-// [START vision_product_search_delete_reference_image]
-// [START vision_product_search_list_reference_images]
-// [START vision_product_search_get_reference_image]
 import com.google.cloud.vision.v1p3beta1.ProductName;
 import com.google.cloud.vision.v1p3beta1.ProductSearchClient;
 import com.google.cloud.vision.v1p3beta1.ReferenceImage;
@@ -29,10 +25,6 @@ import com.google.cloud.vision.v1p3beta1.ReferenceImageName;
 import java.io.IOException;
 import java.io.PrintStream;
 
-// [END vision_product_search_create_reference_image]
-// [END vision_product_search_delete_reference_image]
-// [END vision_product_search_list_reference_images]
-// [END vision_product_search_get_reference_image]
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;

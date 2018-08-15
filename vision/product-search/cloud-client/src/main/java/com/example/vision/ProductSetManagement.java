@@ -16,11 +16,6 @@
 
 package com.example.vision;
 
-// [START vision_product_search_create_product_set]
-// [START vision_product_search_add_product_to_product_set]
-// [START vision_product_search_delete_product_set]
-// [START vision_product_search_list_product_sets]
-// [START vision_product_search_get_product_set]
 import com.google.cloud.vision.v1p3beta1.CreateProductSetRequest;
 import com.google.cloud.vision.v1p3beta1.LocationName;
 import com.google.cloud.vision.v1p3beta1.Product;
@@ -32,11 +27,6 @@ import com.google.cloud.vision.v1p3beta1.ProductSetName;
 import java.io.IOException;
 import java.io.PrintStream;
 
-// [END vision_product_search_create_product_set]
-// [END vision_product_search_add_product_to_product_set]
-// [END vision_product_search_delete_product_set]
-// [END vision_product_search_list_product_sets]
-// [END vision_product_search_get_product_set]
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;

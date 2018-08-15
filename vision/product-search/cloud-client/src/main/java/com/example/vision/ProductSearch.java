@@ -16,7 +16,6 @@
 
 package com.example.vision;
 
-// [START vision_product_search_get_similar_products]
 import com.google.cloud.vision.v1p3beta1.AnnotateImageRequest;
 import com.google.cloud.vision.v1p3beta1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1p3beta1.Feature;
@@ -36,7 +35,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
-// [END vision_product_search_get_similar_products]
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
