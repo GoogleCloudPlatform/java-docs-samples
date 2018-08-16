@@ -1527,7 +1527,7 @@ public class Detect {
   }
   // [END vision_localize_objects_gcs]
 
-  // [START vision_handwritten_ocr]
+  // [START vision_handwritten_ocr_beta]
   /**
    * Performs handwritten text detection on a local image file.
    *
@@ -1598,9 +1598,9 @@ public class Detect {
       }
     }
   }
-  // [END vision_handwritten_ocr]
+  // [END vision_handwritten_ocr_beta]
 
-  // [START vision_handwritten_ocr_gcs]
+  // [START vision_handwritten_ocr_gcs_beta]
   /**
    * Performs handwritten text detection on a remote image on Google Cloud Storage.
    *
@@ -1672,5 +1672,5 @@ public class Detect {
       }
     }
   }
-  // [END vision_handwritten_ocr_gcs]
+  // [END vision_handwritten_ocr_gcs_beta]
 }
