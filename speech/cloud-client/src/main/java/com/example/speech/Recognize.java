@@ -66,9 +66,10 @@ public class Recognize {
       System.out.printf(
           "\tjava %s \"<command>\" \"<path-to-image>\"\n"
               + "Commands:\n"
-              + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize | wordoffsets\n"
-              + "\t| model-selection | auto-punctuation | stream-punctuation | enhanced-model\n"
-              + "\t| metadata | diarization | multi-channel | multi-language | word-level-conf"
+              + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize \n"
+              + "\t| wordoffsets | model-selection | auto-punctuation | stream-punctuation \n"
+              + "\t| enhanced-model| metadata | diarization | multi-channel | multi-language \n"
+              + "\t | word-level-conf"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -721,13 +722,11 @@ public class Recognize {
   /**
    * Performs microphone streaming speech recognition with a duration of 1 minute.
    *
-   * @throws Exception
    */
   public static void streamingMicRecognize() throws Exception {
     AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
     DataLine.Info targetInfo = new Info(TargetDataLine.class, audioFormat);
     TargetDataLine targetDataLine;
-    int BYTES_PER_BUFFER = 6400; // buffer size in bytes
     int durationMillSec = 60 * 1000; // 60 seconds
     if (!AudioSystem.isLineSupported(targetInfo)) {
       System.out.println("Microphone not supported");
@@ -789,7 +788,7 @@ public class Recognize {
       AudioInputStream audio = new AudioInputStream(targetDataLine);
       while (true) {
         long estimatedTime = System.currentTimeMillis() - startTime;
-        byte[] data = new byte[BYTES_PER_BUFFER];
+        byte[] data = new byte[6400];
         audio.read(data);
         if (estimatedTime > durationMillSec) {
           System.out.println("Stop speaking.");
