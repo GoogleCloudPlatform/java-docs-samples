@@ -586,7 +586,7 @@ public class Recognize {
   }
   // [END speech_sync_recognize_punctuation]
 
-  // [START speech_async_recognize_gcs_punctuation]
+  // [START speech_transcribe_auto_punctuation_beta]
   /**
    * Performs transcription on remote FLAC file and prints the transcription.
    *
@@ -626,7 +626,7 @@ public class Recognize {
       System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
   }
-  // [END speech_async_recognize_gcs_punctuation]
+  // [END speech_transcribe_auto_punctuation_beta]
 
   // [START speech_stream_recognize_punctuation]
   /**
@@ -808,7 +808,7 @@ public class Recognize {
   }
   // [END speech_streaming_mic_recognize]
 
-  // [START speech_transcribe_file_with_enhanced_model]
+  // [START speech_transcribe_enhanced_model_beta]
   /**
    * Transcribe the given audio file using an enhanced model.
    *
@@ -848,7 +848,7 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_file_with_enhanced_model]
+  // [END speech_transcribe_enhanced_model_beta]
 
   // [START speech_transcribe_file_with_metadata]
   /**
