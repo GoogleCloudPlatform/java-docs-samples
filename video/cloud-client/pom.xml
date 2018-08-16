@@ -36,13 +36,11 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
       <version>0.56.0-beta</version>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
