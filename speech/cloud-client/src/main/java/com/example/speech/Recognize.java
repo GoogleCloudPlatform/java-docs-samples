@@ -19,6 +19,9 @@ package com.example.speech;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.ApiStreamObserver;
 import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientStream;
+import com.google.api.gax.rpc.ResponseObserver;
+import com.google.api.gax.rpc.StreamController;
 import com.google.cloud.speech.v1p1beta1.LongRunningRecognizeMetadata;
 import com.google.cloud.speech.v1p1beta1.LongRunningRecognizeResponse;
 import com.google.cloud.speech.v1p1beta1.RecognitionAudio;
@@ -47,6 +50,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.DataLine.Info;
+import javax.sound.sampled.TargetDataLine;
+
 public class Recognize {
 
   /** Run speech recognition tasks. */
@@ -56,7 +66,7 @@ public class Recognize {
       System.out.printf(
           "\tjava %s \"<command>\" \"<path-to-image>\"\n"
               + "Commands:\n"
-              + "\tsyncrecognize | asyncrecognize | streamrecognize | wordoffsets\n"
+              + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize | wordoffsets\n"
               + "\t| model-selection | auto-punctuation | stream-punctuation | enhanced-model\n"
               + "\t| metadata | diarization | multi-channel | multi-language | word-level-conf"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
@@ -88,6 +98,8 @@ public class Recognize {
       }
     } else if (command.equals("streamrecognize")) {
       streamingRecognizeFile(path);
+    } else if (command.equals("micstreamrecognize")) {
+      streamingMicRecognize();
     } else if (command.equals("model-selection")) {
       if (path.startsWith("gs://")) {
         transcribeModelSelectionGcs(path);
@@ -704,6 +716,101 @@ public class Recognize {
   }
   // [END speech_stream_recognize_punctuation]
 
+  // [START speech_streaming_mic_recognize]
+
+  /**
+   * Performs microphone streaming speech recognition with a duration of 1 minute.
+   *
+   * @throws Exception
+   */
+  public static void streamingMicRecognize() throws Exception {
+    AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
+    DataLine.Info targetInfo = new Info(TargetDataLine.class, audioFormat);
+    TargetDataLine targetDataLine;
+    int BYTES_PER_BUFFER = 6400; // buffer size in bytes
+    int durationMillSec = 60 * 1000; // 60 seconds
+    if (!AudioSystem.isLineSupported(targetInfo)) {
+      System.out.println("Microphone not supported");
+      System.exit(0);
+    }
+
+    ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
+    try (SpeechClient client = SpeechClient.create()) {
+
+      responseObserver =
+          new ResponseObserver<StreamingRecognizeResponse>() {
+            ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
+
+            public void onStart(StreamController controller) {}
+
+            public void onResponse(StreamingRecognizeResponse response) {
+              responses.add(response);
+            }
+
+            public void onComplete() {
+              for (StreamingRecognizeResponse response : responses) {
+                StreamingRecognitionResult result = response.getResultsList().get(0);
+                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                System.out.printf("Transcript : %s\n", alternative.getTranscript());
+              }
+            }
+
+            public void onError(Throwable t) {
+              System.out.println(t);
+            }
+          };
+
+      ClientStream<StreamingRecognizeRequest> clientStream =
+          client.streamingRecognizeCallable().splitCall(responseObserver);
+
+      RecognitionConfig recConfig =
+          RecognitionConfig.newBuilder()
+              .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+              .setLanguageCode("en-US")
+              .setSampleRateHertz(16000)
+              .build();
+      StreamingRecognitionConfig config =
+          StreamingRecognitionConfig.newBuilder().setConfig(recConfig).build();
+
+      StreamingRecognizeRequest request =
+          StreamingRecognizeRequest.newBuilder()
+              .setStreamingConfig(config)
+              .build(); // The first request in a streaming call has to be a config
+
+      clientStream.send(request);
+
+      // Get the target data line
+      targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
+      targetDataLine.open(audioFormat);
+      targetDataLine.start();
+      System.out.println("Start speaking");
+      long startTime = System.currentTimeMillis();
+      // Audio Input Stream
+      AudioInputStream audio = new AudioInputStream(targetDataLine);
+      while (true) {
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        byte[] data = new byte[BYTES_PER_BUFFER];
+        audio.read(data);
+        if (estimatedTime > durationMillSec) {
+          System.out.println("Stop speaking.");
+          targetDataLine.stop();
+          targetDataLine.close();
+          break;
+        }
+        request =
+            StreamingRecognizeRequest.newBuilder()
+                .setAudioContent(ByteString.copyFrom(data))
+                .build();
+        clientStream.send(request);
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+    }
+    responseObserver.onComplete();
+  }
+
+  // [END speech_streaming_mic_recognize]
+
   // [START speech_transcribe_file_with_enhanced_model]
   /**
    * Transcribe the given audio file using an enhanced model.
@@ -833,8 +940,9 @@ public class Recognize {
         SpeechRecognitionAlternative alternative = result.getAlternatives(0);
         System.out.format("Transcript : %s\n", alternative.getTranscript());
         // The words array contains the entire transcript up until that point.
-        //Referencing the last spoken word to get the associated Speaker tag
-        System.out.format("Speaker Tag %s: %s\n",
+        // Referencing the last spoken word to get the associated Speaker tag
+        System.out.format(
+            "Speaker Tag %s: %s\n",
             alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag(),
             alternative.getTranscript());
       }
@@ -877,8 +985,9 @@ public class Recognize {
         // use the first (most likely) one here.
         SpeechRecognitionAlternative alternative = result.getAlternatives(0);
         // The words array contains the entire transcript up until that point.
-        //Referencing the last spoken word to get the associated Speaker tag
-        System.out.format("Speaker Tag %s:%s\n",
+        // Referencing the last spoken word to get the associated Speaker tag
+        System.out.format(
+            "Speaker Tag %s:%s\n",
             alternative.getWords((alternative.getWordsCount() - 1)).getSpeakerTag(),
             alternative.getTranscript());
       }
