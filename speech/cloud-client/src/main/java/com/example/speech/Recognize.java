@@ -1171,7 +1171,7 @@ public class Recognize {
   }
   // [END speech_transcribe_multilang_gcs]
 
-  // [START speech_transcribe_word_level_confidence]
+  // [START speech_transcribe_word_level_confidence_beta]
 
   /**
    * Transcribe a local audio file with word level confidence
@@ -1208,9 +1208,9 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_word_level_confidence]
+  // [END speech_transcribe_word_level_confidence_beta]
 
-  // [START speech_transcribe_word_level_confidence_gcs]
+  // [START speech_transcribe_word_level_confidence_gcs_beta]
 
   /**
    * Transcribe a remote audio file with word level confidence
@@ -1253,5 +1253,5 @@ public class Recognize {
           alternative.getWords(0).getWord(), alternative.getWords(0).getConfidence());
     }
   }
-  // [END speech_transcribe_word_level_confidence_gcs]
+  // [END speech_transcribe_word_level_confidence_gcs_beta]
 }
