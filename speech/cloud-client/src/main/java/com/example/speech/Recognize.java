@@ -850,7 +850,7 @@ public class Recognize {
   }
   // [END speech_transcribe_enhanced_model_beta]
 
-  // [START speech_transcribe_file_with_metadata]
+  // [START speech_transcribe_recognition_metadata_beta]
   /**
    * Transcribe the given audio file and include recognition metadata in the request.
    *
@@ -900,7 +900,7 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_file_with_metadata]
+  // [END speech_transcribe_recognition_metadata_beta]
 
   // [START speech_transcribe_diarization]
   /**
