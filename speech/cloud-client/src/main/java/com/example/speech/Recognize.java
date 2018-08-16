@@ -902,7 +902,7 @@ public class Recognize {
   }
   // [END speech_transcribe_recognition_metadata_beta]
 
-  // [START speech_transcribe_diarization]
+  // [START speech_transcribe_diarization_beta]
   /**
    * Transcribe the given audio file using speaker diarization.
    *
@@ -945,9 +945,9 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_diarization]
+  // [END speech_transcribe_diarization_beta]
 
-  // [START speech_transcribe_diarization_gcs]
+  // [START speech_transcribe_diarization_gcs_beta]
   /**
    * Transcribe a remote audio file using speaker diarization.
    *
@@ -991,7 +991,7 @@ public class Recognize {
     }
   }
 
-  // [END speech_transcribe_diarization_gcs]
+  // [END speech_transcribe_diarization_gcs_beta]
 
   // [START speech_transcribe_multichannel]
 
