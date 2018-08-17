@@ -388,6 +388,7 @@ public class Recognize {
   }
   // [END speech_transcribe_async_gcs]
 
+  // [START speech_transcribe_streaming]
   /**
    * Performs streaming speech recognition on raw PCM audio data.
    *
@@ -472,6 +473,7 @@ public class Recognize {
       }
     }
   }
+  // [END speech_transcribe_streaming]
 
   // [START speech_transcribe_model_selection]
   /**
@@ -725,7 +727,7 @@ public class Recognize {
   }
   // [END speech_stream_recognize_punctuation]
 
-  // [START speech_streaming_mic_recognize]
+  // [START speech_transcribe_streaming_mic]
   /** Performs microphone streaming speech recognition with a duration of 1 minute. */
   public static void streamingMicRecognize() throws Exception {
 
@@ -814,7 +816,7 @@ public class Recognize {
     }
     responseObserver.onComplete();
   }
-  // [END speech_streaming_mic_recognize]
+  // [END speech_transcribe_streaming_mic]
 
   // [START speech_transcribe_enhanced_model_beta]
   /**
