@@ -146,6 +146,7 @@ public class Recognize {
     }
   }
 
+  // [START speech_transcribe_sync]
   /**
    * Performs speech recognition on raw PCM audio and prints the transcription.
    *
@@ -178,6 +179,7 @@ public class Recognize {
       }
     }
   }
+  // [END speech_transcribe_sync]
 
   /**
    * Performs sync recognize and prints word time offsets.
@@ -222,6 +224,7 @@ public class Recognize {
     }
   }
 
+  // [START speech_transcribe_sync_gcs]
   /**
    * Performs speech recognition on remote FLAC file and prints the transcription.
    *
@@ -251,6 +254,7 @@ public class Recognize {
       }
     }
   }
+  // [END speech_transcribe_sync_gcs]
 
   /**
    * Performs non-blocking speech recognition on raw PCM audio and prints the transcription. Note
