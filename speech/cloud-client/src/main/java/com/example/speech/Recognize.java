@@ -343,6 +343,7 @@ public class Recognize {
     }
   }
 
+  // [START speech_transcribe_async_gcs]
   /**
    * Performs non-blocking speech recognition on remote FLAC file and prints the transcription.
    *
@@ -379,6 +380,7 @@ public class Recognize {
       }
     }
   }
+  // [END speech_transcribe_async_gcs]
 
   /**
    * Performs streaming speech recognition on raw PCM audio data.
