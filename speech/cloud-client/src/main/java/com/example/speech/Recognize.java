@@ -475,7 +475,7 @@ public class Recognize {
   }
   // [END speech_transcribe_streaming]
 
-  // [START speech_transcribe_model_selection]
+  // [START speech_transcribe_model_selection_beta]
   /**
    * Performs transcription of the given audio file synchronously with the selected model.
    *
@@ -509,10 +509,10 @@ public class Recognize {
       SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
       System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
-    // [END speech_transcribe_model_selection]
+    // [END speech_transcribe_model_selection_beta]
   }
 
-  // [START speech_transcribe_model_selection_gcs]
+  // [START speech_transcribe_model_selection_gcs_beta]
   /**
    * Performs transcription of the remote audio file asynchronously with the selected model.
    *
@@ -553,7 +553,7 @@ public class Recognize {
       SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
       System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
-    // [END speech_transcribe_model_selection_gcs]
+    // [END speech_transcribe_model_selection_gcs_beta]
   }
 
   // [START speech_sync_recognize_punctuation]
