@@ -718,20 +718,8 @@ public class Recognize {
   // [END speech_stream_recognize_punctuation]
 
   // [START speech_streaming_mic_recognize]
-
-  /**
-   * Performs microphone streaming speech recognition with a duration of 1 minute.
-   *
-   */
+  /** Performs microphone streaming speech recognition with a duration of 1 minute. */
   public static void streamingMicRecognize() throws Exception {
-    AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
-    DataLine.Info targetInfo = new Info(TargetDataLine.class, audioFormat);
-    TargetDataLine targetDataLine;
-    int durationMillSec = 60 * 1000; // 60 seconds
-    if (!AudioSystem.isLineSupported(targetInfo)) {
-      System.out.println("Microphone not supported");
-      System.exit(0);
-    }
 
     ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
     try (SpeechClient client = SpeechClient.create()) {
@@ -762,23 +750,35 @@ public class Recognize {
       ClientStream<StreamingRecognizeRequest> clientStream =
           client.streamingRecognizeCallable().splitCall(responseObserver);
 
-      RecognitionConfig recConfig =
+      RecognitionConfig recognitionConfig =
           RecognitionConfig.newBuilder()
               .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
               .setLanguageCode("en-US")
               .setSampleRateHertz(16000)
               .build();
-      StreamingRecognitionConfig config =
-          StreamingRecognitionConfig.newBuilder().setConfig(recConfig).build();
+      StreamingRecognitionConfig streamingRecognitionConfig =
+          StreamingRecognitionConfig.newBuilder().setConfig(recognitionConfig).build();
 
       StreamingRecognizeRequest request =
           StreamingRecognizeRequest.newBuilder()
-              .setStreamingConfig(config)
+              .setStreamingConfig(streamingRecognitionConfig)
               .build(); // The first request in a streaming call has to be a config
 
       clientStream.send(request);
-
-      // Get the target data line
+      // SampleRate:16000Hz, SampleSizeInBits: 16, Number of channels: 1, Signed: true,
+      // bigEndian: false
+      AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
+      DataLine.Info targetInfo =
+          new Info(
+              TargetDataLine.class,
+              audioFormat); // Set the system information to read from the microphone audio stream
+      TargetDataLine targetDataLine;
+      int durationMillSec = 60 * 1000; // 60 seconds
+      if (!AudioSystem.isLineSupported(targetInfo)) {
+        System.out.println("Microphone not supported");
+        System.exit(0);
+      }
+      //Target data line captures the audio stream the microphone produces.
       targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
       targetDataLine.open(audioFormat);
       targetDataLine.start();
@@ -807,7 +807,6 @@ public class Recognize {
     }
     responseObserver.onComplete();
   }
-
   // [END speech_streaming_mic_recognize]
 
   // [START speech_transcribe_file_with_enhanced_model]
