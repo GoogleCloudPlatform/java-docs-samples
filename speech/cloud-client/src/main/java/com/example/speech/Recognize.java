@@ -1001,7 +1001,7 @@ public class Recognize {
 
   // [END speech_transcribe_diarization_gcs_beta]
 
-  // [START speech_transcribe_multichannel]
+  // [START speech_transcribe_multichannel_beta]
 
   /**
    * Transcribe a local audio file with multi-channel recognition
@@ -1040,9 +1040,9 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_multichannel]
+  // [END speech_transcribe_multichannel_beta]
 
-  // [START speech_transcribe_multichannel_gcs]
+  // [START speech_transcribe_multichannel_gcs_beta]
 
   /**
    * Transcribe a remote audio file with multi-channel recognition
@@ -1087,7 +1087,7 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_multichannel_gcs]
+  // [END speech_transcribe_multichannel_gcs_beta]
 
   // [START speech_transcribe_multilang]
 
