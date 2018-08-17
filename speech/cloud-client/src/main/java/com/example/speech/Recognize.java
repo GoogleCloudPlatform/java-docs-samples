@@ -256,6 +256,7 @@ public class Recognize {
   }
   // [END speech_transcribe_sync_gcs]
 
+  // [START speech_transcribe_async]
   /**
    * Performs non-blocking speech recognition on raw PCM audio and prints the transcription. Note
    * that transcription is limited to 60 seconds audio.
@@ -298,6 +299,7 @@ public class Recognize {
       }
     }
   }
+  // [END speech_transcribe_async]
 
   // [START speech_transcribe_async_time_offsets_gcs]
   /**
