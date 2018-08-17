@@ -1089,7 +1089,7 @@ public class Recognize {
   }
   // [END speech_transcribe_multichannel_gcs_beta]
 
-  // [START speech_transcribe_multilang]
+  // [START speech_transcribe_multilanguage_beta]
 
   /**
    * Transcribe a local audio file with multi-language recognition
@@ -1129,9 +1129,9 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_multilang]
+  // [END speech_transcribe_multilanguage_beta]
 
-  // [START speech_transcribe_multilang_gcs]
+  // [START speech_transcribe_multilanguage_gcs_beta]
 
   /**
    * Transcribe a remote audio file with multi-language recognition
@@ -1177,7 +1177,7 @@ public class Recognize {
       }
     }
   }
-  // [END speech_transcribe_multilang_gcs]
+  // [END speech_transcribe_multilanguage_gcs_beta]
 
   // [START speech_transcribe_word_level_confidence_beta]
 
