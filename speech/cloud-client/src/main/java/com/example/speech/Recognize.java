@@ -772,14 +772,13 @@ public class Recognize {
           new Info(
               TargetDataLine.class,
               audioFormat); // Set the system information to read from the microphone audio stream
-      TargetDataLine targetDataLine;
-      int durationMillSec = 60 * 1000; // 60 seconds
+
       if (!AudioSystem.isLineSupported(targetInfo)) {
         System.out.println("Microphone not supported");
         System.exit(0);
       }
-      //Target data line captures the audio stream the microphone produces.
-      targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
+      // Target data line captures the audio stream the microphone produces.
+      TargetDataLine targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
       targetDataLine.open(audioFormat);
       targetDataLine.start();
       System.out.println("Start speaking");
@@ -790,7 +789,7 @@ public class Recognize {
         long estimatedTime = System.currentTimeMillis() - startTime;
         byte[] data = new byte[6400];
         audio.read(data);
-        if (estimatedTime > durationMillSec) {
+        if (estimatedTime > 60000) { // 60 seconds
           System.out.println("Stop speaking.");
           targetDataLine.stop();
           targetDataLine.close();
