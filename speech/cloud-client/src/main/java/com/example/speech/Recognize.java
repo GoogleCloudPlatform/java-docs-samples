@@ -295,6 +295,7 @@ public class Recognize {
     }
   }
 
+  // [START speech_transcribe_async_time_offsets_gcs]
   /**
    * Performs non-blocking speech recognition on remote FLAC file and prints the transcription as
    * well as word time offsets.
@@ -342,6 +343,7 @@ public class Recognize {
       }
     }
   }
+  // [END speech_transcribe_async_time_offsets_gcs]
 
   // [START speech_transcribe_async_gcs]
   /**
