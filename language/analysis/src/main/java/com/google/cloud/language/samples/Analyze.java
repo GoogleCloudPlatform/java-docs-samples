@@ -303,7 +303,7 @@ public class Analyze {
    * Detects categories in text using the Language Beta API.
    */
   public static void classifyText(String text) throws Exception {
-    // [START classify_text]
+    // [START language_classify_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set content to the text string
@@ -322,14 +322,14 @@ public class Analyze {
             category.getName(), category.getConfidence());
       }
     }
-    // [END classify_text]
+    // [END language_classify_text]
   }
 
   /**
    * Detects categories in a GCS hosted file using the Language Beta API.
    */
   public static void classifyFile(String gcsUri) throws Exception {
-    // [START classify_file]
+    // [START language_classify_file_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS content URI path
@@ -348,7 +348,7 @@ public class Analyze {
             category.getName(), category.getConfidence());
       }
     }
-    // [END classify_file]
+    // [END language_classify_file_gcs]
   }
 
   /**
