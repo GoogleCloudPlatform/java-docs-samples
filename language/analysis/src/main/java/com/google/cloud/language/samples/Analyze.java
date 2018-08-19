@@ -168,7 +168,7 @@ public class Analyze {
    * Identifies the sentiment in the string {@code text}.
    */
   public static Sentiment analyzeSentimentText(String text) throws Exception {
-    // [START analyze_sentiment_text]
+    // [START language_sentiment_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -185,14 +185,14 @@ public class Analyze {
       }
       return sentiment;
     }
-    // [END analyze_sentiment_text]
+    // [END language_sentiment_text]
   }
 
   /**
    * Gets {@link Sentiment} from the contents of the GCS hosted file.
    */
   public static Sentiment analyzeSentimentFile(String gcsUri) throws Exception {
-    // [START analyze_sentiment_file]
+    // [START language_sentiment_file_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -209,7 +209,7 @@ public class Analyze {
       }
       return sentiment;
     }
-    // [END analyze_sentiment_file]
+    // [END language_sentiment_file_gcs]
   }
 
   /**
