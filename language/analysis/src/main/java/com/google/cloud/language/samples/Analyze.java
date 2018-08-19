@@ -216,7 +216,7 @@ public class Analyze {
    * from the string {@code text}.
    */
   public static List<Token> analyzeSyntaxText(String text) throws Exception {
-    // [START analyze_syntax_text]
+    // [START language_syntax_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -252,14 +252,14 @@ public class Analyze {
       }
       return response.getTokensList();
     }
-    // [END analyze_syntax_text]
+    // [END language_syntax_text]
   }
 
   /**
    * Get the syntax of the GCS hosted file.
    */
   public static List<Token> analyzeSyntaxFile(String gcsUri) throws Exception {
-    // [START analyze_syntax_file]
+    // [START language_syntax_file_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -296,7 +296,7 @@ public class Analyze {
 
       return response.getTokensList();
     }
-    // [END analyze_syntax_file]
+    // [END language_syntax_file_gcs]
   }
 
   /**
