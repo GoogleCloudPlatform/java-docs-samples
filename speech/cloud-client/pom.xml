@@ -36,13 +36,13 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START speech_quickstart_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
       <version>0.56.0-beta</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END speech_quickstart_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
