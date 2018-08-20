@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START simple_request_example]
+// [START gae_java_request_example]
 public class RequestsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -29,5 +29,4 @@ public class RequestsServlet extends HttpServlet {
     resp.getWriter().println("Hello, world");
   }
 }
-// [END simple_request_example]
-
+// [END gae_java_request_example]

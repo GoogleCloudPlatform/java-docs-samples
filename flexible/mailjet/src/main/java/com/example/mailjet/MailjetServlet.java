@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START mailjet_imports]
+// [START gae_flex_mailjet_config]
 
 package com.example.mailjet;
 
@@ -34,9 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-// [END mailjet_imports]
+// [END gae_flex_mailjet_config]
 
-// [START app]
+// [START gae_flex_mailjet_send_message]
 @SuppressWarnings("serial")
 @WebServlet(name = "mailjet", value = "/send/email")
 public class MailjetServlet extends HttpServlet {
@@ -80,4 +80,4 @@ public class MailjetServlet extends HttpServlet {
     }
   }
 }
-// [END app]
+// [END gae_flex_mailjet_send_message]
