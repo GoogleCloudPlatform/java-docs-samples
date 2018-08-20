@@ -30,7 +30,7 @@
     <version>1.0.9</version>
   </parent>
 
-<!-- [START properties] -->
+<!-- [START gae_flex_mysql_properties] -->
   <properties>
 <!--
     INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
@@ -50,7 +50,7 @@
 <!-- [END_EXCLUDE] -->
     <sqlURL>jdbc:mysql://google/${database}?cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}&amp;useSSL=false</sqlURL>
   </properties>
-<!-- [END properties] -->
+<!-- [END gae_flex_mysql_properties] -->
 
   <dependencies>
     <dependency>
@@ -75,7 +75,7 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
+    <!-- [START gae_flex_mysql_dependencies] -->
     <dependency>                        <!-- http://dev.mysql.com/doc/connector-j/en/ -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -86,17 +86,17 @@
       <artifactId>mysql-socket-factory-connector-j-6</artifactId>
       <version>1.0.10</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_flex_mysql_dependencies] -->
   </dependencies>
   <build>
-    <!-- [START resources] -->
+    <!-- [START gae_flex_mysql_resources] -->
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
-    <!-- [END resources] -->
+    <!-- [END gae_flex_mysql_resources] -->
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>

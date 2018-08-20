@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START simple_request_example]
+// [START gae_java8_request_example]
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "requests", description = "Requests: Trivial request", urlPatterns = "/requests")
 public class RequestsServlet extends HttpServlet {
@@ -32,4 +32,4 @@ public class RequestsServlet extends HttpServlet {
     resp.getWriter().println("Hello, world");
   }
 }
-// [END simple_request_example]
+// [END gae_java8_request_example]
