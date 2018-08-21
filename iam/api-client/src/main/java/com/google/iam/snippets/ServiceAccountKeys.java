@@ -87,7 +87,7 @@ public class ServiceAccountKeys {
 
     service.projects().serviceAccounts().keys().delete(fullKeyName).execute();
 
-    System.out.println("Deleted key account: " + fullKeyName);
+    System.out.println("Deleted key: " + fullKeyName);
   }
   // [END iam_delete_key]
 }

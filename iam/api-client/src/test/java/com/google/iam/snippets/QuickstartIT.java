@@ -16,6 +16,11 @@
 
 package com.google.iam.snippets;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -24,8 +29,21 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartIT {
 
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
+
   @Test
   public void testQuickstart() throws Exception {
     Quickstart.main(new String[0]);
+
+    String got = bout.toString();
+    assertTrue(got.contains("Title"));
   }
 }
