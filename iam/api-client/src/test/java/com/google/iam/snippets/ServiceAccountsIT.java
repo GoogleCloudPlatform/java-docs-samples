@@ -55,12 +55,12 @@ public class ServiceAccountsIT {
     ServiceAccountKeys sak = new ServiceAccountKeys();
 
     ServiceAccount account = sa.createServiceAccount(projectId, name, "Java Demo");
-    assertTrue(account.getEmail() == email);
+    assertTrue(account.getDisplayName().equals("Java Demo"));
 
     sa.listServiceAccounts(projectId);
     
     account = sa.renameServiceAccount(email, "Java Demo (Updated!)");
-    assertTrue(account.getDisplayName() == "Java Demo (Updated!)");
+    assertTrue(account.getDisplayName().equals("Java Demo (Updated!)"));
 
     ServiceAccountKey key = sak.createKey(email);
     String got = bout.toString();
