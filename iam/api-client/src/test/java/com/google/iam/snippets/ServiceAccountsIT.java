@@ -1,5 +1,4 @@
-/*
- * Copyright 2018 Google 
+/* Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +51,6 @@ public class ServiceAccountsIT {
 
     ServiceAccounts sa = new ServiceAccounts();
 
-    ServiceAccountKeys sak = new ServiceAccountKeys();
-
     ServiceAccount account = sa.createServiceAccount(projectId, name, "Java Demo");
     assertTrue(account.getDisplayName().equals("Java Demo"));
 
@@ -62,7 +59,9 @@ public class ServiceAccountsIT {
     account = sa.renameServiceAccount(email, "Java Demo (Updated!)");
     assertTrue(account.getDisplayName().equals("Java Demo (Updated!)"));
 
-    ServiceAccountKey key = sak.createKey(email);
+    ServiceAccountKeys sak = new ServiceAccountKeys();
+
+    final ServiceAccountKey key = sak.createKey(email);
     String got = bout.toString();
     assertTrue(got.contains("Created key:"));
 
