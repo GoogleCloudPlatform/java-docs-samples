@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2018 Google 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,14 @@
 
 package com.google.iam.snippets;
 
+import static org.junit.Assert.assertTrue;
+
+import com.google.api.services.iam.v1.model.ServiceAccount;
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Random;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -25,6 +31,16 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ServiceAccountsIT {
+
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
 
   @Test
   public void testServiceAccounts() throws Exception {
@@ -35,16 +51,31 @@ public class ServiceAccountsIT {
     String email = name + "@" + projectId + ".iam.gserviceaccount.com";
 
     ServiceAccounts sa = new ServiceAccounts();
+
     ServiceAccountKeys sak = new ServiceAccountKeys();
 
-    sa.createServiceAccount(projectId, name, "Java Demo");
+    ServiceAccount account = sa.createServiceAccount(projectId, name, "Java Demo");
+    assertTrue(account.getEmail() == email);
+
     sa.listServiceAccounts(projectId);
-    sa.renameServiceAccount(email, "Java Demo (Updated!)");
+    
+    account = sa.renameServiceAccount(email, "Java Demo (Updated!)");
+    assertTrue(account.getDisplayName() == "Java Demo (Updated!)");
 
     ServiceAccountKey key = sak.createKey(email);
+    String got = bout.toString();
+    assertTrue(got.contains("Created key:"));
+
     sak.listKeys(email);
+    got = bout.toString();
+    assertTrue(got.contains("Key:"));
+
     sak.deleteKey(key.getName());
+    got = bout.toString();
+    assertTrue(got.contains("Deleted key:"));
 
     sa.deleteServiceAccount(email);
+    got = bout.toString();
+    assertTrue(got.contains("Deleted service account:"));
   }
 }

@@ -47,47 +47,55 @@ public class ServiceAccounts {
   }
 
   // [START iam_create_service_account]
-  public void createServiceAccount(String projectId, String name, String displayName)
+  public ServiceAccount createServiceAccount(String projectId, String name, String displayName)
       throws IOException {
 
-    ServiceAccount account = new ServiceAccount();
-    account.setDisplayName(displayName);
+    ServiceAccount serviceAccount = new ServiceAccount();
+    serviceAccount.setDisplayName(displayName);
     CreateServiceAccountRequest request = new CreateServiceAccountRequest();
     request.setAccountId(name);
-    request.setServiceAccount(account);
+    request.setServiceAccount(serviceAccount);
 
-    account =
+    serviceAccount =
         service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
 
-    System.out.println("Created service account: " + account.getEmail());
+    System.out.println("Created service account: " + serviceAccount.getEmail());
+    return serviceAccount;
   }
   // [END iam_create_service_account]
 
   // [START iam_list_service_accounts]
-  public void listServiceAccounts(String projectId) throws IOException {
+  public List<ServiceAccount> listServiceAccounts(String projectId) throws IOException {
 
     ListServiceAccountsResponse response =
         service.projects().serviceAccounts().list("projects/" + projectId).execute();
     List<ServiceAccount> serviceAccounts = response.getAccounts();
 
     for (ServiceAccount account : serviceAccounts) {
-      System.out.println(account.getEmail());
+      System.out.println("Name: " + account.getName());
+      System.out.println("Display Name: " + account.getDisplayName());
+      System.out.println("Email: " + account.getEmail());
+      System.out.println();
     }
+    return serviceAccounts;
   }
   // [END iam_list_service_accounts]
 
   // [START iam_rename_service_account]
-  public void renameServiceAccount(String email, String newDisplayName) throws IOException {
+  public ServiceAccount renameServiceAccount(String email, String newDisplayName)
+      throws IOException {
 
     // First, get a service account using List() or Get()
-    ServiceAccount account =
+    ServiceAccount serviceAccount =
         service.projects().serviceAccounts().get("projects/-/serviceAccounts/" + email).execute();
 
     // Then you can update the display name
-    account.setDisplayName(newDisplayName);
-    service.projects().serviceAccounts().update(account.getName(), account).execute();
+    serviceAccount.setDisplayName(newDisplayName);
+    service.projects().serviceAccounts().update(serviceAccount.getName(), serviceAccount).execute();
 
-    System.out.println("Updated display name for " + account.getName() + " to: " + newDisplayName);
+    System.out.println(
+        "Updated display name for " + serviceAccount.getName() + " to: " + newDisplayName);
+    return serviceAccount;
   }
   // [END iam_rename_service_account]
 
