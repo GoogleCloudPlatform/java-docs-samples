@@ -48,13 +48,13 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
+    <!-- [START gae_flex_sendgrid_dependencies] -->
     <dependency>
       <groupId>com.sendgrid</groupId>
       <artifactId>sendgrid-java</artifactId>
       <version>2.2.2</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_flex_sendgrid_dependencies] -->
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->

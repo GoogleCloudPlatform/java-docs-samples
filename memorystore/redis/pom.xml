@@ -37,7 +37,6 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
-  <!-- [START memorystore_dependencies] -->
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -46,13 +45,14 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
+    <!-- [START memorystore_dependencies] -->
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
       <version>2.9.0</version>
     </dependency>
+    <!-- [END memorystore_dependencies] -->
   </dependencies>
-  <!-- [END memorystore_dependencies] -->
 
   <build>
     <!-- for hot reload of the web application -->

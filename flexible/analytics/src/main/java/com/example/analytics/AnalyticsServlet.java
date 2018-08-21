@@ -29,7 +29,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-// [START example]
+// [START gae_flex_analytics_track_event]
 @SuppressWarnings("serial")
 @WebServlet(name = "analytics", value = "")
 public class AnalyticsServlet extends HttpServlet {
@@ -63,4 +63,4 @@ public class AnalyticsServlet extends HttpServlet {
     resp.getWriter().println("Event tracked.");
   }
 }
-// [END example]
+// [END gae_flex_analytics_track_event]
