@@ -82,7 +82,10 @@ public class Asymmetric {
   // [END kms_get_asymmetric_public]
 
   // [START kms_decrypt_rsa]
-  /** Decrypt a given ciphertext using an RSA private key stored on Cloud KMS */
+  /**
+   * Decrypt a given ciphertext using an 'RSA_DECRYPT_OAEP_2048_SHA256' private key 
+   * stored on Cloud KMS
+   */
   public static String decryptRSA(String ciphertext, CloudKMS client, String keyPath) 
       throws IOException {
     AsymmetricDecryptRequest request = new AsymmetricDecryptRequest().setCiphertext(ciphertext);
@@ -98,7 +101,10 @@ public class Asymmetric {
   // [END kms_decrypt_rsa]
 
   // [START kms_encrypt_rsa]
-  /** Encrypt message locally using an RSA public key retrieved from Cloud KMS */
+  /**
+   * Encrypt message locally using an 'RSA_DECRYPT_OAEP_2048_SHA256' public key 
+   * retrieved from Cloud KMS 
+   */
   public static String encryptRSA(String message, CloudKMS client, String keyPath)
       throws IOException, IllegalBlockSizeException, NoSuchPaddingException,
              InvalidKeySpecException, NoSuchProviderException, BadPaddingException,
@@ -119,6 +125,8 @@ public class Asymmetric {
       throws IOException, NoSuchAlgorithmException {
     byte[] msgBytes = message.getBytes(StandardCharsets.UTF_8);
     Digest digest = new Digest();
+    // Note: some key algorithms will require a different hash function
+    // For example, EC_SIGN_P384_SHA384 requires SHA-384
     digest.encodeSha256(MessageDigest.getInstance("SHA-256").digest(msgBytes));
 
     AsymmetricSignRequest signRequest = new AsymmetricSignRequest();
@@ -157,7 +165,7 @@ public class Asymmetric {
 
   // [START kms_verify_signature_ec]
   /** 
-   * Verify the validity of an 'EC_SIGN_P224_SHA256' signature for the 
+   * Verify the validity of an 'EC_SIGN_P256_SHA256' signature for the 
    * specified plaintext message
    */
   public static boolean verifySignatureEC(String signature, String message, CloudKMS client, 

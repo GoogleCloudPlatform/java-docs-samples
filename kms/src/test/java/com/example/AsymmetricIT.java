@@ -109,7 +109,7 @@ public class AsymmetricIT {
 
     boolean s1 = createKeyHelper(rsaDecryptId, "ASYMMETRIC_DECRYPT","RSA_DECRYPT_OAEP_2048_SHA256");
     boolean s2 = createKeyHelper(rsaSignId, "ASYMMETRIC_SIGN", "RSA_SIGN_PSS_2048_SHA256");
-    boolean s3 = createKeyHelper(ecSignId, "ASYMMETRIC_SIGN", "EC_SIGN_P224_SHA256");
+    boolean s3 = createKeyHelper(ecSignId, "ASYMMETRIC_SIGN", "EC_SIGN_P256_SHA256");
     if (s1 || s2 || s3) {
       // leave time for keys to initialize
       Thread.sleep(20000);
