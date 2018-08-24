@@ -44,13 +44,11 @@ limitations under the License.
 
   <dependencies>
     <!-- Compile/runtime dependencies -->
-    <!-- [START endpoints-frameworks] -->
     <dependency>
       <groupId>com.google.endpoints</groupId>
       <artifactId>endpoints-framework</artifactId>
       <version>2.1.2</version>
     </dependency>
-    <!-- [END endpoints-frameworks] -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
@@ -74,7 +72,6 @@ limitations under the License.
     <!-- for hot reload of the web application-->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-        <!-- [START appengine-plugin] -->
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>appengine-maven-plugin</artifactId>
@@ -83,8 +80,6 @@ limitations under the License.
               <!-- deploy configuration -->
           </configuration>
         </plugin>
-        <!-- [END appengine-plugin] -->
-        <!-- [START endpoints-frameworks-plugin] -->
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>endpoints-framework-maven-plugin</artifactId>
@@ -94,7 +89,6 @@ limitations under the License.
               <hostname>YOUR-PROJECT-ID.appspot.com</hostname>
           </configuration>
         </plugin>
-        <!-- [END endpoints-frameworks-plugin] -->
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>versions-maven-plugin</artifactId>

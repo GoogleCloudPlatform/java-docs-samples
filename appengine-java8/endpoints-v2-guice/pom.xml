@@ -110,7 +110,6 @@
                     <!-- deploy configuration -->
                 </configuration>
             </plugin>
-            <!-- [START endpoints_plugin] -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
@@ -123,7 +122,6 @@
                     </serviceClasses>
                 </configuration>
             </plugin>
-            <!-- [START endpoints_plugin] -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
