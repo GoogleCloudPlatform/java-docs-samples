@@ -19,33 +19,26 @@ and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to th
 This project uses the [Assembly Plugin](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html) to build an uber jar.
 Run:
 ```
-   mvn clean package
+   mvn clean package -DskipTests
 ```
 
 ## Retrieve InfoTypes
 An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories) represents an element of sensitive data.
 
-[Info types](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current 
-info types for a given category. eg. HEALTH or GOVERNMENT.
+[InfoTypes](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current InfoTypes.
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata -category GOVERNMENT
+    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
   ``` 
-
-## Retrieve Categories
-[Categories](https://cloud.google.com/dlp/docs/infotypes-categories) provide a way to easily access a group of related InfoTypes.
-```
-  java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
-``` 
 
 ## Run the quickstart
 
 The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
 ```
-   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.QuickStart
+   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.QuickStart
 ```
 
 ## Inspect data for sensitive elements
-Inspect strings, files locally and on Google Cloud Storage and Cloud Datastore kinds with the DLP API.
+Inspect strings, files locally and on Google Cloud Storage, Cloud Datastore, and BigQuery with the DLP API.
 
 Note: image scanning is not currently supported on Google Cloud Storage.
 For more information, refer to the [API documentation](https://cloud.google.com/dlp/docs). 
@@ -73,21 +66,21 @@ Options:
 ### Examples
  - Inspect a string:
    ```
-   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" --infoTypes PHONE_NUMBER EMAIL_ADDRESS
-   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" -customDictionaries me@somedomain.com -customRegexes "\(\d{3}\) \d{3}-\d{4}"
+   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" -customDictionaries me@somedomain.com -customRegexes "\(\d{3}\) \d{3}-\d{4}"
    ```
  - Inspect a local file (text / image):
    ```
-     java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.txt --infoTypes PHONE_NUMBER EMAIL_ADDRESS
-     java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.png --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+     java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.txt --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+     java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.png --infoTypes PHONE_NUMBER EMAIL_ADDRESS
    ```
 - Inspect a file on Google Cloud Storage:
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -gcs -bucketName my-bucket -fileName my-file.txt --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -gcs -bucketName my-bucket -fileName my-file.txt --infoTypes PHONE_NUMBER EMAIL_ADDRESS
   ```
 - Inspect a Google Cloud Datastore kind:
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -ds -kind my-kind --infoTypes PHONE_NUMBER EMAIL_ADDRESS
+    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -ds -kind my-kind --infoTypes PHONE_NUMBER EMAIL_ADDRESS
   ```
 
 ## Automatic redaction of sensitive data from images
@@ -109,7 +102,7 @@ Commands:
 ### Example
 - Redact phone numbers and email addresses from `test.png`:
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -f src/test/resources/test.png -o test-redacted.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
+    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -f src/test/resources/test.png -o test-redacted.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
   ```
 
 ## Integration tests

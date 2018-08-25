@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
 public class DatasetApiIT {
 
   private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String BUCKET = PROJECT_ID + "-vcm";
+  private static final String BUCKET = PROJECT_ID + "-lcm";
   private static final String COMPUTE_REGION = "us-central1";
   private static final String DATASET_NAME = "test_language_dataset";
   private ByteArrayOutputStream bout;

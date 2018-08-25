@@ -92,6 +92,11 @@ Performing streaming speech transcription and punctuation on an audio file
 mvn exec:java -DRecognize -Dexec.args="stream-punctuation ./resources/audio.raw"
 ```
 
+Perform microphone streaming speech recognition
+```
+mvn exec:java -DRecognize -Dexec.args="micstreamrecognize"
+```
+
 ## Enhanced Model
 Transcribe an audio file using an enhanced model
 ```

@@ -131,14 +131,14 @@ public class ModelApi {
     LocationName projectLocation = LocationName.of(projectId, computeRegion);
 
     // Create list models request.
-    ListModelsRequest listModlesRequest =
+    ListModelsRequest listModelsRequest =
         ListModelsRequest.newBuilder()
             .setParent(projectLocation.toString())
             .setFilter(filter)
             .build();
 
     System.out.println("List of models:");
-    for (Model model : client.listModels(listModlesRequest).iterateAll()) {
+    for (Model model : client.listModels(listModelsRequest).iterateAll()) {
       // Display the model information.
       System.out.println(String.format("Model name: %s", model.getName()));
       System.out.println(

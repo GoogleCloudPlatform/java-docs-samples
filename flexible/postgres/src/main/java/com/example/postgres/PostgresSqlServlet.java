@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_postgres_app]
 @SuppressWarnings("serial")
 @WebServlet(name = "postgresql", value = "")
 public class PostgresSqlServlet extends HttpServlet {
@@ -124,4 +124,4 @@ public class PostgresSqlServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_flex_postgres_app]

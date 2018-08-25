@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.vision</groupId>
+  <groupId>com.example.vision.samples.automl</groupId>
   <artifactId>vision-automl</artifactId>
   <packaging>jar</packaging>
 
