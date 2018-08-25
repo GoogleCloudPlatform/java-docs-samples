@@ -43,6 +43,9 @@ import java.util.Collections;
  */
 public final class CommuteSearchSample {
 
+  private static final String DEFAULT_PROJECT_ID =
+      "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
+
   private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
 
   // [START commute_search]

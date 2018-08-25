@@ -102,8 +102,9 @@ public class SampleTests {
   @Test
   public void commuteSearchSampleTest() throws Exception {
     CommuteSearchSample.main();
-    assertThat(bout.toString())
-        .containsMatch(".*appliedCommuteFilter.*1600 Amphitheatre Pkwy.*");
+    String result = bout.toString();
+    assertThat(result).containsMatch(".*matchingJobs.*commuteInfo.*");
+    assertThat(result).containsMatch(".*matchingJobs.*1600 Amphitheatre Pkwy.*");
     bout.reset();
   }
 
@@ -167,11 +168,11 @@ public class SampleTests {
   public void locationSearchSampleTest() throws Exception {
     LocationSearchSample.main();
     assertThat(bout.toString()).containsMatch(
-        ".*appliedJobLocationFilters.*matchingJobs.*\n"
-            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
-            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
-            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
-            + ".*appliedJobLocationFilters.*matchingJobs.*\n"
+        ".*locationFilters.*matchingJobs.*\n"
+            + ".*locationFilters.*matchingJobs.*\n"
+            + ".*locationFilters.*matchingJobs.*\n"
+            + ".*locationFilters.*matchingJobs.*\n"
+            + ".*locationFilters.*matchingJobs.*\n"
     );
     bout.reset();
   }

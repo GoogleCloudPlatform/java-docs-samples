@@ -39,6 +39,9 @@ import java.util.Collections;
  */
 public final class AutoCompleteSample {
 
+  private static final String DEFAULT_PROJECT_ID =
+      "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
+
   private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
 
   //[START auto_complete_job_title]

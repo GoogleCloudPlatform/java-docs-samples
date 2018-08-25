@@ -1,0 +1,633 @@
+# Global METADATA Presubmit checks for "//depot/google3/..."
+#
+# For existing checks, please contact the owning team for changes.  If there's
+# not an owning team explicitly marked, contact piper-team@google.com.
+#
+# Presubmits should generally fall into one of two categories:
+#
+# 1) Short-lived presubmits (weeks) in support of a Large Scale Change
+#    (http://go/lsc).  This can help to prevent regressions during a cleanup
+#    for cleanups of highly referenced code, where regressions happen hourly.
+#
+#    * The LSC doc and target end date should be noted in comments in this file.
+#
+# 2) Permanent presubmits that offer significant, company-wide value which
+#    cannot be achieved through other means (e.g., Tricorder warnings or code
+#    refactoring).  These will be allowed on a case-by-case basis; to justify a
+#    permanent presubmit, please:
+#
+#    * Provide cost-benefit arguments for the change.  Consider the risk of
+#      false positives, which have disproportionate expense as compared to the
+#      benefit of adding a softer Tricorder warning.
+#
+#    * List alternative approaches that you've considered, and why they weren't
+#      used.  If an alternative approach exists it'll usually be preferred,
+#      because presubmits must be run by every engineer.
+#
+#    * If this is banning a coding pattern, explain why the coding pattern
+#      cannot be prevented by any other means (eg, improving libraries).
+#
+# Long-running presubmits are not allowed, since there is no easy way to
+# opt-out. This includes CheckTests, CheckGuitar and presubmit services with
+# long deadline. Ideally each presubmit shouldn't take more than 1s on average.
+#
+# Before adding a presubmit here you should test it on a smaller subset of the
+# depot, for example in one or two top-level google3/ subdirectories. Let it
+# run there for a week to see how many false positives are produced before and
+# how reliable it is.
+#
+# The CL and any necessary explanation should be mailed to piper-team@google.com
+
+presubmit: {
+  path_expression: "//depot/google3/METADATA"
+  include_presubmit: "//depot/google3/devtools/piper/METADATA"
+}
+
+# Checks for BUILD and WORKSPACE naming and syntax validations.
+presubmit: {
+  path_expression: "//depot/google3/....bzl"
+  path_expression: "//depot/google3/.../BUILD"
+  path_expression: "//depot/google3/BUILD"
+  path_expression: "//depot/google3/WORKSPACE"
+  include_presubmit: "//depot/google3/devtools/blaze/METADATA_GLOBAL"
+}
+
+# Checks for disallowed use of Boost libraries in C++ code.
+presubmit: {
+  path_regexp: ".*\\.(?:cc|h)"
+  path_expression_exclusion: "googleclient/..."
+  path_expression_exclusion: "googlemac/..."
+  check_boost: {
+    base: { id: "CheckBoost" }
+    failure_status: ERROR
+  }
+}
+
+# Checks that Go files have been formatted with "gofmt".
+presubmit: {
+  path_expression: "....go"
+  path_expression_exclusion: "//depot/google3/third_party/..."
+  check_presubmit_service: {
+    base: { id: "CheckGoFormat" }
+    address: "blade:fmtserver-presubmit"
+    options: "Go"
+    failure_status: ERROR
+  }
+}
+
+# Checks that Go BUILD rules are managed by "glaze".
+presubmit: {
+  path_expression: ".../BUILD"
+  path_expression: "....go"
+  check_presubmit_service: {
+    base: { id: "CheckGlaze" }
+    address: "blade:fmtserver-presubmit"
+    options: "Glaze"
+    failure_status: ERROR
+  }
+}
+
+# Checks that Dart files have been formatted with "dartfmt".
+presubmit: {
+  path_expression: "....dart"
+  path_expression_exclusion: "//depot/google3/third_party/..."
+  path_expression_exclusion: "//depot/google3/dart/flutter/samples/..."
+  check_presubmit_service: {
+    base: { id: "CheckDartFormat" }
+    address: "blade:fmtserver-presubmit"
+    options: "Dart"
+    failure_status: ERROR
+  }
+}
+
+# Checks that TypeScript files have been formatted with clang-format.
+presubmit: {
+  path_expression: "....ts"
+  path_expression_exclusion: "//depot/google3/third_party/..."
+
+  # Note: the ".ts" extension in google3 is also used by MPEG transport stream
+  # files, but clang-format specially recognizes and avoids those.
+
+  check_presubmit_service: {
+    base: { id: "CheckTypeScriptFormat" }
+    address: "blade:cxx-format"
+    failure_status: ERROR
+  }
+}
+
+# Checks that METADATA files have been formatted with "txtpbfmt".
+presubmit: {
+  path_expression: "//depot/google3/.../METADATA"
+  path_expression: "//depot/google3/METADATA"
+  path_expression: "//depot/google3/....METADATA"
+  path_expression: "//depot/google3/.../METADATA.*"
+  path_expression: "//depot/google3/METADATA.*"
+  path_expression: "//depot/google3/..._METADATA"
+  path_expression: "//depot/google3/.../METADATA_*"
+  path_expression: "//depot/google3/METADATA_*"
+  path_expression_exclusion: "//depot/google3/.../METADATA.tmpl"
+
+  check_presubmit_service: {
+    base: {
+      id: "CheckMETADATAFormat"
+      # Disable only for CLs that edit too many files.
+      disable_tags: "DISABLE_CHECK_METADATA_FORMAT"
+      disable_tags: "DISABLE_CHECK_TEXT_PROTO_FORMAT"
+    }
+    address: "blade:fmtserver-presubmit"
+    options: "TextProto"
+    failure_status: ERROR
+  }
+}
+
+presubmit: {
+  path_expression: ".../OWNERS"
+  path_expression_exclusion: "java/.../OWNERS"
+  path_expression_exclusion: "javatests/.../OWNERS"
+  # experimental is not covered by the large scale change process.
+  path_expression_exclusion: "experimental/.../OWNERS"
+  check_contents {
+    base { id: "CheckSetNoParent" }
+    failure_status: ERROR
+    match_entire_file: true
+    prohibited_regexp: "(?m)^set noparent"
+    suppression_regexp:
+      "(?m)(^file://depot/google3/OWNERS)|"
+      "(^set noparent\\s+# go/lsc intentionally unsupported.\\s*$)"
+    failure_message:
+      "You're using 'set noparent'. You must either:\n"
+      "  A. explicitly include global OWNERS for go/lsc:\n"
+      "      file://depot/google3/OWNERS\n"
+      "      set noparent\n"
+      "  B. explicitly document your intent (copy and paste exactly):\n"
+      "      set noparent # go/lsc intentionally unsupported.\n"
+      "For more information, please see go/owners#noparent."
+  }
+}
+
+presubmit: {
+  path_expression: "java/.../OWNERS"
+  path_expression: "javatests/.../OWNERS"
+  check_contents {
+    base { id: "CheckSetNoParentJava" }
+    failure_status: ERROR
+    match_entire_file: true
+    prohibited_regexp: "(?m)^set noparent"
+    suppression_regexp:
+      "(?m)(^file://depot/google3/java/OWNERS)|"
+      "(^set noparent\\s+# go/lsc intentionally unsupported.\\s*$)"
+    failure_message:
+      "You're using 'set noparent'. You must either:\n"
+      "  A. explicitly include global OWNERS for go/lsc:\n"
+      "      file://depot/google3/java/OWNERS\n"
+      "      set noparent\n"
+      "  B. explicitly document your intent (copy and paste exactly):\n"
+      "      set noparent # go/lsc intentionally unsupported.\n"
+      "For more information, please see go/owners#noparent."
+  }
+}
+
+presubmit: {
+  path_regexp: ".*\\.proto(?:devel)?"
+  # Allow refactoring of messages out of ads/events proto files into
+  # new files without changing packages or api versions.
+  path_expression_exclusion: "//depot/google3/ads/events/..."
+  # Exclude third_party directories which may lack the syntax header.
+  path_expression_exclusion: "//depot/google3/third_party/..."
+
+  # Checks that new .proto files contain a package statement.
+  check_contents: {
+    base: { id: "CheckProtoPackage" }
+    operation: ADD
+    required_regexp: "^package.*"
+    failure_message:
+      "Your changelist contains one or more new .proto files without a\n"
+      "package statement.  Each .proto file must have a package statement\n"
+      "in order to submit.\n"
+      "Please direct questions to protobuf-team@google.com."
+    failure_status: ERROR
+  }
+
+  # Checks that new .proto files contain a syntax statement.
+  check_contents: {
+    base: { id: "CheckProtoSyntax" }
+    operation: ADD
+    required_regexp: "\\s*syntax\\s*=\\s*\".*\""
+    failure_message:
+      "Your changelist contains one or more new .proto files without \n"
+      "a syntax statement.  Each .proto file must have a syntax statement\n"
+      "in order to submit.\n"
+      "Please direct questions to protobuf-team@google.com."
+    failure_status: ERROR
+  }
+
+  # Checks that new .proto files use API version 2 for Python.
+  check_contents: {
+    base: { id: "CheckProto2PyApiVersion" }
+    operation: ADD
+    prohibited_regexp: "\\s*option\\s+py_api_version\\s*=\\s*1"
+    failure_message:
+      "Your changelist contains one or more new .proto files using\n"
+      "py_api_version=1.  You must use py_api_version=2 in order to submit.\n"
+      "See http://goto/should-i-use-proto2 for details.\n"
+      "Please direct questions to protobuf-team@google.com."
+    failure_status: ERROR
+  }
+}
+
+# Checks that new .proto files use API version 2 for C++.
+presubmit: {
+  path_regexp: ".*\\.proto(?:devel)?"
+  path_expression_exclusion: "logs/proto/..."
+  check_contents: {
+    base: { id: "CheckProto2CcApiVersion" }
+    operation: ADD
+    prohibited_regexp: "\\s*option\\s+cc_api_version\\s*=\\s*1"
+    failure_message:
+      "Your changelist contains one or more new .proto files using\n"
+      "cc_api_version=1.  You must use cc_api_version=2 in order to submit.\n"
+      "See http://goto/should-i-use-proto2 for details.\n"
+      "Please direct questions to protobuf-team@google.com."
+    failure_status: ERROR
+  }
+}
+
+# Checks that new and existing .proto files do not use weak fields.
+# TODO(liujisi): resolve deprecation of weak fields.
+presubmit: {
+  path_regexp: ".*\\.proto(?:devel)?"
+  # Exceptions for logs and proto implementation directories.
+  path_expression_exclusion: "logs/..."
+  path_expression_exclusion: "net/proto/..."
+  path_expression_exclusion: "net/proto2/..."
+  path_expression_exclusion: "net/proto_compiler/..."
+  path_expression_exclusion: "third_party/golang/protobuf/..."
+
+  check_contents: {
+    base: { id: "CheckProtoWeakFields" }
+    operation: ADD
+    operation: EDIT
+    prohibited_regexp: "\\s*import\\s+weak\\s+"
+    failure_message:
+      "Your changelist contains one or more .proto files using obsolete\n"
+      "weak fields.  You must remove them in order to submit.\n"
+      "See http://goto/weakfields for details.\n"
+      "Please direct questions to protobuf-team@google.com."
+    failure_status: ERROR
+  }
+}
+
+# Checks that new and existing .proto files do not have extension number
+# conflicts.
+presubmit: {
+  path_expression: "//depot/google3/..."  # For dev branch inclusions.
+  check_proto_conflict: {
+    base: {
+      id: "CheckProtoConflict"
+      disable_tags: "DISABLE_CHECK_PROTO_CONFLICT"
+    }
+    failure_status: WARNING
+  }
+}
+
+# Checks for google3 components violations (http://go/components).
+presubmit: {
+  # TODO(jperkins): Get CheckComponents working on Bagpipe.  Note there aren't
+  # any components under googlemac.
+  path_expression_exclusion: "//depot/google3/experimental/bagpipe/..."
+  path_expression_exclusion: "//depot/google3/googlemac/..."
+  check_components: {
+    base: { id: "CheckComponents" }
+    # This field affects behavior of the check only for the REVIEW action.
+    # For the SUBMIT action, the check always returns an error if it fails.
+    failure_status: WARNING
+  }
+}
+
+# Checks that files do not use /(ls|bns|mbns)/global/slave.
+presubmit: {
+  path_regexp: ".*\\.(?:borg|cc|cfg|config|gcl|go|h|html|java|pi|py|sh|yaml)$"
+  check_contents: {
+    base: { id: "CheckChubbyGlobalSlave" }
+    operation: ADD
+    operation: EDIT
+    prohibited_regexp: "/(ls|bns|mbns)/global/slave\\b"
+    failure_message:
+      "Your changelist contains a file using the discouraged and\n"
+      "unnecessary Chubby path /(ls|bns|mbns)/global/slave. Please use\n"
+      "/(ls|bns|mbns)/any/slave or /(ls|bns|mbns)/local/slave instead.\n"
+      "  See http://goto/AvoidChubbyGlobalSlave for details.\n"
+      "Please direct questions to chubby-team@google.com."
+    failure_status: WARNING
+  }
+}
+
+# Checks that NCL files have been formatted with "nclfmt".
+# See go/blueprint/nclfmt for details.
+presubmit: {
+  path_expression: "....blueprint"
+  path_expression: "....ncl"
+  path_expression: "....itcnf"
+  path_expression_exclusion: "//depot/google3/experimental/..."
+  path_expression_exclusion: "//depot/google3/.../testdata/..."
+  check_presubmit_service: {
+    base: {
+      id: "CheckNickelFormat"
+      disable_tags: "DISABLE_CHECK_NICKEL_FORMAT"
+    }
+    address: "blade:fmtserver-presubmit"
+    options: "NCL"
+    # Mainly for CLs with a large number of files.
+    timeout: 90.0
+    failure_status: ERROR
+  }
+}
+
+# Checks that Blueprint files (http://go/blueprint) are valid.
+# Also triggers blueprint validation on any METADATA file change to
+# check if the presubmit configuration is still valid for all the blueprints
+# that have the files in the pending CLs in their go/owned_code_depotpaths
+# and set go/metadata_path.
+# See http://go/blueprint-validator for details.
+# If a .ncl file is edited, any affected blueprints will be validated.
+# TODO(b/30219294): possibly include .proto files?
+#
+# Please check http://b/13164460 for performance issues.
+presubmit: {
+  path_expression: "//depot/google3/....blueprint"
+  path_expression: "//depot/google3/....ncl"
+  path_expression: "//depot/google3/....itcnf"
+  path_expression: "//depot/google3/.../bluze.textproto"  # go/bluze
+
+  path_expression: "//depot/google3/.../METADATA"
+  path_expression: "//depot/google3/METADATA"
+  path_expression: "//depot/google3/....METADATA"
+  path_expression: "//depot/google3/.../METADATA.*"
+  path_expression: "//depot/google3/METADATA.*"
+  path_expression: "//depot/google3/..._METADATA"
+  path_expression: "//depot/google3/.../METADATA_*"
+  path_expression: "//depot/google3/METADATA_*"
+
+  path_expression_exclusion: "//depot/google3/OWNERS_METADATA"
+  path_expression_exclusion: "//depot/google3/.../OWNERS_METADATA"
+
+  check_presubmit_service: {
+    base: {
+      id: "CheckBlueprint"
+      disable_tags: "DISABLE_CHECK_BLUEPRINT"
+    }
+    address: "blade:blueprint-presubmit"
+    timeout: 900.0
+    execution_mode: SECONDARY_EXECUTION
+    include_all_opened_files: true
+    include_deleted_files: true
+    failure_status: ERROR
+    streaming: true
+  }
+}
+
+# Checks that no new private key files are submitted.
+presubmit: {
+  path_regexp:
+    ".*(?:\\."
+    "(?:borg|cc|config|h|html|java|py|go|sh|key|pem|asc|md|credentials|yaml"
+    "|conf|txt|properties|json|tfstate|properties|cfg|gcl|rst|_json_key|js"
+    "|ipynb|data|def)"
+    "|id_(?:dsa|rsa|ecdsa|ed25519))$"
+  # Exclude non-production, non-Google and test paths
+  path_regexp_exclusion: "//depot/google3/experimental/.*"
+  path_regexp_exclusion: "//depot/google3/third_party/.*"
+  path_regexp_exclusion: "//depot/google3/javatests/.*"
+  path_regexp_exclusion: ".*test\\.[a-z]+$"
+  path_regexp_exclusion: ".*/testdata/.*"
+
+  check_contents: {
+    base: {
+      id: "CheckPrivateKey"
+      disable_tags: "DISABLE_PRIVATE_KEY_CHECK"
+    }
+    operation: ADD
+    prohibited_regexp: "-----BEGIN\\s?(|PGP|EC|DSA|RSA|OPENSSH)\\sPRIVATE\\sKEY"
+    failure_message:
+      "Your changelist contains a private key which reveals it to every\n"
+      "Googler. Please use http://go/keystore for storing the key securely.\n\n"
+      "Note that the key is already visible to every Googler through your\n"
+      "piper client. Please generate a new key for use in keystore, or, if\n"
+      "you absolutely need to keep the key, delete your local client or file\n"
+      "with a http://go/obliteration-request for your citc client.\n"
+      "  See http://go/keyhunt for details."
+    failure_status: WARNING
+  }
+}
+
+# Checks that no new _binary_ private key files are submitted.
+presubmit: {
+  path_regexp: ".*\\.(?:der|p12)$"
+  # Exclude non-production, non-Google and test paths
+  path_regexp_exclusion: "//depot/google3/experimental/.*"
+  path_regexp_exclusion: "//depot/google3/third_party/.*"
+  path_regexp_exclusion: "//depot/google3/javatests/.*"
+  # More broad than CheckPrivateKey to avoid false-positive matches.
+  path_regexp_exclusion: ".*test.*"
+
+  check_file_operation: {
+    base: {
+      id: "CheckBinaryPrivateKey"
+      disable_tags: "DISABLE_PRIVATE_KEY_CHECK"
+    }
+    operation: ADD
+    failure_message:
+      "Your changelist contains a private key which reveals it to every\n"
+      "Googler. Please use http://go/keystore for storing the key securely.\n\n"
+      "Note that the key is already visible to every Googler through your\n"
+      "piper client. Please generate a new key for use in keystore, or, if\n"
+      "you absolutely need to keep the key, delete your local client or file\n"
+      "with a http://go/obliteration-request for your citc client.\n"
+      "  See http://go/keyhunt for details."
+    failure_status: WARNING
+  }
+}
+
+# Checks that no new client secrets are submitted (http://go/client-secrets).
+presubmit: {
+  path_regexp: ".*\\.json$"
+  # Exclude non-production, non-Google and test paths.
+  path_regexp_exclusion: "//depot/google3/experimental/.*"
+  path_regexp_exclusion: "//depot/google3/third_party/.*"
+  path_regexp_exclusion: "//depot/google3/javatests/.*"
+  path_regexp_exclusion: ".*test.*"
+  # Exclude Furball template directories, which can contain long encoded HTML
+  # strings and don't contain client secrets.
+  path_regexp_exclusion: "//depot/google3/java/com/google/eval/furball/fe/templates/experimental/.*"
+
+  check_contents: {
+    base: { id: "CheckClientSecretJson" }
+    operation: ADD
+    prohibited_regexp: "\"client_secret\":[^\"]{0,10}\"[A-z0-9_-]{15,35}\""
+    # We want to allow client_secret for the case of installed applications,
+    # where the secret isn't secret:
+    #   https://developers.google.com/accounts/docs/OAuth2InstalledApp
+    suppression_regexp: "\"installed\":"
+    match_entire_file: true
+    failure_message:
+      "Your changelist contains a client secret which reveals it to every\n"
+      "Googler (http://go/client-secrets). Please use http://go/keystore for\n"
+      "storing the key securely.\n\n"
+      "Note that the key is already visible to every Googler through your\n"
+      "piper client. Please generate a new key for use in keystore, or, if\n"
+      "you absolutely need to keep the key, delete your local client or file\n"
+      "a http://go/obliteration-request for your citc client.\n"
+      "  See http://go/keyhunt for details."
+    failure_status: WARNING
+  }
+}
+
+# Checks formatting of README.security files.
+presubmit: {
+  path_regexp:
+    "//depot/google3/.*/(README|Readme|readme)[^/]*"
+    "(SECURITY|Security|security)[^/]*$"
+  path_regexp_exclusion: "//depot/google3/experimental/.*"
+  check_contents: {
+    operation: ADD
+    base: { id: "CheckReadmeSecurityCategory" }
+    required_regexp: "ISE-TPS-CATEGORY:[A-Z]"
+    failure_message:
+      "Please provide a category for your README.security file in the\n"
+      "ISE-TPS-CATEGORY: field as per http://go/README.security.\n"
+      "Please direct questions to ise-tps@google.com."
+    failure_status: ERROR
+  }
+}
+
+# Checks that new .swig files are in /LANGUAGE/ subdir.
+presubmit: {
+  path_regexp: "//depot/google3/.*/.*\\.swig"
+  path_expression_exclusion: "//depot/google3/experimental/..."
+  path_expression_exclusion: "//depot/google3/obsolete/..."
+  path_expression_exclusion: "//depot/google3/third_party/..."
+  path_expression_exclusion: "//depot/google3/java/..."
+  path_expression_exclusion: "//depot/google3/javatests/..."
+  path_expression_exclusion: ".../java/..."
+  path_expression_exclusion: ".../python/..."
+  path_expression_exclusion: ".../py/..."  # Some existing projects chose this.
+  path_expression_exclusion: ".../go/..."
+  path_expression_exclusion: ".../csharp/..."
+
+  check_contents: {
+    base: { id: "CheckSwigLocation" }
+    operation: ADD
+    # Only protected .swig files allowed outside of /LANGUAGE/ subdirs.
+    required_regexp: " SWIG INCLUDE "
+    failure_message:
+      "Your changelist contains one or more new .swig files not located in\n"
+      "the corresponding /LANGUAGE/ directory. You must move them in order to submit.\n"
+      "See http://goto/swigstyle for details."
+    failure_status: ERROR
+  }
+
+  check_contents: {
+    base: { id: "CheckSwigCommon" }
+    operation: ADD
+    # %include not in regexp as there are cases when google.swig is %imported.
+    prohibited_regexp: "base/swig/google\\.swig"
+    failure_message:
+      "Your changelist contains one or more new .swig files not located in\n"
+      "the corresponding /LANGUAGE/ directory. Such file can be used as common %include\n"
+      "for other .swig files and should not include base/swig/google.swig itself.\n"
+      "See http://goto/swigstyle for details."
+    failure_status: ERROR
+  }
+}
+
+# Checks that .swig files in a /python/ subdir are discouraged.
+# This is used in combination with the above non-/LANGUAGE/ subdirectory error
+# to discourage people from using SWIG for Python in favor of CLIF.
+presubmit: {
+  path_regexp: "//depot/google3/.*/py(thon)?/.*\\.swig$"
+  path_expression_exclusion: "//depot/google3/experimental/..."
+  path_expression_exclusion: "//depot/google3/obsolete/..."
+  # Third party is often C not C++. For C SWIG is a natural choice.
+  path_expression_exclusion: "//depot/google3/third_party/..."
+
+  check_file_operation: {
+    base: {
+      id: "CheckPythonSwigLocation"
+      disable_tags: "CLEANUP"
+      disable_tags: "KEEP_PYTHON_SWIG"
+    }
+    operation: ADD
+    operation: EDIT
+    operation: BRANCH
+    failure_message:
+      "Your changelist contains one or more .swig files for Python.\n"
+      "Use of SWIG is discouraged.  You should be using CLIF instead.\n"
+      "See https://goto.google.com/pyclif for details.\n"
+      "To disable this warning add KEEP_PYTHON_SWIG justification tag to the CL"
+      " description.\n"
+    failure_status: WARNING
+  }
+}
+
+# Prevents checking in a METADATA file with check_code_review test, that does
+# not set require_all_reviewers_lgtm field. Please see go/checkcodereview. The
+# goal is to prevent check_code_review from creeping back after
+# go/checkcodereview-lsc.
+# TODO(b/63837500) remove this check when CheckCodeReview is gone.
+presubmit: {
+  path_expression: "//depot/google3/.../METADATA"
+
+  check_contents {
+    base {
+      id: "CheckDisallowCheckCodeReview"
+      disable_tags: "CLEANUP"
+    }
+    prohibited_regexp: "(?s)check_code_review.*[>}]"
+    # This is not perfect. This will fail for check_code_review setting
+    # require_all_reviewers_lgtm after setting another field taking a proto
+    # message as a value. To support that case, we would need to count
+    # paired parenthesis, which cannot be done with regexps. However, as of
+    # 2017-09-07 there is no such instances of check_code_review in piper,
+    # so this deficiency is acceptable.
+    suppression_regexp: "require_all_reviewers_lgtm"
+    failure_message: "Don't use CheckCodeReview. Please see go/checkcodereview."
+    failure_status: ERROR
+    match_entire_file: true
+  }
+}
+
+# Routes all Kotlin Language CLs while we're in early access period for Kotlin
+# support in Google3. kotlin-google-eng@ has not yet developed a readability
+# process yet and we are interested in monitoring the review culture and how
+# teams use the new language. (Remove after: b/74871875)
+presubmit: {
+  path_expression: "//depot/google3/....kt"
+
+  # Ignore 3rd-party code imports.
+  path_expression_exclusion: "//depot/google3/third_party/..."
+
+  # Ignore work in experimental.
+  path_expression_exclusion: "//depot/google3/experimental/..."
+
+  review_notify: "kt-google3-firehose+cl"
+}
+
+# Checks that no new OWNER file gets submitted. See go/owner-owners.
+presubmit: {
+  path_expression: "//depot/google3/.../OWNER"
+
+  check_file_operation: {
+    base: {
+      id: "CheckOwnerTypo"
+      disable_tags: "DISABLE_OWNER_TYPO_CHECK"
+    }
+    operation: ADD
+    operation: BRANCH
+    failure_message:
+      "Your changelist contains an OWNER file, which is likely to be a typo.\n"
+      "Please rename it to OWNERS. If you do wish to add an OWNER file, you\n"
+      "may use the DISABLE_OWNER_TYPO_CHECK tag in your CL description, with\n"
+      "a comment explaining your use case.\n"
+    failure_status: ERROR
+  }
+}
