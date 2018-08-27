@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ImportProductSetsIT {
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String COMPUTE_REGION = "us-west1";
   private static final String GCS_URI =
       "gs://java-docs-samples-testing/product-search/product_sets.csv";
