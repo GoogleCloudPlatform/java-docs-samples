@@ -16,12 +16,6 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.model.ApplicationInfo;
 import com.google.api.services.jobs.v3.model.Company;
@@ -32,7 +26,6 @@ import com.google.api.services.jobs.v3.model.SearchJobsRequest;
 import com.google.api.services.jobs.v3.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -44,55 +37,11 @@ import java.util.Random;
  */
 public final class FeaturedJobsSearchSample {
 
-  // [START setup]
-
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-  private static final NetHttpTransport NET_HTTP_TRANSPORT = new NetHttpTransport();
-  private static final String SCOPES = "https://www.googleapis.com/auth/jobs";
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = createTalentSolutionClient(
-      generateCredential());
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
 
-  private static CloudTalentSolution createTalentSolutionClient(GoogleCredential credential) {
-    String url = "https://integ-jobs.googleapis.com";
-    return new CloudTalentSolution.Builder(
-        NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(credential))
-        .setApplicationName("JobServiceClientSamples")
-        .setRootUrl(url)
-        .build();
-  }
-
-  private static GoogleCredential generateCredential() {
-    try {
-      // Credentials could be downloaded after creating service account
-      // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
-      // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
-      return GoogleCredential
-          .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
-          .createScoped(Collections.singleton(SCOPES));
-    } catch (Exception e) {
-      System.out.print("Error in generating credential");
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static HttpRequestInitializer setHttpTimeout(
-      final HttpRequestInitializer requestInitializer) {
-    return request -> {
-      requestInitializer.initialize(request);
-      request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
-      request.setConnectTimeout(1 * 60000); // 1 minute connect timeout
-      request.setReadTimeout(1 * 60000); // 1 minute read timeout
-    };
-  }
-
-  public static CloudTalentSolution getTalentSolutionClient() {
-    return talentSolutionClient;
-  }
-
-  // [END setup]
 
   // [START featured_job]
 

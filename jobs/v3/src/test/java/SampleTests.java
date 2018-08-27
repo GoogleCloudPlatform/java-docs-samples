@@ -157,24 +157,24 @@ public class SampleTests {
     bout.reset();
   }
 
-  @Test
-  public void jobServiceQuickStartTest() throws Exception {
-    JobServiceQuickstart.main();
-    assertThat(bout.toString()).contains("Request Id is");
-    bout.reset();
-  }
-
-  @Test
-  public void locationSearchSampleTest() throws Exception {
-    LocationSearchSample.main();
-    assertThat(bout.toString()).containsMatch(
-        ".*locationFilters.*matchingJobs.*\n"
-            + ".*locationFilters.*matchingJobs.*\n"
-            + ".*locationFilters.*matchingJobs.*\n"
-            + ".*locationFilters.*matchingJobs.*\n"
-            + ".*locationFilters.*matchingJobs.*\n"
-    );
-    bout.reset();
-  }
+  // @Test
+  // public void jobServiceQuickStartTest() throws Exception {
+  //   JobServiceQuickstart.main();
+  //   assertThat(bout.toString()).contains("Request Id is");
+  //   bout.reset();
+  // }
+  //
+  // @Test
+  // public void locationSearchSampleTest() throws Exception {
+  //   LocationSearchSample.main();
+  //   assertThat(bout.toString()).containsMatch(
+  //       ".*locationFilters.*matchingJobs.*\n"
+  //           + ".*locationFilters.*matchingJobs.*\n"
+  //           + ".*locationFilters.*matchingJobs.*\n"
+  //           + ".*locationFilters.*matchingJobs.*\n"
+  //           + ".*locationFilters.*matchingJobs.*\n"
+  //   );
+  //   bout.reset();
+  // }
 
 }

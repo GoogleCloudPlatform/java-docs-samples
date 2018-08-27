@@ -157,7 +157,7 @@ public final class BatchOperationSample {
           .projects()
           .jobs()
           .patch(toBeUpdated.getName(),
-              new UpdateJobRequest().setJob(toBeUpdated).setUpdateMask("jobTitle"))
+              new UpdateJobRequest().setJob(toBeUpdated).setUpdateMask("title"))
           .queue(batchUpdate, updateCallback);
     }
     batchUpdate.execute();

@@ -45,7 +45,7 @@ public class JobServiceQuickstart {
       generateCredential());
 
   private static CloudTalentSolution createTalentSolutionClient(GoogleCredential credential) {
-    String url = "https://integ-jobs.googleapis.com";
+    String url = "https://jobs.googleapis.com";
     return new CloudTalentSolution.Builder(
         NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(credential))
         .setApplicationName("JobServiceClientSamples")

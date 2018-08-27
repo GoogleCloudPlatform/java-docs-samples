@@ -198,7 +198,7 @@ public final class BasicJobSample {
     updateJob(jobName, jobToBeUpdated);
 
     // Update a job with field mask
-    updateJobWithFieldMask(jobName, "jobTitle", new Job().setTitle("changedJobTitle"));
+    updateJobWithFieldMask(jobName, "title", new Job().setTitle("changedJobTitle"));
 
     // Delete a job
     deleteJob(jobName);
