@@ -54,9 +54,9 @@ public class Samples {
   /**
    * Creates and returns a new vulnerability Note
    * @param client The Grafeas client used to perform the API requests.
-   * @param noteId A user-specified identifier for the note.
-   * @param projectId the GCP project the note will be created under
-   * @return a Note object representing the new note
+   * @param noteId A user-specified identifier for the Note.
+   * @param projectId the GCP project the Note will be created under
+   * @return the newly created Note object
    */
   public static Note createNote(GrafeasV1Beta1Client client, String noteId, String projectId) {
     Note.Builder noteBuilder = Note.newBuilder();
@@ -76,28 +76,29 @@ public class Samples {
   /**
    * Creates and returns a new Occurrence of a previously created vulnerability Note
    * @param client The Grafeas client used to perform the API requests.
-   * @param imageUri the Container Registry URL associated with the image
+   * @param imageUrl the Container Registry URL associated with the image
    *                 example: "https://gcr.io/project/image@sha256:foo"
-   * @param parentNoteId the identifier of the note associated with this occurrence
-   * @param projectId the GCP project the occurrence will be created under
-   * @return an Occurrence object representing the new occurrence
+   * @param noteId the identifier of the Note associated with this Occurrence
+   * @param occProjectId the GCP project the Occurrence will be created under
+   * @param noteProjectId the GCP project the associated Note belongs to
+   * @return the newly created Occurrence object
    */
-  public static Occurrence createOccurrence(GrafeasV1Beta1Client client, String imageUri, 
-      String parentNoteId,String projectId) {
-    final String parentNoteName = client.formatNoteName(projectId, parentNoteId);
-    final String projectName = client.formatProjectName(projectId);
+  public static Occurrence createOccurrence(GrafeasV1Beta1Client client, String imageUrl, 
+      String noteId, String occProjectId, String noteProjectId) {
+    final String noteName = client.formatNoteName(noteProjectId, noteId);
+    final String occProjectName = client.formatProjectName(occProjectId);
 
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    occBuilder.setNoteName(parentNoteName);
+    occBuilder.setNoteName(noteName);
     Details.Builder detailsBuilder = Details.newBuilder();
     // Details about the vulnerability instance can be added here
     occBuilder.setVulnerability(detailsBuilder);
     // Attach the occurrence to the associated image uri
     Resource.Builder resourceBuilder = Resource.newBuilder();
-    resourceBuilder.setUri(imageUri);
+    resourceBuilder.setUri(imageUrl);
     occBuilder.setResource(resourceBuilder);
     Occurrence newOcc = occBuilder.build();
-    return client.createOccurrence(projectName, newOcc);
+    return client.createOccurrence(occProjectName, newOcc);
   }
   // [END create_occurrence]
 
@@ -106,17 +107,17 @@ public class Samples {
    * Pushes an update to a Note that already exists on the server
    * @param client The Grafeas client used to perform the API requests.
    * @param updated a Note object representing the desired updates to push
-   * @param noteId the identifier of the existing note
+   * @param noteId the identifier of the existing Note
    * @param projectId the GCP project the Note belongs to
    */
-  public static void updateNote(GrafeasV1Beta1Client client, Note updated, String noteId, 
+  public static Note updateNote(GrafeasV1Beta1Client client, Note updated, String noteId, 
       String projectId) {
     final String noteName = client.formatNoteName(projectId, noteId);
     UpdateNoteRequest request = UpdateNoteRequest.newBuilder()
                                                  .setName(noteName)
                                                  .setNote(updated)
                                                  .build();
-    client.updateNote(request);
+    return client.updateNote(request);
   }
   // [END update_note]
 
@@ -124,17 +125,17 @@ public class Samples {
   /**
    * Pushes an update to an Occurrence that already exists on the server
    * @param client The Grafeas client used to perform the API requests.
-   * @param occurrenceName the name of the occurrence to delete.
-   *                       format: "projects/{projectId}/occurrences/{occurrence_id}"
+   * @param occurrenceName the name of the Occurrence to delete.
+   *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
    * @param updated an Occurrence object representing the desired updates to push
    */
-  public static void updateOccurrence(GrafeasV1Beta1Client client, String occurrenceName,
+  public static Occurrence updateOccurrence(GrafeasV1Beta1Client client, String occurrenceName,
       Occurrence updated) {
     UpdateOccurrenceRequest request = UpdateOccurrenceRequest.newBuilder()
                                                              .setName(occurrenceName)
                                                              .setOccurrence(updated)
                                                              .build();
-    client.updateOccurrence(request);
+    return client.updateOccurrence(request);
   }
   // [END update_occurrence]
 
@@ -142,7 +143,7 @@ public class Samples {
   /**
    * Deletes an existing Note from the server
    * @param client The Grafeas client used to perform the API requests.
-   * @param noteId the identifier of the note to delete
+   * @param noteId the identifier of the Note to delete
    * @param projectId the GCP project the Note belongs to
    */
   public static void deleteNote(GrafeasV1Beta1Client client, String noteId, String projectId) {
@@ -155,8 +156,8 @@ public class Samples {
   /**
    * Deletes an existing Occurrence from the server
    * @param client The Grafeas client used to perform the API requests.
-   * @param occurrenceName the name of the occurrence to delete
-   *                       format: "projects/{projectId}/occurrences/{occurrence_id}"
+   * @param occurrenceName the name of the Occurrence to delete
+   *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
    */
   public static void deleteOccurrence(GrafeasV1Beta1Client client, String occurrenceName) {
     client.deleteOccurrence(occurrenceName);
@@ -166,29 +167,33 @@ public class Samples {
 
   // [START get_occurrence]
   /**
-   * Retrieves a specified Occurrence from the server
+   * Retrieves and prints a specified Occurrence from the server
    * @param client The Grafeas client used to perform the API requests.
-   * @param occurrenceName the name of the occurrence to delete
-   *                       format: "projects/{projectId}/occurrences/{occurrence_id}"
+   * @param occurrenceName the name of the Occurrence to delete
+   *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
    * @return the requested Occurrence object
    */
   public static Occurrence getOccurrence(GrafeasV1Beta1Client client, String occurrenceName) {
-    return client.getOccurrence(occurrenceName);
+    Occurrence occ = client.getOccurrence(occurrenceName);
+    System.out.println(occ);
+    return occ;
   }
   // [END get_occurrence]
 
   // [START get_note]
   /**
-   * Retrieves a specified Note from the server
+   * Retrieves and prints a specified Note from the server
    * @param client The Grafeas client used to perform the API requests.
-   * @param noteId the note's unique identifier
+   * @param noteId the Note's unique identifier
    * @param projectId the GCP project the Note belongs to
    * @return the requested Note object
    */
   public static Note getNote(GrafeasV1Beta1Client client, String noteId, String projectId) {
     final String noteName = client.formatNoteName(projectId, noteId);
 
-    return client.getNote(noteName);
+    Note n = client.getNote(noteName);
+    System.out.println(n);
+    return n;
   }
   // [END get_note]
 
@@ -197,13 +202,13 @@ public class Samples {
    * Retrieves and prints the Discovery Occurrence created for a specified image
    * The Discovery Occurrence contains information about the initial scan on the image
    * @param client The Grafeas client used to perform the API requests.
-   * @param imageUri the Container Registry URL associated with the image
+   * @param imageUrl the Container Registry URL associated with the image
    *                 example: "https://gcr.io/project/image@sha256:foo"
    * @param projectId the GCP project the image belongs to
    */
-  public static void getDiscoveryInfo(GrafeasV1Beta1Client client, String imageUri, 
+  public static void getDiscoveryInfo(GrafeasV1Beta1Client client, String imageUrl,
       String projectId) {
-    String filterStr = "kind=\"DISCOVERY\" AND resourceUrl=\"" + imageUri + "\"";
+    String filterStr = "kind=\"DISCOVERY\" AND resourceUrl=\"" + imageUrl + "\"";
     final String projectName = client.formatProjectName(projectId);
 
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
@@ -217,17 +222,17 @@ public class Samples {
    * Retrieves all the Occurrences associated with a specified Note
    * Here, all Occurrences are printed and counted
    * @param client The Grafeas client used to perform the API requests.
-   * @param noteId the note's unique identifier
+   * @param noteId the Note's unique identifier
    * @param projectId the GCP project the Note belongs to
-   * @return number of occurrences found
+   * @return number of Occurrences found
    */
   public static int getOccurrencesForNote(GrafeasV1Beta1Client client, String noteId, 
       String projectId) {
-    final String parentNoteName = client.formatNoteName(projectId, noteId);
+    final String noteName = client.formatNoteName(projectId, noteId);
     int i = 0;
 
     ListNoteOccurrencesRequest request = ListNoteOccurrencesRequest.newBuilder()
-                                                                   .setName(parentNoteName)
+                                                                   .setName(noteName)
                                                                    .build();
     for (Occurrence o : client.listNoteOccurrences(request).iterateAll()) {
       // Write custom code to process each Occurrence here
@@ -244,14 +249,14 @@ public class Samples {
    * Retrieves all the Occurrences associated with a specified image
    * Here, all Occurrences are simply printed and counted
    * @param client The Grafeas client used to perform the API requests.
-   * @param imageUri the Container Registry URL associated with the image
+   * @param imageUrl the Container Registry URL associated with the image
    *                 example: "https://gcr.io/project/image@sha256:foo"
    * @param projectId the GCP project to search for Occurrences in
-   * @return number of occurrences found
+   * @return number of Occurrences found
    */
-  public static int getOccurrencesForImage(GrafeasV1Beta1Client client, String imageUri, 
+  public static int getOccurrencesForImage(GrafeasV1Beta1Client client, String imageUrl, 
       String projectId) {
-    final String filterStr = "resourceUrl=\"" + imageUri + "\"";
+    final String filterStr = "resourceUrl=\"" + imageUrl + "\"";
     final String projectName = client.formatProjectName(projectId);
     int i = 0;
 
@@ -270,7 +275,7 @@ public class Samples {
    * @param subId the user-specified identifier for the Pub/Sub subscription
    * @param timeout the amount of time to listen for Pub/Sub messages (in seconds)
    * @param projectId the GCP project the Pub/Sub subscription belongs to
-   * @return number of occurrence Pub/Sub messages received before exiting
+   * @return number of Occurrence Pub/Sub messages received before exiting
    * @throws InterruptedException on errors with the subscription client
    */
   public static int pubSub(String subId, int timeout, String projectId) 
@@ -327,7 +332,7 @@ public class Samples {
   public static Subscription createOccurrenceSubscription(String subId, String projectId) 
       throws IOException, StatusRuntimeException {
     // This topic id will automatically receive messages when Occurrences are added or modified
-    String topicId = "resource-notes-occurrences-v1alpha1";
+    String topicId = "container-analysis-occurrences-v1beta1";
     SubscriptionAdminClient client = SubscriptionAdminClient.create();
     PushConfig config = PushConfig.getDefaultInstance();
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
