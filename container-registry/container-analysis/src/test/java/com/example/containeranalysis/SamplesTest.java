@@ -133,7 +133,7 @@ public class SamplesTest {
   @Test
   public void testCreateOccurrence() throws Exception {
 
-    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID);
+    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     Occurrence retrieved = Samples.getOccurrence(client, o.getName());
     assertEquals(o.getName(), retrieved.getName());
 
@@ -144,7 +144,7 @@ public class SamplesTest {
   @Test
   public void testDeleteOccurrence() throws Exception {
 
-    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID);
+    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     String occName = o.getName();
 
     Samples.deleteOccurrence(client, occName);
@@ -162,7 +162,7 @@ public class SamplesTest {
   public void testUpdateOccurrence() throws Exception {
     String typeId = "newType";
 
-    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID);
+    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
 
     Occurrence.Builder b = Occurrence.newBuilder(o);
     Details.Builder d = Details.newBuilder();
@@ -182,7 +182,7 @@ public class SamplesTest {
     int newCount;
     int tries = 0;
     int origCount = Samples.getOccurrencesForImage(client, imageUrl, PROJECT_ID);
-    final Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID);
+    final Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
       newCount = Samples.getOccurrencesForImage(client, imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME);
@@ -200,7 +200,7 @@ public class SamplesTest {
     int newCount;
     int tries = 0;
     int origCount = Samples.getOccurrencesForNote(client, noteId, PROJECT_ID);
-    final Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID);
+    final Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
       newCount = Samples.getOccurrencesForNote(client, noteId, PROJECT_ID);
       sleep(SLEEP_TIME);
@@ -235,7 +235,7 @@ public class SamplesTest {
     // now, we can test adding 3 more occurrences
     int endVal = startVal + 3;
     for (int i = startVal; i <= endVal; i++) {
-      Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID);
+      Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
       System.out.println("CREATED: " + o.getName());
       tries = 0;
       do {
