@@ -10,7 +10,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-# [START appyaml]
+
 runtime: java
 env: flex
 
@@ -18,9 +18,8 @@ handlers:
 - url: /.*
   script: this field is required, but ignored
 
-# [START env_variables]
+# [START gae_flex_pubsub_yaml]
 env_variables:
   PUBSUB_TOPIC: <your-topic-name>
   PUBSUB_VERIFICATION_TOKEN: <your-verification-token>
-# [END env_variables]
-# [END appyaml]
+# [END gae_flex_pubsub_yaml]

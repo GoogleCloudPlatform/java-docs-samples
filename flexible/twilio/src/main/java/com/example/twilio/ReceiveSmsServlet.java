@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_twilio_receive_sms]
 @SuppressWarnings("serial")
 @WebServlet(name = "receivesms", value = "/sms/receive")
 public class ReceiveSmsServlet extends HttpServlet {
@@ -50,4 +50,4 @@ public class ReceiveSmsServlet extends HttpServlet {
     response.getWriter().print(twiml.toXML());
   }
 }
-// [END example]
+// [END gae_flex_twilio_receive_sms]

@@ -5,7 +5,7 @@ handlers:
 - url: /.*
   script: this field is required, but ignored
 
-# [START env_variables]
+# [START gae_flex_analytics_env_variables]
 env_variables:
   GA_TRACKING_ID: YOUR-GA-TRACKING-ID
-# [END env_variables]
+# [END gae_flex_analytics_env_variables]

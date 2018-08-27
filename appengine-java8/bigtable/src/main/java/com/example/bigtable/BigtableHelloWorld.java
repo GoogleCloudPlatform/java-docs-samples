@@ -57,9 +57,7 @@ public class BigtableHelloWorld {
     try {
       // The admin API lets us create, manage and delete tables
       Admin admin = connection.getAdmin();
-      // [END connecting_to_bigtable]
 
-      // [START creating_a_table]
       // Create a table with a single column family
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_NAME));
       descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
@@ -77,7 +75,6 @@ public class BigtableHelloWorld {
 
     StringBuilder result = new StringBuilder();
 
-    // [START connecting_to_bigtable]
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
     Connection connection = BigtableHelper.getConnection();
     result.append(create(connection));
@@ -86,7 +83,6 @@ public class BigtableHelloWorld {
 
       // Retrieve the table we just created so we can do some reads and writes
 
-      // [START writing_rows]
       // Write some rows to the table
       result.append("Write some greetings to the table<br>");
       for (int i = 0; i < GREETINGS.length; i++) {
@@ -108,9 +104,7 @@ public class BigtableHelloWorld {
         put.addColumn(COLUMN_FAMILY_NAME, COLUMN_NAME, Bytes.toBytes(GREETINGS[i]));
         table.put(put);
       }
-      // [END writing_rows]
 
-      // [START getting_a_row]
       // Get the first greeting by row key
       String rowKey = "greeting0";
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
@@ -123,7 +117,6 @@ public class BigtableHelloWorld {
       result.append(greeting);
       result.append("<br>");
 
-      // [START scanning_all_rows]
       // Now scan across all rows.
       Scan scan = new Scan();
 
@@ -135,7 +128,6 @@ public class BigtableHelloWorld {
         result.append(Bytes.toString(valueBytes));
         result.append("<br>");
       }
-      // [END scanning_all_rows]
 
     } catch (IOException e) {
       result.append("Exception while running HelloWorld: " + e.getMessage() + "<br>");

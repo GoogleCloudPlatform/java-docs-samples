@@ -16,9 +16,6 @@
 
 package com.example.appengine.bigquerylogging;
 
-// [START bigquery_logging_all]
-// [START bigquery_logging_deps]
-
 import com.google.api.Metric;
 import com.google.api.MetricDescriptor;
 import com.google.cloud.ServiceOptions;
@@ -52,14 +49,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-// [END bigquery_logging_deps]
 
 public class BigQueryRunner {
   private static final String CUSTOM_METRIC_FILTER =
       "metric.type = starts_with(\"custom.googleapis.com/\")";
   private static BigQueryRunner instance;
 
-  // [START bigquery_logging_metrics]
   private static final MetricDescriptor QUERY_DURATION_METRIC = MetricDescriptor
       .newBuilder()
       .setName("custom.googleapis.com/queryDuration")
@@ -81,7 +76,6 @@ public class BigQueryRunner {
   private static final Set<MetricDescriptor> REQUIRED_METRICS = ImmutableSet.of(
       QUERY_DURATION_METRIC, ROWS_RETURNED_METRIC
   );
-  // [END bigquery_logging_metrics]
 
   private static TableResult mostRecentRunResult;
   private static Set<String> existingMetrics = Sets.newHashSet();
@@ -117,7 +111,6 @@ public class BigQueryRunner {
   }
 
   public void runQuery() throws InterruptedException {
-    // [START bigquery_logging_query]
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(
             "SELECT "
@@ -150,9 +143,7 @@ public class BigQueryRunner {
       // errors, not just the latest one.
       throw new RuntimeException(queryJob.getStatus().getError().toString());
     }
-    // [END bigquery_logging_query]
 
-    // [START bigquery_logging_log_metrics]
     // Log the result metrics.
     TableResult result = queryJob.getQueryResults();
 
@@ -172,7 +163,6 @@ public class BigQueryRunner {
     createMetricsIfNeeded();
     client.createTimeSeries(request);
     os.println("Done writing metrics.");
-    // [END bigquery_logging_log_metrics]
 
     mostRecentRunResult = result;
   }
@@ -205,7 +195,6 @@ public class BigQueryRunner {
         .build();
   }
 
-  //  [START bigquery_logging_list_time_series]
   public List<TimeSeriesSummary> getTimeSeriesValues() {
     List<TimeSeriesSummary> summaries = Lists.newArrayList();
     createMetricsIfNeeded();
@@ -236,9 +225,7 @@ public class BigQueryRunner {
     }
     return summaries;
   }
-  //  [END bigquery_logging_list_time_series]
 
-  //  [START bigquery_logging_list_and_create_metrics]
   private void createMetricsIfNeeded() {
     // If all required metrics already exist, no need to make service calls.
     if (REQUIRED_METRICS.stream()
@@ -262,9 +249,7 @@ public class BigQueryRunner {
         .filter(metric -> !existingMetrics.contains(metric.getDisplayName()))
         .forEach(this::createMetric);
   }
-  //  [END bigquery_logging_list_and_create_metrics]
 
-  //  [START bigquery_logging_create_metric]
   private void createMetric(MetricDescriptor newMetric) {
     CreateMetricDescriptorRequest request = CreateMetricDescriptorRequest.newBuilder()
         .setName(projectName)
@@ -273,6 +258,5 @@ public class BigQueryRunner {
 
     client.createMetricDescriptor(request);
   }
-  //  [END bigquery_logging_create_metric]
+
 }
-// [END bigquery_logging_all]
