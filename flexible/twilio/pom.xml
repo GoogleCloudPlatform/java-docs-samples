@@ -41,13 +41,13 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START gae_flex_twilio_dependencies] -->
     <dependency>
       <groupId>com.twilio.sdk</groupId>
       <artifactId>twilio-java-sdk</artifactId>
       <version>6.3.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_flex_twilio_dependencies] -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>

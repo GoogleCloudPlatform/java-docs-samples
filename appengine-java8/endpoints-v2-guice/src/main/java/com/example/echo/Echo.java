@@ -30,7 +30,6 @@ import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.UnauthorizedException;
 
 /** The Echo API which Endpoints will be exposing. */
-// [START echo_api_annotation]
 @Api(
     name = "echo",
     version = "v1",
@@ -40,16 +39,14 @@ import com.google.api.server.spi.response.UnauthorizedException;
         ownerName = "echo.example.com",
         packagePath = ""
       ),
-    // [START_EXCLUDE]
     issuers = {
       @ApiIssuer(
         name = "firebase",
         issuer = "https://securetoken.google.com/YOUR-PROJECT-ID",
         jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
     }
-    // [END_EXCLUDE]
     )
-// [END echo_api_annotation]
+
 public class Echo {
   /**
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
@@ -61,7 +58,6 @@ public class Echo {
    * Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
-  // [START echo_method]
   @ApiMethod(name = "echo")
   public Message echo(Message message, @Named("n") @Nullable Integer n) {
     return doEcho(message, n);
@@ -78,12 +74,10 @@ public class Echo {
    * Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
-  // [START echo_path]
   @ApiMethod(name = "echo_path_parameter", path = "echo/{n}")
   public Message echoPathParameter(Message message, @Named("n") int n) {
     return doEcho(message, n);
   }
-  // [END echo_path]
 
   /**
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
@@ -95,12 +89,10 @@ public class Echo {
    * Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
-  // [START echo_api_key]
   @ApiMethod(name = "echo_api_key", path = "echo_api_key", apiKeyRequired = AnnotationBoolean.TRUE)
   public Message echoApiKey(Message message, @Named("n") @Nullable Integer n) {
     return doEcho(message, n);
   }
-  // [END echo_api_key]
 
   private Message doEcho(Message message, Integer n) {
     if (n != null && n >= 0) {
@@ -126,7 +118,6 @@ public class Echo {
    * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
-  // [START google_id_token_auth]
   @ApiMethod(
       httpMethod = ApiMethod.HttpMethod.GET,
       authenticators = {EspAuthenticator.class},
@@ -142,7 +133,6 @@ public class Echo {
     response.setEmail(user.getEmail());
     return response;
   }
-  // [END google_id_token_auth]
 
   /**
    * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
@@ -154,7 +144,6 @@ public class Echo {
    * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
-  // [START firebase_auth]
   @ApiMethod(
       path = "firebase_user",
       httpMethod = ApiMethod.HttpMethod.GET,
@@ -170,5 +159,4 @@ public class Echo {
     response.setEmail(user.getEmail());
     return response;
   }
-  // [END firebase_auth]
 }

@@ -45,13 +45,13 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
+    <!-- [START gae_flex_datastore_config] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
       <version>1.38.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_flex_datastore_config] -->
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->

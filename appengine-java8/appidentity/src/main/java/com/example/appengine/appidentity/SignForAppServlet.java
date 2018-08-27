@@ -54,7 +54,7 @@ public class SignForAppServlet extends HttpServlet {
     appIdentity = AppIdentityServiceFactory.getAppIdentityService();
   }
 
-  // [START asserting_identity_to_other_services]
+  // [START gae_java8_app_identity_other_services]
   // Note that the algorithm used by AppIdentity.signForApp() and
   // getPublicCertificatesForApp() is "SHA256withRSA"
 
@@ -102,7 +102,7 @@ public class SignForAppServlet extends HttpServlet {
         "isValid=%b for message: %s\n\tsignature: %s\n\tpublic cert: %s",
         isValid, message, Arrays.toString(blobSignature), Arrays.toString(publicCert));
   }
-  // [END asserting_identity_to_other_services]
+  // [END gae_java8_app_identity_other_services]
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

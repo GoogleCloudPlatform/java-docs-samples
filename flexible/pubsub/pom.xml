@@ -13,7 +13,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [START project] -->
 <project>
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
@@ -62,7 +61,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
@@ -73,7 +71,6 @@
       <artifactId>google-cloud-datastore</artifactId>
       <version>1.38.0</version>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test Dependencies -->
     <dependency>
@@ -122,4 +119,3 @@
     </plugins>
   </build>
 </project>
-<!-- [END project] -->
