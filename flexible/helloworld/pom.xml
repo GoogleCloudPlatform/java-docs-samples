@@ -13,7 +13,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [START project] -->
 <project>
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
@@ -41,7 +40,7 @@
     <jetty>9.4.4.v20170414</jetty>
   </properties>
 
-  <!-- [START dependencies] -->
+  <!-- [START gae_flex_libraries_dependencies] -->
   <dependencies>
 
     <dependency>
@@ -53,7 +52,7 @@
     </dependency>
 
   </dependencies>
-  <!-- [END dependencies] -->
+  <!-- [END gae_flex_libraries_dependencies] -->
 
   <build>
     <!-- for hot reload of the web application -->
@@ -78,4 +77,3 @@
     </plugins>
   </build>
 </project>
-<!-- [END project] -->
