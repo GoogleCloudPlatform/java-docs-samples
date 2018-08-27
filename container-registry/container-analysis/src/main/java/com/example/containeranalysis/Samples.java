@@ -26,6 +26,8 @@ import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.containeranalysis.v1beta1.NoteName;
+import com.google.containeranalysis.v1beta1.ProjectName;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
@@ -66,7 +68,7 @@ public class Samples {
     noteBuilder.setVulnerability(vulBuilder);
     Note newNote = noteBuilder.build();
 
-    final String projectName = client.formatProjectName(projectId);
+    final String projectName = ProjectName.format(projectId);
     return client.createNote(projectName, noteId, newNote);
   }
   // [END create_note]
@@ -85,11 +87,11 @@ public class Samples {
    */
   public static Occurrence createOccurrence(GrafeasV1Beta1Client client, String imageUrl, 
       String noteId, String occProjectId, String noteProjectId) {
-    final String noteName = client.formatNoteName(noteProjectId, noteId);
-    final String occProjectName = client.formatProjectName(occProjectId);
+    final NoteName noteName = NoteName.of(noteProjectId, noteId);
+    final String occProjectName = ProjectName.format(occProjectId);
 
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    occBuilder.setNoteName(noteName);
+    occBuilder.setNoteName(noteName.toString());
     Details.Builder detailsBuilder = Details.newBuilder();
     // Details about the vulnerability instance can be added here
     occBuilder.setVulnerability(detailsBuilder);
@@ -112,9 +114,9 @@ public class Samples {
    */
   public static Note updateNote(GrafeasV1Beta1Client client, Note updated, String noteId, 
       String projectId) {
-    final String noteName = client.formatNoteName(projectId, noteId);
+    final NoteName noteName = NoteName.of(projectId, noteId);
     UpdateNoteRequest request = UpdateNoteRequest.newBuilder()
-                                                 .setName(noteName)
+                                                 .setName(noteName.toString())
                                                  .setNote(updated)
                                                  .build();
     return client.updateNote(request);
@@ -147,7 +149,7 @@ public class Samples {
    * @param projectId the GCP project the Note belongs to
    */
   public static void deleteNote(GrafeasV1Beta1Client client, String noteId, String projectId) {
-    final String noteName = client.formatNoteName(projectId, noteId);
+    final NoteName noteName = NoteName.of(projectId, noteId);
     client.deleteNote(noteName);
   }
   // [END delete_note]
@@ -189,7 +191,7 @@ public class Samples {
    * @return the requested Note object
    */
   public static Note getNote(GrafeasV1Beta1Client client, String noteId, String projectId) {
-    final String noteName = client.formatNoteName(projectId, noteId);
+    final NoteName noteName = NoteName.of(projectId, noteId);
 
     Note n = client.getNote(noteName);
     System.out.println(n);
@@ -209,7 +211,7 @@ public class Samples {
   public static void getDiscoveryInfo(GrafeasV1Beta1Client client, String imageUrl,
       String projectId) {
     String filterStr = "kind=\"DISCOVERY\" AND resourceUrl=\"" + imageUrl + "\"";
-    final String projectName = client.formatProjectName(projectId);
+    final String projectName = ProjectName.format(projectId);
 
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
       System.out.println(o);
@@ -228,11 +230,11 @@ public class Samples {
    */
   public static int getOccurrencesForNote(GrafeasV1Beta1Client client, String noteId, 
       String projectId) {
-    final String noteName = client.formatNoteName(projectId, noteId);
+    final NoteName noteName = NoteName.of(projectId, noteId);
     int i = 0;
 
     ListNoteOccurrencesRequest request = ListNoteOccurrencesRequest.newBuilder()
-                                                                   .setName(noteName)
+                                                                   .setName(noteName.toString())
                                                                    .build();
     for (Occurrence o : client.listNoteOccurrences(request).iterateAll()) {
       // Write custom code to process each Occurrence here
@@ -257,7 +259,7 @@ public class Samples {
   public static int getOccurrencesForImage(GrafeasV1Beta1Client client, String imageUrl, 
       String projectId) {
     final String filterStr = "resourceUrl=\"" + imageUrl + "\"";
-    final String projectName = client.formatProjectName(projectId);
+    final String projectName = ProjectName.format(projectId);
     int i = 0;
 
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
