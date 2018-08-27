@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_mysql_app]
 @SuppressWarnings("serial")
 @WebServlet(name = "cloudsql", value = "")
 public class CloudSqlServlet extends HttpServlet {
@@ -126,4 +126,4 @@ public class CloudSqlServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_flex_mysql_app]

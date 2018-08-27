@@ -5,7 +5,5 @@ handlers:
 - url: /.*
   script: this field is required, but ignored
 
-# [START env_variables]
 env_variables:
   BUCKET_NAME: YOUR-BUCKET-NAME
-# [END env_variables]

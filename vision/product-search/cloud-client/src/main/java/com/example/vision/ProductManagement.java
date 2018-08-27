@@ -16,7 +16,6 @@
 
 package com.example.vision;
 
-// [START product_search_import]
 import com.google.cloud.vision.v1p3beta1.LocationName;
 import com.google.cloud.vision.v1p3beta1.Product;
 import com.google.cloud.vision.v1p3beta1.Product.KeyValue;
@@ -33,18 +32,16 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-// [END product_search_import]
 
 /**
  * This application demonstrates how to perform basic operations on Products.
  *
- * For more information, see the tutorial page at
+ * <p>For more information, see the tutorial page at
  * https://cloud.google.com/vision/product-search/docs/
  */
-
 public class ProductManagement {
 
-  // [START product_search_create_product]
+  // [START vision_product_search_create_product]
   /**
    * Create one product.
    *
@@ -53,8 +50,6 @@ public class ProductManagement {
    * @param productId - Id of the product.
    * @param productDisplayName - Display name of the product.
    * @param productCategory - Category of the product.
-   * @param productDescription - Description of the product.
-   * @param productLabels - Labels of the product.
    * @throws IOException - on I/O errors.
    */
   public static void createProduct(
@@ -62,9 +57,7 @@ public class ProductManagement {
       String computeRegion,
       String productId,
       String productDisplayName,
-      String productCategory,
-      String productDescription,
-      String productLabels)
+      String productCategory)
       throws IOException {
     ProductSearchClient client = ProductSearchClient.create();
 
@@ -78,21 +71,15 @@ public class ProductManagement {
             .setName(productId)
             .setDisplayName(productDisplayName)
             .setProductCategory(productCategory)
-            .setDescription(productDescription)
-            .addProductLabels(
-                KeyValue.newBuilder()
-                    .setKey(productLabels.split(",")[0].split("=")[0])
-                    .setValue(productLabels.split(",")[0].split("=")[1])
-                    .build())
             .build();
     Product product = client.createProduct(projectLocation.toString(), myProduct, productId);
 
     // Display the product information
     System.out.println(String.format("Product name: %s", product.getName()));
   }
-  // [END product_search_create_product]
+  // [END vision_product_search_create_product]
 
-  // [START product_search_list_products]
+  // [START vision_product_search_list_products]
   /**
    * List all products.
    *
@@ -112,8 +99,8 @@ public class ProductManagement {
       System.out.println(String.format("\nProduct name: %s", product.getName()));
       System.out.println(
           String.format(
-              "Product id: %s",
-              product.getName().substring(product.getName().lastIndexOf('/') + 1)));
+                "Product id: %s",
+                    product.getName().substring(product.getName().lastIndexOf('/') + 1)));
       System.out.println(String.format("Product display name: %s", product.getDisplayName()));
       System.out.println(String.format("Product category: %s", product.getProductCategory()));
       System.out.println("Product labels:");
@@ -121,9 +108,9 @@ public class ProductManagement {
           String.format("Product labels: %s", product.getProductLabelsList().toString()));
     }
   }
-  // [END product_search_list_products]
+  // [END vision_product_search_list_products]
 
-  // [START product_search_get_product]
+  // [START vision_product_search_get_product]
   /**
    * Get information about a product.
    *
@@ -154,9 +141,9 @@ public class ProductManagement {
     System.out.println(
         String.format("Product labels: %s", product.getProductLabelsList().toString()));
   }
-  // [END product_search_get_product]
+  // [END vision_product_search_get_product]
 
-  // [START product_search_update_product_labels]
+  // [START vision_product_search_update_product_labels]
   /**
    * Update the product labels.
    *
@@ -194,13 +181,14 @@ public class ProductManagement {
 
     // Display the product information
     System.out.println(String.format("Product name: %s", updatedProduct.getName()));
-    System.out.println(
-        String.format(
-            "Updated product labels: %s", updatedProduct.getProductLabelsList().toString()));
+    System.out.println(String.format("Updated product labels: "));
+    for (Product.KeyValue element : updatedProduct.getProductLabelsList()) {
+      System.out.println(String.format("%s: %s", element.getKey(), element.getValue()));
+    }
   }
-  // [END product_search_update_product_labels]
+  // [END vision_product_search_update_product_labels]
 
-  // [START product_search_delete_product]
+  // [START vision_product_search_delete_product]
   /**
    * Delete the product and all its reference images.
    *
@@ -221,7 +209,7 @@ public class ProductManagement {
 
     System.out.println("Product deleted.");
   }
-  // [END product_search_delete_product]
+  // [END vision_product_search_delete_product]
 
   public static void main(String[] args) throws Exception {
     ProductManagement productManagement = new ProductManagement();
@@ -263,9 +251,7 @@ public class ProductManagement {
             computeRegion,
             ns.getString("productId"),
             ns.getString("productDisplayName"),
-            ns.getString("productCategory"),
-            ns.getString("productDescription"),
-            ns.getString("productLabels"));
+            ns.getString("productCategory"));
       }
       if (ns.get("command").equals("list_products")) {
         listProducts(projectId, computeRegion);
