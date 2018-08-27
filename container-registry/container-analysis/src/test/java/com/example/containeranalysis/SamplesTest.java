@@ -124,7 +124,8 @@ public class SamplesTest {
 
     Note.Builder builder = Note.newBuilder(noteObj);
     builder.setShortDescription(descriptionText);
-    Samples.updateNote(client, builder.build(), noteId, PROJECT_ID);
+    Note returned = Samples.updateNote(client, builder.build(), noteId, PROJECT_ID);
+    assertEquals(descriptionText, returned.getShortDescription());
 
     Note updated = Samples.getNote(client, noteId, PROJECT_ID);
     assertEquals(descriptionText, updated.getShortDescription());
@@ -169,12 +170,13 @@ public class SamplesTest {
     d.setType(typeId);
     b.setVulnerability(d);
 
-    Samples.updateOccurrence(client, o.getName(), b.build());
-    Occurrence o2 = Samples.getOccurrence(client, o.getName());
-    assertEquals(typeId, o2.getVulnerability().getType());
+    Occurrence returned = Samples.updateOccurrence(client, o.getName(), b.build());
+    assertEquals(typeId, returned.getVulnerability().getType());
+    Occurrence got = Samples.getOccurrence(client, o.getName());
+    assertEquals(typeId, got.getVulnerability().getType());
 
     //clean up
-    Samples.deleteOccurrence(client, o2.getName());
+    Samples.deleteOccurrence(client, o.getName());
   }
 
   @Test
