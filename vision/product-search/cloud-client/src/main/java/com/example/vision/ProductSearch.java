@@ -193,6 +193,7 @@ public class ProductSearch {
       System.out.println(String.format("Image name: %s", product.getImage()));
     }
   }
+  // [END vision_product_search_get_similar_products_gcs]
 
   public static void main(String[] args) throws Exception {
     ProductSearch productSearch = new ProductSearch();

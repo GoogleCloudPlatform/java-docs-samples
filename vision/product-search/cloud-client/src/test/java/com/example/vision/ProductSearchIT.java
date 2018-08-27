@@ -105,8 +105,6 @@ public class ProductSearchIT {
   @Test
   public void testGetSimilarProductsGcsWithFilter() throws Exception {
     // Act
-    //ImportProductSets.importProductSets(PROJECT_ID, COMPUTE_REGION, GCS_URI);
-    //bout.reset();
     ProductSearch.getSimilarProductsGcs(
         PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID, PRODUCT_CATEGORY, IMAGE_URI_1, FILTER);
 
