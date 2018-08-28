@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START logs_API_example]
 
 package com.example.appengine.logs;
 
@@ -91,5 +90,3 @@ public class LogsServlet extends HttpServlet {
     writer.println(String.format("<br><a href=\"/?offset=%s\">Next</a>", lastOffset));
   }
 }
-// [END logs_API_example]
-
