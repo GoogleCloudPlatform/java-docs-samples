@@ -39,6 +39,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public class EntityTypeManagement {
 
+  // [START dialogflow_list_entity_types]
   /**
    * List entity types
    * @param projectId Project/agent id.
@@ -57,6 +58,7 @@ public class EntityTypeManagement {
       }
     }
   }
+  // [END dialogflow_list_entity_types]
 
   // [START dialogflow_create_entity_type]
   /**

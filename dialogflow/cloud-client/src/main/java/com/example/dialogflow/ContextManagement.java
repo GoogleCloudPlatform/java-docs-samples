@@ -38,6 +38,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public class ContextManagement {
 
+  // [START dialogflow_list_contexts]
   /**
    * Lists contexts
    * @param sessionId Identifier of the DetectIntent session.
@@ -63,6 +64,7 @@ public class ContextManagement {
       }
     }
   }
+  // [END dialogflow_list_contexts]
 
   // [START dialogflow_create_context]
   /**

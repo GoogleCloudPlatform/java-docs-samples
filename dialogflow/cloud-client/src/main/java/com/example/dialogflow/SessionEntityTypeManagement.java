@@ -38,6 +38,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public class SessionEntityTypeManagement {
 
+  // [START dialogflow_list_session_entity_types]
   /**
    * List session entity types
    * @param projectId Project/Agent Id.
@@ -58,6 +59,7 @@ public class SessionEntityTypeManagement {
       }
     }
   }
+  // [END dialogflow_list_session_entity_types]
 
   // [START dialogflow_create_session_entity_type]
   /**
