@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-// [START example]
 @SuppressWarnings("serial")
 public class SendSmsServlet extends HttpServlet {
 
@@ -62,4 +61,3 @@ public class SendSmsServlet extends HttpServlet {
     }
   }
 }
-// [END example]

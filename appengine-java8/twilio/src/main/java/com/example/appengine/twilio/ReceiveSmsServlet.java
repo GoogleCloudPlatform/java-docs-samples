@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 public class ReceiveSmsServlet extends HttpServlet {
 
@@ -48,4 +47,3 @@ public class ReceiveSmsServlet extends HttpServlet {
     response.getWriter().print(twiml.toXML());
   }
 }
-// [END example]
