@@ -47,7 +47,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 
-// [START example]
 @SuppressWarnings({"serial"})
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "GAEInfo", description = "GAEInfo: Write info about GAE Standard",
@@ -233,4 +232,3 @@ public class GaeInfoServlet extends HttpServlet {
     templateEngine.process("index", ctx, resp.getWriter());
   }
 }
-// [END example]

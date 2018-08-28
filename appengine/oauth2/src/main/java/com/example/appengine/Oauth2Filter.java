@@ -52,7 +52,6 @@ public class Oauth2Filter implements Filter {
     this.context = config.getServletContext();
   }
 
-  // [START oauth2]
   @Override
   public void doFilter(
       final ServletRequest servletReq, final ServletResponse servletResp,  final FilterChain chain)
@@ -91,7 +90,6 @@ public class Oauth2Filter implements Filter {
     }
     chain.doFilter(servletReq, servletResp);  // continue processing
   }
-  // [END oauth2]
 
   @Override
   public void destroy() { }
