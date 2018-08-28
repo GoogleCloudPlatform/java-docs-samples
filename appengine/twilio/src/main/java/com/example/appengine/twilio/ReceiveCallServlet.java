@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_twilio_receive_call]
 @SuppressWarnings("serial")
 public class ReceiveCallServlet extends HttpServlet {
 
@@ -44,4 +44,4 @@ public class ReceiveCallServlet extends HttpServlet {
     resp.getWriter().print(twiml.toXML());
   }
 }
-// [END example]
+// [END gae_twilio_receive_call]
