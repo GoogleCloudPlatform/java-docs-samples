@@ -69,7 +69,6 @@ limitations under the License.
   </dependencies>
   <build>
     <plugins>
-<!-- // [START assembly] -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -91,9 +90,7 @@ limitations under the License.
           </archive>
         </configuration>
       </plugin>
-<!-- // [END assembly] -->
 
-<!-- // [START exec] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -106,7 +103,6 @@ limitations under the License.
           </arguments>
         </configuration>
       </plugin>
-<!-- // [END exec] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
