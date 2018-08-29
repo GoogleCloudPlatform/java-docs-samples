@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static java.lang.Thread.sleep;
 import static junit.framework.Assert.fail;
 import static junit.framework.TestCase.assertEquals;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
@@ -74,6 +75,7 @@ public class SamplesTest {
       subscriptionAdminClient.shutdownNow();
     } catch (Exception e) {
       // these exceptions aren't relevant to the tests
+      System.out.println("TearDownClass Error: " + e.toString());
     }
   }
 
@@ -92,17 +94,16 @@ public class SamplesTest {
       Samples.deleteNote(client, noteId, PROJECT_ID);
     } catch (Exception e) {
       // these exceptions aren't relevant to the tests
+      System.out.println("TearDown Error: " + e.toString());
     }
   }
 
   @Test
   public void testCreateNote() throws Exception {
-
     // note should have been created as part of set up. verify that it succeeded
     Note n = Samples.getNote(client, noteId, PROJECT_ID);
 
     assertEquals(n.getName(), noteObj.getName());
-
   }
 
   @Test
@@ -110,12 +111,11 @@ public class SamplesTest {
     Samples.deleteNote(client, noteId, PROJECT_ID);
     try {
       Samples.getNote(client, noteId, PROJECT_ID);
-      //above should throw, because note was deleted
+      // above should throw, because note was deleted
       fail("note not deleted");
-    } catch (Exception e) {
+    } catch (NotFoundException e) {
       // test passes
     }
-
   }
 
   @Test
@@ -133,18 +133,16 @@ public class SamplesTest {
 
   @Test
   public void testCreateOccurrence() throws Exception {
-
     Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     Occurrence retrieved = Samples.getOccurrence(client, o.getName());
     assertEquals(o.getName(), retrieved.getName());
 
-    //clean up
+    // clean up
     Samples.deleteOccurrence(client, o.getName());
   }
 
   @Test
   public void testDeleteOccurrence() throws Exception {
-
     Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     String occName = o.getName();
 
@@ -152,10 +150,10 @@ public class SamplesTest {
 
     try {
       Samples.getOccurrence(client, occName);
-      //getOccurrence should fail, because occurrence was deleted
+      // getOccurrence should fail, because occurrence was deleted
       fail("failed to delete occurrence");
-    } catch (Exception e) {
-      //test passes
+    } catch (NotFoundException e) {
+      // test passes
     }
   }
 
@@ -175,7 +173,7 @@ public class SamplesTest {
     Occurrence got = Samples.getOccurrence(client, o.getName());
     assertEquals(typeId, got.getVulnerability().getType());
 
-    //clean up
+    // clean up
     Samples.deleteOccurrence(client, o.getName());
   }
 
@@ -193,7 +191,7 @@ public class SamplesTest {
     assertEquals(1, newCount);
     assertEquals(0, origCount);
 
-    //clean up
+    // clean up
     Samples.deleteOccurrence(client, o.getName());
   }
 
@@ -211,7 +209,7 @@ public class SamplesTest {
     assertEquals(0, origCount);
     assertEquals(1, newCount);
 
-    //clean up
+    // clean up
     Samples.deleteOccurrence(client, o.getName());
   }
 
