@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 public class HelloServlet extends HttpServlet {
 
@@ -53,4 +52,3 @@ public class HelloServlet extends HttpServlet {
     out.print("Hello world, welcome to Oauth2: " + user.getEmail());
   }
 }
-// [END example]
