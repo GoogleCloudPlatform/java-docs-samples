@@ -36,7 +36,7 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START automl_vision_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-automl</artifactId>
@@ -47,7 +47,7 @@
       <artifactId>argparse4j</artifactId>
       <version>0.8.1</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [START automl_vision_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
