@@ -54,15 +54,10 @@ public class ProductSearchIT {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    ImportProductSets.importProductSets(PROJECT_ID, COMPUTE_REGION, GCS_URI);
-    bout.reset();
   }
 
   @After
   public void tearDown() throws Exception {
-    ProductManagement.deleteProduct(PROJECT_ID,COMPUTE_REGION,PRODUCT_ID_1);
-    ProductManagement.deleteProduct(PROJECT_ID,COMPUTE_REGION,PRODUCT_ID_2);
-    ProductSetManagement.deleteProductSet(PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID);
     System.setOut(null);
   }
 
