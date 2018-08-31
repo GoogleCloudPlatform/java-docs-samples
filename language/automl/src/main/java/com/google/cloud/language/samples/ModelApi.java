@@ -52,7 +52,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public class ModelApi {
 
-  // [START automl_natural_language_create_model]
+  // [START automl_language_create_model]
   /**
    * Demonstrates using the AutoML client to create a model.
    *
@@ -92,9 +92,9 @@ public class ModelApi {
         String.format("Training operation name: %s", response.getInitialFuture().get().getName()));
     System.out.println("Training started...");
   }
-  // [END automl_natural_language_create_model]
+  // [END automl_language_create_model]
 
-  // [START automl_natural_language_get_operation_status]
+  // [START automl_language_get_operation_status]
   /**
    * Demonstrates using the AutoML client to get operation status.
    *
@@ -111,9 +111,9 @@ public class ModelApi {
 
     System.out.println(String.format("Operation status: %s", response));
   }
-  // [END automl_natural_language_get_operation_status]
+  // [END automl_language_get_operation_status]
 
-  // [START automl_natural_language_list_models]
+  // [START automl_language_list_models]
   /**
    * Demonstrates using the AutoML client to list all models.
    *
@@ -151,9 +151,9 @@ public class ModelApi {
       System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
     }
   }
-  // [END automl_natural_language_list_models]
+  // [END automl_language_list_models]
 
-  // [START automl_natural_language_get_model]
+  // [START automl_language_get_model]
   /**
    * Demonstrates using the AutoML client to get model details.
    *
@@ -184,9 +184,9 @@ public class ModelApi {
     System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
     System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
   }
-  // END automl_natural_language_get_model]
+  // END automl_language_get_model]
 
-  // [START automl_natural_language_list_model_evaluations]
+  // [START automl_language_list_model_evaluations]
   /**
    * Demonstrates using the AutoML client to list model evaluations.
    *
@@ -217,9 +217,9 @@ public class ModelApi {
       System.out.println(element);
     }
   }
-  // [END automl_natural_language_list_model_evaluations]
+  // [END automl_language_list_model_evaluations]
 
-  // [START automl_natural_language_get_model_evaluation]
+  // [START automl_language_get_model_evaluation]
   /**
    * Demonstrates using the AutoML client to get model evaluations.
    *
@@ -244,9 +244,9 @@ public class ModelApi {
 
     System.out.println(response);
   }
-  // [END automl_natural_language_get_model_evaluation]
+  // [END automl_language_get_model_evaluation]
 
-  // [START automl_natural_language_display_evaluation]
+  // [START automl_language_display_evaluation]
   /**
    * Demonstrates using the AutoML client to display model evaluation.
    *
@@ -317,9 +317,9 @@ public class ModelApi {
       }
     }
   }
-  // [END automl_natural_language_display_evaluation]
+  // [END automl_language_display_evaluation]
 
-  // [START automl_natural_language_delete_model]
+  // [START automl_language_delete_model]
   /**
    * Demonstrates using the AutoML client to delete a model.
    *
@@ -341,7 +341,7 @@ public class ModelApi {
 
     System.out.println("Model deletion started...");
   }
-  // [END automl_natural_language_delete_model]
+  // [END automl_language_delete_model]
 
   public static void main(String[] args) throws Exception {
     ModelApi modelApi = new ModelApi();

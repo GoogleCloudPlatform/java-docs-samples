@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START simple_logging_example]
+// [START gae_java_logging_example]
 public class LoggingServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(LoggingServlet.class.getName());
 
@@ -36,6 +36,5 @@ public class LoggingServlet extends HttpServlet {
     resp.getWriter().println("Check logs for results");
     // [END_EXCLUDE]
   }
-} 
-// [END simple_logging_example]
-
+}
+// [END gae_java_logging_example]

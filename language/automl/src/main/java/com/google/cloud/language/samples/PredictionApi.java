@@ -46,7 +46,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public class PredictionApi {
 
-  // [START automl_natural_language_predict]
+  // [START automl_language_predict]
   /**
    * Demonstrates using the AutoML client to classify the text content
    *
@@ -85,7 +85,7 @@ public class PredictionApi {
           "Predicted Class Score :" + annotationPayload.getClassification().getScore());
     }
   }
-  // [END automl_natural_language_predict]
+  // [END automl_language_predict]
 
   public static void main(String[] args) throws IOException {
     PredictionApi predictionApi = new PredictionApi();

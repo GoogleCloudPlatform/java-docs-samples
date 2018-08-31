@@ -36,18 +36,18 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START automl_language_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-automl</artifactId>
       <version>0.55.1-beta</version>
     </dependency>
+    <!-- [END automl_language_java_dependencies] -->
     <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
       <artifactId>argparse4j</artifactId>
       <version>0.8.1</version>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
