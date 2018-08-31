@@ -51,7 +51,7 @@ the project for the additional sample.
 
 ## Build Tools
 
-All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
+For instructions regarding development environment setup, please visit [the documentation](https://cloud.google.com/java/docs/setup). All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
 
 ## Testing
 
