@@ -48,7 +48,7 @@ mvn appengine:run
 mvn appengine:deploy
 ```
 
-## Running the Sample
+## Run the Sample Using the Command Line
 
 Set environment variables:
 

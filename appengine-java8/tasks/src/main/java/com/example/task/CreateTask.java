@@ -16,11 +16,11 @@
 
 package com.example.task;
 
-import com.google.cloud.tasks.v2beta2.AppEngineHttpRequest;
-import com.google.cloud.tasks.v2beta2.CloudTasksClient;
-import com.google.cloud.tasks.v2beta2.HttpMethod;
-import com.google.cloud.tasks.v2beta2.QueueName;
-import com.google.cloud.tasks.v2beta2.Task;
+import com.google.cloud.tasks.v2beta3.AppEngineHttpRequest;
+import com.google.cloud.tasks.v2beta3.CloudTasksClient;
+import com.google.cloud.tasks.v2beta3.HttpMethod;
+import com.google.cloud.tasks.v2beta3.QueueName;
+import com.google.cloud.tasks.v2beta3.Task;
 import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
@@ -121,7 +121,18 @@ public class CreateTask {
     String payload = params.getOptionValue(PAYLOAD_OPTION.getOpt(), "default payload");
 
     // [START cloud_tasks_appengine_create_task]
+    // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
+
+      // TODO(developer): Uncomment these lines and replace with your values.
+      // String project = "my-project-id";
+      // String queue = "my-appengine-queue";
+      // String location = "us-central1";
+      // String payload = "hello";
+
+      // Construct the fully qualified queue name.
+      String queueName = QueueName.of(projectId, location, queueName).toString();
+      // Construct the task body.
       Task.Builder taskBuilder = Task
           .newBuilder()
           .setAppEngineHttpRequest(AppEngineHttpRequest.newBuilder()
@@ -129,14 +140,17 @@ public class CreateTask {
               .setRelativeUrl("/tasks/create")
               .setHttpMethod(HttpMethod.POST)
               .build());
+
       if (params.hasOption(IN_SECONDS_OPTION.getOpt())) {
+        // Add the scheduled time to the request.
         int seconds = Integer.parseInt(params.getOptionValue(IN_SECONDS_OPTION.getOpt()));
         taskBuilder.setScheduleTime(Timestamp
             .newBuilder()
             .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));
       }
-      Task task = client.createTask(
-          QueueName.of(projectId, location, queueName).toString(), taskBuilder.build());
+
+      // Send create task request.
+      Task task = client.createTask(queueName, taskBuilder.build());
       System.out.println("Task created: " + task.getName());
     }
     // [END cloud_tasks_appengine_create_task]
