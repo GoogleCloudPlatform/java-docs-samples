@@ -47,7 +47,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  */
 public class DatasetApi {
 
-  // [START automl_natural_language_create_dataset]
+  // [START automl_language_create_dataset]
   /**
    * Demonstrates using the AutoML client to create a dataset
    *
@@ -101,9 +101,9 @@ public class DatasetApi {
     System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
     System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
   }
-  // [END automl_natural_language_create_dataset]
+  // [END automl_language_create_dataset]
 
-  // [START automl_natural_language_list_datasets]
+  // [START automl_language_list_datasets]
   /**
    * Demonstrates using the AutoML client to list all datasets.
    *
@@ -145,9 +145,9 @@ public class DatasetApi {
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
     }
   }
-  // [END automl_natural_language_list_datasets]
+  // [END automl_language_list_datasets]
 
-  // [START automl_natural_language_get_dataset]
+  // [START automl_language_get_dataset]
   /**
    * Demonstrates using the AutoML client to get a dataset by ID.
    *
@@ -181,9 +181,9 @@ public class DatasetApi {
     System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
     System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
   }
-  // [END automl_natural_language_get_dataset]
+  // [END automl_language_get_dataset]
 
-  // [START automl_natural_language_import_data]
+  // [START automl_language_import_data]
   /**
    * Import labeled items.
    *
@@ -217,9 +217,9 @@ public class DatasetApi {
     Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
     System.out.println(String.format("Dataset imported. %s", response));
   }
-  // [END automl_natural_language_import_data]
+  // [END automl_language_import_data]
 
-  // [START automl_natural_language_export_data]
+  // [START automl_language_export_data]
   /**
    * Demonstrates using the AutoML client to export a dataset to a Google Cloud Storage bucket.
    *
@@ -247,9 +247,9 @@ public class DatasetApi {
     Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
     System.out.println(String.format("Dataset exported. %s", response));
   }
-  // [END automl_natural_language_export_data]
+  // [END automl_language_export_data]
 
-  // [START automl_natural_language_delete_dataset]
+  // [START automl_language_delete_dataset]
   /**
    * Delete a dataset.
    *
@@ -271,7 +271,7 @@ public class DatasetApi {
 
     System.out.println(String.format("Dataset deleted. %s", response));
   }
-  // [END automl_natural_language_delete_dataset]
+  // [END automl_language_delete_dataset]
 
   public static void main(String[] args) throws Exception {
     DatasetApi datasetApi = new DatasetApi();

@@ -35,13 +35,13 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START pubsub_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
       <version>1.38.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END pubsub_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>

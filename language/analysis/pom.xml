@@ -35,18 +35,18 @@ limitations under the License.
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START language_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
       <version>1.38.0</version>
     </dependency>
+    <!-- [END language_java_dependencies] -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>20.0</version>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test Dependencies -->
     <dependency>

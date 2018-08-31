@@ -37,7 +37,7 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- dependencies -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
@@ -54,7 +54,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- [END dependencies] -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
