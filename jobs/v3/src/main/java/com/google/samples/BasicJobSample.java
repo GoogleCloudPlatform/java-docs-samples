@@ -91,7 +91,6 @@ public final class BasicJobSample {
           new CreateJobRequest().setJob(jobToBeCreated);
 
       Job jobCreated = talentSolutionClient.projects().jobs().create(DEFAULT_PROJECT_ID, createJobRequest).execute();
-      //Job jobCreated = ta.jobs().create(createJobRequest).execute();
       System.out.println("Job created: " + jobCreated);
       return jobCreated;
     } catch (IOException e) {

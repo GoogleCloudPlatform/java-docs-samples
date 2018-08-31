@@ -139,8 +139,7 @@ public final class CustomAttributeSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain(
-                "www.google.com");
+            .setDomain("www.google.com");
 
     String customAttributeFilter = "(255 <= someFieldName2) AND (someFieldName2 <= 257)";
     JobQuery jobQuery = new JobQuery()
