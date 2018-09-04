@@ -16,12 +16,6 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.model.Company;
 import com.google.api.services.jobs.v3.model.CompensationEntry;
@@ -37,7 +31,6 @@ import com.google.api.services.jobs.v3.model.SearchJobsResponse;
 import com.google.api.services.jobs.v3.model.TimestampRange;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,7 +55,8 @@ public final class GeneralSearchSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
+      .getTalentSolutionClient();
 
   //[START basic_keyword_search]
 
@@ -92,7 +86,7 @@ public final class GeneralSearchSample {
             .setJobQuery(jobQuery) // Set the actual search term as defined in the jobQurey
             .setSearchMode("JOB_SEARCH"); // Set the search mode to a regular search
 
-     SearchJobsResponse searchJobsResponse =
+    SearchJobsResponse searchJobsResponse =
         talentSolutionClient
             .projects()
             .jobs()
@@ -184,11 +178,9 @@ public final class GeneralSearchSample {
   // [START date_range_filter]
 
   /**
-   * Search on date range.
-   * In JSON format, the Timestamp type is encoded as a string in the
-   * [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the
-   * format is "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z"
-   * e.g. "2017-01-15T01:30:15.01Z"
+   * Search on date range. In JSON format, the Timestamp type is encoded as a string in the [RFC
+   * 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the format is
+   * "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z" e.g. "2017-01-15T01:30:15.01Z"
    */
   public static void dateRangeSearch(String companyName, String startTime, String endTime)
       throws IOException {
@@ -217,7 +209,6 @@ public final class GeneralSearchSample {
             .setRequestMetadata(requestMetadata)
             .setJobQuery(jobQuery) // Set the actual search term as defined in the jobQurey
             .setSearchMode("JOB_SEARCH"); // Set the search mode to a regular search
-
 
     SearchJobsResponse searchJobsResponse =
         talentSolutionClient

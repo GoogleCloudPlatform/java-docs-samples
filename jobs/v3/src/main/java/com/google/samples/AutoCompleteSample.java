@@ -16,19 +16,12 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.CloudTalentSolution.Projects.Complete;
 import com.google.api.services.jobs.v3.model.Company;
 import com.google.api.services.jobs.v3.model.CompleteQueryResponse;
 import com.google.api.services.jobs.v3.model.Job;
 import java.io.IOException;
-import java.util.Collections;
 
 /**
  * The samples in this file introduced how to do the auto complete, including:
@@ -42,7 +35,8 @@ public final class AutoCompleteSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
+      .getTalentSolutionClient();
 
   //[START auto_complete_job_title]
 
@@ -102,8 +96,8 @@ public final class AutoCompleteSample {
 
     // Wait several seconds for post processing
     Thread.sleep(10000);
-    defaultAutoComplete(companyName,"goo");
-    defaultAutoComplete(companyName,"sof");
+    defaultAutoComplete(companyName, "goo");
+    defaultAutoComplete(companyName, "sof");
     jobTitleAutoComplete(companyName, "sof");
 
     BasicJobSample.deleteJob(jobName);

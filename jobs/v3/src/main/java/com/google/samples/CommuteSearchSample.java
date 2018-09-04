@@ -16,12 +16,6 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.model.CommuteFilter;
 import com.google.api.services.jobs.v3.model.Company;
@@ -33,7 +27,6 @@ import com.google.api.services.jobs.v3.model.SearchJobsRequest;
 import com.google.api.services.jobs.v3.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * The samples in this file introduce how to do a commute search.
@@ -46,7 +39,8 @@ public final class CommuteSearchSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
+      .getTalentSolutionClient();
 
   // [START commute_search]
 
@@ -81,7 +75,8 @@ public final class CommuteSearchSample {
             .setJobView("JOB_VIEW_FULL")
             .setRequirePreciseResultSize(true);
     SearchJobsResponse response =
-        talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, searchJobsRequest).execute();
+        talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, searchJobsRequest)
+            .execute();
     System.out.println(response);
   }
   // [END commute_search]

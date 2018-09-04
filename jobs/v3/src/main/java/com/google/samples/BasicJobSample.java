@@ -16,12 +16,6 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.model.ApplicationInfo;
 import com.google.api.services.jobs.v3.model.Company;
@@ -30,7 +24,6 @@ import com.google.api.services.jobs.v3.model.Job;
 import com.google.api.services.jobs.v3.model.UpdateJobRequest;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -53,7 +46,8 @@ public final class BasicJobSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
+      .getTalentSolutionClient();
 
   // [START basic_job]
 
@@ -90,7 +84,8 @@ public final class BasicJobSample {
       CreateJobRequest createJobRequest =
           new CreateJobRequest().setJob(jobToBeCreated);
 
-      Job jobCreated = talentSolutionClient.projects().jobs().create(DEFAULT_PROJECT_ID, createJobRequest).execute();
+      Job jobCreated = talentSolutionClient.projects().jobs()
+          .create(DEFAULT_PROJECT_ID, createJobRequest).execute();
       System.out.println("Job created: " + jobCreated);
       return jobCreated;
     } catch (IOException e) {

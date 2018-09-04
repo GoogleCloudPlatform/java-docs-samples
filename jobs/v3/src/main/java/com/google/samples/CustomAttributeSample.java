@@ -16,12 +16,6 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.model.ApplicationInfo;
 import com.google.api.services.jobs.v3.model.Company;
@@ -30,13 +24,14 @@ import com.google.api.services.jobs.v3.model.Job;
 import com.google.api.services.jobs.v3.model.JobQuery;
 import com.google.api.services.jobs.v3.model.RequestMetadata;
 import com.google.api.services.jobs.v3.model.SearchJobsRequest;
-import com.google.api.services.jobs.v3.model.SearchJobsResponse;;
+import com.google.api.services.jobs.v3.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+;
 
 /**
  * This file contains the samples about CustomAttribute, including:
@@ -50,7 +45,8 @@ public final class CustomAttributeSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart.getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
+      .getTalentSolutionClient();
 
   // [START custom_attribute_job]
 
