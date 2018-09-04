@@ -14,13 +14,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # [START memorystore_deploy_sh]
-if [ -z "$GCS_APP_LOCATION" ]; then
-  if [ -z "$BUCKET"]; then
-    echo "Must set \$BUCKET. For example: BUCKET=my-bucket-name"
+if [ -z "$GCS_BUCKET_NAME" ]; then
+    echo "Must set \$GCS_BUCKET_NAME. For example: GCS_BUCKET_NAME=my-bucket"
     exit 1
-  fi
-  GCS_APP_LOCATION="gs://$BUCKET/gce/"
-  echo $GCS_APP_LOCATION
 fi
 
 if [ -z "$ZONE" ]; then
@@ -37,7 +33,7 @@ cd ..
 mvn clean package
 
 #Copy the WAR artifact to the GCS bucket location
-gsutil cp -r target/${WAR} ${GCS_APP_LOCATION}
+gsutil cp -r target/${WAR} gs://"$GCS_BUCKET_NAME"/gce/
 
 cd gce_deployment
 
@@ -48,7 +44,7 @@ gcloud compute instances create my-instance \
     --machine-type=g1-small \
     --scopes cloud-platform \
     --metadata-from-file startup-script=startup-script.sh \
-    --metadata app-location=${GCS_APP_LOCATION},app-war=$WAR \
+    --metadata gcs-bucket=$GCS_BUCKET_NAME,app-war=$WAR \
     --zone $ZONE \
     --tags http-server
 
