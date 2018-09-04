@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-// [START example]
+// [START gae_twilio_send_sms]
 @SuppressWarnings("serial")
 public class SendSmsServlet extends HttpServlet {
 
@@ -62,4 +62,4 @@ public class SendSmsServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_twilio_send_sms]

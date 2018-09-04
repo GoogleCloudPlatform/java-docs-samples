@@ -31,7 +31,7 @@
     </properties>
 
     <dependencies>
-        <!-- [START dependencies] -->
+        <!-- [START tts_java_dependencies] -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-texttospeech</artifactId>
@@ -42,7 +42,7 @@
             <artifactId>argparse4j</artifactId>
             <version>0.8.1</version>
         </dependency>
-        <!-- [END dependencies] -->
+        <!-- [END tts_java_dependencies] -->
 
         <!-- Test dependencies -->
         <dependency>

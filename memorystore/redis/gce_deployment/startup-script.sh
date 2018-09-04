@@ -18,10 +18,10 @@ set -ex
 
 # Talk to the metadata server to get the project id and location of application binary.
 PROJECTID=$(curl -s "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
-GCS_APP_LOCATION=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/app-location" -H "Metadata-Flavor: Google")
+GCS_BUCKET_NAME=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs-bucket" -H "Metadata-Flavor: Google")
 WAR=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/app-war" -H "Metadata-Flavor: Google")
 
-gsutil cp "$GCS_APP_LOCATION"** .
+gsutil cp gs://"$GCS_BUCKET_NAME"/gce/"$WAR" .
 
 # Install dependencies from apt
 apt-get update

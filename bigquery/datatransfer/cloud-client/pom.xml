@@ -36,13 +36,13 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START bigquerydatatransfer_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquerydatatransfer</artifactId>
       <version>0.56.0-beta</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END bigquerydatatransfer_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>

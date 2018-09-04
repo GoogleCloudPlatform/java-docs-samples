@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @WebServlet(name = "cron", value = "/cron")
 @SuppressWarnings("serial")
 public class CronServlet extends HttpServlet {
@@ -35,4 +34,3 @@ public class CronServlet extends HttpServlet {
     out.println("Hello from cron!");
   }
 }
-// [END example]
