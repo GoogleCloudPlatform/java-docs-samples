@@ -29,6 +29,7 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -46,11 +47,16 @@ public class RetrieveDataSnippets {
     // [START fs_retrieve_create_examples]
     CollectionReference cities = db.collection("cities");
     List<ApiFuture<WriteResult>> futures = new ArrayList<>();
-    futures.add(cities.document("SF").set(new City("San Francisco", "CA", "USA", false, 860000L)));
-    futures.add(cities.document("LA").set(new City("Los Angeles", "CA", "USA", false, 3900000L)));
-    futures.add(cities.document("DC").set(new City("Washington D.C.", null, "USA", true, 680000L)));
-    futures.add(cities.document("TOK").set(new City("Tokyo", null, "Japan", true, 9000000L)));
-    futures.add(cities.document("BJ").set(new City("Beijing", null, "China", true, 21500000L)));
+    futures.add(cities.document("SF").set(new City("San Francisco", "CA", "USA", false, 860000L,
+        Arrays.asList("west_coast", "norcal"))));
+    futures.add(cities.document("LA").set(new City("Los Angeles", "CA", "USA", false, 3900000L,
+        Arrays.asList("west_coast", "socal"))));
+    futures.add(cities.document("DC").set(new City("Washington D.C.", null, "USA", true, 680000L,
+        Arrays.asList("east_coast"))));
+    futures.add(cities.document("TOK").set(new City("Tokyo", null, "Japan", true, 9000000L,
+        Arrays.asList("kanto", "honshu"))));
+    futures.add(cities.document("BJ").set(new City("Beijing", null, "China", true, 21500000L,
+        Arrays.asList("jingjinji", "hebei"))));
     // (optional) block on operation
     ApiFutures.allAsList(futures).get();
     // [END fs_retrieve_create_examples]
