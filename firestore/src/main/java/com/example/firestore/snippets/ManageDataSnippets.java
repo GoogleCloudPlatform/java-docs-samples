@@ -30,6 +30,7 @@ import com.google.cloud.firestore.Transaction;
 import com.google.cloud.firestore.WriteBatch;
 import com.google.cloud.firestore.WriteResult;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ class ManageDataSnippets {
     docData.put("name", "Los Angeles");
     docData.put("state", "CA");
     docData.put("country", "USA");
+    docData.put("regions", Arrays.asList("west_coast", "socal"));
     // Add a new document (asynchronously) in collection "cities" with id "LA"
     ApiFuture<WriteResult> future = db.collection("cities").document("LA").set(docData);
     // ...
@@ -102,7 +104,8 @@ class ManageDataSnippets {
    */
   City addSimpleDocumentAsEntity() throws Exception {
     // [START fs_add_simple_doc_as_entity]
-    City city = new City("Los Angeles", "CA", "USA", false, 3900000L);
+    City city = new City("Los Angeles", "CA", "USA", false, 3900000L,
+        Arrays.asList("west_coast", "socal"));
     ApiFuture<WriteResult> future = db.collection("cities").document("LA").set(city);
     // block on response if required
     System.out.println("Update time : " + future.get().getUpdateTime());
@@ -256,6 +259,23 @@ class ManageDataSnippets {
     ApiFuture<WriteResult> writeResult = docRef.update("timestamp", FieldValue.serverTimestamp());
     System.out.println("Update time : " + writeResult.get());
     // [END fs_update_server_timestamp]
+  }
+
+  /** Update array fields in a document. **/
+  void updateDocumentArray() throws Exception {
+    // [START fs_update_document_array]
+    DocumentReference washingtonRef = db.collection("cities").document("DC");
+
+    // Atomically add a new region to the "regions" array field.
+    ApiFuture<WriteResult> arrayUnion = washingtonRef.update("regions",
+        FieldValue.arrayUnion("greater_virginia"));
+    System.out.println("Update time : " + arrayUnion.get());
+
+    // Atomically remove a region from the "regions" array field.
+    ApiFuture<WriteResult> arrayRm = washingtonRef.update("regions",
+        FieldValue.arrayRemove("east_coast"));
+    System.out.println("Update time : " + arrayRm.get());
+    // [END fs_update_document_array]
   }
 
   /** Delete specific fields when updating a document. */
