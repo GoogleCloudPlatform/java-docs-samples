@@ -16,8 +16,6 @@
 
 package com.google.cloud.vision.samples.landmarkdetection;
 
-// [START import_libraries]
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -36,7 +34,6 @@ import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
-// [END import_libraries]
 
 /**
  * A sample application that uses the Vision API to detect landmarks in an image that is hosted on
@@ -52,7 +49,6 @@ public class DetectLandmark {
 
   private static final int MAX_RESULTS = 4;
 
-  // [START run_application]
   /**
    * Annotates an image using the Vision API.
    */
@@ -74,9 +70,7 @@ public class DetectLandmark {
       System.out.printf("\t%s\n", annotation.getDescription());
     }
   }
-  // [END run_application]
 
-  // [START authenticate]
   /**
    * Connects to the Vision API using Application Default Credentials.
    */
@@ -88,9 +82,7 @@ public class DetectLandmark {
             .setApplicationName(APPLICATION_NAME)
             .build();
   }
-  // [END authenticate]
 
-  // [START detect_gcs_object]
   private final Vision vision;
 
   /**
@@ -129,5 +121,4 @@ public class DetectLandmark {
     }
     return response.getLandmarkAnnotations();
   }
-  // [END detect_gcs_object]
 }
