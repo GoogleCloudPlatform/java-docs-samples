@@ -16,11 +16,11 @@
 
 package com.google.samples;
 
-import com.google.api.services.jobs.v2.JobService;
-import com.google.api.services.jobs.v2.JobService.V2.Complete;
-import com.google.api.services.jobs.v2.model.Company;
-import com.google.api.services.jobs.v2.model.CompleteQueryResponse;
-import com.google.api.services.jobs.v2.model.Job;
+import com.google.api.services.jobs.v3.CloudTalentSolution;
+import com.google.api.services.jobs.v3.CloudTalentSolution.Projects.Complete;
+import com.google.api.services.jobs.v3.model.Company;
+import com.google.api.services.jobs.v3.model.CompleteQueryResponse;
+import com.google.api.services.jobs.v3.model.Job;
 import java.io.IOException;
 
 /**
@@ -32,7 +32,11 @@ import java.io.IOException;
  */
 public final class AutoCompleteSample {
 
-  private static JobService jobService = JobServiceQuickstart.getJobService();
+  private static final String DEFAULT_PROJECT_ID =
+      "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
+
+  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
+      .getTalentSolutionClient();
 
   //[START auto_complete_job_title]
 
@@ -41,13 +45,15 @@ public final class AutoCompleteSample {
    */
   public static void jobTitleAutoComplete(String companyName, String query)
       throws IOException {
-    Complete complete = jobService
-        .v2()
-        .complete()
-        .setQuery(query)
-        .setLanguageCode("en-US")
-        .setType("JOB_TITLE")
-        .setPageSize(10);
+
+    Complete complete =
+        talentSolutionClient
+            .projects()
+            .complete(DEFAULT_PROJECT_ID)
+            .setQuery(query)
+            .setLanguageCode("en-US")
+            .setType("JOB_TITLE")
+            .setPageSize(10);
     if (companyName != null) {
       complete.setCompanyName(companyName);
     }
@@ -63,12 +69,13 @@ public final class AutoCompleteSample {
    */
   public static void defaultAutoComplete(String companyName, String query)
       throws IOException {
-    Complete complete = jobService
-        .v2()
-        .complete()
-        .setQuery(query)
-        .setLanguageCode("en-US")
-        .setPageSize(10);
+    Complete complete =
+        talentSolutionClient
+            .projects()
+            .complete(DEFAULT_PROJECT_ID)
+            .setQuery(query)
+            .setLanguageCode("en-US")
+            .setPageSize(10);
     if (companyName != null) {
       complete.setCompanyName(companyName);
     }
@@ -84,13 +91,13 @@ public final class AutoCompleteSample {
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
     Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName)
-        .setJobTitle("Software engineer");
+        .setTitle("Software engineer");
     final String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
 
     // Wait several seconds for post processing
     Thread.sleep(10000);
-    defaultAutoComplete(companyName,"goo");
-    defaultAutoComplete(companyName,"sof");
+    defaultAutoComplete(companyName, "goo");
+    defaultAutoComplete(companyName, "sof");
     jobTitleAutoComplete(companyName, "sof");
 
     BasicJobSample.deleteJob(jobName);
