@@ -38,11 +38,11 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class CreateTask {
-  private static String GGOGLE_CLOUD_PROJECT_KEY = "GOOGLE_CLOUD_PROJECT";
+  private static String GOOGLE_CLOUD_PROJECT_KEY = "PROJECT_ID";
 
   private static Option PROJECT_ID_OPTION = Option.builder("pid")
       .longOpt("project-id")
-      .desc("The Google Cloud Project, if not set as GOOGLE_CLOUD_PROJECT env var.")
+      .desc("The Google Cloud Project, if not set as PROJECT_ID env var.")
       .hasArg()
       .argName("project-id")
       .type(String.class)
@@ -109,7 +109,7 @@ public class CreateTask {
     if (params.hasOption("project-id")) {
       projectId = params.getOptionValue("project-id");
     } else {
-      projectId = System.getenv(GGOGLE_CLOUD_PROJECT_KEY);
+      projectId = System.getenv(GOOGLE_CLOUD_PROJECT_KEY);
     }
     if (Strings.isNullOrEmpty(projectId)) {
       printUsage(options);
@@ -131,13 +131,13 @@ public class CreateTask {
       // String payload = "hello";
 
       // Construct the fully qualified queue name.
-      String queueName = QueueName.of(projectId, location, queueName).toString();
+      String queuePath = QueueName.of(projectId, location, queueName).toString();
       // Construct the task body.
       Task.Builder taskBuilder = Task
           .newBuilder()
           .setAppEngineHttpRequest(AppEngineHttpRequest.newBuilder()
-              .setPayload(ByteString.copyFrom(payload, Charset.defaultCharset()))
-              .setRelativeUrl("/tasks/create")
+              .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
+              .setRelativeUri("/tasks/create")
               .setHttpMethod(HttpMethod.POST)
               .build());
 
@@ -150,7 +150,7 @@ public class CreateTask {
       }
 
       // Send create task request.
-      Task task = client.createTask(queueName, taskBuilder.build());
+      Task task = client.createTask(queuePath, taskBuilder.build());
       System.out.println("Task created: " + task.getName());
     }
     // [END cloud_tasks_appengine_create_task]
