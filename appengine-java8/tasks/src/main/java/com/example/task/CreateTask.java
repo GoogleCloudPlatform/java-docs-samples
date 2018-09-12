@@ -124,14 +124,15 @@ public class CreateTask {
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
 
-      // TODO(developer): Uncomment these lines and replace with your values.
-      // String project = "my-project-id";
-      // String queue = "my-appengine-queue";
-      // String location = "us-central1";
-      // String payload = "hello";
+      // Variables provided by the CLI.
+      // projectId = "my-project-id";
+      // queueName = "my-appengine-queue";
+      // location = "us-central1";
+      // payload = "hello";
 
       // Construct the fully qualified queue name.
       String queuePath = QueueName.of(projectId, location, queueName).toString();
+
       // Construct the task body.
       Task.Builder taskBuilder = Task
           .newBuilder()
