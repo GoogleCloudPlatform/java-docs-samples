@@ -49,7 +49,7 @@ Set environment variables:
 First, your project ID:
 
 ```
-export PROJECT_ID=<YOUR_PROJECT_ID>
+export GOOGLE_CLOUD_PROJECT=<YOUR_GOOGLE_CLOUD_PROJECT>
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
@@ -73,7 +73,7 @@ Create a task, targeted at the `/tasks/create` endpoint, with a payload specifie
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $PROJECT_ID \
+    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
     --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
 ```
 
@@ -86,6 +86,6 @@ Create a task that will be scheduled for a time in the future using the
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $PROJECT_ID \
+    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
     --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
 ```

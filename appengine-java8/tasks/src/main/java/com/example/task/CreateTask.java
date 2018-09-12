@@ -38,11 +38,11 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class CreateTask {
-  private static String GOOGLE_CLOUD_PROJECT_KEY = "PROJECT_ID";
+  private static String GOOGLE_CLOUD_PROJECT_KEY = "GOOGLE_CLOUD_PROJECT";
 
   private static Option PROJECT_ID_OPTION = Option.builder("pid")
       .longOpt("project-id")
-      .desc("The Google Cloud Project, if not set as PROJECT_ID env var.")
+      .desc("The Google Cloud Project, if not set as GOOGLE_CLOUD_PROJECT env var.")
       .hasArg()
       .argName("project-id")
       .type(String.class)
