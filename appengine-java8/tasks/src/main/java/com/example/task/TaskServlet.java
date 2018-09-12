@@ -35,10 +35,13 @@ public class TaskServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     log.info("Received task request: " + req.getServletPath());
-    if (req.getParameter("payload") != null) {
-      String payload = req.getParameter("payload");
-      log.info("Request payload: " + payload);
-      String output = String.format("Received task with payload %s", payload);
+    String body = req.getReader()
+        .lines()
+        .reduce("", (accumulator, actual) -> accumulator + actual);
+        
+    if (!body.isEmpty()) {
+      log.info("Request payload: " + body);
+      String output = String.format("Received task with payload %s", body);
       resp.getOutputStream().write(output.getBytes());
       log.info("Sending response: " + output);
       resp.setStatus(HttpServletResponse.SC_OK);
