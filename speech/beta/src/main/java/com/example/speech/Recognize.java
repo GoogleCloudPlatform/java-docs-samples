@@ -108,15 +108,9 @@ public class Recognize {
         transcribeModelSelection(path);
       }
     } else if (command.equals("auto-punctuation")) {
-      if (path.startsWith("gs://")) {
-        transcribeGcsWithAutomaticPunctuation(path);
-      } else {
         transcribeFileWithAutomaticPunctuation(path);
-      }
     } else if (command.equals("stream-punctuation")) {
       streamingTranscribeWithAutomaticPunctuation(path);
-    } else if (command.equals("enhanced-model")) {
-      transcribeFileWithEnhancedModel(path);
     } else if (command.equals("metadata")) {
       transcribeFileWithMetadata(path);
     } else if (command.equals("diarization")) {
@@ -598,48 +592,6 @@ public class Recognize {
   }
   // [END speech_sync_recognize_punctuation]
 
-  // [START speech_transcribe_auto_punctuation_beta]
-  /**
-   * Performs transcription on remote FLAC file and prints the transcription.
-   *
-   * @param gcsUri the path to the remote FLAC audio file to transcribe.
-   */
-  public static void transcribeGcsWithAutomaticPunctuation(String gcsUri) throws Exception {
-    try (SpeechClient speechClient = SpeechClient.create()) {
-      // Configure request with raw PCM audio
-      RecognitionConfig config =
-          RecognitionConfig.newBuilder()
-              .setEncoding(AudioEncoding.FLAC)
-              .setLanguageCode("en-US")
-              .setSampleRateHertz(16000)
-              .setEnableAutomaticPunctuation(true)
-              .build();
-
-      // Set the remote path for the audio file
-      RecognitionAudio audio = RecognitionAudio.newBuilder().setUri(gcsUri).build();
-
-      // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
-          speechClient.longRunningRecognizeAsync(config, audio);
-
-      while (!response.isDone()) {
-        System.out.println("Waiting for response...");
-        Thread.sleep(10000);
-      }
-
-      // Just print the first result here.
-      SpeechRecognitionResult result = response.get().getResultsList().get(0);
-
-      // There can be several alternative transcripts for a given chunk of speech. Just use the
-      // first (most likely) one here.
-      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-
-      // Print out the result
-      System.out.printf("Transcript : %s\n", alternative.getTranscript());
-    }
-  }
-  // [END speech_transcribe_auto_punctuation_beta]
-
   // [START speech_stream_recognize_punctuation]
   /**
    * Performs streaming speech recognition on raw PCM audio data.
@@ -819,48 +771,6 @@ public class Recognize {
     responseObserver.onComplete();
   }
   // [END speech_transcribe_streaming_mic]
-
-  // [START speech_transcribe_enhanced_model_beta]
-  /**
-   * Transcribe the given audio file using an enhanced model.
-   *
-   * @param fileName the path to an audio file.
-   */
-  public static void transcribeFileWithEnhancedModel(String fileName) throws Exception {
-    Path path = Paths.get(fileName);
-    byte[] content = Files.readAllBytes(path);
-
-    try (SpeechClient speechClient = SpeechClient.create()) {
-      // Get the contents of the local audio file
-      RecognitionAudio recognitionAudio =
-          RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
-
-      // Configure request to enable enhanced models
-      RecognitionConfig config =
-          RecognitionConfig.newBuilder()
-              .setEncoding(AudioEncoding.LINEAR16)
-              .setLanguageCode("en-US")
-              .setSampleRateHertz(8000)
-              // Enhanced models are only available to projects that
-              // opt in for audio data collection.
-              .setUseEnhanced(true)
-              // A model must be specified to use enhanced model.
-              .setModel("phone_call")
-              .build();
-
-      // Perform the transcription request
-      RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
-
-      // Print out the results
-      for (SpeechRecognitionResult result : recognizeResponse.getResultsList()) {
-        // There can be several alternative transcripts for a given chunk of speech. Just use the
-        // first (most likely) one here.
-        SpeechRecognitionAlternative alternative = result.getAlternatives(0);
-        System.out.format("Transcript: %s\n\n", alternative.getTranscript());
-      }
-    }
-  }
-  // [END speech_transcribe_enhanced_model_beta]
 
   // [START speech_transcribe_recognition_metadata_beta]
   /**
