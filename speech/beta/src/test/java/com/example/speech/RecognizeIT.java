@@ -61,57 +61,6 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testRecognizeFile() throws Exception {
-    Recognize.syncRecognizeFile(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-  }
-
-  @Test
-  public void testRecognizeWordoffset() throws Exception {
-    Recognize.syncRecognizeWords(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-    assertThat(got).contains("\t0.0 sec -");
-  }
-
-  @Test
-  public void testRecognizeGcs() throws Exception {
-    Recognize.syncRecognizeGcs(gcsAudioPath);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-  }
-
-  @Test
-  public void testAsyncRecognizeFile() throws Exception {
-    Recognize.asyncRecognizeFile(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-  }
-
-  @Test
-  public void testAsyncRecognizeGcs() throws Exception {
-    Recognize.asyncRecognizeGcs(gcsAudioPath);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-  }
-
-  @Test
-  public void testAsyncWordoffset() throws Exception {
-    Recognize.asyncRecognizeWords(gcsAudioPath);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-    assertThat(got).contains("\t0.0 sec -");
-  }
-
-  @Test
-  public void testStreamRecognize() throws Exception {
-    Recognize.streamingRecognizeFile(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("how old is the Brooklyn Bridge");
-  }
-
-  @Test
   public void testModelSelection() throws Exception {
     Recognize.transcribeModelSelection(videoFileName);
     String got = bout.toString();
@@ -125,20 +74,6 @@ public class RecognizeIT {
     String got = bout.toString();
     assertThat(got).contains("OK Google");
     assertThat(got).contains("the weather outside is sunny");
-  }
-
-  @Test
-  public void testAutoPunctuation() throws Exception {
-    Recognize.transcribeFileWithAutomaticPunctuation(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("How old is the Brooklyn Bridge?");
-  }
-
-  @Test
-  public void testStreamAutoPunctuation() throws Exception {
-    Recognize.streamingTranscribeWithAutomaticPunctuation(audioFileName);
-    String got = bout.toString();
-    assertThat(got).contains("How old is the Brooklyn Bridge?");
   }
 
   @Test
