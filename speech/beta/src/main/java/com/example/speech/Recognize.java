@@ -47,9 +47,8 @@ public class Recognize {
       System.out.printf(
           "\tjava %s \"<command>\" \"<path-to-image>\"\n"
               + "Commands:\n"
-              + "\t model-selection | stream-punctuation | enhanced-model| metadata  \n"
-              + "\t| diarization | multi-channel | multi-language \n"
-              + "\t | word-level-conf"
+              + "\t model-selection | metadata | diarization | multi-channel |\n"
+              + "\t multi-language | word-level-conf\n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -59,7 +58,7 @@ public class Recognize {
     String path = args.length > 1 ? args[1] : "";
 
     // Use command and GCS path pattern to invoke transcription.
-   if (command.equals("model-selection")) {
+    if (command.equals("model-selection")) {
       if (path.startsWith("gs://")) {
         transcribeModelSelectionGcs(path);
       } else {
@@ -94,7 +93,7 @@ public class Recognize {
     }
   }
 
-    // [START speech_transcribe_model_selection_beta]
+  // [START speech_transcribe_model_selection_beta]
   /**
    * Performs transcription of the given audio file synchronously with the selected model.
    *
@@ -172,8 +171,8 @@ public class Recognize {
       SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
       System.out.printf("Transcript : %s\n", alternative.getTranscript());
     }
-    // [END speech_transcribe_model_selection_gcs_beta]
   }
+  // [END speech_transcribe_model_selection_gcs_beta]
 
   // [START speech_transcribe_recognition_metadata_beta]
   /**
@@ -315,11 +314,9 @@ public class Recognize {
       }
     }
   }
-
   // [END speech_transcribe_diarization_gcs_beta]
 
   // [START speech_transcribe_multichannel_beta]
-
   /**
    * Transcribe a local audio file with multi-channel recognition
    *
@@ -360,7 +357,6 @@ public class Recognize {
   // [END speech_transcribe_multichannel_beta]
 
   // [START speech_transcribe_multichannel_gcs_beta]
-
   /**
    * Transcribe a remote audio file with multi-channel recognition
    *
@@ -407,7 +403,6 @@ public class Recognize {
   // [END speech_transcribe_multichannel_gcs_beta]
 
   // [START speech_transcribe_multilanguage_beta]
-
   /**
    * Transcribe a local audio file with multi-language recognition
    *
@@ -449,7 +444,6 @@ public class Recognize {
   // [END speech_transcribe_multilanguage_beta]
 
   // [START speech_transcribe_multilanguage_gcs_beta]
-
   /**
    * Transcribe a remote audio file with multi-language recognition
    *
@@ -497,7 +491,6 @@ public class Recognize {
   // [END speech_transcribe_multilanguage_gcs_beta]
 
   // [START speech_transcribe_word_level_confidence_beta]
-
   /**
    * Transcribe a local audio file with word level confidence
    *
@@ -536,7 +529,6 @@ public class Recognize {
   // [END speech_transcribe_word_level_confidence_beta]
 
   // [START speech_transcribe_word_level_confidence_gcs_beta]
-
   /**
    * Transcribe a remote audio file with word level confidence
    *
