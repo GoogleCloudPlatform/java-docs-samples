@@ -61,22 +61,6 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testModelSelection() throws Exception {
-    Recognize.transcribeModelSelection(videoFileName);
-    String got = bout.toString();
-    assertThat(got).contains("OK Google");
-    assertThat(got).contains("the weather outside is sunny");
-  }
-
-  @Test
-  public void testGcsModelSelection() throws Exception {
-    Recognize.transcribeModelSelectionGcs(gcsVideoPath);
-    String got = bout.toString();
-    assertThat(got).contains("OK Google");
-    assertThat(got).contains("the weather outside is sunny");
-  }
-
-  @Test
   public void testMetadata() throws Exception {
     Recognize.transcribeFileWithMetadata(recognitionAudioFile);
     String got = bout.toString();

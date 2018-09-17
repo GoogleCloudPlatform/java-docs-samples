@@ -38,8 +38,11 @@ public class RecognizeIT {
   // The path to the audio file to transcribe
   private String audioFileName = "./resources/audio.raw";
   private String gcsAudioPath = "gs://" + BUCKET + "/speech/brooklyn.flac";
-
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
+
+  // The path to the video file to transcribe
+  private String videoFileName = "./resources/Google_Gnome.wav";
+  private String gcsVideoPath = "gs://" + BUCKET + "/speech/Google_Gnome.wav";
 
   @Before
   public void setUp() {
@@ -132,4 +135,19 @@ public class RecognizeIT {
     assertThat(got).contains("Chrome");
   }
 
+  @Test
+  public void testModelSelection() throws Exception {
+    Recognize.transcribeModelSelection(videoFileName);
+    String got = bout.toString();
+    assertThat(got).contains("OK Google");
+    assertThat(got).contains("the weather outside is sunny");
+  }
+
+  @Test
+  public void testGcsModelSelection() throws Exception {
+    Recognize.transcribeModelSelectionGcs(gcsVideoPath);
+    String got = bout.toString();
+    assertThat(got).contains("OK Google");
+    assertThat(got).contains("the weather outside is sunny");
+  }
 }
