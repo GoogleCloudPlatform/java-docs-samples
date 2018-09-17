@@ -87,8 +87,6 @@ public class Recognize {
     }
   }
 
-
-
   // [START speech_transcribe_recognition_metadata_beta]
   /**
    * Transcribe the given audio file and include recognition metadata in the request.

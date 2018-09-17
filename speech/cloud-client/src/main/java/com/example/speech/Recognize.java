@@ -112,8 +112,8 @@ public class Recognize {
       } else {
         transcribeModelSelection(path);
       }
-      }
     }
+  }
 
   // [START speech_transcribe_sync]
   /**
