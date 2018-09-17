@@ -47,7 +47,7 @@ public class Recognize {
       System.out.printf(
           "\tjava %s \"<command>\" \"<path-to-image>\"\n"
               + "Commands:\n"
-              + "\t model-selection | metadata | diarization | multi-channel |\n"
+              + "\t metadata | diarization | multi-channel |\n"
               + "\t multi-language | word-level-conf\n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
@@ -58,13 +58,7 @@ public class Recognize {
     String path = args.length > 1 ? args[1] : "";
 
     // Use command and GCS path pattern to invoke transcription.
-    if (command.equals("model-selection")) {
-      if (path.startsWith("gs://")) {
-        transcribeModelSelectionGcs(path);
-      } else {
-        transcribeModelSelection(path);
-      }
-    } else if (command.equals("metadata")) {
+    if (command.equals("metadata")) {
       transcribeFileWithMetadata(path);
     } else if (command.equals("diarization")) {
       if (path.startsWith("gs://")) {
@@ -93,86 +87,7 @@ public class Recognize {
     }
   }
 
-  // [START speech_transcribe_model_selection_beta]
-  /**
-   * Performs transcription of the given audio file synchronously with the selected model.
-   *
-   * @param fileName the path to a audio file to transcribe
-   */
-  public static void transcribeModelSelection(String fileName) throws Exception {
-    Path path = Paths.get(fileName);
-    byte[] content = Files.readAllBytes(path);
 
-    try (SpeechClient speech = SpeechClient.create()) {
-      // Configure request with video media type
-      RecognitionConfig recConfig =
-          RecognitionConfig.newBuilder()
-              // encoding may either be omitted or must match the value in the file header
-              .setEncoding(AudioEncoding.LINEAR16)
-              .setLanguageCode("en-US")
-              // sample rate hertz may be either be omitted or must match the value in the file
-              // header
-              .setSampleRateHertz(16000)
-              .setModel("video")
-              .build();
-
-      RecognitionAudio recognitionAudio =
-          RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
-
-      RecognizeResponse recognizeResponse = speech.recognize(recConfig, recognitionAudio);
-      // Just print the first result here.
-      SpeechRecognitionResult result = recognizeResponse.getResultsList().get(0);
-      // There can be several alternative transcripts for a given chunk of speech. Just use the
-      // first (most likely) one here.
-      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-      System.out.printf("Transcript : %s\n", alternative.getTranscript());
-    }
-    // [END speech_transcribe_model_selection_beta]
-  }
-
-  // [START speech_transcribe_model_selection_gcs_beta]
-  /**
-   * Performs transcription of the remote audio file asynchronously with the selected model.
-   *
-   * @param gcsUri the path to the remote audio file to transcribe.
-   */
-  public static void transcribeModelSelectionGcs(String gcsUri) throws Exception {
-    try (SpeechClient speech = SpeechClient.create()) {
-
-      // Configure request with video media type
-      RecognitionConfig config =
-          RecognitionConfig.newBuilder()
-              // encoding may either be omitted or must match the value in the file header
-              .setEncoding(AudioEncoding.LINEAR16)
-              .setLanguageCode("en-US")
-              // sample rate hertz may be either be omitted or must match the value in the file
-              // header
-              .setSampleRateHertz(16000)
-              .setModel("video")
-              .build();
-
-      RecognitionAudio audio = RecognitionAudio.newBuilder().setUri(gcsUri).build();
-
-      // Use non-blocking call for getting file transcription
-      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
-          speech.longRunningRecognizeAsync(config, audio);
-
-      while (!response.isDone()) {
-        System.out.println("Waiting for response...");
-        Thread.sleep(10000);
-      }
-
-      List<SpeechRecognitionResult> results = response.get().getResultsList();
-
-      // Just print the first result here.
-      SpeechRecognitionResult result = results.get(0);
-      // There can be several alternative transcripts for a given chunk of speech. Just use the
-      // first (most likely) one here.
-      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-      System.out.printf("Transcript : %s\n", alternative.getTranscript());
-    }
-  }
-  // [END speech_transcribe_model_selection_gcs_beta]
 
   // [START speech_transcribe_recognition_metadata_beta]
   /**

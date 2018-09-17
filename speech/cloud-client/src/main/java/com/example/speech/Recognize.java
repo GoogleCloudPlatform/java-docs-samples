@@ -64,7 +64,7 @@ public class Recognize {
               + "Commands:\n"
               + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize \n"
               + "\t| wordoffsets | auto-punctuation | stream-punctuation \n"
-              + "\t| enhanced-model \n"
+              + "\t| enhanced-model | model-selection\n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -106,8 +106,14 @@ public class Recognize {
       streamingTranscribeWithAutomaticPunctuation(path);
     } else if (command.equals("enhanced-model")) {
       transcribeFileWithEnhancedModel(path);
+    } else if (command.equals("model-selection")) {
+      if (path.startsWith("gs://")) {
+        transcribeModelSelectionGcs(path);
+      } else {
+        transcribeModelSelection(path);
+      }
+      }
     }
-  }
 
   // [START speech_transcribe_sync]
   /**
@@ -744,4 +750,84 @@ public class Recognize {
   }
   // [END speech_transcribe_enhanced_model]
 
+  // [START speech_transcribe_model_selection]
+  /**
+   * Performs transcription of the given audio file synchronously with the selected model.
+   *
+   * @param fileName the path to a audio file to transcribe
+   */
+  public static void transcribeModelSelection(String fileName) throws Exception {
+    Path path = Paths.get(fileName);
+    byte[] content = Files.readAllBytes(path);
+
+    try (SpeechClient speech = SpeechClient.create()) {
+      // Configure request with video media type
+      RecognitionConfig recConfig =
+          RecognitionConfig.newBuilder()
+              // encoding may either be omitted or must match the value in the file header
+              .setEncoding(AudioEncoding.LINEAR16)
+              .setLanguageCode("en-US")
+              // sample rate hertz may be either be omitted or must match the value in the file
+              // header
+              .setSampleRateHertz(16000)
+              .setModel("video")
+              .build();
+
+      RecognitionAudio recognitionAudio =
+          RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(content)).build();
+
+      RecognizeResponse recognizeResponse = speech.recognize(recConfig, recognitionAudio);
+      // Just print the first result here.
+      SpeechRecognitionResult result = recognizeResponse.getResultsList().get(0);
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
+    }
+  }
+  // [END speech_transcribe_model_selection]
+
+  // [START speech_transcribe_model_selection_gcs]
+  /**
+   * Performs transcription of the remote audio file asynchronously with the selected model.
+   *
+   * @param gcsUri the path to the remote audio file to transcribe.
+   */
+  public static void transcribeModelSelectionGcs(String gcsUri) throws Exception {
+    try (SpeechClient speech = SpeechClient.create()) {
+
+      // Configure request with video media type
+      RecognitionConfig config =
+          RecognitionConfig.newBuilder()
+              // encoding may either be omitted or must match the value in the file header
+              .setEncoding(AudioEncoding.LINEAR16)
+              .setLanguageCode("en-US")
+              // sample rate hertz may be either be omitted or must match the value in the file
+              // header
+              .setSampleRateHertz(16000)
+              .setModel("video")
+              .build();
+
+      RecognitionAudio audio = RecognitionAudio.newBuilder().setUri(gcsUri).build();
+
+      // Use non-blocking call for getting file transcription
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+          speech.longRunningRecognizeAsync(config, audio);
+
+      while (!response.isDone()) {
+        System.out.println("Waiting for response...");
+        Thread.sleep(10000);
+      }
+
+      List<SpeechRecognitionResult> results = response.get().getResultsList();
+
+      // Just print the first result here.
+      SpeechRecognitionResult result = results.get(0);
+      // There can be several alternative transcripts for a given chunk of speech. Just use the
+      // first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
+    }
+  }
+  // [END speech_transcribe_model_selection_gcs]
 }
