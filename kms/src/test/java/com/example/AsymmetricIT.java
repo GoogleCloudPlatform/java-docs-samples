@@ -56,6 +56,7 @@ public class AsymmetricIT {
   private static final String parent = "projects/" + projectId + "/locations/global";
   private static final String keyRing = "kms-asymmetric-sample";
   private static final String message = "test message 123";
+  private static final byte[] message_bytes = message.getBytes(StandardCharsets.UTF_8);
 
   private static final String rsaDecryptId = "rsa-decrypt";
   private static final String rsaSignId = "rsa-sign";
@@ -136,11 +137,13 @@ public class AsymmetricIT {
 
   @Test
   public void testRSAEncryptDecrypt() throws Exception {
-    String ciphertext = Asymmetric.encryptRSA(message, client, rsaDecrypt);
+    byte[] cipherbytes = Asymmetric.encryptRSA(message_bytes, client, rsaDecrypt);
+    String ciphertext = Base64.getEncoder().encodeToString(cipherbytes);
     assertEquals("incorrect RSA ciphertext length.", 344, ciphertext.length());
     assertEquals("incorrect ciphertext final character.", '=', ciphertext.charAt(343));
 
-    String plaintext = Asymmetric.decryptRSA(ciphertext, client, rsaDecrypt);
+    bytes[] plainbytes = Asymmetric.decryptRSA(cipherbytes, client, rsaDecrypt);
+    String plaintext = new String(plainbytes);
     assertEquals("decryption failed.", message, plaintext);
   }
 
@@ -150,9 +153,11 @@ public class AsymmetricIT {
     assertEquals("invalid ciphertext length", 344, sig.length());
     assertEquals("incorrect ciphertext final character.", '=', sig.charAt(343));
 
-    boolean success = Asymmetric.verifySignatureRSA(sig, message, client, rsaSign);
+    boolean success = Asymmetric.verifySignatureRSA(sig, message_bytes, client, rsaSign);
     assertTrue("RSA verification failed.", success);
-    boolean shouldFail = Asymmetric.verifySignatureRSA(sig, message + ".", client, rsaSign);
+    String changed = message + ".";
+    byte[] changed_bytes = changed.getBytes(StandardCharsets.UTF_8);
+    boolean shouldFail = Asymmetric.verifySignatureRSA(sig, changed_bytes, client, rsaSign);
     assertFalse("RSA verification failed.", shouldFail);
   }
 
@@ -161,9 +166,11 @@ public class AsymmetricIT {
     String sig = Asymmetric.signAsymmetric(message, client, ecSign);
     assertTrue("invalid ciphertext length", sig.length() > 50 && sig.length() < 300);
 
-    boolean success = Asymmetric.verifySignatureEC(sig, message, client, ecSign);
+    boolean success = Asymmetric.verifySignatureEC(sig, message_bytes, client, ecSign);
     assertTrue("RSA verification failed.", success);
-    boolean shouldFail = Asymmetric.verifySignatureEC(sig, message + ".", client, ecSign);
+    String changed = message + ".";
+    byte[] changed_bytes = changed.getBytes(StandardCharsets.UTF_8);
+    boolean shouldFail = Asymmetric.verifySignatureEC(sig, changed_bytes, client, ecSign);
     assertFalse("RSA verification failed.", shouldFail);
   }
 
