@@ -90,7 +90,7 @@ public class Asymmetric {
    */
   public static byte[] decryptRSA(byte[] ciphertext, CloudKMS client, String keyPath) 
       throws IOException {
-    AsymmetricDecryptRequest request = new AsymmetricDecryptRequest().setCiphertext(ciphertext);
+    AsymmetricDecryptRequest request = new AsymmetricDecryptRequest().encodeCiphertext(ciphertext);
     AsymmetricDecryptResponse response = client.projects()
                                                .locations()
                                                .keyRings()
