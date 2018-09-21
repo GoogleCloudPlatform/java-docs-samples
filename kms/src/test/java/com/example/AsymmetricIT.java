@@ -158,8 +158,8 @@ public class AsymmetricIT {
     boolean success = Asymmetric.verifySignatureRSA(sig, message_bytes, client, rsaSign);
     assertTrue("RSA verification failed.", success);
     String changed = message + ".";
-    byte[] changed_bytes = changed.getBytes(StandardCharsets.UTF_8);
-    boolean shouldFail = Asymmetric.verifySignatureRSA(sig, changed_bytes, client, rsaSign);
+    byte[] changedBytes = changed.getBytes(StandardCharsets.UTF_8);
+    boolean shouldFail = Asymmetric.verifySignatureRSA(sig, changedBytes, client, rsaSign);
     assertFalse("RSA verification failed.", shouldFail);
   }
 
@@ -171,8 +171,8 @@ public class AsymmetricIT {
     boolean success = Asymmetric.verifySignatureEC(sig, message_bytes, client, ecSign);
     assertTrue("RSA verification failed.", success);
     String changed = message + ".";
-    byte[] changed_bytes = changed.getBytes(StandardCharsets.UTF_8);
-    boolean shouldFail = Asymmetric.verifySignatureEC(sig, changed_bytes, client, ecSign);
+    byte[] changedBytes = changed.getBytes(StandardCharsets.UTF_8);
+    boolean shouldFail = Asymmetric.verifySignatureEC(sig, changedBytes, client, ecSign);
     assertFalse("RSA verification failed.", shouldFail);
   }
 
