@@ -151,7 +151,7 @@ public class AsymmetricIT {
 
   @Test
   public void testRSASignVerify() throws Exception {
-    String sig = Asymmetric.signAsymmetric(message, client, rsaSign);
+    String sig = Asymmetric.signAsymmetric(message_bytes, client, rsaSign);
     assertEquals("invalid ciphertext length", 344, sig.length());
     assertEquals("incorrect ciphertext final character.", '=', sig.charAt(343));
 
@@ -165,7 +165,7 @@ public class AsymmetricIT {
 
   @Test
   public void testECSignVerify() throws Exception {
-    String sig = Asymmetric.signAsymmetric(message, client, ecSign);
+    String sig = Asymmetric.signAsymmetric(message_bytes, client, ecSign);
     assertTrue("invalid ciphertext length", sig.length() > 50 && sig.length() < 300);
 
     boolean success = Asymmetric.verifySignatureEC(sig, message_bytes, client, ecSign);
