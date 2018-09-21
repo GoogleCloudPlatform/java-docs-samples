@@ -31,10 +31,12 @@ import com.google.api.services.cloudkms.v1.model.KeyRing;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -142,7 +144,7 @@ public class AsymmetricIT {
     assertEquals("incorrect RSA ciphertext length.", 344, ciphertext.length());
     assertEquals("incorrect ciphertext final character.", '=', ciphertext.charAt(343));
 
-    bytes[] plainbytes = Asymmetric.decryptRSA(cipherbytes, client, rsaDecrypt);
+    byte[] plainbytes = Asymmetric.decryptRSA(cipherbytes, client, rsaDecrypt);
     String plaintext = new String(plainbytes);
     assertEquals("decryption failed.", message, plaintext);
   }
