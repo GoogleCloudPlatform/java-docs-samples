@@ -16,6 +16,7 @@
 
 package com.example;
 
+// [START kms_get_asymmetric_public]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -52,6 +53,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemReader;
+// [END kms_get_asymmetric_public]
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class Asymmetric {
