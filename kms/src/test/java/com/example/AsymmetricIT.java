@@ -142,7 +142,6 @@ public class AsymmetricIT {
     byte[] cipherbytes = Asymmetric.encryptRSA(message_bytes, client, rsaDecrypt);
     String ciphertext = Base64.getEncoder().encodeToString(cipherbytes);
     assertEquals("incorrect RSA ciphertext length.", 344, ciphertext.length());
-    assertEquals("incorrect ciphertext final character.", '=', ciphertext.charAt(343));
 
     byte[] plainbytes = Asymmetric.decryptRSA(cipherbytes, client, rsaDecrypt);
     String plaintext = new String(plainbytes);
