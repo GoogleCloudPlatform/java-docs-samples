@@ -42,11 +42,6 @@
       <artifactId>google-cloud-dialogflow</artifactId>
       <version>0.55.1-alpha</version>
     </dependency>
-    <dependency>
-      <groupId>net.sourceforge.argparse4j</groupId>
-      <artifactId>argparse4j</artifactId>
-      <version>0.8.1</version>
-    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
