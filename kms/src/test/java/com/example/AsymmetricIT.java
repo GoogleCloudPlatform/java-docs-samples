@@ -36,6 +36,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -139,40 +140,39 @@ public class AsymmetricIT {
 
   @Test
   public void testRSAEncryptDecrypt() throws Exception {
-    byte[] cipherbytes = Asymmetric.encryptRSA(message_bytes, client, rsaDecrypt);
-    String ciphertext = Base64.getEncoder().encodeToString(cipherbytes);
-    assertEquals("incorrect RSA ciphertext length.", 344, ciphertext.length());
+    byte[] ciphertext = Asymmetric.encryptRSA(message_bytes, client, rsaDecrypt);
+    assertEquals("incorrect RSA ciphertext length.", 256, ciphertext.length);
 
-    byte[] plainbytes = Asymmetric.decryptRSA(cipherbytes, client, rsaDecrypt);
+    byte[] plainbytes = Asymmetric.decryptRSA(ciphertext, client, rsaDecrypt);
+    assertTrue("decryption failed.", Arrays.equals(message_bytes, plainbytes));
     String plaintext = new String(plainbytes);
     assertEquals("decryption failed.", message, plaintext);
   }
 
   @Test
   public void testRSASignVerify() throws Exception {
-    String sig = Asymmetric.signAsymmetric(message_bytes, client, rsaSign);
-    assertEquals("invalid ciphertext length", 344, sig.length());
-    assertEquals("incorrect ciphertext final character.", '=', sig.charAt(343));
+    byte[] sig = Asymmetric.signAsymmetric(message_bytes, client, rsaSign);
+    assertEquals("invalid ciphertext length", 256, sig.length);
 
     boolean success = Asymmetric.verifySignatureRSA(sig, message_bytes, client, rsaSign);
-    assertTrue("RSA verification failed.", success);
+    assertTrue("RSA verification failed. Valid message not accepted", success);
     String changed = message + ".";
     byte[] changedBytes = changed.getBytes(StandardCharsets.UTF_8);
     boolean shouldFail = Asymmetric.verifySignatureRSA(sig, changedBytes, client, rsaSign);
-    assertFalse("RSA verification failed.", shouldFail);
+    assertFalse("RSA verification failed. Invalid message accepted", shouldFail);
   }
 
   @Test
   public void testECSignVerify() throws Exception {
-    String sig = Asymmetric.signAsymmetric(message_bytes, client, ecSign);
-    assertTrue("invalid ciphertext length", sig.length() > 50 && sig.length() < 300);
+    byte[] sig = Asymmetric.signAsymmetric(message_bytes, client, ecSign);
+    assertTrue("invalid ciphertext length", sig.length > 50 && sig.length < 300);
 
     boolean success = Asymmetric.verifySignatureEC(sig, message_bytes, client, ecSign);
-    assertTrue("RSA verification failed.", success);
+    assertTrue("EC verification failed. Valid message not accepted", success);
     String changed = message + ".";
     byte[] changedBytes = changed.getBytes(StandardCharsets.UTF_8);
     boolean shouldFail = Asymmetric.verifySignatureEC(sig, changedBytes, client, ecSign);
-    assertFalse("RSA verification failed.", shouldFail);
+    assertFalse("EC verification failed. Invalid message accepted", shouldFail);
   }
 
 }
