@@ -26,7 +26,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
 
-@WebListener
+@WebListener("Creates a connection pool that is stored in the Servlet's context for later use.")
 public class ConnectionPoolContextListener implements ServletContextListener {
 
   private static final String CLOUD_SQL_INSTANCE_NAME = System.getenv("CLOUD_SQL_INSTANCE_NAME");
@@ -74,7 +74,9 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
     // [START cloud_sql_connection_lifetime]
     // maxLifetime is the maximum possible lifetime of a connection in the pool. Connections that
-    // live longer than this many milliseconds will be closed and reestablished between uses.
+    // live longer than this many milliseconds will be closed and reestablished between uses. This
+    // value should be several minutes shorter than the database's timeout value to avoid unexpected
+    // terminations.
     config.setMaxLifetime(1800000); // 30 minutes
     // [END cloud_sql_connection_lifetime]
 

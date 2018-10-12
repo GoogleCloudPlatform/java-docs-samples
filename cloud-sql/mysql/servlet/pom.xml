@@ -37,14 +37,6 @@
   </properties>
 
   <dependencies>
-
-    <!-- Required only for AppEngine Standard -->
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.64</version>
-    </dependency>
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -79,6 +71,7 @@
           <scanIntervalSeconds>1</scanIntervalSeconds>
         </configuration>
       </plugin>
+      <!-- Only required for AppEngine Deployments -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
