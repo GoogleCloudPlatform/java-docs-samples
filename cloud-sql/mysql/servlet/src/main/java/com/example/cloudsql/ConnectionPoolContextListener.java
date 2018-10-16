@@ -29,6 +29,8 @@ import javax.sql.DataSource;
 @WebListener("Creates a connection pool that is stored in the Servlet's context for later use.")
 public class ConnectionPoolContextListener implements ServletContextListener {
 
+  // Saving credentials in environment variables is convenient, but not secure - consider a more
+  // secure solution such as https://cloud.google.com/kms/ to help keep secrets safe.
   private static final String CLOUD_SQL_INSTANCE_NAME = System.getenv("CLOUD_SQL_INSTANCE_NAME");
   private static final String DB_USER = System.getenv("DB_USER");
   private static final String DB_PASS = System.getenv("DB_PASS");

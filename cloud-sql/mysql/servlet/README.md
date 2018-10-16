@@ -3,7 +3,8 @@
 ## Before you begin
 
 1. If you haven't already, set up a Java Development Environment (including google-cloud-sdk and 
-maven utilities) by following the [java setup guide](https://cloud.google.com/java/docs/setup).
+maven utilities) by following the [java setup guide](https://cloud.google.com/java/docs/setup) and 
+[create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
 1. Create a 2nd Gen Cloud SQL Instance by following these 
 [instructions](https://cloud.google.com/sql/docs/mysql/create-instance). Note the connection string,
@@ -25,6 +26,8 @@ export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
 ```
+Note: Saving credentials in environment variables is convenient, but not secure - consider a more
+secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep secrets safe.
 
 ## Deploying locally
 
@@ -40,7 +43,9 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 
 To run on GAE-Standard, create an AppEngine project by following the setup for these 
 [instructions](https://cloud.google.com/appengine/docs/standard/java/quickstart#before-you-begin) 
-and verify that `appengine-api-1.0-sdk` is listed as a dependency in the pom.xml.
+and verify that 
+[appengine-maven-plugin](https://cloud.google.com/java/docs/setup#optional_install_maven_or_gradle_plugin_for_app_engine)
+ has been added in your build section as a plugin.
 
 
 ### Development Server
