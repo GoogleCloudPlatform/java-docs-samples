@@ -16,12 +16,12 @@
 
 package com.example;
 
-// [START kms_get_asymmetric_public]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+// [START kms_asymmetric_imports]
 import com.google.api.services.cloudkms.v1.CloudKMS;
 import com.google.api.services.cloudkms.v1.CloudKMSScopes;
 import com.google.api.services.cloudkms.v1.model.AsymmetricDecryptRequest;
@@ -52,7 +52,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemReader;
-// [END kms_get_asymmetric_public]
+// [END kms_asymmetric_imports]
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class Asymmetric {
