@@ -43,7 +43,6 @@ import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import javax.crypto.BadPaddingException;
@@ -58,7 +57,18 @@ import org.bouncycastle.util.io.pem.PemReader;
 public class Asymmetric {
 
   // [START kms_get_asymmetric_public]
-  /** Retrieves the public key from a saved asymmetric key pair on Cloud KMS */
+  /**
+   * Retrieves the public key from a saved asymmetric key pair on Cloud KMS 
+   *
+   * Requires:
+   *   java.io.StringReader
+   *   java.security.KeyFactory
+   *   java.security.PublicKey
+   *   java.security.Security
+   *   java.security.spec.X509EncodedKeySpec
+   *   org.bouncycastle.jce.provider.BouncyCastleProvider
+   *   org.bouncycastle.util.io.pem.PemReader
+   */
   public static PublicKey getAsymmetricPublicKey(CloudKMS client, String keyPath) 
       throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, 
       NoSuchProviderException {
@@ -104,7 +114,13 @@ public class Asymmetric {
   // [START kms_encrypt_rsa]
   /**
    * Encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256' public key 
-   * retrieved from Cloud KMS 
+   * retrieved from Cloud KMS
+   *
+   * Requires:
+   *   java.security.PublicKey
+   *   java.security.Security
+   *   javax.crypto.Cipher
+   *   org.bouncycastle.jce.provider.BouncyCastleProvider
    */
   public static byte[] encryptRSA(byte[] plaintext, CloudKMS client, String keyPath)
       throws IOException, IllegalBlockSizeException, NoSuchPaddingException,
@@ -120,7 +136,12 @@ public class Asymmetric {
   // [END kms_encrypt_rsa]
 
   // [START kms_sign_asymmetric]
-  /** Create a signature for a message using a private key stored on Cloud KMS */
+  /** Create a signature for a message using a private key stored on Cloud KMS 
+    *
+    * Requires:
+    *   java.security.MessageDigest
+    *   java.util.Base64
+    */
   public static byte[] signAsymmetric(byte[] message, CloudKMS client, String keyPath)
       throws IOException, NoSuchAlgorithmException {
     Digest digest = new Digest();
@@ -146,6 +167,12 @@ public class Asymmetric {
   /**
    * Verify the validity of an 'RSA_SIGN_PSS_2048_SHA256' signature for the 
    * specified message
+   *
+   * Requires:
+   *   java.security.PublicKey
+   *   java.security.Security
+   *   java.security.Signature
+   *   org.bouncycastle.jce.provider.BouncyCastleProvider
    */
   public static boolean verifySignatureRSA(byte[] signature, byte[] message, CloudKMS client, 
       String keyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, 
@@ -165,6 +192,12 @@ public class Asymmetric {
   /** 
    * Verify the validity of an 'EC_SIGN_P256_SHA256' signature for the 
    * specified message
+   * 
+   * Requires:
+   *   java.security.PublicKey
+   *   java.security.Security
+   *   java.security.Signature
+   *   org.bouncycastle.jce.provider.BouncyCastleProvider
    */
   public static boolean verifySignatureEC(byte[] signature, byte[] message, CloudKMS client, 
       String keyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, 
