@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.56.0-beta</version>
+      <version>0.61.0-beta</version>
     </dependency>
     <!-- [END speech_quickstart_dependencies] -->
 
