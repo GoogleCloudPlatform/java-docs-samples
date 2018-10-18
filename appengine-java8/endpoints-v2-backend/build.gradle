@@ -53,11 +53,12 @@ dependencies {
     compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
     // [END api_management]
 }
-
+// [START endpoints_plugin_config]
 endpointsServer {
   // Endpoints Framework Plugin server-side configuration
   hostname = "${projectId}.appspot.com"
 }
+// [END endpoints_plugin_config]
 
 appengine {  // App Engine tasks configuration
   deploy {   // deploy configuration
