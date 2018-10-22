@@ -80,7 +80,7 @@ public class InspectFile {
       System.out.println("Findings: " + response.getResult().getFindingsCount());
       for (Finding f : response.getResult().getFindingsList()) {
         System.out.println("\tQuote: " + f.getQuote());
-        System.out.println("\tInfo type: " + f.getInfoType());
+        System.out.println("\tInfo type: " + f.getInfoType().getName());
         System.out.println("\tLikelihood: " + f.getLikelihood());
       }
     } catch (Exception e) {
