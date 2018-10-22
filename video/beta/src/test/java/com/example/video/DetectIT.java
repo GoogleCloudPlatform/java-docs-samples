@@ -18,14 +18,13 @@ package com.example.video;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.videointelligence.v1p2beta1.ObjectTrackingAnnotation;
+import com.google.cloud.videointelligence.v1p2beta1.TextAnnotation;
+import com.google.cloud.videointelligence.v1p2beta1.VideoAnnotationResults;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.cloud.videointelligence.v1p2beta1.ObjectTrackingAnnotation;
-import com.google.cloud.videointelligence.v1p2beta1.TextAnnotation;
-import com.google.cloud.videointelligence.v1p2beta1.VideoAnnotationResults;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +82,7 @@ public class DetectIT {
 
   @Test
   public void testTrackObjectsGcs() throws Exception {
-    VideoAnnotationResults result = TrackObjects.trackObjectsGcs("gs://demomakercat.mp4");
+    VideoAnnotationResults result = TrackObjects.trackObjectsGcs("gs://demomaker/cat.mp4");
 
     boolean textExists = false;
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
