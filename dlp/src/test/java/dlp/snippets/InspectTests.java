@@ -66,7 +66,6 @@ public class InspectTests {
     InspectString.inspectString(PROJECT_ID,  "I'm Gary and my email is gary@example.com");
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Info type: PHONE_NUMBER"));
     assertThat(output, CoreMatchers.containsString("Info type: EMAIL_ADDRESS"));
   }
 
