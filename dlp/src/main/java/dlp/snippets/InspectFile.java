@@ -68,14 +68,14 @@ public class InspectFile {
           .setIncludeQuote(true)
           .build();
 
-      // Construct request
+      // Construct the request to be sent by the client
       InspectContentRequest request = InspectContentRequest.newBuilder()
           .setParent(project.toString())
           .setItem(item)
           .setInspectConfig(config)
           .build();
 
-      // Run request and parse response
+      // Use the client to send the request and parse results
       InspectContentResponse response = dlp.inspectContent(request);
       System.out.println("Findings: " + response.getResult().getFindingsCount());
       for (Finding f : response.getResult().getFindingsList()) {
