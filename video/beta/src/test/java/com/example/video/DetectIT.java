@@ -75,6 +75,7 @@ public class DetectIT {
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
       if (objectTrackingAnnotation.getEntity().getDescription().toUpperCase().contains("CAT")) {
         textExists = true;
+        break;
       }
     }
 
@@ -89,6 +90,7 @@ public class DetectIT {
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
       if (objectTrackingAnnotation.getEntity().getDescription().toUpperCase().contains("CAT")) {
         textExists = true;
+        break;
       }
     }
 
@@ -104,6 +106,7 @@ public class DetectIT {
       for (String possibleText : POSSIBLE_TEXTS) {
         if (textAnnotation.getText().toUpperCase().contains(possibleText.toUpperCase())) {
           textExists = true;
+          break;
         }
       }
     }
@@ -120,6 +123,7 @@ public class DetectIT {
       for (String possibleText : POSSIBLE_TEXTS) {
         if (textAnnotation.getText().toUpperCase().contains(possibleText.toUpperCase())) {
           textExists = true;
+          break;
         }
       }
     }
