@@ -20,6 +20,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.videointelligence.v1p2beta1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1p2beta1.AnnotateVideoRequest;
 import com.google.cloud.videointelligence.v1p2beta1.AnnotateVideoResponse;
+import com.google.cloud.videointelligence.v1p2beta1.Entity;
 import com.google.cloud.videointelligence.v1p2beta1.Feature;
 import com.google.cloud.videointelligence.v1p2beta1.NormalizedBoundingBox;
 import com.google.cloud.videointelligence.v1p2beta1.ObjectTrackingAnnotation;
@@ -29,6 +30,7 @@ import com.google.cloud.videointelligence.v1p2beta1.VideoIntelligenceServiceClie
 import com.google.cloud.videointelligence.v1p2beta1.VideoSegment;
 import com.google.protobuf.ByteString;
 
+import com.google.protobuf.Duration;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,9 +45,7 @@ public class TrackObjects {
    * @param filePath the path to the video file to analyze.
    */
   public static VideoAnnotationResults trackObjects(String filePath) throws Exception {
-
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
-
       // Read file
       Path path = Paths.get(filePath);
       byte[] data = Files.readAllBytes(path);
@@ -58,48 +58,51 @@ public class TrackObjects {
           .build();
 
       // asynchronously perform object tracking on videos
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future =
           client.annotateVideoAsync(request);
 
       System.out.println("Waiting for operation to complete...");
       // The first result is retrieved because a single video was processed.
-      VideoAnnotationResults result = response.get(1000, TimeUnit.SECONDS)
-          .getAnnotationResults(0);
+      AnnotateVideoResponse response = future.get(1000, TimeUnit.SECONDS);
+      VideoAnnotationResults results = response.getAnnotationResults(0);
 
       // Get only the first annotation for demo purposes.
-      ObjectTrackingAnnotation objectTrackingAnnotation = result.getObjectAnnotations(0);
+      ObjectTrackingAnnotation annotation = results.getObjectAnnotations(0);
+      System.out.println("Confidence: " + annotation.getConfidence());
 
-      if (objectTrackingAnnotation.hasEntity()) {
-        System.out.println("Entity description: "
-            + objectTrackingAnnotation.getEntity().getDescription());
-        System.out.println("Entity id:: " + objectTrackingAnnotation.getEntity().getEntityId());
+      if (annotation.hasEntity()) {
+        Entity entity = annotation.getEntity();
+        System.out.println("Entity description: " + entity.getDescription());
+        System.out.println("Entity id:: " + entity.getEntityId());
       }
 
-      if (objectTrackingAnnotation.hasSegment()) {
-        VideoSegment videoSegment = objectTrackingAnnotation.getSegment();
-        System.out.println(String.format("Segment: %.2fs to %.2fs",
-            videoSegment.getStartTimeOffset().getSeconds()
-                + videoSegment.getStartTimeOffset().getNanos() / 1e9,
-            videoSegment.getEndTimeOffset().getSeconds()
-                + videoSegment.getEndTimeOffset().getNanos() / 1e9));
+      if (annotation.hasSegment()) {
+        VideoSegment videoSegment = annotation.getSegment();
+        Duration startTimeOffset = videoSegment.getStartTimeOffset();
+        Duration endTimeOffset = videoSegment.getEndTimeOffset();
+        // Display the segment time in seconds, 1e9 converts nanos to seconds
+        System.out.println(String.format(
+            "Segment: %.2fs to %.2fs",
+            startTimeOffset.getSeconds() + startTimeOffset.getNanos() / 1e9,
+            endTimeOffset.getSeconds() + endTimeOffset.getNanos() / 1e9));
       }
-
-      System.out.println("Confidence: " + objectTrackingAnnotation.getConfidence());
-
 
       // Here we print only the bounding box of the first frame in this segment.
-      ObjectTrackingFrame objectTrackingFrame = objectTrackingAnnotation.getFrames(0);
-      NormalizedBoundingBox normalizedBoundingBox = objectTrackingFrame.getNormalizedBoundingBox();
-      System.out.println(String.format("Time offset of the first frame: %.2fs",
-          objectTrackingFrame.getTimeOffset().getSeconds()
-              + objectTrackingFrame.getTimeOffset().getNanos() / 1e9));
+      ObjectTrackingFrame frame = annotation.getFrames(0);
+      // Display the offset time in seconds, 1e9 converts nanos to seconds
+      Duration timeOffset = frame.getTimeOffset();
+      System.out.println(String.format(
+          "Time offset of the first frame: %.2fs",
+          timeOffset.getSeconds() + timeOffset.getNanos() / 1e9));
 
+      // Display the bounding box of the detected object
+      NormalizedBoundingBox normalizedBoundingBox = frame.getNormalizedBoundingBox();
       System.out.println("Bounding box position:");
       System.out.println("\tleft: " + normalizedBoundingBox.getLeft());
       System.out.println("\ttop: " + normalizedBoundingBox.getTop());
       System.out.println("\tright: " + normalizedBoundingBox.getRight());
       System.out.println("\tbottom: " + normalizedBoundingBox.getBottom());
-      return result;
+      return results;
     }
   }
   // [END video_object_tracking_beta]
@@ -111,9 +114,7 @@ public class TrackObjects {
    * @param gcsUri the path to the video file to analyze.
    */
   public static VideoAnnotationResults trackObjectsGcs(String gcsUri) throws Exception {
-
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
-
       // Create the request
       AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
           .setInputUri(gcsUri)
@@ -122,48 +123,51 @@ public class TrackObjects {
           .build();
 
       // asynchronously perform object tracking on videos
-      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
+      OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future =
           client.annotateVideoAsync(request);
 
       System.out.println("Waiting for operation to complete...");
       // The first result is retrieved because a single video was processed.
-      VideoAnnotationResults result = response.get(1000, TimeUnit.SECONDS)
-          .getAnnotationResults(0);
+      AnnotateVideoResponse response = future.get(1000, TimeUnit.SECONDS);
+      VideoAnnotationResults results = response.getAnnotationResults(0);
 
       // Get only the first annotation for demo purposes.
-      ObjectTrackingAnnotation objectTrackingAnnotation = result.getObjectAnnotations(0);
+      ObjectTrackingAnnotation annotation = results.getObjectAnnotations(0);
+      System.out.println("Confidence: " + annotation.getConfidence());
 
-      if (objectTrackingAnnotation.hasEntity()) {
-        System.out.println("Entity description: "
-            + objectTrackingAnnotation.getEntity().getDescription());
-        System.out.println("Entity id:: " + objectTrackingAnnotation.getEntity().getEntityId());
+      if (annotation.hasEntity()) {
+        Entity entity = annotation.getEntity();
+        System.out.println("Entity description: " + entity.getDescription());
+        System.out.println("Entity id:: " + entity.getEntityId());
       }
 
-      if (objectTrackingAnnotation.hasSegment()) {
-        VideoSegment videoSegment = objectTrackingAnnotation.getSegment();
-        System.out.println(String.format("Segment: %.2fs to %.2fs",
-            videoSegment.getStartTimeOffset().getSeconds()
-                + videoSegment.getStartTimeOffset().getNanos() / 1e9,
-            videoSegment.getEndTimeOffset().getSeconds()
-                + videoSegment.getEndTimeOffset().getNanos() / 1e9));
+      if (annotation.hasSegment()) {
+        VideoSegment videoSegment = annotation.getSegment();
+        Duration startTimeOffset = videoSegment.getStartTimeOffset();
+        Duration endTimeOffset = videoSegment.getEndTimeOffset();
+        // Display the segment time in seconds, 1e9 converts nanos to seconds
+        System.out.println(String.format(
+            "Segment: %.2fs to %.2fs",
+            startTimeOffset.getSeconds() + startTimeOffset.getNanos() / 1e9,
+            endTimeOffset.getSeconds() + endTimeOffset.getNanos() / 1e9));
       }
-
-      System.out.println("Confidence: " + objectTrackingAnnotation.getConfidence());
-
 
       // Here we print only the bounding box of the first frame in this segment.
-      ObjectTrackingFrame objectTrackingFrame = objectTrackingAnnotation.getFrames(0);
-      NormalizedBoundingBox normalizedBoundingBox = objectTrackingFrame.getNormalizedBoundingBox();
-      System.out.println(String.format("Time offset of the first frame: %.2fs",
-          objectTrackingFrame.getTimeOffset().getSeconds()
-              + objectTrackingFrame.getTimeOffset().getNanos() / 1e9));
+      ObjectTrackingFrame frame = annotation.getFrames(0);
+      // Display the offset time in seconds, 1e9 converts nanos to seconds
+      Duration timeOffset = frame.getTimeOffset();
+      System.out.println(String.format(
+          "Time offset of the first frame: %.2fs",
+          timeOffset.getSeconds() + timeOffset.getNanos() / 1e9));
 
+      // Display the bounding box of the detected object
+      NormalizedBoundingBox normalizedBoundingBox = frame.getNormalizedBoundingBox();
       System.out.println("Bounding box position:");
       System.out.println("\tleft: " + normalizedBoundingBox.getLeft());
       System.out.println("\ttop: " + normalizedBoundingBox.getTop());
       System.out.println("\tright: " + normalizedBoundingBox.getRight());
       System.out.println("\tbottom: " + normalizedBoundingBox.getBottom());
-      return result;
+      return results;
     }
   }
   // [END video_object_tracking_gcs_beta]

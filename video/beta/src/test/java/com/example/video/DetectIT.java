@@ -42,8 +42,9 @@ public class DetectIT {
   static final String FILE_LOCATION =
       "gs://java-docs-samples-testing/video/googlework_short.mp4";
 
-  private static final List<String> POSSIBLE_TEXTS = Arrays.asList("Google", "SUR", "SUR",
-          "ROTO", "Vice President", "58oo9", "LONDRES", "OMAR", "PARIS", "METRO", "RUE", "CARLO");
+  private static final List<String> POSSIBLE_TEXTS = Arrays.asList(
+      "Google", "SUR", "SUR", "ROTO", "Vice President", "58oo9", "LONDRES", "OMAR", "PARIS",
+      "METRO", "RUE", "CARLO");
 
   @Before
   public void setUp() {
