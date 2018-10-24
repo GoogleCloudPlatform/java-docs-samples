@@ -70,8 +70,10 @@ public class InspectString {
           .setInspectConfig(config)
           .build();
 
-      // Run request and parse response
+      // Use the client to send the API request
       InspectContentResponse response = dlp.inspectContent(request);
+
+      // Parse the response and process results
       System.out.println("Findings: " + response.getResult().getFindingsCount());
       for (Finding f : response.getResult().getFindingsList()) {
         System.out.println("\tQuote: " + f.getQuote());
