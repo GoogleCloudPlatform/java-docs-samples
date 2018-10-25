@@ -47,7 +47,7 @@ Publishes 5 messages to the topic `my-topic`.
 ```
    mvn exec:java -Dexec.mainClass=com.example.pubsub.SubscriberExample -Dexec.args=my-sub
 ```
-Subscriber will continue to listen on the topic for 5 minutes and print out message id and data as messages are received.
+Subscriber will continue to listen on the topic and print out message id and data as messages are received. `Ctrl+C` to exit.
 
 #### Testing
 Run the test with Maven.

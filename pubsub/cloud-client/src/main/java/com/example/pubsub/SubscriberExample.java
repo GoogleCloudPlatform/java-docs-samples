@@ -29,7 +29,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class SubscriberExample {
 
-  // use the default project id
+  // Use the default project id.
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
   private static final BlockingQueue<PubsubMessage> messages = new LinkedBlockingDeque<>();
@@ -45,17 +45,17 @@ public class SubscriberExample {
 
   /** Receive messages over a subscription. */
   public static void main(String... args) throws Exception {
-    // set subscriber id, eg. my-sub
+    // TODO: your subscription ID eg. "my-sub"
     String subscriptionId = args[0];
-    ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
+    ProjectSubscriptionName subscriptionPath = ProjectSubscriptionName.of(
         PROJECT_ID, subscriptionId);
     Subscriber subscriber = null;
     try {
-      // create a subscriber bound to the asynchronous message receiver
+      // Create a subscriber bound to the asynchronous message receiver.
       subscriber =
-          Subscriber.newBuilder(subscriptionName, new MessageReceiverExample()).build();
+          Subscriber.newBuilder(subscriptionPath, new MessageReceiverExample()).build();
       subscriber.startAsync().awaitRunning();
-      // Continue to listen to messages
+      // Continue to listen to messages.
       while (true) {
         PubsubMessage message = messages.take();
         System.out.println("Message Id: " + message.getMessageId());

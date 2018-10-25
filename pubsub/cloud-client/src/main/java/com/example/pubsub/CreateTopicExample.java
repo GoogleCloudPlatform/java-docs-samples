@@ -25,7 +25,6 @@ import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectTopicName;
 
 public class CreateTopicExample {
-
   /**
    * Create a topic.
    *
@@ -34,23 +33,26 @@ public class CreateTopicExample {
    */
   public static void main(String... args) throws Exception {
 
-    // Your Google Cloud Platform project ID
+    // TODO: Your Google Cloud Platform project ID
     String projectId = ServiceOptions.getDefaultProjectId();
 
-    // Your topic ID, eg. "my-topic"
+    // TODO: Your topic ID, eg. "my-topic"
     String topicId = args[0];
 
     // Create a new topic
-    ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
+    ProjectTopicName topicPath = ProjectTopicName.of(projectId, topicId);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.createTopic(topic);
+      topicAdminClient.createTopic(topicPath);
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies topic already exists
       System.out.print(e.getStatusCode().getCode());
       System.out.print(e.isRetryable());
     }
 
-    System.out.printf("Topic %s:%s created.\n", topic.getProject(), topic.getTopic());
+    System.out.printf("Topic %s:%s created.\n", topicPath.getProject(), topicPath.getTopic());
+
+    // Uncomment if you encounter java.lang.IllegalThreadStateException.
+    // System.exit(0);
   }
 }
 // [END pubsub_quickstart_create_topic]
