@@ -17,6 +17,7 @@
 package com.example.pubsub;
 
 // [START pubsub_quickstart_subscriber]
+// [START pubsub_subscriber_async_pull]
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
@@ -69,3 +70,4 @@ public class SubscriberExample {
   }
 }
 // [END pubsub_quickstart_subscriber]
+// [END pubsub_subscriber_async_pull]
