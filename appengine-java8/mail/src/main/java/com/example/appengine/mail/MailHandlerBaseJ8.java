@@ -36,11 +36,11 @@ import java.util.regex.Pattern;
  * Base class for handling the filtering of incoming emails in App Engine.
  */
 // [START example]
-public abstract class MailHandlerBase implements Filter {
+public abstract class MailHandlerBaseJ8 implements Filter {
 
   private Pattern pattern = null;
 
-  protected MailHandlerBase(String pattern) {
+  protected MailHandlerBaseJ8(String pattern) {
     if (pattern == null || pattern.trim().length() == 0)
     {
       throw new IllegalArgumentException("Expected non-empty regular expression");
@@ -48,9 +48,9 @@ public abstract class MailHandlerBase implements Filter {
     this.pattern = Pattern.compile("/_ah/mail/"+pattern);
   }
 
-  @Override public void init(FilterConfig config) throws ServletException { }
+  public void init(FilterConfig config) throws ServletException { }
 
-  @Override public void destroy() { }
+  public void destroy() { }
 
   /**
    * Process the message. A message will only be passed to this method
@@ -65,7 +65,6 @@ public abstract class MailHandlerBase implements Filter {
    */
   protected abstract boolean processMessage(HttpServletRequest req, HttpServletResponse res) throws ServletException;
 
-  @Override
   public void doFilter(ServletRequest sreq, ServletResponse sres, FilterChain chain)
       throws IOException, ServletException {
 

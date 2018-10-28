@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class MailHandlerServlet extends HttpServlet {
+public class MailHandlerServletJ8 extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(MailHandlerServlet.class.getName());
 

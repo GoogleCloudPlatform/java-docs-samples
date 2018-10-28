@@ -16,7 +16,7 @@
 
 package com.example.time;
 
-import org.joda.time.Instant;
+import com.google.appengine.repackaged.org.joda.time.Instant;
 
 /**
  * Clock implementation that returns the "real" system time.

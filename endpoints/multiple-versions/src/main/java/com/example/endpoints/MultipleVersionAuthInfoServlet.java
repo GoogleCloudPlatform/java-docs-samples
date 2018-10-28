@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * See openapi.yaml for authentication mechanisms (e.g. JWT tokens, Google ID token).
  */
 @WebServlet("/auth/info/*")
-public class AuthInfoServlet extends HttpServlet {
+public class MultipleVersionAuthInfoServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

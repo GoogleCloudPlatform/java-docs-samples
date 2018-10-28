@@ -46,6 +46,12 @@ Copyright 2016 Google Inc.
       <artifactId>mail</artifactId>
       <version>1.4.7</version>
     </dependency>
+      <dependency>
+          <groupId>com.google.appengine</groupId>
+          <artifactId>appengine-api-1.0-sdk</artifactId>
+          <version>RELEASE</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->

@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START example]
-public class HandleDiscussionEmail extends MailHandlerBase {
+public class HandleDiscussionEmail extends MailHandlerBaseJ8 {
 
-  private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
+  private static final Logger log = Logger.getLogger(HandleDiscussionEmailJ8.class.getName());
 
   public HandleDiscussionEmail() {
     super("discuss-(.*)@(.*)");

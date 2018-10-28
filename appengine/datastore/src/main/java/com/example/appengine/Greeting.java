@@ -18,10 +18,11 @@ package com.example.appengine;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.User;
+import com.google.appengine.repackaged.org.joda.time.Instant;
 import com.google.auto.value.AutoValue;
-import java.util.Date;
+
 import javax.annotation.Nullable;
-import org.joda.time.Instant;
+import java.util.Date;
 
 @AutoValue
 public abstract class Greeting {

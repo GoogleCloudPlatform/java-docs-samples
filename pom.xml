@@ -86,7 +86,7 @@
         <module>spanner/cloud-client</module>
 
         <module>speech/cloud-client</module>
-
+        <module>speech/beta</module>
         <module>storage/cloud-client</module>
         <module>storage/json-api</module>
         <module>storage/storage-transfer</module>

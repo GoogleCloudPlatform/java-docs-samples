@@ -17,7 +17,7 @@
     version="2.5">
   <servlet>
     <servlet-name>mail</servlet-name>
-    <servlet-class>com.example.appengine.mail.MailServlet</servlet-class>
+    <servlet-class>com.example.appengine.mail.MailServletJ8</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>mail</servlet-name>
@@ -27,7 +27,7 @@
   <!-- [START filter_handler] -->
   <filter>
     <filter-name>HandleDiscussionEmail</filter-name>
-    <filter-class>com.example.appengine.mail.HandleDiscussionEmail</filter-class>
+    <filter-class>com.example.appengine.mail.HandleDiscussionEmailJ8</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>HandleDiscussionEmail</filter-name>
@@ -40,7 +40,7 @@
   <!-- [START incoming_mail_servlet]
   <servlet>
     <servlet-name>mailhandler</servlet-name>
-    <servlet-class>com.example.appengine.mail.MailHandlerServlet</servlet-class>
+    <servlet-class>com.example.appengine.mail.MailHandlerServletJ8</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>mailhandler</servlet-name>
@@ -60,7 +60,7 @@
   <!-- [START bounced_mail_servlet] -->
   <servlet>
     <servlet-name>bouncehandler</servlet-name>
-    <servlet-class>com.example.appengine.mail.BounceHandlerServlet</servlet-class>
+    <servlet-class>com.example.appengine.mail.BounceHandlerServletJ8</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>bouncehandler</servlet-name>

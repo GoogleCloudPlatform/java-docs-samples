@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 // [START example]
-public class HandleDiscussionEmail extends MailHandlerBase {
+public class HandleDiscussionEmailJ8 extends MailHandlerBaseJ8 {
 
-  private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
-  public HandleDiscussionEmail() { super("discuss-(.*)@(.*)"); }
+  private static final Logger log = Logger.getLogger(HandleDiscussionEmailJ8.class.getName());
+  public HandleDiscussionEmailJ8() { super("discuss-(.*)@(.*)"); }
 
   @Override
   protected boolean processMessage(HttpServletRequest req, HttpServletResponse res)

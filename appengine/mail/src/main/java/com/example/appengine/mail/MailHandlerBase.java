@@ -48,9 +48,9 @@ public abstract class MailHandlerBase implements Filter {
     this.pattern = Pattern.compile("/_ah/mail/" + pattern);
   }
 
-  @Override public void init(FilterConfig config) throws ServletException { }
+  public void init(FilterConfig config) throws ServletException { }
 
-  @Override public void destroy() { }
+  public void destroy() { }
 
   /**
    * Process the message. A message will only be passed to this method
@@ -66,7 +66,6 @@ public abstract class MailHandlerBase implements Filter {
   protected abstract boolean processMessage(
       HttpServletRequest req, HttpServletResponse res) throws ServletException;
 
-  @Override
   public void doFilter(ServletRequest sreq, ServletResponse sres, FilterChain chain)
       throws IOException, ServletException {
 

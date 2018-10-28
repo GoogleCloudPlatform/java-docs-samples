@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BounceHandlerServlet extends HttpServlet {
+public class BounceHandlerServletJ8 extends HttpServlet {
 
-  private static final Logger log = Logger.getLogger(BounceHandlerServlet.class.getName());
+  private static final Logger log = Logger.getLogger(BounceHandlerServletJ8.class.getName());
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
