@@ -205,6 +205,7 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
     assertEquals(results, expectedResults);
   }
 
+  @Test
   public void testPaginateCursor() throws Exception {
     // Snippet executes it's own query. Failures result in thrown Exceptions
     queryDataSnippets.paginateCursor();
