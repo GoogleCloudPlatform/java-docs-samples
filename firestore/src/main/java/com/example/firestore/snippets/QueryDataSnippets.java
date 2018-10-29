@@ -372,7 +372,7 @@ class QueryDataSnippets {
     List<QueryDocumentSnapshot> docs = firstPage.get(30, TimeUnit.SECONDS).getDocuments();
 
     // Construct query for the next 25 cities.
-    QueryDocumentSnapshot lastDoc = docs.get(docs.size()-1);
+    QueryDocumentSnapshot lastDoc = docs.get(docs.size() - 1);
     ApiFuture<QuerySnapshot> secondPage = cities
         .orderBy("population")
         .startAfter(lastDoc)
