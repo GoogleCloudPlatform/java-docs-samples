@@ -197,6 +197,19 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
     assertTrue(Objects.equals(result, expectedResults));
   }
 
+  @Test
+  public void testCreateStartAtSnapshotQueryCursor() throws Exception {
+    Query q = queryDataSnippets.createStartAtSnapshotQueryCursor();
+    List<String> results = getResults(q);
+    List<String> expectedResults = Arrays.asList("SF", "LA");
+    assertEquals(results, expectedResults);
+  }
+
+  public void testPaginateCursor() throws Exception {
+    // Snippet executes it's own query. Failures result in thrown Exceptions
+    queryDataSnippets.paginateCursor();
+  }
+
   private Set<String> getResultsAsSet(Query query) throws Exception {
     List<String> docIds = getResults(query);
     return new HashSet<>(docIds);

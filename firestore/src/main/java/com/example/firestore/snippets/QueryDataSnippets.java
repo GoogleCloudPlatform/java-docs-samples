@@ -21,16 +21,23 @@ import com.example.firestore.snippets.model.City;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.Query.Direction;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 
+import com.google.firestore.v1beta1.Document;
+import com.google.protobuf.Api;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /** Snippets to support firestore querying data documentation. */
 class QueryDataSnippets {
@@ -327,5 +334,52 @@ class QueryDataSnippets {
         .orderBy("state")
         .startAt("Springfield", "Missouri");
     // [END fs_multiple_cursor_conditions]
+  }
+
+  /**
+   * Create a query using a snapshot as a start point.
+   *
+   * @return query
+   */
+  Query createStartAtSnapshotQueryCursor()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    // [START fs_document_snapshot_cursor]
+    // Fetch the Snapshot
+    ApiFuture<DocumentSnapshot> future = db.collection("cities").document("SF").get();
+    DocumentSnapshot snapshot = future.get(30, TimeUnit.SECONDS);
+
+    // Construct the query
+    Query query = db.collection("cities")
+        .orderBy("population")
+        .startAt(snapshot);
+    // [END fs_document_snapshot_cursor]
+    return query;
+  }
+
+  /**
+   * Example of a paginated query.
+   */
+  void paginateCursor() throws InterruptedException, ExecutionException, TimeoutException {
+    // [START fs_paginate_cursor]
+    // Construct query for first 25 cities, ordered by population.
+    CollectionReference cities = db.collection("cities");
+    ApiFuture<QuerySnapshot> firstPage = cities
+        .orderBy("population")
+        .limit(25)
+        .get();
+
+    // Wait for results.
+    List<QueryDocumentSnapshot> docs = firstPage.get(30, TimeUnit.SECONDS).getDocuments();
+
+    // Construct query for the next 25 cities.
+    QueryDocumentSnapshot lastDoc = docs.get(docs.size()-1);
+    ApiFuture<QuerySnapshot> secondPage = cities
+        .orderBy("population")
+        .startAfter(lastDoc)
+        .limit(25)
+        .get();
+
+    docs = secondPage.get(30, TimeUnit.SECONDS).getDocuments();
+    // [END fs_paginate_cursor]
   }
 }
