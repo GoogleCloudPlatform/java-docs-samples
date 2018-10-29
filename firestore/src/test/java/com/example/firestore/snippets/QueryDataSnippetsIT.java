@@ -201,8 +201,8 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
   public void testCreateStartAtSnapshotQueryCursor() throws Exception {
     Query q = queryDataSnippets.createStartAtSnapshotQueryCursor();
     List<String> results = getResults(q);
-    List<String> expectedResults = Arrays.asList("SF", "LA");
-    assertEquals(results, expectedResults);
+    List<String> expectedResults = Arrays.asList("SF", "LA", "TOK", "BJ");
+    assertEquals(expectedResults, results);
   }
 
   @Test
