@@ -51,7 +51,7 @@ public class Quickstart {
     // Register the view. It is imperative that this step exists,
     // otherwise recorded metrics will be dropped and never exported.
     View view = View.create(
-        Name.create("task_latency_distribution_4"),
+        Name.create("task_latency_distribution"),
         "The distribution of the task latencies.",
         LATENCY_MS,
         Aggregation.Distribution.create(LATENCY_BOUNDARIES),
@@ -68,7 +68,6 @@ public class Quickstart {
     StackdriverStatsExporter.createAndRegister();
     // [END setup_exporter]
 
-    // [START example_code]
     // Record 100 fake latency values between 0 and 5 seconds.
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
@@ -81,8 +80,9 @@ public class Quickstart {
     // live for at least the interval past any metrics that must be collected, or some risk being
     // lost if they are recorded after the last export.
 
+    System.out.println(String.format(
+        "Sleeping %d seconds before shutdown to ensure all records are flushed.", EXPORT_INTERVAL));
     Thread.sleep(TimeUnit.MILLISECONDS.convert(EXPORT_INTERVAL, TimeUnit.SECONDS));
-    // [END example_code]
   }
 }
 // [END monitoring_opencensus_metrics_quickstart]

@@ -74,6 +74,7 @@
         </executions>
         <configuration>
           <mainClass>com.example.opencensus.Quickstart</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
         </configuration>
       </plugin>
     </plugins>
