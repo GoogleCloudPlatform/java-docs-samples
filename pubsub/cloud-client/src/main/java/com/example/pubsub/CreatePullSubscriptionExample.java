@@ -39,10 +39,10 @@ public class CreatePullSubscriptionExample {
     // Your Google Cloud Platform project ID
     String projectId = ServiceOptions.getDefaultProjectId();
 
-    // Your topic ID, eg. "my-topic"
+    // TODO: Your topic ID, eg. "my-topic"
     String topicId = args[0];
 
-    // Your subscription ID eg. "my-sub"
+    // TODO: your subscription ID eg. "my-sub"
     String subscriptionId = args[1];
 
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
@@ -51,7 +51,8 @@ public class CreatePullSubscriptionExample {
     ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
         projectId, subscriptionId);
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
-      // create a pull subscription with default acknowledgement deadline (= 10 seconds)
+      // Create a pull subscription with default acknowledgement deadline.
+      // A default value of 10 seconds is used when ackDeadlineSeconds is set to 0.
       Subscription subscription =
           subscriptionAdminClient.createSubscription(
               subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
@@ -64,6 +65,9 @@ public class CreatePullSubscriptionExample {
     System.out.printf(
         "Subscription %s:%s created.\n",
         subscriptionName.getProject(), subscriptionName.getSubscription());
+
+    // Uncomment if you encounter java.lang.IllegalThreadStateException.
+    // System.exit(0);
   }
 }
 // [END pubsub_quickstart_create_subscription]

@@ -28,31 +28,32 @@ import com.google.pubsub.v1.PubsubMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PublisherExample {
 
-  // use the default project id
+  // Use the default project id.
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
   /** Publish messages to a topic.
    * @param args topic name, number of messages
    */
   public static void main(String... args) throws Exception {
-    // topic id, eg. "my-topic"
+    // TODO: Your topic ID, eg. "my-topic"
     String topicId = args[0];
     int messageCount = Integer.parseInt(args[1]);
-    ProjectTopicName topicName = ProjectTopicName.of(PROJECT_ID, topicId);
+    ProjectTopicName topicPath = ProjectTopicName.of(PROJECT_ID, topicId);
     Publisher publisher = null;
     List<ApiFuture<String>> futures = new ArrayList<>();
 
     try {
-      // Create a publisher instance with default settings bound to the topic
-      publisher = Publisher.newBuilder(topicName).build();
+      // Create a publisher instance with default settings bound to the topic.
+      publisher = Publisher.newBuilder(topicPath).build();
 
       for (int i = 0; i < messageCount; i++) {
         String message = "message-" + i;
 
-        // convert message to bytes
+        // Convert message to bytes.
         ByteString data = ByteString.copyFromUtf8(message);
         PubsubMessage pubsubMessage = PubsubMessage.newBuilder()
             .setData(data)
@@ -63,7 +64,7 @@ public class PublisherExample {
         futures.add(future);
       }
     } finally {
-      // Wait on any pending requests
+      // Wait on any pending requests.
       List<String> messageIds = ApiFutures.allAsList(futures).get();
 
       for (String messageId : messageIds) {
@@ -74,6 +75,9 @@ public class PublisherExample {
         // When finished with the publisher, shutdown to free up resources.
         publisher.shutdown();
       }
+
+      // Uncomment if you encounter java.lang.IllegalThreadStateException.
+      // System.exit(0);
     }
   }
 }
