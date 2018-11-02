@@ -344,7 +344,7 @@ class QueryDataSnippets {
   Query createStartAtSnapshotQueryCursor()
       throws InterruptedException, ExecutionException, TimeoutException {
     // [START fs_document_snapshot_cursor]
-    // Fetch the Snapshot
+    // Fetch the snapshot with an API call, waiting for a maximum of 30 seconds for a result.
     ApiFuture<DocumentSnapshot> future = db.collection("cities").document("SF").get();
     DocumentSnapshot snapshot = future.get(30, TimeUnit.SECONDS);
 
@@ -368,7 +368,7 @@ class QueryDataSnippets {
         .limit(25)
         .get();
 
-    // Wait for results.
+    // Wait for the results of the API call, waiting for a maximum of 30 seconds for a result.
     List<QueryDocumentSnapshot> docs = firstPage.get(30, TimeUnit.SECONDS).getDocuments();
 
     // Construct query for the next 25 cities.
