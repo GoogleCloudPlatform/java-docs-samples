@@ -211,8 +211,8 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
     List<Query> pages = queryDataSnippets.paginateCursor();
     List<String> firstPage = getResults(pages.get(0));
     List<String> secondPage = getResults(pages.get(1));
-    assertEquals(firstPage, Arrays.asList("SF", "LA", "TOK", "BJ"));
-    assertEquals(firstPage, new ArrayList<String>());
+    assertEquals(Arrays.asList("DC", "SF", "LA", "TOK", "BJ"), firstPage);
+    assertEquals(new ArrayList<String>(), secondPage);
   }
 
   private Set<String> getResultsAsSet(Query query) throws Exception {
