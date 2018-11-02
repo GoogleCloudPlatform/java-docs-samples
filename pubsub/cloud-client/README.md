@@ -29,17 +29,20 @@ For more samples, see the samples in
 
 #### Create a new topic
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreateTopicExample -Dexec.args=my-topic
+  mvn exec:java -Dexec.cleanupDaemonThreads=false \
+    -Dexec.mainClass=com.example.pubsub.CreateTopicExample -Dexec.args=my-topic
 ```
 
 #### Create a subscription
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic my-sub"
+  mvn exec:java -Dexec.cleanupDaemonThreads=false \
+    -Dexec.mainClass=com.example.pubsub.CreatePullSubscriptionExample -Dexec.args="my-topic my-sub"
 ```
 
 #### Publish messages
 ```
-  mvn exec:java -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args="my-topic 5"
+  mvn exec:java -Dexec.cleanupDaemonThreads=false \
+    -Dexec.mainClass=com.example.pubsub.PublisherExample -Dexec.args="my-topic 5"
 ```
 Publishes 5 messages to the topic `my-topic`.
 
@@ -47,7 +50,7 @@ Publishes 5 messages to the topic `my-topic`.
 ```
    mvn exec:java -Dexec.mainClass=com.example.pubsub.SubscriberExample -Dexec.args=my-sub
 ```
-Subscriber will continue to listen on the topic and print out message id and data as messages are received. Press `Ctrl+C` to exit the application. 
+Subscriber will continue to listen on the topic and print out message id and data as messages are received. Press `Ctrl+C` to exit the application.
 
 #### Testing
 Run the test with Maven.
