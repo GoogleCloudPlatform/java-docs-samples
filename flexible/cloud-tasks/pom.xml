@@ -13,7 +13,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [START project] -->
 <project>
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
@@ -46,7 +45,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudtasks</artifactId>
-      <version>v2beta2-rev47-1.23.0</version>
+      <version>v2beta2-rev54-1.24.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -85,4 +84,3 @@
     </plugins>
   </build>
 </project>
-<!-- [END project] -->

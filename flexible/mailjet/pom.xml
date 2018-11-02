@@ -50,13 +50,13 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
+    <!-- [START gae_flex_mailjet_dependencies] -->
     <dependency>
       <groupId>com.mailjet</groupId>
       <artifactId>mailjet-client</artifactId>
       <version>${mailjet-version}</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_flex_mailjet_dependencies] -->
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->

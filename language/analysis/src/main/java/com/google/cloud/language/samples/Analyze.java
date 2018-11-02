@@ -95,7 +95,7 @@ public class Analyze {
    * Identifies entities in the string {@code text}.
    */
   public static void analyzeEntitiesText(String text) throws Exception {
-    // [START analyze_entities_text]
+    // [START language_entities_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -124,14 +124,14 @@ public class Analyze {
         }
       }
     }
-    // [END analyze_entities_text]
+    // [END language_entities_text]
   }
 
   /**
    * Identifies entities in the contents of the object at the given GCS {@code path}.
    */
   public static void analyzeEntitiesFile(String gcsUri) throws Exception {
-    // [START analyze_entities_gcs]
+    // [START language_entities_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS Content URI path to the file to be analyzed
@@ -161,14 +161,14 @@ public class Analyze {
         }
       }
     }
-    // [END analyze_entities_gcs]
+    // [END language_entities_gcs]
   }
 
   /**
    * Identifies the sentiment in the string {@code text}.
    */
   public static Sentiment analyzeSentimentText(String text) throws Exception {
-    // [START analyze_sentiment_text]
+    // [START language_sentiment_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -185,14 +185,14 @@ public class Analyze {
       }
       return sentiment;
     }
-    // [END analyze_sentiment_text]
+    // [END language_sentiment_text]
   }
 
   /**
    * Gets {@link Sentiment} from the contents of the GCS hosted file.
    */
   public static Sentiment analyzeSentimentFile(String gcsUri) throws Exception {
-    // [START analyze_sentiment_file]
+    // [START language_sentiment_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -209,14 +209,14 @@ public class Analyze {
       }
       return sentiment;
     }
-    // [END analyze_sentiment_file]
+    // [END language_sentiment_gcs]
   }
 
   /**
    * from the string {@code text}.
    */
   public static List<Token> analyzeSyntaxText(String text) throws Exception {
-    // [START analyze_syntax_text]
+    // [START language_syntax_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -252,14 +252,14 @@ public class Analyze {
       }
       return response.getTokensList();
     }
-    // [END analyze_syntax_text]
+    // [END language_syntax_text]
   }
 
   /**
    * Get the syntax of the GCS hosted file.
    */
   public static List<Token> analyzeSyntaxFile(String gcsUri) throws Exception {
-    // [START analyze_syntax_file]
+    // [START language_syntax_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -296,14 +296,14 @@ public class Analyze {
 
       return response.getTokensList();
     }
-    // [END analyze_syntax_file]
+    // [END language_syntax_gcs]
   }
 
   /**
    * Detects categories in text using the Language Beta API.
    */
   public static void classifyText(String text) throws Exception {
-    // [START classify_text]
+    // [START language_classify_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set content to the text string
@@ -322,14 +322,14 @@ public class Analyze {
             category.getName(), category.getConfidence());
       }
     }
-    // [END classify_text]
+    // [END language_classify_text]
   }
 
   /**
    * Detects categories in a GCS hosted file using the Language Beta API.
    */
   public static void classifyFile(String gcsUri) throws Exception {
-    // [START classify_file]
+    // [START language_classify_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS content URI path
@@ -348,14 +348,14 @@ public class Analyze {
             category.getName(), category.getConfidence());
       }
     }
-    // [END classify_file]
+    // [END language_classify_gcs]
   }
 
   /**
    * Detects the entity sentiments in the string {@code text} using the Language Beta API.
    */
   public static void entitySentimentText(String text) throws Exception {
-    // [START entity_sentiment_text]
+    // [START language_entity_sentiment_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -379,14 +379,14 @@ public class Analyze {
         }
       }
     }
-    // [END entity_sentiment_text]
+    // [END language_entity_sentiment_text]
   }
 
   /**
    * Identifies the entity sentiments in the the GCS hosted file using the Language Beta API.
    */
   public static void entitySentimentFile(String gcsUri) throws Exception {
-    // [START entity_sentiment_file]
+    // [START language_entity_sentiment_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder()
@@ -413,6 +413,6 @@ public class Analyze {
         }
       }
     }
-    // [END entity_sentiment_file]
+    // [END language_entity_sentiment_gcs]
   }
 }

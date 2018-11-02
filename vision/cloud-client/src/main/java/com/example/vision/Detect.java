@@ -46,6 +46,7 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.InputConfig;
+import com.google.cloud.vision.v1.LocalizedObjectAnnotation;
 import com.google.cloud.vision.v1.LocationInfo;
 import com.google.cloud.vision.v1.OperationMetadata;
 import com.google.cloud.vision.v1.OutputConfig;
@@ -103,6 +104,7 @@ public class Detect {
               + "Commands:\n"
               + "\tfaces | labels | landmarks | logos | text | safe-search | properties"
               + "| web | web-entities | web-entities-include-geo | crop | ocr \n"
+              + "| object-localization \n"
               + "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
               + "resource (gs://...)\n"
               + "Path to File:\n\tA path to the remote file on Cloud Storage (gs://...)\n"
@@ -190,6 +192,12 @@ public class Detect {
     } else if (command.equals("ocr")) {
       String destPath = args.length > 2 ? args[2] : "";
       detectDocumentsGcs(path, destPath);
+    } else if (command.equals("object-localization")) {
+      if (path.startsWith("gs://")) {
+        detectLocalizedObjectsGcs(path, out);
+      } else {
+        detectLocalizedObjects(path, out);
+      }
     }
   }
 
@@ -201,6 +209,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_face_detection]
   public static void detectFaces(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -234,6 +243,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_face_detection]
 
   /**
    * Detects faces in the specified remote image on Google Cloud Storage.
@@ -244,6 +254,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_face_detection_gcs]
   public static void detectFacesGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -278,6 +289,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_face_detection_gcs]
 
   /**
    * Detects labels in the specified local image.
@@ -287,6 +299,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_label_detection]
   public static void detectLabels(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -315,6 +328,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_label_detection]
 
   /**
    * Detects labels in the specified remote image on Google Cloud Storage.
@@ -325,6 +339,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_label_detection_gcs]
   public static void detectLabelsGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -354,6 +369,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_label_detection_gcs]
 
   /**
    * Detects landmarks in the specified local image.
@@ -363,6 +379,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_landmark_detection]
   public static void detectLandmarks(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -392,6 +409,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_landmark_detection]
 
   /**
    * Detects landmarks in the specified URI.
@@ -440,6 +458,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_landmark_detection_gcs]
   public static void detectLandmarksGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -469,6 +488,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_landmark_detection_gcs]
 
   /**
    * Detects logos in the specified local image.
@@ -478,6 +498,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_logo_detection]
   public static void detectLogos(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -506,6 +527,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_logo_detection]
 
   /**
    * Detects logos in the specified remote image on Google Cloud Storage.
@@ -516,6 +538,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_logo_detection_gcs]
   public static void detectLogosGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -544,6 +567,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_logo_detection_gcs]
 
   /**
    * Detects text in the specified image.
@@ -553,6 +577,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_text_detection]
   public static void detectText(String filePath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -582,6 +607,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_text_detection]
 
   /**
    * Detects text in the specified remote image on Google Cloud Storage.
@@ -591,6 +617,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_text_detection_gcs]
   public static void detectTextGcs(String gcsPath, PrintStream out) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -619,6 +646,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_text_detection_gcs]
 
   /**
    * Detects image properties such as color frequency from the specified local image.
@@ -628,6 +656,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_image_property_detection]
   public static void detectProperties(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -663,6 +692,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_image_property_detection]
 
   /**
    * Detects image properties such as color frequency from the specified remote image on Google
@@ -673,6 +703,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_image_property_detection_gcs]
   public static void detectPropertiesGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -707,8 +738,8 @@ public class Detect {
       }
     }
   }
+  // [END vision_image_property_detection_gcs]
 
-  // [START vision_detect_safe_search]
   /**
    * Detects whether the specified image has features you would want to moderate.
    *
@@ -717,6 +748,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_safe_search_detection]
   public static void detectSafeSearch(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -751,9 +783,8 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_safe_search]
+  // [END vision_safe_search_detection]
 
-  // [START vision_detect_safe_search_uri]
   /**
    * Detects whether the specified image on Google Cloud Storage has features you would want
    * to moderate.
@@ -763,6 +794,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_safe_search_detection_gcs]
   public static void detectSafeSearchGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -796,9 +828,9 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_safe_search_uri]
+  // [END vision_safe_search_detection_gcs]
 
-  // [START vision_detect_web]
+  // [START vision_web_detection]
   /**
    * Finds references to the specified image on the web.
    *
@@ -861,9 +893,9 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_web]
+  // [END vision_web_detection]
 
-  // [START vision_detect_web_uri]
+  // [START vision_web_detection_gcs]
   /**
    * Detects whether the remote image on Google Cloud Storage has features you would want to
    * moderate.
@@ -926,7 +958,7 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_web_uri]
+  // [END vision_web_detection_gcs]
 
   /**
    * Find web entities given a local image.
@@ -1001,7 +1033,7 @@ public class Detect {
     }
   }
 
-  // [START vision_web_entities_include_geo_results]
+  // [START vision_web_detection_include_geo]
   /**
    * Find web entities given a local image.
    * @param filePath The path of the image to detect.
@@ -1048,9 +1080,9 @@ public class Detect {
               }));
     }
   }
-  // [END vision_web_entities_include_geo_results]
+  // [END vision_web_detection_include_geo]
 
-  // [START vision_web_entities_include_geo_results_uri]
+  // [START vision_web_detection_include_geo_gcs]
   /**
    * Find web entities given the remote image on Google Cloud Storage.
    * @param gcsPath The path to the remote file on Google Cloud Storage to detect web entities with
@@ -1099,7 +1131,7 @@ public class Detect {
               }));
     }
   }
-  // [END vision_web_entities_include_geo_results_uri]
+  // [END vision_web_detection_include_geo_gcs]
 
   /**
    * Suggests a region to crop to for a local file.
@@ -1109,6 +1141,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_crop_hint_detection]
   public static void detectCropHints(String filePath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -1139,6 +1172,7 @@ public class Detect {
       }
     }
   }
+  // [END vision_crop_hint_detection]
 
   /**
    * Suggests a region to crop to for a remote file on Google Cloud Storage.
@@ -1148,6 +1182,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_crop_hint_detection_gcs]
   public static void detectCropHintsGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -1177,8 +1212,8 @@ public class Detect {
       }
     }
   }
+  // [END vision_crop_hint_detection_gcs]
 
-  // [START vision_detect_document]
   /**
    * Performs document text detection on a local image file.
    *
@@ -1187,8 +1222,9 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_fulltext_detection]
   public static void detectDocumentText(String filePath, PrintStream out) throws Exception,
-      IOException {
+       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -1241,9 +1277,8 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_document]
+  // [END vision_fulltext_detection]
 
-  // [START vision_detect_document_uri]
   /**
    * Performs document text detection on a remote image on Google Cloud Storage.
    *
@@ -1252,6 +1287,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
+  // [START vision_fulltext_detection_gcs]
   public static void detectDocumentTextGcs(String gcsPath, PrintStream out) throws Exception,
       IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -1304,9 +1340,9 @@ public class Detect {
       }
     }
   }
-  // [END vision_detect_document_uri]
+  // [END vision_fulltext_detection_gcs]
 
-  // [START vision_async_detect_document_ocr]
+  // [START vision_text_detection_pdf_gcs]
   /**
    * Performs document text OCR with PDF/TIFF as source files on Google Cloud Storage.
    *
@@ -1423,5 +1459,94 @@ public class Detect {
       }
     }
   }
-  // [END vision_async_detect_document_ocr]
+  // [END vision_text_detection_pdf_gcs]
+
+  // [START vision_localize_objects]
+  /**
+   * Detects localized objects in the specified local image.
+   *
+   * @param filePath The path to the file to perform localized object detection on.
+   * @param out A {@link PrintStream} to write detected objects to.
+   * @throws Exception on errors while closing the client.
+   * @throws IOException on Input/Output errors.
+   */
+  public static void detectLocalizedObjects(String filePath, PrintStream out)
+      throws Exception, IOException {
+    List<AnnotateImageRequest> requests = new ArrayList<>();
+
+    ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+    Image img = Image.newBuilder().setContent(imgBytes).build();
+    AnnotateImageRequest request =
+        AnnotateImageRequest.newBuilder()
+            .addFeatures(Feature.newBuilder().setType(Type.OBJECT_LOCALIZATION))
+            .setImage(img)
+            .build();
+    requests.add(request);
+
+    // Perform the request
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
+      List<AnnotateImageResponse> responses = response.getResponsesList();
+
+      // Display the results
+      for (AnnotateImageResponse res : responses) {
+        for (LocalizedObjectAnnotation entity : res.getLocalizedObjectAnnotationsList()) {
+          out.format("Object name: %s\n", entity.getName());
+          out.format("Confidence: %s\n", entity.getScore());
+          out.format("Normalized Vertices:\n");
+          entity
+              .getBoundingPoly()
+              .getNormalizedVerticesList()
+              .forEach(vertex -> out.format("- (%s, %s)\n", vertex.getX(), vertex.getY()));
+        }
+      }
+    }
+  }
+  // [END vision_localize_objects]
+
+  // [START vision_localize_objects_gcs]
+  /**
+   * Detects localized objects in a remote image on Google Cloud Storage.
+   *
+   * @param gcsPath The path to the remote file on Google Cloud Storage to detect localized objects
+   *     on.
+   * @param out A {@link PrintStream} to write detected objects to.
+   * @throws Exception on errors while closing the client.
+   * @throws IOException on Input/Output errors.
+   */
+  public static void detectLocalizedObjectsGcs(String gcsPath, PrintStream out)
+      throws Exception, IOException {
+    List<AnnotateImageRequest> requests = new ArrayList<>();
+
+    ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
+    Image img = Image.newBuilder().setSource(imgSource).build();
+
+    AnnotateImageRequest request =
+        AnnotateImageRequest.newBuilder()
+            .addFeatures(Feature.newBuilder().setType(Type.OBJECT_LOCALIZATION))
+            .setImage(img)
+            .build();
+    requests.add(request);
+
+    // Perform the request
+    try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
+      List<AnnotateImageResponse> responses = response.getResponsesList();
+      client.close();
+      // Display the results
+      for (AnnotateImageResponse res : responses) {
+        for (LocalizedObjectAnnotation entity : res.getLocalizedObjectAnnotationsList()) {
+          out.format("Object name: %s\n", entity.getName());
+          out.format("Confidence: %s\n", entity.getScore());
+          out.format("Normalized Vertices:\n");
+          entity
+              .getBoundingPoly()
+              .getNormalizedVerticesList()
+              .forEach(vertex -> out.format("- (%s, %s)\n", vertex.getX(), vertex.getY()));
+        }
+      }
+    }
+  }
+  // [END vision_localize_objects_gcs]
 }

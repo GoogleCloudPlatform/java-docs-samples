@@ -18,7 +18,6 @@ package com.example.appengine.pusher;
 
 import com.pusher.rest.Pusher;
 
-// [START pusher_server_initialize]
 public abstract class PusherService {
 
   public static final String APP_KEY = System.getenv("PUSHER_APP_KEY");
@@ -40,4 +39,3 @@ public abstract class PusherService {
     return pusher;
   }
 }
-// [END pusher_server_initialize]

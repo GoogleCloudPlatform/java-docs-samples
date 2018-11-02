@@ -34,14 +34,13 @@ Looks like:  `projectID:region:instance`
 ## Running locally
 
 ```bash
-$ mvn clean jetty:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassowrd -Ddatabase=myDatabase
+$ mvn clean jetty:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassword -Ddatabase=myDatabase
 ```
 
 ## Deploying
 
 ```bash
-$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root
--Dpassword=myPassword -Ddatabase=myDatabase
+$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassword -Ddatabase=myDatabase
 ```
 
 

@@ -28,69 +28,12 @@ You can then run `Detect` via:
 mvn exec:java -DDetect -Dexec.args="arg1 'arg 2' arg3"
 ```
 
-### Analyze an image
-
+#### Localized Objects
 ```
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
-```
-
-#### Faces
-```
-mvn exec:java -DDetect -Dexec.args="faces ./resources/face_no_surprise.jpg"
+mvn exec:java -DDetect -Dexec.args="object-localization ./resources/puppies.jpg"
 ```
 
-#### Labels
+#### Hand-written OCR
 ```
-mvn exec:java -DDetect -Dexec.args="labels ./resources/wakeupcat.jpg"
-```
-
-#### Landmarks
-```
-mvn exec:java -DDetect -Dexec.args="landmarks ./resources/landmark.jpg"
-```
-
-#### Logos
-```
-mvn exec:java -DDetect -Dexec.args="logos ./resources/logos.png"
-```
-
-#### Text
-```
-mvn exec:java -DDetect -Dexec.args="text ./resources/text.jpg"
-```
-
-#### Safe Search
-```
-mvn exec:java -DDetect -Dexec.args="safe-search ./resources/wakeupcat.jpg"
-```
-
-#### Properties
-```
-mvn exec:java -DDetect -Dexec.args="properties ./resources/city.jpg"
-```
-
-#### Web
-```
-mvn exec:java -DDetect -Dexec.args="web ./resources/landmark.jpg"
-```
-
-#### Web Entities
-```
-mvn exec:java -DDetect -Dexec.args="web-entities ./resources/landmark.jpg"
-```
-
-#### Web Entities Include Geo
-```
-mvn exec:java -DDetect -Dexec.args="web-entities-include-geo ./resources/landmark.jpg"
-```
-
-#### Crop
-```
-mvn exec:java -DDetect -Dexec.args="crop ./resources/landmark.jpg"
-```
-
-#### OCR
-```
-mvn exec:java -DDetect -Dexec.args="ocr gs://java-docs-samples-testing/vision/HodgeConj.pdf \
-   gs://<BUCKET_ID>/"
+mvn exec:java -DDetect -Dexec.args="handwritten-ocr ./resources/handwritten.jpg"
 ```

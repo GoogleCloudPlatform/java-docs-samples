@@ -36,13 +36,13 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START translate_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
-      <version>1.32.0</version>
+      <version>1.38.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END translate_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.40</version>
+      <version>0.42</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -72,7 +72,7 @@ public class Detect {
     }
   }
 
-  // [START video_speech_transcription]
+  // [START video_speech_transcription_gcs_beta]
   /**
    * Transcribe speech from a video stored on GCS.
    *
@@ -84,6 +84,7 @@ public class Detect {
       // Set the language code
       SpeechTranscriptionConfig config = SpeechTranscriptionConfig.newBuilder()
           .setLanguageCode("en-US")
+          .setEnableAutomaticPunctuation(true)
           .build();
 
       // Set the video context with the above configuration
@@ -104,7 +105,7 @@ public class Detect {
 
       System.out.println("Waiting for operation to complete...");
       // Display the results
-      for (VideoAnnotationResults results : response.get(180, TimeUnit.SECONDS)
+      for (VideoAnnotationResults results : response.get(300, TimeUnit.SECONDS)
           .getAnnotationResultsList()) {
         for (SpeechTranscription speechTranscription : results.getSpeechTranscriptionsList()) {
           try {
@@ -134,5 +135,5 @@ public class Detect {
       }
     }
   }
-  // [END video_speech_transcription]
+  // [END video_speech_transcription_gcs_beta]
 }

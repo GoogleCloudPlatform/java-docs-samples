@@ -26,14 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for speech recognize sample.
- */
+/** Tests for speech recognize sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class RecognizeIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID;
+  private static final String BUCKET = "cloud-samples-tests";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -41,12 +38,11 @@ public class RecognizeIT {
   // The path to the audio file to transcribe
   private String audioFileName = "./resources/audio.raw";
   private String gcsAudioPath = "gs://" + BUCKET + "/speech/brooklyn.flac";
+  private String recognitionAudioFile = "./resources/commercial_mono.wav";
 
   // The path to the video file to transcribe
   private String videoFileName = "./resources/Google_Gnome.wav";
   private String gcsVideoPath = "gs://" + BUCKET + "/speech/Google_Gnome.wav";
-
-  private String recognitionAudioFile = "./resources/commercial_mono.wav";
 
   @Before
   public void setUp() {
@@ -112,22 +108,6 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testModelSelection() throws Exception {
-    Recognize.transcribeModelSelection(videoFileName);
-    String got = bout.toString();
-    assertThat(got).contains("OK Google");
-    assertThat(got).contains("the weather outside is sunny");
-  }
-
-  @Test
-  public void testGcsModelSelection() throws Exception {
-    Recognize.transcribeModelSelectionGcs(gcsVideoPath);
-    String got = bout.toString();
-    assertThat(got).contains("OK Google");
-    assertThat(got).contains("the weather outside is sunny");
-  }
-
-  @Test
   public void testAutoPunctuation() throws Exception {
     Recognize.transcribeFileWithAutomaticPunctuation(audioFileName);
     String got = bout.toString();
@@ -156,9 +136,18 @@ public class RecognizeIT {
   }
 
   @Test
-  public void testMetadata() throws Exception {
-    Recognize.transcribeFileWithMetadata(recognitionAudioFile);
+  public void testModelSelection() throws Exception {
+    Recognize.transcribeModelSelection(videoFileName);
     String got = bout.toString();
-    assertThat(got).contains("Chrome");
+    assertThat(got).contains("OK Google");
+    assertThat(got).contains("the weather outside is sunny");
+  }
+
+  @Test
+  public void testGcsModelSelection() throws Exception {
+    Recognize.transcribeModelSelectionGcs(gcsVideoPath);
+    String got = bout.toString();
+    assertThat(got).contains("OK Google");
+    assertThat(got).contains("the weather outside is sunny");
   }
 }

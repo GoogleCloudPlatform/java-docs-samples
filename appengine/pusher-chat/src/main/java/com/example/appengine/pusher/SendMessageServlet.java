@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
  * <ahref="https://pusher.com/docs/server_api_guide/server_excluding_recipients">Excluding
  * Recipients</ahref>}
  */
-// [START pusher_server_send_message]
 public class SendMessageServlet extends HttpServlet {
 
   private Gson gson = new GsonBuilder().create();
@@ -81,4 +80,3 @@ public class SendMessageServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(messageData));
   }
 }
-// [END pusher_server_send_message]

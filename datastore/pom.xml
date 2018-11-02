@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.32.0</version>
+      <version>1.38.0</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -57,10 +57,6 @@
   </dependencies>
   <build>
     <plugins>
-<!-- // [START datastore_maven]-->
-
-<!-- // [END datastore_maven]-->
-<!-- // [START datastore_exec] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -69,7 +65,6 @@
           <mainClass>com.google.datastore.snippets.TaskList</mainClass>
         </configuration>
       </plugin>
-<!-- // [END datastore_exec] -->
     </plugins>
   </build>
 </project>

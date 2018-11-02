@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
   </parent>
 
   <properties>
@@ -36,13 +36,11 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.50.0-beta</version>
+      <version>0.67.0-beta</version>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
@@ -54,7 +52,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.40</version>
+      <version>0.42</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

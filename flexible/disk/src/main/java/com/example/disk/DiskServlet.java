@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 @WebServlet(name = "disk", value = "")
 public class DiskServlet extends HttpServlet {
@@ -69,4 +68,3 @@ public class DiskServlet extends HttpServlet {
     out.print("Instance: " + instanceId + "\nSeen:\n" + sb.toString());
   }
 }
-// [END example]

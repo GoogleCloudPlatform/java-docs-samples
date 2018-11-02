@@ -75,6 +75,16 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
   }
 
   @Test
+  public void testArrayQueryReturnsExpectedResults() throws Exception {
+    Set<String> expected = new HashSet<>(Arrays.asList("SF", "LA"));
+
+    Query query = queryDataSnippets.createArrayQuery();
+    Set<String> results = getResultsAsSet(query);
+
+    assertTrue(Objects.equals(results, expected));
+  }
+
+  @Test
   public void testChainedQuery() throws Exception {
     Query q = queryDataSnippets.createChainedQuery();
     Set<String> result = getResultsAsSet(q);

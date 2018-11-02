@@ -173,19 +173,17 @@ public class Detect {
    * @param filePath the path to the video file to analyze.
    */
   public static void analyzeLabelsFile(String filePath) throws Exception {
-    // [START video_analyze_labels_local]
+    // [START video_analyze_labels]
     // Instantiate a com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
       // Read file and encode into Base64
       Path path = Paths.get(filePath);
       byte[] data = Files.readAllBytes(path);
-      byte[] encodedBytes = Base64.encodeBase64(data);
 
       AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
-          .setInputContent(ByteString.copyFrom(encodedBytes))
+          .setInputContent(ByteString.copyFrom(data))
           .addFeatures(Feature.LABEL_DETECTION)
           .build();
-
       // Create an operation that will contain the response when the operation completes.
       OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> response =
           client.annotateVideoAsync(request);
@@ -251,7 +249,7 @@ public class Detect {
         }
       }
     }
-    // [END video_analyze_labels_local]
+    // [END video_analyze_labels]
   }
 
   /**

@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-monitoring</artifactId>
-            <version>0.50.0-beta</version>
+            <version>1.38.0</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -52,6 +52,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>0.42</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
