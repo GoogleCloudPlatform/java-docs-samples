@@ -359,27 +359,28 @@ class QueryDataSnippets {
   /**
    * Example of a paginated query.
    */
-  void paginateCursor() throws InterruptedException, ExecutionException, TimeoutException {
+  List<Query> paginateCursor() throws InterruptedException, ExecutionException, TimeoutException {
     // [START fs_paginate_cursor]
     // Construct query for first 25 cities, ordered by population.
     CollectionReference cities = db.collection("cities");
-    ApiFuture<QuerySnapshot> firstPage = cities
+    Query firstPage = cities
         .orderBy("population")
-        .limit(25)
-        .get();
+        .limit(25);
 
     // Wait for the results of the API call, waiting for a maximum of 30 seconds for a result.
-    List<QueryDocumentSnapshot> docs = firstPage.get(30, TimeUnit.SECONDS).getDocuments();
+    ApiFuture<QuerySnapshot> future = firstPage.get();
+    List<QueryDocumentSnapshot> docs = future.get(30, TimeUnit.SECONDS).getDocuments();
 
     // Construct query for the next 25 cities.
     QueryDocumentSnapshot lastDoc = docs.get(docs.size() - 1);
-    ApiFuture<QuerySnapshot> secondPage = cities
+    Query secondPage = cities
         .orderBy("population")
         .startAfter(lastDoc)
-        .limit(25)
-        .get();
+        .limit(25);
 
-    docs = secondPage.get(30, TimeUnit.SECONDS).getDocuments();
+    future = secondPage.get();
+    docs = future.get(30, TimeUnit.SECONDS).getDocuments();
     // [END fs_paginate_cursor]
+    return Arrays.asList(firstPage, secondPage);
   }
 }
