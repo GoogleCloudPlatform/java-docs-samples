@@ -25,6 +25,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +37,8 @@ import javax.sql.DataSource;
 @WebServlet(name = "Index", value = "")
 public class IndexServlet extends HttpServlet {
 
+  private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
@@ -42,14 +46,14 @@ public class IndexServlet extends HttpServlet {
     // in the ContextListener when the application was started
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
 
-    int tabCt;
-    int voteCt;
+    int tabCount;
+    int spaceCount;
     List<Vote> recentVotes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       // PreparedStatements are compiled by the database immediately and executed at a later date.
       // Most databases cache previously compiled queries, which improves efficiency.
       PreparedStatement voteStmt =  conn.prepareStatement(
-          "SELECT canidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5");
+          "SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5");
       // Execute the statement
       ResultSet voteResults = voteStmt.executeQuery();
       // Convert a ResultSet into Vote objects
@@ -61,31 +65,31 @@ public class IndexServlet extends HttpServlet {
 
       // PreparedStatements can also be executed multiple times with different arguments. This can
       // improve efficiency, and project a query from being vulnerable to an SQL injection.
-      PreparedStatement voteCtStmt = conn.prepareStatement(
-          "SELECT COUNT(vote_id) FROM votes WHERE canidate=?");
+      PreparedStatement voteCountStmt = conn.prepareStatement(
+          "SELECT COUNT(vote_id) FROM votes WHERE candidate=?");
 
-      voteCtStmt.setString(1, "tabs");
-      ResultSet tabResult = voteCtStmt.executeQuery();
+      voteCountStmt.setString(1, "TABS");
+      ResultSet tabResult = voteCountStmt.executeQuery();
       tabResult.next(); // Move to the first result
-      tabCt = tabResult.getInt(1);
+      tabCount = tabResult.getInt(1);
 
-      voteCtStmt.setString(1, "spaces");
-      ResultSet spacesResult = voteCtStmt.executeQuery();
-      spacesResult.next(); // Move to the first result
-      voteCt = spacesResult.getInt(1);
+      voteCountStmt.setString(1, "SPACES");
+      ResultSet spaceResult = voteCountStmt.executeQuery();
+      spaceResult.next(); // Move to the first result
+      spaceCount = spaceResult.getInt(1);
 
-    } catch (SQLException e) {
+    } catch (SQLException ex) {
       // If something goes wrong, the application needs to react appropriately. This might mean
       // getting a new connection and executing the query again, or it might mean redirecting the
       // user to a different page to let them know something went wrong.
       throw new ServletException("Unable to successfully connect to the database. Please check the "
-          + "steps in the README and try again.");
+          + "steps in the README and try again.", ex);
     }
     // [END cloud_sql_example_query]
 
     // Add variables and render the page
-    req.setAttribute("tabVoteCt", tabCt);
-    req.setAttribute("spaceVoteCt", voteCt);
+    req.setAttribute("tabCount", tabCount);
+    req.setAttribute("spaceCount", spaceCount);
     req.setAttribute("recentVotes", recentVotes);
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
@@ -96,10 +100,10 @@ public class IndexServlet extends HttpServlet {
     // Get the team from the request and record the time of the vote.
     String team = req.getParameter("team");
     if (team != null) {
-      team = team.toLowerCase();
+      team = team.toUpperCase();
     }
     Timestamp now = new Timestamp(new Date().getTime());
-    if (team == null || !team.equals("tabs") && !team.equals("spaces")) {
+    if (team == null || (!team.equals("TABS") && !team.equals("SPACES"))) {
       resp.setStatus(400);
       resp.getWriter().append("Invalid team specified.");
       return;
@@ -114,25 +118,26 @@ public class IndexServlet extends HttpServlet {
 
       // PreparedStatements can be more efficient and project against injections.
       PreparedStatement voteStmt = conn.prepareStatement(
-          "INSERT INTO votes (time_cast, canidate) VALUES (?, ?);");
+          "INSERT INTO votes (time_cast, candidate) VALUES (?, ?);");
       voteStmt.setTimestamp(1, now);
       voteStmt.setString(2, team);
 
       // Finally, execute the statement. If it fails, an error will be thrown.
       voteStmt.execute();
 
-    } catch (SQLException e) {
+    } catch (SQLException ex) {
       // If something goes wrong, handle the error in this section. This might involve retrying or
       // adjusting parameters depending on the situation.
       // [START_EXCLUDE]
-      System.out.println("An SQL error occurred during executions: \n" + e.toString());
-      resp.getWriter().write("Unable to successfully cast vote! Please contact the application"
-          + "owner for more details.");
+      LOGGER.log(Level.WARNING, "Error while attempting to submit vote.", ex);
+      resp.setStatus(500);
+      resp.getWriter().write("Unable to successfully cast vote! Please check the application "
+          + "logs for more details.");
       // [END_EXCLUDE]
     }
     // [END cloud_sql_example_statement]
 
-
+    resp.setStatus(200);
     resp.getWriter().printf("Vote successfully cast for '%s' at time %s!\n", team, now);
   }
 

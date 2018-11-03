@@ -20,20 +20,20 @@ import java.sql.Timestamp;
 
 public class Vote {
 
-  private String candiate;
+  private String candidate;
   private Timestamp timeCast;
 
-  public Vote(String candiate, Timestamp timeCast) {
-    this.candiate = candiate;
+  public Vote(String candidate, Timestamp timeCast) {
+    this.candidate = candidate.toUpperCase();
     this.timeCast = timeCast;
   }
 
-  public String getCandiate() {
-    return candiate;
+  public String getCandidate() {
+    return candidate;
   }
 
-  public void setCandiate(String candiate) {
-    this.candiate = candiate;
+  public void setCandidate(String candidate) {
+    this.candidate = candidate.toUpperCase();
   }
 
   public Timestamp getTimeCast() {

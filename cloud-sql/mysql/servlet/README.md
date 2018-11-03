@@ -39,7 +39,7 @@ mvn jetty:run
 
 Navigate towards `http://127.0.0.1:8080` to verify your application is running correctly.
 
-## Google AppEngine-Standard
+## Google App Engine Standard
 
 To run on GAE-Standard, create an AppEngine project by following the setup for these 
 [instructions](https://cloud.google.com/appengine/docs/standard/java/quickstart#before-you-begin) 

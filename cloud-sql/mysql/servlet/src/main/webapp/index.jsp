@@ -1,5 +1,3 @@
-<%@ page import="java.util.List" %>
-<%@ page import="com.example.cloudsql.Vote" %>
 <!--
 Copyright 2018 Google LLC
 
@@ -16,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 <head>
     <title>Tabs VS Spaces</title>
@@ -30,88 +29,87 @@ limitations under the License.
         <a href="#" class="brand-logo center">Tabs VS Spaces</a>
     </div>
 </nav>
-
-<%
-    Integer tabVoteCt = (Integer) request.getAttribute("tabVoteCt");
-    Integer spaceVoteCt = (Integer) request.getAttribute("spaceVoteCt");
-    List<Vote> recentVotes = (List<Vote>) request.getAttribute("recentVotes");
-    int voteDiff = 0;
-    String leadTeam = "";
-    if (!tabVoteCt.equals(spaceVoteCt)) {
-      if (tabVoteCt > spaceVoteCt) {
-        leadTeam = "TABS";
-        voteDiff = tabVoteCt - spaceVoteCt;
-      } else {
-        leadTeam = "SPACES";
-        voteDiff = spaceVoteCt - tabVoteCt;
-      }
-    }
-%>
 <div class="section">
     <div class="center">
         <h4>
-            <% if(voteDiff != 0) { %>
-            <%= leadTeam %> are winning by <%= voteDiff %> <%= voteDiff > 1 ? "votes" : "vote" %>.
-            <% } else { %>
-            TABS and SPACES are tied!
-            <% } %>
+            <c:choose>
+                <c:when test="${tabCount == spaceCount}">
+                    TABS and SPACES are evenly matched!
+                </c:when>
+                <c:when test="${tabCount > spaceCount}">
+                    TABS are winning by <c:out value="${tabCount - spaceCount}"/>
+                    <c:out value='${tabCount - spaceCount > 1 ? "votes" : "vote"}'/>!
+                </c:when>
+                <c:when test="${tabCount < spaceCount}">
+                    SPACES are winning by <c:out value="${spaceCount - tabCount}"/>
+                    <c:out value='${spaceCount - tabCount > 1 ? "votes" : "vote"}'/>!!
+                </c:when>
+            </c:choose>
         </h4>
     </div>
     <div class="row center">
         <div class="col s6 m5 offset-m1">
-            <div class="card-panel <%= leadTeam.equals("TABS") ? "green lighten-3" : "" %>">
+            <c:if test="${tabCount > spaceCount}">
+                <c:set value="green lighten-3" var="tabWinClass"></c:set>
+            </c:if>
+            <div class="card-panel ${tabWinClass}">
                 <i class="material-icons large">keyboard_tab</i>
-                <h3><%= tabVoteCt %> votes</h3>
+                <h3><c:out value="${tabCount}"/> votes</h3>
                 <button id="voteTabs" class="btn green">Vote for TABS</button>
             </div>
         </div>
         <div class="col s6 m5">
-            <div  class="card-panel <%= leadTeam.equals("SPACES") ? "blue lighten-3" : ""  %>">
+            <c:if test="${tabCount < spaceCount}">
+                <c:set value="blue lighten-3" var="spaceWinClass"></c:set>
+            </c:if>
+            <div class="card-panel ${spaceWinClass}">
                 <i class="material-icons large">space_bar</i>
-                <h3><%= spaceVoteCt %> votes</h3>
+                <h3><c:out value="${spaceCount}"/> votes</h3>
                 <button id="voteSpaces" class="btn blue">Vote for SPACES</button>
             </div>
         </div>
     </div>
     <h4 class="header center">Recent Votes</h4>
     <ul class="container collection center">
-        <% for(Vote v : recentVotes) { %>
+        <c:forEach items="${recentVotes}" var="vote">
             <li class="collection-item avatar">
-                <% if(v.getCandiate().equals("tabs")) { %>
-                <i class="material-icons circle green">keyboard_tab</i>
-                <% } else { %>
-                <i class="material-icons circle blue">space_bar</i>
-                <% } %>
-                <span class="title">A vote for <b><%= v.getCandiate().toUpperCase() %></b></span>
-                <p>was cast at <%= v.getTimeCast() %>.</p>
+                <c:choose>
+                    <c:when test='${vote.getCandidate().equals("TABS")}'>
+                        <i class="material-icons circle green">keyboard_tab</i>
+                    </c:when>
+                    <c:when test='${vote.getCandidate().equals("SPACES")}'>
+                        <i class="material-icons circle blue">space_bar</i>
+                    </c:when>
+                </c:choose>
+                <span class="title">
+                    A vote for <b><c:out value="${vote.getCandidate()}"/></b>
+                </span>
+                <p>was cast at <c:out value="${vote.getTimeCast()}"/>.</p>
             </li>
-        <% } %>
+        </c:forEach>
     </ul>
 </div>
-</body>
-<footer>
-    <script>
-      function vote(team) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-          var msg = "";
-          if (this.readyState == 4) {
-            if (!window.alert(this.responseText)) {
-              window.location.reload();
-            }
-          }
-        };
-        xhr.open("POST", "/", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.send("team=" + team);
+<script>
+  function vote(team) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4) {
+        if (!window.alert(this.responseText)) {
+          window.location.reload();
+        }
       }
+    };
+    xhr.open("POST", "/", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("team=" + team);
+  }
 
-      document.getElementById("voteTabs").addEventListener("click", function () {
-        vote("tabs");
-      });
-      document.getElementById("voteSpaces").addEventListener("click", function () {
-        vote("spaces");
-      });
-    </script>
-</footer>
+  document.getElementById("voteTabs").addEventListener("click", function () {
+    vote("TABS");
+  });
+  document.getElementById("voteSpaces").addEventListener("click", function () {
+    vote("SPACES");
+  });
+</script>
+</body>
 </html>
