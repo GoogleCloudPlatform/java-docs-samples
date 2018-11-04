@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,8 +34,7 @@ import org.json.JSONObject;
 @WebServlet(
     name = "URLFetch",
     description = "URLFetch: Write low order IP address to Cloud SQL",
-    urlPatterns = "/urlfetch"
-)
+    urlPatterns = "/urlfetch")
 public class UrlFetchServlet extends HttpServlet {
 
   @Override
@@ -68,8 +66,11 @@ public class UrlFetchServlet extends HttpServlet {
     String text = req.getParameter("text");
 
     // Validation for id and text inputs.
-    if (id == null || text == null || id.isEmpty() || text.isEmpty() ||
-        Integer.parseInt(id) > 100) {
+    if (id == null
+        || text == null
+        || id.isEmpty()
+        || text.isEmpty()
+        || Integer.parseInt(id) > 100) {
       req.setAttribute("error", "invalid input");
       req.getRequestDispatcher("/urlfetchresult.jsp").forward(req, resp);
       return;
