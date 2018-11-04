@@ -76,10 +76,6 @@ public class UrlFetchServlet extends HttpServlet {
       return;
     }
 
-    // Create JSON request.
-    JSONObject jsonObj =
-        new JSONObject().put("userId", 1).put("id", id).put("title", text).put("body", text);
-
     // [START complex]
     URL url = new URL("http://jsonplaceholder.typicode.com/posts/" + id);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -89,6 +85,10 @@ public class UrlFetchServlet extends HttpServlet {
     conn.setRequestProperty("Accept", "application/json");
     // Set HTTP request method.
     conn.setRequestMethod("PUT");
+
+    // Create JSON request.
+    JSONObject jsonObj =
+        new JSONObject().put("userId", 1).put("id", id).put("title", text).put("body", text);
 
     OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
     writer.write(jsonObj.toString());
