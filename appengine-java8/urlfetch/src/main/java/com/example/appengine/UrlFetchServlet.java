@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,8 +34,7 @@ import org.json.JSONObject;
 @WebServlet(
     name = "URLFetch",
     description = "URLFetch: Write low order IP address to Cloud SQL",
-    urlPatterns = "/urlfetch"
-)
+    urlPatterns = "/urlfetch")
 public class UrlFetchServlet extends HttpServlet {
 
   @Override
@@ -67,23 +65,33 @@ public class UrlFetchServlet extends HttpServlet {
     String id = req.getParameter("id");
     String text = req.getParameter("text");
 
-    if (id == null || text == null || id == "" || text == "") {
+    // Validation for id and text inputs.
+    if (id == null
+        || text == null
+        || id.isEmpty()
+        || text.isEmpty()
+        || Integer.parseInt(id) > 100) {
       req.setAttribute("error", "invalid input");
       req.getRequestDispatcher("/urlfetchresult.jsp").forward(req, resp);
       return;
     }
 
-    JSONObject jsonObj =
-        new JSONObject().put("userId", 1).put("id", id).put("title", text).put("body", text);
-
     // [START complex]
     URL url = new URL("http://jsonplaceholder.typicode.com/posts/" + id);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    // Enable output for the connection.
     conn.setDoOutput(true);
+    conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+    conn.setRequestProperty("Accept", "application/json");
+    // Set HTTP request method.
     conn.setRequestMethod("PUT");
 
+    // Create JSON request.
+    JSONObject jsonObj =
+        new JSONObject().put("userId", 1).put("id", id).put("title", text).put("body", text);
+
     OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-    writer.write(URLEncoder.encode(jsonObj.toString(), "UTF-8"));
+    writer.write(jsonObj.toString());
     writer.close();
 
     int respCode = conn.getResponseCode(); // New items get NOT_FOUND on PUT
@@ -92,6 +100,7 @@ public class UrlFetchServlet extends HttpServlet {
       StringBuffer response = new StringBuffer();
       String line;
 
+      // Read input data stream.
       BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
       while ((line = reader.readLine()) != null) {
         response.append(line);
