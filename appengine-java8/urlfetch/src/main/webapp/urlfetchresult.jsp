@@ -26,23 +26,20 @@ limitations under the License.
     <c:if test="${not empty joke}">
         <h2>Joke: ${joke}</h2>
     </c:if>
-    <p /><p />
+
     <c:if test="${not empty error}">
-        <h2>${error}</h2>
+        <h2 style="color:red">${error}</h2>
     </c:if>
-    <p />
-    <c:if test="${not empty response}">${response}</c:if>
-    <p />
-    <p>
+
+    <c:if test="${not empty response}">
+      <p>${response}</p>
+    </c:if>
+
     <form method="post">
-        <label for="id">&nbsp;&nbsp;ID:</label><input type="text" name="id" value="777"/><br />
+        <label for="id">&nbsp;&nbsp;ID:</label><input type="text" name="id" value="1"/><br />
         <label for="text">Text:</label><input type="text" name="text" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/><br />
         <input type="submit" value="Send"/>
     </form>
-    </p>
-    <c:if test="">
-
-    </c:if>
 </body>
 </html>
 <!-- [END base]-->
