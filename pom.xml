@@ -81,6 +81,8 @@
 
         <module>memorystore/redis</module>
 
+        <module>opencensus</module>
+
         <module>pubsub/cloud-client</module>
 
         <module>spanner/cloud-client</module>
