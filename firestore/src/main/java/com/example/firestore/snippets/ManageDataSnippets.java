@@ -404,6 +404,7 @@ class ManageDataSnippets {
     // [START fs_write_batch]
     // Get a new write batch
     WriteBatch batch = db.batch();
+
     // Set the value of 'NYC'
     DocumentReference nycRef = db.collection("cities").document("NYC");
     batch.set(nycRef, new City());
