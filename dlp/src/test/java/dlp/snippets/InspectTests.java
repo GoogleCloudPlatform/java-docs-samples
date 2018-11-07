@@ -70,8 +70,18 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectFile() {
-    InspectFile.inspectFile(PROJECT_ID,  "src/test/resources/test.png", "IMAGE");
+  public void textInspectTestFile() {
+    InspectTextFile.inspectTextFile(PROJECT_ID,  "src/test/resources/test.txt");
+
+    String output = bout.toString();
+    assertThat(output, CoreMatchers.containsString("Info type: PHONE_NUMBER"));
+    assertThat(output, CoreMatchers.containsString("Info type: EMAIL_ADDRESS"));
+  }
+
+
+  @Test
+  public void testInspectImageFile() {
+    InspectImageFile.inspectImageFile(PROJECT_ID,  "src/test/resources/test.png");
 
     String output = bout.toString();
     assertThat(output, CoreMatchers.containsString("Info type: PHONE_NUMBER"));

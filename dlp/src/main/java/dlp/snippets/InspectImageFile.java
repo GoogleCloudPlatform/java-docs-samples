@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_inspect_file]
+// [START dlp_inspect_image_file]
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ByteContentItem.BytesType;
@@ -32,10 +32,10 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InspectFile {
+public class InspectImageFile {
 
-  // Inspects the specified file.
-  public static void inspectFile(String projectId, String filePath, String fileType) {
+  // Inspects the specified image file.
+  public static void inspectImageFile(String projectId, String filePath) {
     // String projectId = "my-project-id";
     // String filePath = "path/to/image.png";
     // String fileType = "IMAGE"
@@ -48,7 +48,7 @@ public class InspectFile {
       // Set content for request
       ByteString fileBytes = ByteString.readFrom(new FileInputStream(filePath));
       ByteContentItem byteItem = ByteContentItem.newBuilder()
-          .setType(BytesType.valueOf(fileType))
+          .setType(BytesType.IMAGE)
           .setData(fileBytes)
           .build();
       ContentItem item = ContentItem.newBuilder()
@@ -90,4 +90,4 @@ public class InspectFile {
     }
   }
 }
-// [END dlp_inspect_file]
+// [END dlp_inspect_image_file]
