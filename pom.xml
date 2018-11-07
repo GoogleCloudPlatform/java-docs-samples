@@ -47,9 +47,9 @@
         <module>bigquery/rest</module>
 
         <module>cdn/signed-urls</module>
-        <module>cloud-tasks</module>
 
         <module>cloud-sql/mysql/servlet</module>
+        <module>cloud-sql/postgres/servlet</module>
 
         <module>compute</module>
         <module>container-registry/container-analysis</module>
