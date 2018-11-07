@@ -85,7 +85,6 @@ public class IndexServlet extends HttpServlet {
       throw new ServletException("Unable to successfully connect to the database. Please check the "
           + "steps in the README and try again.", ex);
     }
-    // [END cloud_sql_example_query]
 
     // Add variables and render the page
     req.setAttribute("tabCount", tabCount);
@@ -111,7 +110,7 @@ public class IndexServlet extends HttpServlet {
 
     // Reuse the pool that was created in the ContextListener when the Servlet started.
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
-    // [START cloud_sql_example_statement]
+    // [START cloud_sql_mysql_example_statement]
     // Using a try-with-resources statement ensures that the connection is always released back
     // into the pool at the end of the statement (even if an error occurs)
     try (Connection conn = pool.getConnection()) {
@@ -135,7 +134,7 @@ public class IndexServlet extends HttpServlet {
           + "logs for more details.");
       // [END_EXCLUDE]
     }
-    // [END cloud_sql_example_statement]
+    // [END cloud_sql_mysql_example_statement]
 
     resp.setStatus(200);
     resp.getWriter().printf("Vote successfully cast for '%s' at time %s!\n", team, now);

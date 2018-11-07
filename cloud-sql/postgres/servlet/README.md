@@ -1,4 +1,4 @@
-# Connecting to Cloud SQL - MySQL
+# Connecting to Cloud SQL - Postgres
 
 ## Before you begin
 
