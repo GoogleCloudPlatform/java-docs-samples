@@ -35,7 +35,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
-  private static readonly String bucketName = "bucket-for-asset";
+  private static final String bucketName = "bucket-for-asset";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
