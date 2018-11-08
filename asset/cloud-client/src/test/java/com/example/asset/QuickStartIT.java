@@ -35,7 +35,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
-  private String bucketName;
+  private static readonly String bucketName = "bucket-for-asset";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -46,14 +46,17 @@ public class QuickStartIT {
 
   private static final void createBucket(String bucketName) {
     Storage storage = StorageOptions.getDefaultInstance().getService();
+    if (storage.get(bucketName) != null) {
+      // Bucket exists.
+      return;
+    }
     Bucket bucket = storage.create(BucketInfo.of(bucketName));
     assertThat(bucket).isNotNull();
-    System.out.printf("Bucket %s created for test.", bucket.getName());
   }
 
   @Before
   public void setUp() {
-    bucketName = UUID.randomUUID().toString();
+    //bucketName = UUID.randomUUID().toString();
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
@@ -65,7 +68,6 @@ public class QuickStartIT {
     String consoleOutput = bout.toString();
     System.setOut(null);
     deleteBucket(bucketName);
-    System.out.printf(consoleOutput);
   }
 
   @Test
