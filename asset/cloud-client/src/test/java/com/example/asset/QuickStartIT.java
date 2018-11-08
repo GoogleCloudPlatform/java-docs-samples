@@ -52,7 +52,7 @@ public class QuickStartIT {
 
   @Before
   public void setUp() {
-    bucketName = "my-new-bucket-" + UUID.randomUUID().toString();
+    bucketName = UUID.randomUUID().toString();
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
