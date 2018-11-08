@@ -48,6 +48,7 @@ public class QuickStartIT {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Bucket bucket = storage.create(BucketInfo.of(bucketName));
     assertThat(bucket).isNotNull();
+    System.out.printf("Bucket %s created for test.", bucket.getName());
   }
 
   @Before
@@ -61,8 +62,10 @@ public class QuickStartIT {
 
   @After
   public void tearDown() {
+    String consoleOutput = bout.toString();
     System.setOut(null);
     deleteBucket(bucketName);
+    System.out.printf(consoleOutput);
   }
 
   @Test
