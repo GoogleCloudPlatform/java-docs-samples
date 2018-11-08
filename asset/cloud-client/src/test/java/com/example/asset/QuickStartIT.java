@@ -31,9 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for quickstart sample.
- */
+/** Tests for quickstart sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
@@ -49,6 +47,7 @@ public class QuickStartIT {
   private static final void createBucket(String bucketName) {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Bucket bucket = storage.create(BucketInfo.of(bucketName));
+    assertThat(bucket).isNotNull();
   }
 
   @Before
@@ -74,4 +73,3 @@ public class QuickStartIT {
     assertThat(got).contains(String.format("uri: \"%s\"", assetDumpPath));
   }
 }
-
