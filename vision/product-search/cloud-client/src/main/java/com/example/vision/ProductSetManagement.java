@@ -16,13 +16,9 @@
 
 package com.example.vision;
 
-import com.google.cloud.vision.v1p3beta1.CreateProductSetRequest;
-import com.google.cloud.vision.v1p3beta1.LocationName;
-import com.google.cloud.vision.v1p3beta1.Product;
-import com.google.cloud.vision.v1p3beta1.ProductName;
-import com.google.cloud.vision.v1p3beta1.ProductSearchClient;
-import com.google.cloud.vision.v1p3beta1.ProductSet;
-import com.google.cloud.vision.v1p3beta1.ProductSetName;
+import com.google.cloud.vision.v1.CreateProductSetRequest;
+import com.google.cloud.vision.v1.ProductSearchClient;
+import com.google.cloud.vision.v1.ProductSet;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -37,10 +33,9 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 /**
  * This application demonstrates how to perform basic operations on Product Sets.
  *
- * For more information, see the tutorial page at
+ * <p>For more information, see the tutorial page at
  * https://cloud.google.com/vision/product-search/docs/
  */
-
 public class ProductSetManagement {
 
   // [START vision_product_search_create_product_set]
@@ -59,13 +54,13 @@ public class ProductSetManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // A resource that represents Google Cloud Platform location.
-    LocationName projectLocation = LocationName.of(projectId, computeRegion);
+    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
 
     // Create a product set with the product set specification in the region.
     ProductSet myProductSet = ProductSet.newBuilder().setDisplayName(productSetDisplayName).build();
     CreateProductSetRequest request =
         CreateProductSetRequest.newBuilder()
-            .setParent(projectLocation.toString())
+            .setParent(formattedParent)
             .setProductSet(myProductSet)
             .setProductSetId(productSetId)
             .build();
@@ -73,7 +68,6 @@ public class ProductSetManagement {
 
     // Display the product set information
     System.out.println(String.format("Product set name: %s", productSet.getName()));
-
   }
   // [END vision_product_search_create_product_set]
 
@@ -88,9 +82,9 @@ public class ProductSetManagement {
   public static void listProductSets(String projectId, String computeRegion) throws IOException {
     ProductSearchClient client = ProductSearchClient.create();
     // A resource that represents Google Cloud Platform location.
-    LocationName projectLocation = LocationName.of(projectId, computeRegion);
+    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
     // List all the product sets available in the region.
-    for (ProductSet productSet : client.listProductSets(projectLocation).iterateAll()) {
+    for (ProductSet productSet : client.listProductSets(formattedParent).iterateAll()) {
       // Display the product set information
       System.out.println(String.format("Product set name: %s", productSet.getName()));
       System.out.println(
@@ -103,7 +97,6 @@ public class ProductSetManagement {
       System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
     }
-
   }
   // [END vision_product_search_list_product_sets]
 
@@ -121,11 +114,10 @@ public class ProductSetManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
-
+    String formattedName =
+        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
     // Get complete detail of the product set.
-    ProductSet productSet = client.getProductSet(productSetPath);
-
+    ProductSet productSet = client.getProductSet(formattedName);
     // Display the product set information
     System.out.println(String.format("Product set name: %s", productSet.getName()));
     System.out.println(
@@ -148,15 +140,15 @@ public class ProductSetManagement {
    * @param productSetId - Id of the product set.
    * @throws IOException - on I/O errors.
    */
-  public static void deleteProductSet(
-      String projectId, String computeRegion, String productSetId) throws IOException {
+  public static void deleteProductSet(String projectId, String computeRegion, String productSetId)
+      throws IOException {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
-
+    String formattedName =
+        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
     // Delete the product set.
-    client.deleteProductSet(productSetPath.toString());
+    client.deleteProductSet(formattedName);
 
     System.out.println(String.format("Product set deleted"));
   }

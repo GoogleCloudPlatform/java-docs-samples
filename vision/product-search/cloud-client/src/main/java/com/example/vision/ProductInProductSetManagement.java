@@ -16,13 +16,9 @@
 
 package com.example.vision;
 
-import com.google.cloud.vision.v1p3beta1.LocationName;
-import com.google.cloud.vision.v1p3beta1.Product;
-import com.google.cloud.vision.v1p3beta1.ProductName;
-import com.google.cloud.vision.v1p3beta1.ProductSearchClient;
-import com.google.cloud.vision.v1p3beta1.ProductSet;
-import com.google.cloud.vision.v1p3beta1.ProductSetName;
-import com.google.protobuf.FieldMask;
+import com.google.cloud.vision.v1.Product;
+import com.google.cloud.vision.v1.ProductName;
+import com.google.cloud.vision.v1.ProductSearchClient;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -37,10 +33,9 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 /**
  * This application demonstrates how to perform basic operations with Products in a Product Set.
  *
- * For more information, see the tutorial page at
+ * <p>For more information, see the tutorial page at
  * https://cloud.google.com/vision/product-search/docs/
  */
-
 public class ProductInProductSetManagement {
 
   // [START vision_product_search_add_product_to_product_set]
@@ -59,13 +54,14 @@ public class ProductInProductSetManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
+    String formattedName =
+        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
 
     // Get the full path of the product.
     String productPath = ProductName.of(projectId, computeRegion, productId).toString();
 
     // Add the product to the product set.
-    client.addProductToProductSet(productSetPath, productPath);
+    client.addProductToProductSet(formattedName, productPath);
 
     System.out.println(String.format("Product added to product set."));
   }
@@ -85,11 +81,10 @@ public class ProductInProductSetManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
-
+    String formattedName =
+        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
     // List all the products available in the product set.
-    for (Product product :
-        client.listProductsInProductSet(productSetPath.toString()).iterateAll()) {
+    for (Product product : client.listProductsInProductSet(formattedName).iterateAll()) {
       // Display the product information
       System.out.println(String.format("Product name: %s", product.getName()));
       System.out.println(
@@ -121,13 +116,15 @@ public class ProductInProductSetManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product set.
-    ProductSetName productSetPath = ProductSetName.of(projectId, computeRegion, productSetId);
+    String formattedParent =
+        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
 
     // Get the full path of the product.
-    String productPath = ProductName.of(projectId, computeRegion, productId).toString();
+    String formattedName =
+        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
 
     // Remove the product from the product set.
-    client.removeProductFromProductSet(productSetPath, productPath);
+    client.removeProductFromProductSet(formattedParent, formattedName);
 
     System.out.println(String.format("Product removed from product set."));
   }

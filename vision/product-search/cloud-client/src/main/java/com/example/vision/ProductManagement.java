@@ -16,11 +16,9 @@
 
 package com.example.vision;
 
-import com.google.cloud.vision.v1p3beta1.LocationName;
-import com.google.cloud.vision.v1p3beta1.Product;
-import com.google.cloud.vision.v1p3beta1.Product.KeyValue;
-import com.google.cloud.vision.v1p3beta1.ProductName;
-import com.google.cloud.vision.v1p3beta1.ProductSearchClient;
+import com.google.cloud.vision.v1.Product;
+import com.google.cloud.vision.v1.Product.KeyValue;
+import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
@@ -62,8 +60,7 @@ public class ProductManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // A resource that represents Google Cloud Platform location.
-    LocationName projectLocation = LocationName.of(projectId, computeRegion);
-
+    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
     // Create a product with the product specification in the region.
     // Multiple labels are also supported.
     Product myProduct =
@@ -72,7 +69,7 @@ public class ProductManagement {
             .setDisplayName(productDisplayName)
             .setProductCategory(productCategory)
             .build();
-    Product product = client.createProduct(projectLocation.toString(), myProduct, productId);
+    Product product = client.createProduct(formattedParent, myProduct, productId);
 
     // Display the product information
     System.out.println(String.format("Product name: %s", product.getName()));
@@ -91,16 +88,16 @@ public class ProductManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // A resource that represents Google Cloud Platform location.
-    LocationName projectLocation = LocationName.of(projectId, computeRegion);
+    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
 
     // List all the products available in the region.
-    for (Product product : client.listProducts(projectLocation).iterateAll()) {
+    for (Product product : client.listProducts(formattedParent).iterateAll()) {
       // Display the product information
       System.out.println(String.format("\nProduct name: %s", product.getName()));
       System.out.println(
           String.format(
-                "Product id: %s",
-                    product.getName().substring(product.getName().lastIndexOf('/') + 1)));
+              "Product id: %s",
+              product.getName().substring(product.getName().lastIndexOf('/') + 1)));
       System.out.println(String.format("Product display name: %s", product.getDisplayName()));
       System.out.println(String.format("Product category: %s", product.getProductCategory()));
       System.out.println("Product labels:");
@@ -124,10 +121,10 @@ public class ProductManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product.
-    ProductName productPath = ProductName.of(projectId, computeRegion, productId);
-
+    String formattedName =
+        ProductSearchClient.formatProductName(projectId, computeRegion, "[PRODUCT]");
     // Get complete detail of the product.
-    Product product = client.getProduct(productPath.toString());
+    Product product = client.getProduct(formattedName);
 
     // Display the product information
     System.out.println(String.format("Product name: %s", product.getName()));
@@ -159,13 +156,14 @@ public class ProductManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product.
-    String productPath = ProductName.of(projectId, computeRegion, productId).toString();
+    String formattedName =
+        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
 
     // Set product name, product labels and product display name.
     // Multiple labels are also supported.
     Product product =
         Product.newBuilder()
-            .setName(productPath)
+            .setName(formattedName)
             .addProductLabels(
                 KeyValue.newBuilder()
                     .setKey(productLabels.split(",")[0].split("=")[0])
@@ -202,10 +200,11 @@ public class ProductManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product.
-    ProductName productPath = ProductName.of(projectId, computeRegion, productId);
+    String formattedName =
+        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
 
     // Delete a product.
-    client.deleteProduct(productPath);
+    client.deleteProduct(formattedName);
 
     System.out.println("Product deleted.");
   }

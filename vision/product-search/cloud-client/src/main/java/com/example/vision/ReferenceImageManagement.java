@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-
 package com.example.vision;
 
-import com.google.cloud.vision.v1p3beta1.ProductName;
-import com.google.cloud.vision.v1p3beta1.ProductSearchClient;
-import com.google.cloud.vision.v1p3beta1.ReferenceImage;
-import com.google.cloud.vision.v1p3beta1.ReferenceImageName;
+import com.google.cloud.vision.v1.ProductSearchClient;
+import com.google.cloud.vision.v1.ReferenceImage;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,10 +33,9 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  * This application demonstrates how to perform basic operations on Reference Images in Cloud Vision
  * Product Search.
  *
- * For more information, see the tutorial page at
+ * <p>For more information, see the tutorial page at
  * https://cloud.google.com/vision/product-search/docs/
  */
-
 public class ReferenceImageManagement {
 
   // [START vision_product_search_create_reference_image]
@@ -63,13 +59,13 @@ public class ReferenceImageManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product.
-    ProductName productPath = ProductName.of(projectId, computeRegion, productId);
-
+    String formattedParent =
+        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
     // Create a reference image.
     ReferenceImage referenceImage = ReferenceImage.newBuilder().setUri(gcsUri).build();
-    ReferenceImage image =
-        client.createReferenceImage(productPath, referenceImage, referenceImageId);
 
+    ReferenceImage image =
+        client.createReferenceImage(formattedParent, referenceImage, referenceImageId);
     // Display the reference image information.
     System.out.println(String.format("Reference image name: %s", image.getName()));
     System.out.println(String.format("Reference image uri: %s", image.getUri()));
@@ -90,9 +86,9 @@ public class ReferenceImageManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the product.
-    ProductName productPath = ProductName.of(projectId, computeRegion, productId);
-
-    for (ReferenceImage image : client.listReferenceImages(productPath.toString()).iterateAll()) {
+    String formattedParent =
+        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+    for (ReferenceImage image : client.listReferenceImages(formattedParent).iterateAll()) {
       // Display the reference image information.
       System.out.println(String.format("Reference image name: %s", image.getName()));
       System.out.println(
@@ -123,11 +119,10 @@ public class ReferenceImageManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the reference image.
-    ReferenceImageName referenceImagePath =
-        ReferenceImageName.of(projectId, computeRegion, productId, referenceImageId);
-
+    String formattedName =
+        ProductSearchClient.formatImageName(projectId, computeRegion, productId, referenceImageId);
     // Get complete detail of the reference image.
-    ReferenceImage image = client.getReferenceImage(referenceImagePath);
+    ReferenceImage image = client.getReferenceImage(formattedName);
 
     // Display the reference image information.
     System.out.println(String.format("Reference image name: %s", image.getName()));
@@ -158,11 +153,10 @@ public class ReferenceImageManagement {
     ProductSearchClient client = ProductSearchClient.create();
 
     // Get the full path of the reference image.
-    ReferenceImageName referenceImagePath =
-        ReferenceImageName.of(projectId, computeRegion, productId, referenceImageId);
-
+    String formattedName =
+        ProductSearchClient.formatImageName(projectId, computeRegion, productId, referenceImageId);
     // Delete the reference image.
-    client.deleteReferenceImage(referenceImagePath.toString());
+    client.deleteReferenceImage(formattedName);
     System.out.println("Reference image deleted from product.");
   }
   // [END vision_product_search_delete_reference_image]

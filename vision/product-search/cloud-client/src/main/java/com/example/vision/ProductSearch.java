@@ -16,17 +16,17 @@
 
 package com.example.vision;
 
-import com.google.cloud.vision.v1p3beta1.AnnotateImageRequest;
-import com.google.cloud.vision.v1p3beta1.BatchAnnotateImagesResponse;
-import com.google.cloud.vision.v1p3beta1.Feature;
-import com.google.cloud.vision.v1p3beta1.Feature.Type;
-import com.google.cloud.vision.v1p3beta1.Image;
-import com.google.cloud.vision.v1p3beta1.ImageAnnotatorClient;
-import com.google.cloud.vision.v1p3beta1.ImageContext;
-import com.google.cloud.vision.v1p3beta1.ImageSource;
-import com.google.cloud.vision.v1p3beta1.ProductSearchParams;
-import com.google.cloud.vision.v1p3beta1.ProductSearchResults.Result;
-import com.google.cloud.vision.v1p3beta1.ProductSetName;
+import com.google.cloud.vision.v1.AnnotateImageRequest;
+import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1.Feature;
+import com.google.cloud.vision.v1.Feature.Type;
+import com.google.cloud.vision.v1.Image;
+import com.google.cloud.vision.v1.ImageAnnotatorClient;
+import com.google.cloud.vision.v1.ImageContext;
+import com.google.cloud.vision.v1.ImageSource;
+import com.google.cloud.vision.v1.ProductSearchParams;
+import com.google.cloud.vision.v1.ProductSearchResults.Result;
+import com.google.cloud.vision.v1.ProductSetName;
 import com.google.protobuf.ByteString;
 
 import java.io.File;
