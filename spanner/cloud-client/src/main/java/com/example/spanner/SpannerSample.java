@@ -19,6 +19,7 @@ package com.example.spanner;
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 import static com.google.cloud.spanner.Type.StructField;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -30,6 +31,8 @@ import com.google.cloud.spanner.Operation;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerException;
+import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
@@ -42,6 +45,7 @@ import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -132,7 +136,7 @@ public class SpannerSample {
 
   // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Database, CreateDatabaseMetadata> op =
+    OperationFuture<Database, CreateDatabaseMetadata> op =
         dbAdminClient.createDatabase(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
@@ -149,14 +153,20 @@ public class SpannerSample {
                     + "  AlbumTitle   STRING(MAX)\n"
                     + ") PRIMARY KEY (SingerId, AlbumId),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"));
-    Database db = op.waitFor().getResult();
-    System.out.println("Created database [" + db.getId() + "]");
+    try {
+      Database db = op.get();
+      System.out.println("Created database [" + db.getId() + "]");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_database]
 
   // [START spanner_create_table_with_timestamp_column]
   static void createTableWithTimestamp(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Void, UpdateDatabaseDdlMetadata> op =
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
         dbAdminClient.updateDatabaseDdl(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
@@ -170,8 +180,14 @@ public class SpannerSample {
                     + ") PRIMARY KEY (SingerId, VenueId, EventDate),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"),
             null);
-    op.waitFor().getResult();
-    System.out.println("Created Performances table in database: [" + id + "]");
+    try {
+      op.get();
+      System.out.println("Created Performances table in database: [" + id + "]");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_table_with_timestamp_column]
 
