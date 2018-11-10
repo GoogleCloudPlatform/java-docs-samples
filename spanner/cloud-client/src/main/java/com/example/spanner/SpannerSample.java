@@ -27,7 +27,6 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Operation;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
@@ -276,14 +275,21 @@ public class SpannerSample {
 
   // [START spanner_add_column]
   static void addMarketingBudget(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
-            null)
-        .waitFor();
-    System.out.println("Added MarketingBudget column");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
+              null);
+    try {
+      op.get();
+      System.out.println("Added MarketingBudget column");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_add_column]
 
@@ -387,14 +393,21 @@ public class SpannerSample {
 
   // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
-            null)
-        .waitFor();
-    System.out.println("Added AlbumsByAlbumTitle index");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
+              null);
+    try {
+      op.get();
+      System.out.println("Added AlbumsByAlbumTitle index");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_index]
 
@@ -447,15 +460,23 @@ public class SpannerSample {
 
   // [START spanner_create_storing_index]
   static void addStoringIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList(
-                "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)"),
-            null)
-        .waitFor();
-    System.out.println("Added AlbumsByAlbumTitle2 index");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList(
+                  "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) "
+                      + "STORING (MarketingBudget)"),
+              null); 
+    try {
+      op.get();
+      System.out.println("Added AlbumsByAlbumTitle2 index");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_storing_index]
 
@@ -525,16 +546,23 @@ public class SpannerSample {
 
   // [START spanner_add_timestamp_column]
   static void addCommitTimestamp(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList(
-                "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
-                    + "OPTIONS (allow_commit_timestamp=true)"),
-            null)
-        .waitFor();
-    System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList(
+                  "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
+                      + "OPTIONS (allow_commit_timestamp=true)"),
+              null); 
+    try {
+      op.get();
+      System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_add_timestamp_column]
 
@@ -621,8 +649,8 @@ public class SpannerSample {
             .singleUse()
             .executeQuery(
                 Statement.of(
-                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime FROM Performances"
-                        + " ORDER BY LastUpdateTime DESC"));
+                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime "
+                        + " FROM Performances ORDER BY LastUpdateTime DESC"));
     while (resultSet.next()) {
       System.out.printf(
           "%d %d %s %s %s\n",
