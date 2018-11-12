@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.example.asset;
 
 // [START asset_quickstart_export_assets]
-
 // Imports the Google Cloud client library
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1beta1.AssetServiceClient;
