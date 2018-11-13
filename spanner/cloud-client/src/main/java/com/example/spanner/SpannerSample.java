@@ -59,6 +59,8 @@ import java.util.concurrent.TimeUnit;
  *   <li>Writing data using a read-write transaction.
  *   <li>Using an index to read and execute SQL queries over data.
  *   <li>Using commit timestamp for tracking when a record was last updated.
+ *   <li>Using Google API Extensions for Java to make thread-safe requests via
+ *       long-running operations. http://googleapis.github.io/gax-java/
  * </ul>
  */
 public class SpannerSample {
@@ -153,11 +155,15 @@ public class SpannerSample {
                     + ") PRIMARY KEY (SingerId, AlbumId),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"));
     try {
+      // Initiate the request which returns an OperationFuture.
       Database db = op.get();
       System.out.println("Created database [" + db.getId() + "]");
     } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
       throw (SpannerException) e.getCause();
     } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
       throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
@@ -180,11 +186,15 @@ public class SpannerSample {
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"),
             null);
     try {
+      // Initiate the request which returns an OperationFuture.
       op.get();
       System.out.println("Created Performances table in database: [" + id + "]");
     } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
       throw (SpannerException) e.getCause();
     } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
       throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
@@ -283,11 +293,15 @@ public class SpannerSample {
               Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
               null);
     try {
+      // Initiate the request which returns an OperationFuture.
       op.get();
       System.out.println("Added MarketingBudget column");
     } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
       throw (SpannerException) e.getCause();
     } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
       throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
@@ -401,11 +415,15 @@ public class SpannerSample {
               Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
               null);
     try {
+      // Initiate the request which returns an OperationFuture.
       op.get();
       System.out.println("Added AlbumsByAlbumTitle index");
     } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
       throw (SpannerException) e.getCause();
     } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
       throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
@@ -470,11 +488,15 @@ public class SpannerSample {
                       + "STORING (MarketingBudget)"),
               null); 
     try {
+      // Initiate the request which returns an OperationFuture.
       op.get();
       System.out.println("Added AlbumsByAlbumTitle2 index");
     } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
       throw (SpannerException) e.getCause();
     } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
       throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
@@ -556,11 +578,15 @@ public class SpannerSample {
                       + "OPTIONS (allow_commit_timestamp=true)"),
               null); 
     try {
+      // Initiate the request which returns an OperationFuture.
       op.get();
       System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
     } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
       throw (SpannerException) e.getCause();
     } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
       throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
@@ -650,7 +676,7 @@ public class SpannerSample {
             .executeQuery(
                 Statement.of(
                     "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime "
-                        + " FROM Performances ORDER BY LastUpdateTime DESC"));
+                        + "FROM Performances ORDER BY LastUpdateTime DESC"));
     while (resultSet.next()) {
       System.out.printf(
           "%d %d %s %s %s\n",
