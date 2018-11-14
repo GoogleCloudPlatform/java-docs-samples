@@ -16,40 +16,26 @@
 
 package com.example;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudkms.v1.CloudKMS;
-import com.google.api.services.cloudkms.v1.CloudKMSScopes;
-import com.google.api.services.cloudkms.v1.model.AsymmetricDecryptRequest;
-import com.google.api.services.cloudkms.v1.model.AsymmetricDecryptResponse;
-import com.google.api.services.cloudkms.v1.model.AsymmetricSignRequest;
-import com.google.api.services.cloudkms.v1.model.AsymmetricSignResponse;
-import com.google.api.services.cloudkms.v1.model.Digest;
-import com.google.api.services.cloudkms.v1.model.KeyRing;
-import com.google.api.services.cloudkms.v1.model.ListKeyRingsResponse;
+import com.google.cloud.kms.v1.AsymmetricDecryptResponse;
+import com.google.cloud.kms.v1.AsymmetricSignRequest;
+import com.google.cloud.kms.v1.AsymmetricSignResponse;
+import com.google.cloud.kms.v1.Digest;
+import com.google.cloud.kms.v1.KeyManagementServiceClient;
+import com.google.common.io.BaseEncoding;
+import com.google.protobuf.ByteString;
+
 import java.io.IOException;
-import java.io.StringReader;
-import java.security.InvalidKeyException;
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PublicKey;
-import java.security.Security;
 import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
+import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.io.pem.PemReader;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class Asymmetric {
@@ -57,35 +43,28 @@ public class Asymmetric {
   // [START kms_get_asymmetric_public]
   /**
    * Retrieves the public key from a saved asymmetric key pair on Cloud KMS 
-   *
-   * Requires:
-   *   java.io.StringReader
-   *   java.security.KeyFactory
-   *   java.security.PublicKey
-   *   java.security.Security
-   *   java.security.spec.X509EncodedKeySpec
-   *   org.bouncycastle.jce.provider.BouncyCastleProvider
-   *   org.bouncycastle.util.io.pem.PemReader
    */
-  public static PublicKey getAsymmetricPublicKey(CloudKMS client, String keyPath) 
-      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, 
-      NoSuchProviderException {
-    Security.addProvider(new BouncyCastleProvider());
-    com.google.api.services.cloudkms.v1.model.PublicKey response;
-    response = client.projects()
-                     .locations()
-                     .keyRings()
-                     .cryptoKeys()
-                     .cryptoKeyVersions()
-                     .getPublicKey(keyPath)
-                     .execute();
-    PemReader reader = new PemReader(new StringReader(response.getPem()));
-    byte[] pem = reader.readPemObject().getContent();
-    X509EncodedKeySpec abstractKey = new X509EncodedKeySpec(pem);
-    try {
-      return KeyFactory.getInstance("RSA", "BC").generatePublic(abstractKey);
-    } catch (InvalidKeySpecException e) {
-      return KeyFactory.getInstance("ECDSA", "BC").generatePublic(abstractKey);
+  public static PublicKey getAsymmetricPublicKey(KeyManagementServiceClient client, String keyPath) 
+      throws IOException, GeneralSecurityException {
+    
+    com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+
+    // Convert a PEM key to DER without taking a dependency on a third party library
+    String pemKey = pub.getPem();
+    pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
+    pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
+    pemKey = pemKey.replaceAll("\\s", "");
+    byte[] derKey = BaseEncoding.base64().decode(pemKey);
+
+    X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+
+    if (pub.getAlgorithm().name().contains("RSA")) {
+      return KeyFactory.getInstance("RSA").generatePublic(keySpec);
+    } else if (pub.getAlgorithm().name().contains("EC")) {
+      return KeyFactory.getInstance("EC").generatePublic(keySpec);
+    } else {
+      throw new UnsupportedOperationException(String.format(
+          "key at path '%s' is of unsupported type '%s'.", keyPath, pub.getAlgorithm()));
     }
   }
   // [END kms_get_asymmetric_public]
@@ -95,17 +74,12 @@ public class Asymmetric {
    * Decrypt a given ciphertext using an 'RSA_DECRYPT_OAEP_2048_SHA256' private key 
    * stored on Cloud KMS
    */
-  public static byte[] decryptRSA(byte[] ciphertext, CloudKMS client, String keyPath) 
+  public static byte[] decryptRSA(
+      KeyManagementServiceClient client, String keyPath, byte[] ciphertext) 
       throws IOException {
-    AsymmetricDecryptRequest request = new AsymmetricDecryptRequest().encodeCiphertext(ciphertext);
-    AsymmetricDecryptResponse response = client.projects()
-                                               .locations()
-                                               .keyRings()
-                                               .cryptoKeys()
-                                               .cryptoKeyVersions()
-                                               .asymmetricDecrypt(keyPath, request)
-                                               .execute();
-    return response.decodePlaintext();
+    AsymmetricDecryptResponse response =
+        client.asymmetricDecrypt(keyPath, ByteString.copyFrom(ciphertext));
+    return response.getPlaintext().toByteArray();
   }
   // [END kms_decrypt_rsa]
 
@@ -113,72 +87,54 @@ public class Asymmetric {
   /**
    * Encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256' public key 
    * retrieved from Cloud KMS
-   *
-   * Requires:
-   *   java.security.PublicKey
-   *   java.security.Security
-   *   javax.crypto.Cipher
-   *   org.bouncycastle.jce.provider.BouncyCastleProvider
    */
-  public static byte[] encryptRSA(byte[] plaintext, CloudKMS client, String keyPath)
-      throws IOException, IllegalBlockSizeException, NoSuchPaddingException,
-             InvalidKeySpecException, NoSuchProviderException, BadPaddingException,
-             NoSuchAlgorithmException, InvalidKeyException {
-    Security.addProvider(new BouncyCastleProvider());
+  public static byte[] encryptRSA(
+      KeyManagementServiceClient client, String keyPath, byte[] plaintext)
+      throws IOException, GeneralSecurityException {
     PublicKey rsaKey = getAsymmetricPublicKey(client, keyPath);
 
-    Cipher cipher = Cipher.getInstance("RSA/NONE/OAEPWITHSHA256ANDMGF1PADDING", "BC");
-    cipher.init(Cipher.ENCRYPT_MODE, rsaKey);
+    Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+    OAEPParameterSpec oaepParams = new OAEPParameterSpec(
+        "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
+    cipher.init(Cipher.ENCRYPT_MODE, rsaKey, oaepParams);
+
     return cipher.doFinal(plaintext);
   }
   // [END kms_encrypt_rsa]
 
   // [START kms_sign_asymmetric]
-  /** Create a signature for a message using a private key stored on Cloud KMS 
-    *
-    * Requires:
-    *   java.security.MessageDigest
-    *   java.util.Base64
-    */
-  public static byte[] signAsymmetric(byte[] message, CloudKMS client, String keyPath)
+  /**
+   *  Create a signature for a message using a private key stored on Cloud KMS 
+   */
+  public static byte[] signAsymmetric(
+      KeyManagementServiceClient client, String keyPath, byte[] message)
       throws IOException, NoSuchAlgorithmException {
-    Digest digest = new Digest();
+
     // Note: some key algorithms will require a different hash function
     // For example, EC_SIGN_P384_SHA384 requires SHA-384
-    digest.encodeSha256(MessageDigest.getInstance("SHA-256").digest(message));
+    byte[] messageHash = MessageDigest.getInstance("SHA-256").digest(message);
 
-    AsymmetricSignRequest signRequest = new AsymmetricSignRequest();
-    signRequest.setDigest(digest);
-
-    AsymmetricSignResponse response = client.projects()
-                                            .locations()
-                                            .keyRings()
-                                            .cryptoKeys()
-                                            .cryptoKeyVersions()
-                                            .asymmetricSign(keyPath, signRequest)
-                                            .execute();
-    return Base64.getMimeDecoder().decode(response.getSignature());
+    AsymmetricSignRequest request = AsymmetricSignRequest.newBuilder()
+        .setName(keyPath)
+        .setDigest(Digest.newBuilder().setSha256(ByteString.copyFrom(messageHash)))
+        .build();
+    
+    AsymmetricSignResponse response = client.asymmetricSign(request);
+    return response.getSignature().toByteArray();
   }
   // [END kms_sign_asymmetric]
 
   // [START kms_verify_signature_rsa]
   /**
-   * Verify the validity of an 'RSA_SIGN_PSS_2048_SHA256' signature for the 
+   * Verify the validity of an 'RSA_SIGN_PKCS1_2048_SHA256' signature for the 
    * specified message
-   *
-   * Requires:
-   *   java.security.PublicKey
-   *   java.security.Security
-   *   java.security.Signature
-   *   org.bouncycastle.jce.provider.BouncyCastleProvider
    */
-  public static boolean verifySignatureRSA(byte[] signature, byte[] message, CloudKMS client, 
-      String keyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, 
-      SignatureException, NoSuchProviderException, InvalidKeyException {
-    Security.addProvider(new BouncyCastleProvider());
-    PublicKey rsaKey = getAsymmetricPublicKey(client, keyPath);
+  public static boolean verifySignatureRSA(
+      KeyManagementServiceClient client, String keyPath, byte[] message, byte[] signature)
+      throws IOException, GeneralSecurityException {
 
-    Signature rsaVerify = Signature.getInstance("SHA256withRSA/PSS");
+    PublicKey rsaKey = getAsymmetricPublicKey(client, keyPath);
+    Signature rsaVerify = Signature.getInstance("SHA256withRSA");
 
     rsaVerify.initVerify(rsaKey);
     rsaVerify.update(message);
@@ -190,38 +146,17 @@ public class Asymmetric {
   /** 
    * Verify the validity of an 'EC_SIGN_P256_SHA256' signature for the 
    * specified message
-   * 
-   * Requires:
-   *   java.security.PublicKey
-   *   java.security.Security
-   *   java.security.Signature
-   *   org.bouncycastle.jce.provider.BouncyCastleProvider
    */
-  public static boolean verifySignatureEC(byte[] signature, byte[] message, CloudKMS client, 
-      String keyPath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, 
-      SignatureException, NoSuchProviderException, InvalidKeyException {
-    Security.addProvider(new BouncyCastleProvider());
+  public static boolean verifySignatureEC(
+      KeyManagementServiceClient client, String keyPath, byte[] message, byte[] signature)
+      throws IOException, GeneralSecurityException {
     PublicKey ecKey = getAsymmetricPublicKey(client, keyPath);
 
-    Signature ecVerify = Signature.getInstance("SHA256withECDSA", "BC");
-
+    Signature ecVerify = Signature.getInstance("SHA256withECDSA");
     ecVerify.initVerify(ecKey);
     ecVerify.update(message);
     return ecVerify.verify(signature);
   }
   // [END kms_verify_signature_ec]
-
-  public static CloudKMS createAuthorizedClient() throws IOException {
-    HttpTransport transport = new NetHttpTransport();
-    JsonFactory jsonFactory = new JacksonFactory();
-    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(CloudKMSScopes.all());
-    }
-    return new CloudKMS.Builder(transport, jsonFactory, credential)
-      .setApplicationName("CloudKMS snippets")
-      .build();
-  }
-
 }
 
