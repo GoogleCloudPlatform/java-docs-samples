@@ -335,18 +335,4 @@ public class SnippetsIT {
 
     assertThat(bout.toString()).doesNotContainMatch(TEST_USER);
   }
-
-  @Test
-  public void encryptDecrypt_encryptsAndDecrypts() throws Exception {
-    // Encrypt ENCRYPT_STRING with the current primary version.
-    byte[] ciphertext = CryptFile.encrypt(
-        PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, ENCRYPT_STRING.getBytes());
-
-    assertThat(new String(ciphertext)).isNotEqualTo(ENCRYPT_STRING);
-
-    byte[] plaintext = CryptFile.decrypt(
-        PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, ciphertext);
-
-    assertThat(new String(plaintext)).isEqualTo(ENCRYPT_STRING);
-  }
 }
