@@ -18,9 +18,9 @@ package com.example;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.services.cloudkms.v1.model.CryptoKey;
-import com.google.api.services.cloudkms.v1.model.CryptoKeyVersion;
-import com.google.api.services.cloudkms.v1.model.KeyRing;
+import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKeyVersion;
+import com.google.cloud.kms.v1.KeyRing;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -66,10 +66,12 @@ public class QuickstartIT {
   public static void tearDownClass() throws Exception {
     List<CryptoKeyVersion> versions = 
         Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-    
+
     for (CryptoKeyVersion v : versions) {
-      if (!v.getState().equals("DESTROY_SCHEDULED")) {
-        Snippets.destroyCryptoKeyVersion(v.getName());
+      if (!v.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
+        Snippets.destroyCryptoKeyVersion(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID,
+            SnippetsIT.parseVersionId(v.getName()));
       }
     }
   }

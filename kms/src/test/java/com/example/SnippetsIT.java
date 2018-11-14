@@ -19,11 +19,11 @@ package com.example;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import com.google.api.services.cloudkms.v1.model.Binding;
-import com.google.api.services.cloudkms.v1.model.CryptoKey;
-import com.google.api.services.cloudkms.v1.model.CryptoKeyVersion;
-import com.google.api.services.cloudkms.v1.model.KeyRing;
-import com.google.api.services.cloudkms.v1.model.Policy;
+import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKeyVersion;
+import com.google.cloud.kms.v1.KeyRing;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,10 +72,11 @@ public class SnippetsIT {
   public static void tearDownClass() throws Exception {
     List<CryptoKeyVersion> versions = 
         Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-    
+
     for (CryptoKeyVersion v : versions) {
-      if (!v.getState().equals("DESTROY_SCHEDULED")) {
-        Snippets.destroyCryptoKeyVersion(v.getName());
+      if (!v.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
+        Snippets.destroyCryptoKeyVersion(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, parseVersionId(v.getName()));
       }
     }
   }
@@ -104,7 +105,7 @@ public class SnippetsIT {
       assertThat(v.getName()).contains(String.format(
           "keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/", KEY_RING_ID, CRYPTO_KEY_ID));
 
-      if (v.getState().equals("ENABLED")) {
+      if (v.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.ENABLED)) {
         return;
       }
     }
@@ -122,7 +123,7 @@ public class SnippetsIT {
 
     CryptoKeyVersion disabled = Snippets.disableCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(disabled.getState()).isEqualTo("DISABLED");
+    assertThat(disabled.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DISABLED);
   }
 
   @Test
@@ -135,12 +136,12 @@ public class SnippetsIT {
     // Disable the new key version
     CryptoKeyVersion disabled = Snippets.disableCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(disabled.getState()).isEqualTo("DISABLED");
+    assertThat(disabled.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DISABLED);
 
     // Enable the now-disabled key version
     CryptoKeyVersion enabled = Snippets.enableCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(enabled.getState()).isEqualTo("ENABLED");
+    assertThat(enabled.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.ENABLED);
   }
 
   @Test
@@ -153,7 +154,8 @@ public class SnippetsIT {
     // Destroy the new key version
     CryptoKeyVersion destroyScheduled = Snippets.destroyCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(destroyScheduled.getState()).isEqualTo("DESTROY_SCHEDULED");
+    assertThat(destroyScheduled.getState()).isEqualTo(
+        CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED);
   }
 
 
@@ -168,12 +170,14 @@ public class SnippetsIT {
     // version for destruction.
     CryptoKeyVersion destroyScheduled = Snippets.destroyCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(destroyScheduled.getState()).isEqualTo("DESTROY_SCHEDULED");
+    assertThat(destroyScheduled.getState()).isEqualTo(
+        CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED);
 
     // Now restore the key version.
     CryptoKeyVersion restored = Snippets.restoreCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(restored.getState()).isEqualTo("DISABLED");
+    assertThat(restored.getState()).isEqualTo(
+        CryptoKeyVersion.CryptoKeyVersionState.DISABLED);
   }
 
   @Test
@@ -182,7 +186,7 @@ public class SnippetsIT {
     // caching. So we test that the call was successful.
     CryptoKeyVersion version = Snippets.createCryptoKeyVersion(
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-    assertThat(version.getState()).isEqualTo("ENABLED");
+    assertThat(version.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.ENABLED);
 
     String versionId = parseVersionId(version.getName());
 
@@ -198,11 +202,9 @@ public class SnippetsIT {
         PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
 
     // Make sure the policy doesn't already have our test user
-    if (policy.getBindings() != null) { // TODO: remove when we use the GAPIC client
-      for (Binding binding : policy.getBindings()) {
-        for (String m : binding.getMembers()) {
-          assertThat(TEST_USER).isNotEqualTo(m);
-        }
+    for (Binding binding : policy.getBindingsList()) {
+      for (String m : binding.getMembersList()) {
+        assertThat(TEST_USER).isNotEqualTo(m);
       }
     }
 
@@ -211,8 +213,8 @@ public class SnippetsIT {
       Policy added = Snippets.addMemberToCryptoKeyPolicy(
           PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, TEST_USER, TEST_ROLE);
 
-      for (Binding binding : added.getBindings()) {
-        for (String m : binding.getMembers()) {
+      for (Binding binding : added.getBindingsList()) {
+        for (String m : binding.getMembersList()) {
           if (TEST_USER.equals(m)) {
             return;
           }
@@ -225,11 +227,9 @@ public class SnippetsIT {
       // Now remove the test user, and make sure the policy no longer has it
       Policy removed = Snippets.removeMemberFromCryptoKeyPolicy(
           PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, TEST_USER, TEST_ROLE);
-      if (policy.getBindings() != null) { // TODO: remove when we use the GAPIC client
-        for (Binding binding : removed.getBindings()) {
-          for (String m : binding.getMembers()) {
-            assertThat(TEST_USER).isNotEqualTo(m);
-          }
+      for (Binding binding : removed.getBindingsList()) {
+        for (String m : binding.getMembersList()) {
+          assertThat(TEST_USER).isNotEqualTo(m);
         }
       }
     }
@@ -241,11 +241,9 @@ public class SnippetsIT {
     Policy policy = Snippets.getKeyRingPolicy(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
 
     // Make sure the policy doesn't already have our test user
-    if (policy.getBindings() != null) { // TODO: remove when we use the GAPIC client
-      for (Binding binding : policy.getBindings()) {
-        for (String m : binding.getMembers()) {
-          assertThat(TEST_USER).isNotEqualTo(m);
-        }
+    for (Binding binding : policy.getBindingsList()) {
+      for (String m : binding.getMembersList()) {
+        assertThat(TEST_USER).isNotEqualTo(m);
       }
     }
 
@@ -254,8 +252,8 @@ public class SnippetsIT {
       Policy added = Snippets.addMemberToKeyRingPolicy(
           PROJECT_ID, LOCATION_ID, KEY_RING_ID, TEST_USER, TEST_ROLE);
 
-      for (Binding binding : added.getBindings()) {
-        for (String m : binding.getMembers()) {
+      for (Binding binding : added.getBindingsList()) {
+        for (String m : binding.getMembersList()) {
           if (TEST_USER.equals(m)) {
             return;
           }
@@ -268,11 +266,9 @@ public class SnippetsIT {
       // Now remove the test user, and make sure the policy no longer has it
       Policy removed = Snippets.removeMemberFromKeyRingPolicy(
           PROJECT_ID, LOCATION_ID, KEY_RING_ID, TEST_USER, TEST_ROLE);
-      if (policy.getBindings() != null) { // TODO: remove when we use the GAPIC client
-        for (Binding binding : removed.getBindings()) {
-          for (String m : binding.getMembers()) {
-            assertThat(TEST_USER).isNotEqualTo(m);
-          }
+      for (Binding binding : removed.getBindingsList()) {
+        for (String m : binding.getMembersList()) {
+          assertThat(TEST_USER).isNotEqualTo(m);
         }
       }
     }
