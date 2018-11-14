@@ -17,17 +17,16 @@
 import static com.google.common.truth.Truth.assertThat;
 
 import com.amazonaws.services.s3.model.Bucket;
+import java.util.List;
 import org.junit.Test;
 
-import java.util.List;
-
-public class S3SDKTest {
+public class S3SdkTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BUCKET = PROJECT_ID;
 
   @Test
   public void testListBucket() throws Exception {
-    List<Bucket> listing = S3SDK.listGCSBuckets();
+    List<Bucket> listing = S3Sdk.listGcsBuckets();
     assertThat(listing.toString()).contains(BUCKET);
   }
 }
