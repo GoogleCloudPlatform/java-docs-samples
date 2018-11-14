@@ -219,19 +219,27 @@ public class Snippets {
   public static CryptoKeyVersion destroyCryptoKeyVersion(
       String projectId, String locationId, String keyRingId, String cryptoKeyId, String version)
       throws IOException {
-    // Create the Cloud KMS client.
-    CloudKMS kms = createAuthorizedClient();
 
     // The resource name of the cryptoKey version
     String cryptoKeyVersion = String.format(
         "projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/%s",
         projectId, locationId, keyRingId, cryptoKeyId, version);
 
+    return destroyCryptoKeyVersion(cryptoKeyVersion);
+  }
+
+  /**
+   * Marks the given version of a crypto key to be destroyed at a scheduled future point.
+   */
+  public static CryptoKeyVersion destroyCryptoKeyVersion(String resourceName) throws IOException {
+    // Create the Cloud KMS client.
+    CloudKMS kms = createAuthorizedClient();
+
     DestroyCryptoKeyVersionRequest destroyRequest = new DestroyCryptoKeyVersionRequest();
 
     CryptoKeyVersion destroyed = kms.projects().locations().keyRings().cryptoKeys()
         .cryptoKeyVersions()
-        .destroy(cryptoKeyVersion, destroyRequest)
+        .destroy(resourceName, destroyRequest)
         .execute();
 
     System.out.println(destroyed);

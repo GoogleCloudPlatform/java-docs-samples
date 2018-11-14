@@ -18,8 +18,14 @@ package com.example;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.services.cloudkms.v1.model.CryptoKey;
+import com.google.api.services.cloudkms.v1.model.CryptoKeyVersion;
+import com.google.api.services.cloudkms.v1.model.KeyRing;
+
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,39 +38,53 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class CryptFileIT {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION_ID = "global";
+  private static final String KEY_RING_ID = "test-key-ring-" + UUID.randomUUID().toString();
+  private static final String CRYPTO_KEY_ID = UUID.randomUUID().toString();
+  private static final String ENCRYPT_STRING = 
+      "Everyone shall sit under their own vine and fig tree";
+
+  /**
+   * Creates a CryptoKey for use during this test run.
+   */
   @BeforeClass
   public static void setUpClass() throws Exception {
-    SnippetsIT.setUpClass();
+    KeyRing keyRing = Snippets.createKeyRing(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
+    assertThat(keyRing.getName()).contains("keyRings/" + KEY_RING_ID);
+
+    CryptoKey cryptoKey = 
+        Snippets.createCryptoKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
+    assertThat(cryptoKey.getName()).contains(String.format(
+        "keyRings/%s/cryptoKeys/%s", KEY_RING_ID, CRYPTO_KEY_ID));
   }
 
   /**
-   * Destroys all the keys created during this test run.
+   * Destroys all the key versions created during this test run.
    */
   @AfterClass
   public static void tearDownClass() throws Exception {
-    SnippetsIT.tearDownClass();
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    Snippets.createCryptoKeyVersion(
-        SnippetsIT.PROJECT_ID, SnippetsIT.LOCATION_ID, SnippetsIT.KEY_RING_ID,
-        SnippetsIT.CRYPTO_KEY_ID);
+    List<CryptoKeyVersion> versions = 
+        Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
+    
+    for (CryptoKeyVersion v : versions) {
+      if (!v.getState().equals("DESTROY_SCHEDULED")) {
+        Snippets.destroyCryptoKeyVersion(v.getName());
+      }
+    }
   }
 
   @Test
   public void encryptDecrypt_encryptsAndDecrypts() throws Exception {
     // Encrypt ENCRYPT_STRING with the current primary version.
     byte[] ciphertext = CryptFile.encrypt(
-        SnippetsIT.PROJECT_ID, SnippetsIT.LOCATION_ID, SnippetsIT.KEY_RING_ID,
-        SnippetsIT.CRYPTO_KEY_ID, SnippetsIT.ENCRYPT_STRING.getBytes());
+        PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, ENCRYPT_STRING.getBytes());
 
-    assertThat(new String(ciphertext)).isNotEqualTo(SnippetsIT.ENCRYPT_STRING);
+    assertThat(new String(ciphertext)).isNotEqualTo(ENCRYPT_STRING);
 
     byte[] plaintext = CryptFile.decrypt(
-        SnippetsIT.PROJECT_ID, SnippetsIT.LOCATION_ID, SnippetsIT.KEY_RING_ID,
-        SnippetsIT.CRYPTO_KEY_ID, ciphertext);
+        PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, ciphertext);
 
-    assertThat(new String(plaintext)).isEqualTo(SnippetsIT.ENCRYPT_STRING);
+    assertThat(new String(plaintext)).isEqualTo(ENCRYPT_STRING);
   }
 }
