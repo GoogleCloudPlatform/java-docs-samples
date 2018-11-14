@@ -36,6 +36,7 @@ import com.google.api.services.cloudkms.v1.model.RestoreCryptoKeyVersionRequest;
 import com.google.api.services.cloudkms.v1.model.SetIamPolicyRequest;
 import com.google.api.services.cloudkms.v1.model.UpdateCryptoKeyPrimaryVersionRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.kohsuke.args4j.CmdLineException;
@@ -128,7 +129,7 @@ public class Snippets {
   /**
    * Creates a new crypto key version for the given id.
    */
-  public static void createCryptoKeyVersion(
+  public static CryptoKeyVersion createCryptoKeyVersion(
       String projectId, String locationId, String keyRingId, String cryptoKeyId)
       throws IOException {
     // Create the Cloud KMS client.
@@ -147,6 +148,7 @@ public class Snippets {
         .execute();
 
     System.out.println(newVersion);
+    return newVersion;
   }
   // [END kms_create_cryptokey_version]
 
@@ -511,9 +513,9 @@ public class Snippets {
   // [END kms_remove_member_from_keyring_policy]
 
   /**
-   * Prints all the key rings in the given project.
+   * Lists all the key rings in the given project.
    */
-  public static void listKeyRings(String projectId, String locationId) throws IOException {
+  public static List<KeyRing> listKeyRings(String projectId, String locationId) throws IOException {
     // Create the Cloud KMS client.
     CloudKMS kms = createAuthorizedClient();
 
@@ -530,19 +532,24 @@ public class Snippets {
 
     // Print the returned key rings
     if (null != response.getKeyRings()) {
+      ArrayList<KeyRing> result = new ArrayList<>();
       System.out.println("Key Rings: ");
       for (KeyRing keyRing : response.getKeyRings()) {
+        result.add(keyRing);
         System.out.println(keyRing.getName());
       }
+      return result;
     } else {
       System.out.println("No keyrings defined.");
+      return Collections.emptyList();
     }
   }
 
   /**
-   * Prints all crypto keys in the given key ring.
+   * Lists all crypto keys in the given key ring.
    */
-  public static void listCryptoKeys(String projectId, String locationId, String keyRingId)
+  public static List<CryptoKey> listCryptoKeys(
+      String projectId, String locationId, String keyRingId)
       throws IOException {
     // Create the Cloud KMS client.
     CloudKMS kms = createAuthorizedClient();
@@ -552,6 +559,7 @@ public class Snippets {
         "projects/%s/locations/%s/keyRings/%s",
         projectId, locationId, keyRingId);
 
+    ArrayList<CryptoKey> results = new ArrayList<>();
     ListCryptoKeysResponse cryptoKeys = null;
     do { // Print every page of keys
       cryptoKeys = kms.projects().locations().keyRings()
@@ -561,15 +569,18 @@ public class Snippets {
           .execute();
 
       for (CryptoKey key : cryptoKeys.getCryptoKeys()) {
+        results.add(key);
         System.out.println(key);
       }
     } while (cryptoKeys.getNextPageToken() != null);
+
+    return results;
   }
 
   /**
-   * Prints all the versions for the given crypto key.
+   * Lists all the versions for the given crypto key.
    */
-  public static void listCryptoKeyVersions(
+  public static List<CryptoKeyVersion> listCryptoKeyVersions(
       String projectId, String locationId, String keyRingId, String cryptoKeyId)
       throws IOException {
     // Create the Cloud KMS client.
@@ -586,15 +597,19 @@ public class Snippets {
         .list(cryptoKeys)
         .execute();
 
+    ArrayList<CryptoKeyVersion> results = new ArrayList<>();
     for (CryptoKeyVersion version : versions.getCryptoKeyVersions()) {
       System.out.println(version);
+      results.add(version);
     }
+
+    return results;
   }
 
   /**
    * Sets a version as the primary version for a crypto key.
    */
-  public static void setPrimaryVersion(String projectId, String locationId, String keyRingId,
+  public static CryptoKey setPrimaryVersion(String projectId, String locationId, String keyRingId,
       String cryptoKeyId, String versionId) throws IOException {
     // Create the Cloud KMS client.
     CloudKMS kms = createAuthorizedClient();
@@ -609,7 +624,7 @@ public class Snippets {
             new UpdateCryptoKeyPrimaryVersionRequest().setCryptoKeyVersionId(versionId)).execute();
 
     System.out.println(key);
-
+    return key;
   }
 
 
