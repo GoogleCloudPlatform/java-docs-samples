@@ -28,18 +28,6 @@ import org.kohsuke.args4j.CmdLineParser;
 
 public class CryptFile {
 
-  /**
-   * Creates a KeyManagementServiceClient using Application Default Credentials.
-   *
-   * @return an authorized KeyManagementServiceClient.
-   * @throws IOException if there's an error getting the default credentials.
-   */
-  public static KeyManagementServiceClient createClient() throws IOException {
-    // GAP: missing ability to set application name
-    // see https://github.com/googleapis/gax-java/issues/614
-    return KeyManagementServiceClient.create();
-  }
-
   // [START kms_encrypt]
 
   /**
@@ -50,7 +38,7 @@ public class CryptFile {
       throws IOException {
 
     // Create the KeyManagementServiceClient using try-with-resources to manage client cleanup.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = Snippets.createClient()) {
 
       // The resource name of the cryptoKey
       String resourceName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -74,7 +62,7 @@ public class CryptFile {
       throws IOException {
 
     // Create the KeyManagementServiceClient using try-with-resources to manage client cleanup.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = Snippets.createClient()) {
 
       // The resource name of the cryptoKey
       String resourceName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
