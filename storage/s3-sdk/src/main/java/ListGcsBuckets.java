@@ -40,7 +40,7 @@ import com.amazonaws.services.s3.model.Bucket;
 
 import java.util.List;
 
-public class S3Sdk {
+public class ListGcsBuckets {
   public static List<Bucket> listGcsBuckets() {
     // Change the endpoint_url to use the Google Cloud Storage XML API endpoint.
     AmazonS3 interopClient =

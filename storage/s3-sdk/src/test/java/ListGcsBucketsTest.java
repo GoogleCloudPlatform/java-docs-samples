@@ -20,7 +20,7 @@ import com.amazonaws.services.s3.model.Bucket;
 import java.util.List;
 import org.junit.Test;
 
-public class S3SdkTest {
+public class ListGcsBucketsTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BUCKET = PROJECT_ID;
 

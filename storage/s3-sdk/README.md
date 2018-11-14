@@ -39,7 +39,7 @@ Install [Maven](http://maven.apache.org/).
 1. Run example using the following Maven command:
 
    ```
-   mvn exec:java -Dexec.mainClass=S3Sdk
+   mvn exec:java -Dexec.mainClass=ListGcsBuckets
    ```
 
 ## Products
