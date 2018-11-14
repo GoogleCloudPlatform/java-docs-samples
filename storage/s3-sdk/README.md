@@ -1,16 +1,14 @@
-# Google Cloud Storage (GCS) and the Google Java API Client library
+# Using Google Cloud Storage (GCS) with the S3 SDK
 
-Google Cloud Storage Service features a REST-based API that allows developers to store and access arbitrarily-large objects. These sample Java applications demonstrate how to access the Google Cloud Storage JSON API using the Google Java API Client Libraries. For more information, read the [Google Cloud Storage JSON API Overview][1].
+[Google Cloud Storage][1] features APIs that allows developers to store and access arbitrarily-large
+objects. The [GCS XML API][5] provides support for AWS S3 API users that use S3 SDKs.
+Learn more about [Migrating to GCS][6].
 
-## Quickstart
+## Prerequisites
 
-1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/), including the [gcloud tool](https://cloud.google.com/sdk/gcloud/).
+Install [Maven](http://maven.apache.org/).
 
-1. Setup the gcloud tool.
-
-   ```
-   gcloud init
-   ```
+## Setup
 
 1. Clone this repo.
 
@@ -18,7 +16,11 @@ Google Cloud Storage Service features a REST-based API that allows developers to
    git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
    ```
 
-1. Install [Maven](http://maven.apache.org/).
+1. Change into this directory:
+
+   ```
+   cd java-docs-samples/storage/s3-sdk
+   ```
 
 1. Build this project from this directory:
 
@@ -26,30 +28,32 @@ Google Cloud Storage Service features a REST-based API that allows developers to
    mvn package
    ```
 
-1. Run one of the sample apps by specifying its class name and a bucket name:
+1. Get your [Interoperable Storage Access Keys][3] and set the following environment variables:
+
+   * AWS_ACCESS_KEY_ID=[ACCESS_KEY]
+   * AWS_SECRET_ACCESS_KEY=[SECRET]
+
+
+## List GCS buckets using the AWS S3 SDK
+
+1. Run example using the following Maven command:
 
    ```
-   mvn exec:java -Dexec.mainClass=StorageSample \
-           -Dexec.args="ABucketName"
-   ```
-
-Note that if it's been a while, you may need to login with gcloud.
-
-   ```
-   gcloud auth application-default login
+   mvn exec:java -Dexec.mainClass=S3Sdk
    ```
 
 ## Products
 - [Google Cloud Storage][2]
 
 ## Language
-- [Java][3]
+- [Java][2]
 
 ## Dependencies
-- [Google APIs Client Library for Java][4]
+- [AWS S3 Java SDK][4]
 
-[1]: https://cloud.google.com/storage/docs/json_api
-[2]: https://cloud.google.com/storage
-[3]: https://java.com
-[4]: http://code.google.com/p/google-api-java-client/
-
+[1]: https://cloud.google.com/storage
+[2]: https://java.com
+[3]: https://cloud.google.com/storage/docs/migrating#keys
+[4]: https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+[5]: https://cloud.google.com/storage/docs/xml-api/overview
+[6]: https://cloud.google.com/storage/docs/migrating
