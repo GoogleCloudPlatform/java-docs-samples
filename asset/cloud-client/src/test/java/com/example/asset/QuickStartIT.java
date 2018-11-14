@@ -18,9 +18,11 @@ package com.example.asset;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -35,12 +37,15 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
-  private static final String bucketName = "bucket-for-asset";
+  private static final String bucketName = UUID.randomUUID().toString();
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static final void deleteBucket(String bucketName) {
     Storage storage = StorageOptions.getDefaultInstance().getService();
+    for (BlobInfo info : storage.list(bucketName, BlobListOption.versions(true)).getValues()) {
+      storage.delete(info.getBlobId());
+    }
     storage.delete(bucketName);
   }
 
@@ -56,8 +61,7 @@ public class QuickStartIT {
 
   @Before
   public void setUp() {
-    //bucketName = UUID.randomUUID().toString();
-
+    createBucket(bucketName);
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
