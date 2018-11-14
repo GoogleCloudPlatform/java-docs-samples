@@ -36,14 +36,14 @@
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
+
 import java.util.List;
 
 public class S3Sdk {
   public static List<Bucket> listGcsBuckets() {
     // Change the endpoint_url to use the Google Cloud Storage XML API endpoint.
-    AmazonS3 s3 =
+    AmazonS3 interopClient =
         AmazonS3ClientBuilder.standard()
             .withEndpointConfiguration(
                 new AwsClientBuilder.EndpointConfiguration(
@@ -51,14 +51,23 @@ public class S3Sdk {
             .build();
 
     // Call GCS to list current buckets
-    List<Bucket> buckets = s3.listBuckets();
+    List<Bucket> buckets = interopClient.listBuckets();
 
     // Print bucket names
     System.out.println("Buckets:");
     for (Bucket bucket : buckets) {
       System.out.println(bucket.getName());
     }
+
+    // Explicitly clean up client resources.
+    interopClient.shutdown();
+
     return buckets;
   }
+  // [END storage_s3_sdk_list_buckets]
+
+  public static void main(String[] args) {
+    listGcsBuckets();
+  }
 }
-// [END storage_s3_sdk_list_buckets]
+
