@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package com.example.asset;
 
-// [START asset_quickstart_export_assets]
-// Imports the Google Cloud client library
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1beta1.AssetServiceClient;
 import com.google.cloud.asset.v1beta1.ExportAssetsRequest;
@@ -25,6 +23,9 @@ import com.google.cloud.asset.v1beta1.ExportAssetsResponse;
 import com.google.cloud.asset.v1beta1.GcsDestination;
 import com.google.cloud.asset.v1beta1.OutputConfig;
 import com.google.cloud.asset.v1beta1.ProjectName;
+
+// [START asset_quickstart_export_assets]
+// Imports the Google Cloud client library
 
 public class ExportAssetsExample {
 
