@@ -17,13 +17,13 @@
 package com.example.appengine.sendgrid;
 
 // [START gae_sendgrid_import]
-import com.sendgrid.SendGrid;
-import com.sendgrid.Mail;
-import com.sendgrid.Email;
 import com.sendgrid.Content;
-import com.sendgrid.Request;
+import com.sendgrid.Email;
+import com.sendgrid.Mail;
 import com.sendgrid.Method;
+import com.sendgrid.Request;
 import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,8 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 public class SendEmailServlet extends HttpServlet {
 
   @Override
-  public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void service(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     // Get parameters from environment variables.
     final String sendgridApiKey = System.getenv("SENDGRID_API_KEY");
     final String sendgridSender = System.getenv("SENDGRID_SENDER");
