@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.64</version>
+      <version>1.9.68</version>
     </dependency>
 
     <dependency>
@@ -66,14 +66,14 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.24.1</version>
+      <version>1.27.0</version>
     </dependency>
 
     <!-- [START dependencies] -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.4</version>
+      <version>42.2.5</version>
     </dependency>
 
     <dependency>
