@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging-logback</artifactId>
-      <version>0.56.0-alpha</version>
+      <version>0.70.0-alpha</version>
     </dependency>
 
     <!-- Test dependencies -->

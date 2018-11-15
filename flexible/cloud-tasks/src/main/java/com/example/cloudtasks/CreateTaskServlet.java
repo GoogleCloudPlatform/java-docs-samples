@@ -21,11 +21,11 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtasks.v2beta2.CloudTasks;
-import com.google.api.services.cloudtasks.v2beta2.CloudTasksScopes;
-import com.google.api.services.cloudtasks.v2beta2.model.AppEngineHttpRequest;
-import com.google.api.services.cloudtasks.v2beta2.model.CreateTaskRequest;
-import com.google.api.services.cloudtasks.v2beta2.model.Task;
+import com.google.api.services.cloudtasks.v2beta3.CloudTasks;
+import com.google.api.services.cloudtasks.v2beta3.CloudTasksScopes;
+import com.google.api.services.cloudtasks.v2beta3.model.AppEngineHttpRequest;
+import com.google.api.services.cloudtasks.v2beta3.model.CreateTaskRequest;
+import com.google.api.services.cloudtasks.v2beta3.model.Task;
 import com.google.common.io.BaseEncoding;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -99,8 +99,8 @@ public class CreateTaskServlet extends HttpServlet {
     payload = BaseEncoding.base64().encode(payload.getBytes());
     AppEngineHttpRequest postRequest = new AppEngineHttpRequest()
         .setHttpMethod("POST")
-        .setRelativeUrl("/example_task_handler")
-        .setPayload(payload);
+        .setRelativeUri("/example_task_handler")
+        .setBody(payload);
     Task task = new Task().setAppEngineHttpRequest(postRequest);
 
     // Create the CreateTaskRequest

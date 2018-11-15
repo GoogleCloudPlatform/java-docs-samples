@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dialogflow</artifactId>
-      <version>0.55.1-alpha</version>
+      <version>0.70.0-alpha</version>
     </dependency>
 
     <!-- Test dependencies -->

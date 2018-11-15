@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.67.0-beta</version>
+      <version>0.70.0-beta</version>
     </dependency>
 
     <!-- Test dependencies -->
