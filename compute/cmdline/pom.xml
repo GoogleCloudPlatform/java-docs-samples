@@ -32,7 +32,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <project.compute.version>v1-rev193-1.24.1</project.compute.version>
+    <project.compute.version>v1-rev20181022-1.27.0</project.compute.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -40,7 +40,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.24.1</version>
+      <version>1.27.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>

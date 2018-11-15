@@ -39,7 +39,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>1.38.0</version>
+      <version>1.52.0</version>
     </dependency>
     <!-- [END language_java_dependencies] -->
     <dependency>
