@@ -27,7 +27,7 @@ Copyright 2018 Google LLC
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
   </parent>
 
   <properties>
@@ -44,7 +44,7 @@ Copyright 2018 Google LLC
       <scope>provided</scope>
     </dependency>
 
-    <!-- [START gae_sendgrid_ependencies] -->
+    <!-- [START gae_sendgrid_dependencies] -->
     <dependency>
       <groupId>com.sendgrid</groupId>
       <artifactId>sendgrid-java</artifactId>
