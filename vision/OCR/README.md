@@ -10,7 +10,7 @@ identifies the Text in it.
 
 This sample uses the [Gradle][gradle] build system. Before getting started, be
 sure to [download][gradle-download] and [install][gradle-install] it. When you use
-Maven as described here, it will automatically download the needed client
+Gradle as described here, it will automatically download the needed client
 libraries.
 
 [gradle]: https://gradle.org/install/
@@ -36,7 +36,7 @@ libraries.
     ```bash
     gcsbucket="gs://Bucket-Name/";
     # Make sure your ACL's are properly set and Bucket has proper access to upload the Image
-    # After setting up the ACL, make change accordingly ".setAcl(new ArrayList<>(Arrays.asList(Acl.of(**User.ofAllUsers()**, **Role.READER**)))).build(),"
+    # After setting up the ACL, make change accordingly ".setAcl(new ArrayList<>(Arrays.asList(Acl.of(User.ofAllUsers(), Role.READER)))).build(),"
     ```
 
 [cloud-console]: https://console.cloud.google.com
