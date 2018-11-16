@@ -356,7 +356,7 @@ public class Detect {
       // Create the request
       AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
               .setInputUri(gcsUri)
-              .addFeatures(com.google.cloud.videointelligence.v1.Feature.SPEECH_TRANSCRIPTION)
+              .addFeatures(Feature.SPEECH_TRANSCRIPTION)
               .setVideoContext(context)
               .build();
 
@@ -394,7 +394,7 @@ public class Detect {
           }
         }
       }
-      // [END video_speech_transcription_gcs]
     }
+    // [END video_speech_transcription_gcs]
   }
 }
