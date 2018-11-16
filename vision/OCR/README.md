@@ -29,7 +29,7 @@ libraries.
     export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
     ```
 
-* [Create Bucket] (bucket-creation) where you want to Store the Uploaded Image
+* [Create Bucket](bucket-creation) where you want to Store the Uploaded Image
 
 * Set the Bucket name in the Code
 
@@ -43,7 +43,7 @@ libraries.
 [vision-api]: https://console.cloud.google.com/apis/api/vision.googleapis.com/overview?project=_
 [adc]: https://cloud.google.com/docs/authentication#developer_workflow
 [gcs]: https://cloud.google.com/storage/docs/overview
-[bucket-creation] : https://cloud.google.com/storage/docs/creating-buckets
+[bucket-creation]: https://cloud.google.com/storage/docs/creating-buckets
 
 ## Run the sample
 

@@ -61,7 +61,7 @@ Google Cloud Storage.
 This Sample identifies the text written in an Image and Stored that Image to
 Google Cloud Storage
 
-- [Documentation and Java Code] (OCR)
+- [Documentation and Java Code](OCR)
 
 ### Text Detection Using the Vision API
 
