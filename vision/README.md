@@ -54,7 +54,14 @@ This sample identifies faces within an image.
 This sample identifies a landmark within an image stored on
 Google Cloud Storage.
 
-- [Documentation and Java Code](landmark_detection)
+- [Documentation and Java Code](landmark-detection)
+
+### Optical Character Recognition Using Vision API
+
+This Sample identifies the text written in an Image and Stored that Image to
+Google Cloud Storage
+
+- [Documentation and Java Code](OCR)
 
 ### Text Detection Using the Vision API
 
