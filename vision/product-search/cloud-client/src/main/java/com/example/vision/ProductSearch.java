@@ -114,7 +114,7 @@ public class ProductSearch {
 
     List<Result> similarProducts =
         response.getResponses(0).getProductSearchResults().getResultsList();
-
+    queryImageClient.close();
     System.out.println("Similar Products: ");
     for (Result product : similarProducts) {
       System.out.println(String.format("\nProduct name: %s", product.getProduct().getName()));
@@ -181,7 +181,7 @@ public class ProductSearch {
 
     List<Result> similarProducts =
         response.getResponses(0).getProductSearchResults().getResultsList();
-
+    queryImageClient.close();
     System.out.println("Similar Products: ");
     for (Result product : similarProducts) {
       System.out.println(String.format("\nProduct name: %s", product.getProduct().getName()));

@@ -65,7 +65,7 @@ public class ProductSetManagement {
             .setProductSetId(productSetId)
             .build();
     ProductSet productSet = client.createProductSet(request);
-
+    client.close();
     // Display the product set information
     System.out.println(String.format("Product set name: %s", productSet.getName()));
   }
@@ -97,6 +97,7 @@ public class ProductSetManagement {
       System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
     }
+    client.close();
   }
   // [END vision_product_search_list_product_sets]
 
@@ -118,6 +119,7 @@ public class ProductSetManagement {
         ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
     // Get complete detail of the product set.
     ProductSet productSet = client.getProductSet(formattedName);
+    client.close();
     // Display the product set information
     System.out.println(String.format("Product set name: %s", productSet.getName()));
     System.out.println(
@@ -149,7 +151,7 @@ public class ProductSetManagement {
         ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
     // Delete the product set.
     client.deleteProductSet(formattedName);
-
+    client.close();
     System.out.println(String.format("Product set deleted"));
   }
   // [END vision_product_search_delete_product_set]

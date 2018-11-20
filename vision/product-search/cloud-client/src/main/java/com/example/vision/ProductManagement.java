@@ -70,7 +70,7 @@ public class ProductManagement {
             .setProductCategory(productCategory)
             .build();
     Product product = client.createProduct(formattedParent, myProduct, productId);
-
+    client.close();
     // Display the product information
     System.out.println(String.format("Product name: %s", product.getName()));
   }
@@ -104,6 +104,7 @@ public class ProductManagement {
       System.out.println(
           String.format("Product labels: %s", product.getProductLabelsList().toString()));
     }
+    client.close();
   }
   // [END vision_product_search_list_products]
 
@@ -122,10 +123,10 @@ public class ProductManagement {
 
     // Get the full path of the product.
     String formattedName =
-        ProductSearchClient.formatProductName(projectId, computeRegion, "[PRODUCT]");
+        ProductSearchClient.formatProductName(projectId, computeRegion,productId);
     // Get complete detail of the product.
     Product product = client.getProduct(formattedName);
-
+    client.close();
     // Display the product information
     System.out.println(String.format("Product name: %s", product.getName()));
     System.out.println(
@@ -134,9 +135,10 @@ public class ProductManagement {
     System.out.println(String.format("Product display name: %s", product.getDisplayName()));
     System.out.println(String.format("Product description: %s", product.getDescription()));
     System.out.println(String.format("Product category: %s", product.getProductCategory()));
-    System.out.println("Product labels:");
-    System.out.println(
-        String.format("Product labels: %s", product.getProductLabelsList().toString()));
+    System.out.println(String.format("Product labels: "));
+    for (Product.KeyValue element : product.getProductLabelsList()) {
+      System.out.println(String.format("%s: %s", element.getKey(), element.getValue()));
+    }
   }
   // [END vision_product_search_get_product]
 
@@ -176,7 +178,7 @@ public class ProductManagement {
 
     // Update the product.
     Product updatedProduct = client.updateProduct(product, updateMask);
-
+    client.close();
     // Display the product information
     System.out.println(String.format("Product name: %s", updatedProduct.getName()));
     System.out.println(String.format("Updated product labels: "));
@@ -205,7 +207,7 @@ public class ProductManagement {
 
     // Delete a product.
     client.deleteProduct(formattedName);
-
+    client.close();
     System.out.println("Product deleted.");
   }
   // [END vision_product_search_delete_product]

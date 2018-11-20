@@ -66,6 +66,7 @@ public class ReferenceImageManagement {
 
     ReferenceImage image =
         client.createReferenceImage(formattedParent, referenceImage, referenceImageId);
+    client.close();
     // Display the reference image information.
     System.out.println(String.format("Reference image name: %s", image.getName()));
     System.out.println(String.format("Reference image uri: %s", image.getUri()));
@@ -100,6 +101,7 @@ public class ReferenceImageManagement {
           String.format(
               "Reference image bounding polygons: %s \n", image.getBoundingPolysList().toString()));
     }
+    client.close();
   }
   // [END vision_product_search_list_reference_images]
 
@@ -123,7 +125,7 @@ public class ReferenceImageManagement {
         ProductSearchClient.formatImageName(projectId, computeRegion, productId, referenceImageId);
     // Get complete detail of the reference image.
     ReferenceImage image = client.getReferenceImage(formattedName);
-
+    client.close();
     // Display the reference image information.
     System.out.println(String.format("Reference image name: %s", image.getName()));
     System.out.println(
@@ -157,6 +159,7 @@ public class ReferenceImageManagement {
         ProductSearchClient.formatImageName(projectId, computeRegion, productId, referenceImageId);
     // Delete the reference image.
     client.deleteReferenceImage(formattedName);
+    client.close();
     System.out.println("Reference image deleted from product.");
   }
   // [END vision_product_search_delete_reference_image]
