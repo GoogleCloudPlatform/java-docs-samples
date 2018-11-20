@@ -102,7 +102,6 @@ public class ProductManagementIT {
     // Act
     ProductManagement.createProduct(
         PROJECT_ID, COMPUTE_REGION, PRODUCT_ID, PRODUCT_DISPLAY_NAME, PRODUCT_CATEGORY);
-    //ProductManagement.listProducts(PROJECT_ID, COMPUTE_REGION);
     ProductManagement.getProduct(PROJECT_ID, COMPUTE_REGION, PRODUCT_ID);
 
     // Assert
