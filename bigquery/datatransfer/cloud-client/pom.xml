@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquerydatatransfer</artifactId>
-      <version>0.56.0-beta</version>
+      <version>0.70.0-beta</version>
     </dependency>
     <!-- [END bigquerydatatransfer_java_dependencies] -->
 
