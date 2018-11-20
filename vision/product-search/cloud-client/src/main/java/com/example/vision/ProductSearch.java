@@ -24,6 +24,7 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
 import com.google.cloud.vision.v1.ImageSource;
+import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.cloud.vision.v1.ProductSearchParams;
 import com.google.cloud.vision.v1.ProductSearchResults.Result;
 import com.google.cloud.vision.v1.ProductSetName;
@@ -78,7 +79,8 @@ public class ProductSearch {
     ImageAnnotatorClient queryImageClient = ImageAnnotatorClient.create();
 
     // Get the full path of the product set.
-    String productSetPath = ProductSetName.of(projectId, computeRegion, productSetId).toString();
+    String productSetPath = ProductSearchClient
+        .formatProductSetName(projectId, computeRegion, productSetId);
 
     // Read the image as a stream of bytes.
     File imgPath = new File(filePath);
