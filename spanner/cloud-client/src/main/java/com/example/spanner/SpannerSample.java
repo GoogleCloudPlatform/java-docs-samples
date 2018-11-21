@@ -252,25 +252,27 @@ public class SpannerSample {
   // [END spanner_insert_data]
 
   // [START spanner_delete_data]
-    static void deleteExampleData(DatabaseClient dbClient) {
-      List<Mutation> mutations = new ArrayList<>();
-  
-      // KeySet.all() can be used to delete all the rows in a table.
-      mutations.add(Mutation.delete("Albums", KeySet.all()));
-  
-      // KeySet.singleKey() can be used to delete one row at a time.
-      for (Singer singer : SINGERS) {
-        mutations.add(Mutation.delete("Singers", KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
-      }
-  
-      // Because Albums is created with ON DELETE CASCADE, you can delete all the rows in both tables
-      // by deleting the entire Singers table.
-      //mutations.add(Mutation.delete("Singers", KeySet.all()));
-  
-      dbClient.write(mutations);
-      System.out.printf("Records deleted.\n");
-    } 
-    // [END spanner_delete_data]
+  static void deleteExampleData(DatabaseClient dbClient) {
+    List<Mutation> mutations = new ArrayList<>();
+
+    // KeySet.all() can be used to delete all the rows in a table.
+    mutations.add(Mutation.delete("Albums", KeySet.all()));
+
+    // KeySet.singleKey() can be used to delete one row at a time.
+    for (Singer singer : SINGERS) {
+      mutations.add(
+          Mutation.delete("Singers", 
+              KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
+    }
+
+    // Because Albums is created with ON DELETE CASCADE, you can delete all the rows in both tables
+    // by deleting the entire Singers table.
+    //mutations.add(Mutation.delete("Singers", KeySet.all()));
+
+    dbClient.write(mutations);
+    System.out.printf("Records deleted.\n");
+  } 
+  // [END spanner_delete_data]
 
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
