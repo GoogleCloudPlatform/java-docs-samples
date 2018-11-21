@@ -265,9 +265,10 @@ public class SpannerSample {
               KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
     }
 
-    // Because Albums is created with ON DELETE CASCADE, you can delete all the rows in both tables
+    // Because Albums is created with ON DELETE CASCADE,
+    // you can delete all the rows in both tables
     // by deleting the entire Singers table.
-    //mutations.add(Mutation.delete("Singers", KeySet.all()));
+    // mutations.add(Mutation.delete("Singers", KeySet.all()));
 
     dbClient.write(mutations);
     System.out.printf("Records deleted.\n");
