@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/google_appengine/jetty9
+FROM gcr.io/google_appengine/jetty
 
 ADD endpoints-1.0-SNAPSHOT.war $JETTY_BASE/webapps/root.war
 ADD . /app
