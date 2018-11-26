@@ -76,56 +76,56 @@ public class ProductSearch {
       String filePath,
       String filter)
       throws IOException {
-    ImageAnnotatorClient queryImageClient = ImageAnnotatorClient.create();
+    try (ImageAnnotatorClient queryImageClient = ImageAnnotatorClient.create()) {
 
-    // Get the full path of the product set.
-    String productSetPath = ProductSearchClient
-        .formatProductSetName(projectId, computeRegion, productSetId);
+      // Get the full path of the product set.
+      String productSetPath =
+          ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
 
-    // Read the image as a stream of bytes.
-    File imgPath = new File(filePath);
-    byte[] content = Files.readAllBytes(imgPath.toPath());
+      // Read the image as a stream of bytes.
+      File imgPath = new File(filePath);
+      byte[] content = Files.readAllBytes(imgPath.toPath());
 
-    // Create annotate image request along with product search feature.
-    Feature featuresElement = Feature.newBuilder().setType(Type.PRODUCT_SEARCH).build();
-    // The input image can be a HTTPS link or Raw image bytes.
-    // Example:
-    // To use HTTP link replace with below code
-    //  ImageSource source = ImageSource.newBuilder().setImageUri(imageUri).build();
-    //  Image image = Image.newBuilder().setSource(source).build();
-    Image image = Image.newBuilder().setContent(ByteString.copyFrom(content)).build();
-    ImageContext imageContext =
-        ImageContext.newBuilder()
-            .setProductSearchParams(
-                ProductSearchParams.newBuilder()
-                    .setProductSet(productSetPath)
-                    .addProductCategories(productCategory)
-                    .setFilter(filter))
-            .build();
+      // Create annotate image request along with product search feature.
+      Feature featuresElement = Feature.newBuilder().setType(Type.PRODUCT_SEARCH).build();
+      // The input image can be a HTTPS link or Raw image bytes.
+      // Example:
+      // To use HTTP link replace with below code
+      //  ImageSource source = ImageSource.newBuilder().setImageUri(imageUri).build();
+      //  Image image = Image.newBuilder().setSource(source).build();
+      Image image = Image.newBuilder().setContent(ByteString.copyFrom(content)).build();
+      ImageContext imageContext =
+          ImageContext.newBuilder()
+              .setProductSearchParams(
+                  ProductSearchParams.newBuilder()
+                      .setProductSet(productSetPath)
+                      .addProductCategories(productCategory)
+                      .setFilter(filter))
+              .build();
 
-    AnnotateImageRequest annotateImageRequest =
-        AnnotateImageRequest.newBuilder()
-            .addFeatures(featuresElement)
-            .setImage(image)
-            .setImageContext(imageContext)
-            .build();
-    List<AnnotateImageRequest> requests = Arrays.asList(annotateImageRequest);
+      AnnotateImageRequest annotateImageRequest =
+          AnnotateImageRequest.newBuilder()
+              .addFeatures(featuresElement)
+              .setImage(image)
+              .setImageContext(imageContext)
+              .build();
+      List<AnnotateImageRequest> requests = Arrays.asList(annotateImageRequest);
 
-    // Search products similar to the image.
-    BatchAnnotateImagesResponse response = queryImageClient.batchAnnotateImages(requests);
+      // Search products similar to the image.
+      BatchAnnotateImagesResponse response = queryImageClient.batchAnnotateImages(requests);
 
-    List<Result> similarProducts =
-        response.getResponses(0).getProductSearchResults().getResultsList();
-    queryImageClient.close();
-    System.out.println("Similar Products: ");
-    for (Result product : similarProducts) {
-      System.out.println(String.format("\nProduct name: %s", product.getProduct().getName()));
-      System.out.println(
-          String.format("Product display name: %s", product.getProduct().getDisplayName()));
-      System.out.println(
-          String.format("Product description: %s", product.getProduct().getDescription()));
-      System.out.println(String.format("Score(Confidence): %s", product.getScore()));
-      System.out.println(String.format("Image name: %s", product.getImage()));
+      List<Result> similarProducts =
+          response.getResponses(0).getProductSearchResults().getResultsList();
+      System.out.println("Similar Products: ");
+      for (Result product : similarProducts) {
+        System.out.println(String.format("\nProduct name: %s", product.getProduct().getName()));
+        System.out.println(
+            String.format("Product display name: %s", product.getProduct().getDisplayName()));
+        System.out.println(
+            String.format("Product description: %s", product.getProduct().getDescription()));
+        System.out.println(String.format("Score(Confidence): %s", product.getScore()));
+        System.out.println(String.format("Image name: %s", product.getImage()));
+      }
     }
   }
   // [END vision_product_search_get_similar_products]
@@ -144,55 +144,57 @@ public class ProductSearch {
    *     color:red AND style:kids color:blue AND style:kids
    * @throws Exception - on errors.
    */
-  public static void getSimilarProductsGcs(String projectId,
+  public static void getSimilarProductsGcs(
+      String projectId,
       String computeRegion,
       String productSetId,
       String productCategory,
       String gcsUri,
-      String filter) throws Exception {
-    ImageAnnotatorClient queryImageClient = ImageAnnotatorClient.create();
+      String filter)
+      throws Exception {
+    try (ImageAnnotatorClient queryImageClient = ImageAnnotatorClient.create()) {
 
-    // Get the full path of the product set.
-    String productSetPath = ProductSetName.of(projectId, computeRegion, productSetId).toString();
+      // Get the full path of the product set.
+      String productSetPath = ProductSetName.of(projectId, computeRegion, productSetId).toString();
 
-    // Get the image from Google Cloud Storage
-    ImageSource source = ImageSource.newBuilder().setGcsImageUri(gcsUri).build();
+      // Get the image from Google Cloud Storage
+      ImageSource source = ImageSource.newBuilder().setGcsImageUri(gcsUri).build();
 
-    // Create annotate image request along with product search feature.
-    Feature featuresElement = Feature.newBuilder().setType(Type.PRODUCT_SEARCH).build();
-    Image image = Image.newBuilder().setSource(source).build();
-    ImageContext imageContext =
-        ImageContext.newBuilder()
-            .setProductSearchParams(
-                ProductSearchParams.newBuilder()
-                    .setProductSet(productSetPath)
-                    .addProductCategories(productCategory)
-                    .setFilter(filter))
-            .build();
+      // Create annotate image request along with product search feature.
+      Feature featuresElement = Feature.newBuilder().setType(Type.PRODUCT_SEARCH).build();
+      Image image = Image.newBuilder().setSource(source).build();
+      ImageContext imageContext =
+          ImageContext.newBuilder()
+              .setProductSearchParams(
+                  ProductSearchParams.newBuilder()
+                      .setProductSet(productSetPath)
+                      .addProductCategories(productCategory)
+                      .setFilter(filter))
+              .build();
 
-    AnnotateImageRequest annotateImageRequest =
-        AnnotateImageRequest.newBuilder()
-            .addFeatures(featuresElement)
-            .setImage(image)
-            .setImageContext(imageContext)
-            .build();
-    List<AnnotateImageRequest> requests = Arrays.asList(annotateImageRequest);
+      AnnotateImageRequest annotateImageRequest =
+          AnnotateImageRequest.newBuilder()
+              .addFeatures(featuresElement)
+              .setImage(image)
+              .setImageContext(imageContext)
+              .build();
+      List<AnnotateImageRequest> requests = Arrays.asList(annotateImageRequest);
 
-    // Search products similar to the image.
-    BatchAnnotateImagesResponse response = queryImageClient.batchAnnotateImages(requests);
+      // Search products similar to the image.
+      BatchAnnotateImagesResponse response = queryImageClient.batchAnnotateImages(requests);
 
-    List<Result> similarProducts =
-        response.getResponses(0).getProductSearchResults().getResultsList();
-    queryImageClient.close();
-    System.out.println("Similar Products: ");
-    for (Result product : similarProducts) {
-      System.out.println(String.format("\nProduct name: %s", product.getProduct().getName()));
-      System.out.println(
-          String.format("Product display name: %s", product.getProduct().getDisplayName()));
-      System.out.println(
-          String.format("Product description: %s", product.getProduct().getDescription()));
-      System.out.println(String.format("Score(Confidence): %s", product.getScore()));
-      System.out.println(String.format("Image name: %s", product.getImage()));
+      List<Result> similarProducts =
+          response.getResponses(0).getProductSearchResults().getResultsList();
+      System.out.println("Similar Products: ");
+      for (Result product : similarProducts) {
+        System.out.println(String.format("\nProduct name: %s", product.getProduct().getName()));
+        System.out.println(
+            String.format("Product display name: %s", product.getProduct().getDisplayName()));
+        System.out.println(
+            String.format("Product description: %s", product.getProduct().getDescription()));
+        System.out.println(String.format("Score(Confidence): %s", product.getScore()));
+        System.out.println(String.format("Image name: %s", product.getImage()));
+      }
     }
   }
   // [END vision_product_search_get_similar_products_gcs]

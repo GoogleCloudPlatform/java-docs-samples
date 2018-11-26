@@ -51,23 +51,24 @@ public class ProductSetManagement {
   public static void createProductSet(
       String projectId, String computeRegion, String productSetId, String productSetDisplayName)
       throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // A resource that represents Google Cloud Platform location.
-    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
+      // A resource that represents Google Cloud Platform location.
+      String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
 
-    // Create a product set with the product set specification in the region.
-    ProductSet myProductSet = ProductSet.newBuilder().setDisplayName(productSetDisplayName).build();
-    CreateProductSetRequest request =
-        CreateProductSetRequest.newBuilder()
-            .setParent(formattedParent)
-            .setProductSet(myProductSet)
-            .setProductSetId(productSetId)
-            .build();
-    ProductSet productSet = client.createProductSet(request);
-    client.close();
-    // Display the product set information
-    System.out.println(String.format("Product set name: %s", productSet.getName()));
+      // Create a product set with the product set specification in the region.
+      ProductSet myProductSet =
+          ProductSet.newBuilder().setDisplayName(productSetDisplayName).build();
+      CreateProductSetRequest request =
+          CreateProductSetRequest.newBuilder()
+              .setParent(formattedParent)
+              .setProductSet(myProductSet)
+              .setProductSetId(productSetId)
+              .build();
+      ProductSet productSet = client.createProductSet(request);
+      // Display the product set information
+      System.out.println(String.format("Product set name: %s", productSet.getName()));
+    }
   }
   // [END vision_product_search_create_product_set]
 
@@ -80,24 +81,24 @@ public class ProductSetManagement {
    * @throws IOException - on I/O errors.
    */
   public static void listProductSets(String projectId, String computeRegion) throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
-    // A resource that represents Google Cloud Platform location.
-    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
-    // List all the product sets available in the region.
-    for (ProductSet productSet : client.listProductSets(formattedParent).iterateAll()) {
-      // Display the product set information
-      System.out.println(String.format("Product set name: %s", productSet.getName()));
-      System.out.println(
-          String.format(
-              "Product set id: %s",
-              productSet.getName().substring(productSet.getName().lastIndexOf('/') + 1)));
-      System.out.println(
-          String.format("Product set display name: %s", productSet.getDisplayName()));
-      System.out.println("Product set index time:");
-      System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
-      System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
+    try (ProductSearchClient client = ProductSearchClient.create()) {
+      // A resource that represents Google Cloud Platform location.
+      String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
+      // List all the product sets available in the region.
+      for (ProductSet productSet : client.listProductSets(formattedParent).iterateAll()) {
+        // Display the product set information
+        System.out.println(String.format("Product set name: %s", productSet.getName()));
+        System.out.println(
+            String.format(
+                "Product set id: %s",
+                productSet.getName().substring(productSet.getName().lastIndexOf('/') + 1)));
+        System.out.println(
+            String.format("Product set display name: %s", productSet.getDisplayName()));
+        System.out.println("Product set index time:");
+        System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
+        System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
+      }
     }
-    client.close();
   }
   // [END vision_product_search_list_product_sets]
 
@@ -112,24 +113,25 @@ public class ProductSetManagement {
    */
   public static void getProductSet(String projectId, String computeRegion, String productSetId)
       throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // Get the full path of the product set.
-    String formattedName =
-        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
-    // Get complete detail of the product set.
-    ProductSet productSet = client.getProductSet(formattedName);
-    client.close();
-    // Display the product set information
-    System.out.println(String.format("Product set name: %s", productSet.getName()));
-    System.out.println(
-        String.format(
-            "Product set id: %s",
-            productSet.getName().substring(productSet.getName().lastIndexOf('/') + 1)));
-    System.out.println(String.format("Product set display name: %s", productSet.getDisplayName()));
-    System.out.println("Product set index time:");
-    System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
-    System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
+      // Get the full path of the product set.
+      String formattedName =
+          ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
+      // Get complete detail of the product set.
+      ProductSet productSet = client.getProductSet(formattedName);
+      // Display the product set information
+      System.out.println(String.format("Product set name: %s", productSet.getName()));
+      System.out.println(
+          String.format(
+              "Product set id: %s",
+              productSet.getName().substring(productSet.getName().lastIndexOf('/') + 1)));
+      System.out.println(
+          String.format("Product set display name: %s", productSet.getDisplayName()));
+      System.out.println("Product set index time:");
+      System.out.println(String.format("\tseconds: %s", productSet.getIndexTime().getSeconds()));
+      System.out.println(String.format("\tnanos: %s", productSet.getIndexTime().getNanos()));
+    }
   }
   // [END vision_product_search_get_product_set]
 
@@ -144,15 +146,15 @@ public class ProductSetManagement {
    */
   public static void deleteProductSet(String projectId, String computeRegion, String productSetId)
       throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // Get the full path of the product set.
-    String formattedName =
-        ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
-    // Delete the product set.
-    client.deleteProductSet(formattedName);
-    client.close();
-    System.out.println(String.format("Product set deleted"));
+      // Get the full path of the product set.
+      String formattedName =
+          ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
+      // Delete the product set.
+      client.deleteProductSet(formattedName);
+      System.out.println(String.format("Product set deleted"));
+    }
   }
   // [END vision_product_search_delete_product_set]
 

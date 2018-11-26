@@ -54,34 +54,36 @@ public class ImportProductSets extends JPanel {
    */
   public static void importProductSets(String projectId, String computeRegion, String gcsUri)
       throws Exception {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // A resource that represents Google Cloud Platform location.
-    String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
-    Builder gcsSource = ImportProductSetsGcsSource.newBuilder().setCsvFileUri(gcsUri);
+      // A resource that represents Google Cloud Platform location.
+      String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
+      Builder gcsSource = ImportProductSetsGcsSource.newBuilder().setCsvFileUri(gcsUri);
 
-    // Set the input configuration along with Google Cloud Storage URI
-    ImportProductSetsInputConfig inputConfig =
-        ImportProductSetsInputConfig.newBuilder().setGcsSource(gcsSource).build();
+      // Set the input configuration along with Google Cloud Storage URI
+      ImportProductSetsInputConfig inputConfig =
+          ImportProductSetsInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
-    // Import the product sets from the input URI.
-    OperationFuture<ImportProductSetsResponse, BatchOperationMetadata> response =
-        client.importProductSetsAsync(formattedParent, inputConfig);
+      // Import the product sets from the input URI.
+      OperationFuture<ImportProductSetsResponse, BatchOperationMetadata> response =
+          client.importProductSetsAsync(formattedParent, inputConfig);
 
-    System.out.println(String.format("Processing operation name: %s", response.getName()));
-    ImportProductSetsResponse results = response.get();
-    System.out.println("Processing done.");
-    System.out.println("Results of the processing:");
+      System.out.println(String.format("Processing operation name: %s", response.getName()));
+      ImportProductSetsResponse results = response.get();
+      System.out.println("Processing done.");
+      System.out.println("Results of the processing:");
 
-    for (int i = 0; i < results.getStatusesCount(); i++) {
-      System.out.println(
-          String.format("Status of processing line %s of the csv: %s", i, results.getStatuses(i)));
-      // Check the status of reference image.
-      if (results.getStatuses(i).getCode() == 0) {
-        ReferenceImage referenceImage = results.getReferenceImages(i);
-        System.out.println(referenceImage);
-      } else {
-        System.out.println("No reference image.");
+      for (int i = 0; i < results.getStatusesCount(); i++) {
+        System.out.println(
+            String.format(
+                "Status of processing line %s of the csv: %s", i, results.getStatuses(i)));
+        // Check the status of reference image.
+        if (results.getStatuses(i).getCode() == 0) {
+          ReferenceImage referenceImage = results.getReferenceImages(i);
+          System.out.println(referenceImage);
+        } else {
+          System.out.println("No reference image.");
+        }
       }
     }
   }

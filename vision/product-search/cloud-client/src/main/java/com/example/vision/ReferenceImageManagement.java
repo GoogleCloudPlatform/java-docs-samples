@@ -56,20 +56,20 @@ public class ReferenceImageManagement {
       String referenceImageId,
       String gcsUri)
       throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // Get the full path of the product.
-    String formattedParent =
-        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
-    // Create a reference image.
-    ReferenceImage referenceImage = ReferenceImage.newBuilder().setUri(gcsUri).build();
+      // Get the full path of the product.
+      String formattedParent =
+          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      // Create a reference image.
+      ReferenceImage referenceImage = ReferenceImage.newBuilder().setUri(gcsUri).build();
 
-    ReferenceImage image =
-        client.createReferenceImage(formattedParent, referenceImage, referenceImageId);
-    client.close();
-    // Display the reference image information.
-    System.out.println(String.format("Reference image name: %s", image.getName()));
-    System.out.println(String.format("Reference image uri: %s", image.getUri()));
+      ReferenceImage image =
+          client.createReferenceImage(formattedParent, referenceImage, referenceImageId);
+      // Display the reference image information.
+      System.out.println(String.format("Reference image name: %s", image.getName()));
+      System.out.println(String.format("Reference image uri: %s", image.getUri()));
+    }
   }
   // [END vision_product_search_create_reference_image]
 
@@ -84,24 +84,25 @@ public class ReferenceImageManagement {
    */
   public static void listReferenceImagesOfProduct(
       String projectId, String computeRegion, String productId) throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // Get the full path of the product.
-    String formattedParent =
-        ProductSearchClient.formatProductName(projectId, computeRegion, productId);
-    for (ReferenceImage image : client.listReferenceImages(formattedParent).iterateAll()) {
-      // Display the reference image information.
-      System.out.println(String.format("Reference image name: %s", image.getName()));
-      System.out.println(
-          String.format(
-              "Reference image id: %s",
-              image.getName().substring(image.getName().lastIndexOf('/') + 1)));
-      System.out.println(String.format("Reference image uri: %s", image.getUri()));
-      System.out.println(
-          String.format(
-              "Reference image bounding polygons: %s \n", image.getBoundingPolysList().toString()));
+      // Get the full path of the product.
+      String formattedParent =
+          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      for (ReferenceImage image : client.listReferenceImages(formattedParent).iterateAll()) {
+        // Display the reference image information.
+        System.out.println(String.format("Reference image name: %s", image.getName()));
+        System.out.println(
+            String.format(
+                "Reference image id: %s",
+                image.getName().substring(image.getName().lastIndexOf('/') + 1)));
+        System.out.println(String.format("Reference image uri: %s", image.getUri()));
+        System.out.println(
+            String.format(
+                "Reference image bounding polygons: %s \n",
+                image.getBoundingPolysList().toString()));
+      }
     }
-    client.close();
   }
   // [END vision_product_search_list_reference_images]
 
@@ -118,24 +119,25 @@ public class ReferenceImageManagement {
   public static void getReferenceImage(
       String projectId, String computeRegion, String productId, String referenceImageId)
       throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // Get the full path of the reference image.
-    String formattedName =
-        ProductSearchClient.formatImageName(projectId, computeRegion, productId, referenceImageId);
-    // Get complete detail of the reference image.
-    ReferenceImage image = client.getReferenceImage(formattedName);
-    client.close();
-    // Display the reference image information.
-    System.out.println(String.format("Reference image name: %s", image.getName()));
-    System.out.println(
-        String.format(
-            "Reference image id: %s",
-            image.getName().substring(image.getName().lastIndexOf('/') + 1)));
-    System.out.println(String.format("Reference image uri: %s", image.getUri()));
-    System.out.println(
-        String.format(
-            "Reference image bounding polygons: %s \n", image.getBoundingPolysList().toString()));
+      // Get the full path of the reference image.
+      String formattedName =
+          ProductSearchClient.formatImageName(
+              projectId, computeRegion, productId, referenceImageId);
+      // Get complete detail of the reference image.
+      ReferenceImage image = client.getReferenceImage(formattedName);
+      // Display the reference image information.
+      System.out.println(String.format("Reference image name: %s", image.getName()));
+      System.out.println(
+          String.format(
+              "Reference image id: %s",
+              image.getName().substring(image.getName().lastIndexOf('/') + 1)));
+      System.out.println(String.format("Reference image uri: %s", image.getUri()));
+      System.out.println(
+          String.format(
+              "Reference image bounding polygons: %s \n", image.getBoundingPolysList().toString()));
+    }
   }
   // [END vision_product_search_get_reference_image]
 
@@ -152,15 +154,16 @@ public class ReferenceImageManagement {
   public static void deleteReferenceImage(
       String projectId, String computeRegion, String productId, String referenceImageId)
       throws IOException {
-    ProductSearchClient client = ProductSearchClient.create();
+    try (ProductSearchClient client = ProductSearchClient.create()) {
 
-    // Get the full path of the reference image.
-    String formattedName =
-        ProductSearchClient.formatImageName(projectId, computeRegion, productId, referenceImageId);
-    // Delete the reference image.
-    client.deleteReferenceImage(formattedName);
-    client.close();
-    System.out.println("Reference image deleted from product.");
+      // Get the full path of the reference image.
+      String formattedName =
+          ProductSearchClient.formatImageName(
+              projectId, computeRegion, productId, referenceImageId);
+      // Delete the reference image.
+      client.deleteReferenceImage(formattedName);
+      System.out.println("Reference image deleted from product.");
+    }
   }
   // [END vision_product_search_delete_reference_image]
 
