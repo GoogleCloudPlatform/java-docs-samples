@@ -60,7 +60,11 @@ public class TraceSample {
 
   // [START trace_setup_java_full_sampling]
   public static void doWorkFullSampled() {
-    try (Scope ss = tracer.spanBuilder("MyChildWorkSpan")
+    try (
+        Scope ss = tracer.spanBuilder("MyChildWorkSpan")
+                     .setSampler(Samplers.alwaysSample())
+                     .startScopedSpan();
+    ) {
         .setSampler(Samplers.alwaysSample())
         .startScopedSpan()) {
       doInitialWork();
