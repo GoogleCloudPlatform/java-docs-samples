@@ -95,8 +95,10 @@ public class ProductInProductSetManagement {
         System.out.println(String.format("Product display name: %s", product.getDisplayName()));
         System.out.println(String.format("Product description: %s", product.getDescription()));
         System.out.println(String.format("Product category: %s", product.getProductCategory()));
-        System.out.println(
-            String.format("Product labels: %s\n", product.getProductLabelsList().toString()));
+        System.out.println("Product labels: ");
+        for (Product.KeyValue element : product.getProductLabelsList()) {
+          System.out.println(String.format("%s: %s", element.getKey(), element.getValue()));
+        }
       }
     }
   }
