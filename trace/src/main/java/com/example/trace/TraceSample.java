@@ -63,10 +63,7 @@ public class TraceSample {
     try (
         Scope ss = tracer.spanBuilder("MyChildWorkSpan")
                      .setSampler(Samplers.alwaysSample())
-                     .startScopedSpan();
-    ) {
-        .setSampler(Samplers.alwaysSample())
-        .startScopedSpan()) {
+                     .startScopedSpan()) {
       doInitialWork();
       tracer.getCurrentSpan().addAnnotation("Finished initial work");
       doFinalWork();
@@ -85,10 +82,12 @@ public class TraceSample {
   public static void createAndRegisterWithToken(String accessToken) throws IOException {
     Date expirationTime = DateTime.now().plusSeconds(60).toDate();
 
+    GoogleCredentials credentials =
+        GoogleCredentials.create(new AccessToken(accessToken, expirationTime));
     StackdriverTraceExporter.createAndRegister(
         StackdriverTraceConfiguration.builder()
             .setProjectId("MyStackdriverProjectId")
-            .setCredentials(GoogleCredentials.create(new AccessToken(accessToken, expirationTime)))
+            .setCredentials(credentials)
             .build());
   }
   // [END trace_setup_java_create_and_register_with_token]

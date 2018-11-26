@@ -16,11 +16,15 @@
 
 package com.example.trace;
 
+import com.google.common.base.Strings;
+
 import io.opencensus.exporter.trace.stackdriver.StackdriverTraceExporter;
 
 import java.io.IOException;
 
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -31,6 +35,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TraceSampleIT {
+  private static final String CLOUD_PROJECT_KEY = "GOOGLE_CLOUD_PROJECT";
+
+  @BeforeClass
+  public static void setup() {
+    Assert.assertFalse(Strings.isNullOrEmpty(System.getenv(CLOUD_PROJECT_KEY)));
+  }
 
   @After
   public void tearDown() {
@@ -51,7 +61,7 @@ public class TraceSampleIT {
 
   @Test
   public void testCreateAndRegisterGoogleCloudPlatform() throws IOException {
-    TraceSample.createAndRegisterGoogleCloudPlatform(System.getenv("GOOGLE_CLOUD_PROJECT"));
+    TraceSample.createAndRegisterGoogleCloudPlatform(System.getenv(CLOUD_PROJECT_KEY));
     TraceSample.doWork();
   }
 }
