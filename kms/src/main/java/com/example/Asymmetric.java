@@ -44,27 +44,30 @@ public class Asymmetric {
   /**
    * Retrieves the public key from a saved asymmetric key pair on Cloud KMS 
    */
-  public static PublicKey getAsymmetricPublicKey(KeyManagementServiceClient client, String keyPath) 
-      throws IOException, GeneralSecurityException {
-    
-    com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+  public static PublicKey getAsymmetricPublicKey(String keyPath) 
+    throws IOException, GeneralSecurityException {
 
-    // Convert a PEM key to DER without taking a dependency on a third party library
-    String pemKey = pub.getPem();
-    pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
-    pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
-    pemKey = pemKey.replaceAll("\\s", "");
-    byte[] derKey = BaseEncoding.base64().decode(pemKey);
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
 
-    X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+      // Convert a PEM key to DER without taking a dependency on a third party library
+      String pemKey = pub.getPem();
+      pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceAll("\\s", "");
+      byte[] derKey = BaseEncoding.base64().decode(pemKey);
 
-    if (pub.getAlgorithm().name().contains("RSA")) {
-      return KeyFactory.getInstance("RSA").generatePublic(keySpec);
-    } else if (pub.getAlgorithm().name().contains("EC")) {
-      return KeyFactory.getInstance("EC").generatePublic(keySpec);
-    } else {
-      throw new UnsupportedOperationException(String.format(
-          "key at path '%s' is of unsupported type '%s'.", keyPath, pub.getAlgorithm()));
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+
+      if (pub.getAlgorithm().name().contains("RSA")) {
+        return KeyFactory.getInstance("RSA").generatePublic(keySpec);
+      } else if (pub.getAlgorithm().name().contains("EC")) {
+        return KeyFactory.getInstance("EC").generatePublic(keySpec);
+      } else {
+        throw new UnsupportedOperationException(String.format(
+            "key at path '%s' is of unsupported type '%s'.", keyPath, pub.getAlgorithm()));
+      }
     }
   }
   // [END kms_get_asymmetric_public]
@@ -74,12 +77,13 @@ public class Asymmetric {
    * Decrypt a given ciphertext using an 'RSA_DECRYPT_OAEP_2048_SHA256' private key 
    * stored on Cloud KMS
    */
-  public static byte[] decryptRSA(
-      KeyManagementServiceClient client, String keyPath, byte[] ciphertext) 
-      throws IOException {
-    AsymmetricDecryptResponse response =
-        client.asymmetricDecrypt(keyPath, ByteString.copyFrom(ciphertext));
-    return response.getPlaintext().toByteArray();
+  public static byte[] decryptRSA(String keyPath, byte[] ciphertext) throws IOException {
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      AsymmetricDecryptResponse response = client.asymmetricDecrypt(keyPath,
+                                                                    ByteString.copyFrom(ciphertext));
+      return response.getPlaintext().toByteArray();
+    }
   }
   // [END kms_decrypt_rsa]
 
@@ -88,17 +92,28 @@ public class Asymmetric {
    * Encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256' public key 
    * retrieved from Cloud KMS
    */
-  public static byte[] encryptRSA(
-      KeyManagementServiceClient client, String keyPath, byte[] plaintext)
-      throws IOException, GeneralSecurityException {
-    PublicKey rsaKey = getAsymmetricPublicKey(client, keyPath);
+  public static byte[] encryptRSA(String keyPath, byte[] plaintext) 
+    throws IOException, GeneralSecurityException {
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      // Get the public key
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      String pemKey = pub.getPem();
+      pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceAll("\\s", "");
+      byte[] derKey = BaseEncoding.base64().decode(pemKey);
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+      PublicKey rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
 
-    Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
-    OAEPParameterSpec oaepParams = new OAEPParameterSpec(
-        "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
-    cipher.init(Cipher.ENCRYPT_MODE, rsaKey, oaepParams);
+      // Encrypt the plaintext
+      Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+      OAEPParameterSpec oaepParams = new OAEPParameterSpec(
+          "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
+      cipher.init(Cipher.ENCRYPT_MODE, rsaKey, oaepParams);
 
-    return cipher.doFinal(plaintext);
+      return cipher.doFinal(plaintext);
+    }
   }
   // [END kms_encrypt_rsa]
 
@@ -106,21 +121,23 @@ public class Asymmetric {
   /**
    *  Create a signature for a message using a private key stored on Cloud KMS 
    */
-  public static byte[] signAsymmetric(
-      KeyManagementServiceClient client, String keyPath, byte[] message)
+  public static byte[] signAsymmetric(String keyPath, byte[] message)
       throws IOException, NoSuchAlgorithmException {
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
-    // Note: some key algorithms will require a different hash function
-    // For example, EC_SIGN_P384_SHA384 requires SHA-384
-    byte[] messageHash = MessageDigest.getInstance("SHA-256").digest(message);
+      // Note: some key algorithms will require a different hash function
+      // For example, EC_SIGN_P384_SHA384 requires SHA-384
+      byte[] messageHash = MessageDigest.getInstance("SHA-256").digest(message);
 
-    AsymmetricSignRequest request = AsymmetricSignRequest.newBuilder()
-        .setName(keyPath)
-        .setDigest(Digest.newBuilder().setSha256(ByteString.copyFrom(messageHash)))
-        .build();
-    
-    AsymmetricSignResponse response = client.asymmetricSign(request);
-    return response.getSignature().toByteArray();
+      AsymmetricSignRequest request = AsymmetricSignRequest.newBuilder()
+          .setName(keyPath)
+          .setDigest(Digest.newBuilder().setSha256(ByteString.copyFrom(messageHash)))
+          .build();
+
+      AsymmetricSignResponse response = client.asymmetricSign(request);
+      return response.getSignature().toByteArray();
+    }
   }
   // [END kms_sign_asymmetric]
 
@@ -129,16 +146,27 @@ public class Asymmetric {
    * Verify the validity of an 'RSA_SIGN_PKCS1_2048_SHA256' signature for the 
    * specified message
    */
-  public static boolean verifySignatureRSA(
-      KeyManagementServiceClient client, String keyPath, byte[] message, byte[] signature)
+  public static boolean verifySignatureRSA(String keyPath, byte[] message, byte[] signature)
       throws IOException, GeneralSecurityException {
 
-    PublicKey rsaKey = getAsymmetricPublicKey(client, keyPath);
-    Signature rsaVerify = Signature.getInstance("SHA256withRSA");
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      // Get the public key
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      String pemKey = pub.getPem();
+      pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceAll("\\s", "");
+      byte[] derKey = BaseEncoding.base64().decode(pemKey);
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+      PublicKey rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
 
-    rsaVerify.initVerify(rsaKey);
-    rsaVerify.update(message);
-    return rsaVerify.verify(signature);
+      // Verify the signature
+      Signature rsaVerify = Signature.getInstance("SHA256withRSA");
+      rsaVerify.initVerify(rsaKey);
+      rsaVerify.update(message);
+      return rsaVerify.verify(signature);
+    }
   }
   // [END kms_verify_signature_rsa]
 
@@ -147,15 +175,27 @@ public class Asymmetric {
    * Verify the validity of an 'EC_SIGN_P256_SHA256' signature for the 
    * specified message
    */
-  public static boolean verifySignatureEC(
-      KeyManagementServiceClient client, String keyPath, byte[] message, byte[] signature)
+  public static boolean verifySignatureEC(String keyPath, byte[] message, byte[] signature)
       throws IOException, GeneralSecurityException {
-    PublicKey ecKey = getAsymmetricPublicKey(client, keyPath);
 
-    Signature ecVerify = Signature.getInstance("SHA256withECDSA");
-    ecVerify.initVerify(ecKey);
-    ecVerify.update(message);
-    return ecVerify.verify(signature);
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      // Get the public key
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      String pemKey = pub.getPem();
+      pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
+      pemKey = pemKey.replaceAll("\\s", "");
+      byte[] derKey = BaseEncoding.base64().decode(pemKey);
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+      PublicKey ecKey = KeyFactory.getInstance("EC").generatePublic(keySpec);
+
+      // Verify the signature
+      Signature ecVerify = Signature.getInstance("SHA256withECDSA");
+      ecVerify.initVerify(ecKey);
+      ecVerify.update(message);
+      return ecVerify.verify(signature);
+    }
   }
   // [END kms_verify_signature_ec]
 }

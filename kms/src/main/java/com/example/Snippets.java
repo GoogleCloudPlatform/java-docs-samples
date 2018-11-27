@@ -63,7 +63,7 @@ public class Snippets {
   public static KeyRing createKeyRing(String projectId, String locationId, String keyRingId)
       throws IOException {
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the location associated with the KeyRing.
       String parent = LocationName.format(projectId, locationId);
@@ -86,7 +86,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // The resource name of the location associated with the KeyRing.
       String parent = KeyRingName.format(projectId, locationId, keyRingId);
 
@@ -112,7 +112,7 @@ public class Snippets {
       String projectId, String locationId, String keyRingId, String cryptoKeyId)
       throws IOException {
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey
       String cryptoKey = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -134,7 +134,7 @@ public class Snippets {
       String projectId, String locationId, String keyRingId, String cryptoKeyId, String version)
       throws IOException {
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String versionName = CryptoKeyVersionName.format(
@@ -169,7 +169,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String versionName = CryptoKeyVersionName.format(
@@ -205,7 +205,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String versionName = CryptoKeyVersionName.format(
@@ -229,7 +229,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String versionName = CryptoKeyVersionName.format(
@@ -252,7 +252,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String keyName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -273,7 +273,7 @@ public class Snippets {
   public static Policy getKeyRingPolicy(String projectId, String locationId, String keyRingId)
       throws IOException {
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String keyRingName = KeyRingName.format(projectId, locationId, keyRingId);
@@ -311,7 +311,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String keyName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -362,7 +362,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String keyRingName = KeyRingName.format(projectId, locationId, keyRingId);
@@ -401,7 +401,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String keyName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -448,7 +448,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey version
       String keyRingName = KeyRingName.format(projectId, locationId, keyRingId);
@@ -490,7 +490,7 @@ public class Snippets {
   public static List<KeyRing> listKeyRings(String projectId, String locationId) throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the location to search.
       String parent = LocationName.format(projectId, locationId);
@@ -515,7 +515,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the KeyRing to search.
       String parent = KeyRingName.format(projectId, locationId, keyRingId);
@@ -540,7 +540,7 @@ public class Snippets {
       throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the CryptoKey to search.
       String parent = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -566,7 +566,7 @@ public class Snippets {
       String cryptoKeyId, String versionId) throws IOException {
 
     // Create the Cloud KMS client.
-    try (KeyManagementServiceClient client = createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the CryptoKey to update.
       String resourceName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
