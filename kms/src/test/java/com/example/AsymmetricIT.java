@@ -113,17 +113,17 @@ public class AsymmetricIT {
 
   @Test
   public void testGetPublicKey() throws Exception {
-    PublicKey rsaDecryptKey = Asymmetric.getAsymmetricPublicKey(client, RSA_DECRYPT_PATH);
+    PublicKey rsaDecryptKey = Asymmetric.getAsymmetricPublicKey(RSA_DECRYPT_PATH);
     assertEquals("invalid RSA key.", "RSA", rsaDecryptKey.getAlgorithm());
-    PublicKey rsaSignKey = Asymmetric.getAsymmetricPublicKey(client, RSA_SIGN_PATH);
+    PublicKey rsaSignKey = Asymmetric.getAsymmetricPublicKey(RSA_SIGN_PATH);
     assertEquals("invalid RSA key.", "RSA", rsaSignKey.getAlgorithm());
-    PublicKey ecSignKey = Asymmetric.getAsymmetricPublicKey(client, EC_SIGN_PATH);
+    PublicKey ecSignKey = Asymmetric.getAsymmetricPublicKey(EC_SIGN_PATH);
     assertEquals("invalid EC key.", "EC", ecSignKey.getAlgorithm());
 
     String fakeKeyPath = CryptoKeyVersionName.format(
         PROJECT_ID, LOCATION, KEY_RING, "FAKE", "1");
     try {
-      Asymmetric.getAsymmetricPublicKey(client, fakeKeyPath);
+      Asymmetric.getAsymmetricPublicKey(fakeKeyPath);
       // should throw exception above
       fail("NotFoundException expected for non-existent key");
     } catch (NotFoundException e) {
@@ -133,33 +133,33 @@ public class AsymmetricIT {
 
   @Test
   public void testRSAEncryptDecrypt() throws Exception {
-    byte[] ciphertext = Asymmetric.encryptRSA(client, RSA_DECRYPT_PATH, MESSAGE);
+    byte[] ciphertext = Asymmetric.encryptRSA(RSA_DECRYPT_PATH, MESSAGE);
     assertEquals("incorrect RSA ciphertext length.", 256, ciphertext.length);
 
-    byte[] plaintext = Asymmetric.decryptRSA(client, RSA_DECRYPT_PATH, ciphertext);
+    byte[] plaintext = Asymmetric.decryptRSA(RSA_DECRYPT_PATH, ciphertext);
     assertTrue("decryption failed.", Arrays.equals(plaintext, MESSAGE));
   }
 
   @Test
   public void testRSASignVerify() throws Exception {
-    byte[] sig = Asymmetric.signAsymmetric(client, RSA_SIGN_PATH, MESSAGE);
+    byte[] sig = Asymmetric.signAsymmetric(RSA_SIGN_PATH, MESSAGE);
     assertEquals("invalid signature length", 256, sig.length);
 
-    boolean success = Asymmetric.verifySignatureRSA(client, RSA_SIGN_PATH, MESSAGE, sig);
+    boolean success = Asymmetric.verifySignatureRSA(RSA_SIGN_PATH, MESSAGE, sig);
     assertTrue("RSA verification failed. Valid message not accepted", success);
     byte[] alt = new byte[256];
-    boolean verifiedInvalid = Asymmetric.verifySignatureRSA(client, RSA_SIGN_PATH, MESSAGE, alt);
+    boolean verifiedInvalid = Asymmetric.verifySignatureRSA(RSA_SIGN_PATH, MESSAGE, alt);
     assertFalse("RSA verification failed. Invalid message accepted", verifiedInvalid);
   }
 
   @Test
   public void testECSignVerify() throws Exception {
-    byte[] sig = Asymmetric.signAsymmetric(client, EC_SIGN_PATH, MESSAGE);
-    boolean success = Asymmetric.verifySignatureEC(client, EC_SIGN_PATH, MESSAGE, sig);
+    byte[] sig = Asymmetric.signAsymmetric(EC_SIGN_PATH, MESSAGE);
+    boolean success = Asymmetric.verifySignatureEC(EC_SIGN_PATH, MESSAGE, sig);
     assertTrue("EC verification failed. Valid message not accepted", success);
 
-    byte[] alt = Asymmetric.signAsymmetric(client, EC_SIGN_PATH, new byte[16]);
-    boolean verifiedInvalid = Asymmetric.verifySignatureEC(client, EC_SIGN_PATH, MESSAGE, alt);
+    byte[] alt = Asymmetric.signAsymmetric(EC_SIGN_PATH, new byte[16]);
+    boolean verifiedInvalid = Asymmetric.verifySignatureEC(EC_SIGN_PATH, MESSAGE, alt);
     assertFalse("EC verification failed. Invalid message accepted", verifiedInvalid);
   }
 }
