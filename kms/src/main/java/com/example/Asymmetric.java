@@ -42,14 +42,17 @@ public class Asymmetric {
 
   // [START kms_get_asymmetric_public]
   /**
-   * Retrieves the public key from a saved asymmetric key pair on Cloud KMS 
+   * Retrieves the public key from a saved asymmetric key pair on Cloud KMS
+   *
+   * Example keyName:
+   *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static PublicKey getAsymmetricPublicKey(String keyPath) 
+  public static PublicKey getAsymmetricPublicKey(String keyName) 
     throws IOException, GeneralSecurityException {
 
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyName);
 
       // Convert a PEM key to DER without taking a dependency on a third party library
       String pemKey = pub.getPem();
@@ -66,7 +69,7 @@ public class Asymmetric {
         return KeyFactory.getInstance("EC").generatePublic(keySpec);
       } else {
         throw new UnsupportedOperationException(String.format(
-            "key at path '%s' is of unsupported type '%s'.", keyPath, pub.getAlgorithm()));
+            "key at path '%s' is of unsupported type '%s'.", keyName, pub.getAlgorithm()));
       }
     }
   }
@@ -74,13 +77,16 @@ public class Asymmetric {
 
   // [START kms_decrypt_rsa]
   /**
-   * Decrypt a given ciphertext using an 'RSA_DECRYPT_OAEP_2048_SHA256' private key 
+   * Decrypt a given ciphertext using an 'RSA_DECRYPT_OAEP_2048_SHA256' private key
    * stored on Cloud KMS
+   *
+   * Example keyName:
+   *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static byte[] decryptRSA(String keyPath, byte[] ciphertext) throws IOException {
+  public static byte[] decryptRSA(String keyName, byte[] ciphertext) throws IOException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      AsymmetricDecryptResponse response = client.asymmetricDecrypt(keyPath,
+      AsymmetricDecryptResponse response = client.asymmetricDecrypt(keyName,
                                                                     ByteString.copyFrom(ciphertext));
       return response.getPlaintext().toByteArray();
     }
@@ -91,13 +97,16 @@ public class Asymmetric {
   /**
    * Encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256' public key 
    * retrieved from Cloud KMS
+   *
+   * Example keyName:
+   *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static byte[] encryptRSA(String keyPath, byte[] plaintext) 
+  public static byte[] encryptRSA(String keyName, byte[] plaintext) 
     throws IOException, GeneralSecurityException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Get the public key
-      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyName);
       String pemKey = pub.getPem();
       pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
       pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
@@ -119,9 +128,12 @@ public class Asymmetric {
 
   // [START kms_sign_asymmetric]
   /**
-   *  Create a signature for a message using a private key stored on Cloud KMS 
+   *  Create a signature for a message using a private key stored on Cloud KMS
+   *
+   * Example keyName:
+   *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static byte[] signAsymmetric(String keyPath, byte[] message)
+  public static byte[] signAsymmetric(String keyName, byte[] message)
       throws IOException, NoSuchAlgorithmException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
@@ -131,7 +143,7 @@ public class Asymmetric {
       byte[] messageHash = MessageDigest.getInstance("SHA-256").digest(message);
 
       AsymmetricSignRequest request = AsymmetricSignRequest.newBuilder()
-          .setName(keyPath)
+          .setName(keyName)
           .setDigest(Digest.newBuilder().setSha256(ByteString.copyFrom(messageHash)))
           .build();
 
@@ -145,14 +157,17 @@ public class Asymmetric {
   /**
    * Verify the validity of an 'RSA_SIGN_PKCS1_2048_SHA256' signature for the 
    * specified message
+   *
+   * Example keyName:
+   *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static boolean verifySignatureRSA(String keyPath, byte[] message, byte[] signature)
+  public static boolean verifySignatureRSA(String keyName, byte[] message, byte[] signature)
       throws IOException, GeneralSecurityException {
 
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Get the public key
-      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyName);
       String pemKey = pub.getPem();
       pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
       pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
@@ -174,14 +189,17 @@ public class Asymmetric {
   /** 
    * Verify the validity of an 'EC_SIGN_P256_SHA256' signature for the 
    * specified message
+   *
+   * Example keyName:
+   *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static boolean verifySignatureEC(String keyPath, byte[] message, byte[] signature)
+  public static boolean verifySignatureEC(String keyName, byte[] message, byte[] signature)
       throws IOException, GeneralSecurityException {
 
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Get the public key
-      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyPath);
+      com.google.cloud.kms.v1.PublicKey pub = client.getPublicKey(keyName);
       String pemKey = pub.getPem();
       pemKey = pemKey.replaceFirst("-----BEGIN PUBLIC KEY-----", "");
       pemKey = pemKey.replaceFirst("-----END PUBLIC KEY-----", "");
