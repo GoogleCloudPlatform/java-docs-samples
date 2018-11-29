@@ -7,9 +7,13 @@
   <groupId>com.example.datastore</groupId>
   <artifactId>schedule-export</artifactId>
 
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.10</version>
+</parent>
+
   <properties>
-    <!-- uncomment if you wish to set your project here project- gcloud is used otherwise -->
-    <!-- <app.deploy.project>jl-ds-java</app.deploy.project> -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
