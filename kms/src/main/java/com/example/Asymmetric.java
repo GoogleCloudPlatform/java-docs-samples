@@ -19,8 +19,13 @@ package com.example;
 import com.google.cloud.kms.v1.AsymmetricDecryptResponse;
 import com.google.cloud.kms.v1.AsymmetricSignRequest;
 import com.google.cloud.kms.v1.AsymmetricSignResponse;
+import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose;
+import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm;
+import com.google.cloud.kms.v1.CryptoKeyVersionTemplate;
 import com.google.cloud.kms.v1.Digest;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
+import com.google.cloud.kms.v1.KeyRingName;
 import com.google.common.io.BaseEncoding;
 import com.google.protobuf.ByteString;
 
@@ -39,6 +44,42 @@ import javax.crypto.spec.PSource;
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class Asymmetric {
+
+  // [START kms_create_asymmetric_key]
+  /**
+   * Creates an RSA encrypt/decrypt key pair with the given id.
+   */
+  public static CryptoKey createAsymmetricKey(String projectId, String locationId, String keyRingId,
+      String cryptoKeyId)
+      throws IOException {
+
+    // Create the Cloud KMS client.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      // The resource name of the location associated with the KeyRing.
+      String parent = KeyRingName.format(projectId, locationId, keyRingId);
+
+      // Choose a purpose (ASYMMETRIC_DECRYPT or ASYMMETRIC_SIGN).
+      CryptoKeyPurpose purpose = CryptoKeyPurpose.ASYMMETRIC_DECRYPT;
+
+      // Choose an algorithm.
+      CryptoKeyVersionAlgorithm algorithm = CryptoKeyVersionAlgorithm.RSA_DECRYPT_OAEP_2048_SHA256;
+      CryptoKeyVersionTemplate version = CryptoKeyVersionTemplate.newBuilder()
+          .setAlgorithm(algorithm)
+          .build();
+
+      // Build the key template
+      CryptoKey cryptoKey = CryptoKey.newBuilder()
+          .setPurpose(purpose)
+          .setVersionTemplate(version)
+          .build();
+
+      // Create the CryptoKey for your project.
+      CryptoKey createdKey = client.createCryptoKey(parent, cryptoKeyId, cryptoKey);
+
+      return createdKey;
+    }
+  }
+  // [END kms_create_asymmetric_key]
 
   // [START kms_get_asymmetric_public]
   /**
