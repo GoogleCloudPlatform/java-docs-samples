@@ -7,11 +7,11 @@ sends an export request to the Cloud Datastore Admin API.
 
 Deploy the GAE app:
 
-   mvn appengine:deploy
+    mvn appengine:deploy
 
 Deploy the cronjob:
 
-   gcloud app deploy cron.yaml
+    gcloud app deploy cron.yaml
 
 You can test your cron job by running the job manually:
 
