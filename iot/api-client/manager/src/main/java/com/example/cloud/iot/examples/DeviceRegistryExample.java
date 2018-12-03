@@ -34,6 +34,8 @@ import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
+import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceRequest;
+import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
 import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
@@ -721,6 +723,42 @@ public class DeviceRegistryExample {
   }
   // [END iot_set_iam_policy]
 
+  /** Send a command to a device. **/
+  // [START send_command]
+  public static void sendCommand(
+      String deviceId, String projectId, String cloudRegion, String registryName, String data)
+      throws GeneralSecurityException, IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service = new CloudIot.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
+        .setApplicationName(APP_NAME).build();
+
+    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
+        projectId, cloudRegion, registryName, deviceId);
+
+    SendCommandToDeviceRequest req = new SendCommandToDeviceRequest();
+
+    // Data sent through the wire has to be base64 encoded.
+    Base64.Encoder encoder = Base64.getEncoder();
+    String encPayload = encoder.encodeToString(data.getBytes("UTF-8"));
+    req.setBinaryData(encPayload);
+    System.out.printf("Sending command to %s\n", devicePath);
+
+    SendCommandToDeviceResponse res =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .sendCommandToDevice(devicePath, req).execute();
+
+    System.out.println("Command response: " + res.toString());
+    // [END send_command]
+  }
+
   /** Entry poit for CLI. */
   public static void main(String[] args) throws Exception {
     DeviceRegistryExampleOptions options = DeviceRegistryExampleOptions.fromFlags(args);
@@ -821,6 +859,11 @@ public class DeviceRegistryExample {
           setIamPermissions(options.projectId, options.cloudRegion, options.registryName,
               options.member, options.role);
         }
+        break;
+      case "send-command":
+        System.out.println("Sending command to device:");
+        sendCommand(options.deviceId, options.projectId, options.cloudRegion, options.registryName,
+            options.commandData);
         break;
       default:
         String header = "Cloud IoT Core Commandline Example (Device / Registry management): \n\n";
