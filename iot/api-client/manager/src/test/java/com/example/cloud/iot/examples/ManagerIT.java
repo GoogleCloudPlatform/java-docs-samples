@@ -413,6 +413,43 @@ public class ManagerIT {
   // MQTT device tests
   @Test
   public void testMqttDeviceConfig() throws Exception {
+    final String deviceName = "rsa-device-mqtt-config";
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createDeviceWithRs256(
+        deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.listDevices(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    // Device bootstrapped, time to connect and run.
+    String[] testArgs = {
+        "-project_id=" + PROJECT_ID,
+        "-registry_id=" + REGISTRY_ID,
+        "-device_id=" + deviceName,
+        "-private_key_file=" + PKCS_PATH,
+        "-message_type=events",
+        "-num_messages=1",
+        "-algorithm=RS256"
+    };
+    com.example.cloud.iot.examples.MqttExample.main(testArgs);
+    // End device test.
+
+    // Assertions
+    String got = bout.toString();
+    System.out.println(got);
+    Assert.assertTrue(got.contains("Payload :"));
+
+    // Clean up
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testMqttDeviceCommand() throws Exception {
     final String deviceName = "rsa-device-mqtt-commands";
     topic = DeviceRegistryExample.createIotTopic(
         PROJECT_ID,

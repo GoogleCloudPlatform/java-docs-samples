@@ -756,8 +756,8 @@ public class DeviceRegistryExample {
             .sendCommandToDevice(devicePath, req).execute();
 
     System.out.println("Command response: " + res.toString());
-    // [END send_command]
   }
+  // [END send_command]
 
   /** Entry poit for CLI. */
   public static void main(String[] args) throws Exception {
