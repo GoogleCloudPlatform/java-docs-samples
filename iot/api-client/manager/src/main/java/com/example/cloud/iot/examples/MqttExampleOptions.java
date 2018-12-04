@@ -36,6 +36,7 @@ public class MqttExampleOptions {
   String mqttBridgeHostname = "mqtt.googleapis.com";
   short mqttBridgePort = 8883;
   String messageType = "event";
+  int waitTime = 120;
 
   /** Construct an MqttExampleOptions class from command line flags. */
   public static MqttExampleOptions fromFlags(String[] args) {
@@ -125,6 +126,13 @@ public class MqttExampleOptions {
             .hasArg()
             .desc("Indicates whether the message is a telemetry event or a device state message")
             .build());
+    options.addOption(
+        Option.builder()
+            .type(Number.class)
+            .longOpt("wait_time")
+            .hasArg()
+            .desc("Wait time (in seconds) for commands.")
+            .build());
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine;
@@ -137,6 +145,9 @@ public class MqttExampleOptions {
       res.deviceId = commandLine.getOptionValue("device_id");
       res.privateKeyFile = commandLine.getOptionValue("private_key_file");
       res.algorithm = commandLine.getOptionValue("algorithm");
+      if (commandLine.hasOption("wait_time")) {
+        res.waitTime = ((Number) commandLine.getParsedOptionValue("wait_time")).intValue();
+      }
       if (commandLine.hasOption("cloud_region")) {
         res.cloudRegion = commandLine.getOptionValue("cloud_region");
       }
