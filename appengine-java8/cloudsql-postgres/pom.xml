@@ -69,7 +69,7 @@
       <version>1.27.0</version>
     </dependency>
 
-    <!-- [START dependencies] -->
+    <!-- [START gae_java8_postgres_dependencies] -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
@@ -81,14 +81,14 @@
       <artifactId>postgres-socket-factory</artifactId>
       <version>1.0.11</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_java8_postgres_dependencies] -->
   </dependencies>
 
   <build>
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <!-- [START plugins] -->
+      <!-- [START gae_java8_postgres_plugins] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -114,7 +114,7 @@
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>
       </plugin>
-      <!-- [END plugins] -->
+      <!-- [END gae_java8_postgres_plugins] -->
     </plugins>
   </build>
 </project>
