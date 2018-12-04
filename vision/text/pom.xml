@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev20181031-1.27.0</version>
+      <version>v1-rev20181112-1.27.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
@@ -66,14 +66,14 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
-      <version>2.9.0</version>
+      <version>3.0.0-m1</version>
     </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

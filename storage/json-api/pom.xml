@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev20181013-1.27.0</version>
+      <version>v1-rev20181109-1.27.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -64,7 +64,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-      <version>4.12</version>
+      <version>4.13-beta-1</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>

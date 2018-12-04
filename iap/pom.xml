@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
-      <version>6.3</version>
+      <version>6.4.2</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-1</version>
     </dependency>
   </dependencies>
 </project>
