@@ -49,6 +49,8 @@ public class SendServlet extends HttpServlet {
   private static final String GAE_INSTANCE_VAR = "GAE_INSTANCE";
   // GOOGLE_CLOUD_PROJECT environment variable is set to the GCP project ID on App Engine Flexible.
   private static final String GOOGLE_CLOUD_PROJECT_ENV_VAR = "GOOGLE_CLOUD_PROJECT";
+  // GAE_SERVICE environment variable is set to the GCP service name.
+  private static final String GAE_SERVICE_ENV_VAR = "GAE_SERVICE";
 
   private final WebSocketClient webSocketClient;
   private final ClientSocket clientSocket;
@@ -119,13 +121,13 @@ public class SendServlet extends HttpServlet {
     if (System.getenv(GAE_INSTANCE_VAR) != null) {
       String projectId = System.getenv(GOOGLE_CLOUD_PROJECT_ENV_VAR);
       if (projectId != null) {
-        webSocketHost = projectId + APPENGINE_HOST_SUFFIX;
+        String serviceName = System.getenv(GAE_SERVICE_ENV_VAR);
+        webSocketHost = serviceName + "-dot-" + projectId + APPENGINE_HOST_SUFFIX;
       }
       Preconditions.checkNotNull(webSocketHost);
       // Use wss:// instead of ws:// protocol when connecting over https
       webSocketProtocolPrefix = WEBSOCKET_HTTPS_PROTOCOL_PREFIX;
     }
-    System.out.println(webSocketProtocolPrefix + webSocketHost + ENDPOINT);
     return webSocketProtocolPrefix + webSocketHost + ENDPOINT;
   }
 }

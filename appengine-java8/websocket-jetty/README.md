@@ -51,8 +51,12 @@ For more details on configuring your `app.yaml`, please refer to [this resource]
 The sample application is packaged as a war, and hence will be automatically run using the [Java 8/Jetty 9 with Servlet 3.1 Runtime](https://cloud.google.com/appengine/docs/flexible/java/dev-jetty9).
 
 ```
-  mvn appengine:deploy
+mvn appengine:deploy
 ```
 You can then direct your browser to `https://YOUR_PROJECT_ID.appspot.com/`
 
 To test the Javascript client, access `https://YOUR_PROJECT_ID.appspot.com/js_client.jsp`
+
+Note: This application constructs a Web Socket URL using `getWebSocketAddress`
+in the [SendServlet Class](src/main/java/com/example/flexible/websocket/jettynative/SendServlet.java)
+. The application assumes the latest version of the service.

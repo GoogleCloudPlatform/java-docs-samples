@@ -23,12 +23,15 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-flexible</artifactId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
-  </parent>
+  <!--
+   The parent pom defines common style checks and testing strategies for our samples.
+   Removing or replacing it should not effect the execution of the samples in anyway.
+ -->
+ <parent>
+   <groupId>com.google.cloud.samples</groupId>
+   <artifactId>shared-configuration</artifactId>
+   <version>1.0.9</version>
+ </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
