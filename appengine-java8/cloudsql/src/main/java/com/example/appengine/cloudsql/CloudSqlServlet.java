@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_java8_mysql_app]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "CloudSQL",
@@ -100,4 +100,4 @@ public class CloudSqlServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_java8_mysql_app]
