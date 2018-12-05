@@ -449,6 +449,61 @@ public class ManagerIT {
   }
 
   @Test
+  public void testMqttDeviceCommand() throws Exception {
+    final String deviceName = "rsa-device-mqtt-commands";
+    topic = DeviceRegistryExample.createIotTopic(
+        PROJECT_ID,
+        TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createDeviceWithRs256(
+        deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+
+    // Device bootstrapped, time to connect and run.
+    String[] testArgs = {
+        "-project_id=" + PROJECT_ID,
+        "-registry_id=" + REGISTRY_ID,
+        "-cloud_region=" + CLOUD_REGION,
+        "-device_id=" + deviceName,
+        "-private_key_file=" + PKCS_PATH,
+        "-wait_time=" + 10,
+        "-algorithm=RS256"
+    };
+
+    Thread deviceThread = new Thread() {
+      public void run() {
+        try {
+          com.example.cloud.iot.examples.MqttExample.main(testArgs);
+        } catch (Exception e) {
+          // TODO: Fail
+          System.out.println("Failure on Exception");
+        }
+      }
+    };
+    deviceThread.start();
+
+    Thread.sleep(500); // Give the device a chance to connect
+    com.example.cloud.iot.examples.DeviceRegistryExample.sendCommand(
+        deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID, "me want cookie!");
+
+    deviceThread.join();
+    // End device test.
+
+    // Assertions
+    String got = bout.toString();
+    System.out.println(got);
+    Assert.assertTrue(got.contains("Finished loop successfully."));
+    Assert.assertTrue(got.contains("me want cookie"));
+    Assert.assertFalse(got.contains("Failure on Exception"));
+
+    // Clean up
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
   public void testMqttDeviceEvents() throws Exception {
     final String deviceName = "rsa-device-mqtt-events";
     topic = DeviceRegistryExample.createIotTopic(

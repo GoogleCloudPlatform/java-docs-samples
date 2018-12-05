@@ -31,6 +31,7 @@ public class DeviceRegistryExampleOptions {
   String rsaCertificateFile = "rsa_cert.pem";
   String cloudRegion = "us-central1";
   String command = "help";
+  String commandData = "Specify with --data";
   String configuration = "Specify with -configuration";
   String deviceId; // Default to UUID?
   String pubsubTopic;
@@ -43,14 +44,6 @@ public class DeviceRegistryExampleOptions {
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
   public static DeviceRegistryExampleOptions fromFlags(String[] args) {
     // Required arguments
-    options.addOption(
-        Option.builder()
-            .type(String.class)
-            .longOpt("pubsub_topic")
-            .hasArg()
-            .desc("Pub/Sub topic to create registry in.")
-            .required()
-            .build());
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -74,11 +67,19 @@ public class DeviceRegistryExampleOptions {
                 + "\n\tpatch-device-es"
                 + "\n\tpatch-device-rsa"
                 + "\n\tset-config"
-                + "\n\tset-iam-permissions")
+                + "\n\tset-iam-permissions"
+                + "\n\tsend-command")
             .required()
             .build());
 
     // Optional arguments.
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("pubsub_topic")
+            .hasArg()
+            .desc("Pub/Sub topic to create registry in.")
+            .build());
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -124,6 +125,13 @@ public class DeviceRegistryExampleOptions {
     options.addOption(
         Option.builder()
             .type(String.class)
+            .longOpt("data")
+            .hasArg()
+            .desc("The command data (string or JSON) to send to the specified device.")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
             .longOpt("configuration")
             .hasArg()
             .desc("The configuration (string or JSON) to set the specified device to.")
@@ -160,6 +168,16 @@ public class DeviceRegistryExampleOptions {
 
       if (res.command.equals("help") || res.command.equals("")) {
         throw new ParseException("Invalid command, showing help.");
+      }
+
+      if (commandLine.hasOption("cloud_region")) {
+        res.cloudRegion = commandLine.getOptionValue("cloud_region");
+      }
+      if (commandLine.hasOption("data")) {
+        res.commandData = commandLine.getOptionValue("data");
+      }
+      if (commandLine.hasOption("device_id")) {
+        res.deviceId = commandLine.getOptionValue("device_id");
       }
 
       if (commandLine.hasOption("project_id")) {
