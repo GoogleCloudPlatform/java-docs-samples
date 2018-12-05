@@ -11,7 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [START config] -->
+<!-- [START gae_java_mysql_config] -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <threadsafe>true</threadsafe>
   <use-google-connector-j>true</use-google-connector-j>
@@ -20,4 +20,4 @@
     <property name="ae-cloudsql.local-database-url" value="jdbc:mysql://google/${database}?cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}&amp;useSSL=false" />
   </system-properties>
 </appengine-web-app>
-<!-- [END config] -->
+<!-- [END gae_java_mysql_config] -->
