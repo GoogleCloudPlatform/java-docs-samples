@@ -55,7 +55,8 @@ public class CloudDatastoreExport extends HttpServlet {
 
       // Read export parameters
       // If output prefix does not end with slash, add a timestamp
-      if (!outputUrlPrefix.substring(outputUrlPrefix.length() - 1).contentEquals("/")) {
+      if (!outputUrlPrefix.endsWith("/") {
+     
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         outputUrlPrefix = outputUrlPrefix + "/" + timeStamp + "/";
       }
