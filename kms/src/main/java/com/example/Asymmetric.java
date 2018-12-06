@@ -89,7 +89,7 @@ public class Asymmetric {
    *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
   public static PublicKey getAsymmetricPublicKey(String keyName) 
-    throws IOException, GeneralSecurityException {
+      throws IOException, GeneralSecurityException {
 
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
@@ -127,8 +127,8 @@ public class Asymmetric {
   public static byte[] decryptRSA(String keyName, byte[] ciphertext) throws IOException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      AsymmetricDecryptResponse response = client.asymmetricDecrypt(keyName,
-                                                                    ByteString.copyFrom(ciphertext));
+      AsymmetricDecryptResponse response = client.asymmetricDecrypt(
+          keyName, ByteString.copyFrom(ciphertext));
       return response.getPlaintext().toByteArray();
     }
   }
@@ -143,7 +143,7 @@ public class Asymmetric {
    *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
   public static byte[] encryptRSA(String keyName, byte[] plaintext) 
-    throws IOException, GeneralSecurityException {
+      throws IOException, GeneralSecurityException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Get the public key
