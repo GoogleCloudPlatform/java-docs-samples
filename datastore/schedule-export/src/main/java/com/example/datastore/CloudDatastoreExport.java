@@ -51,7 +51,7 @@ public class CloudDatastoreExport extends HttpServlet {
       scopes.add("https://www.googleapis.com/auth/datastore");
       final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
       final AppIdentityService.GetAccessTokenResult accessToken =
-          appIdentity.getAccessToken(scopes);
+          AppIdentityServiceFactory.getAppIdentityService().getAccessToken(scopes);
 
       // Read export parameters
       // If output prefix does not end with slash, add a timestamp
