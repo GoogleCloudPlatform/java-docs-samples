@@ -1,10 +1,29 @@
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.example.datastore;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,17 +32,11 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
- * Unit tests for {@link CloudDatastoreExport}.
+ * Unit tests for {@link DatastoreExportServlet}.
  */
 @RunWith(JUnit4.class)
-public class CloudDatastoreExportTest {
+public class DatastoreExportServletTest {
   private static final String FAKE_URL = "fake.fk/cloud-datastore-export";
   // Set up a helper so that the ApiProxy returns a valid environment for local testing.
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
@@ -31,7 +44,7 @@ public class CloudDatastoreExportTest {
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
-  private CloudDatastoreExport servletUnderTest;
+  private DatastoreExportServlet servletUnderTest;
 
   @Before
   public void setUp() throws Exception {
@@ -45,7 +58,7 @@ public class CloudDatastoreExportTest {
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    servletUnderTest = new CloudDatastoreExport();
+    servletUnderTest = new DatastoreExportServlet();
   }
 
   @After public void tearDown() {
@@ -53,12 +66,15 @@ public class CloudDatastoreExportTest {
   }
 
   @Test
-  public void doGetWritesResponse() throws Exception {
+  public void badOutputUrlReturnsError() throws Exception {
+    
+    when(mockRequest.getParameter("output_url_prefix")).thenReturn("gs:bucket/");
     servletUnderTest.doGet(mockRequest, mockResponse);
 
-    // We expect our hello world response.
+    // We expect output_url_prefix error message.
     assertThat(responseWriter.toString())
         .named("CloudDatastoreExport response")
         .contains("Must provide a valid output_url_prefix");
   }
+
 }

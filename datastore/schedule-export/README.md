@@ -1,7 +1,8 @@
 # Scheduling a Cloud Datastore export
 
 This Google App Engine (GAE) app receives export requests at `/cloud-datastore-export` and
-sends an export request to the Cloud Datastore Admin API.
+sends an export request to the < href="https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export">Cloud Datastore Admin API</a>. You must give the GAE service account permission to initiate Cloud Datastore exports and
+to write to the targe Cloud Storage bucket, see [Scheduling an Export](https://cloud.google.com/datastore/docs/schedule-export) in the Cloud Datastore documentation.
 
 ## Deploying
 
@@ -9,7 +10,13 @@ Deploy the GAE app:
 
     mvn appengine:deploy
 
-Deploy the cronjob:
+The app takes the following parameters:
+
+* `output_url_prefix` (required)-specifies where to save your Cloud Datastore export. If the URL ends with a `/`, it's used as is. Otherwise, the app adds a timesamp to the url.
+* 'kind' (optional, multiple)-restricts export to only these kinds.
+* 'namespace' (optional, multiple)-restricts export to only these namespaces.
+
+Modify and deploy the cronjob:
 
     gcloud app deploy cron.yaml
 

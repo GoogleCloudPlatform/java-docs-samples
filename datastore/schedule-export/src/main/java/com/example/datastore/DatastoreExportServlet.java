@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.example.datastore;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
@@ -23,85 +39,98 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-@WebServlet(name = "CloudDatastoreExport", value = "/cloud-datastore-export")
-public class CloudDatastoreExport extends HttpServlet {
+@WebServlet(name = "DatastoreExportServlet", value = "/cloud-datastore-export")
+public class DatastoreExportServlet extends HttpServlet {
 
-  private static final Logger log = Logger.getLogger(CloudDatastoreExport.class.getName());
+  private static final Logger log = Logger.getLogger(DatastoreExportServlet.class.getName());
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    // Verify outputURL parameter
+    // Validate outputURL parameter
     String outputUrlPrefix = request.getParameter("output_url_prefix");
 
     if (outputUrlPrefix == null || !outputUrlPrefix.matches("^gs://.*")) {
+      // Send error response if outputURL not set or not a Cloud Storage bucket
       response.setStatus(HttpServletResponse.SC_CONFLICT);
       response.setContentType("text/plain");
       response.getWriter().println("Error: Must provide a valid output_url_prefix.");
 
     } else {
-
-      // Get project ID
+      // Get project ID, needed for REST URL
       String projectId = ApiProxy.getCurrentEnvironment().getAppId();
       // Remove partition information to get plain app ID
       String appId = projectId.replaceFirst("(.*~)", "");
 
-      // Get access token
-      ArrayList<String> scopes = new ArrayList<String>();
-      scopes.add("https://www.googleapis.com/auth/datastore");
-      final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
-      final AppIdentityService.GetAccessTokenResult accessToken =
-          AppIdentityServiceFactory.getAppIdentityService().getAccessToken(scopes);
-
-      // Read export parameters
-      // If output prefix does not end with slash, add a timestamp
-      if (!outputUrlPrefix.endsWith("/") {
-     
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        outputUrlPrefix = outputUrlPrefix + "/" + timeStamp + "/";
-      }
-
-      String[] namespaces = request.getParameterValues("namespace_id");
-      String[] kinds = request.getParameterValues("kind");
-
-      // Build export request
-      JSONObject exportRequest = new JSONObject();
-      exportRequest.put("output_url_prefix", outputUrlPrefix);
-
-      JSONObject entityFilter = new JSONObject();
-
-      if (kinds != null) {
-        JSONArray kindsJSON = new JSONArray(kinds);
-        entityFilter.put("kinds", kinds);
-      }
-
-      if (namespaces != null) {
-        JSONArray namespacesJSON = new JSONArray(namespaces);
-        entityFilter.put("namespaceIds", namespacesJSON);
-      }
-
-      exportRequest.put("entityFilter", entityFilter);
-
+      // Put together export request headers
       URL url = new URL("https://datastore.googleapis.com/v1/projects/" + appId + ":export");
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setDoOutput(true);
       connection.setRequestMethod("POST");
       connection.addRequestProperty("Content-Type", "application/json");
+
+      // Get an access token to authorize export request
+      ArrayList<String> scopes = new ArrayList<String>();
+      scopes.add("https://www.googleapis.com/auth/datastore");
+      final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
+      final AppIdentityService.GetAccessTokenResult accessToken =
+          AppIdentityServiceFactory.getAppIdentityService().getAccessToken(scopes);
       connection.addRequestProperty("Authorization", "Bearer " + accessToken.getAccessToken());
 
+      // Build export request payload based on URL parameters
+      // Required: output_url_prefix
+      // Optional: entity filter
+      JSONObject exportRequest = new JSONObject();
+
+      // If output prefix ends with a slash, use as is
+      // Otherwise, add a timestamp to form unique output url
+      if (!outputUrlPrefix.endsWith("/")) {
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        outputUrlPrefix = outputUrlPrefix + "/" + timeStamp + "/";
+      }
+
+      // Add outputUrl to payload
+      exportRequest.put("output_url_prefix", outputUrlPrefix);
+
+      // Build optional entity filter to export subset of
+      // kinds or namespaces
+      JSONObject entityFilter = new JSONObject();
+
+      // Read kind parameters and add to export request if not null
+      String[] kinds = request.getParameterValues("kind");
+      if (kinds != null) {
+        JSONArray kindsJson = new JSONArray(kinds);
+        entityFilter.put("kinds", kinds);
+      }
+
+      // Read namespace parameters and add to export request if not null
+      String[] namespaces = request.getParameterValues("namespace_id");
+
+      if (namespaces != null) {
+        JSONArray namespacesJson = new JSONArray(namespaces);
+        entityFilter.put("namespaceIds", namespacesJson);
+      }
+
+      // Add entity filter to payload
+      // Finish export request payload
+      exportRequest.put("entityFilter", entityFilter);
+
+      // Send export request
       OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
       exportRequest.write(writer);
       writer.close();
 
+      // Examine server's response
       if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
-        JSONTokener exportResponseTokens = new JSONTokener(connection.getInputStream());
-        JSONObject exportResponse = new JSONObject(exportResponseTokens);
+        // Success, print export operation information
+        JSONObject exportResponse = new JSONObject(new JSONTokener(connection.getInputStream()));
 
         response.setContentType("text/plain");
         response.getWriter().println("Export started:\n" + exportResponse.toString(4));
 
       } else {
+        // Report and log any errors
         InputStream s = connection.getErrorStream();
         InputStreamReader r = new InputStreamReader(s, StandardCharsets.UTF_8);
         String errorMessage =
