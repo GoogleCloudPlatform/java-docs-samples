@@ -23,6 +23,7 @@ Maven:
 
 The following command will run the sample
 
+
     mvn exec:java -Dexec.mainClass="com.example.cloud.iot.examples.DeviceGatewayExample"
 
 The following description summarizes the sample usage:
