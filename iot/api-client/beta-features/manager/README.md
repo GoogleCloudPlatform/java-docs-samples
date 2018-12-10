@@ -17,11 +17,11 @@ the sample every time you run it.
 Run the following command to install the libraries and build the sample with
 Maven:
 
-mvn clean compile assembly:single
+    mvn clean compile assembly:single
 
 ## Running the sample
 
-The following code will run the sample
+The following command will run the sample
 
     mvn exec:java -Dexec.mainClass="com.example.cloud.iot.examples.DeviceGatewayExample"
 

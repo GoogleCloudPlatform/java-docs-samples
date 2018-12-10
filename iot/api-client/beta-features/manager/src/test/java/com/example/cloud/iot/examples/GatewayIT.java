@@ -188,11 +188,10 @@ public class GatewayIT {
     final String gatewayName = "rsa-listen-gateway-test";
     topic = DeviceGatewayExample.createIotTopic(PROJECT_ID, TOPIC_ID);
     DeviceGatewayExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
-    DeviceGatewayExample.createGateway(PROJECT_ID, CLOUD_REGION, REGISTRY_ID, 
+    DeviceGatewayExample.createGateway(PROJECT_ID, CLOUD_REGION, REGISTRY_ID,
         gatewayName, RSA_PATH, "RS256");
     MqttClient client = DeviceGatewayExample.startMqtt("mqtt.googleapis.com", (short)443,
-          PROJECT_ID, CLOUD_REGION, REGISTRY_ID, gatewayName,
-          PKCS_PATH, "RS256");
+        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, gatewayName, PKCS_PATH, "RS256");
 
 
     Thread deviceThread = new Thread() {
