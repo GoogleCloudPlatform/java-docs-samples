@@ -119,17 +119,8 @@ public class DatastoreExportServlet extends HttpServlet {
       writer.close();
 
       // Examine server's response
-      if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-
-        // Success, print export operation information
-        JSONObject exportResponse = new JSONObject(new JSONTokener(connection.getInputStream()));
-
-        response.setContentType("text/plain");
-        response.getWriter().println(
-          "Export started:\n" + exportResponse.toString(4));
-
-      } else {
-        // Report and log any errors
+      if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        // Request failed, report and log errors
         InputStream s = connection.getErrorStream();
         InputStreamReader r = new InputStreamReader(s, StandardCharsets.UTF_8);
         String errorMessage =
@@ -141,6 +132,15 @@ public class DatastoreExportServlet extends HttpServlet {
         response.setContentType("text/plain");
         response.getWriter().println(
           "Failed to initiate export.");
+
+        
+      } else {
+        // Success, print export operation information
+        JSONObject exportResponse = new JSONObject(new JSONTokener(connection.getInputStream()));
+
+        response.setContentType("text/plain");
+        response.getWriter().println(
+          "Export started:\n" + exportResponse.toString(4));
       }
     }
   }
