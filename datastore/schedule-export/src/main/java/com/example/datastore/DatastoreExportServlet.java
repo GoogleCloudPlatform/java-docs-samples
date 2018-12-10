@@ -58,12 +58,10 @@ public class DatastoreExportServlet extends HttpServlet {
 
     } else {
       // Get project ID, needed for REST URL
-      String projectId = ApiProxy.getCurrentEnvironment().getAppId();
-      // Remove partition information to get plain app ID
-      String appId = projectId.replaceFirst("(.*~)", "");
+      final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
       // Put together export request headers
-      URL url = new URL("https://datastore.googleapis.com/v1/projects/" + appId + ":export");
+      URL url = new URL("https://datastore.googleapis.com/v1/projects/" + PROJECT_ID + ":export");
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setDoOutput(true);
       connection.setRequestMethod("POST");
@@ -127,7 +125,8 @@ public class DatastoreExportServlet extends HttpServlet {
         JSONObject exportResponse = new JSONObject(new JSONTokener(connection.getInputStream()));
 
         response.setContentType("text/plain");
-        response.getWriter().println("Export started:\n" + exportResponse.toString(4));
+        response.getWriter().println(
+          "Export started:\n" + exportResponse.toString(4));
 
       } else {
         // Report and log any errors
@@ -140,7 +139,8 @@ public class DatastoreExportServlet extends HttpServlet {
         log.warning(errorMessage);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.setContentType("text/plain");
-        response.getWriter().println("Failed to initiate export.");
+        response.getWriter().println(
+          "Failed to initiate export.");
       }
     }
   }
