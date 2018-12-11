@@ -39,7 +39,7 @@
   </properties>
 
   <dependencies>
-    <!-- [START trace_setup_java_maven ] -->
+    <!-- [START trace_setup_java_maven] -->
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-api</artifactId>
@@ -56,7 +56,7 @@
       <version>0.12.2</version>
       <scope>runtime</scope>
     </dependency>
-    <!-- [END trace_setup_java_maven ] -->
+    <!-- [END trace_setup_java_maven] -->
 
     <!-- Test dependencies -->
     <dependency>
