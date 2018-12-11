@@ -42,6 +42,8 @@ import org.json.JSONTokener;
 @WebServlet(name = "DatastoreExportServlet", value = "/cloud-datastore-export")
 public class DatastoreExportServlet extends HttpServlet {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   private static final Logger log = Logger.getLogger(DatastoreExportServlet.class.getName());
 
   @Override
@@ -57,8 +59,6 @@ public class DatastoreExportServlet extends HttpServlet {
       response.getWriter().println("Error: Must provide a valid output_url_prefix.");
 
     } else {
-      // Get project ID, needed for REST URL
-      final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
       // Put together export request headers
       URL url = new URL("https://datastore.googleapis.com/v1/projects/" + PROJECT_ID + ":export");
@@ -131,7 +131,7 @@ public class DatastoreExportServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.setContentType("text/plain");
         response.getWriter().println(
-          "Failed to initiate export.");
+            "Failed to initiate export.");
 
         
       } else {
@@ -140,7 +140,7 @@ public class DatastoreExportServlet extends HttpServlet {
 
         response.setContentType("text/plain");
         response.getWriter().println(
-          "Export started:\n" + exportResponse.toString(4));
+            "Export started:\n" + exportResponse.toString(4));
       }
     }
   }
