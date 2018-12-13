@@ -57,11 +57,6 @@ import javax.sound.sampled.TargetDataLine;
 
 public class Recognize {
 
-  // Creating shared object
-  private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
-  private static TargetDataLine targetDataLine;
-  private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
-
   /** Run speech recognition tasks. */
   public static void main(String... args) throws Exception {
     if (args.length < 1) {
@@ -71,7 +66,7 @@ public class Recognize {
               + "Commands:\n"
               + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize \n"
               + "\t| wordoffsets | auto-punctuation | stream-punctuation \n"
-              + "\t| enhanced-model | model-selection | infinitestreamrecognize\n"
+              + "\t| enhanced-model | model-selection \n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -119,8 +114,6 @@ public class Recognize {
       } else {
         transcribeModelSelection(path);
       }
-    } else if (command.equals("infinitestreamrecognize")) {
-      infiniteStreamingRecognize();
     }
   }
 
@@ -840,135 +833,4 @@ public class Recognize {
   }
   // [END speech_transcribe_model_selection_gcs]
 
-  // [START speech_transcribe_infinite_streaming]
-  /** Performs infinite streaming speech recognition */
-  public static void infiniteStreamingRecognize() throws Exception {
-
-    // Microphone Input buffering
-    class MicBuffer implements Runnable {
-
-      @Override
-      public void run() {
-        System.out.println("Start speaking...Press Ctrl-C to stop transcription.");
-
-        targetDataLine.start();
-        byte[] data = new byte[BYTES_PER_BUFFER];
-        while (targetDataLine.isOpen()) {
-          try {
-            int numBytesRead = targetDataLine.read(data, 0, data.length);
-            if ((numBytesRead <= 0) && (targetDataLine.isOpen())) {
-              continue;
-            }
-            sharedQueue.put(data.clone());
-          } catch (InterruptedException e) {
-            System.out.println("Microphone input buffering interrupted : " + e.getMessage());
-          }
-        }
-      }
-    }
-
-    // Creating microphone input buffer thread
-    MicBuffer micrunnable = new MicBuffer();
-    Thread micThread = new Thread(micrunnable);
-
-    ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
-    try (SpeechClient client = SpeechClient.create()) {
-
-      responseObserver =
-          new ResponseObserver<StreamingRecognizeResponse>() {
-
-            ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
-
-            public void onStart(StreamController controller) {}
-
-            public void onResponse(StreamingRecognizeResponse response) {
-              responses.add(response);
-              StreamingRecognitionResult result = response.getResultsList().get(0);
-              // There can be several alternative transcripts for a given chunk of speech. Just use
-              // the
-              // first (most likely) one here.
-              SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-              System.out.printf("Transcript : %s\n", alternative.getTranscript());
-            }
-
-            public void onComplete() {}
-
-            public void onError(Throwable t) {
-              System.out.println(t);
-            }
-          };
-
-      ClientStream<StreamingRecognizeRequest> clientStream =
-          client.streamingRecognizeCallable().splitCall(responseObserver);
-
-      RecognitionConfig recognitionConfig =
-          RecognitionConfig.newBuilder()
-              .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-              .setLanguageCode("en-US")
-              .setSampleRateHertz(16000)
-              .build();
-      StreamingRecognitionConfig streamingRecognitionConfig =
-          StreamingRecognitionConfig.newBuilder().setConfig(recognitionConfig).build();
-
-      StreamingRecognizeRequest request =
-          StreamingRecognizeRequest.newBuilder()
-              .setStreamingConfig(streamingRecognitionConfig)
-              .build(); // The first request in a streaming call has to be a config
-
-      clientStream.send(request);
-
-      try {
-        // SampleRate:16000Hz, SampleSizeInBits: 16, Number of channels: 1, Signed: true,
-        // bigEndian: false
-        AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
-        DataLine.Info targetInfo =
-            new Info(
-                TargetDataLine.class,
-                audioFormat); // Set the system information to read from the microphone audio stream
-
-        if (!AudioSystem.isLineSupported(targetInfo)) {
-          System.out.println("Microphone not supported");
-          System.exit(0);
-        }
-        // Target data line captures the audio stream the microphone produces.
-        targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
-        targetDataLine.open(audioFormat);
-        micThread.start();
-
-        long startTime = System.currentTimeMillis();
-
-        while (true) {
-
-          long estimatedTime = System.currentTimeMillis() - startTime;
-
-          if (estimatedTime >= 55000) {
-
-            clientStream.closeSend();
-            clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
-
-            request =
-                StreamingRecognizeRequest.newBuilder()
-                    .setStreamingConfig(streamingRecognitionConfig)
-                    .build();
-
-            startTime = System.currentTimeMillis();
-
-          } else {
-            request =
-                StreamingRecognizeRequest.newBuilder()
-                    .setAudioContent(ByteString.copyFrom(sharedQueue.take()))
-                    .build();
-          }
-
-          clientStream.send(request);
-        }
-      } catch (Exception e) {
-        System.out.println(e);
-      }
-      responseObserver.onComplete();
-
-      clientStream.closeSend();
-    }
-  }
-  // [END speech_transcribe_infinite_streaming]
 }
