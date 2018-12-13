@@ -46,8 +46,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -66,7 +64,7 @@ public class Recognize {
               + "Commands:\n"
               + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize \n"
               + "\t| wordoffsets | auto-punctuation | stream-punctuation \n"
-              + "\t| enhanced-model | model-selection \n"
+              + "\t| enhanced-model | model-selection\n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -832,5 +830,4 @@ public class Recognize {
     }
   }
   // [END speech_transcribe_model_selection_gcs]
-
 }
