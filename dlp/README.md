@@ -107,11 +107,18 @@ Commands:
 
 ## Integration tests
 ### Setup
-- [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt).
+- [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt) and [dictionary.txt](src/test/resources/dictionary.txt).
+- Update the Google Cloud Storage `bucketName` with the name of your bucket in the files:
+  - [InspectIT.java](src/test/java/com/example/dlp/InspectIT.java)
+  - [JobsIT.java](src/test/java/com/example/dlp/JobsIT.java)
+  - [RiskAnalysisIT.java](src/test/java/com/example/dlp/RiskAnalysisIT.java)
+  - [StoredInfoTypesIT.java](src/test/java/com/example/dlp/StoredInfoTypesIT.java)
+  - [TriggersIT.java](src/test/java/com/example/dlp/TriggersIT.java)
 - [Create a Google Cloud Datastore](https://console.cloud.google.com/datastore) kind and add an entity with properties:
   - `property1` : john@doe.com
   - `property2` : 343-343-3435
-- Update the Google Cloud Storage path and Datastore kind in [InspectIT.java](src/test/java/com/example/dlp/InspectIT.java).
+- Update the Datastore kind in [InspectIT.java](src/test/java/com/example/dlp/InspectIT.java).
+- [Create a Google Cloud Pub/Sub topic](https://cloud.google.com/pubsub/docs/admin#create_a_topic) named `dlp-tests` and [add a subscription](https://cloud.google.com/pubsub/docs/admin#create_a_pull_subscription) named `dlp-test`.
 - Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
 
 ## Run
