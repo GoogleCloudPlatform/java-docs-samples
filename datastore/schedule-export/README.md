@@ -13,8 +13,8 @@ Deploy the GAE app:
 The app takes the following parameters:
 
 * `output_url_prefix` (required)-specifies where to save your Cloud Datastore export. If the URL ends with a `/`, it's used as is. Otherwise, the app adds a timesamp to the url.
-* 'kind' (optional, multiple)-restricts export to only these kinds.
-* 'namespace_id' (optional, multiple)-restricts export to only these namespaces.
+* `kind` (optional, multiple)-restricts export to only these kinds.
+* `namespace_id` (optional, multiple)-restricts export to only these namespaces.
 
 Modify and deploy the cronjob:
 
