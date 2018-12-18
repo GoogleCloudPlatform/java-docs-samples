@@ -1,7 +1,7 @@
 # Scheduling a Cloud Datastore export
 
 This Google App Engine (GAE) app receives export requests at `/cloud-datastore-export` and
-sends an export request to the < href="https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export">Cloud Datastore Admin API</a>. You must give the GAE service account permission to initiate Cloud Datastore exports and
+sends an export request to the [Cloud Datastore Admin API](https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export). You must give the GAE service account permission to initiate Cloud Datastore exports and
 to write to the targe Cloud Storage bucket, see [Scheduling an Export](https://cloud.google.com/datastore/docs/schedule-export) in the Cloud Datastore documentation.
 
 ## Deploying
