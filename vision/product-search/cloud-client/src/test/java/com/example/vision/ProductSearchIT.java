@@ -62,7 +62,7 @@ public class ProductSearchIT {
     ProductSetManagement.deleteProductSet(PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID);
     System.setOut(null);
   }
-
+  //Tests rely on pre-created product set that has been indexed.
   @Test
   public void testGetSimilarProductsFile() throws Exception {
     // Act
