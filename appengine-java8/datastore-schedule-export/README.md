@@ -19,7 +19,7 @@ For more information on completing these requirements, see the
 
 Set the target project in gcloud:
 
-   gcloud config set project PROJECT_NAME
+    gcloud config set project PROJECT_NAME
 
 Deploy the GAE app:
 
