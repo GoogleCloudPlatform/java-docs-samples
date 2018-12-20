@@ -80,7 +80,7 @@ public class DatastoreExportServlet extends HttpServlet {
       // Optional: entity filter
       JSONObject exportRequest = new JSONObject();
 
-      // If output prefix ends with a slash, use as is
+      // If output prefix ends with a slash, use as-is
       // Otherwise, add a timestamp to form unique output url
       if (!outputUrlPrefix.endsWith("/")) {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
@@ -103,7 +103,6 @@ public class DatastoreExportServlet extends HttpServlet {
 
       // Read namespace parameters and add to export request if not null
       String[] namespaces = request.getParameterValues("namespace_id");
-
       if (namespaces != null) {
         JSONArray namespacesJson = new JSONArray(namespaces);
         entityFilter.put("namespaceIds", namespacesJson);
@@ -120,7 +119,7 @@ public class DatastoreExportServlet extends HttpServlet {
 
       // Examine server's response
       if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-        // Request failed, report and log errors
+        // Request failed, log errors and return
         InputStream s = connection.getErrorStream();
         InputStreamReader r = new InputStreamReader(s, StandardCharsets.UTF_8);
         String errorMessage =
@@ -132,16 +131,15 @@ public class DatastoreExportServlet extends HttpServlet {
         response.setContentType("text/plain");
         response.getWriter().println(
             "Failed to initiate export.");
-
-        
-      } else {
-        // Success, print export operation information
-        JSONObject exportResponse = new JSONObject(new JSONTokener(connection.getInputStream()));
-
-        response.setContentType("text/plain");
-        response.getWriter().println(
-            "Export started:\n" + exportResponse.toString(4));
+        return;   
       }
+
+      // Success, print export operation information
+      JSONObject exportResponse = new JSONObject(new JSONTokener(connection.getInputStream()));
+
+      response.setContentType("text/plain");
+      response.getWriter().println(
+          "Export started:\n" + exportResponse.toString(4));    
     }
   }
 }

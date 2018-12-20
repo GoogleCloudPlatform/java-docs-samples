@@ -11,7 +11,7 @@
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.10</version>
-</parent>
+  </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +33,7 @@
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>1.9.59</version>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>25.1-android</version>
@@ -59,26 +59,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.59</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.59</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>0.33</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -196,7 +181,6 @@
          <artifactId>appengine-maven-plugin</artifactId>
          <version>1.3.1</version>
          <configuration>
-           <project>jl-ds-java</project>
            <version>1</version>
          </configuration>
       </plugin>

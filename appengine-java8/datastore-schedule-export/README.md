@@ -1,10 +1,25 @@
 # Scheduling a Cloud Datastore export
 
 This Google App Engine (GAE) app receives export requests at `/cloud-datastore-export` and
-sends an export request to the [Cloud Datastore Admin API](https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export). You must give the GAE service account permission to initiate Cloud Datastore exports and
-to write to the targe Cloud Storage bucket, see [Scheduling an Export](https://cloud.google.com/datastore/docs/schedule-export) in the Cloud Datastore documentation.
+sends an export request to the [Cloud Datastore Admin API](https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export). 
+
+## Before you begin
+
+This app requires the following to complete export operations:
+
+1. A Google Cloud project with billing enabled.
+1. A Cloud Storage bucket for your export files.
+1. The App Engine default service account must have permission
+to write to the Cloud Storage bucket and have the Cloud Datastore Import Export Admin IAM role.
+
+For more information on completing these requirements, see the
+[Cloud Datastore documentation](https://cloud.google.com/datastore/docs/schedule-export#before_you_begin).
 
 ## Deploying
+
+Set the target project in gcloud:
+
+   gcloud config set project PROJECT_NAME
 
 Deploy the GAE app:
 

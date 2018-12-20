@@ -1,4 +1,0 @@
-cron:
-- description: "Daily Cloud Datastore Export"
-  url: /cloud-datastore-export?output_url_prefix=gs://my-export-bucket&kind=task
-  schedule: every 24 hours
