@@ -26,7 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link ProductSearch}. */
+/**
+ * Integration (system) tests for {@link ProductSearch}.Tests rely on pre-created product set
+ * that has been indexed.
+ **/
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ProductSearchIT {
@@ -62,7 +65,7 @@ public class ProductSearchIT {
     ProductSetManagement.deleteProductSet(PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID);
     System.setOut(null);
   }
-  //Tests rely on pre-created product set that has been indexed.
+
   @Test
   public void testGetSimilarProductsFile() throws Exception {
     // Act
