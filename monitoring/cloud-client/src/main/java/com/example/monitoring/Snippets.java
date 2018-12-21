@@ -398,8 +398,8 @@ public class Snippets {
   void getMonitoredResource(String resourceId) throws IOException {
     String projectId = System.getProperty("projectId");
     MetricServiceClient client = MetricServiceClient.create();
-    MonitoredResourceDescriptorName name = MonitoredResourceDescriptorName.of(projectId,
-        resourceId);
+    MonitoredResourceDescriptorName name =
+        MonitoredResourceDescriptorName.of(projectId, resourceId);
     MonitoredResourceDescriptor response = client.getMonitoredResourceDescriptor(name);
     System.out.println("Retrieved Monitored Resource: " + gson.toJson(response));
   }
