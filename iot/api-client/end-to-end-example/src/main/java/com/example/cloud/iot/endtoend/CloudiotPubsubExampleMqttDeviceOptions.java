@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2019 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class CloudiotPubsubExampleMqttDeviceOptions {
   String cloudRegion = "us-central1";
   int numMessages = 100;
   String mqttBridgeHostname = "mqtt.googleapis.com";
-  short mqttBridgePort = 8883;
+  short mqttBridgePort = 8883; // if running from a Compute VM, use 443.
   String messageType = "event";
 
   static final Options options = new Options();
