@@ -128,6 +128,9 @@ public class MqttExample {
     String configTopic = String.format("/devices/%s/config", deviceId);
     client.subscribe(configTopic, 1);
 
+    String commandTopic = String.format("/devices/%s/commands/#", deviceId);
+    client.subscribe(commandTopic, 1);
+
     client.setCallback(mCallback);
   }
   // [END iot_mqtt_configcallback]
@@ -275,12 +278,21 @@ public class MqttExample {
       }
     }
 
+    // Wait for commands to arrive for about two minutes.
+    for (int i = 1; i <= options.waitTime; ++i) {
+      System.out.print(".");
+      Thread.sleep(1000);
+    }
+    System.out.println("");
+
+
     // Disconnect the client if still connected, and finish the run.
     if (client.isConnected()) {
       client.disconnect();
     }
 
     System.out.println("Finished loop successfully. Goodbye!");
+    client.close();
     // [END iot_mqtt_publish]
   }
 }

@@ -251,6 +251,25 @@ public class SpannerSample {
   }
   // [END spanner_insert_data]
 
+  // [START spanner_delete_data]
+  static void deleteExampleData(DatabaseClient dbClient) {
+    List<Mutation> mutations = new ArrayList<>();
+
+    // KeySet.all() can be used to delete all the rows in a table.
+    mutations.add(Mutation.delete("Albums", KeySet.all()));
+
+    // KeySet.singleKey() can be used to delete one row at a time.
+    for (Singer singer : SINGERS) {
+      mutations.add(
+          Mutation.delete("Singers", 
+              KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
+    }
+
+    dbClient.write(mutations);
+    System.out.printf("Records deleted.\n");
+  } 
+  // [END spanner_delete_data]
+
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
     // singleUse() can be used to execute a single read or query against Cloud Spanner.
@@ -1077,6 +1096,9 @@ public class SpannerSample {
       case "write":
         writeExampleData(dbClient);
         break;
+      case "delete":
+        deleteExampleData(dbClient);
+        break;
       case "query":
         query(dbClient);
         break;
@@ -1194,6 +1216,7 @@ public class SpannerSample {
     System.err.println("Examples:");
     System.err.println("    SpannerExample createdatabase my-instance example-db");
     System.err.println("    SpannerExample write my-instance example-db");
+    System.err.println("    SpannerExample delete my-instance example-db");
     System.err.println("    SpannerExample query my-instance example-db");
     System.err.println("    SpannerExample read my-instance example-db");
     System.err.println("    SpannerExample addmarketingbudget my-instance example-db");

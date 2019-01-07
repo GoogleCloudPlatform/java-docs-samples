@@ -79,6 +79,11 @@ public class SpannerSampleIT {
 
     runSample("write");
 
+    out = runSample("delete");
+    assertThat(out).contains("Records deleted.");
+
+    runSample("write");
+
     out = runSample("read");
     assertThat(out).contains("1 1 Total Junk");
 
