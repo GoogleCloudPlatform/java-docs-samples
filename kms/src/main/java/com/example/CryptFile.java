@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class CryptFile {
       throws IOException {
 
     // Create the KeyManagementServiceClient using try-with-resources to manage client cleanup.
-    try (KeyManagementServiceClient client = Snippets.createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey
       String resourceName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);
@@ -62,7 +62,7 @@ public class CryptFile {
       throws IOException {
 
     // Create the KeyManagementServiceClient using try-with-resources to manage client cleanup.
-    try (KeyManagementServiceClient client = Snippets.createClient()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the cryptoKey
       String resourceName = CryptoKeyName.format(projectId, locationId, keyRingId, cryptoKeyId);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,18 +42,6 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 public class Snippets {
-
-  /**
-   * Creates a KeyManagementServiceClient using Application Default Credentials.
-   *
-   * @return an authorized KeyManagementServiceClient.
-   * @throws IOException if there's an error getting the default credentials.
-   */
-  public static KeyManagementServiceClient createClient() throws IOException {
-    // GAP: missing ability to set application name
-    // see https://github.com/googleapis/gax-java/issues/614
-    return KeyManagementServiceClient.create();
-  }
 
   // [START kms_create_keyring]
 
@@ -411,16 +399,16 @@ public class Snippets {
 
       // Create a bindings list that filters out the provided member
       List<Binding> newBindings = new ArrayList<>();
-      for (Binding b : iamPolicy.getBindingsList()) {
-        if (!b.getRole().equals(role)) {
-          newBindings.add(b);
+      for (Binding binding : iamPolicy.getBindingsList()) {
+        if (!binding.getRole().equals(role)) {
+          newBindings.add(binding);
           continue;
         }
 
-        Binding.Builder builder = Binding.newBuilder().setRole(b.getRole());
-        for (String m : b.getMembersList()) {
-          if (!member.equals(m)) {
-            builder.addMembers(m);
+        Binding.Builder builder = Binding.newBuilder().setRole(binding.getRole());
+        for (String bindingMember : binding.getMembersList()) {
+          if (!member.equals(bindingMember)) {
+            builder.addMembers(bindingMember);
           }
         }
         newBindings.add(builder.build());
@@ -458,14 +446,14 @@ public class Snippets {
 
       // Create a bindings list that filters out the provided member
       List<Binding> newBindings = new ArrayList<>();
-      for (Binding b : iamPolicy.getBindingsList()) {
-        if (!b.getRole().equals(role)) {
-          newBindings.add(b);
+      for (Binding binding : iamPolicy.getBindingsList()) {
+        if (!binding.getRole().equals(role)) {
+          newBindings.add(binding);
         } else {
-          Binding.Builder builder = Binding.newBuilder().setRole(b.getRole());
-          for (String m : b.getMembersList()) {
-            if (!member.equals(m)) {
-              builder.addMembers(m);
+          Binding.Builder builder = Binding.newBuilder().setRole(binding.getRole());
+          for (String bindingMember : binding.getMembersList()) {
+            if (!member.equals(bindingMember)) {
+              builder.addMembers(bindingMember);
             }
           }
           newBindings.add(builder.build());

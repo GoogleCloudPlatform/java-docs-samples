@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,6 @@ public class Quickstart {
     String location = args[1];
 
     // Create the KeyManagementServiceClient using try-with-resources to manage client cleanup.
-    // GAP: missing ability to set application name
-    // see https://github.com/googleapis/gax-java/issues/614
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
 
       // The resource name of the location to search

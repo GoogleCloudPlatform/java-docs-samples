@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class AsymmetricIT {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    // TODO: set application name
+    // TODO: set application name. https://github.com/googleapis/gax-java/issues/614
     client = KeyManagementServiceClient.create();
 
     try {

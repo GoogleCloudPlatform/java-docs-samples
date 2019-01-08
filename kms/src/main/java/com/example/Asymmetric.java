@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,27 +53,20 @@ public class Asymmetric {
       String cryptoKeyId)
       throws IOException {
 
-    // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      // The resource name of the location associated with the KeyRing.
       String parent = KeyRingName.format(projectId, locationId, keyRingId);
 
-      // Choose a purpose (ASYMMETRIC_DECRYPT or ASYMMETRIC_SIGN).
       CryptoKeyPurpose purpose = CryptoKeyPurpose.ASYMMETRIC_DECRYPT;
-
-      // Choose an algorithm.
       CryptoKeyVersionAlgorithm algorithm = CryptoKeyVersionAlgorithm.RSA_DECRYPT_OAEP_2048_SHA256;
+
       CryptoKeyVersionTemplate version = CryptoKeyVersionTemplate.newBuilder()
           .setAlgorithm(algorithm)
           .build();
-
-      // Build the key template
       CryptoKey cryptoKey = CryptoKey.newBuilder()
           .setPurpose(purpose)
           .setVersionTemplate(version)
           .build();
 
-      // Create the CryptoKey for your project.
       CryptoKey createdKey = client.createCryptoKey(parent, cryptoKeyId, cryptoKey);
 
       return createdKey;
@@ -156,7 +149,9 @@ public class Asymmetric {
       X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
       PublicKey rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
 
-      // Encrypt the plaintext
+      // Encrypt plaintext for the 'RSA_DECRYPT_OAEP_2048_SHA256' key.
+      // For other key algorithms:
+      // https://docs.oracle.com/javase/7/docs/api/javax/crypto/Cipher.html
       Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
       OAEPParameterSpec oaepParams = new OAEPParameterSpec(
           "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
@@ -217,7 +212,9 @@ public class Asymmetric {
       X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
       PublicKey rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
 
-      // Verify the signature
+      // Verify the 'RSA_SIGN_PKCS1_2048_SHA256' signature.
+      // For other key algorithms:
+      // http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature
       Signature rsaVerify = Signature.getInstance("SHA256withRSA");
       rsaVerify.initVerify(rsaKey);
       rsaVerify.update(message);
@@ -249,7 +246,9 @@ public class Asymmetric {
       X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
       PublicKey ecKey = KeyFactory.getInstance("EC").generatePublic(keySpec);
 
-      // Verify the signature
+      // Verify the 'EC_SIGN_P256_SHA256' signature
+      // For other key algorithms:
+      // http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature
       Signature ecVerify = Signature.getInstance("SHA256withECDSA");
       ecVerify.initVerify(ecKey);
       ecVerify.update(message);

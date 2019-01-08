@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,11 +67,11 @@ public class CryptFileIT {
     List<CryptoKeyVersion> versions = 
         Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
 
-    for (CryptoKeyVersion v : versions) {
-      if (!v.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
+    for (CryptoKeyVersion version : versions) {
+      if (!version.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
         Snippets.destroyCryptoKeyVersion(
             PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID,
-            SnippetsIT.parseVersionId(v.getName()));
+            SnippetsIT.parseVersionId(version.getName()));
       }
     }
   }

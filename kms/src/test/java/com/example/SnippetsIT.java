@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,10 +73,10 @@ public class SnippetsIT {
     List<CryptoKeyVersion> versions = 
         Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
 
-    for (CryptoKeyVersion v : versions) {
-      if (!v.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
+    for (CryptoKeyVersion version : versions) {
+      if (!version.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
         Snippets.destroyCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, parseVersionId(v.getName()));
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, parseVersionId(version.getName()));
       }
     }
   }
@@ -101,11 +101,11 @@ public class SnippetsIT {
     List<CryptoKeyVersion> versions = 
         Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
 
-    for (CryptoKeyVersion v : versions) {
-      assertThat(v.getName()).contains(String.format(
+    for (CryptoKeyVersion version : versions) {
+      assertThat(version.getName()).contains(String.format(
           "keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/", KEY_RING_ID, CRYPTO_KEY_ID));
 
-      if (v.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.ENABLED)) {
+      if (version.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.ENABLED)) {
         return;
       }
     }
