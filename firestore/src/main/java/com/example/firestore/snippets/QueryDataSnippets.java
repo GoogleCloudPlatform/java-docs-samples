@@ -125,14 +125,14 @@ class QueryDataSnippets {
     CollectionReference cities = db.collection("cities");
 
     // [START fs_simple_queries]
-    Query countryQuery = cities.whereEqualTo("state", "CA");
+    Query stateQuery = cities.whereEqualTo("state", "CA");
     Query populationQuery = cities.whereLessThan("population", 1000000L);
-    Query cityQuery = cities.whereGreaterThanOrEqualTo("name", "San Francisco");
+    Query nameQuery = cities.whereGreaterThanOrEqualTo("name", "San Francisco");
     // [END fs_simple_queries]
 
-    querys.add(countryQuery);
+    querys.add(stateQuery);
     querys.add(populationQuery);
-    querys.add(cityQuery);
+    querys.add(nameQuery);
     return querys;
   }
 
