@@ -33,9 +33,12 @@ public class DetectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  static final String LABEL_FILE_LOCATION = "gs://demomaker/cat.mp4";
+  static final String LABEL_GCS_LOCATION = "gs://demomaker/cat.mp4";
+  static final String LABEL_FILE_LOCATION = "./resources/cat.mp4";
   static final String SHOTS_FILE_LOCATION = "gs://demomaker/gbikes_dinosaur.mp4";
   static final String EXPLICIT_CONTENT_LOCATION =  "gs://demomaker/cat.mp4";
+  static final String SPEECH_GCS_LOCATION =
+          "gs://java-docs-samples-testing/video/googlework_short.mp4";
 
   @Before
   public void setUp() {
@@ -51,7 +54,16 @@ public class DetectIT {
 
   @Test
   public void testLabels() throws Exception {
-    String[] args = {"labels", LABEL_FILE_LOCATION};
+    String[] args = {"labels", LABEL_GCS_LOCATION};
+    Detect.argsHelper(args);
+    String got = bout.toString();
+    // Test that the video with a cat has the whiskers label (may change).
+    assertThat(got.toUpperCase()).contains("WHISKERS");
+  }
+
+  @Test
+  public void testLabelsFile() throws Exception {
+    String[] args = {"labels-file", LABEL_FILE_LOCATION};
     Detect.argsHelper(args);
     String got = bout.toString();
     // Test that the video with a cat has the whiskers label (may change).
@@ -73,5 +85,14 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("Shots:");
     assertThat(got).contains("Location: 0");
+  }
+
+  @Test
+  public void testSpeechTranscription() throws Exception {
+    String[] args = {"speech-transcription", SPEECH_GCS_LOCATION};
+    Detect.argsHelper(args);
+    String got = bout.toString();
+
+    assertThat(got).contains("cultural");
   }
 }

@@ -79,6 +79,11 @@ public class SpannerSampleIT {
 
     runSample("write");
 
+    out = runSample("delete");
+    assertThat(out).contains("Records deleted.");
+
+    runSample("write");
+
     out = runSample("read");
     assertThat(out).contains("1 1 Total Junk");
 
@@ -147,6 +152,53 @@ public class SpannerSampleIT {
     out = runSample("querynestedstructfield");
     assertThat(out).contains("6 Imagination\n");
     assertThat(out).contains("9 Imagination\n");
+
+    runSample("insertusingdml");
+    out = runSample("querysingerstable");
+    assertThat(out).contains("Virginia Watson");
+
+    runSample("updateusingdml");
+    out = runSample("querymarketingbudget");
+    assertThat(out).contains("1 1 2000000");
+
+    runSample("deleteusingdml");
+    out = runSample("querysingerstable");
+    assertThat(out).doesNotContain("Alice Trentor");
+
+    out = runSample("updateusingdmlwithtimestamp");
+    assertThat(out).contains("2 records updated");
+
+    out = runSample("writeandreadusingdml");
+    assertThat(out).contains("Timothy Campbell");
+
+    runSample("updateusingdmlwithstruct");
+    out = runSample("querysingerstable");
+    assertThat(out).contains("Timothy Grant");
+
+    runSample("writeusingdml");
+    out = runSample("querysingerstable");
+    assertThat(out).contains("Melissa Garcia");
+    assertThat(out).contains("Russell Morales");
+    assertThat(out).contains("Jacqueline Long");
+    assertThat(out).contains("Dylan Shaw");
+
+    runSample("writewithtransactionusingdml");
+    out = runSample("querymarketingbudget");    
+    assertThat(out).contains("1 1 1800000");
+    assertThat(out).contains("2 2 200000");
+    
+    runSample("updateusingpartitioneddml");
+    out = runSample("querymarketingbudget");
+    assertThat(out).contains("1 1 1800000");
+    assertThat(out).contains("2 2 100000");
+
+    runSample("deleteusingpartitioneddml");
+    out = runSample("querysingerstable");
+    assertThat(out).doesNotContain("Timothy Grant");
+    assertThat(out).doesNotContain("Melissa Garcia");
+    assertThat(out).doesNotContain("Russell Morales");
+    assertThat(out).doesNotContain("Jacqueline Long");
+    assertThat(out).doesNotContain("Dylan Shaw");
   }
 
   private String formatForTest(String name) {

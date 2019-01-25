@@ -63,7 +63,7 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
-      <version>3.0.9.RELEASE</version>
+      <version>3.0.11.RELEASE</version>
     </dependency>
 
   </dependencies>

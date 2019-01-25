@@ -21,15 +21,23 @@ import com.example.firestore.snippets.model.City;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.Query.Direction;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 
+import com.google.firestore.v1beta1.Document;
+import com.google.protobuf.Api;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /** Snippets to support firestore querying data documentation. */
 class QueryDataSnippets {
@@ -46,14 +54,20 @@ class QueryDataSnippets {
    * @return collection reference
    */
   void prepareExamples() throws Exception {
+
     // [START fs_query_create_examples]
     CollectionReference cities = db.collection("cities");
     List<ApiFuture<WriteResult>> futures = new ArrayList<>();
-    futures.add(cities.document("SF").set(new City("San Francisco", "CA", "USA", false, 860000L)));
-    futures.add(cities.document("LA").set(new City("Los Angeles", "CA", "USA", false, 3900000L)));
-    futures.add(cities.document("DC").set(new City("Washington D.C.", null, "USA", true, 680000L)));
-    futures.add(cities.document("TOK").set(new City("Tokyo", null, "Japan", true, 9000000L)));
-    futures.add(cities.document("BJ").set(new City("Beijing", null, "China", true, 21500000L)));
+    futures.add(cities.document("SF").set(new City("San Francisco", "CA", "USA", false, 860000L,
+        Arrays.asList("west_coast", "norcal"))));
+    futures.add(cities.document("LA").set(new City("Los Angeles", "CA", "USA", false, 3900000L,
+        Arrays.asList("west_coast", "socal"))));
+    futures.add(cities.document("DC").set(new City("Washington D.C.", null, "USA", true, 680000L,
+        Arrays.asList("east_coast"))));
+    futures.add(cities.document("TOK").set(new City("Tokyo", null, "Japan", true, 9000000L,
+        Arrays.asList("kanto", "honshu"))));
+    futures.add(cities.document("BJ").set(new City("Beijing", null, "China", true, 21500000L,
+        Arrays.asList("jingjinji", "hebei"))));
     // (optional) block on documents successfully added
     ApiFutures.allAsList(futures).get();
     // [END fs_query_create_examples]
@@ -111,15 +125,29 @@ class QueryDataSnippets {
     CollectionReference cities = db.collection("cities");
 
     // [START fs_simple_queries]
-    Query countryQuery = cities.whereEqualTo("state", "CA");
+    Query stateQuery = cities.whereEqualTo("state", "CA");
     Query populationQuery = cities.whereLessThan("population", 1000000L);
-    Query cityQuery = cities.whereGreaterThanOrEqualTo("name", "San Francisco");
+    Query nameQuery = cities.whereGreaterThanOrEqualTo("name", "San Francisco");
     // [END fs_simple_queries]
 
-    querys.add(countryQuery);
+    querys.add(stateQuery);
     querys.add(populationQuery);
-    querys.add(cityQuery);
+    querys.add(nameQuery);
     return querys;
+  }
+
+  /**
+   * Creates a query based on array containment.
+   *
+   * @return query
+   */
+  Query createArrayQuery() {
+    // [START fs_array_contains_filter]
+    CollectionReference citiesRef = db.collection("cities");
+    Query westCoastQuery = citiesRef.whereArrayContains("regions", "west_coast");
+    // [END fs_array_contains_filter]
+
+    return westCoastQuery;
   }
 
   /**
@@ -306,5 +334,53 @@ class QueryDataSnippets {
         .orderBy("state")
         .startAt("Springfield", "Missouri");
     // [END fs_multiple_cursor_conditions]
+  }
+
+  /**
+   * Create a query using a snapshot as a start point.
+   *
+   * @return query
+   */
+  Query createStartAtSnapshotQueryCursor()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    // [START fs_document_snapshot_cursor]
+    // Fetch the snapshot with an API call, waiting for a maximum of 30 seconds for a result.
+    ApiFuture<DocumentSnapshot> future = db.collection("cities").document("SF").get();
+    DocumentSnapshot snapshot = future.get(30, TimeUnit.SECONDS);
+
+    // Construct the query
+    Query query = db.collection("cities")
+        .orderBy("population")
+        .startAt(snapshot);
+    // [END fs_document_snapshot_cursor]
+    return query;
+  }
+
+  /**
+   * Example of a paginated query.
+   */
+  List<Query> paginateCursor() throws InterruptedException, ExecutionException, TimeoutException {
+    // [START fs_paginate_cursor]
+    // Construct query for first 25 cities, ordered by population.
+    CollectionReference cities = db.collection("cities");
+    Query firstPage = cities
+        .orderBy("population")
+        .limit(25);
+
+    // Wait for the results of the API call, waiting for a maximum of 30 seconds for a result.
+    ApiFuture<QuerySnapshot> future = firstPage.get();
+    List<QueryDocumentSnapshot> docs = future.get(30, TimeUnit.SECONDS).getDocuments();
+
+    // Construct query for the next 25 cities.
+    QueryDocumentSnapshot lastDoc = docs.get(docs.size() - 1);
+    Query secondPage = cities
+        .orderBy("population")
+        .startAfter(lastDoc)
+        .limit(25);
+
+    future = secondPage.get();
+    docs = future.get(30, TimeUnit.SECONDS).getDocuments();
+    // [END fs_paginate_cursor]
+    return Arrays.asList(firstPage, secondPage);
   }
 }

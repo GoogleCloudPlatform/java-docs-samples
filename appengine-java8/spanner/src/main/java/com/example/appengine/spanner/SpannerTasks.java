@@ -16,6 +16,7 @@
 
 package com.example.appengine.spanner;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Key;
@@ -28,10 +29,13 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.common.base.Stopwatch;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 class SpannerTasks {
@@ -103,7 +107,8 @@ class SpannerTasks {
 
   private static DatabaseClient databaseClient = null;
 
-  private static void createDatabase(PrintWriter pw) {
+  private static void createDatabase(PrintWriter pw) throws InterruptedException,
+      ExecutionException {
     Iterable<String> statements =
         Arrays.asList(
             "CREATE TABLE Singers (\n"
@@ -122,8 +127,7 @@ class SpannerTasks {
         SpannerClient.getDatabaseAdminClient()
             .createDatabase(
                 SpannerClient.getInstanceId(), SpannerClient.getDatabaseId(), statements)
-            .waitFor()
-            .getResult();
+            .get();
     pw.println("Created database [" + db.getId() + "]");
   }
 
@@ -180,15 +184,15 @@ class SpannerTasks {
     }
   }
 
-  private static void addMarketingBudgetColumnToAlbums(PrintWriter pw) {
-    Operation<Void, UpdateDatabaseDdlMetadata> op =
-        SpannerClient.getDatabaseAdminClient()
-            .updateDatabaseDdl(
-                SpannerClient.getInstanceId(),
-                SpannerClient.getDatabaseId(),
-                Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
-                null);
-    op.waitFor();
+  private static void addMarketingBudgetColumnToAlbums(PrintWriter pw) throws ExecutionException,
+      InterruptedException {
+    SpannerClient.getDatabaseAdminClient()
+        .updateDatabaseDdl(
+            SpannerClient.getInstanceId(),
+            SpannerClient.getDatabaseId(),
+            Collections.singletonList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
+            null)
+        .get();
   }
 
   // Before executing this method, a new column MarketingBudget has to be added to the Albums
@@ -281,15 +285,14 @@ class SpannerTasks {
     }
   }
 
-  private static void addIndex() {
-    Operation<Void, UpdateDatabaseDdlMetadata> op =
-        SpannerClient.getDatabaseAdminClient()
-            .updateDatabaseDdl(
-                SpannerClient.getInstanceId(),
-                SpannerClient.getDatabaseId(),
-                Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
-                null);
-    op.waitFor();
+  private static void addIndex() throws ExecutionException, InterruptedException {
+    SpannerClient.getDatabaseAdminClient()
+        .updateDatabaseDdl(
+            SpannerClient.getInstanceId(),
+            SpannerClient.getDatabaseId(),
+            Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
+            null)
+        .get();
   }
 
   // Before running this example, add the index AlbumsByAlbumTitle by applying the DDL statement
@@ -328,17 +331,16 @@ class SpannerTasks {
     }
   }
 
-  private static void addStoringIndex() {
-    Operation<Void, UpdateDatabaseDdlMetadata> op =
-        SpannerClient.getDatabaseAdminClient()
-            .updateDatabaseDdl(
-                SpannerClient.getInstanceId(),
-                SpannerClient.getDatabaseId(),
-                Arrays.asList(
-                    "CREATE INDEX AlbumsByAlbumTitle2 "
-                        + "ON Albums(AlbumTitle) STORING (MarketingBudget)"),
-                null);
-    op.waitFor();
+  private static void addStoringIndex() throws ExecutionException, InterruptedException {
+    SpannerClient.getDatabaseAdminClient()
+        .updateDatabaseDdl(
+            SpannerClient.getInstanceId(),
+            SpannerClient.getDatabaseId(),
+            Arrays.asList(
+                "CREATE INDEX AlbumsByAlbumTitle2 "
+                    + "ON Albums(AlbumTitle) STORING (MarketingBudget)"),
+            null)
+        .get();
   }
 
   // Before running this example, create a storing index AlbumsByAlbumTitle2 by applying the DDL
@@ -366,7 +368,7 @@ class SpannerTasks {
     // ReadOnlyTransaction must be closed by calling close() on it to release resources held by it.
     // We use a try-with-resource block to automatically do so.
     try (ReadOnlyTransaction transaction =
-        SpannerClient.getDatabaseClient().readOnlyTransaction()) {
+             SpannerClient.getDatabaseClient().readOnlyTransaction()) {
       ResultSet queryResultSet =
           transaction.executeQuery(
               Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"));
@@ -386,7 +388,7 @@ class SpannerTasks {
     }
   }
 
-  static void runTask(Task task, PrintWriter pw) {
+  static void runTask(Task task, PrintWriter pw) throws ExecutionException, InterruptedException {
     Stopwatch stopwatch = Stopwatch.createStarted();
     switch (task) {
       case createDatabase:

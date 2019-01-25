@@ -75,6 +75,16 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
   }
 
   @Test
+  public void testArrayQueryReturnsExpectedResults() throws Exception {
+    Set<String> expected = new HashSet<>(Arrays.asList("SF", "LA"));
+
+    Query query = queryDataSnippets.createArrayQuery();
+    Set<String> results = getResultsAsSet(query);
+
+    assertTrue(Objects.equals(results, expected));
+  }
+
+  @Test
   public void testChainedQuery() throws Exception {
     Query q = queryDataSnippets.createChainedQuery();
     Set<String> result = getResultsAsSet(q);
@@ -185,6 +195,24 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
     List<String> expectedResults = Arrays.asList("Missouri", "Wisconsin");
     List<String> result = getResults(query2);
     assertTrue(Objects.equals(result, expectedResults));
+  }
+
+  @Test
+  public void testCreateStartAtSnapshotQueryCursor() throws Exception {
+    Query q = queryDataSnippets.createStartAtSnapshotQueryCursor();
+    List<String> results = getResults(q);
+    List<String> expectedResults = Arrays.asList("SF", "LA", "TOK", "BJ");
+    assertEquals(expectedResults, results);
+  }
+
+  @Test
+  public void testPaginateCursor() throws Exception {
+    // Snippet executes it's own query. Failures result in thrown Exceptions
+    List<Query> pages = queryDataSnippets.paginateCursor();
+    List<String> firstPage = getResults(pages.get(0));
+    List<String> secondPage = getResults(pages.get(1));
+    assertEquals(Arrays.asList("DC", "SF", "LA", "TOK", "BJ"), firstPage);
+    assertEquals(new ArrayList<String>(), secondPage);
   }
 
   private Set<String> getResultsAsSet(Query query) throws Exception {

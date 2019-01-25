@@ -19,6 +19,7 @@ package com.example.spanner;
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 import static com.google.cloud.spanner.Type.StructField;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -26,10 +27,11 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Operation;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerException;
+import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
@@ -42,6 +44,7 @@ import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -56,6 +59,8 @@ import java.util.concurrent.TimeUnit;
  *   <li>Writing data using a read-write transaction.
  *   <li>Using an index to read and execute SQL queries over data.
  *   <li>Using commit timestamp for tracking when a record was last updated.
+ *   <li>Using Google API Extensions for Java to make thread-safe requests via
+ *       long-running operations. http://googleapis.github.io/gax-java/
  * </ul>
  */
 public class SpannerSample {
@@ -132,7 +137,7 @@ public class SpannerSample {
 
   // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Database, CreateDatabaseMetadata> op =
+    OperationFuture<Database, CreateDatabaseMetadata> op =
         dbAdminClient.createDatabase(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
@@ -149,14 +154,24 @@ public class SpannerSample {
                     + "  AlbumTitle   STRING(MAX)\n"
                     + ") PRIMARY KEY (SingerId, AlbumId),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"));
-    Database db = op.waitFor().getResult();
-    System.out.println("Created database [" + db.getId() + "]");
+    try {
+      // Initiate the request which returns an OperationFuture.
+      Database db = op.get();
+      System.out.println("Created database [" + db.getId() + "]");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_database]
 
   // [START spanner_create_table_with_timestamp_column]
   static void createTableWithTimestamp(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Void, UpdateDatabaseDdlMetadata> op =
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
         dbAdminClient.updateDatabaseDdl(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
@@ -170,8 +185,18 @@ public class SpannerSample {
                     + ") PRIMARY KEY (SingerId, VenueId, EventDate),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"),
             null);
-    op.waitFor().getResult();
-    System.out.println("Created Performances table in database: [" + id + "]");
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Created Performances table in database: [" + id + "]");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_table_with_timestamp_column]
 
@@ -226,6 +251,25 @@ public class SpannerSample {
   }
   // [END spanner_insert_data]
 
+  // [START spanner_delete_data]
+  static void deleteExampleData(DatabaseClient dbClient) {
+    List<Mutation> mutations = new ArrayList<>();
+
+    // KeySet.all() can be used to delete all the rows in a table.
+    mutations.add(Mutation.delete("Albums", KeySet.all()));
+
+    // KeySet.singleKey() can be used to delete one row at a time.
+    for (Singer singer : SINGERS) {
+      mutations.add(
+          Mutation.delete("Singers", 
+              KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
+    }
+
+    dbClient.write(mutations);
+    System.out.printf("Records deleted.\n");
+  } 
+  // [END spanner_delete_data]
+
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
     // singleUse() can be used to execute a single read or query against Cloud Spanner.
@@ -260,14 +304,25 @@ public class SpannerSample {
 
   // [START spanner_add_column]
   static void addMarketingBudget(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
-            null)
-        .waitFor();
-    System.out.println("Added MarketingBudget column");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
+              null);
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added MarketingBudget column");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_add_column]
 
@@ -371,14 +426,25 @@ public class SpannerSample {
 
   // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
-            null)
-        .waitFor();
-    System.out.println("Added AlbumsByAlbumTitle index");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
+              null);
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added AlbumsByAlbumTitle index");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_index]
 
@@ -431,15 +497,27 @@ public class SpannerSample {
 
   // [START spanner_create_storing_index]
   static void addStoringIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList(
-                "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)"),
-            null)
-        .waitFor();
-    System.out.println("Added AlbumsByAlbumTitle2 index");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList(
+                  "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) "
+                      + "STORING (MarketingBudget)"),
+              null); 
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added AlbumsByAlbumTitle2 index");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_storing_index]
 
@@ -509,16 +587,27 @@ public class SpannerSample {
 
   // [START spanner_add_timestamp_column]
   static void addCommitTimestamp(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList(
-                "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
-                    + "OPTIONS (allow_commit_timestamp=true)"),
-            null)
-        .waitFor();
-    System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList(
+                  "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
+                      + "OPTIONS (allow_commit_timestamp=true)"),
+              null); 
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_add_timestamp_column]
 
@@ -581,6 +670,22 @@ public class SpannerSample {
   }
   // [END spanner_query_data_with_timestamp_column]
 
+  static void querySingersTable(DatabaseClient dbClient) {
+    ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    "SELECT SingerId, FirstName, LastName FROM Singers"));
+    while (resultSet.next()) {
+      System.out.printf(
+          "%s %s %s\n",
+          resultSet.getLong("SingerId"),
+          resultSet.getString("FirstName"),
+          resultSet.getString("LastName"));
+    }
+  }
+
   static void queryPerformancesTable(DatabaseClient dbClient) {
     // Rows without an explicit value for Revenue will have a Revenue equal to
     // null.
@@ -589,8 +694,8 @@ public class SpannerSample {
             .singleUse()
             .executeQuery(
                 Statement.of(
-                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime FROM Performances"
-                        + " ORDER BY LastUpdateTime DESC"));
+                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime "
+                        + "FROM Performances ORDER BY LastUpdateTime DESC"));
     while (resultSet.next()) {
       System.out.printf(
           "%d %d %s %s %s\n",
@@ -640,8 +745,8 @@ public class SpannerSample {
     Statement s =
         Statement.newBuilder(
                 "SELECT SingerId FROM Singers "
-                + "WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
-                + "= @name")
+                    + "WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
+                    + "= @name")
             .bind("name")
             .to(name)
             .build();
@@ -676,8 +781,8 @@ public class SpannerSample {
     Statement s =
         Statement.newBuilder(
                 "SELECT SingerId FROM Singers WHERE "
-                + "STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
-                + "IN UNNEST(@names)")
+                    + "STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
+                    + "IN UNNEST(@names)")
             .bind("names")
             .toStructArray(nameType, bandMembers)
             .build();
@@ -756,6 +861,229 @@ public class SpannerSample {
   }
   // [END spanner_field_access_on_nested_struct_parameters]
 
+  // [START spanner_dml_standard_insert]
+  static void insertUsingDml(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                String sql =
+                    "INSERT INTO Singers (SingerId, FirstName, LastName) "
+                        + " VALUES (10, 'Virginia', 'Watson')";
+                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                System.out.printf("%d record inserted.\n", rowCount);
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_standard_insert]
+
+  // [START spanner_dml_standard_update]
+  static void updateUsingDml(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                String sql =
+                    "UPDATE Albums "
+                        + "SET MarketingBudget = MarketingBudget * 2 "
+                        + "WHERE SingerId = 1 and AlbumId = 1";
+                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                System.out.printf("%d record updated.\n", rowCount);
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_standard_update]
+
+  // [START spanner_dml_standard_delete]
+  static void deleteUsingDml(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                String sql = "DELETE FROM Singers WHERE FirstName = 'Alice'";
+                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                System.out.printf("%d record deleted.\n", rowCount);
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_standard_delete]
+
+  // [START spanner_dml_standard_update_with_timestamp]
+  static void updateUsingDmlWithTimestamp(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                String sql =
+                    "UPDATE Albums "
+                        + "SET LastUpdateTime = PENDING_COMMIT_TIMESTAMP() WHERE SingerId = 1";
+                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                System.out.printf("%d records updated.\n", rowCount);
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_standard_update_with_timestamp]
+
+  // [START spanner_dml_write_then_read]
+  static void writeAndReadUsingDml(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                // Insert record.
+                String sql =
+                    "INSERT INTO Singers (SingerId, FirstName, LastName) "
+                        + " VALUES (11, 'Timothy', 'Campbell')";
+                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                System.out.printf("%d record inserted.\n", rowCount);
+                // Read newly inserted record.
+                sql = "SELECT FirstName, LastName FROM Singers WHERE SingerId = 11";
+                ResultSet resultSet = transaction.executeQuery(Statement.of(sql));
+                while (resultSet.next()) {
+                  System.out.printf(
+                      "%s %s\n", resultSet.getString("FirstName"), resultSet.getString("LastName"));
+                }
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_write_then_read]
+
+  // [START spanner_dml_structs]
+  static void updateUsingDmlWithStruct(DatabaseClient dbClient) {
+    Struct name =
+        Struct.newBuilder().set("FirstName").to("Timothy").set("LastName").to("Campbell").build();
+    Statement s =
+        Statement.newBuilder(
+                "UPDATE Singers SET LastName = 'Grant' "
+                    + "WHERE STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
+                    + "= @name")
+            .bind("name")
+            .to(name)
+            .build();
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                long rowCount = transaction.executeUpdate(s);
+                System.out.printf("%d record updated.\n", rowCount);
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_structs]
+
+  // [START spanner_dml_getting_started_insert]
+  static void writeUsingDml(DatabaseClient dbClient) {
+    // Insert 4 singer records
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                String sql =
+                    "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES "
+                        + "(12, 'Melissa', 'Garcia'), "
+                        + "(13, 'Russell', 'Morales'), "
+                        + "(14, 'Jacqueline', 'Long'), "
+                        + "(15, 'Dylan', 'Shaw')";
+                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                System.out.printf("%d records inserted.\n", rowCount);
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_getting_started_insert]
+
+  // [START spanner_dml_getting_started_update]
+  static void writeWithTransactionUsingDml(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                // Transfer marketing budget from one album to another. We do it in a transaction to
+                // ensure that the transfer is atomic.
+                String sql1 =
+                    "SELECT MarketingBudget from Albums WHERE SingerId = 1 and AlbumId = 1";
+                ResultSet resultSet = transaction.executeQuery(Statement.of(sql1));
+                long album1Budget = 0;
+                while (resultSet.next()) {
+                  album1Budget = resultSet.getLong("MarketingBudget");
+                }
+                // Transaction will only be committed if this condition still holds at the time of
+                // commit. Otherwise it will be aborted and the callable will be rerun by the
+                // client library.
+                if (album1Budget >= 300000) {
+                  String sql2 =
+                      "SELECT MarketingBudget from Albums WHERE SingerId = 2 and AlbumId = 2";
+                  ResultSet resultSet2 = transaction.executeQuery(Statement.of(sql2));
+                  long album2Budget = 0;
+                  while (resultSet.next()) {
+                    album2Budget = resultSet2.getLong("MarketingBudget");
+                  }
+                  long transfer = 200000;
+                  album2Budget += transfer;
+                  album1Budget -= transfer;
+                  Statement updateStatement =
+                      Statement.newBuilder(
+                          "UPDATE Albums "
+                              + "SET MarketingBudget = @AlbumBudget "
+                              + "WHERE SingerId = 1 and AlbumId = 1")
+                          .bind("AlbumBudget")
+                          .to(album1Budget)
+                          .build();
+                  transaction.executeUpdate(updateStatement);
+                  Statement updateStatement2 =
+                      Statement.newBuilder(
+                          "UPDATE Albums "
+                              + "SET MarketingBudget = @AlbumBudget "
+                              + "WHERE SingerId = 2 and AlbumId = 2")
+                          .bind("AlbumBudget")
+                          .to(album2Budget)
+                          .build();
+                  transaction.executeUpdate(updateStatement2);
+                }
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_getting_started_update]
+
+  // [START spanner_dml_partitioned_update]
+  static void updateUsingPartitionedDml(DatabaseClient dbClient) {
+    String sql = "UPDATE Albums SET MarketingBudget = 100000 WHERE SingerId > 1";
+    long rowCount = dbClient.executePartitionedUpdate(Statement.of(sql));
+    System.out.printf("%d records updated.\n", rowCount);
+  }
+  // [END spanner_dml_partitioned_update]
+
+  // [START spanner_dml_partitioned_delete]
+  static void deleteUsingPartitionedDml(DatabaseClient dbClient) {
+    String sql = "DELETE FROM Singers WHERE SingerId > 10";
+    long rowCount = dbClient.executePartitionedUpdate(Statement.of(sql));
+    System.out.printf("%d records deleted.\n", rowCount);
+  }
+  // [END spanner_dml_partitioned_delete]
+
   static void run(
       DatabaseClient dbClient,
       DatabaseAdminClient dbAdminClient,
@@ -767,6 +1095,9 @@ public class SpannerSample {
         break;
       case "write":
         writeExampleData(dbClient);
+        break;
+      case "delete":
+        deleteExampleData(dbClient);
         break;
       case "query":
         query(dbClient);
@@ -822,6 +1153,9 @@ public class SpannerSample {
       case "writewithtimestamp":
         writeExampleDataWithTimestamp(dbClient);
         break;
+      case "querysingerstable":
+        querySingersTable(dbClient);
+        break;
       case "queryperformancestable":
         queryPerformancesTable(dbClient);
         break;
@@ -840,6 +1174,36 @@ public class SpannerSample {
       case "querynestedstructfield":
         queryNestedStructField(dbClient);
         break;
+      case "insertusingdml":
+        insertUsingDml(dbClient);
+        break;
+      case "updateusingdml":
+        updateUsingDml(dbClient);
+        break;
+      case "deleteusingdml":
+        deleteUsingDml(dbClient);
+        break;
+      case "updateusingdmlwithtimestamp":
+        updateUsingDmlWithTimestamp(dbClient);
+        break;
+      case "writeandreadusingdml":
+        writeAndReadUsingDml(dbClient);
+        break;
+      case "updateusingdmlwithstruct":
+        updateUsingDmlWithStruct(dbClient);
+        break;
+      case "writeusingdml":
+        writeUsingDml(dbClient);
+        break;
+      case "writewithtransactionusingdml":
+        writeWithTransactionUsingDml(dbClient);
+        break;
+      case "updateusingpartitioneddml":
+        updateUsingPartitionedDml(dbClient);
+        break;
+      case "deleteusingpartitioneddml":
+        deleteUsingPartitionedDml(dbClient);
+        break;        
       default:
         printUsageAndExit();
     }
@@ -852,6 +1216,7 @@ public class SpannerSample {
     System.err.println("Examples:");
     System.err.println("    SpannerExample createdatabase my-instance example-db");
     System.err.println("    SpannerExample write my-instance example-db");
+    System.err.println("    SpannerExample delete my-instance example-db");
     System.err.println("    SpannerExample query my-instance example-db");
     System.err.println("    SpannerExample read my-instance example-db");
     System.err.println("    SpannerExample addmarketingbudget my-instance example-db");
@@ -870,12 +1235,23 @@ public class SpannerSample {
     System.err.println("    SpannerExample querywithtimestamp my-instance example-db");
     System.err.println("    SpannerExample createtablewithtimestamp my-instance example-db");
     System.err.println("    SpannerExample writewithtimestamp my-instance example-db");
+    System.err.println("    SpannerExample querysingerstable my-instance example-db");    
     System.err.println("    SpannerExample queryperformancestable my-instance example-db");
     System.err.println("    SpannerExample writestructdata my-instance example-db");
     System.err.println("    SpannerExample querywithstruct my-instance example-db");
     System.err.println("    SpannerExample querywitharrayofstruct my-instance example-db");
     System.err.println("    SpannerExample querystructfield my-instance example-db");
     System.err.println("    SpannerExample querynestedstructfield my-instance example-db");
+    System.err.println("    SpannerExample insertusingdml my-instance example-db");
+    System.err.println("    SpannerExample updateusingdml my-instance example-db");
+    System.err.println("    SpannerExample deleteusingdml my-instance example-db");
+    System.err.println("    SpannerExample updateusingdmlwithtimestamp my-instance example-db");
+    System.err.println("    SpannerExample writeandreadusingdml my-instance example-db");
+    System.err.println("    SpannerExample updateusingdmlwithstruct my-instance example-db");
+    System.err.println("    SpannerExample writeusingdml my-instance example-db");
+    System.err.println("    SpannerExample writewithtransactionusingdml my-instance example-db");
+    System.err.println("    SpannerExample updateusingpartitioneddml my-instance example-db");
+    System.err.println("    SpannerExample deleteusingpartitioneddml my-instance example-db");
     System.exit(1);
   }
 

@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
   </parent>
 
   <properties>
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.56.0-beta</version>
+      <version>0.70.0-beta</version>
     </dependency>
     <!-- [END speech_quickstart_dependencies] -->
 
@@ -129,6 +129,34 @@
             </executions>
             <configuration>
               <mainClass>com.example.speech.Recognize</mainClass>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>InfiniteStreamRecognize</id>
+      <activation>
+        <property>
+          <name>InfiniteStreamRecognize</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.example.speech.InfiniteStreamRecognize</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </plugin>

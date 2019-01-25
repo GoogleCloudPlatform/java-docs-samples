@@ -21,6 +21,7 @@ App Engine task attempts.
  [Cloud Tasks API](https://console.cloud.google.com/launcher/details/google/cloudtasks.googleapis.com).
  * Download and install the [Cloud SDK](https://cloud.google.com/sdk).
  * Download and install [Maven](http://maven.apache.org/install.html).
+ * Set up [Google Application Credentials](https://cloud.google.com/docs/authentication/getting-started).
 
 ## Creating a queue
 
@@ -37,25 +38,18 @@ version unless configured to do otherwise.
 [Using Maven and the App Engine Plugin](https://cloud.google.com/appengine/docs/flexible/java/using-maven)
 & [Maven Plugin Goals and Parameters](https://cloud.google.com/appengine/docs/flexible/java/maven-reference)
 
-### Running locally
-
-```
-mvn appengine:run
-```
-### Deploying
-
 ```
 mvn appengine:deploy
 ```
 
-## Running the Sample
+## Run the Sample Using the Command Line
 
 Set environment variables:
 
 First, your project ID:
 
 ```
-export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT_ID>
+export GOOGLE_CLOUD_PROJECT=<YOUR_GOOGLE_CLOUD_PROJECT>
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
@@ -85,11 +79,7 @@ mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
 
 The App Engine app serves as a target for the push requests. It has an
 endpoint `/tasks/create` that reads the payload (i.e., the request body) of the
-HTTP POST request and logs it. The log output can be viewed with:
-
-```
-gcloud app logs read
-```
+HTTP POST request and logs it. The log output can be viewed with [Stackdriver Logging](https://console.cloud.google.com/logs/viewer?minLogLevel=0).
 
 Create a task that will be scheduled for a time in the future using the
 `--in-seconds` flag:
