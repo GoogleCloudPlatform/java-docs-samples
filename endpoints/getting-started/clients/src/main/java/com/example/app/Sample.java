@@ -21,8 +21,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
-import java.net.*;
-import java.io.*;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Sample {
 
