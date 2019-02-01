@@ -146,7 +146,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Google");
+    assertThat(got).contains("google");
   }
 
   @Test
@@ -157,7 +157,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Google");
+    assertThat(got).contains("google");
   }
 
   @Test
