@@ -73,8 +73,16 @@ public class Sample {
 // [END endpoints_jwt_request]
 
   public static void main(String[] args) throws Exception {
-    String jwt = generateJWT("/app/key.json", "iss", "sub", 100);
+    String keyPath = args[0];
+    URL host = new URL(args[1]);
+    String audience = args[2];
+    String saEmail = args[3];
+
+    String jwt = generateJWT(keyPath, saEmail, audience, 3600);
     System.out.println(jwt);
+
+    String response = makeJWTRequest(jwt, host);
+    System.out.println(response);
   }
 
 }
