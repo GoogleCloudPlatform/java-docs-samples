@@ -27,7 +27,7 @@ import java.net.ProtocolException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Sample {
+public class JWTClient {
 
 
 // [START endpoints_generate_jwt_sa]
