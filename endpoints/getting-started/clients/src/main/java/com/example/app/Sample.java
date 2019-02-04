@@ -31,17 +31,28 @@ public class Sample {
 
 
 // [START endpoints_generate_jwt_sa]
+  /*
+   * Generates a signed JSON Web Token using a Google API Service Account
+   * utilizes com.auth0.jwt
+   */
   public static String generateJWT(String saKeyfile, String saEmail, String audience,
       int expiryLength) throws FileNotFoundException, IOException {
 
     Date now = new Date();
     Date expiration = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expiryLength));
 
+    // build jwt
     JWTCreator.Builder token = JWT.create()
                                   .withIssuedAt(now)
+                                  // expires after 'expirary_length' seconds.
                                   .withExpiresAt(expiration)
+                                  // must match 'issuer' in the security configuration in your
+                                  // swagger spec (e.g. service account email). It can be any string
                                   .withIssuer(saEmail)
+                                  // must be either your Endpoints service name, or match the value
+                                  // specified as the 'x-google-audience' in the OpenAPI document.
                                   .withAudience(audience)
+                                  // subject and email should match the service account's email
                                   .withSubject(saEmail)
                                   .withClaim("email", saEmail);
 
@@ -55,6 +66,9 @@ public class Sample {
 
 
 // [START endpoints_jwt_request]
+  /*
+   * Makes an authorized request to the endpoint
+   */
   public static String makeJWTRequest(String singedJWT, URL url) throws IOException, ProtocolException{
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
