@@ -89,7 +89,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("whiskers");
+    assertThat(got).contains("Whiskers");
   }
 
   @Test
@@ -100,7 +100,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("whiskers");
+    assertThat(got).contains("Whiskers");
   }
 
   @Test
