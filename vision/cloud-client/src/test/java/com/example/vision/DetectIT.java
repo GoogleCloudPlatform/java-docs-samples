@@ -363,7 +363,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("HODGE'S GENERAL CONJECTURE");
+    assertThat(got).contains("OIL, GAS AND MINERAL LEASE");
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
 
