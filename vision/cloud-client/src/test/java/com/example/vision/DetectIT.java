@@ -40,7 +40,8 @@ public class DetectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID;
+  private static final String ASSET_BUCKET = "cloud-samples-data";
+  private static final String OUTPUT_BUCKET = PROJECT_ID;
   private static final  String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT";
 
   @Before
@@ -71,7 +72,7 @@ public class DetectIT {
   @Test
   public void testFacesGcs() throws Exception {
     // Act
-    String[] args = {"faces", "gs://" + BUCKET + "/vision/face_no_surprise.jpg"};
+    String[] args = {"faces", "gs://" + ASSET_BUCKET + "/vision/face/face_no_surprise.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -95,7 +96,7 @@ public class DetectIT {
   @Test
   public void testLabelsGcs() throws Exception {
     // Act
-    String[] args = {"labels", "gs://" + BUCKET + "/vision/wakeupcat.jpg"};
+    String[] args = {"labels", "gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -117,7 +118,7 @@ public class DetectIT {
   @Test
   public void testLandmarksGcs() throws Exception {
     // Act
-    String[] args = {"landmarks", "gs://" + BUCKET + "/vision/landmark.jpg"};
+    String[] args = {"landmarks", "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -129,7 +130,7 @@ public class DetectIT {
   public void testLandmarksUrl() throws Exception {
     // Act
     String uri = "https://storage-download.googleapis.com/"
-        + BUCKET + "/vision/landmark.jpg";
+        + ASSET_BUCKET + "/vision/landmark/pofa.jpg";
     String[] args = {"landmarks", uri};
     Detect.argsHelper(args, out);
 
@@ -152,7 +153,7 @@ public class DetectIT {
   @Test
   public void testLogosGcs() throws Exception {
     // Act
-    String[] args = {"logos", "gs://" + BUCKET + "/vision/logos.png"};
+    String[] args = {"logos", "gs://" + ASSET_BUCKET + "/vision/logo/logo_google.png"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -174,7 +175,7 @@ public class DetectIT {
   @Test
   public void testTextGcs() throws Exception {
     // Act
-    String[] args = {"text", "gs://" + BUCKET + "/vision/text.jpg"};
+    String[] args = {"text", "gs://" + ASSET_BUCKET + "/vision/text/screen.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -197,7 +198,7 @@ public class DetectIT {
   @Test
   public void testSafeSearchGcs() throws Exception {
     // Act
-    String[] args = {"safe-search", "gs://" + BUCKET + "/vision/wakeupcat.jpg"};
+    String[] args = {"safe-search", "gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -223,7 +224,7 @@ public class DetectIT {
   @Test
   public void testPropertiesGcs() throws Exception {
     // Act
-    String[] args = {"properties", "gs://" + BUCKET + "/vision/landmark.jpg"};
+    String[] args = {"properties", "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -249,7 +250,7 @@ public class DetectIT {
   @Test
   public void detectWebAnnotationsGcs() throws Exception {
     // Act
-    String[] args = {"web", "gs://" + BUCKET + "/vision/landmark.jpg"};
+    String[] args = {"web", "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -272,7 +273,7 @@ public class DetectIT {
   @Test
   public void testDetectWebEntitiesGcs() throws Exception {
     // Act
-    String[] args = {"web-entities", "gs://" + BUCKET + "/vision/landmark.jpg"};
+    String[] args = {"web-entities", "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg"};
     Detect.argsHelper(args, out);
 
     String got = bout.toString();
@@ -294,7 +295,7 @@ public class DetectIT {
   @Test
   public void testDetectWebEntitiesIncludeGeoResultsGcs() throws Exception {
     // Act
-    String[] args = {"web-entities-include-geo", "gs://" + BUCKET + "/vision/landmark.jpg"};
+    String[] args = {"web-entities-include-geo", "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg"};
     Detect.argsHelper(args, out);
 
     String got = bout.toString();
@@ -317,7 +318,7 @@ public class DetectIT {
   @Test
   public void testCropHintsGcs() throws Exception {
     // Act
-    String[] args = {"crop", "gs://" + BUCKET + "/vision/wakeupcat.jpg"};
+    String[] args = {"crop", "gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -343,7 +344,7 @@ public class DetectIT {
   @Test
   public void testDocumentTextGcs() throws Exception {
     // Act
-    String[] args = {"fulltext", "gs://" + BUCKET + "/vision/text.jpg"};
+    String[] args = {"fulltext", "gs://" + ASSET_BUCKET + "/vision/text/screen.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -356,8 +357,8 @@ public class DetectIT {
   @Test
   public void testDetectDocumentsGcs() throws Exception {
     // Act
-    String[] args = {"ocr", "gs://" + BUCKET + "/vision/HodgeConj.pdf",
-        "gs://" + BUCKET + "/" + OUTPUT_PREFIX + "/"};
+    String[] args = {"ocr", "gs://" + ASSET_BUCKET + "/vision/document/custom_0773375000.pdf",
+        "gs://" + OUTPUT_BUCKET + "/" + OUTPUT_PREFIX + "/"};
     Detect.argsHelper(args, out);
 
     // Assert
@@ -366,7 +367,7 @@ public class DetectIT {
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
 
-    Page<Blob> blobs = storage.list(BUCKET, BlobListOption.currentDirectory(),
+    Page<Blob> blobs = storage.list(OUTPUT_BUCKET, BlobListOption.currentDirectory(),
         BlobListOption.prefix(OUTPUT_PREFIX + "/"));
 
     for (Blob blob : blobs.iterateAll()) {
@@ -388,7 +389,7 @@ public class DetectIT {
   @Test
   public void testDetectLocalizedObjectsGcs() throws Exception {
     // Act
-    String[] args = {"object-localization", "gs://cloud-samples-data/vision/puppies.jpg"};
+    String[] args = {"object-localization", "gs://cloud-samples-data/vision/object_localization/puppies.jpg"};
     Detect.argsHelper(args, out);
 
     // Assert
