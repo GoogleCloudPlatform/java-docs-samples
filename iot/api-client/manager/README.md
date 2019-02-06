@@ -16,7 +16,7 @@ the sample every time you run it.
 Run the following command to install the libraries and build the sample with
 Maven:
 
-mvn clean compile assembly:single
+    mvn clean compile assembly:single
 
 ## Running the sample
 
@@ -165,6 +165,53 @@ Patch a device with RSA:
                    -rsa_certificate_file ../rsa_cert.pem \
                    -device_id=java-device-0 \
                    -command=patch-device-rsa"
+
+Create a gateway:
+
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -registry_name=your-registry \
+                   -public_key_file ../rsa_cert.pem \
+                   -gateway_id=java-gateway-0 \
+                   -command=create-gateway"
+
+Bind a device to a gateway:
+
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -registry_name=your-registry \
+                   -gateway_id=java-gateway-0 \
+                   -device_id=java-device-0 \
+                   -command=bind-device-to-gateway"
+
+Unbind a device to a gateway:
+
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -registry_name=your-registry \
+                   -gateway_id=java-gateway-0 \
+                   -device_id=java-device-0 \
+                   -command=unbind-device-from-gateway"
+
+List gateways in a registry.
+
+    mvn exec:java \
+          -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+          -Dexec.args="-project_id=blue-jet-123 \
+                       -registry_name=your-registry \
+                       -command=list-gateways"
+
+List devices bound to a gateway.
+
+    mvn exec:java \
+              -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+              -Dexec.args="-project_id=blue-jet-123 \
+                           -registry_name=your-registry \
+                           -gateway_id=your-gateway-id  \
+                           -command=list-devices-for-gateway"
 
 
 # Cloud IoT Core Java HTTP example
