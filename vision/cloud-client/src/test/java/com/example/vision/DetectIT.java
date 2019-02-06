@@ -89,8 +89,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Whiskers");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("whiskers");
   }
 
   @Test
@@ -100,8 +100,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Whiskers");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("whiskers");
   }
 
   @Test
@@ -111,8 +111,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Palace of Fine Arts");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("palace of fine arts");
   }
 
   @Test
@@ -122,8 +122,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Palace of Fine Arts");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("palace of fine arts");
   }
 
   @Test
@@ -134,8 +134,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Palace of Fine Arts");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("palace of fine arts");
   }
 
   @Test
@@ -145,7 +145,7 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
+    String got = bout.toString().toLowerCase();
     assertThat(got).contains("google");
   }
 
@@ -156,7 +156,7 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
+    String got = bout.toString().toLowerCase();
     assertThat(got).contains("google");
   }
 
@@ -241,9 +241,9 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("History");
-    assertThat(got).contains("Best guess label: palace of fine arts");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("history");
+    assertThat(got).contains("best guess label: palace of fine arts");
   }
 
   @Test
@@ -253,9 +253,9 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("History");
-    assertThat(got).contains("Best guess label: palace of fine arts");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("history");
+    assertThat(got).contains("best guess label: palace of fine arts");
   }
 
   @Test
@@ -265,8 +265,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).doesNotContain("Zepra");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).doesNotContain("zepra");
   }
 
   @Test
@@ -275,8 +275,8 @@ public class DetectIT {
     String[] args = { "web-entities", "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg" };
     Detect.argsHelper(args, out);
 
-    String got = bout.toString();
-    assertThat(got).contains("Description");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("description");
   }
 
   @Test
@@ -286,9 +286,9 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
+    String got = bout.toString().toLowerCase();
     // Note: entities and labels can change over time.
-    assertThat(got).doesNotContain("Error");
+    assertThat(got).doesNotContain("error");
   }
 
   @Test
@@ -298,8 +298,8 @@ public class DetectIT {
         "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg" };
     Detect.argsHelper(args, out);
 
-    String got = bout.toString();
-    assertThat(got).contains("Description");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("description");
   }
 
   @Test
@@ -382,8 +382,8 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Dog");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("dog");
   }
 
   @Test
@@ -394,7 +394,7 @@ public class DetectIT {
     Detect.argsHelper(args, out);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Dog");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("dog");
   }
 }
