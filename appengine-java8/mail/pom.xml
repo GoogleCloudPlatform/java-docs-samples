@@ -23,7 +23,7 @@ Copyright 2016 Google Inc.
   <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
   <parent>
     <groupId>com.google.cloud</groupId>
-    <artifactId>appengine-doc-samples</artifactId>
+    <artifactId>java-docs-samples</artifactId>
     <version>1.0.0</version>
     <relativePath>..</relativePath>
   </parent>
