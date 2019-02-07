@@ -891,7 +891,7 @@ public class DeviceRegistryExample {
       MqttClient client, String deviceId, String messageType, String data) throws MqttException {
     // [START send_data_from_bound_device]
     if (!messageType.equals("events") && !messageType.equals("state")) {
-      System.err.println("Invalid message type, must ether be 'state' or events'");
+      System.err.println(String.format("%s is invalid message type, must ether be 'state' or events'", messageType));
       return;
     }
     final String dataTopic = String.format("/devices/%s/%s", deviceId, messageType);
