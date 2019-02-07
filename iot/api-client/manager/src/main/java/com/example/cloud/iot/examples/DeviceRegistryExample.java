@@ -24,7 +24,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Charsets;
 import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
-<<<<<<< HEAD
 import com.google.api.services.cloudiot.v1.model.BindDeviceToGatewayRequest;
 import com.google.api.services.cloudiot.v1.model.BindDeviceToGatewayResponse;
 import com.google.api.services.cloudiot.v1.model.Device;
@@ -33,19 +32,16 @@ import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.api.services.cloudiot.v1.model.DeviceState;
 import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
-import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
-import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
-import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.GatewayConfig;
 import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
-import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
-import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
+import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
+import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
+import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceRequest;
+import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
+import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayResponse;
-=======
-import com.google.api.services.cloudiot.v1.model.*;
->>>>>>> dec906eda63efa1f76dec2cd35b4155a6351c3ed
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
@@ -1249,7 +1245,7 @@ public class DeviceRegistryExample {
       case "list-devices-for-gateway":
         System.out.println("Listing devices for gateway:");
         listDevicesForGateway(
-          options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
+            options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
 
         break;
       case "list-registries":
