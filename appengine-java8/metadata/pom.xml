@@ -51,7 +51,7 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>3.11.0</version>
+      <version>3.13.1</version>
     </dependency>
 
     <dependency>

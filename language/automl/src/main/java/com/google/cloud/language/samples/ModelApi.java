@@ -184,7 +184,7 @@ public class ModelApi {
     System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
     System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
   }
-  // END automl_language_get_model]
+  // [END automl_language_get_model]
 
   // [START automl_language_list_model_evaluations]
   /**
