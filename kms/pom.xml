@@ -25,7 +25,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-kms</artifactId>
-      <version>0.70.0-beta</version>
+      <version>0.80.0-beta</version>
     </dependency>
     <dependency>
       <groupId>args4j</groupId>
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
