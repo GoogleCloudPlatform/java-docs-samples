@@ -40,12 +40,6 @@ To get started, [download][maven-download] and [install][maven-install] it.
 [text-to-speech-api]: https://console.cloud.google.com/apis/api/texttospeech.googleapis.com/overview?project=_
 [auth]: https://cloud.google.com/docs/authentication/getting-started
 
-## Quckstart
-Synthesize text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/QuickstartSample.java)
-```
-mvn exec:java -DQuickstart
-```
-
 ## Snippets
 To verify the snippets are running correctly, you can run the tests via:
 ```
