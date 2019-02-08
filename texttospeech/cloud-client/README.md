@@ -58,6 +58,11 @@ This sample synthesizes text to an output audio file. [Java Code](https://github
 mvn exec:java -DSynthesizeText -Dexec.args='--text "hello"'
 ```
 
+This sample synthesizes text with an audio profile to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
+```
+mvn exec:java -DSynthesizeText -Dexec.args='--text "hello" "telephony-class-application"'
+```
+
 This sample synthesizes ssml to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
 ```
 mvn exec:java -DSynthesizeText -Dexec.args='--ssml "<speak>Hello there.</speak>"'

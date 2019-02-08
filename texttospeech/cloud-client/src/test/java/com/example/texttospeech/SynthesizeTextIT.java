@@ -38,6 +38,7 @@ public class SynthesizeTextIT {
   private static String OUTPUT = "output.mp3";
   private static String TEXT = "Hello there.";
   private static String SSML = "<speak>Hello there.</speak>";
+  private static String EFFECTSPROFILE = "telephony-class-application";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -71,6 +72,18 @@ public class SynthesizeTextIT {
   public void testSynthesizeSsml() throws Exception {
     // Act
     SynthesizeText.synthesizeSsml(SSML);
+
+    // Assert
+    outputFile = new File(OUTPUT);
+    assertThat(outputFile.isFile()).isTrue();
+    String got = bout.toString();
+    assertThat(got).contains("Audio content written to file \"output.mp3\"");
+  }
+
+  @Test
+  public void testSynthesizeTextWithAudioProfile() throws Exception {
+    // Act
+    SynthesizeText.synthesizeTextWithAudioProfile(TEXT, EFFECTSPROFILE);
 
     // Assert
     outputFile = new File(OUTPUT);
