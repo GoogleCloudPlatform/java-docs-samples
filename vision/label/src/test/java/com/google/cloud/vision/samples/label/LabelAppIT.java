@@ -49,7 +49,7 @@ public class LabelAppIT {
 
     ImmutableSet.Builder<String> builder = ImmutableSet.builder();
     for (EntityAnnotation label : labels) {
-      builder.add(label.getDescription());
+      builder.add(label.getDescription().toLowerCase());
     }
     ImmutableSet<String> descriptions = builder.build();
 

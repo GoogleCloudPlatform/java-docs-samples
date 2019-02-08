@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "PostgreSQL",
@@ -93,4 +92,3 @@ public class PostgreSqlServlet extends HttpServlet {
     }
   }
 }
-// [END example]
