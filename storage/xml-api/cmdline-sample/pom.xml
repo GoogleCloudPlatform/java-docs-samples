@@ -30,7 +30,7 @@
   </parent>
 
   <properties>
-    <project.http.version>1.24.1</project.http.version>
+    <project.http.version>1.27.0</project.http.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-exec-maven-plugin>1.6.0</codehaus-exec-maven-plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -70,7 +70,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev135-1.24.1</version>
+      <version>v1-rev20181013-1.27.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>

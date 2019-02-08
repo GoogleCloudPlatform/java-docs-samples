@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev135-1.24.1</version>
+      <version>v1-rev20181013-1.27.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>com.google.oauth-client</groupId>
       <artifactId>google-oauth-client-jetty</artifactId>
-      <version>1.24.1</version>
+      <version>1.27.0</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
