@@ -56,17 +56,17 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.27.0</version>
+      <version>1.28.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.27.0</version>
+      <version>1.28.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.27.0</version>
+      <version>1.28.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -84,7 +84,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory-connector-j-6</artifactId>
-      <version>1.0.11</version>
+      <version>1.0.12</version>
     </dependency>
     <!-- [END gae_flex_mysql_dependencies] -->
   </dependencies>

@@ -39,12 +39,12 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.68</version>
+      <version>1.9.71</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.6</version>
+      <version>4.5.7</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
