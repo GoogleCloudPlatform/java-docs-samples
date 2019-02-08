@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * JWTClient shows how a client can authenticate with a Cloud Endpoints service
  */
-public class JwtClient {
+public class GoogleJwtClient {
 
   // [START endpoints_generate_jwt_sa]
   /**
