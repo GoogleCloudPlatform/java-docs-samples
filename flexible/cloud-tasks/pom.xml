@@ -45,12 +45,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudtasks</artifactId>
-      <version>v2beta3-rev20181022-1.27.0</version>
+      <version>v2beta3-rev20190125-1.28.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.68</version>
+      <version>1.9.71</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
