@@ -19,6 +19,7 @@ package com.example.spanner;
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 import static com.google.cloud.spanner.Type.StructField;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -26,10 +27,11 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Operation;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerException;
+import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
@@ -42,6 +44,7 @@ import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -56,6 +59,8 @@ import java.util.concurrent.TimeUnit;
  *   <li>Writing data using a read-write transaction.
  *   <li>Using an index to read and execute SQL queries over data.
  *   <li>Using commit timestamp for tracking when a record was last updated.
+ *   <li>Using Google API Extensions for Java to make thread-safe requests via
+ *       long-running operations. http://googleapis.github.io/gax-java/
  * </ul>
  */
 public class SpannerSample {
@@ -132,7 +137,7 @@ public class SpannerSample {
 
   // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Database, CreateDatabaseMetadata> op =
+    OperationFuture<Database, CreateDatabaseMetadata> op =
         dbAdminClient.createDatabase(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
@@ -149,14 +154,24 @@ public class SpannerSample {
                     + "  AlbumTitle   STRING(MAX)\n"
                     + ") PRIMARY KEY (SingerId, AlbumId),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"));
-    Database db = op.waitFor().getResult();
-    System.out.println("Created database [" + db.getId() + "]");
+    try {
+      // Initiate the request which returns an OperationFuture.
+      Database db = op.get();
+      System.out.println("Created database [" + db.getId() + "]");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_database]
 
   // [START spanner_create_table_with_timestamp_column]
   static void createTableWithTimestamp(DatabaseAdminClient dbAdminClient, DatabaseId id) {
-    Operation<Void, UpdateDatabaseDdlMetadata> op =
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
         dbAdminClient.updateDatabaseDdl(
             id.getInstanceId().getInstance(),
             id.getDatabase(),
@@ -170,8 +185,18 @@ public class SpannerSample {
                     + ") PRIMARY KEY (SingerId, VenueId, EventDate),\n"
                     + "  INTERLEAVE IN PARENT Singers ON DELETE CASCADE"),
             null);
-    op.waitFor().getResult();
-    System.out.println("Created Performances table in database: [" + id + "]");
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Created Performances table in database: [" + id + "]");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_table_with_timestamp_column]
 
@@ -226,6 +251,25 @@ public class SpannerSample {
   }
   // [END spanner_insert_data]
 
+  // [START spanner_delete_data]
+  static void deleteExampleData(DatabaseClient dbClient) {
+    List<Mutation> mutations = new ArrayList<>();
+
+    // KeySet.all() can be used to delete all the rows in a table.
+    mutations.add(Mutation.delete("Albums", KeySet.all()));
+
+    // KeySet.singleKey() can be used to delete one row at a time.
+    for (Singer singer : SINGERS) {
+      mutations.add(
+          Mutation.delete("Singers", 
+              KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
+    }
+
+    dbClient.write(mutations);
+    System.out.printf("Records deleted.\n");
+  } 
+  // [END spanner_delete_data]
+
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
     // singleUse() can be used to execute a single read or query against Cloud Spanner.
@@ -260,14 +304,25 @@ public class SpannerSample {
 
   // [START spanner_add_column]
   static void addMarketingBudget(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
-            null)
-        .waitFor();
-    System.out.println("Added MarketingBudget column");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
+              null);
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added MarketingBudget column");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_add_column]
 
@@ -371,14 +426,25 @@ public class SpannerSample {
 
   // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
-            null)
-        .waitFor();
-    System.out.println("Added AlbumsByAlbumTitle index");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
+              null);
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added AlbumsByAlbumTitle index");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_index]
 
@@ -431,15 +497,27 @@ public class SpannerSample {
 
   // [START spanner_create_storing_index]
   static void addStoringIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList(
-                "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)"),
-            null)
-        .waitFor();
-    System.out.println("Added AlbumsByAlbumTitle2 index");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList(
+                  "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) "
+                      + "STORING (MarketingBudget)"),
+              null); 
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added AlbumsByAlbumTitle2 index");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_create_storing_index]
 
@@ -509,16 +587,27 @@ public class SpannerSample {
 
   // [START spanner_add_timestamp_column]
   static void addCommitTimestamp(DatabaseAdminClient adminClient, DatabaseId dbId) {
-    adminClient
-        .updateDatabaseDdl(
-            dbId.getInstanceId().getInstance(),
-            dbId.getDatabase(),
-            Arrays.asList(
-                "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
-                    + "OPTIONS (allow_commit_timestamp=true)"),
-            null)
-        .waitFor();
-    System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        adminClient
+          .updateDatabaseDdl(
+              dbId.getInstanceId().getInstance(),
+              dbId.getDatabase(),
+              Arrays.asList(
+                  "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
+                      + "OPTIONS (allow_commit_timestamp=true)"),
+              null); 
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Added LastUpdateTime as a commit timestamp column in Albums table.");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
   }
   // [END spanner_add_timestamp_column]
 
@@ -605,8 +694,8 @@ public class SpannerSample {
             .singleUse()
             .executeQuery(
                 Statement.of(
-                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime FROM Performances"
-                        + " ORDER BY LastUpdateTime DESC"));
+                    "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime "
+                        + "FROM Performances ORDER BY LastUpdateTime DESC"));
     while (resultSet.next()) {
       System.out.printf(
           "%d %d %s %s %s\n",
@@ -1007,6 +1096,9 @@ public class SpannerSample {
       case "write":
         writeExampleData(dbClient);
         break;
+      case "delete":
+        deleteExampleData(dbClient);
+        break;
       case "query":
         query(dbClient);
         break;
@@ -1124,6 +1216,7 @@ public class SpannerSample {
     System.err.println("Examples:");
     System.err.println("    SpannerExample createdatabase my-instance example-db");
     System.err.println("    SpannerExample write my-instance example-db");
+    System.err.println("    SpannerExample delete my-instance example-db");
     System.err.println("    SpannerExample query my-instance example-db");
     System.err.println("    SpannerExample read my-instance example-db");
     System.err.println("    SpannerExample addmarketingbudget my-instance example-db");

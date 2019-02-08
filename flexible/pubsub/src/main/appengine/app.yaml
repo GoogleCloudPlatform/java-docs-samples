@@ -21,5 +21,7 @@ handlers:
 # [START gae_flex_pubsub_yaml]
 env_variables:
   PUBSUB_TOPIC: <your-topic-name>
+  # This token is used to verify that requests originate from your
+  # application. It can be any sufficiently random string.
   PUBSUB_VERIFICATION_TOKEN: <your-verification-token>
 # [END gae_flex_pubsub_yaml]

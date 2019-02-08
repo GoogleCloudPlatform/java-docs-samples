@@ -37,16 +37,16 @@
   </properties>
 
   <dependencies>
-    <!-- dependencies -->
+    <!-- [START face_detection_dependencies] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev389-1.24.1</version>
+      <version>v1-rev20181031-1.27.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.24.1</version>
+      <version>1.27.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -59,6 +59,7 @@
       <artifactId>guava</artifactId>
       <version>25.1-android</version>
     </dependency>
+    <!-- [END face_detection_dependencies] -->
 
     <!-- Test Dependencies -->
     <dependency>
