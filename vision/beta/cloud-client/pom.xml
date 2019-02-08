@@ -36,18 +36,18 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START vision_java_dependencies_beta] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>1.34.0</version>
+      <version>1.52.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.34.0</version>
+      <version>1.52.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END vision_java_dependencies_beta] -->
 
     <!-- Test dependencies -->
     <dependency>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
+      <version>0.42</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

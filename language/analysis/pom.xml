@@ -35,18 +35,18 @@ limitations under the License.
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START language_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>1.34.0</version>
+      <version>1.52.0</version>
     </dependency>
+    <!-- [END language_java_dependencies] -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>20.0</version>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test Dependencies -->
     <dependency>
@@ -57,7 +57,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
+      <version>0.42</version>
     </dependency>
   </dependencies>
   <build>

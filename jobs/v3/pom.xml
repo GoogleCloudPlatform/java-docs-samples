@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.samples</groupId>
+  <artifactId>cloud-talent-solution-samples</artifactId>
+  <version>3.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.10</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
+  <prerequisites>
+    <maven>3.5</maven>
+  </prerequisites>
+
+  <dependencies>
+    <!-- [START dependencies] -->
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-jobs</artifactId>
+      <version>v3-rev5-1.24.1</version>
+    </dependency>
+    <!-- [END dependencies] -->
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.40</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+  </dependencies>
+</project>

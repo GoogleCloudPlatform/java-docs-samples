@@ -130,6 +130,16 @@ public class ManageDataSnippetsIT extends BaseIntegrationTest {
   }
 
   @Test
+  public void testUpdateDocumentArray() throws Exception {
+    manageDataSnippets.updateDocumentArray();
+    DocumentReference docRef = db.collection("cities").document("DC");
+    City city = getDocumentDataAsCity(docRef);
+    assertTrue(city.getRegions().contains("greater_virginia"));
+    assertTrue(!city.getRegions().contains("east_coast"));
+  }
+
+
+  @Test
   public void testDeleteFields() throws Exception {
     manageDataSnippets.deleteFields();
     DocumentReference docRef = db.collection("cities").document("BJ");

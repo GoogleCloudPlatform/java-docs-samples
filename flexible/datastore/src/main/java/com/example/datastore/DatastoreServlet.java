@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_datastore_app]
 @SuppressWarnings("serial")
 @WebServlet(name = "datastore", value = "")
 public class DatastoreServlet extends HttpServlet {
@@ -82,4 +82,4 @@ public class DatastoreServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_flex_datastore_app]

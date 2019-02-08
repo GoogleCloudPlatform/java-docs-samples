@@ -36,7 +36,7 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
-
+    <!-- [START api_management] -->
     <!-- Add a filter that fetches the service config from service management. -->
     <filter>
         <filter-name>endpoints-api-configuration</filter-name>
@@ -44,7 +44,6 @@
     </filter>
 
     <!-- Add a filter that performs Endpoints logging and monitoring. -->
-    <!-- [START api_management] -->
     <filter>
         <filter-name>endpoints-api-controller</filter-name>
         <filter-class>com.google.api.control.extensions.appengine.GoogleAppEngineControlFilter</filter-class>

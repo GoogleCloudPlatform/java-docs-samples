@@ -16,6 +16,7 @@
 
 package com.example.firestore.snippets.model;
 
+import java.util.List;
 import java.util.Objects;
 
 /** Represents a city : name, weather, population, country, capital, geo coordinates. */
@@ -26,6 +27,7 @@ public class City {
   private String country;
   private Boolean capital;
   private Long population;
+  private List<String> regions;
 
   // [START fs_class_definition]
   public City() {
@@ -33,12 +35,14 @@ public class City {
   }
 
   // Initialize all fields of a city
-  public City(String name, String state, String country, Boolean capital, Long population) {
+  public City(String name, String state, String country,
+              Boolean capital, Long population, List<String> regions) {
     this.name = name;
     this.state = state;
     this.country = country;
     this.capital = capital;
     this.population = population;
+    this.regions = regions;
   }
   // [END fs_class_definition]
 
@@ -86,6 +90,14 @@ public class City {
     this.population = population;
   }
 
+  public List<String> getRegions() {
+    return regions;
+  }
+
+  public void setRegions(List<String> regions) {
+    this.regions = regions;
+  }
+
   private String getDefinedValue(String s) {
     if (s != null) {
       return s;
@@ -120,6 +132,14 @@ public class City {
       sb.append(capital);
       sb.append(",");
     }
+    if (regions != null) {
+      sb.append(" regions : [");
+      for (String r : regions) {
+        sb.append(r);
+        sb.append(", ");
+      }
+      sb.append("],");
+    }
     //remove trailing comma
     if (sb.lastIndexOf(",") >= sb.length() - 1) {
       sb.deleteCharAt(sb.length() - 1);
@@ -138,7 +158,7 @@ public class City {
         && Objects.equals(state, city.state)
         && Objects.equals(country, city.country)
         && Objects.equals(population, city.population)
-        && Objects.equals(capital, city.capital);
-
+        && Objects.equals(capital, city.capital)
+        && Objects.equals(regions, city.regions);
   }
 }

@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 
-// [START example]
 @SuppressWarnings("serial")
 public class AnalyticsServlet extends HttpServlet {
 
@@ -58,4 +57,3 @@ public class AnalyticsServlet extends HttpServlet {
     resp.getWriter().println("Event tracked.");
   }
 }
-// [END example]

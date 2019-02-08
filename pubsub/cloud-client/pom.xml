@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc.
+  Copyright 2018 Google LLC.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -35,13 +35,13 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START pubsub_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.34.0</version>
+      <version>1.52.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END pubsub_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
@@ -53,8 +53,21 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
+      <version>0.42</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

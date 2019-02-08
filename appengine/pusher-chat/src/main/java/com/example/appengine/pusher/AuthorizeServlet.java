@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @see <a href="https://pusher.com/docs/authenticating_users">Pusher Authentication Docs</a>
  */
-// [START pusher_authorize]
 public class AuthorizeServlet extends HttpServlet {
 
   @Override
@@ -92,4 +91,3 @@ public class AuthorizeServlet extends HttpServlet {
     return queryPairs;
   }
 }
-// [END pusher_authorize]

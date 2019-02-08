@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START simple_logging_example]
+// [START gae_java8_logging_example]
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
     name = "RequestLogging",
@@ -44,4 +44,4 @@ public class LoggingServlet extends HttpServlet {
     // [END_EXCLUDE]
   }
 }
-// [END simple_logging_example]
+// [END gae_java8_logging_example]
