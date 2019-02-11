@@ -57,6 +57,7 @@
     <module>guestbook-cloud-datastore</module>
     <module>guestbook-objectify</module>
     <module>images</module>
+    <module>mail</module>
     <module>mailgun</module>
     <module>mailjet</module>
     <module>memcache</module>
