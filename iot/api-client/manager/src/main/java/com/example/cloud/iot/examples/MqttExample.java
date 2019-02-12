@@ -202,6 +202,13 @@ public class MqttExample {
     }
 
     attachCallback(client, gatewayId);
+
+    // The topic gateways receive error updates on. QoS must be 0.
+    String errorTopic = String.format("/devices/%s/errors", gatewayId);
+    System.out.println(String.format("Listening on %s", errorTopic));
+
+    client.subscribe(errorTopic, 0);
+
     return client;
     // [END iot_gateway_start_mqtt]
   }
@@ -458,12 +465,14 @@ public class MqttExample {
           }
         };
 
-    String configTopic = String.format("/devices/%s/config", deviceId);
-    client.subscribe(configTopic, 1);
-
     String commandTopic = String.format("/devices/%s/commands/#", deviceId);
-    client.subscribe(commandTopic, 1);
+    System.out.println(String.format("Listening on %s", commandTopic));
 
+    String configTopic = String.format("/devices/%s/config", deviceId);
+    System.out.println(String.format("Listening on %s", configTopic));
+
+    client.subscribe(configTopic, 1);
+    client.subscribe(commandTopic, 1);
     client.setCallback(mCallback);
   }
   // [END iot_mqtt_configcallback]

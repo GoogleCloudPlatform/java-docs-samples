@@ -22,6 +22,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /** Command line options for the MQTT example. */
 public class MqttExampleOptions {
@@ -168,13 +169,15 @@ public class MqttExampleOptions {
     try {
       commandLine = parser.parse(options, args);
       MqttExampleOptions res = new MqttExampleOptions();
-      res.command = commandLine.getOptionValue("command");
 
       res.projectId = commandLine.getOptionValue("project_id");
       res.registryId = commandLine.getOptionValue("registry_id");
       res.deviceId = commandLine.getOptionValue("device_id");
       res.privateKeyFile = commandLine.getOptionValue("private_key_file");
       res.algorithm = commandLine.getOptionValue("algorithm");
+      if (commandLine.hasOption("command")) {
+        res.command = commandLine.getOptionValue("command");
+      }
       if (commandLine.hasOption("gateway_id")) {
         res.gatewayId = commandLine.getOptionValue("gateway_id");
       }

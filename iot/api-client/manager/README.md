@@ -16,7 +16,7 @@ the sample every time you run it.
 Run the following command to install the libraries and build the sample with
 Maven:
 
-mvn clean compile assembly:single
+    mvn clean compile assembly:single
 
 ## Running the sample
 
@@ -278,6 +278,8 @@ located in the `asia-east1` region, and you have generated your
 credentials using the [`generate_keys.sh`](../generate_keys.sh) script
 provided in the parent folder, you can run the sample as:
 
+Run mqtt example:
+
     mvn exec:java \
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
         -Dexec.args="-project_id=blue-jet-123 \
@@ -286,6 +288,39 @@ provided in the parent folder, you can run the sample as:
                      -device_id=my-device \
                      -private_key_file=../rsa_private_pkcs8 \
                      -algorithm=RS256"
+
+Listen for configuration messages:
+
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -cloud_region=us-central1 \
+                   -registry_id=my-registry  \
+                   -gateway_id=test-gateway \
+                   -ec_public_key_file=../ec_public.pem \
+                   -algorithm='ES256' or 'RS256'
+                   -device_id=java-device-0 \
+                   -mqtt_bridge_hostname=mqtt.googleapis.com \
+                   -mqtt_bridge_port=443 or 8883 \
+                   -command=listen-for-config-messages"
+
+Send data on behalf of device:
+
+    mvn exec:java \
+      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+      -Dexec.args="-project_id=blue-jet-123 \
+                   -cloud_region=us-central1 \
+                   -registry_id=my-registry  \
+                   -gateway_id=test-gateway \
+                   -ec_public_key_file=../ec_public.pem \
+                   -algorithm='ES256' or 'RS256'
+                   -device_id=java-device-0 \
+                   -message_type='event' or 'state' \
+                   -telemetry_data='your telemetry msg' \
+                   -mqtt_bridge_hostname=mqtt.googleapis.com \
+                   -mqtt_bridge_port=443 or 8883 \
+                   -command=send-data-from-bound-device"
+
 
 ## Reading the messages written by the sample client
 
