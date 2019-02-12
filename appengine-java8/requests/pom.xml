@@ -40,7 +40,7 @@ Copyright 2016 Google Inc.
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-maven-plugin</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.71</version>
         </dependency>
 
         <dependency>
@@ -66,7 +66,7 @@ Copyright 2016 Google Inc.
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13-beta-2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -78,19 +78,19 @@ Copyright 2016 Google Inc.
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.71</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.71</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-tools-sdk</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.71</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -33,7 +33,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <opencensus.version>0.17.0</opencensus.version>
+    <opencensus.version>0.19.2</opencensus.version>
   </properties>
 
   <!-- Include the BOM to ensure compatibility across multiple google-cloud-* libraries -->
@@ -129,7 +129,7 @@ limitations under the License.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>

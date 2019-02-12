@@ -36,7 +36,7 @@ public class SendEmailServlet {
 
     SendGrid.Response response = sendgrid.send(email);
     if (response.getCode() != 200) {
-      System.out.print(String.format("An error occured: %s", response.getMessage()));
+      System.out.print(String.format("An error occurred: %s", response.getMessage()));
       return;
     }
     System.out.print("Email sent.");
