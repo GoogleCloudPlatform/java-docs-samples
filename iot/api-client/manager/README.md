@@ -360,7 +360,7 @@ Send data on behalf of device:
                    -registry_id=my-registry  \
                    -gateway_id=test-gateway \
                    -ec_public_key_file=../ec_public.pem \
-                   -algorithm='ES256' or 'RS256'
+                   -algorithm='ES256' or 'RS256' \
                    -device_id=java-device-0 \
                    -message_type='event' or 'state' \
                    -telemetry_data='your telemetry msg' \

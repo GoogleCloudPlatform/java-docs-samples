@@ -26,6 +26,7 @@ import org.apache.commons.cli.ParseException;
 
 /** Command line options for the Device Manager example. */
 public class DeviceRegistryExampleOptions {
+  static final Options options = new Options();
   String projectId;
   String ecPublicKeyFile = "ec_public.pem";
   String rsaCertificateFile = "rsa_cert.pem";
@@ -39,7 +40,6 @@ public class DeviceRegistryExampleOptions {
   String member;
   String role;
   long version = 0;
-  static final Options options = new Options();
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
   public static DeviceRegistryExampleOptions fromFlags(String[] args) {
@@ -51,24 +51,24 @@ public class DeviceRegistryExampleOptions {
             .hasArg()
             .desc(
                 "Command to run:"
-                + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
-                + "\n\tcreate-rsa"
-                + "\n\tcreate-es"
-                + "\n\tcreate-unauth"
-                + "\n\tcreate-registry"
-                + "\n\tdelete-device"
-                + "\n\tdelete-registry"
-                + "\n\tget-device"
-                + "\n\tget-device-state"
-                + "\n\tget-iam-permissions"
-                + "\n\tget-registry"
-                + "\n\tlist-devices"
-                + "\n\tlist-registries"
-                + "\n\tpatch-device-es"
-                + "\n\tpatch-device-rsa"
-                + "\n\tset-config"
-                + "\n\tset-iam-permissions"
-                + "\n\tsend-command")
+                    + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
+                    + "\n\tcreate-rsa"
+                    + "\n\tcreate-es"
+                    + "\n\tcreate-unauth"
+                    + "\n\tcreate-registry"
+                    + "\n\tdelete-device"
+                    + "\n\tdelete-registry"
+                    + "\n\tget-device"
+                    + "\n\tget-device-state"
+                    + "\n\tget-iam-permissions"
+                    + "\n\tget-registry"
+                    + "\n\tlist-devices"
+                    + "\n\tlist-registries"
+                    + "\n\tpatch-device-es"
+                    + "\n\tpatch-device-rsa"
+                    + "\n\tset-config"
+                    + "\n\tset-iam-permissions"
+                    + "\n\tsend-command")
             .required()
             .build());
 
@@ -230,8 +230,8 @@ public class DeviceRegistryExampleOptions {
       String footer = "\nhttps://cloud.google.com/iot-core";
 
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("DeviceRegistryExample", header, options, footer,
-          true);
+      formatter.printHelp(
+              "DeviceRegistryExample", header, options, footer, true);
 
       System.err.println(e.getMessage());
       return null;
