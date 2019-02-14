@@ -103,7 +103,7 @@
         <version>1.0.2</version>
         <configuration>
           <!-- plugin configuration -->
-          <hostname>${endpoints.project.id}.appspot.com</hostname>
+          <hostname>[YOUR_PROJECT_ID].appspot.com</hostname>
         </configuration>
       </plugin>
       <!-- [END endpoints_plugin] -->
