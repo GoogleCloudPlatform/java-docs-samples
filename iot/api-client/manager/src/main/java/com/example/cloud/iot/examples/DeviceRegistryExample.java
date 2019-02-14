@@ -85,7 +85,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  * <code>
  * $ mvn clean compile assembly:single
  * $ mvn exec:java \
- *       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+ *       -Dexec.mainClass="com.google.cloud.iot.examples.DeviceRegistryExample" \
  *       -Dexec.args="-project_id=my-project-id \
  *                    -pubsub_topic=projects/my-project-id/topics/my-topic-id \
  *                    -ec_public_key_file=/path/to/ec_public.pem \
@@ -887,23 +887,6 @@ public class DeviceRegistryExample {
     // [END unbind_device_from_gateway]
   }
 
-  public static void sendDataFromDevice(
-      MqttClient client, String deviceId, String messageType, String data) throws MqttException {
-    // [START send_data_from_bound_device]
-    if (!messageType.equals("events") && !messageType.equals("state")) {
-      System.err.println(
-          String.format(
-              "%s is invalid message type, must ether be 'state' or events'", messageType));
-      return;
-    }
-    final String dataTopic = String.format("/devices/%s/%s", deviceId, messageType);
-    MqttMessage message = new MqttMessage(data.getBytes());
-    message.setQos(1);
-    client.publish(dataTopic, message);
-    System.out.println("Data sent");
-    // [END send_data_from_bound_device]
-  }
-
   public static void attachDeviceToGateway(MqttClient client, String deviceId)
       throws MqttException {
     // [START attach_device]
@@ -1151,25 +1134,6 @@ public class DeviceRegistryExample {
     }
 
     switch (options.command) {
-      case "bind-device-to-gateway":
-        System.out.println("Binding device to gateway:");
-        bindDeviceToGateway(
-            options.projectId,
-            options.cloudRegion,
-            options.registryName,
-            options.deviceId,
-            options.gatewayId);
-        break;
-      case "create-gateway":
-        System.out.println("Creating Gateway:");
-        createGateway(
-            options.projectId,
-            options.cloudRegion,
-            options.registryName,
-            options.gatewayId,
-            options.publicKeyFile,
-            options.algorithm);
-        break;
       case "create-iot-topic":
         System.out.println("Create IoT Topic:");
         createIotTopic(options.projectId, options.pubsubTopic);
@@ -1239,16 +1203,6 @@ public class DeviceRegistryExample {
       case "list-devices":
         System.out.println("List devices");
         listDevices(options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "list-gateways":
-        System.out.println("Listing gateways:");
-        listGateways(options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "list-devices-for-gateway":
-        System.out.println("Listing devices for gateway:");
-        listDevicesForGateway(
-            options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
-
         break;
       case "list-registries":
         System.out.println("List registries");
