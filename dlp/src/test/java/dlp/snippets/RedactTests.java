@@ -16,6 +16,7 @@
 
 package dlp.snippets;
 
+// [START dlp_redact_image]
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertThat;
 

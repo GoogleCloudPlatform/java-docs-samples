@@ -16,6 +16,7 @@
 
 package dlp.snippets;
 
+// [START dlp_redact_image]
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ByteContentItem.BytesType;
@@ -84,3 +85,4 @@ class RedactImageFile {
     }
   }
 }
+// [END dlp_redact_image]
