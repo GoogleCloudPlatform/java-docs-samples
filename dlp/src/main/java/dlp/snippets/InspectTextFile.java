@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,14 +38,15 @@ public class InspectTextFile {
   public static void inspectTextFile(String projectId, String filePath) {
     // String projectId = "my-project-id";
     // String filePath = "path/to/image.png";
-    // String fileType = "IMAGE"
 
-    // Initialize client with try-with-resources for automatic cleanup of background resources
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Set project for request
+      // Specify the project used for request.
       ProjectName project = ProjectName.of(projectId);
 
-      // Set content for request
+      // Specify the type and content to be inspected.
       ByteString fileBytes = ByteString.readFrom(new FileInputStream(filePath));
       ByteContentItem byteItem = ByteContentItem.newBuilder()
           .setType(BytesType.TEXT_UTF8)
@@ -55,27 +56,27 @@ public class InspectTextFile {
           .setByteItem(byteItem)
           .build();
 
-      // Set required InfoTypes for inspection config
+      // Specify the type of info the inspection will look for.
       List<InfoType> infoTypes = new ArrayList<>();
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
       for (String typeName : new String[] {"PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD_NUMBER"}) {
         infoTypes.add(InfoType.newBuilder().setName(typeName).build());
       }
 
-      // Set the inspect configuration for request
+      // Construct the configuration for the Inspect request.
       InspectConfig config = InspectConfig.newBuilder()
           .addAllInfoTypes(infoTypes)
           .setIncludeQuote(true)
           .build();
 
-      // Construct the request to be sent by the client
+      // Construct the Inspect request to be sent by the client.
       InspectContentRequest request = InspectContentRequest.newBuilder()
           .setParent(project.toString())
           .setItem(item)
           .setInspectConfig(config)
           .build();
 
-      // Use the client to send the API request
+      // Use the client to send the API request.
       InspectContentResponse response = dlp.inspectContent(request);
 
       // Parse the response and process results

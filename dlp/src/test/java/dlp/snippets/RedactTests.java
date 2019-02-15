@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,29 +62,10 @@ public class RedactTests {
   }
 
   @Test
-  public void testInspectString() {
-    InspectString.inspectString(PROJECT_ID,  "I'm Gary and my email is gary@example.com");
+  public void testRedactImage() {
+    RedactImageFile.redactImageFile(PROJECT_ID,  "src/test/resources/test.png");
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Info type: EMAIL_ADDRESS"));
-  }
-
-  @Test
-  public void textInspectTestFile() {
-    InspectTextFile.inspectTextFile(PROJECT_ID,  "src/test/resources/test.txt");
-
-    String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Info type: PHONE_NUMBER"));
-    assertThat(output, CoreMatchers.containsString("Info type: EMAIL_ADDRESS"));
-  }
-
-
-  @Test
-  public void testInspectImageFile() {
-    InspectImageFile.inspectImageFile(PROJECT_ID,  "src/test/resources/test.png");
-
-    String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Info type: PHONE_NUMBER"));
     assertThat(output, CoreMatchers.containsString("Info type: EMAIL_ADDRESS"));
   }
 
