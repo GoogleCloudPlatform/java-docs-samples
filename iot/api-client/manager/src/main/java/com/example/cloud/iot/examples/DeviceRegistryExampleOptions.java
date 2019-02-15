@@ -26,7 +26,7 @@ import org.apache.commons.cli.ParseException;
 
 /** Command line options for the Device Manager example. */
 public class DeviceRegistryExampleOptions {
-  String algorithm;
+  static final Options options = new Options();
   String projectId;
   String ecPublicKeyFile = "ec_public.pem";
   String rsaCertificateFile = "rsa_cert.pem";
@@ -35,14 +35,11 @@ public class DeviceRegistryExampleOptions {
   String commandData = "Specify with --data";
   String configuration = "Specify with -configuration";
   String deviceId; // Default to UUID?
-  String gatewayId;
   String pubsubTopic;
-  String publicKeyFile;
   String registryName;
   String member;
   String role;
   long version = 0;
-  static final Options options = new Options();
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
   public static DeviceRegistryExampleOptions fromFlags(String[] args) {
@@ -54,8 +51,6 @@ public class DeviceRegistryExampleOptions {
             .hasArg()
             .desc(
                 "Command to run:"
-                    + "\n\tbind-device-to-gateway"
-                    + "\n\tcreate-gateway"
                     + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
                     + "\n\tcreate-rsa"
                     + "\n\tcreate-es"
@@ -69,25 +64,15 @@ public class DeviceRegistryExampleOptions {
                     + "\n\tget-registry"
                     + "\n\tlist-devices"
                     + "\n\tlist-registries"
-                    + "\n\tlist-gateways"
-                    + "\n\tlist-devices-for-gateway"
                     + "\n\tpatch-device-es"
                     + "\n\tpatch-device-rsa"
                     + "\n\tset-config"
                     + "\n\tset-iam-permissions"
-                    + "\n\tsend-command"
-                    + "\n\tunbind-device-from-gateway")
+                    + "\n\tsend-command")
             .required()
             .build());
 
     // Optional arguments.
-    options.addOption(
-        Option.builder()
-            .type(String.class)
-            .longOpt("algorithm")
-            .hasArg()
-            .desc("Algorithm used for public/private keys.")
-            .build());
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -126,13 +111,6 @@ public class DeviceRegistryExampleOptions {
     options.addOption(
         Option.builder()
             .type(String.class)
-            .longOpt("public_key_file")
-            .hasArg()
-            .desc("Public key file used for registering devices and gateways.")
-            .build());
-    options.addOption(
-        Option.builder()
-            .type(String.class)
             .longOpt("registry_name")
             .hasArg()
             .desc("Name for your Device Registry.")
@@ -143,13 +121,6 @@ public class DeviceRegistryExampleOptions {
             .longOpt("device_id")
             .hasArg()
             .desc("Name for your Device.")
-            .build());
-    options.addOption(
-        Option.builder()
-            .type(String.class)
-            .longOpt("gateway_id")
-            .hasArg()
-            .desc("The identifier for the Gateway.")
             .build());
     options.addOption(
         Option.builder()
@@ -199,9 +170,6 @@ public class DeviceRegistryExampleOptions {
         throw new ParseException("Invalid command, showing help.");
       }
 
-      if (commandLine.hasOption("algorithm")) {
-        res.algorithm = commandLine.getOptionValue("algorithm");
-      }
       if (commandLine.hasOption("cloud_region")) {
         res.cloudRegion = commandLine.getOptionValue("cloud_region");
       }
@@ -211,9 +179,7 @@ public class DeviceRegistryExampleOptions {
       if (commandLine.hasOption("device_id")) {
         res.deviceId = commandLine.getOptionValue("device_id");
       }
-      if (commandLine.hasOption("gateway_id")) {
-        res.gatewayId = commandLine.getOptionValue("gateway_id");
-      }
+
       if (commandLine.hasOption("project_id")) {
         res.projectId = commandLine.getOptionValue("project_id");
       } else {
@@ -229,9 +195,7 @@ public class DeviceRegistryExampleOptions {
       } else {
         // TODO: Get from environment variable
       }
-      if (commandLine.hasOption("public_key_file")) {
-        res.publicKeyFile = commandLine.getOptionValue("public_key_file");
-      }
+
       if (commandLine.hasOption("ec_public_key_file")) {
         res.ecPublicKeyFile = commandLine.getOptionValue("ec_public_key_file");
       }
@@ -266,7 +230,8 @@ public class DeviceRegistryExampleOptions {
       String footer = "\nhttps://cloud.google.com/iot-core";
 
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("DeviceRegistryExample", header, options, footer, true);
+      formatter.printHelp(
+              "DeviceRegistryExample", header, options, footer, true);
 
       System.err.println(e.getMessage());
       return null;
