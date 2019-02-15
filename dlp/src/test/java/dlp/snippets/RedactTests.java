@@ -66,7 +66,7 @@ public class RedactTests {
     RedactImageFile.redactImageFile(PROJECT_ID,  "src/test/resources/test.png");
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Info type: EMAIL_ADDRESS"));
+    assertThat(output, CoreMatchers.containsString("Redacted image written"));
   }
 
 }
