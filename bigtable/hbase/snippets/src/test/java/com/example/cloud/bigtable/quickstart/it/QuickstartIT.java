@@ -45,14 +45,15 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartIT {
 
-  private final String instanceId = System.getProperty("bigtable.test.instance");
+  // provide your project id as an env var
+  private final String projectId = System.getProperty("bigtable.test.projectID");
+  private final String instanceId = System.getProperty("bigtable.test.instanceID");
+
   private final String tableId = formatForTest("my-table");
   private final String columnFamilyName = "my-column-family";
   private final String columnName = "my-column";
   private final String data = "my-data";
 
-  // provide your project id as an env var
-  private final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private String formatForTest(String name) {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);

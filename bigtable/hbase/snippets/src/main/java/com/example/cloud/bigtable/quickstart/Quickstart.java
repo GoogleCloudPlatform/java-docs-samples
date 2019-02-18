@@ -44,12 +44,15 @@ public class Quickstart {
     // Use try-with-resources to make sure the connection is closed correctly
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
 
+      System.out.println("--- Connection established with Bigtable Instance ---");
       // Create a connection to the table that already exists
       // Use try-with-resources to make sure the connection to the table is closed correctly
       try (Table table = connection.getTable(TableName.valueOf(tableId))) {
 
         // Read a row
         String rowKey = "r1";
+        System.out.printf("--- Reading for row-key: %s for provided table: %s ---\n",
+            rowKey, tableId);
 
         // Retrieve the result
         Result result = table.get(new Get(Bytes.toBytes(rowKey)));
@@ -57,7 +60,9 @@ public class Quickstart {
         // Convert row data to string
         String rowValue = Bytes.toString(result.value());
 
-        System.out.printf("Row r1: %s", rowValue);
+        System.out.printf("Scanned value for Row r1: %s \n", rowValue);
+
+        System.out.println(" --- Finished reading row --- ");
 
       }  catch (IOException e) {
         // handle exception while connecting to a table
