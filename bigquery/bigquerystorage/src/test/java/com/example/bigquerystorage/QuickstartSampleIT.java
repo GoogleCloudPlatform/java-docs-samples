@@ -51,7 +51,7 @@ public class QuickstartSampleIT {
   public void testQuickstart() throws Exception {
     StorageSample.main(PROJECT_ID);
     String got = bout.toString();
-    assertThat(bout.size() > 1024);
-    assertThat(got.contains("Zayvion"));
+    assertThat(bout.size()).isGreaterThan(2014);
+    assertThat(got).contains("Zayvion");
   }
 }

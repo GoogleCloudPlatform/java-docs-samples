@@ -113,8 +113,11 @@ public class StorageSample {
       SimpleRowReader reader = new SimpleRowReader(
           new Schema.Parser().parse(session.getAvroSchema().getSchema()));
 
+      // Assert that there are streams available in the session.  If this fails, consider writing
+      // results of a query to a named table rather than consuming cached results directly.
       Preconditions.checkState(session.getStreamsCount() > 0);
 
+      // Use the first stream to perform reading.
       StreamPosition readPosition = StreamPosition.newBuilder()
           .setStream(session.getStreams(0))
           .build();
@@ -123,6 +126,7 @@ public class StorageSample {
           .setReadPosition(readPosition)
           .build();
 
+      // Process each block of rows as they arrive and decode using our simple row reader.
       ServerStream<ReadRowsResponse> stream = client.readRowsCallable().call(readRowsRequest);
       for (ReadRowsResponse response : stream) {
         Preconditions.checkState(response.hasAvroRows());
