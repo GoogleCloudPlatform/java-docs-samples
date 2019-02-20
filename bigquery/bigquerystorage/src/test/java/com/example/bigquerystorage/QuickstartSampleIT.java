@@ -51,7 +51,8 @@ public class QuickstartSampleIT {
   public void testQuickstart() throws Exception {
     StorageSample.main(PROJECT_ID);
     String got = bout.toString();
-    assertThat(bout.size()).isGreaterThan(2014);
+    // Ensure at least 1k of output generated and a specific token was present in the output.
+    assertThat(bout.size()).isGreaterThan(1024);
     assertThat(got).contains("Zayvion");
   }
 }
