@@ -28,8 +28,10 @@ import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadRowsRequest;
 import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadRowsResponse;
 import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadSession;
 import com.google.cloud.bigquery.storage.v1beta1.Storage.StreamPosition;
+import com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto.TableModifiers;
 import com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto.TableReference;
 import com.google.common.base.Preconditions;
+import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;
@@ -81,6 +83,10 @@ public class StorageSample {
     // Sets your Google Cloud Platform project ID.
     // String projectId = "YOUR_PROJECT_ID";
     String projectId = args[0];
+    Integer snapshotMillis = null;
+    if (args.length > 1) {
+      snapshotMillis = Integer.parseInt(args[1]);
+    }
 
     try (BigQueryStorageClient client = BigQueryStorageClient.create()) {
       String parent = String.format("projects/%s", projectId);
@@ -101,16 +107,28 @@ public class StorageSample {
           .setRowRestriction("state = \"WA\"")
           .build();
 
-      // Construct the session.
-      CreateReadSessionRequest readSessionRequest = CreateReadSessionRequest.newBuilder()
+      // Begin building the session request.
+      CreateReadSessionRequest.Builder builder = CreateReadSessionRequest.newBuilder()
           .setParent(parent)
           .setTableReference(tableReference)
           .setReadOptions(options)
           .setRequestedStreams(1)
-          .setFormat(DataFormat.AVRO)
-          .build();
+          .setFormat(DataFormat.AVRO);
 
-      ReadSession session = client.createReadSession(readSessionRequest);
+      // Optionally specify the snapshot time.  When unspecified, snapshot time is "now".
+      if (snapshotMillis != null) {
+        Timestamp t = Timestamp.newBuilder()
+            .setSeconds(snapshotMillis / 1000)
+            .setNanos((int) ((snapshotMillis % 1000) * 1000000))
+            .build();
+        TableModifiers modifiers = TableModifiers.newBuilder()
+            .setSnapshotTime(t)
+            .build();
+        builder.setTableModifiers(modifiers);
+      }
+
+      // Request the session creation.
+      ReadSession session = client.createReadSession(builder.build());
 
       SimpleRowReader reader = new SimpleRowReader(
           new Schema.Parser().parse(session.getAvroSchema().getSchema()));
