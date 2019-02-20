@@ -45,6 +45,7 @@
         <module>bigquery/cloud-client</module>
         <module>bigquery/datatransfer/cloud-client</module>
         <module>bigquery/rest</module>
+        <module>bigquery/bigquerystorage</module>
 
         <module>cdn/signed-urls</module>
 
