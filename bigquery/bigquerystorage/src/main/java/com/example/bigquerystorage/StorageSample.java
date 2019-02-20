@@ -133,8 +133,9 @@ public class StorageSample {
       SimpleRowReader reader = new SimpleRowReader(
           new Schema.Parser().parse(session.getAvroSchema().getSchema()));
 
-      // Assert that there are streams available in the session.  If this fails, consider writing
-      // results of a query to a named table rather than consuming cached results directly.
+      // Assert that there are streams available in the session.  An empty table may not have
+      // data available.  If no sessions are available for an anonymous (cached) table, consider
+      // writing results of a query to a named table rather than consuming cached results directly.
       Preconditions.checkState(session.getStreamsCount() > 0);
 
       // Use the first stream to perform reading.
