@@ -42,6 +42,18 @@ Install [Maven](http://maven.apache.org/).
    mvn exec:java -Dexec.mainClass=ListGcsBuckets
    ```
 
+## Test Sample
+
+1. Set the following environment variable with the default project for Interoperable Storage Access Keys.
+
+   * GOOGLE_CLOUD_PROJECT_S3_SDK=[GOOGLE_PROJECT_ID]
+
+1. Run test using the following Maven command:
+
+   ```
+   mvn exec:java 
+   ```
+
 ## Products
 - [Google Cloud Storage][2]
 

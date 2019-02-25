@@ -21,12 +21,12 @@ import java.util.List;
 import org.junit.Test;
 
 public class ListGcsBucketsTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK");
   private static final String BUCKET = PROJECT_ID;
 
   @Test
   public void testListBucket() throws Exception {
-    List<Bucket> listing = S3Sdk.listGcsBuckets();
-    assertThat(listing.toString()).contains(BUCKET);
+    List<Bucket> buckets = ListGcsBuckets.listGcsBuckets();
+    assertThat(buckets.toString()).contains(BUCKET);
   }
 }
