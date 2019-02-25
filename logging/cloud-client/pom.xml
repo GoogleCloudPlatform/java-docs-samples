@@ -26,7 +26,8 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
+    <relativePath></relativePath>
   </parent>
 
   <properties>
@@ -39,14 +40,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.38.0</version>
+      <version>1.62.0</version>
     </dependency>
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -56,4 +57,27 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin> <!-- Integration / System Tests -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+          <forkCount>3</forkCount>
+          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
