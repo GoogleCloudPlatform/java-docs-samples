@@ -16,7 +16,6 @@
 
 package dlp.snippets;
 
-// [START dlp_redact_image]
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -40,8 +39,7 @@ public class RedactTests {
   private static void requireEnvVar(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -64,10 +62,9 @@ public class RedactTests {
 
   @Test
   public void testRedactImage() {
-    RedactImageFile.redactImageFile(PROJECT_ID,  "src/test/resources/test.png");
+    RedactImageFile.redactImageFile(PROJECT_ID, "src/test/resources/test.png");
 
     String output = bout.toString();
     assertThat(output, CoreMatchers.containsString("Redacted image written"));
   }
-
 }
