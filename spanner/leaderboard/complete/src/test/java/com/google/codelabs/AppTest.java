@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 import java.util.UUID;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +43,11 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AppTest {
   // The instance needs to exist for tests to pass.
-  private final String instanceId = System.getProperty("spanner.test.instance");
-  private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
+  private String defaultInstanceId = "default-instance";
+  private String systemInstanceId = System.getenv("SPANNER_TEST_INSTANCE");
+  private final String instanceId = 
+      (systemInstanceId != null) ? systemInstanceId : defaultInstanceId;
+  private final String databaseId = formatForTest(System.getenv("SPANNER_TEST_DATABASE"));
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
 
@@ -122,6 +127,16 @@ public class AppTest {
   }
 
   private String formatForTest(String name) {
+    if (name == null) {
+      // Set name to random 5 character String;
+      name = "";
+      String characters = "abcdefghijklmnopqrstuvwxyz";
+      Random random = new Random();
+      for (int i = 0; i < 5; i++) {
+        char c = characters.charAt(random.nextInt(26));
+        name += c;
+      }
+    }  
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 }

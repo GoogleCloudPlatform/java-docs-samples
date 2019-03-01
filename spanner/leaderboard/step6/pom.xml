@@ -75,12 +75,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.0.0-M3</version>
-        <configuration>
-          <systemPropertyVariables>
-            <spanner.test.instance>default-instance</spanner.test.instance>
-            <spanner.sample.database>mysample</spanner.sample.database>
-          </systemPropertyVariables>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
