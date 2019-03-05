@@ -251,7 +251,7 @@ public class App {
     try  {
       dbAdminClient.dropDatabase(db.getInstanceId().getInstance(), db.getDatabase());
     } catch (Exception e) {
-      System.err.println("Error encountered while deleting database. Error message: " + e");
+      System.err.println("Error encountered while deleting database. Error message: " + e);
     }
     System.out.printf("Database deleted.\n");
   }
