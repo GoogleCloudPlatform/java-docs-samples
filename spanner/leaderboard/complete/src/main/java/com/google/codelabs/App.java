@@ -119,11 +119,10 @@ public class App {
               @Override
               public Void run(TransactionContext transaction) throws Exception {
                 // Get the number of players.
-                String sql =
-                    "SELECT Count(PlayerId) as PlayerCount FROM Players";
+                String sql = "SELECT Count(PlayerId) as PlayerCount FROM Players";
                 ResultSet resultSet = transaction.executeQuery(Statement.of(sql));
                 long numberOfPlayers = 0;
-                while (resultSet.next()) {
+                if (resultSet.next()) {
                   numberOfPlayers = resultSet.getLong("PlayerCount");
                 }
                 // Insert 100 player records into the Players table.
@@ -152,9 +151,7 @@ public class App {
             .singleUse()
             .executeQuery(Statement.of("SELECT * FROM Players"));
     while (resultSet.next()) {
-      if (!playerRecordsFound) {
-        playerRecordsFound = true;
-      }
+      playerRecordsFound = true;
       final long playerId = resultSet.getLong("PlayerId");
       dbClient
           .readWriteTransaction()
@@ -170,26 +167,19 @@ public class App {
                   int startDay = endDate.getDayOfMonth();
                   LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
                   long start = startDate.toEpochDay();
-                  long randomDay;
-                  LocalDate randomDayDate;
-                  LocalTime randomTime;
-                  LocalDateTime randomDate;
-                  Instant randomInstant;
                   Random r = new Random();
-                  long randomScore;
-                  
                   // Insert 4 score records into the Scores table 
                   // for each player in the Players table.
                   for (int x = 1; x <= 4; x++) {
                     // Generate random score between 1,000,000 and 1,000
-                    randomScore = r.nextInt(1000000 - 1000) + 1000;
+                    long randomScore = r.nextInt(1000000 - 1000) + 1000;
                     // Get random day within the past two years.
-                    randomDay = ThreadLocalRandom.current().nextLong(start, end);
-                    randomDayDate = LocalDate.ofEpochDay(randomDay);
-                    randomTime = LocalTime.of(
-                      r.nextInt(23), r.nextInt(59), r.nextInt(59), r.nextInt(9999));
-                    randomDate = LocalDateTime.of(randomDayDate, randomTime);
-                    randomInstant = randomDate.toInstant(ZoneOffset.UTC);
+                    long randomDay = ThreadLocalRandom.current().nextLong(start, end);
+                    LocalDate randomDayDate = LocalDate.ofEpochDay(randomDay);
+                    LocalTime randomTime = LocalTime.of(
+                        r.nextInt(23), r.nextInt(59), r.nextInt(59), r.nextInt(9999));
+                    LocalDateTime randomDate = LocalDateTime.of(randomDayDate, randomTime);
+                    Instant randomInstant = randomDate.toInstant(ZoneOffset.UTC);
                     transaction.buffer(
                         Mutation.newInsertBuilder("Scores")
                             .set("PlayerId")
@@ -216,20 +206,15 @@ public class App {
   }
 
   static void query(DatabaseClient dbClient) {
-    String scoreDate;
-    String score;
-    ResultSet resultSet =
-        dbClient
-            .singleUse()
-            .executeQuery(
-                Statement.of(
-                    "SELECT p.PlayerId, p.PlayerName, s.Score, s.Timestamp "
-                        + "FROM Players p "
-                        + "JOIN Scores s ON p.PlayerId = s.PlayerId "
-                        + "ORDER BY s.Score DESC LIMIT 10"));
+    Statement statement = Statement.of(
+        "SELECT p.PlayerId, p.PlayerName, s.Score, s.Timestamp "
+          + "FROM Players p "
+          + "JOIN Scores s ON p.PlayerId = s.PlayerId "
+          + "ORDER BY s.Score DESC LIMIT 10");
+    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
     while (resultSet.next()) {
-      scoreDate = String.valueOf(resultSet.getTimestamp("Timestamp"));
-      score = String.format("%,d", resultSet.getLong("Score"));
+      String scoreDate = String.valueOf(resultSet.getTimestamp("Timestamp"));
+      String score = String.format("%,d", resultSet.getLong("Score"));
       System.out.printf(
           "PlayerId: %d  PlayerName: %s  Score: %s  Timestamp: %s\n",
           resultSet.getLong("PlayerId"), resultSet.getString("PlayerName"), score,
@@ -238,8 +223,6 @@ public class App {
   }
 
   static void query(DatabaseClient dbClient, int timespan) {
-    String scoreDate;
-    String score;
     Statement statement =
         Statement
             .newBuilder(
@@ -253,13 +236,10 @@ public class App {
             .bind("Timespan")
             .to(timespan)
             .build();
-    ResultSet resultSet =
-        dbClient
-            .singleUse()
-            .executeQuery(statement);
+    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
     while (resultSet.next()) {
-      scoreDate = String.valueOf(resultSet.getTimestamp("Timestamp"));
-      score = String.format("%,d", resultSet.getLong("Score"));
+      String scoreDate = String.valueOf(resultSet.getTimestamp("Timestamp"));
+      String score = String.format("%,d", resultSet.getLong("Score"));
       System.out.printf(
           "PlayerId: %d  PlayerName: %s  Score: %s  Timestamp: %s\n",
           resultSet.getLong("PlayerId"), resultSet.getString("PlayerName"), score,
@@ -271,7 +251,7 @@ public class App {
     try  {
       dbAdminClient.dropDatabase(db.getInstanceId().getInstance(), db.getDatabase());
     } catch (Exception e) {
-      System.err.println("Error encountered while deleting database.");
+      System.err.println("Error encountered while deleting database. Error message: " + e");
     }
     System.out.printf("Database deleted.\n");
   }
