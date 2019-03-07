@@ -57,9 +57,5 @@ public class ListGcsBuckets {
     return buckets;
   }
   // [END storage_s3_sdk_list_buckets]
-
-  public static void main(String[] args) {
-    listGcsBuckets(args[0], args[1]);
-  }
 }
 
