@@ -30,16 +30,12 @@ Install [Maven](http://maven.apache.org/).
 
 1. Get your [Interoperable Storage Access Keys][3] and set the following environment variables:
 
-   * AWS_ACCESS_KEY_ID=[ACCESS_KEY]
-   * AWS_SECRET_ACCESS_KEY=[SECRET]
-
-
 ## List GCS buckets using the AWS S3 SDK
 
 1. Run example using the following Maven command:
 
    ```
-   mvn exec:java -Dexec.mainClass=ListGcsBuckets
+   mvn exec:java -Dexec.mainClass=ListGcsBuckets -Dexec.args="[ACCESS_KEY_ID] [ACCESS_SECRET_KEY]"
    ```
 
 ## Test Sample
@@ -47,11 +43,13 @@ Install [Maven](http://maven.apache.org/).
 1. Set the following environment variable with the default project for Interoperable Storage Access Keys.
 
    * GOOGLE_CLOUD_PROJECT_S3_SDK=[GOOGLE_PROJECT_ID]
+   * STORAGE_HMAC_ACCESS_KEY_ID=[ACCESS_KEY_ID]
+   * STORAGE_HMAC_ACCESS_SECRET_KEY=[ACCESS_SECRET_KEY]
 
 1. Run test using the following Maven command:
 
    ```
-   mvn exec:java 
+   mvn verify
    ```
 
 ## Products

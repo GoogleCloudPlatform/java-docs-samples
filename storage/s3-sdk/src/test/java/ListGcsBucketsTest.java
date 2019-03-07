@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,13 @@ import org.junit.Test;
 
 public class ListGcsBucketsTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK");
+  private static final String KEY_ID = System.getenv("STORAGE_HMAC_ACCESS_KEY_ID");
+  private static final String SECRET_KEY = System.getenv("STORAGE_HMAC_ACCESS_SECRET_KEY");
   private static final String BUCKET = PROJECT_ID;
 
   @Test
   public void testListBucket() throws Exception {
-    List<Bucket> buckets = ListGcsBuckets.listGcsBuckets();
+    List<Bucket> buckets = ListGcsBuckets.listGcsBuckets(KEY_ID, SECRET_KEY);
     assertThat(buckets.toString()).contains(BUCKET);
   }
 }
