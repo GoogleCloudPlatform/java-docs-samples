@@ -45,8 +45,8 @@ public class Quickstart {
             .build();
 
     // Call the Cloud IAM Roles API
-    ListRolesResponse respose = service.roles().list().execute();
-    List<Role> roles = respose.getRoles();
+    ListRolesResponse response = service.roles().list().execute();
+    List<Role> roles = response.getRoles();
 
     // Process the response
     for (Role role : roles) {
