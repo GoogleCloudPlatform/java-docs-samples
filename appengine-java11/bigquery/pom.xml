@@ -113,7 +113,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>warfile</finalName>
+    <finalName>bigquery</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

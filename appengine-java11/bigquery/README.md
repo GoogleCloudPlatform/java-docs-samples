@@ -67,4 +67,4 @@ been deleted) it may take up to 5 minutes for the MetricDescriptors to sync
 with StackDriver before any results are shown. If you do not see results,
 please wait a few moments and try again.
 
-[dashboard]: https://pantheon.corp.google.com/monitoring
+[dashboard]: https://console.cloud.google.com/monitoring
