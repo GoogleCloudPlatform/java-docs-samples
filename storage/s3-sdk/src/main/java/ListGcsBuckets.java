@@ -26,10 +26,10 @@ import java.util.List;
 
 public class ListGcsBuckets {
   public static List<Bucket> listGcsBuckets(String googleAccessKeyId, 
-      String googleSecretAccessKey) {
+      String googleAccessKeySecret) {
     // Create a BasicAWSCredentials using Cloud Storage HMAC credentials.
     BasicAWSCredentials googleCreds = new BasicAWSCredentials(googleAccessKeyId, 
-        googleSecretAccessKey);
+        googleAccessKeySecret);
 
     // Create a new client and do the following:
     // 1. Change the endpoint URL to use the Google Cloud Storage XML API endpoint.
