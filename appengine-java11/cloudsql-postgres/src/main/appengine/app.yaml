@@ -1,0 +1,8 @@
+runtime: java11
+instance_class: F2
+entrypoint: 'java -cp * com.google.appengine.demo.jettymain.Main cloud-postgresql.war'
+env_variables:
+  DB_INSTANCE: <project_id>:<instance_region>:<database_instance>
+  DB_DATABASE: <database_name>
+  DB_USER: <user_name>
+  DB_PASSWORD: <password>

@@ -8,17 +8,16 @@ Engine standard Java 11. Find more information about connecting to [Cloud SQL fr
 
 ## Setup
 
-* If you haven't already, Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
+* Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
 
     `gcloud init`
 
-* If this is your first time creating an App engine application:
+* If this is your first time creating an App Engine application:
 ```
    gcloud app create
 ```
 
-* If you haven't already, Setup
-[Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+* Setup [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
 
     `gcloud auth application-default login`
 
