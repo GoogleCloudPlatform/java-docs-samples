@@ -6,11 +6,19 @@
   <name>simplejettymain-j11</name>
   <version>1</version>
   <packaging>jar</packaging>
+
+  <!-- <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.10</version>
+  </parent> -->
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
