@@ -100,4 +100,22 @@ public class DetectIT {
     assertThat(got).contains("Google Cloud Platform");
 
   }
+
+  @Test
+  public void testDetectDocumentFeatures() {
+    DetectDocumentFeatures.detectDocumentFeatures("./resources/kafka.pdf");
+
+    //Assert
+    String got = bout.toString();
+    assertThat(got).contains("Confidence:");
+  }
+
+  @Test
+  public void testDetectDocumentFeaturesGcs() throws Exception {
+    DetectDocumentFeaturesGcs.detectDocumentFeaturesGcs("gs://cloud-samples-data/video/kafka.pdf");
+
+    //Assert
+    String got = bout.toString();
+    assertThat(got).contains("Confidence:");
+  }
 }
