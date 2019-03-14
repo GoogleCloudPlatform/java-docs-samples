@@ -17,18 +17,18 @@
 // Solution found in: https://stackoverflow.com/questions/47264520/unable-to-listobjects-from-gcs-bucket
 
 // [START storage_s3_sdk_list_objects]
+import com.amazonaws.Request;
+
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.handlers.RequestHandler2;
 
+import com.amazonaws.handlers.RequestHandler2;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.model.ObjectListing;
-
-import com.amazonaws.Request;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.util.List;
 import java.util.Map;
@@ -76,7 +76,7 @@ public class ListGcsObjects {
     @Override
     public void beforeRequest(Request<?> request) {
       if (request.getOriginalRequest() instanceof ListObjectsRequest) {
-          request.getParameters().remove("encoding-type");
+        request.getParameters().remove("encoding-type");
       }
     }
   }
