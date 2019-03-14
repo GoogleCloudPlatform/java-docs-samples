@@ -43,6 +43,7 @@ public class ListGcsObjects {
     // Create a new client and do the following:
     // 1. Change the endpoint URL to use the Google Cloud Storage XML API endpoint.
     // 2. Use Cloud Storage HMAC Credentials.
+    // 3. Remove "encoding-type" when using listObjects() using withRequestHandlers().
     AmazonS3 interopClient =
         AmazonS3ClientBuilder.standard()
             .withEndpointConfiguration(
