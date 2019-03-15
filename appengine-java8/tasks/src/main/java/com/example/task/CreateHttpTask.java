@@ -16,9 +16,9 @@
 
 package com.example.task;
 
-import com.google.cloud.tasks.v2beta3.HttpRequest;
 import com.google.cloud.tasks.v2beta3.CloudTasksClient;
 import com.google.cloud.tasks.v2beta3.HttpMethod;
+import com.google.cloud.tasks.v2beta3.HttpRequest;
 import com.google.cloud.tasks.v2beta3.QueueName;
 import com.google.cloud.tasks.v2beta3.Task;
 import com.google.common.base.Strings;
