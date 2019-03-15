@@ -16,7 +16,7 @@
 
 package com.example.task;
 
-import com.google.cloud.tasks.v2beta3.AppEngineHttpRequest;
+import com.google.cloud.tasks.v2beta3.HttpRequest;
 import com.google.cloud.tasks.v2beta3.CloudTasksClient;
 import com.google.cloud.tasks.v2beta3.HttpMethod;
 import com.google.cloud.tasks.v2beta3.QueueName;
@@ -37,7 +37,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class CreateTask {
+public class CreateHttpTask {
   private static String GOOGLE_CLOUD_PROJECT_KEY = "GOOGLE_CLOUD_PROJECT";
 
   private static Option PROJECT_ID_OPTION = Option.builder("pid")
@@ -66,6 +66,15 @@ public class CreateTask {
       .type(String.class)
       .build();
 
+  private static Option URL_OPTION = Option.builder("u")
+      .required()
+      .longOpt("url")
+      .desc("The full url path that the request will be sent to.")
+      .hasArg()
+      .argName("url")
+      .type(String.class)
+      .build();
+
   private static Option PAYLOAD_OPTION = Option.builder("p")
       .longOpt("payload")
       .desc("The payload string for the task.")
@@ -87,6 +96,7 @@ public class CreateTask {
     options.addOption(PROJECT_ID_OPTION);
     options.addOption(QUEUE_OPTION);
     options.addOption(LOCATION_OPTION);
+    options.addOption(URL_OPTION);
     options.addOption(PAYLOAD_OPTION);
     options.addOption(IN_SECONDS_OPTION);
 
@@ -118,9 +128,10 @@ public class CreateTask {
 
     String queueName = params.getOptionValue(QUEUE_OPTION.getOpt());
     String location = params.getOptionValue(LOCATION_OPTION.getOpt());
+    String url = params.getOptionValue(URL_OPTION.getOpt());
     String payload = params.getOptionValue(PAYLOAD_OPTION.getOpt(), "default payload");
 
-    // [START cloud_tasks_appengine_create_task]
+    // [START cloud_tasks_create_http_task]
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
 
@@ -128,6 +139,7 @@ public class CreateTask {
       // projectId = "my-project-id";
       // queueName = "my-appengine-queue";
       // location = "us-central1";
+      // url = "https://<project-id>.appspot.com/tasks/create";
       // payload = "hello";
 
       // Construct the fully qualified queue name.
@@ -136,9 +148,9 @@ public class CreateTask {
       // Construct the task body.
       Task.Builder taskBuilder = Task
           .newBuilder()
-          .setAppEngineHttpRequest(AppEngineHttpRequest.newBuilder()
+          .setHttpRequest(HttpRequest.newBuilder()
               .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
-              .setRelativeUri("/tasks/create")
+              .setUrl(url)
               .setHttpMethod(HttpMethod.POST)
               .build());
 
@@ -154,7 +166,7 @@ public class CreateTask {
       Task task = client.createTask(queuePath, taskBuilder.build());
       System.out.println("Task created: " + task.getName());
     }
-    // [END cloud_tasks_appengine_create_task]
+    // [END cloud_tasks_create_http_task]
   }
 
   private static void printUsage(Options options) {
@@ -162,7 +174,7 @@ public class CreateTask {
     formatter.printHelp(
         "client",
         "A simple Cloud Tasks command line client that creates a task with an "
-            + "App Engine endpoint.",
+            + "HTTP endpoint.",
         options, "", true);
     throw new RuntimeException();
   }

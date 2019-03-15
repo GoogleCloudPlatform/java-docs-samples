@@ -52,7 +52,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>0.63.0-beta</version>
+      <version>0.83.0-beta</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -88,7 +88,6 @@ Copyright 2018 Google LLC
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <configuration>
-          <mainClass>com.example.task.CreateTask</mainClass>
           <cleanupDaemonThreads>false</cleanupDaemonThreads>
         </configuration>
       </plugin>
