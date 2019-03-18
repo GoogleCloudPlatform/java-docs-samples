@@ -112,7 +112,7 @@ public class DetectIT {
   @Test
   public void testDetectDocumentFeaturesGcs() throws Exception {
     // Act
-    DetectBatchAnnotateFilesGcs.detectDocumentFeaturesGcs(
+    DetectBatchAnnotateFilesGcs.detectBatchAnnotateFilesGcs(
         "gs://cloud-samples-data/video/kafka.pdf");
 
     // Assert

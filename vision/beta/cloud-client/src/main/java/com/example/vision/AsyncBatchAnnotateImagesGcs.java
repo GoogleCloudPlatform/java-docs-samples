@@ -16,7 +16,7 @@
 
 package com.example.vision;
 
-// [START vision_detect_async_batch_annotate_images_beta]
+// [START vision_async_batch_annotate_images_beta]
 
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.paging.Page;
@@ -47,15 +47,13 @@ import java.util.regex.Pattern;
 
 public class AsyncBatchAnnotateImagesGcs {
 
-  /**
-   * Performs asynchronous batch annotation of images on Google Cloud Storage
-   * @param gcsSourcePath The path to the remote file on Google Cloud Storage
-   * @param gcsDestinationPath The path to the annotated image file
-   * @throws Exception on errors
-   */
+  // Performs asynchronous batch annotation of images on Google Cloud Storage
 
   public static void asyncBatchAnnotateImagesGcs(String gcsSourcePath, String gcsDestinationPath)
       throws Exception {
+
+    // String gcsSourcePath = "gs://YOUR_BUCKET_ID/path_to_your_data";
+    // String gcsDestinationPath = "gs://YOUR_BUCKET_ID/path_to_store_annotation";
 
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -158,4 +156,4 @@ public class AsyncBatchAnnotateImagesGcs {
   }
 }
 
-// [END vision_detect_async_batch_annotate_images_beta]
+// [END vision_async_batch_annotate_images_beta]

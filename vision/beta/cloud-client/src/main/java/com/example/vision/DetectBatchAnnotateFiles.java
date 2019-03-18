@@ -16,7 +16,7 @@
 
 package com.example.vision;
 
-// [START vision_detect_batch_annotate_files_beta]
+// [START vision_batch_annotate_files_beta]
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.vision.v1p4beta1.AnnotateFileRequest;
@@ -40,28 +40,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class DetectBatchAnnotateFiles {
 
-  /**
-   * Performs document feature detection on a local PDF/TIFF/GIF file.
-   * While your PDF file may have several pages, this API can process up to 5 pages only.
-   * @param filePath The local file path e.g. "path/to/file.pdf"
-   * @throws Exception on errors
-   */
-  public static void detectBatchAnnotateFiles(String filePath) {
+  // Performs document feature detection on a local PDF/TIFF/GIF file.
 
-    // Initialize the client that will be used to send requests. This client only needs to be
-    // created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+  public static void detectBatchAnnotateFiles(String filePath) {
+    // String filePath = "path/to/your_file";
+
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-      //Annotate the first two pages and the last one (max 5 pages)
-      //First page starts at 1, and not 0. Last page is -1.
-      List<Integer> pages = Arrays.asList(1,2,-1);
+      // Annotate the first two pages and the last one (max 5 pages)
+      // First page starts at 1, and not 0. Last page is -1.
+      List<Integer> pages = Arrays.asList(1, 2, -1);
       ByteString pdfBytes = ByteString.readFrom(new FileInputStream(filePath));
       Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
-      //Other supported mime types : 'image/tiff' or 'image/gif'
+      // Other supported mime types : 'image/tiff' or 'image/gif'
       InputConfig inputConfig =
           InputConfig.newBuilder().setMimeType("application/pdf").setContent(pdfBytes).build();
       AnnotateFileRequest request =
@@ -77,8 +69,8 @@ public class DetectBatchAnnotateFiles {
       ApiFuture<BatchAnnotateFilesResponse> future =
           client.batchAnnotateFilesCallable().futureCall(batchAnnotateFilesRequest);
       BatchAnnotateFilesResponse response = future.get();
-      client.close();
-      //Getting the first response
+
+      // Getting the first response
       AnnotateFileResponse annotateFileResponse = response.getResponses(0);
       // For full list of available annotations, see http://g.co/cloud/vision/docs
       TextAnnotation textAnnotation = annotateFileResponse.getResponses(0).getFullTextAnnotation();
@@ -115,4 +107,4 @@ public class DetectBatchAnnotateFiles {
     }
   }
 }
-// [END vision_detect_batch_annotate_files_beta]
+// [END vision_batch_annotate_files_beta]
