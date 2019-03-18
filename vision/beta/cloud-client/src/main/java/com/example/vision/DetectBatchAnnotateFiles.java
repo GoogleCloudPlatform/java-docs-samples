@@ -16,7 +16,7 @@
 
 package com.example.vision;
 
-// [START vision_fulltext_detection_pdf_gcs_beta]
+// [START vision_detect_batch_annotate_files_beta]
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.vision.v1p4beta1.AnnotateFileRequest;
@@ -26,7 +26,6 @@ import com.google.cloud.vision.v1p4beta1.BatchAnnotateFilesResponse;
 import com.google.cloud.vision.v1p4beta1.Block;
 import com.google.cloud.vision.v1p4beta1.Feature;
 import com.google.cloud.vision.v1p4beta1.Feature.Type;
-import com.google.cloud.vision.v1p4beta1.GcsSource;
 import com.google.cloud.vision.v1p4beta1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1p4beta1.InputConfig;
 import com.google.cloud.vision.v1p4beta1.Page;
@@ -34,35 +33,37 @@ import com.google.cloud.vision.v1p4beta1.Paragraph;
 import com.google.cloud.vision.v1p4beta1.Symbol;
 import com.google.cloud.vision.v1p4beta1.TextAnnotation;
 import com.google.cloud.vision.v1p4beta1.Word;
+import com.google.protobuf.ByteString;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DetectDocumentFeaturesGcs {
+
+public class DetectBatchAnnotateFiles {
 
   /**
-   * Performs document feature detection on a remote PDF/TIFF/GIF file on Google Cloud Storage.
+   * Performs document feature detection on a local PDF/TIFF/GIF file.
    * While your PDF file may have several pages, this API can process up to 5 pages only.
-   *
-   * @param gcsPath The path to the remote file on Google Cloud Storage
+   * @param filePath The local file path e.g. "path/to/file.pdf"
    * @throws Exception on errors
    */
-  public static void detectDocumentFeaturesGcs(String gcsPath) {
+  public static void detectBatchAnnotateFiles(String filePath) {
 
     // Initialize the client that will be used to send requests. This client only needs to be
     // created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-      // Annotate the first two pages and the last one (max 5 pages)
-      // First page starts at 1, and not 0. Last page is -1.
-      List<Integer> pages = Arrays.asList(1, 2, -1);
-      GcsSource gcsSource = GcsSource.newBuilder().setUri(gcsPath).build();
+      //Annotate the first two pages and the last one (max 5 pages)
+      //First page starts at 1, and not 0. Last page is -1.
+      List<Integer> pages = Arrays.asList(1,2,-1);
+      ByteString pdfBytes = ByteString.readFrom(new FileInputStream(filePath));
       Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
       //Other supported mime types : 'image/tiff' or 'image/gif'
       InputConfig inputConfig =
-          InputConfig.newBuilder().setMimeType("application/pdf").setGcsSource(gcsSource).build();
+          InputConfig.newBuilder().setMimeType("application/pdf").setContent(pdfBytes).build();
       AnnotateFileRequest request =
           AnnotateFileRequest.newBuilder()
               .addFeatures(feat)
@@ -77,7 +78,7 @@ public class DetectDocumentFeaturesGcs {
           client.batchAnnotateFilesCallable().futureCall(batchAnnotateFilesRequest);
       BatchAnnotateFilesResponse response = future.get();
       client.close();
-      // Getting the first response
+      //Getting the first response
       AnnotateFileResponse annotateFileResponse = response.getResponses(0);
       // For full list of available annotations, see http://g.co/cloud/vision/docs
       TextAnnotation textAnnotation = annotateFileResponse.getResponses(0).getFullTextAnnotation();
@@ -114,4 +115,4 @@ public class DetectDocumentFeaturesGcs {
     }
   }
 }
-// [END vision_fulltext_detection_pdf_gcs_beta]
+// [END vision_detect_batch_annotate_files_beta]

@@ -32,13 +32,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DetectIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  // private static final String BUCKET = PROJECT_ID;
+  private static final String BUCKET = "java-docs-samples-testing";
+  private static final String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private Detect app;
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  //private static final String BUCKET = PROJECT_ID;
-  private static final String BUCKET = "java-docs-samples-testing";
-  private static final  String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT";
 
   @Before
   public void setUp() throws IOException {
@@ -90,32 +90,45 @@ public class DetectIT {
   public void testDetectHandwrittenOcrGcs() throws Exception {
     // Act
     String[] args = {
-        "handwritten-ocr",
-        "gs://cloud-samples-data/vision/handwritten.jpg",
+      "handwritten-ocr", "gs://cloud-samples-data/vision/handwritten.jpg",
     };
     Detect.argsHelper(args, out);
 
     // Assert
     String got = bout.toString();
     assertThat(got).contains("Google Cloud Platform");
-
   }
 
   @Test
   public void testDetectDocumentFeatures() {
-    DetectDocumentFeatures.detectDocumentFeatures("./resources/kafka.pdf");
+    // Act
+    DetectBatchAnnotateFiles.detectBatchAnnotateFiles("./resources/kafka.pdf");
 
-    //Assert
+    // Assert
     String got = bout.toString();
     assertThat(got).contains("Confidence:");
   }
 
   @Test
   public void testDetectDocumentFeaturesGcs() throws Exception {
-    DetectDocumentFeaturesGcs.detectDocumentFeaturesGcs("gs://cloud-samples-data/video/kafka.pdf");
+    // Act
+    DetectBatchAnnotateFilesGcs.detectDocumentFeaturesGcs(
+        "gs://cloud-samples-data/video/kafka.pdf");
 
-    //Assert
+    // Assert
     String got = bout.toString();
     assertThat(got).contains("Confidence:");
+  }
+
+  @Test
+  public void testAsyncBatchAnnotateImagesGcs() throws Exception {
+    // Act
+    AsyncBatchAnnotateImagesGcs.asyncBatchAnnotateImagesGcs(
+        "gs://cloud-samples-data/vision/label/wakeupcat.jpg",
+        "gs://" + BUCKET + "/" + OUTPUT_PREFIX + "/");
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("red:");
   }
 }
