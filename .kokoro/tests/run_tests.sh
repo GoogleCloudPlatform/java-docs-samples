@@ -31,6 +31,7 @@ gradle -v
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
 export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
 source ${KOKORO_GFILE_DIR}/aws-secrets.sh
+source ${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh
 source ${KOKORO_GFILE_DIR}/dlp_secrets.txt
 # Activate service account
 gcloud auth activate-service-account\
