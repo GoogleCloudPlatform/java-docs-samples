@@ -37,7 +37,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -126,18 +128,24 @@ public class App {
                   numberOfPlayers = resultSet.getLong("PlayerCount");
                 }
                 // Insert 100 player records into the Players table.
+                List<Statement> stmts = new ArrayList<Statement>();
                 long randomId;
                 for (int x = 1; x <= 100; x++) {
                   numberOfPlayers++;
                   randomId = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
-                  transaction.buffer(
-                      Mutation.newInsertBuilder("Players")
-                          .set("PlayerId")
-                          .to(randomId)
-                          .set("PlayerName")
-                          .to("Player " + numberOfPlayers)
-                          .build());
+                  Statement statement =
+                      Statement
+                        .newBuilder(
+                            "INSERT INTO Players (PlayerId, PlayerName) "
+                            + "VALUES (@PlayerId, @PlayerName) ")
+                        .bind("PlayerId")
+                        .to(randomId)
+                        .bind("PlayerName")
+                        .to("Player " + numberOfPlayers)
+                        .build();
+                  stmts.add(statement);
                 }
+                transaction.batchUpdate(stmts);
                 return null;
               }
             });
@@ -168,6 +176,7 @@ public class App {
                   LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
                   long start = startDate.toEpochDay();
                   Random r = new Random();
+                  List<Statement> stmts = new ArrayList<Statement>();
                   // Insert 4 score records into the Scores table 
                   // for each player in the Players table.
                   for (int x = 1; x <= 4; x++) {
@@ -180,20 +189,24 @@ public class App {
                         r.nextInt(23), r.nextInt(59), r.nextInt(59), r.nextInt(9999));
                     LocalDateTime randomDate = LocalDateTime.of(randomDayDate, randomTime);
                     Instant randomInstant = randomDate.toInstant(ZoneOffset.UTC);
-                    transaction.buffer(
-                        Mutation.newInsertBuilder("Scores")
-                            .set("PlayerId")
-                            .to(playerId)
-                            .set("Score")
-                            .to(randomScore)
-                            .set("Timestamp")
-                            .to(randomInstant.toString())
-                            .build());
+                    Statement statement =
+                        Statement
+                        .newBuilder(
+                          "INSERT INTO Scores (PlayerId, Score, Timestamp) "
+                          + "VALUES (@PlayerId, @Score, @Timestamp) ")
+                        .bind("PlayerId")
+                        .to(playerId)
+                        .bind("Score")
+                        .to(randomScore)
+                        .bind("Timestamp")
+                        .to(randomInstant.toString())
+                        .build();
+                    stmts.add(statement);
                   }
+                  transaction.batchUpdate(stmts);
                   return null;
                 }
               });
-
     }
     if (!playerRecordsFound) {
       System.out.println("Parameter 'scores' is invalid since "
