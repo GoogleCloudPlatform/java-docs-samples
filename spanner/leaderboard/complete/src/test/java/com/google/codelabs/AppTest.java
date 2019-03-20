@@ -99,6 +99,18 @@ public class AppTest {
     out = runSample("insert", "scores");
     assertThat(out).contains("Done inserting score records");
 
+    out = runSample("insert", "scores");
+    assertThat(out).contains("Done inserting score records");
+
+    out = runSample("insert", "scores");
+    assertThat(out).contains("Done inserting score records");
+
+    out = runSample("insert", "scores");
+    assertThat(out).contains("Done inserting score records");
+
+    out = runSample("insert", "scores");
+    assertThat(out).contains("Done inserting score records");
+
     // Query Top Ten Players of all time.
     out = runSample("query");
     assertThat(out).contains("PlayerId: ");
