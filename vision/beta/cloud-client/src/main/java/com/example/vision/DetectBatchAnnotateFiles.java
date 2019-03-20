@@ -17,7 +17,6 @@
 package com.example.vision;
 
 // [START vision_batch_annotate_files_beta]
-
 import com.google.api.core.ApiFuture;
 import com.google.cloud.vision.v1p4beta1.AnnotateFileRequest;
 import com.google.cloud.vision.v1p4beta1.AnnotateFileResponse;
@@ -43,7 +42,6 @@ import java.util.List;
 public class DetectBatchAnnotateFiles {
 
   // Performs document feature detection on a local PDF/TIFF/GIF file.
-
   public static void detectBatchAnnotateFiles(String filePath) {
     // String filePath = "path/to/your_file";
 
@@ -64,6 +62,7 @@ public class DetectBatchAnnotateFiles {
               .build();
       List<AnnotateFileRequest> requests = new ArrayList<>();
       requests.add(request);
+
       BatchAnnotateFilesRequest batchAnnotateFilesRequest =
           BatchAnnotateFilesRequest.newBuilder().addAllRequests(requests).build();
       ApiFuture<BatchAnnotateFilesResponse> future =
@@ -72,6 +71,7 @@ public class DetectBatchAnnotateFiles {
 
       // Getting the first response
       AnnotateFileResponse annotateFileResponse = response.getResponses(0);
+
       // For full list of available annotations, see http://g.co/cloud/vision/docs
       TextAnnotation textAnnotation = annotateFileResponse.getResponses(0).getFullTextAnnotation();
       for (Page page : textAnnotation.getPagesList()) {

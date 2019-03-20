@@ -106,7 +106,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Confidence:");
+    assertThat(got).contains("Samsa");
   }
 
   @Test
@@ -117,7 +117,7 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Confidence:");
+    assertThat(got).contains("Samsa");
   }
 
   @Test
