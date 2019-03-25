@@ -199,6 +199,10 @@ public class SpannerSampleIT {
     assertThat(out).doesNotContain("Russell Morales");
     assertThat(out).doesNotContain("Jacqueline Long");
     assertThat(out).doesNotContain("Dylan Shaw");
+
+    out = runSample("updateusingbatchdml");
+    assertThat(out).contains("1 record updated by stmt 0");
+    assertThat(out).contains("1 record updated by stmt 1");
   }
 
   private String formatForTest(String name) {
