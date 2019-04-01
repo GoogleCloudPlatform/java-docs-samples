@@ -108,7 +108,7 @@ Copyright 2019 Google Inc.
         <version>2.7</version>
         <executions>
           <execution>
-            <id>copy-resource-one</id>
+            <id>copy-resources</id>
             <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
