@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2017 Google Inc.
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,14 @@ echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
 set +e
 # Diff to find out what has changed from master
 RESULT=0
-cd github/java-docs-samples
+
+# Select directory to run tests
+if [[ $PROJECT == appengine-java11 ]]; then
+  cd github/java-docs-samples/appengine-java11
+else
+  cd github/java-docs-samples
+fi
+
 # For every pom.xml (may break on whitespace)
 for file in **/pom.xml; do
     # Navigate to project
@@ -69,7 +76,7 @@ for file in **/pom.xml; do
            -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
            -Dbigtable.instanceID=instance
         EXIT=$?
-        
+
         if [ $EXIT -ne 0 ]; then
             echo -e "\n Tests failed. \n"
             RESULT=1

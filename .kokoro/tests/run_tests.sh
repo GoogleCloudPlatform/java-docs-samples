@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2017 Google Inc.
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,11 +38,17 @@ gcloud auth activate-service-account\
     --key-file=$GOOGLE_APPLICATION_CREDENTIALS \
     --project=$GOOGLE_CLOUD_PROJECT
 
+# Select directory to run tests
+if [[ $PROJECT == appengine-java11 ]]; then
+  cd github/java-docs-samples/appengine-java11
+else
+  cd github/java-docs-samples
+fi
+
 # Run the tests
-cd github/java-docs-samples
 mvn --batch-mode --fail-at-end clean verify \
-    -Dfile.encoding="UTF-8" \
-    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Dmaven.test.redirectTestOutputToFile=true \
-    -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-    -Dbigtable.instanceID=instance
+-Dfile.encoding="UTF-8" \
+-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+-Dmaven.test.redirectTestOutputToFile=true \
+-Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+-Dbigtable.instanceID=instance
