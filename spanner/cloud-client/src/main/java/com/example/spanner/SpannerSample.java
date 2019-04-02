@@ -30,6 +30,7 @@ import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerBatchUpdateException;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
@@ -1084,6 +1085,39 @@ public class SpannerSample {
   }
   // [END spanner_dml_partitioned_delete]
 
+  // [START spanner_dml_batch_update]  
+  static void updateUsingBatchDml(DatabaseClient dbClient) {
+    dbClient
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                List<Statement> stmts = new ArrayList<Statement>();
+                String sql = "INSERT INTO Albums "
+                            + "(SingerId, AlbumId, AlbumTitle, MarketingBudget) "
+                            + "VALUES (1, 3, 'Test Album Title', 10000) ";
+                stmts.add(Statement.of(sql));
+                sql = "UPDATE Albums "
+                        + "SET MarketingBudget = MarketingBudget * 2 "
+                        + "WHERE SingerId = 1 and AlbumId = 3";
+                stmts.add(Statement.of(sql));
+                long [] rowCounts;
+                try {
+                  rowCounts = transaction.batchUpdate(stmts);
+                } catch (SpannerBatchUpdateException e) {
+                  rowCounts = e.getUpdateCounts();
+                }
+                for (int i = 0; i < rowCounts.length; i++) {
+                  System.out.printf(
+                      "%d record updated by stmt %d.\n", rowCounts[i], i);
+                }
+                return null;
+              }
+            });
+  }
+  // [END spanner_dml_batch_update]
+
   static void run(
       DatabaseClient dbClient,
       DatabaseAdminClient dbAdminClient,
@@ -1203,7 +1237,10 @@ public class SpannerSample {
         break;
       case "deleteusingpartitioneddml":
         deleteUsingPartitionedDml(dbClient);
-        break;        
+        break;
+      case "updateusingbatchdml":
+        updateUsingBatchDml(dbClient);
+        break;
       default:
         printUsageAndExit();
     }
@@ -1252,6 +1289,7 @@ public class SpannerSample {
     System.err.println("    SpannerExample writewithtransactionusingdml my-instance example-db");
     System.err.println("    SpannerExample updateusingpartitioneddml my-instance example-db");
     System.err.println("    SpannerExample deleteusingpartitioneddml my-instance example-db");
+    System.err.println("    SpannerExample updateusingbatchdml my-instance example-db");
     System.exit(1);
   }
 

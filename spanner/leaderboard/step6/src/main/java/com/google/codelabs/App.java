@@ -37,7 +37,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -53,6 +55,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>Creating a Cloud Spanner database.
  *   <li>Inserting data using a read-write transaction.
+ *   <li>Executing SQL queries over data, filtering and ordering by timestamp.
  * </ul>
  */
 public class App {
@@ -124,18 +127,24 @@ public class App {
                   numberOfPlayers = resultSet.getLong("PlayerCount");
                 }
                 // Insert 100 player records into the Players table.
+                List<Statement> stmts = new ArrayList<Statement>();
                 long randomId;
                 for (int x = 1; x <= 100; x++) {
                   numberOfPlayers++;
                   randomId = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
-                  transaction.buffer(
-                      Mutation.newInsertBuilder("Players")
-                          .set("PlayerId")
-                          .to(randomId)
-                          .set("PlayerName")
-                          .to("Player " + numberOfPlayers)
-                          .build());
+                  Statement statement =
+                      Statement
+                        .newBuilder(
+                            "INSERT INTO Players (PlayerId, PlayerName) "
+                            + "VALUES (@PlayerId, @PlayerName) ")
+                        .bind("PlayerId")
+                        .to(randomId)
+                        .bind("PlayerName")
+                        .to("Player " + numberOfPlayers)
+                        .build();
+                  stmts.add(statement);
                 }
+                transaction.batchUpdate(stmts);
                 return null;
               }
             });
@@ -166,10 +175,11 @@ public class App {
                   LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
                   long start = startDate.toEpochDay();
                   Random r = new Random();
+                  List<Statement> stmts = new ArrayList<Statement>();
                   // Insert 4 score records into the Scores table 
                   // for each player in the Players table.
                   for (int x = 1; x <= 4; x++) {
-                    // Generate random score between 1,000,000 and 1,000.
+                    // Generate random score between 1,000,000 and 1,000
                     long randomScore = r.nextInt(1000000 - 1000) + 1000;
                     // Get random day within the past two years.
                     long randomDay = ThreadLocalRandom.current().nextLong(start, end);
@@ -178,16 +188,21 @@ public class App {
                         r.nextInt(23), r.nextInt(59), r.nextInt(59), r.nextInt(9999));
                     LocalDateTime randomDate = LocalDateTime.of(randomDayDate, randomTime);
                     Instant randomInstant = randomDate.toInstant(ZoneOffset.UTC);
-                    transaction.buffer(
-                        Mutation.newInsertBuilder("Scores")
-                            .set("PlayerId")
-                            .to(playerId)
-                            .set("Score")
-                            .to(randomScore)
-                            .set("Timestamp")
-                            .to(randomInstant.toString())
-                            .build());
+                    Statement statement =
+                        Statement
+                        .newBuilder(
+                          "INSERT INTO Scores (PlayerId, Score, Timestamp) "
+                          + "VALUES (@PlayerId, @Score, @Timestamp) ")
+                        .bind("PlayerId")
+                        .to(playerId)
+                        .bind("Score")
+                        .to(randomScore)
+                        .bind("Timestamp")
+                        .to(randomInstant.toString())
+                        .build();
+                    stmts.add(statement);
                   }
+                  transaction.batchUpdate(stmts);
                   return null;
                 }
               });
@@ -200,6 +215,48 @@ public class App {
       System.exit(1);
     } else {
       System.out.println("Done inserting score records...");
+    }
+  }
+
+  static void query(DatabaseClient dbClient) {
+    Statement statement = Statement.of(
+        "SELECT p.PlayerId, p.PlayerName, s.Score, s.Timestamp "
+          + "FROM Players p "
+          + "JOIN Scores s ON p.PlayerId = s.PlayerId "
+          + "ORDER BY s.Score DESC LIMIT 10");
+    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
+    while (resultSet.next()) {
+      String scoreDate = String.valueOf(resultSet.getTimestamp("Timestamp"));
+      String score = String.format("%,d", resultSet.getLong("Score"));
+      System.out.printf(
+          "PlayerId: %d  PlayerName: %s  Score: %s  Timestamp: %s\n",
+          resultSet.getLong("PlayerId"), resultSet.getString("PlayerName"), score,
+          scoreDate.substring(0,10));
+    }
+  }
+
+  static void query(DatabaseClient dbClient, int timespan) {
+    Statement statement =
+        Statement
+            .newBuilder(
+              "SELECT p.PlayerId, p.PlayerName, s.Score, s.Timestamp "
+              + "FROM Players p "
+              + "JOIN Scores s ON p.PlayerId = s.PlayerId "
+              + "WHERE s.Timestamp > "
+              + "TIMESTAMP_SUB(CURRENT_TIMESTAMP(), "
+              + "    INTERVAL @Timespan HOUR) "
+              + "ORDER BY s.Score DESC LIMIT 10")
+            .bind("Timespan")
+            .to(timespan)
+            .build();
+    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
+    while (resultSet.next()) {
+      String scoreDate = String.valueOf(resultSet.getTimestamp("Timestamp"));
+      String score = String.format("%,d", resultSet.getLong("Score"));
+      System.out.printf(
+          "PlayerId: %d  PlayerName: %s  Score: %s  Timestamp: %s\n",
+          resultSet.getLong("PlayerId"), resultSet.getString("PlayerName"), score,
+          scoreDate.substring(0,10));
     }
   }
 
@@ -218,6 +275,11 @@ public class App {
     System.out.println("  java -jar leaderboard.jar insert my-instance example-db scores");
     System.out.println("      - Insert sample score data into Scores sample Cloud Spanner "
         + "database table.\n");
+    System.out.println("  java -jar leaderboard.jar query my-instance example-db");
+    System.out.println("      - Query players with top ten scores of all time.\n");
+    System.out.println("  java -jar leaderboard.jar query my-instance example-db 168");
+    System.out.println("      - Query players with top ten scores within a timespan "
+        + "specified in hours.\n");
     System.exit(1);
   }
 
@@ -244,6 +306,20 @@ public class App {
             insertType = "";
           }
           insert(dbClient, insertType);
+          break;
+        case "query":
+          if (args.length == 4) {
+            int timespan = 0;
+            try {
+              timespan = Integer.parseInt(args[3]);
+            } catch (NumberFormatException e) {
+              System.err.println("query command's 'timespan' parameter must be a valid integer.");
+              System.exit(1);
+            }
+            query(dbClient, timespan);
+          } else {
+            query(dbClient);
+          }
           break;
         default:
           printUsageAndExit();
