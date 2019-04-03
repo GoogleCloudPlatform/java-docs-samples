@@ -38,17 +38,43 @@ gcloud auth activate-service-account\
     --key-file=$GOOGLE_APPLICATION_CREDENTIALS \
     --project=$GOOGLE_CLOUD_PROJECT
 
-# Select directory to run tests
-if [[ $PROJECT == appengine-java11 ]]; then
-  cd github/java-docs-samples/appengine-java11
-else
-  cd github/java-docs-samples
-fi
+echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
+set +e
 
-# Run the tests
-mvn --batch-mode --fail-at-end clean verify \
--Dfile.encoding="UTF-8" \
--Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
--Dmaven.test.redirectTestOutputToFile=true \
--Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
--Dbigtable.instanceID=instance
+# For every pom.xml (may break on whitespace)
+for file in **/pom.xml; do
+    # Navigate to project
+    file=$(dirname "$file")
+    pushd "$file" > /dev/null
+
+    # Check if Java version matches test version
+    VERSION=$(grep "source>$JAVA_VERSION" pom.xml -c)
+
+    # Check for changes to the current folder
+    if [ "$VERSION" -eq 1 ]; then
+        echo "------------------------------------------------------------"
+        echo "- testing $file"
+        echo "------------------------------------------------------------"
+
+        # Run tests and update RESULT if failed
+        mvn -q --batch-mode --fail-at-end clean verify \
+           -Dfile.encoding="UTF-8" \
+           -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+           -Dmaven.test.redirectTestOutputToFile=true \
+           -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+           -Dbigtable.instanceID=instance
+        EXIT=$?
+
+        if [ $EXIT -ne 0 ]; then
+           echo -e "\n Tests failed. \n"
+           RESULT=1
+        else
+           echo -e "\n Tests complete. \n"
+        fi
+    fi
+
+    popd > /dev/null
+
+done
+
+exit $RESULT
