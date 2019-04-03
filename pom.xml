@@ -39,6 +39,7 @@
         <!-- App Engine Standard -->
         <module>appengine</module>
         <module>appengine-java8</module>
+        <module>appengine-java11</module>
         <module>auth</module>
         <module>flexible</module>
 
