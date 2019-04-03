@@ -22,6 +22,7 @@ import com.google.cloud.datalabeling.v1beta1.AnnotationSpecSet;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListAnnotationSpecSetsPagedResponse;
 import com.google.cloud.datalabeling.v1beta1.ListAnnotationSpecSetsRequest;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -56,8 +57,9 @@ public class CreateAnnotationSpecSetIT {
 
     // Delete the Annotation Spec Sheet
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+      ProjectName projectName = ProjectName.of(PROJECT_ID);
       ListAnnotationSpecSetsRequest listRequest = ListAnnotationSpecSetsRequest.newBuilder()
-          .setParent(DataLabelingServiceClient.formatProjectName(PROJECT_ID))
+          .setParent(projectName.toString())
           .build();
 
       ListAnnotationSpecSetsPagedResponse response = dataLabelingServiceClient

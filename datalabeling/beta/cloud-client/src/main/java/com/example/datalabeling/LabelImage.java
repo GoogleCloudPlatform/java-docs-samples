@@ -69,10 +69,10 @@ class LabelImage {
       // You'll want to save this for later to retrieve your completed operation.
       System.out.format("Operation Name: %s\n", operation.getName());
 
-      // [END datalabeling_label_image_beta]
+
       // Cancel the operation to avoid charges when testing.
       dataLabelingServiceClient.getOperationsClient().cancelOperation(operation.getName());
-      // [START datalabeling_label_image_beta]
+
     } catch (IOException | InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }

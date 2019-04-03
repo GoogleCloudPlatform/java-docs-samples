@@ -22,6 +22,7 @@ import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListInstructionsPagedResponse;
 import com.google.cloud.datalabeling.v1beta1.Instruction;
 import com.google.cloud.datalabeling.v1beta1.ListInstructionsRequest;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -58,8 +59,9 @@ public class CreateInstructionIT {
 
     // Delete the Instruction
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+      ProjectName projectName = ProjectName.of(PROJECT_ID);
       ListInstructionsRequest listRequest = ListInstructionsRequest.newBuilder()
-          .setParent(DataLabelingServiceClient.formatProjectName(PROJECT_ID))
+          .setParent(projectName.toString())
           .build();
 
       ListInstructionsPagedResponse response = dataLabelingServiceClient

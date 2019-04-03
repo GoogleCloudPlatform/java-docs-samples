@@ -24,6 +24,7 @@ import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataType;
 import com.google.cloud.datalabeling.v1beta1.Instruction;
 import com.google.cloud.datalabeling.v1beta1.PdfInstruction;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -36,7 +37,7 @@ class CreateInstruction {
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
 
-      String formattedProjectName = DataLabelingServiceClient.formatProjectName(projectId);
+      ProjectName projectName = ProjectName.of(projectId);
 
       // There are two types of instructions: CSV (CsvInstruction) or PDF (PdfInstruction)
       PdfInstruction pdfInstruction = PdfInstruction.newBuilder()
@@ -52,7 +53,7 @@ class CreateInstruction {
 
       CreateInstructionRequest createInstructionRequest = CreateInstructionRequest.newBuilder()
           .setInstruction(instruction)
-          .setParent(formattedProjectName)
+          .setParent(projectName.toString())
           .build();
 
       OperationFuture<Instruction, CreateInstructionMetadata> operation =

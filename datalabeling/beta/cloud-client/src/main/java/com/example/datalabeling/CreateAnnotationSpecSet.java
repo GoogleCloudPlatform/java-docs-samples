@@ -21,6 +21,7 @@ import com.google.cloud.datalabeling.v1beta1.AnnotationSpec;
 import com.google.cloud.datalabeling.v1beta1.AnnotationSpecSet;
 import com.google.cloud.datalabeling.v1beta1.CreateAnnotationSpecSetRequest;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ class CreateAnnotationSpecSet {
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
 
-      String formattedProjectName = DataLabelingServiceClient.formatProjectName(projectId);
+      ProjectName projectName = ProjectName.of(projectId);
 
       List<AnnotationSpec> annotationSpecs = new ArrayList<>();
       for (Entry<String, String> entry : annotationLabels.entrySet()) {
@@ -59,7 +60,7 @@ class CreateAnnotationSpecSet {
 
       CreateAnnotationSpecSetRequest request = CreateAnnotationSpecSetRequest.newBuilder()
           .setAnnotationSpecSet(annotationSpecSet)
-          .setParent(formattedProjectName)
+          .setParent(projectName.toString())
           .build();
 
       AnnotationSpecSet result = dataLabelingServiceClient.createAnnotationSpecSet(request);

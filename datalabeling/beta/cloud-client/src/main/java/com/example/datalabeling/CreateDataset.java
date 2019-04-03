@@ -20,6 +20,7 @@ package com.example.datalabeling;
 import com.google.cloud.datalabeling.v1beta1.CreateDatasetRequest;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.Dataset;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.IOException;
 
 class CreateDataset {
@@ -29,7 +30,7 @@ class CreateDataset {
     // String projectId = "YOUR_PROJECT_ID";
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
-      String formattedProjectName = DataLabelingServiceClient.formatProjectName(projectId);
+      ProjectName projectName = ProjectName.of(projectId);
 
       Dataset dataset = Dataset.newBuilder()
           .setDisplayName("YOUR_DATASET_DISPLAY_NAME")
@@ -37,7 +38,7 @@ class CreateDataset {
           .build();
 
       CreateDatasetRequest createDatasetRequest = CreateDatasetRequest.newBuilder()
-          .setParent(formattedProjectName)
+          .setParent(projectName.toString())
           .setDataset(dataset)
           .build();
 

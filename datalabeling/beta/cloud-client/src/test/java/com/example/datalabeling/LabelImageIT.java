@@ -26,6 +26,7 @@ import com.google.cloud.datalabeling.v1beta1.Instruction;
 import com.google.cloud.datalabeling.v1beta1.ListAnnotationSpecSetsRequest;
 import com.google.cloud.datalabeling.v1beta1.ListDatasetsRequest;
 import com.google.cloud.datalabeling.v1beta1.ListInstructionsRequest;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -59,10 +60,11 @@ public class LabelImageIT {
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
       // Create the dataset
       CreateDataset.createDataset(PROJECT_ID);
+      ProjectName projectName = ProjectName.of(PROJECT_ID);
 
       // Get the Dataset
       ListDatasetsRequest datasetsRequest = ListDatasetsRequest.newBuilder()
-          .setParent(DataLabelingServiceClient.formatProjectName(PROJECT_ID))
+          .setParent(projectName.toString())
           .build();
       ListDatasetsPagedResponse datasetsResponse = dataLabelingServiceClient
           .listDatasets(datasetsRequest);
@@ -83,7 +85,7 @@ public class LabelImageIT {
 
       // Get the instruction
       ListInstructionsRequest instructionsRequest = ListInstructionsRequest.newBuilder()
-          .setParent(DataLabelingServiceClient.formatProjectName(PROJECT_ID))
+          .setParent(projectName.toString())
           .build();
       ListInstructionsPagedResponse instructionsResponse = dataLabelingServiceClient
           .listInstructions(instructionsRequest);
@@ -95,7 +97,7 @@ public class LabelImageIT {
 
       // Get the annotation spec set
       ListAnnotationSpecSetsRequest annotationRequest = ListAnnotationSpecSetsRequest.newBuilder()
-          .setParent(DataLabelingServiceClient.formatProjectName(PROJECT_ID))
+          .setParent(projectName.toString())
           .build();
       ListAnnotationSpecSetsPagedResponse annotationsResponse = dataLabelingServiceClient
           .listAnnotationSpecSets(annotationRequest);

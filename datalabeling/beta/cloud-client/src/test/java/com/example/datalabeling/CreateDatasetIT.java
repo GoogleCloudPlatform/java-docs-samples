@@ -22,6 +22,7 @@ import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListDatasetsPagedResponse;
 import com.google.cloud.datalabeling.v1beta1.Dataset;
 import com.google.cloud.datalabeling.v1beta1.ListDatasetsRequest;
+import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -56,8 +57,9 @@ public class CreateDatasetIT {
 
     // Delete the Dataset
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+      ProjectName projectName = ProjectName.of(PROJECT_ID);
       ListDatasetsRequest listRequest = ListDatasetsRequest.newBuilder()
-          .setParent(DataLabelingServiceClient.formatProjectName(PROJECT_ID))
+          .setParent(projectName.toString())
           .build();
 
       ListDatasetsPagedResponse response = dataLabelingServiceClient
