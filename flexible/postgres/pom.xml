@@ -85,7 +85,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.0.12</version>
+      <version>1.0.13</version>
     </dependency>
     <!-- [END gae_flex_postgres_dependencies] -->
   </dependencies>
