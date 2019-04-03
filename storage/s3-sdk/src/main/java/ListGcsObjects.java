@@ -28,17 +28,21 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import java.util.List;
 
 public class ListGcsObjects {
-  public static ObjectListing listGcsObjects(String googleAccessKeyId, 
+  public static void listGcsObjects(String googleAccessKeyId,
       String googleAccessKeySecret, String bucketName) {
+
+    // String googleAccessKeyId = "GOOGTS7C7FUP3AIRVJTE2BCD";
+    // String googleAccessKeySecret = "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ";
+    // String bucketName = "bucket-name";
+
     // Create a BasicAWSCredentials using Cloud Storage HMAC credentials.
-    BasicAWSCredentials googleCreds = new BasicAWSCredentials(googleAccessKeyId, 
+    BasicAWSCredentials googleCreds = new BasicAWSCredentials(googleAccessKeyId,
         googleAccessKeySecret);
 
     // Create a new client and do the following:
     // 1. Change the endpoint URL to use the Google Cloud Storage XML API endpoint.
     // 2. Use Cloud Storage HMAC Credentials.
-    AmazonS3 interopClient =
-        AmazonS3ClientBuilder.standard()
+    AmazonS3 interopClient = AmazonS3ClientBuilder.standard()
             .withEndpointConfiguration(
                 new AwsClientBuilder.EndpointConfiguration(
                     "https://storage.googleapis.com", "auto"))
@@ -56,8 +60,6 @@ public class ListGcsObjects {
 
     // Explicitly clean up client resources.
     interopClient.shutdown();
-
-    return objects;
   }
 }
 // [END storage_s3_sdk_list_objects]
