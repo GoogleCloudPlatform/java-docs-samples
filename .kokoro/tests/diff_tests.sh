@@ -43,13 +43,6 @@ set +e
 # Diff to find out what has changed from master
 RESULT=0
 
-# Select directory to run tests
-if [[ $PROJECT == appengine-java11 ]]; then
-  cd github/java-docs-samples/appengine-java11
-else
-  cd github/java-docs-samples
-fi
-
 # For every pom.xml (may break on whitespace)
 for file in **/pom.xml; do
     # Navigate to project
@@ -59,11 +52,15 @@ for file in **/pom.xml; do
     # Only tests changed projects
     git diff --quiet master.. .
     CHANGED=$?
+
     # Only test leafs to prevent testing twice
     PARENT=$(grep "<modules>" pom.xml -c)
 
+    # Check if Java version matches test version
+    VERSION=$(grep "source>$JAVA_VERSION" pom.xml -c)
+
     # Check for changes to the current folder
-    if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ]; then
+    if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ] && [ "$VERSION" -eq 1 ]; then
         echo "------------------------------------------------------------"
         echo "- testing $file"
         echo "------------------------------------------------------------"
