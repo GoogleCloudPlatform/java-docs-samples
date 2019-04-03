@@ -29,6 +29,7 @@ import com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClient;
 import com.google.cloud.dialogflow.v2beta1.ProjectName;
 
 import com.google.common.collect.ImmutableList;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -54,8 +55,9 @@ public class KnowledgeBaseManagementIT {
   private static String DOCUMENT_BASE_NAME = "fake_document_name";
 
   private static List<String> TEXTS = ImmutableList
-      .of("How do I sign up?", "Is my data redundant?", "Where can I find pricing information?",
-          "Where is my data stored?", "What are my support options?");
+      .of("How do I sign up?", "How can I maximize the availability of my data?",
+          "Where can I find pricing information?", "Where is my data stored?",
+          "What are my support options?");
 
   @Before
   public void setUp() {
@@ -166,12 +168,12 @@ public class KnowledgeBaseManagementIT {
     int answersFound = 0;
     for (String text : TEXTS) {
       KnowledgeAnswers knowledgeAnswers = allAnswers.get(text);
-      if (knowledgeAnswers.getAnswersCount() > 0) {
+      if (knowledgeAnswers.getAnswersCount() > 0 &&
+          text.equals(knowledgeAnswers.getAnswers(0).getFaqQuestion())) {
         answersFound++;
         Answer answer = knowledgeAnswers.getAnswers(0);
-        assertEquals(text, answer.getFaqQuestion());
         assertEquals(document.getName(), answer.getSource());
-        assertThat(answer.getAnswer()).contains("Cloud Storage");
+        assertThat(answer.getAnswer()).containsMatch("Cloud Storage|storage class");
       }
     }
     // To make the test less flaky, check that half of the texts got a result.

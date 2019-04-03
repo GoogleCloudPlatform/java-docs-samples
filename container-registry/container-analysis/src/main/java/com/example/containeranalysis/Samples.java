@@ -18,10 +18,7 @@ package com.example.containeranalysis;
 
 import static java.lang.Thread.sleep;
 
-import com.google.cloud.devtools.containeranalysis.v1beta1.ContainerAnalysisV1Beta1Client;
 import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client.ListNoteOccurrencesPagedResponse;
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client.ListOccurrencesPagedResponse;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -33,19 +30,18 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
+
 import io.grafeas.v1beta1.ListNoteOccurrencesRequest;
-import io.grafeas.v1beta1.ListOccurrencesRequest;
 import io.grafeas.v1beta1.Note;
 import io.grafeas.v1beta1.Occurrence;
 import io.grafeas.v1beta1.Resource;
 import io.grafeas.v1beta1.UpdateNoteRequest;
 import io.grafeas.v1beta1.UpdateOccurrenceRequest;
 import io.grafeas.v1beta1.vulnerability.Details;
-import io.grafeas.v1beta1.vulnerability.Severity;
 import io.grafeas.v1beta1.vulnerability.Vulnerability;
 import io.grpc.StatusRuntimeException;
+
 import java.io.IOException;
-import java.lang.InterruptedException;
 
 /**
  * API usage samples

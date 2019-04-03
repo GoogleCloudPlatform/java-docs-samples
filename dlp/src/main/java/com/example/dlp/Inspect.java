@@ -23,9 +23,7 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.BigQueryOptions;
 import com.google.privacy.dlp.v2.BigQueryTable;
-import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
-import com.google.privacy.dlp.v2.ContentItem;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.CustomInfoType;
 import com.google.privacy.dlp.v2.CustomInfoType.Dictionary;
@@ -33,34 +31,27 @@ import com.google.privacy.dlp.v2.CustomInfoType.Dictionary.WordList;
 import com.google.privacy.dlp.v2.CustomInfoType.Regex;
 import com.google.privacy.dlp.v2.DatastoreOptions;
 import com.google.privacy.dlp.v2.DlpJob;
-import com.google.privacy.dlp.v2.Finding;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectConfig.FindingLimits;
-import com.google.privacy.dlp.v2.InspectContentRequest;
-import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.InspectResult;
 import com.google.privacy.dlp.v2.KindExpression;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.PartitionId;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.StorageConfig;
-import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.activation.MimetypesFileTypeMap;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -71,6 +62,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class Inspect {
+  private static final int JOB_TIMEOUT_MINUTES = 2;
 
   // [START dlp_inspect_gcs]
   /**
@@ -169,7 +161,7 @@ public class Inspect {
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try {
-        done.get(1, TimeUnit.MINUTES);
+        done.get(JOB_TIMEOUT_MINUTES, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (Exception e) {
         System.out.println("Unable to verify job completion.");
@@ -293,7 +285,7 @@ public class Inspect {
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try {
-        done.get(1, TimeUnit.MINUTES);
+        done.get(JOB_TIMEOUT_MINUTES, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (Exception e) {
         System.out.println("Unable to verify job completion.");
@@ -418,7 +410,7 @@ public class Inspect {
       subscriber.startAsync();
 
       try {
-        done.get(1, TimeUnit.MINUTES);
+        done.get(JOB_TIMEOUT_MINUTES, TimeUnit.MINUTES);
         Thread.sleep(500); // Wait for the job to become available
       } catch (Exception e) {
         System.out.println("Unable to verify job completion.");
