@@ -42,7 +42,7 @@ echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
 set +e
 # Diff to find out what has changed from master
 RESULT=0
-
+cd github/java-docs-samples
 # For every pom.xml (may break on whitespace)
 for file in **/pom.xml; do
     # Navigate to project
