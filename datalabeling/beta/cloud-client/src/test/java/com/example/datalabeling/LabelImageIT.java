@@ -48,6 +48,7 @@ public class LabelImageIT {
       "gs://cloud-samples-data/datalabeling/image/image_dataset.csv";
   private static String INSTRUCTION_GCS_SOURCE_URI =
       "gs://cloud-samples-data/datalabeling/instruction/test.pdf";
+  private static String datsetName = "LABEL_IMAGE_DATASET_NAME";
 
   private Dataset dataset;
   private Instruction instruction;
@@ -59,7 +60,7 @@ public class LabelImageIT {
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
       // Create the dataset
-      CreateDataset.createDataset(PROJECT_ID);
+      CreateDataset.createDataset(PROJECT_ID,datsetName);
       ProjectName projectName = ProjectName.of(PROJECT_ID);
 
       // Get the Dataset
@@ -69,7 +70,7 @@ public class LabelImageIT {
       ListDatasetsPagedResponse datasetsResponse = dataLabelingServiceClient
           .listDatasets(datasetsRequest);
       for (Dataset returnedDataset : datasetsResponse.getPage().iterateAll()) {
-        if (returnedDataset.getDisplayName().equals("YOUR_DATASET_DISPLAY_NAME")) {
+        if (returnedDataset.getDisplayName().equals("LABEL_IMAGE_DATASET_NAME")) {
           dataset = returnedDataset;
         }
       }

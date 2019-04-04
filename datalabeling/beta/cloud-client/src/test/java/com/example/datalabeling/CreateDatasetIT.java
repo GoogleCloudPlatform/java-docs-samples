@@ -43,6 +43,7 @@ public class CreateDatasetIT {
   private ByteArrayOutputStream bout;
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
+  private static String datasetName = "CREATE_DATASET_NAME";
 
   @Before
   public void setUp() {
@@ -66,7 +67,7 @@ public class CreateDatasetIT {
           .listDatasets(listRequest);
 
       for (Dataset dataset : response.getPage().iterateAll()) {
-        if (dataset.getDisplayName().equals("YOUR_DATASET_DISPLAY_NAME")) {
+        if (dataset.getDisplayName().equals(datasetName)) {
           dataLabelingServiceClient.deleteDataset(dataset.getName());
         }
       }
@@ -77,12 +78,12 @@ public class CreateDatasetIT {
 
   @Test
   public void testCreateDataset() {
-    CreateDataset.createDataset(PROJECT_ID);
+    CreateDataset.createDataset(PROJECT_ID,datasetName);
 
     String output = bout.toString();
 
     assertThat(output, CoreMatchers.containsString(
-        "DisplayName: YOUR_DATASET_DISPLAY_NAME"));
+        "DisplayName: CREATE_DATASET_NAME"));
     assertThat(output, CoreMatchers.containsString("Description: YOUR_DESCRIPTION"));
   }
 }

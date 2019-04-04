@@ -26,14 +26,15 @@ import java.io.IOException;
 class CreateDataset {
 
   // Create a dataset that is initially empty.
-  static void createDataset(String projectId) {
+  static void createDataset(String projectId, String datasetName) {
     // String projectId = "YOUR_PROJECT_ID";
+    // String datasetName = "YOUR_DATASET_DISPLAY_NAME";
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
       ProjectName projectName = ProjectName.of(projectId);
 
       Dataset dataset = Dataset.newBuilder()
-          .setDisplayName("YOUR_DATASET_DISPLAY_NAME")
+          .setDisplayName(datasetName)
           .setDescription("YOUR_DESCRIPTION")
           .build();
 

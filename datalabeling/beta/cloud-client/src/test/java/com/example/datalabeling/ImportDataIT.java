@@ -45,6 +45,7 @@ public class ImportDataIT {
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String GCS_SOURCE_URI =
       "gs://cloud-samples-data/datalabeling/image/image_dataset.csv";
+  private static String datasetName = "IMPORT_DATASET_NAME";
 
   private static Dataset dataset;
 
@@ -53,7 +54,7 @@ public class ImportDataIT {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    CreateDataset.createDataset(PROJECT_ID);
+    CreateDataset.createDataset(PROJECT_ID,datasetName);
 
     // Get the Dataset
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
@@ -66,7 +67,7 @@ public class ImportDataIT {
           .listDatasets(listRequest);
 
       for (Dataset returnedDataset : response.getPage().iterateAll()) {
-        if (returnedDataset.getDisplayName().equals("YOUR_DATASET_DISPLAY_NAME")) {
+        if (returnedDataset.getDisplayName().equals("IMPORT_DATASET_NAME")) {
           dataset = returnedDataset;
         }
       }
@@ -91,7 +92,7 @@ public class ImportDataIT {
           .listDatasets(listRequest);
 
       for (Dataset returnedDataset : response.getPage().iterateAll()) {
-        if (returnedDataset.getDisplayName().equals("YOUR_DATASET_DISPLAY_NAME")) {
+        if (returnedDataset.getDisplayName().equals("IMPORT_DATASET_NAME")) {
           dataLabelingServiceClient.deleteDataset(returnedDataset.getName());
         }
       }
