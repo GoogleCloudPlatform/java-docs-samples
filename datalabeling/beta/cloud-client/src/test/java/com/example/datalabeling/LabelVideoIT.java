@@ -21,7 +21,12 @@ import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListAnnotationSpecSetsPagedResponse;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListDatasetsPagedResponse;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListInstructionsPagedResponse;
+import com.google.cloud.datalabeling.v1beta1.DataType;
 import com.google.cloud.datalabeling.v1beta1.Dataset;
+import com.google.cloud.datalabeling.v1beta1.GcsSource;
+import com.google.cloud.datalabeling.v1beta1.ImportDataOperationResponse;
+import com.google.cloud.datalabeling.v1beta1.ImportDataRequest;
+import com.google.cloud.datalabeling.v1beta1.InputConfig;
 import com.google.cloud.datalabeling.v1beta1.Instruction;
 import com.google.cloud.datalabeling.v1beta1.ListAnnotationSpecSetsRequest;
 import com.google.cloud.datalabeling.v1beta1.ListDatasetsRequest;
@@ -74,7 +79,28 @@ public class LabelVideoIT {
       }
 
       // Import the images
-      ImportData.importData(dataset.getName(), DATASET_GCS_SOURCE_URI);
+      //ImportData.importData(dataset.getName(), DATASET_GCS_SOURCE_URI);
+      GcsSource gcsSource =
+          GcsSource.newBuilder()
+              .setInputUri(DATASET_GCS_SOURCE_URI)
+              .setMimeType("text/csv")
+              .build();
+
+      InputConfig inputConfig =
+          InputConfig.newBuilder()
+              .setDataType(DataType.VIDEO) // DataTypes: AUDIO, IMAGE, VIDEO, TEXT
+              .setGcsSource(gcsSource)
+              .build();
+
+      ImportDataRequest importDataRequest =
+          ImportDataRequest.newBuilder()
+              .setName(dataset.getName())
+              .setInputConfig(inputConfig)
+              .build();
+
+      ImportDataOperationResponse response =
+          dataLabelingServiceClient.importDataAsync(importDataRequest).get();
+      System.out.format("Imported items: %d\n", response.getImportCount());
 
       // Create the instruction
       CreateInstruction.createInstruction(PROJECT_ID, INSTRUCTION_GCS_SOURCE_URI);
@@ -105,7 +131,7 @@ public class LabelVideoIT {
           annotationSpecSet = returnedAnnotation;
         }
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
       System.exit(-1);
     }
