@@ -51,11 +51,11 @@ for file in **/pom.xml; do
     # Only test leafs to prevent testing twice
     PARENT=$(grep "<modules>" pom.xml -c)
 
-    # Check if Java version matches test version
-    VERSION=$(grep "source>$JAVA_VERSION" pom.xml -c)
+    # Get the Java version from the pom.xml
+    VERSION=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
 
     # Check for changes to the current folder
-    if [ "$PARENT" -eq 0 ] && [ "$VERSION" -eq 1 ]; then
+    if [ "$PARENT" -eq 0 ] && [ ",$JAVA_VERSIONS," = *",$VERSION,"* ]; then
         echo "------------------------------------------------------------"
         echo "- testing $file"
         echo "------------------------------------------------------------"
