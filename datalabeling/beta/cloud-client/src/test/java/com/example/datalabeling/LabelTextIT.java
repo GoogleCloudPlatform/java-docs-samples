@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -151,7 +151,7 @@ public class LabelTextIT {
     }
   }
 
-  @Test
+  @Ignore
   public void testLabelText() {
     // Start the labeling task
     LabelText.labelText(instruction.getName(), annotationSpecSet.getName(), dataset.getName());

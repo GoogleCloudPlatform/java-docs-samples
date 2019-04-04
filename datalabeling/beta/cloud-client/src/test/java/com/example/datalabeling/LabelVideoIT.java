@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -151,7 +151,7 @@ public class LabelVideoIT {
     }
   }
 
-  @Test
+  @Ignore
   public void testLabelVideo() {
     // Start the labeling task
     LabelVideo.labelVideo(instruction.getName(), annotationSpecSet.getName(), dataset.getName());
