@@ -32,7 +32,9 @@ import java.util.concurrent.ExecutionException;
 class LabelText {
 
   // Start a Text Labeling Task
-  static void labelText(String formattedInstructionName, String formattedAnnotationSpecSetName,
+  static void labelText(
+      String formattedInstructionName,
+      String formattedAnnotationSpecSetName,
       String formattedDatasetName) {
     // String formattedInstructionName = DataLabelingServiceClient.formatInstructionName(
     //      "YOUR_PROJECT_ID", "YOUR_INSTRUCTION_UUID");
@@ -44,28 +46,30 @@ class LabelText {
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
 
-      HumanAnnotationConfig humanAnnotationConfig = HumanAnnotationConfig.newBuilder()
-          .setAnnotatedDatasetDisplayName("annotated_displayname")
-          .setAnnotatedDatasetDescription("annotated_description")
-          .setLanguageCode("en-us")
-          .setInstruction(formattedInstructionName)
-          .build();
+      HumanAnnotationConfig humanAnnotationConfig =
+          HumanAnnotationConfig.newBuilder()
+              .setAnnotatedDatasetDisplayName("annotated_displayname")
+              .setAnnotatedDatasetDescription("annotated_description")
+              .setLanguageCode("en-us")
+              .setInstruction(formattedInstructionName)
+              .build();
 
-      SentimentConfig sentimentConfig = SentimentConfig.newBuilder()
-          .setEnableLabelSentimentSelection(false)
-          .build();
+      SentimentConfig sentimentConfig =
+          SentimentConfig.newBuilder().setEnableLabelSentimentSelection(false).build();
 
-      TextClassificationConfig textClassificationConfig = TextClassificationConfig.newBuilder()
-          .setAnnotationSpecSet(formattedAnnotationSpecSetName)
-          .setSentimentConfig(sentimentConfig)
-          .build();
+      TextClassificationConfig textClassificationConfig =
+          TextClassificationConfig.newBuilder()
+              .setAnnotationSpecSet(formattedAnnotationSpecSetName)
+              .setSentimentConfig(sentimentConfig)
+              .build();
 
-      LabelTextRequest labelTextRequest = LabelTextRequest.newBuilder()
-          .setParent(formattedDatasetName)
-          .setBasicConfig(humanAnnotationConfig)
-          .setTextClassificationConfig(textClassificationConfig)
-          .setFeature(Feature.TEXT_CLASSIFICATION)
-          .build();
+      LabelTextRequest labelTextRequest =
+          LabelTextRequest.newBuilder()
+              .setParent(formattedDatasetName)
+              .setBasicConfig(humanAnnotationConfig)
+              .setTextClassificationConfig(textClassificationConfig)
+              .setFeature(Feature.TEXT_CLASSIFICATION)
+              .build();
 
       OperationFuture<AnnotatedDataset, LabelOperationMetadata> operation =
           dataLabelingServiceClient.labelTextAsync(labelTextRequest);

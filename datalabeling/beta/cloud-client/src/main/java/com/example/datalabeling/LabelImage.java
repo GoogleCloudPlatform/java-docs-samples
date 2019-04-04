@@ -32,7 +32,9 @@ import java.util.concurrent.ExecutionException;
 class LabelImage {
 
   // Start an Image Labeling Task
-  static void labelImage(String formattedInstructionName, String formattedAnnotationSpecSetName,
+  static void labelImage(
+      String formattedInstructionName,
+      String formattedAnnotationSpecSetName,
       String formattedDatasetName) {
     // String formattedInstructionName = DataLabelingServiceClient.formatInstructionName(
     //      "YOUR_PROJECT_ID", "YOUR_INSTRUCTION_UUID");
@@ -44,31 +46,33 @@ class LabelImage {
 
     try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
 
-      HumanAnnotationConfig humanAnnotationConfig = HumanAnnotationConfig.newBuilder()
-          .setAnnotatedDatasetDisplayName("annotated_displayname")
-          .setAnnotatedDatasetDescription("annotated_description")
-          .setInstruction(formattedInstructionName)
-          .build();
+      HumanAnnotationConfig humanAnnotationConfig =
+          HumanAnnotationConfig.newBuilder()
+              .setAnnotatedDatasetDisplayName("annotated_displayname")
+              .setAnnotatedDatasetDescription("annotated_description")
+              .setInstruction(formattedInstructionName)
+              .build();
 
-      ImageClassificationConfig imageClassificationConfig = ImageClassificationConfig.newBuilder()
-          .setAllowMultiLabel(true)
-          .setAnswerAggregationType(StringAggregationType.MAJORITY_VOTE)
-          .setAnnotationSpecSet(formattedAnnotationSpecSetName)
-          .build();
+      ImageClassificationConfig imageClassificationConfig =
+          ImageClassificationConfig.newBuilder()
+              .setAllowMultiLabel(true)
+              .setAnswerAggregationType(StringAggregationType.MAJORITY_VOTE)
+              .setAnnotationSpecSet(formattedAnnotationSpecSetName)
+              .build();
 
-      LabelImageRequest labelImageRequest = LabelImageRequest.newBuilder()
-          .setParent(formattedDatasetName)
-          .setBasicConfig(humanAnnotationConfig)
-          .setImageClassificationConfig(imageClassificationConfig)
-          .setFeature(Feature.CLASSIFICATION)
-          .build();
+      LabelImageRequest labelImageRequest =
+          LabelImageRequest.newBuilder()
+              .setParent(formattedDatasetName)
+              .setBasicConfig(humanAnnotationConfig)
+              .setImageClassificationConfig(imageClassificationConfig)
+              .setFeature(Feature.CLASSIFICATION)
+              .build();
 
       OperationFuture<AnnotatedDataset, LabelOperationMetadata> operation =
           dataLabelingServiceClient.labelImageAsync(labelImageRequest);
 
       // You'll want to save this for later to retrieve your completed operation.
       System.out.format("Operation Name: %s\n", operation.getName());
-
 
       // Cancel the operation to avoid charges when testing.
       dataLabelingServiceClient.getOperationsClient().cancelOperation(operation.getName());
