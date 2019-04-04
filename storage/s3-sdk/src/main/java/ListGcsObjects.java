@@ -31,8 +31,8 @@ public class ListGcsObjects {
   public static void listGcsObjects(String googleAccessKeyId,
       String googleAccessKeySecret, String bucketName) {
 
-    // String googleAccessKeyId = "GOOGTS7C7FUP3AIRVJTE2BCD";
-    // String googleAccessKeySecret = "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ";
+    // String googleAccessKeyId = "your-google-access-key-id";
+    // String googleAccessKeySecret = "your-google-access-key-secret";
     // String bucketName = "bucket-name";
 
     // Create a BasicAWSCredentials using Cloud Storage HMAC credentials.
