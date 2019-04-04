@@ -48,11 +48,14 @@ for file in **/pom.xml; do
     file=$(dirname "$file")
     pushd "$file" > /dev/null
 
+    # Only test leafs to prevent testing twice
+    PARENT=$(grep "<modules>" pom.xml -c)
+
     # Check if Java version matches test version
     VERSION=$(grep "source>$JAVA_VERSION" pom.xml -c)
 
     # Check for changes to the current folder
-    if [ "$VERSION" -eq 1 ]; then
+    if [ "$PARENT" -eq 0 ] && [ "$VERSION" -eq 1 ]; then
         echo "------------------------------------------------------------"
         echo "- testing $file"
         echo "------------------------------------------------------------"
