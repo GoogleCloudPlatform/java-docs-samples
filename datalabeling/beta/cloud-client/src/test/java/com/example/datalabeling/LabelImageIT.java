@@ -107,9 +107,8 @@ public class LabelImageIT {
           annotationSpecSet = returnedAnnotation;
         }
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
-      System.exit(-1);
     }
   }
 

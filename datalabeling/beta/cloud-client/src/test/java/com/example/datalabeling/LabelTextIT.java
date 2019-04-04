@@ -127,7 +127,6 @@ public class LabelTextIT {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      System.exit(-1);
     }
   }
 

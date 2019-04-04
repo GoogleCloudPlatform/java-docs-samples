@@ -129,7 +129,6 @@ public class LabelVideoIT {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      System.exit(-1);
     }
   }
 
