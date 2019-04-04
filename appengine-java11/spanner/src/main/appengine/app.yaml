@@ -1,5 +1,5 @@
 runtime: java11
 instance_class: F4
-entrypoint: 'java -cp * com.google.appengine.demo.jettymain.Main spanner.war'
+entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main spanner.war'
 env_variables:
   SPANNER_INSTANCE: <INSTANCE_ID>

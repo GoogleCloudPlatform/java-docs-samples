@@ -44,7 +44,7 @@
     After App Engine Staging you can see the content in
     ${project.build.directory}/dependent-jars!-->
     <dependency>
-      <groupId>com.google.appengine.demo</groupId>
+      <groupId>com.example.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
       <scope>provided</scope>
