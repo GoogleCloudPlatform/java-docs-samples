@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetDelete;
 import com.google.healthcare.datasets.DatasetGet;
 import com.google.healthcare.datasets.DatasetGetIamPolicy;
 import com.google.healthcare.datasets.DatasetList;
@@ -34,6 +33,7 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDeIdentify;
+import snippets.healthcare.datasets.DatasetDelete;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -97,7 +97,7 @@ public class DatasetTests extends HealthcareTestBase {
     DatasetDeIdentify.datasetDeIdentify(datasetName, newDatasetName);
     assertBoutContents("Deidentified Dataset: ", newDatasetName);
 
-    DatasetDelete.deleteDataset(newDatasetName);
+    DatasetDelete.datasetDelete(newDatasetName);
     DatasetList.listDatasets(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
     assertNotBoutContents(newDatasetId);
   }
@@ -123,7 +123,7 @@ public class DatasetTests extends HealthcareTestBase {
   @Test
   public void test_03_DeleteDataset() throws Exception {
     // Test this last because we use the Dataset for other data type tests.
-    DatasetDelete.deleteDataset(datasetName);
+    DatasetDelete.datasetDelete(datasetName);
 
     // Verify delete successful.
     DatasetList.listDatasets(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);

@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDeIdentify;
+import snippets.healthcare.datasets.DatasetDelete;
 
 @RunWith(JUnit4.class)
 public class DatasetTests {
@@ -80,13 +81,21 @@ public class DatasetTests {
     assertThat(output, containsString("De-identified dataset created."));
   }
 
+  private void testDatasetDelete(String datasetName) throws IOException {
+    DatasetDelete.datasetDelete(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Dataset deleted."));
+  }
+
   // Use a test runner to guarantee sure the tests run sequentially.
   @Test
   public void testRunner() throws IOException {
-    String firstDatasetId = "dataset-" + UUID.randomUUID().toString();
+    String firstDatasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
     String firstDatasetName = String.format(DATASET_NAME, PROJECT_ID, REGION, firstDatasetId);
 
     testDatasetCreate(firstDatasetId);
     testDatasetDeidentify(firstDatasetName, firstDatasetName + "_died");
+    testDatasetDelete(firstDatasetName);
   }
 }
