@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import snippets.healthcare.datasets.DatasetCreate;
 import com.google.healthcare.dicom.DicomStoreCreate;
 import com.google.healthcare.dicom.DicomStoreDelete;
 import com.google.healthcare.dicom.DicomStoreExport;
@@ -39,6 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
+import snippets.healthcare.datasets.DatasetCreate;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -62,7 +62,7 @@ public class DicomStoreTests extends HealthcareTestBase {
 
     studyId = "study-" + suffix;
 
-    DatasetCreate.createDataset(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
+    DatasetCreate.datasetCreate(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
   }
 
   @AfterClass

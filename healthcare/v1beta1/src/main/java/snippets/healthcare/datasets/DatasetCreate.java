@@ -35,10 +35,10 @@ public class DatasetCreate {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void datasetCreate(String projectId, String region, String datasetId)
+  public static void datasetCreate(String projectId, String regionId, String datasetId)
       throws IOException {
     // String projectId = "your-project-id";
-    // String region = "us-central1";
+    // String regionId = "us-central1";
     // String datasetId = "your-dataset-id";
 
     // Initialize the Client, which will be used to interact with the service.
@@ -48,8 +48,8 @@ public class DatasetCreate {
     Dataset dataset = new Dataset();
     dataset.put("your-field-name", "your-field-value");
 
-    // Create request and specify any options.
-    String parentName = String.format("projects/%s/locations/%s", projectId, region);
+    // Create request and configure any parameters.
+    String parentName = String.format("projects/%s/locations/%s", projectId, regionId);
     Datasets.Create request = client.projects().locations().datasets().create(parentName, dataset);
     request.setDatasetId(datasetId);
 

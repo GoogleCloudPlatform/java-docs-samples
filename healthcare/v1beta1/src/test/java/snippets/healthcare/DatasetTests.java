@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,14 +31,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDeIdentify;
 
 @RunWith(JUnit4.class)
 public class DatasetTests {
-
-  private ByteArrayOutputStream bout;
-
+  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
+
+  private ByteArrayOutputStream bout;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -63,11 +65,28 @@ public class DatasetTests {
     bout.reset();
   }
 
-  @Test
-  public void testDatasetCreate() throws IOException {
-    DatasetCreate.datasetCreate(PROJECT_ID, REGION, "test-dataset-1");
+  private void testDatasetCreate(String datasetId) throws IOException {
+    DatasetCreate.datasetCreate(PROJECT_ID, REGION, datasetId);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset created."));
+  }
+
+  private void testDatasetDeidentify(String srcDatasetName, String destDatasetName)
+      throws IOException {
+    DatasetDeIdentify.datasetDeIdentify(srcDatasetName, destDatasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("De-identified dataset created."));
+  }
+
+  // Use a test runner to guarantee sure the tests run sequentially.
+  @Test
+  public void testRunner() throws IOException {
+    String firstDatasetId = "dataset-" + UUID.randomUUID().toString();
+    String firstDatasetName = String.format(DATASET_NAME, PROJECT_ID, REGION, firstDatasetId);
+
+    testDatasetCreate(firstDatasetId);
+    testDatasetDeidentify(firstDatasetName, firstDatasetName + "_died");
   }
 }

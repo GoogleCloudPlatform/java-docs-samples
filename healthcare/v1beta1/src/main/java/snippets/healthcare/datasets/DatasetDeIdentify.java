@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.healthcare.datasets;
+package snippets.healthcare.datasets;
 
 // [START healthcare_deidentify_dataset]
-import com.google.HealthcareQuickstart;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -25,55 +24,65 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Dataset;
 import com.google.api.services.healthcare.v1beta1.model.DeidentifyConfig;
 import com.google.api.services.healthcare.v1beta1.model.DeidentifyDatasetRequest;
 import com.google.api.services.healthcare.v1beta1.model.DicomConfig;
+import com.google.api.services.healthcare.v1beta1.model.Operation;
 import com.google.api.services.healthcare.v1beta1.model.TagFilterList;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class DatasetDeIdentify {
+  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-  private static final Gson GSON = new Gson();
-  private static List<String> defaultDicomKeepList = ImmutableList.of("PatientID");
 
-  public static void deidentifyDataset(String sourceDataset, String destinationDataset) throws IOException {
-    // String sourceDataset = "your-source-dataset";
-    // String destinationDataset = "your-destination-dataset";
-    DeidentifyDatasetRequest request = new DeidentifyDatasetRequest();
-    request.setDestinationDataset(destinationDatasetName);
-    TagFilterList tagFilterList = new TagFilterList();
-    List<String> whitelistTagList = Lists.newArrayList(defaultDicomKeepList);
-    whitelistTagList.addAll(Lists.newArrayList(whitelistTags));
-    tagFilterList.setTags(whitelistTagList);
-    DeidentifyConfig deidConfig = new DeidentifyConfig();
-    DicomConfig dicomConfig = new DicomConfig();
-    dicomConfig.setKeepList(tagFilterList);
-    deidConfig.setDicom(dicomConfig);
-    request.setConfig(deidConfig);
-    HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .deidentify(sourceDatasetName, request)
-        .execute();
+  public static void datasetDeIdentify(String srcDatasetName, String destDatasetName)
+      throws IOException {
+    // String srcDatasetName =
+    //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-src-dataset-id");
+    // String destDatasetName =
+    //    String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dest-dataset-id");
 
-    Dataset deidDataset =
-        HealthcareQuickstart.getCloudHealthcareClient()
-            .projects()
-            .locations()
-            .datasets()
-            .get(destinationDatasetName)
-            .execute();
+    // Initialize the Client, which will be used to interact with the service.
+    CloudHealthcare client = createClient();
 
-    System.out.println("Deidentified Dataset: " + GSON.toJson(deidDataset));
+    // Configure what information needs to be De-Identified.
+    // For more information on de-identifying using tags, please see the following:
+    // https://cloud.google.com/healthcare/docs/how-tos/dicom-deidentify#de-identification_using_tags
+    TagFilterList tags = new TagFilterList().setTags(Arrays.asList("PatientID"));
+    DicomConfig dicomConfig = new DicomConfig().setKeepList(tags);
+    DeidentifyConfig config = new DeidentifyConfig().setDicom(dicomConfig);
+
+    // Create the de-identify request and configure any parameters.
+    DeidentifyDatasetRequest deidentifyRequest =
+        new DeidentifyDatasetRequest().setDestinationDataset(destDatasetName).setConfig(config);
+    Datasets.Deidentify request =
+        client.projects().locations().datasets().deidentify(srcDatasetName, deidentifyRequest);
+
+    // Execute the request, wait for the operation to complete, and process the results.
+    try {
+      Operation operation = request.execute();
+      while (!operation.getDone()) {
+        // Update the status of the operation with another request.
+        Thread.sleep(500); // Pause for 500ms between requests.
+        operation =
+            client
+                .projects()
+                .locations()
+                .datasets()
+                .operations()
+                .get(operation.getName())
+                .execute();
+      }
+      System.out.println(
+          "De-identified Dataset created. Response content: " + operation.getResponse());
+    } catch (Exception ex) {
+      System.out.printf("Error during request execution: %s", ex.getMessage());
+    }
   }
 
   private static CloudHealthcare createClient() throws IOException {
