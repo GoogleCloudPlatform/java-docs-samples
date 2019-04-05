@@ -25,13 +25,13 @@
 	</properties>
 
 	<dependencies>
-		<!-- [START automl_natural_language_entity_java_dependencies] -->
+		<!-- [START automl_tables_java_dependencies] -->
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-automl</artifactId>
 			<version>0.86.0-beta</version>
 		</dependency>
-		<!-- [END automl_natural_language_entity_java_dependencies] -->
+		<!-- [END automl_tables_java_dependencies] -->
 		<dependency>
 			<groupId>net.sourceforge.argparse4j</groupId>
 			<artifactId>argparse4j</artifactId>

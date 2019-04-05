@@ -99,7 +99,7 @@
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>
-
+        <module>tables/automl</module>
         <module>texttospeech/cloud-client</module>
         <!-- <module>translate/automl</module> -->
         <module>translate/cloud-client</module>

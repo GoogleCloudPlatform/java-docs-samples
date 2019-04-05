@@ -131,7 +131,7 @@ public class ModelApiIT {
   }
 
   @Test
-  public void testDeployModel() throws IOException {
+  public void testDeployModel() throws Exception {
     // Act
     ModelApi.deployModel(PROJECT_ID, COMPUTE_REGION, DEPLOY_MODEL_ID);
 
@@ -141,7 +141,7 @@ public class ModelApiIT {
   }
 
   @Test
-  public void testUndeployModel() throws IOException {
+  public void testUndeployModel() throws Exception {
     // Act
     ModelApi.undeployModel(PROJECT_ID, COMPUTE_REGION, UNDEPLOY_MODEL_ID);
 

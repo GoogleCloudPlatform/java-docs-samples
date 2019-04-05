@@ -765,10 +765,10 @@ public class ModelApi {
    * @param projectId the Id of the project.
    * @param computeRegion the Region name. (e.g., "us-central1")
    * @param modelId the Id of the model.
-   * @throws IOException
+   * @throws Exception
    */
   public static void deployModel(String projectId, String computeRegion, String modelId)
-      throws IOException {
+      throws Exception {
     // Instantiates a client.
     AutoMlClient client = AutoMlClient.create();
 
@@ -780,16 +780,13 @@ public class ModelApi {
         DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
 
     // Deploy a model with the deploy model request.
-    Operation response = client.deployModel(deployModelRequest);
+    OperationFuture<Empty, OperationMetadata> response = client.deployModelAsync(deployModelRequest);
 
     // Display the deployment details of model.
     System.out.println(String.format("Deployment Details:"));
     System.out.println(String.format("\tName: %s", response.getName()));
     System.out.println(String.format("\tMetadata:"));
-    System.out.println(String.format("\t\tType Url: %s", response.getMetadata().getTypeUrl()));
-    System.out.println(
-        String.format(
-            "\t\tValue: %s", response.getMetadata().getValue().toStringUtf8().replace("\n", "")));
+    System.out.println(response.getMetadata());
   }
   // [END automl_tables_deploy_model]
 
@@ -800,10 +797,10 @@ public class ModelApi {
    * @param projectId the Id of the project.
    * @param computeRegion the Region name. (e.g., "us-central1")
    * @param modelId the Id of the model.
-   * @throws IOException
+   * @throws Exception
    */
   public static void undeployModel(String projectId, String computeRegion, String modelId)
-      throws IOException {
+      throws Exception {
     // Instantiates a client.
     AutoMlClient client = AutoMlClient.create();
 
@@ -815,16 +812,13 @@ public class ModelApi {
         UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
 
     // Undeploy a model with the undeploy model request.
-    Operation response = client.undeployModel(undeployModelRequest);
+    OperationFuture<Empty, OperationMetadata> response = client.undeployModelAsync(undeployModelRequest);
 
     // Display the undeployment details of model.
     System.out.println(String.format("Undeployment Details:"));
     System.out.println(String.format("\tName: %s", response.getName()));
     System.out.println(String.format("\tMetadata:"));
-    System.out.println(String.format("\t\tType Url: %s", response.getMetadata().getTypeUrl()));
-    System.out.println(
-        String.format(
-            "\t\tValue: %s", response.getMetadata().getValue().toStringUtf8().replace("\n", "")));
+    System.out.println(response.getMetadata());
   }
   // [END automl_tables_undeploy_model]
 
@@ -856,13 +850,13 @@ public class ModelApi {
   // [END automl_tables_delete_model]
 
   public static void main(String[] args)
-      throws IOException, InterruptedException, ExecutionException {
+      throws Exception {
     ModelApi modelApi = new ModelApi();
     modelApi.argsHelper(args);
   }
 
   public void argsHelper(String[] args)
-      throws IOException, InterruptedException, ExecutionException {
+      throws Exception {
     ArgumentParser parser =
         ArgumentParsers.newFor("ModelApi")
             .build()
