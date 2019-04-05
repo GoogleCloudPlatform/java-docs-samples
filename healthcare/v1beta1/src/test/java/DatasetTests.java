@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetGetIamPolicy;
 import com.google.healthcare.datasets.DatasetList;
 import com.google.healthcare.datasets.DatasetPatch;
 import com.google.healthcare.datasets.DatasetSetIamPolicy;
@@ -34,6 +33,7 @@ import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDeIdentify;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.datasets.DatasetGet;
+import snippets.healthcare.datasets.DatasetGetIamPolicy;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -104,7 +104,7 @@ public class DatasetTests extends HealthcareTestBase {
 
   @Test
   public void test_02_GetDatasetIamPolicy() throws Exception {
-    DatasetGetIamPolicy.getIamPolicy(datasetName);
+    DatasetGetIamPolicy.datasetGetIamPolicy(datasetName);
     assertBoutContents("Retrieved Dataset policy:.*etag.*", "ACAB");
   }
 

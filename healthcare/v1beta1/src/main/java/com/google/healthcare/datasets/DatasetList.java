@@ -17,7 +17,6 @@
 package com.google.healthcare.datasets;
 
 // [START healthcare_list_datasets]
-
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Dataset;
 import com.google.api.services.healthcare.v1beta1.model.ListDatasetsResponse;

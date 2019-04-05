@@ -16,7 +16,7 @@
 
 package snippets.healthcare.datasets;
 
-// [START healthcare_get_dataset]
+// [START healthcare_dataset_get_iam_policy]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -26,16 +26,16 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Dataset;
+import com.google.api.services.healthcare.v1beta1.model.Policy;
 import java.io.IOException;
 import java.util.Collections;
 
-public class DatasetGet {
+public class DatasetGetIamPolicy {
   private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void datasetGet(String datasetName) throws IOException {
+  public static void datasetGetIamPolicy(String datasetName) throws IOException {
     // String datasetName =
     //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
@@ -43,11 +43,12 @@ public class DatasetGet {
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
-    Datasets.Get request = client.projects().locations().datasets().get(datasetName);
+    Datasets.GetIamPolicy request =
+        client.projects().locations().datasets().getIamPolicy(datasetName);
 
     // Execute the request and process the results.
-    Dataset dataset = request.execute();
-    System.out.println("Dataset retreived: \n" + dataset.toPrettyString());
+    Policy policy = request.execute();
+    System.out.println("Dataset IAMPolicy retrieved: \n" + policy.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -72,4 +73,4 @@ public class DatasetGet {
         .build();
   }
 }
-// [END healthcare_get_dataset]
+// [END healthcare_dataset_get_iam_policy]
