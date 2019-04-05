@@ -33,6 +33,7 @@ import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDeIdentify;
 import snippets.healthcare.datasets.DatasetDelete;
+import snippets.healthcare.datasets.DatasetGet;
 
 @RunWith(JUnit4.class)
 public class DatasetTests {
@@ -71,6 +72,13 @@ public class DatasetTests {
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset created."));
+  }
+
+  private void testDatasetGet(String datasetName) throws IOException {
+    DatasetGet.datasetGet(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Dataset retreived:"));
   }
 
   private void testDatasetDeidentify(String srcDatasetName, String destDatasetName)

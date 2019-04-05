@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetGet;
 import com.google.healthcare.datasets.DatasetGetIamPolicy;
 import com.google.healthcare.datasets.DatasetList;
 import com.google.healthcare.datasets.DatasetPatch;
@@ -34,6 +33,7 @@ import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDeIdentify;
 import snippets.healthcare.datasets.DatasetDelete;
+import snippets.healthcare.datasets.DatasetGet;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -68,7 +68,7 @@ public class DatasetTests extends HealthcareTestBase {
 
   @Test
   public void test_02_GetDataset() throws Exception {
-    DatasetGet.getDataset(datasetName);
+    DatasetGet.datasetGet(datasetName);
     assertBoutContents("Retrieved Dataset: .+", datasetName);
   }
 
