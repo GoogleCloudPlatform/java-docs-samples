@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetList;
 import com.google.healthcare.datasets.DatasetPatch;
 import com.google.healthcare.datasets.DatasetSetIamPolicy;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import snippets.healthcare.datasets.DatasetDeIdentify;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.datasets.DatasetGet;
 import snippets.healthcare.datasets.DatasetGetIamPolicy;
+import snippets.healthcare.datasets.DatasetList;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -74,7 +74,7 @@ public class DatasetTests extends HealthcareTestBase {
 
   @Test
   public void test_02_ListDataset() throws Exception {
-    DatasetList.listDatasets(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
+    DatasetList.datasetList(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
     assertBoutContents("Retrieved \\d+ datasets", datasetName);
   }
 
@@ -98,7 +98,7 @@ public class DatasetTests extends HealthcareTestBase {
     assertBoutContents("Deidentified Dataset: ", newDatasetName);
 
     DatasetDelete.datasetDelete(newDatasetName);
-    DatasetList.listDatasets(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
+    DatasetList.datasetList(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
     assertNotBoutContents(newDatasetId);
   }
 
@@ -126,7 +126,7 @@ public class DatasetTests extends HealthcareTestBase {
     DatasetDelete.datasetDelete(datasetName);
 
     // Verify delete successful.
-    DatasetList.listDatasets(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
+    DatasetList.datasetList(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
     assertNotBoutContents(datasetId);
   }
 }

@@ -35,6 +35,7 @@ import snippets.healthcare.datasets.DatasetDeIdentify;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.datasets.DatasetGet;
 import snippets.healthcare.datasets.DatasetGetIamPolicy;
+import snippets.healthcare.datasets.DatasetList;
 
 @RunWith(JUnit4.class)
 public class DatasetTests {
@@ -82,6 +83,13 @@ public class DatasetTests {
     assertThat(output, containsString("Dataset retrieved:"));
   }
 
+  private void testDatasetList() throws IOException {
+    DatasetList.datasetList(PROJECT_ID, REGION);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Retrieved \\d+ datasets:"));
+  }
+
   private void testDatasetGetIAMPolicy(String datasetName) throws IOException {
     DatasetGetIamPolicy.datasetGetIamPolicy(datasetName);
 
@@ -112,6 +120,7 @@ public class DatasetTests {
 
     testDatasetCreate(firstDatasetId);
     testDatasetGet(firstDatasetName);
+    testDatasetList();
     testDatasetGetIAMPolicy(firstDatasetName);
     testDatasetDeidentify(firstDatasetName, firstDatasetName + "_died");
     testDatasetDelete(firstDatasetName);
