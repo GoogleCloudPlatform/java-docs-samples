@@ -30,6 +30,11 @@
   <dependencies>
     <!-- [START dependencies] -->
     <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-healthcare</artifactId>
+      <version>v1beta1-rev20190401-1.28.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
       <version>1.24.1</version>
