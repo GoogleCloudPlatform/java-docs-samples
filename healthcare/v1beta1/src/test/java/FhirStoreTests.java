@@ -15,7 +15,7 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetCreate;
 import com.google.healthcare.fhir.FhirStoreCreate;
 import com.google.healthcare.fhir.FhirStoreDelete;
 import com.google.healthcare.fhir.FhirStoreExecuteBundle;

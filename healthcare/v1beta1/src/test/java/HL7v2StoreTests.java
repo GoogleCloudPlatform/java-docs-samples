@@ -17,7 +17,7 @@
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetCreate;
 import com.google.healthcare.hl7v2.HL7v2Create;
 import com.google.healthcare.hl7v2.HL7v2Delete;
 import com.google.healthcare.hl7v2.HL7v2Get;

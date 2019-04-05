@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.healthcare.datasets;
+package snippets.healthcare.datasets;
 
 // [START healthcare_create_dataset]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -35,7 +35,7 @@ public class DatasetCreate {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void createDataset(String projectId, String region, String datasetId)
+  public static void datasetCreate(String projectId, String region, String datasetId)
       throws IOException {
     // String projectId = "your-project-id";
     // String region = "us-central1";
@@ -44,20 +44,33 @@ public class DatasetCreate {
     // Initialize the Client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Create a new Dataset to send to the service.
+    // Create a new Dataset and populate with associated data.
     Dataset dataset = new Dataset();
+    dataset.put("your-field-name", "your-field-value");
 
-    // Create request and configure options.
+    // Create request and specify any options.
     String parentName = String.format("projects/%s/locations/%s", projectId, region);
     Datasets.Create request = client.projects().locations().datasets().create(parentName, dataset);
     request.setDatasetId(datasetId);
 
-    // Execute the request and process the results.
+    // Execute the request, wait for the operation to complete, and process the results.
     try {
       Operation operation = request.execute();
-      System.out.println("Created Dataset: " + operation.getName());
-    } catch (IOException ex) {
-      System.out.printf("Error during request execution: %s \n %s \n", ex.getMessage());
+      while (!operation.getDone()) {
+        // Update the status of the operation with another request.
+        Thread.sleep(500); // Pause for 500ms between requests.
+        operation =
+            client
+                .projects()
+                .locations()
+                .datasets()
+                .operations()
+                .get(operation.getName())
+                .execute();
+      }
+      System.out.println("Dataset created. Response content: " + operation.getResponse());
+    } catch (Exception ex) {
+      System.out.printf("Error during request execution: %s", ex.getMessage());
     }
   }
 

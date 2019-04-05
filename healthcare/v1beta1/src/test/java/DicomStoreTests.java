@@ -15,7 +15,7 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetCreate;
 import com.google.healthcare.dicom.DicomStoreCreate;
 import com.google.healthcare.dicom.DicomStoreDelete;
 import com.google.healthcare.dicom.DicomStoreExport;

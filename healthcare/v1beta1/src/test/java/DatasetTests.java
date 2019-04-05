@@ -15,7 +15,7 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetCreate;
 import com.google.healthcare.datasets.DatasetDeIdentify;
 import com.google.healthcare.datasets.DatasetDelete;
 import com.google.healthcare.datasets.DatasetGet;
