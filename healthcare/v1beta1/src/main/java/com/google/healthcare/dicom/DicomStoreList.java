@@ -21,24 +21,22 @@ package com.google.healthcare.dicom;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.DicomStore;
 import com.google.api.services.healthcare.v1beta1.model.ListDicomStoresResponse;
-
 import java.io.IOException;
 import java.util.List;
 
 public class DicomStoreList {
-  public static void listDicomStores(String projectId, String cloudRegion, String datasetId) throws IOException {
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s",
-        projectId,
-        cloudRegion,
-        datasetId);
-    ListDicomStoresResponse response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .list(parentName)
-        .execute();
+  public static void listDicomStores(String projectId, String cloudRegion, String datasetId)
+      throws IOException {
+    String parentName =
+        String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
+    ListDicomStoresResponse response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .list(parentName)
+            .execute();
     List<DicomStore> dicomStores = response.getDicomStores();
     if (dicomStores == null) {
       System.out.println("Retrieved 0 Dicom stores");

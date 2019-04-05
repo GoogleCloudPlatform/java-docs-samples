@@ -21,7 +21,6 @@ package com.google.healthcare.fhir.resources;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.SearchResources;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-
 import java.io.IOException;
 
 public class FhirResourceSearchPost {
@@ -30,20 +29,20 @@ public class FhirResourceSearchPost {
       String cloudRegion,
       String datasetId,
       String fhirStoreId,
-      String resourceType) throws IOException {
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
-        projectId,
-        cloudRegion,
-        datasetId,
-        fhirStoreId);
-    SearchResources request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .searchResources(parentName, resourceType);
+      String resourceType)
+      throws IOException {
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
+            projectId, cloudRegion, datasetId, fhirStoreId);
+    SearchResources request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .searchResources(parentName, resourceType);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody httpBody = request.execute();
 

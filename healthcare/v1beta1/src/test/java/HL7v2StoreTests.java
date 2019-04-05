@@ -31,11 +31,9 @@ import com.google.healthcare.hl7v2.messages.HL7v2MessageGet;
 import com.google.healthcare.hl7v2.messages.HL7v2MessageIngest;
 import com.google.healthcare.hl7v2.messages.HL7v2MessageList;
 import com.google.healthcare.hl7v2.messages.HL7v2MessagePatch;
-
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -60,19 +58,15 @@ public class HL7v2StoreTests extends HealthcareTestBase {
 
     hl7v2StoreId = "hl7v2-store-" + suffix;
 
-    hl7v2StoreName = String.format(
-        "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        hl7v2StoreId);
+    hl7v2StoreName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
 
-    hl7v2MessagePrefix = String.format(
-        "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        hl7v2StoreId);
+    hl7v2MessagePrefix =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
 
     DatasetCreate.createDataset(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
   }
@@ -143,7 +137,8 @@ public class HL7v2StoreTests extends HealthcareTestBase {
     assertThat(messageNameMatcher.find()).isTrue();
     // '=' is encoded for JSON, but won't work for 'get'.
     hl7v2MessageName = messageNameMatcher.group("messageName").replace("\\u003d", "=");
-    hl7v2MessageId = hl7v2MessageName.substring(hl7v2MessageName.indexOf("messages/") + "messages/".length());
+    hl7v2MessageId =
+        hl7v2MessageName.substring(hl7v2MessageName.indexOf("messages/") + "messages/".length());
     assertBoutContents("Created HL7v2 message:", hl7v2StoreName);
   }
 
@@ -155,7 +150,8 @@ public class HL7v2StoreTests extends HealthcareTestBase {
 
   @Test
   public void test_03_ListHL7v2Messages() throws Exception {
-    HL7v2MessageList.listHL7v2Messages(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
+    HL7v2MessageList.listHL7v2Messages(
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
     assertBoutContents("Retrieved \\d+ HL7v2 messages", hl7v2MessageName.replace("=", ""));
   }
 
@@ -163,27 +159,21 @@ public class HL7v2StoreTests extends HealthcareTestBase {
   public void test_03_PatchHL7v2Message() throws Exception {
     HL7v2MessagePatch.patchHL7v2Message(hl7v2MessageName, "labelKey", "labelValue");
     assertBoutContents(
-        "Patched HL7v2 message:",
-        hl7v2MessageName.replace("=", ""),
-        "labelKey",
-        "labelValue");
+        "Patched HL7v2 message:", hl7v2MessageName.replace("=", ""), "labelKey", "labelValue");
   }
 
   @Test
   public void test_04_IngestHL7v2Message() throws Exception {
     HL7v2MessageIngest.ingestHl7v2Message(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        hl7v2StoreId,
-        hl7v2MessageName);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId, hl7v2MessageName);
     assertBoutContents("Ingested HL7v2 message:", hl7v2MessageName.replace("=", ""));
   }
 
   @Test
   public void test_05_DeleteHL7v2Message() throws Exception {
     HL7v2MessageDelete.deleteHL7v2Message(hl7v2MessageName);
-    HL7v2MessageList.listHL7v2Messages(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
+    HL7v2MessageList.listHL7v2Messages(
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
     assertNotBoutContents(hl7v2MessageId);
   }
 

@@ -22,31 +22,32 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.DicomStore;
 import com.google.api.services.healthcare.v1beta1.model.NotificationConfig;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DicomStorePatch {
   private static final Gson GSON = new Gson();
 
   public static void patchDicomStore(String dicomStoreName, String pubsubTopic) throws IOException {
-    DicomStore patched = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .get(dicomStoreName)
-        .execute();
+    DicomStore patched =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .get(dicomStoreName)
+            .execute();
     NotificationConfig notificationConfig = new NotificationConfig();
     notificationConfig.setPubsubTopic(pubsubTopic);
     patched.setNotificationConfig(notificationConfig);
-    DicomStore response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .patch(dicomStoreName, patched)
-        .setUpdateMask("notificationConfig")
-        .execute();
+    DicomStore response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .patch(dicomStoreName, patched)
+            .setUpdateMask("notificationConfig")
+            .execute();
     System.out.println("Patched Dicom store: " + GSON.toJson(response));
   }
 }

@@ -19,7 +19,6 @@ package com.google.healthcare.hl7v2.messages;
 // [START healthcare_delete_hl7v2_message]
 
 import com.google.HealthcareQuickstart;
-
 import java.io.IOException;
 
 public class HL7v2MessageDelete {

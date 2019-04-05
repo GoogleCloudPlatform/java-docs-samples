@@ -21,18 +21,18 @@ package com.google.healthcare.fhir.resources;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.Get;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-
 import java.io.IOException;
 
 public class FhirResourceGet {
   public static void getFhirResource(String resourceName) throws IOException {
-    Get request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .get(resourceName);
+    Get request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .get(resourceName);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody httpBody = request.execute();
     System.out.println("Retrieved FHIR resource: " + httpBody.getData());

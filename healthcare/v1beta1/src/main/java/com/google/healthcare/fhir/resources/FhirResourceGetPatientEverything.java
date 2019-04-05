@@ -21,19 +21,19 @@ package com.google.healthcare.fhir.resources;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.Get;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-
 import java.io.IOException;
 
 public class FhirResourceGetPatientEverything {
   public static void getPatientEverything(String resourceName) throws IOException {
     String everythingName = String.format("%s/$everything", resourceName);
-    Get request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .get(everythingName);
+    Get request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .get(everythingName);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody httpBody = request.execute();
 

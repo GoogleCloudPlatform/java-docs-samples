@@ -21,27 +21,28 @@ package com.google.healthcare.datasets;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Dataset;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DatasetPatch {
   private static final Gson GSON = new Gson();
 
   public static void patchDataset(String datasetName, String timeZone) throws IOException {
-    Dataset patched = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .get(datasetName)
-        .execute();
+    Dataset patched =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .get(datasetName)
+            .execute();
     patched.setTimeZone(timeZone);
-    Dataset response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .patch(datasetName, patched)
-        .setUpdateMask("timeZone")
-        .execute();
+    Dataset response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .patch(datasetName, patched)
+            .setUpdateMask("timeZone")
+            .execute();
     System.out.println("Patched Dataset: " + GSON.toJson(response));
   }
 }

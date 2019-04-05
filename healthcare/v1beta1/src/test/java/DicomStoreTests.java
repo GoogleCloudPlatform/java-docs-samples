@@ -29,9 +29,7 @@ import com.google.healthcare.dicom.web.DicomWebDeleteStudy;
 import com.google.healthcare.dicom.web.DicomWebRetrieveStudy;
 import com.google.healthcare.dicom.web.DicomWebSearchForInstances;
 import com.google.healthcare.dicom.web.DicomWebStoreInstance;
-
 import java.io.IOException;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,12 +55,10 @@ public class DicomStoreTests extends HealthcareTestBase {
 
     dicomStoreId = "dicom-store-" + suffix;
 
-    dicomStoreName = String.format(
-        "projects/%s/locations/%s/datasets/%s/dicomStores/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        dicomStoreId);
+    dicomStoreName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/dicomStores/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, dicomStoreId);
 
     studyId = "study-" + suffix;
 
@@ -82,10 +78,7 @@ public class DicomStoreTests extends HealthcareTestBase {
   @Test
   public void test_01_CreateDicomStore() throws Exception {
     DicomStoreCreate.createDicomStore(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        dicomStoreId);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, dicomStoreId);
     assertBoutContents("Created Dicom store:", dicomStoreName);
   }
 

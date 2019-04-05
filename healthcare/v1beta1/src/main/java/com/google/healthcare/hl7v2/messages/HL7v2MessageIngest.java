@@ -23,7 +23,6 @@ import com.google.api.services.healthcare.v1beta1.model.IngestMessageRequest;
 import com.google.api.services.healthcare.v1beta1.model.IngestMessageResponse;
 import com.google.api.services.healthcare.v1beta1.model.Message;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class HL7v2MessageIngest {
@@ -34,31 +33,32 @@ public class HL7v2MessageIngest {
       String cloudRegion,
       String datasetId,
       String hl7v2StoreId,
-      String hl7v2MessageName) throws IOException {
-    Message message = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .messages()
-        .get(hl7v2MessageName)
-        .execute();
+      String hl7v2MessageName)
+      throws IOException {
+    Message message =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .messages()
+            .get(hl7v2MessageName)
+            .execute();
     IngestMessageRequest ingestRequest = new IngestMessageRequest();
     ingestRequest.setMessage(message);
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
-        projectId,
-        cloudRegion,
-        datasetId,
-        hl7v2StoreId);
-    IngestMessageResponse response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .messages()
-        .ingest(parentName, ingestRequest)
-        .execute();
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
+            projectId, cloudRegion, datasetId, hl7v2StoreId);
+    IngestMessageResponse response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .messages()
+            .ingest(parentName, ingestRequest)
+            .execute();
     System.out.println("Ingested HL7v2 message: " + GSON.toJson(response));
   }
 }

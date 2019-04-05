@@ -22,7 +22,6 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.ExportDicomDataRequest;
 import com.google.api.services.healthcare.v1beta1.model.GoogleCloudHealthcareV1beta1DicomGcsDestination;
 import com.google.api.services.healthcare.v1beta1.model.Operation;
-
 import java.io.IOException;
 
 public class DicomStoreExport {
@@ -33,13 +32,14 @@ public class DicomStoreExport {
         new GoogleCloudHealthcareV1beta1DicomGcsDestination();
     gcdDestination.setUriPrefix("gs://" + uriPrefix);
     exportRequest.setGcsDestination(gcdDestination);
-    Operation exportOperation = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .export(dicomStoreName, exportRequest)
-        .execute();
+    Operation exportOperation =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .export(dicomStoreName, exportRequest)
+            .execute();
     System.out.println("Exporting Dicom store op name: " + exportOperation.getName());
   }
 }

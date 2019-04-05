@@ -21,20 +21,20 @@ package com.google.healthcare.dicom.web;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DicomWebSearchForInstances {
   private static final Gson GSON = new Gson();
 
   public static void searchForInstances(String dicomStoreName) throws IOException {
-    HttpBody response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .searchForInstances(dicomStoreName, "studies")
-        .execute();
+    HttpBody response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .searchForInstances(dicomStoreName, "studies")
+            .execute();
     System.out.println("Found Dicom store instances: " + GSON.toJson(response));
   }
 }

@@ -22,7 +22,6 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.ExecuteBundle;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class FhirStoreExecuteBundle {
@@ -30,12 +29,13 @@ public class FhirStoreExecuteBundle {
 
   public static void executeBundle(String fhirStoreName) throws IOException {
     HttpBody context = new HttpBody();
-    ExecuteBundle request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .executeBundle(fhirStoreName, context);
+    ExecuteBundle request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .executeBundle(fhirStoreName, context);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody response = request.execute();
 

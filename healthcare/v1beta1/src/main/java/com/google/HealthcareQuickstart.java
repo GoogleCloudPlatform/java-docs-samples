@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,10 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-
 import java.io.IOException;
 import java.util.Collections;
 
-/**
- * The quickstart for Cloud Job Discovery
- */
+/** The quickstart for Cloud Job Discovery */
 public class HealthcareQuickstart {
   // [START quickstart]
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
@@ -39,12 +36,11 @@ public class HealthcareQuickstart {
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
   public static final String APPLICATION_NAME = "HealthcareAPIFHIRStores";
 
-  private static CloudHealthcare cloudHealthcareClient = createHealthcareClient(
-      generateCredential(CloudHealthcareScopes.CLOUD_PLATFORM));
+  private static CloudHealthcare cloudHealthcareClient =
+      createHealthcareClient(generateCredential(CloudHealthcareScopes.CLOUD_PLATFORM));
 
   private static CloudHealthcare createHealthcareClient(GoogleCredential credential) {
-    return new CloudHealthcare.Builder(
-        NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(credential))
+    return new CloudHealthcare.Builder(NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(credential))
         .setApplicationName(APPLICATION_NAME)
         .build();
   }
@@ -54,8 +50,7 @@ public class HealthcareQuickstart {
       // Credentials could be downloaded after creating service account
       // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
       // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
-      return GoogleCredential
-          .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
+      return GoogleCredential.getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
           .createScoped(Collections.singleton(scopes));
     } catch (Exception e) {
       System.out.print("Error in generating credential");
@@ -83,20 +78,22 @@ public class HealthcareQuickstart {
   }
 
   public static void main(String... args) throws Exception {
-//    try {
-//      ListCompaniesResponse listCompaniesResponse = HealthcareQuickstart.getCloudHealthcareClient().projects().locations()
-//          .list(DEFAULT_PROJECT_ID)
-//          .execute();
-//      System.out.println("Request Id is " + listCompaniesResponse.getMetadata().getRequestId());
-//      if (listCompaniesResponse.getCompanies() != null) {
-//        for (Company company : listCompaniesResponse.getCompanies()) {
-//          System.out.println(company.getName());
-//        }
-//      }
-//    } catch (IOException e) {
-//      System.out.println("Got exception while listing companies");
-//      throw e;
-//    }
+    //    try {
+    //      ListCompaniesResponse listCompaniesResponse =
+    // HealthcareQuickstart.getCloudHealthcareClient().projects().locations()
+    //          .list(DEFAULT_PROJECT_ID)
+    //          .execute();
+    //      System.out.println("Request Id is " +
+    // listCompaniesResponse.getMetadata().getRequestId());
+    //      if (listCompaniesResponse.getCompanies() != null) {
+    //        for (Company company : listCompaniesResponse.getCompanies()) {
+    //          System.out.println(company.getName());
+    //        }
+    //      }
+    //    } catch (IOException e) {
+    //      System.out.println("Got exception while listing companies");
+    //      throw e;
+    //    }
   }
 
   // [END quickstart]

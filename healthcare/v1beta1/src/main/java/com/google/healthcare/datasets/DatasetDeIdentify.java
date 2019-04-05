@@ -27,7 +27,6 @@ import com.google.api.services.healthcare.v1beta1.model.TagFilterList;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -36,18 +35,17 @@ public class DatasetDeIdentify {
   private static List<String> defaultDicomKeepList = ImmutableList.of("PatientID");
 
   public static void deidentifyDataset(
-      String sourceDatasetName,
-      String destinationDatasetName,
-      String... whitelistTags) throws IOException {
+      String sourceDatasetName, String destinationDatasetName, String... whitelistTags)
+      throws IOException {
     DeidentifyDatasetRequest request = new DeidentifyDatasetRequest();
     request.setDestinationDataset(destinationDatasetName);
-    DeidentifyConfig deidConfig = new DeidentifyConfig();
-    DicomConfig dicomConfig = new DicomConfig();
     TagFilterList tagFilterList = new TagFilterList();
     List<String> whitelistTagList = Lists.newArrayList(defaultDicomKeepList);
     whitelistTagList.addAll(Lists.newArrayList(whitelistTags));
     tagFilterList.setTags(whitelistTagList);
+    DeidentifyConfig deidConfig = new DeidentifyConfig();
     dicomConfig.setKeepList(tagFilterList);
+    DicomConfig dicomConfig = new DicomConfig();
     deidConfig.setDicom(dicomConfig);
     request.setConfig(deidConfig);
     HealthcareQuickstart.getCloudHealthcareClient()
@@ -57,12 +55,13 @@ public class DatasetDeIdentify {
         .deidentify(sourceDatasetName, request)
         .execute();
 
-    Dataset deidDataset = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .get(destinationDatasetName)
-        .execute();
+    Dataset deidDataset =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .get(destinationDatasetName)
+            .execute();
 
     System.out.println("Deidentified Dataset: " + GSON.toJson(deidDataset));
   }

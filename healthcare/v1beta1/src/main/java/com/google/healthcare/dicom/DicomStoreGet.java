@@ -21,20 +21,20 @@ package com.google.healthcare.dicom;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.DicomStore;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DicomStoreGet {
   private static final Gson GSON = new Gson();
 
   public static void getDicomStore(String dicomStoreName) throws IOException {
-    DicomStore dicomStore = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .get(dicomStoreName)
-        .execute();
+    DicomStore dicomStore =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .get(dicomStoreName)
+            .execute();
     System.out.println("Retrieved Dicom store: " + GSON.toJson(dicomStore));
   }
 }

@@ -19,7 +19,6 @@ package com.google.healthcare.dicom;
 // [START healthcare_delete_dicom_store]
 
 import com.google.HealthcareQuickstart;
-
 import java.io.IOException;
 
 public class DicomStoreDelete {

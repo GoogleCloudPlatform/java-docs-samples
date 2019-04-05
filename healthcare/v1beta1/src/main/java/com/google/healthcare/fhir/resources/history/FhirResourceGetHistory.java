@@ -21,19 +21,19 @@ package com.google.healthcare.fhir.resources.history;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.History.Get;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-
 import java.io.IOException;
 
 public class FhirResourceGetHistory {
   public static void getFhirResourceHistory(String resourceName) throws IOException {
-    Get request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .history()
-        .get(resourceName);
+    Get request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .history()
+            .get(resourceName);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody httpBody = request.execute();
     System.out.println("Retrieved FHIR resource history: " + httpBody.getData());

@@ -19,7 +19,6 @@ package com.google.healthcare.datasets;
 // [START healthcare_delete_dataset]
 
 import com.google.HealthcareQuickstart;
-
 import java.io.IOException;
 
 public class DatasetDelete {

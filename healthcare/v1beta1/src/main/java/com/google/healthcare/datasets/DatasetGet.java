@@ -21,19 +21,19 @@ package com.google.healthcare.datasets;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Dataset;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DatasetGet {
   private static final Gson GSON = new Gson();
 
   public static void getDataset(String datasetName) throws IOException {
-    Dataset dataset = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .get(datasetName)
-        .execute();
+    Dataset dataset =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .get(datasetName)
+            .execute();
     System.out.println("Retrieved Dataset: " + GSON.toJson(dataset));
   }
 }

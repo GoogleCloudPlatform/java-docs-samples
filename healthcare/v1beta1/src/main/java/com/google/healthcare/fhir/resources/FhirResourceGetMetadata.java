@@ -21,29 +21,25 @@ package com.google.healthcare.fhir.resources;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.GetMetadata;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-
 import java.io.IOException;
 
 public class FhirResourceGetMetadata {
   public static void getMetadata(
-      String projectId,
-      String cloudRegion,
-      String datasetId,
-      String fhirStoreId) throws IOException {
+      String projectId, String cloudRegion, String datasetId, String fhirStoreId)
+      throws IOException {
 
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
-        projectId,
-        cloudRegion,
-        datasetId,
-        fhirStoreId);
-    GetMetadata request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .getMetadata(parentName);
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
+            projectId, cloudRegion, datasetId, fhirStoreId);
+    GetMetadata request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .getMetadata(parentName);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody response = request.execute();
 

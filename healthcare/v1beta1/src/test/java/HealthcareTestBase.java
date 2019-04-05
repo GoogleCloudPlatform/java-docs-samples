@@ -19,7 +19,6 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.model.ListDatasetsResponse;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -27,12 +26,9 @@ import java.util.UUID;
 
 public class HealthcareTestBase {
   protected static final String DEFAULT_CLOUD_REGION = "us-central1";
-  protected static final String DEFAULT_PROJECT_ID =
-      System.getenv("GOOGLE_CLOUD_PROJECT");
-  protected static final String GCLOUD_BUCKET_NAME =
-      System.getenv("GCLOUD_BUCKET_NAME");
-  protected static final String GCLOUD_PUBSUB_TOPIC =
-      System.getenv("GCLOUD_PUBSUB_TOPIC");
+  protected static final String DEFAULT_PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  protected static final String GCLOUD_BUCKET_NAME = System.getenv("GCLOUD_BUCKET_NAME");
+  protected static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
   protected static String datasetId;
   protected static String suffix;
   protected static ByteArrayOutputStream bout;
@@ -42,11 +38,7 @@ public class HealthcareTestBase {
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
 
-    suffix = UUID
-        .randomUUID()
-        .toString()
-        .substring(0, 4)
-        .replaceAll("-", "_");
+    suffix = UUID.randomUUID().toString().substring(0, 4).replaceAll("-", "_");
 
     datasetId = "dataset-" + suffix;
   }
@@ -54,16 +46,10 @@ public class HealthcareTestBase {
   protected static void tearDownClass() throws IOException {
     // Delete all lingering datasets.
     CloudHealthcare client = HealthcareQuickstart.getCloudHealthcareClient();
-    String parentName = String.format(
-        "projects/%s/locations/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION);
-    ListDatasetsResponse response = client
-        .projects()
-        .locations()
-        .datasets()
-        .list(parentName)
-        .execute();
+    String parentName =
+        String.format("projects/%s/locations/%s", DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION);
+    ListDatasetsResponse response =
+        client.projects().locations().datasets().list(parentName).execute();
     if (response.getDatasets() == null) {
       return;
     }

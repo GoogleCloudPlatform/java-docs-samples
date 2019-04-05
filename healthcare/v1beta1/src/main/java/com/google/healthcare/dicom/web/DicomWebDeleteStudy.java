@@ -20,7 +20,6 @@ package com.google.healthcare.dicom.web;
 
 import com.google.HealthcareQuickstart;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DicomWebDeleteStudy {

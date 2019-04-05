@@ -19,7 +19,6 @@ package com.google.healthcare.fhir;
 // [START healthcare_delete_fhir_store]
 
 import com.google.HealthcareQuickstart;
-
 import java.io.IOException;
 
 public class FhirStoreDelete {

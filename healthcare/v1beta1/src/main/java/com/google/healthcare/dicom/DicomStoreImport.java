@@ -22,7 +22,6 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.GoogleCloudHealthcareV1beta1DicomGcsSource;
 import com.google.api.services.healthcare.v1beta1.model.ImportDicomDataRequest;
 import com.google.api.services.healthcare.v1beta1.model.Operation;
-
 import java.io.IOException;
 
 public class DicomStoreImport {
@@ -33,13 +32,14 @@ public class DicomStoreImport {
     gcsSource.setUri("gs://" + uri);
     ImportDicomDataRequest importRequest = new ImportDicomDataRequest();
     importRequest.setGcsSource(gcsSource);
-    Operation importOperation = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .healthcareImport(dicomStoreName, importRequest)
-        .execute();
+    Operation importOperation =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .healthcareImport(dicomStoreName, importRequest)
+            .execute();
     System.out.println("Importing Dicom store op name: " + importOperation.getName());
   }
 }

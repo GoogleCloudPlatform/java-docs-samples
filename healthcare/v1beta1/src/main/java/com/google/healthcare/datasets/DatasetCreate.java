@@ -21,7 +21,6 @@ package com.google.healthcare.datasets;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.Create;
 import com.google.api.services.healthcare.v1beta1.model.Dataset;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -32,11 +31,12 @@ public class DatasetCreate {
     cloudRegion = Optional.of(cloudRegion).orElse("us-central1");
 
     String parentName = String.format("projects/%s/locations/%s", projectId, cloudRegion);
-    Create createRequest = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .create(parentName, dataset);
+    Create createRequest =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .create(parentName, dataset);
 
     createRequest.setDatasetId(datasetId);
     createRequest.execute();

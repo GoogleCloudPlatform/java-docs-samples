@@ -21,21 +21,20 @@ package com.google.healthcare.fhir;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.GetIamPolicy;
 import com.google.api.services.healthcare.v1beta1.model.Policy;
-
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class FhirStoreGetIamPolicy {
   private static final Gson GSON = new Gson();
 
   public static void getIamPolicy(String fhirStoreName) throws IOException {
-    GetIamPolicy request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .getIamPolicy(fhirStoreName);
+    GetIamPolicy request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .getIamPolicy(fhirStoreName);
     Policy policy = request.execute();
 
     System.out.println("FHIR store IAM policy retrieved: " + GSON.toJson(policy));

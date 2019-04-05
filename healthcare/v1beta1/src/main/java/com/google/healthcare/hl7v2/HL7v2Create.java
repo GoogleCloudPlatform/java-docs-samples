@@ -22,22 +22,16 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.model.Hl7V2Store;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class HL7v2Create {
   private static final Gson GSON = new Gson();
 
   public static void createHL7v2Store(
-      String projectId,
-      String cloudRegion,
-      String datasetId,
-      String hl7v2StoreId) throws IOException {
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s",
-        projectId,
-        cloudRegion,
-        datasetId);
+      String projectId, String cloudRegion, String datasetId, String hl7v2StoreId)
+      throws IOException {
+    String parentName =
+        String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
     Hl7V2Store hl7v2Store = new Hl7V2Store();
     CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores.Create createRequest =
         HealthcareQuickstart.getCloudHealthcareClient()

@@ -22,7 +22,6 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.CreateMessageRequest;
 import com.google.api.services.healthcare.v1beta1.model.Message;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -37,27 +36,27 @@ public class HL7v2MessageCreate {
       String cloudRegion,
       String datasetId,
       String hl7v2StoreId,
-      String messageFileName) throws IOException {
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
-        projectId,
-        cloudRegion,
-        datasetId,
-        hl7v2StoreId);
+      String messageFileName)
+      throws IOException {
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
+            projectId, cloudRegion, datasetId, hl7v2StoreId);
     CreateMessageRequest createRequest = new CreateMessageRequest();
     Message message = new Message();
     List<String> lines = Files.readAllLines(Paths.get(messageFileName), Charset.defaultCharset());
     String data = String.join("\n", lines);
     message.setData(data);
     createRequest.setMessage(message);
-    Message response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .messages()
-        .create(parentName, createRequest)
-        .execute();
+    Message response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .messages()
+            .create(parentName, createRequest)
+            .execute();
     System.out.println("Created HL7v2 message: " + GSON.toJson(response));
   }
 }

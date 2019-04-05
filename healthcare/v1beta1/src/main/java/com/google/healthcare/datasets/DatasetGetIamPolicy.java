@@ -21,19 +21,19 @@ package com.google.healthcare.datasets;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Policy;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DatasetGetIamPolicy {
   private static final Gson GSON = new Gson();
 
   public static void getIamPolicy(String datasetName) throws IOException {
-    Policy policy = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .getIamPolicy(datasetName)
-        .execute();
+    Policy policy =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .getIamPolicy(datasetName)
+            .execute();
     String policyJson = GSON.toJson(policy);
     System.out.println("Retrieved Dataset policy: " + policyJson);
   }

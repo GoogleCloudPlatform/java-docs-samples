@@ -21,21 +21,21 @@ package com.google.healthcare.dicom.web;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DicomWebRetrieveStudy {
   private static final Gson GSON = new Gson();
 
   public static void retrieveStudy(String dicomStoreName, String studyId) throws IOException {
-    HttpBody response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .studies()
-        .retrieveStudy(dicomStoreName, "studies/" + studyId)
-        .execute();
+    HttpBody response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .studies()
+            .retrieveStudy(dicomStoreName, "studies/" + studyId)
+            .execute();
     System.out.println("Retrieved Dicom study: " + GSON.toJson(response));
   }
 }

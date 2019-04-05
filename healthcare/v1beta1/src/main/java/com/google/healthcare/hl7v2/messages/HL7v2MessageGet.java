@@ -21,21 +21,21 @@ package com.google.healthcare.hl7v2.messages;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Message;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class HL7v2MessageGet {
   private static final Gson GSON = new Gson();
 
   public static void getHL7v2Message(String hl7v2MessageName) throws IOException {
-    Message message = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .messages()
-        .get(hl7v2MessageName)
-        .execute();
+    Message message =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .messages()
+            .get(hl7v2MessageName)
+            .execute();
     System.out.println("Retrieved HL7v2 message: " + GSON.toJson(message));
   }
 }

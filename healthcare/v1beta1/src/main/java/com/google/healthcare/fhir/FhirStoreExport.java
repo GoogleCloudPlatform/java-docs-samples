@@ -22,24 +22,23 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.ExportResourcesRequest;
 import com.google.api.services.healthcare.v1beta1.model.GoogleCloudHealthcareV1beta1FhirRestGcsDestination;
 import com.google.api.services.healthcare.v1beta1.model.Operation;
-
 import java.io.IOException;
 
 public class FhirStoreExport {
-  public static void exportFhirStore(String fhirResourceName, String uriPrefix)
-      throws IOException {
+  public static void exportFhirStore(String fhirResourceName, String uriPrefix) throws IOException {
     ExportResourcesRequest exportRequest = new ExportResourcesRequest();
     GoogleCloudHealthcareV1beta1FhirRestGcsDestination gcdDestination =
         new GoogleCloudHealthcareV1beta1FhirRestGcsDestination();
     gcdDestination.setUriPrefix("gs://" + uriPrefix);
     exportRequest.setGcsDestination(gcdDestination);
-    Operation exportOperation = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .export(fhirResourceName, exportRequest)
-        .execute();
+    Operation exportOperation =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .export(fhirResourceName, exportRequest)
+            .execute();
     System.out.println("Exporting FHIR store operation name: " + exportOperation.getName());
   }
 }

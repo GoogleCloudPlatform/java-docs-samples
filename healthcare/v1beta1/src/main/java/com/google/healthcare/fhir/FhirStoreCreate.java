@@ -21,23 +21,25 @@ package com.google.healthcare.fhir;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.model.FhirStore;
-
 import java.io.IOException;
 import java.util.Optional;
 
 public class FhirStoreCreate {
-  public static void createFhirStore(String projectId, String cloudRegion, String datasetId, String fhirStoreId)
+  public static void createFhirStore(
+      String projectId, String cloudRegion, String datasetId, String fhirStoreId)
       throws IOException {
     FhirStore fhirStore = new FhirStore();
     cloudRegion = Optional.of(cloudRegion).orElse("us-central1");
 
-    String parentName = String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
-    CloudHealthcare.Projects.Locations.Datasets.FhirStores.Create createRequest = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .create(parentName, fhirStore);
+    String parentName =
+        String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
+    CloudHealthcare.Projects.Locations.Datasets.FhirStores.Create createRequest =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .create(parentName, fhirStore);
 
     createRequest.setFhirStoreId(fhirStoreId);
     createRequest.execute();

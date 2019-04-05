@@ -40,9 +40,7 @@ import com.google.healthcare.fhir.resources.FhirResourceSearchPost;
 import com.google.healthcare.fhir.resources.history.FhirResourceDeletePurge;
 import com.google.healthcare.fhir.resources.history.FhirResourceGetHistory;
 import com.google.healthcare.fhir.resources.history.FhirResourceListHistory;
-
 import java.io.IOException;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -71,28 +69,20 @@ public class FhirStoreTests extends HealthcareTestBase {
 
     fhirStoreId = "fhir-store-" + suffix;
 
-    fhirStoreName = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId);
+    fhirStoreName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId);
 
-    fhirResourceName = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType);
+    fhirResourceName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType);
 
-    fhirResourceName2 = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType2);
+    fhirResourceName2 =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType2);
 
     DatasetCreate.createDataset(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
   }
@@ -110,10 +100,7 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Test
   public void test_01_CreateFhirStore() throws Exception {
     FhirStoreCreate.createFhirStore(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId);
     assertBoutContents("Created FHIR store:", fhirStoreId);
   }
 
@@ -176,11 +163,7 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Ignore // TODO: b/128844810
   public void test_03_CreateFhirResource() throws Exception {
     FhirResourceCreate.createFhirResource(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType);
     assertBoutContents("Created FHIR resource:");
     // TODO: Get Resource ID for getPatientEverything test.
   }
@@ -189,11 +172,7 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Ignore // TODO: b/128844810
   public void test_04_SearchFhirResources() throws Exception {
     FhirResourceSearch.searchFhirResources(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType);
     assertBoutContents("FHIR resource search results:", fhirResourceName);
   }
 
@@ -201,11 +180,7 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Ignore // TODO: b/128844810
   public void test_04_SearchFhirResourcesPost() throws Exception {
     FhirResourceSearchPost.searchFhirResourcesPost(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType);
     assertBoutContents("FHIR resource search results:", fhirResourceName);
   }
 
@@ -255,17 +230,9 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Ignore // TODO: b/128844810
   public void test_04_ConditionalDeleteFhirResource() throws Exception {
     FhirResourceCreate.createFhirResource(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType2);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType2);
     FhirResourceConditionalDelete.conditionalDeleteFhirResource(
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId,
-        fhirStoreId,
-        fhirResourceType2);
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType2);
     assertBoutContents("Conditionally deleted FHIR resource:", fhirResourceName2);
   }
 
@@ -273,14 +240,15 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Ignore // TODO: b/128844810
   public void test_04_GetPatientEverything() throws Exception {
     FhirResourceGetPatientEverything.getPatientEverything(fhirResourceName);
-    assertBoutContents("FHIR resource search results:", fhirResourceName + "/[parse-from-CreateResource]");
+    assertBoutContents(
+        "FHIR resource search results:", fhirResourceName + "/[parse-from-CreateResource]");
   }
-
 
   @Test
   @Ignore // TODO: b/128844810
   public void test_04_GetFhirResourceMetadata() throws Exception {
-    FhirResourceGetMetadata.getMetadata(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId);
+    FhirResourceGetMetadata.getMetadata(
+        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId);
     assertBoutContents("FHIR resource metadata retrieved:");
   }
 
@@ -311,7 +279,7 @@ public class FhirStoreTests extends HealthcareTestBase {
   @Test
   @Ignore // TODO: b/128844810
   public void test_07_DeletePurgeFhirResource() throws Exception {
-    //Delete+Purge will remove a resource's version history.
+    // Delete+Purge will remove a resource's version history.
     FhirResourceDeletePurge.deletePurgeFhirResource(fhirResourceName);
 
     FhirResourceGetHistory.getFhirResourceHistory(fhirResourceName);

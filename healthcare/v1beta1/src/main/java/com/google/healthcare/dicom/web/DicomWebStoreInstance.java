@@ -22,10 +22,8 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 import com.google.gson.Gson;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
-
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
@@ -40,14 +38,15 @@ public class DicomWebStoreInstance {
     builder.build().writeTo(out);
     HttpBody body = new HttpBody();
     body.encodeData(out.getBytes());
-    HttpBody response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .studies()
-        .storeInstances(dicomStoreName, "studies/" + studyId, body)
-        .execute();
+    HttpBody response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .studies()
+            .storeInstances(dicomStoreName, "studies/" + studyId, body)
+            .execute();
     System.out.println("Stored Dicom store: " + GSON.toJson(response));
   }
 }

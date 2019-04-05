@@ -19,7 +19,6 @@ package com.google.healthcare.hl7v2;
 // [START healthcare_delete_hl7v2_store]
 
 import com.google.HealthcareQuickstart;
-
 import java.io.IOException;
 
 public class HL7v2Delete {

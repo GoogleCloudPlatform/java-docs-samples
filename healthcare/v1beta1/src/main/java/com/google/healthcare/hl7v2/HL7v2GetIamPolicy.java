@@ -21,20 +21,20 @@ package com.google.healthcare.hl7v2;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Policy;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class HL7v2GetIamPolicy {
   private static final Gson GSON = new Gson();
 
   public static void getIamPolicy(String hl7v2StoreName) throws IOException {
-    Policy policy = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .getIamPolicy(hl7v2StoreName)
-        .execute();
+    Policy policy =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .getIamPolicy(hl7v2StoreName)
+            .execute();
     System.out.println("Retrieved HL7v2 store policy: " + GSON.toJson(policy));
   }
 }

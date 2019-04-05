@@ -21,20 +21,22 @@ package com.google.healthcare.fhir;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.FhirStore;
 import com.google.api.services.healthcare.v1beta1.model.ListFhirStoresResponse;
-
 import java.io.IOException;
 import java.util.List;
 
 public class FhirStoreList {
-  public static void listFhirStores(String projectId, String cloudRegion, String datasetId) throws IOException {
-    String parentName = String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
-    ListFhirStoresResponse response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .list(parentName)
-        .execute();
+  public static void listFhirStores(String projectId, String cloudRegion, String datasetId)
+      throws IOException {
+    String parentName =
+        String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
+    ListFhirStoresResponse response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .list(parentName)
+            .execute();
     List<FhirStore> fhirStores = response.getFhirStores();
     if (fhirStores == null) {
       System.out.println("Retrieved 0 FHIR stores");

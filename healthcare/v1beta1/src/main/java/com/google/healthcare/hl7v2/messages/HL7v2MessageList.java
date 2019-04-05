@@ -20,27 +20,26 @@ package com.google.healthcare.hl7v2.messages;
 
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.ListMessagesResponse;
-
 import java.io.IOException;
 import java.util.List;
 
 public class HL7v2MessageList {
-  public static void listHL7v2Messages(String projectId, String cloudRegion, String datasetId, String hl7v2StoreId)
+  public static void listHL7v2Messages(
+      String projectId, String cloudRegion, String datasetId, String hl7v2StoreId)
       throws IOException {
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
-        projectId,
-        cloudRegion,
-        datasetId,
-        hl7v2StoreId);
-    ListMessagesResponse response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .messages()
-        .list(parentName)
-        .execute();
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s",
+            projectId, cloudRegion, datasetId, hl7v2StoreId);
+    ListMessagesResponse response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .messages()
+            .list(parentName)
+            .execute();
     List<String> messages = response.getMessages();
     if (messages == null) {
       System.out.println("Retrieved 0 HL7v2 messages");

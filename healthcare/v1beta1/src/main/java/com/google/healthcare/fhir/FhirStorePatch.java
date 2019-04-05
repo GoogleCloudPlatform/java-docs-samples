@@ -22,31 +22,32 @@ import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.FhirStore;
 import com.google.api.services.healthcare.v1beta1.model.NotificationConfig;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class FhirStorePatch {
   private static final Gson GSON = new Gson();
 
   public static void patchFhirStore(String fhirStoreName, String pubsubTopic) throws IOException {
-    FhirStore patched = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .get(fhirStoreName)
-        .execute();
+    FhirStore patched =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .get(fhirStoreName)
+            .execute();
     NotificationConfig notificationConfig = new NotificationConfig();
     notificationConfig.setPubsubTopic(pubsubTopic);
     patched.setNotificationConfig(notificationConfig);
-    FhirStore response = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .patch(fhirStoreName, patched)
-        .setUpdateMask("notificationConfig")
-        .execute();
+    FhirStore response =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .patch(fhirStoreName, patched)
+            .setUpdateMask("notificationConfig")
+            .execute();
     System.out.println("Patched FHIR store: " + GSON.toJson(response));
   }
 }

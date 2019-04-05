@@ -23,11 +23,9 @@ import com.google.healthcare.datasets.DatasetGetIamPolicy;
 import com.google.healthcare.datasets.DatasetList;
 import com.google.healthcare.datasets.DatasetPatch;
 import com.google.healthcare.datasets.DatasetSetIamPolicy;
-
 import java.io.IOException;
 import java.util.TimeZone;
 import java.util.UUID;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,11 +44,10 @@ public class DatasetTests extends HealthcareTestBase {
   public static void setUp() {
     setUpClass();
 
-    datasetName = String.format(
-        "projects/%s/locations/%s/datasets/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        datasetId);
+    datasetName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
   }
 
   @AfterClass
@@ -90,16 +87,12 @@ public class DatasetTests extends HealthcareTestBase {
 
   @Test
   public void test_02_DeidDataset() throws Exception {
-    String newDatasetId = "dataset-" + UUID
-        .randomUUID()
-        .toString()
-        .substring(0, 4)
-        .replaceAll("-", "_");
-    String newDatasetName = String.format(
-        "projects/%s/locations/%s/datasets/%s",
-        DEFAULT_PROJECT_ID,
-        DEFAULT_CLOUD_REGION,
-        newDatasetId);
+    String newDatasetId =
+        "dataset-" + UUID.randomUUID().toString().substring(0, 4).replaceAll("-", "_");
+    String newDatasetName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s",
+            DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, newDatasetId);
 
     DatasetDeIdentify.deidentifyDataset(datasetName, newDatasetName);
     assertBoutContents("Deidentified Dataset: ", newDatasetName);

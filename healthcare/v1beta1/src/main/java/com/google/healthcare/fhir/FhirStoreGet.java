@@ -21,20 +21,20 @@ package com.google.healthcare.fhir;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.FhirStore;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class FhirStoreGet {
   private static final Gson GSON = new Gson();
 
   public static void getFhirStore(String fhirStoreName) throws IOException {
-    FhirStore fhirStore = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .get(fhirStoreName)
-        .execute();
+    FhirStore fhirStore =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .get(fhirStoreName)
+            .execute();
     System.out.println("Retrieved FHIR store: " + GSON.toJson(fhirStore));
   }
 }

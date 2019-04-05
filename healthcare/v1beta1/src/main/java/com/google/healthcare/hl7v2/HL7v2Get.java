@@ -21,20 +21,20 @@ package com.google.healthcare.hl7v2;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Hl7V2Store;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class HL7v2Get {
   private static final Gson GSON = new Gson();
 
   public static void getHL7v2Store(String hl7v2StoreName) throws IOException {
-    Hl7V2Store hl7v2Store = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .hl7V2Stores()
-        .get(hl7v2StoreName)
-        .execute();
+    Hl7V2Store hl7v2Store =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .hl7V2Stores()
+            .get(hl7v2StoreName)
+            .execute();
     System.out.println("Retrieved HL7v2 store: " + GSON.toJson(hl7v2Store));
   }
 }

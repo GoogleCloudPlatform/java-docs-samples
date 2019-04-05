@@ -21,7 +21,6 @@ package com.google.healthcare.fhir.resources;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.CreateResource;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -38,19 +37,18 @@ public class FhirResourceCreate {
     httpBody.setContentType(resourceType);
     httpBody.setData("{'resourceType': '" + resourceType + "'}");
 
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
-        projectId,
-        Optional.of(cloudRegion).orElse("us-central1"),
-        datasetId,
-        fhirStoreId);
-    CreateResource request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .createResource(parentName, resourceType, httpBody);
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
+            projectId, Optional.of(cloudRegion).orElse("us-central1"), datasetId, fhirStoreId);
+    CreateResource request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .createResource(parentName, resourceType, httpBody);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     HttpBody response = request.execute();
 

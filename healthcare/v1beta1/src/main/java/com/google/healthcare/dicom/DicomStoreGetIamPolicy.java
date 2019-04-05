@@ -21,20 +21,20 @@ package com.google.healthcare.dicom;
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.model.Policy;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class DicomStoreGetIamPolicy {
   private static final Gson GSON = new Gson();
 
   public static void getIamPolicy(String dicomStoreName) throws IOException {
-    Policy policy = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .getIamPolicy(dicomStoreName)
-        .execute();
+    Policy policy =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .getIamPolicy(dicomStoreName)
+            .execute();
     String policyJson = GSON.toJson(policy);
     System.out.println("Retrieved Dicom store policy: " + policyJson);
     // TODO: Revisit when https://b.corp.google.com/issues/128937427 is fixed.

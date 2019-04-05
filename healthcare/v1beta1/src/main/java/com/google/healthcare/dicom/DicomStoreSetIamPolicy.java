@@ -24,14 +24,14 @@ import com.google.api.services.healthcare.v1beta1.model.Policy;
 import com.google.api.services.healthcare.v1beta1.model.SetIamPolicyRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.util.List;
 
 public class DicomStoreSetIamPolicy {
   private static final Gson GSON = new Gson();
 
-  public static void setIamPolicy(String dicomStoreName, String role, List<String> members) throws IOException {
+  public static void setIamPolicy(String dicomStoreName, String role, List<String> members)
+      throws IOException {
     Binding binding = new Binding();
 
     binding.setRole(role);
@@ -42,13 +42,14 @@ public class DicomStoreSetIamPolicy {
     request.setPolicy(new Policy());
     request.getPolicy().setBindings(bindings);
 
-    Policy updatedPolicy = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .dicomStores()
-        .setIamPolicy(dicomStoreName, request)
-        .execute();
+    Policy updatedPolicy =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .setIamPolicy(dicomStoreName, request)
+            .execute();
     System.out.println("Set Dicom store policy: " + GSON.toJson(updatedPolicy));
   }
 }

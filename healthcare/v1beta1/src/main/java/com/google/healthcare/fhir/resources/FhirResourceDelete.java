@@ -20,18 +20,18 @@ package com.google.healthcare.fhir.resources;
 
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.Delete;
-
 import java.io.IOException;
 
 public class FhirResourceDelete {
   public static void deleteFhirResource(String resourceName) throws IOException {
-    Delete request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .delete(resourceName);
+    Delete request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .delete(resourceName);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     request.execute();
   }

@@ -20,7 +20,6 @@ package com.google.healthcare.fhir.resources;
 
 import com.google.HealthcareQuickstart;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.ConditionalDeleteResource;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -30,20 +29,20 @@ public class FhirResourceConditionalDelete {
       String cloudRegion,
       String datasetId,
       String fhirStoreId,
-      String resourceType) throws IOException {
-    String parentName = String.format(
-        "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
-        projectId,
-        Optional.of(cloudRegion).orElse("us-central1"),
-        datasetId,
-        fhirStoreId);
-    ConditionalDeleteResource request = HealthcareQuickstart.getCloudHealthcareClient()
-        .projects()
-        .locations()
-        .datasets()
-        .fhirStores()
-        .fhir()
-        .conditionalDeleteResource(parentName, resourceType);
+      String resourceType)
+      throws IOException {
+    String parentName =
+        String.format(
+            "projects/%s/locations/%s/datasets/%s/fhirStores/%s",
+            projectId, Optional.of(cloudRegion).orElse("us-central1"), datasetId, fhirStoreId);
+    ConditionalDeleteResource request =
+        HealthcareQuickstart.getCloudHealthcareClient()
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .fhir()
+            .conditionalDeleteResource(parentName, resourceType);
     request.setAccessToken(HealthcareQuickstart.getAccessToken());
     request.execute();
     System.out.println("Conditionally deleted FHIR resource: " + resourceType);
