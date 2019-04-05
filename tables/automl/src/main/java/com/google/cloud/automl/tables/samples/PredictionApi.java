@@ -109,10 +109,20 @@ public class PredictionApi {
 
       PredictResponse response = predictionClient.predict(modelName, examplePayload, params);
       System.out.println("Prediction results:");
-      for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-        System.out.println("Predicted class name :" + annotationPayload.getDisplayName());
+      List<AnnotationPayload> annotationPayloadList = response.getPayloadList();
+      if (response.getPayloadCount() == 1) {
         System.out.println(
-            "Predicted class score :" + annotationPayload.getClassification().getScore());
+            String.format(
+                "\tRegression result: %0.3f",
+                annotationPayloadList.get(0).getTables().getValue().getNumberValue()));
+      } else {
+        for (AnnotationPayload annotationPayload : annotationPayloadList) {
+          System.out.println(
+              String.format(
+                  "\tClassification label: %s\t\tClassification score: %.3f",
+                  annotationPayload.getTables().getValue().getStringValue(),
+                  annotationPayload.getTables().getScore()));
+        }
       }
     }
   }
