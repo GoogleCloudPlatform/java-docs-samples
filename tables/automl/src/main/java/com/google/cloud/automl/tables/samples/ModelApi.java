@@ -793,7 +793,7 @@ public class ModelApi {
   }
   // [END automl_tables_deploy_model]
 
-  // [START automl_tables_deploy_model]
+  // [START automl_tables_undeploy_model]
   /**
    * Demonstrates using the AutoML client to undelpoy model.
    *
@@ -826,7 +826,7 @@ public class ModelApi {
         String.format(
             "\t\tValue: %s", response.getMetadata().getValue().toStringUtf8().replace("\n", "")));
   }
-  // [END automl_tables_deploy_model]
+  // [END automl_tables_undeploy_model]
 
   // [START automl_tables_delete_model]
   /**
