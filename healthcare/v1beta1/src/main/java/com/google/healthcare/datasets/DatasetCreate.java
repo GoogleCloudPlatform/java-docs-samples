@@ -17,31 +17,70 @@
 package com.google.healthcare.datasets;
 
 // [START healthcare_create_dataset]
-
-import com.google.HealthcareQuickstart;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.Create;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.Dataset;
+import com.google.api.services.healthcare.v1beta1.model.Operation;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Collections;
 
 public class DatasetCreate {
-  public static void createDataset(String projectId, String cloudRegion, String datasetId)
+  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+
+  public static void createDataset(String projectId, String region, String datasetId)
       throws IOException {
+    // String projectId = "your-project-id";
+    // String region = "us-central1";
+    // String datasetId = "your-dataset-id";
+
+    // Initialize the Client, which will be used to interact with the service.
+    CloudHealthcare client = createClient();
+
+    // Create a new Dataset to send to the service.
     Dataset dataset = new Dataset();
-    cloudRegion = Optional.of(cloudRegion).orElse("us-central1");
 
-    String parentName = String.format("projects/%s/locations/%s", projectId, cloudRegion);
-    Create createRequest =
-        HealthcareQuickstart.getCloudHealthcareClient()
-            .projects()
-            .locations()
-            .datasets()
-            .create(parentName, dataset);
+    // Create request and configure options.
+    String parentName = String.format("projects/%s/locations/%s", projectId, region);
+    Datasets.Create request = client.projects().locations().datasets().create(parentName, dataset);
+    request.setDatasetId(datasetId);
 
-    createRequest.setDatasetId(datasetId);
-    createRequest.execute();
+    // Execute the request and process the results.
+    try {
+      Operation operation = request.execute();
+      System.out.println("Created Dataset: " + operation.getName());
+    } catch (IOException ex) {
+      System.out.printf("Error during request execution: %s \n %s \n", ex.getMessage());
+    }
+  }
 
-    System.out.println("Created Dataset: " + createRequest.getDatasetId());
+  private static CloudHealthcare createClient() throws IOException {
+    // Use Application Default Credentials (ADC) to authenticate the requests
+    // For more information see https://cloud.google.com/docs/authentication/production
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
+
+    // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
+    HttpRequestInitializer requestInitializer =
+        request -> {
+          credential.initialize(request);
+          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
+          request.setConnectTimeout(60000); // 1 minute connect timeout
+          request.setReadTimeout(60000); // 1 minute read timeout
+        };
+
+    // Build the client for interacting with the service.
+    return new CloudHealthcare.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
+        .setApplicationName("your-application-name")
+        .build();
   }
 }
 // [END healthcare_create_dataset]
