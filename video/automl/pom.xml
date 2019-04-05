@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-automl</artifactId>
-			<version>0.86.0-beta</version>
+			<version>0.87.0-beta</version>
 		</dependency>
 		<!-- [END automl_language_java_dependencies] -->
 		<dependency>
