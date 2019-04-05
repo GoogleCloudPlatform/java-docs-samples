@@ -541,7 +541,7 @@ public class ModelApi {
    * @throws IOException
    */
   public static void deployModel(String projectId, String computeRegion, String modelId)
-      throws IOException {
+      throws IOException, InterruptedException, ExecutionException {
     // Instantiates a client.
     AutoMlClient client = AutoMlClient.create();
 
@@ -553,16 +553,11 @@ public class ModelApi {
         DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
 
     // Deploy a model with the deploy model request.
-    Operation response = client.deployModel(deployModelRequest);
+    OperationFuture<Empty,OperationMetadata> response = client.deployModelAsync(deployModelRequest);
 
     // Display the deployment details of model.
     System.out.println(String.format("Deployment Details:"));
     System.out.println(String.format("\tName: %s", response.getName()));
-    System.out.println(String.format("\tMetadata:"));
-    System.out.println(String.format("\t\tType Url: %s", response.getMetadata().getTypeUrl()));
-    System.out.println(
-        String.format(
-            "\t\tValue: %s", response.getMetadata().getValue().toStringUtf8().replace("\n", "")));
   }
   // [END automl_video_intelligence_classification_deploy_model]
 
@@ -576,7 +571,7 @@ public class ModelApi {
    * @throws IOException
    */
   public static void undeployModel(String projectId, String computeRegion, String modelId)
-      throws IOException {
+      throws IOException, InterruptedException, ExecutionException {
     // Instantiates a client.
     AutoMlClient client = AutoMlClient.create();
 
@@ -588,16 +583,12 @@ public class ModelApi {
         UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
 
     // Undeploy a model with the undeploy model request.
-    Operation response = client.undeployModel(undeployModelRequest);
+    OperationFuture<Empty,OperationMetadata> response = 
+        client.undeployModelAsync(undeployModelRequest);
 
     // Display the undeployment details of model.
     System.out.println(String.format("Undeployment Details:"));
     System.out.println(String.format("\tName: %s", response.getName()));
-    System.out.println(String.format("\tMetadata:"));
-    System.out.println(String.format("\t\tType Url: %s", response.getMetadata().getTypeUrl()));
-    System.out.println(
-        String.format(
-            "\t\tValue: %s", response.getMetadata().getValue().toStringUtf8().replace("\n", "")));
   }
   // [END automl_video_intelligence_classification_undeploy_model]
 
