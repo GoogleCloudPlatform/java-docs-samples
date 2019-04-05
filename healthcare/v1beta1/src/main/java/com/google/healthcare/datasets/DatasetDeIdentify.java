@@ -44,8 +44,8 @@ public class DatasetDeIdentify {
     whitelistTagList.addAll(Lists.newArrayList(whitelistTags));
     tagFilterList.setTags(whitelistTagList);
     DeidentifyConfig deidConfig = new DeidentifyConfig();
-    dicomConfig.setKeepList(tagFilterList);
     DicomConfig dicomConfig = new DicomConfig();
+    dicomConfig.setKeepList(tagFilterList);
     deidConfig.setDicom(dicomConfig);
     request.setConfig(deidConfig);
     HealthcareQuickstart.getCloudHealthcareClient()
