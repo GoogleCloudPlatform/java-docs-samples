@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.healthcare.datasets;
+package snippets.healthcare.datasets;
 
-// [START healthcare_dataset_set_iam_policy]
+// [START healthcare_patch_dataset]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -26,47 +26,41 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Binding;
-import com.google.api.services.healthcare.v1beta1.model.Policy;
-import com.google.api.services.healthcare.v1beta1.model.SetIamPolicyRequest;
+import com.google.api.services.healthcare.v1beta1.model.Dataset;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
-public class DatasetSetIamPolicy {
+public class DatasetPatch {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void datasetSetIamPolicy(String datasetName) throws IOException {
+  public static void datasetPatch(String datasetName) throws IOException {
     // String datasetName =
     //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
-    // Initialize the Client, which will be used to interact with the service.
+    // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the IAMPolicy to apply to the dataset
-    // For more information on understanding IAM roles, see the following:
-    // https://cloud.google.com/iam/docs/understanding-roles
-    Binding binding =
-        new Binding()
-            .setRole("roles/healthcare.datasetViewer")
-            .setMembers(
-                Arrays.asList(
-                    "user:mike@example.com",
-                    "group:admins@example.com",
-                    "domain:google.com",
-                    "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
-    Policy policy = new Policy().setBindings(Arrays.asList(binding));
-    SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
+    // Fetch the initial state of the dataset.
+    Datasets.Get getRequest = client.projects().locations().datasets().get(datasetName);
+    Dataset dataset = getRequest.execute();
+
+    // Update the Dataset fields as needed as needed. For a full list of dataset fields, see:
+    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets#Dataset
+    dataset.setTimeZone("America/New_York");
 
     // Create request and configure any parameters.
-    Datasets.SetIamPolicy request =
-        client.projects().locations().datasets().setIamPolicy(datasetName, policyRequest);
+    Datasets.Patch request =
+        client
+            .projects()
+            .locations()
+            .datasets()
+            .patch(datasetName, dataset)
+            .setUpdateMask("timeZone");
 
     // Execute the request and process the results.
-    Policy updatedPolicy = request.execute();
-
-    System.out.println("Dataset policy has been updated: " + updatedPolicy.toPrettyString());
+    dataset = request.execute();
+    System.out.println("Dataset patched: \n" + dataset.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -91,4 +85,4 @@ public class DatasetSetIamPolicy {
         .build();
   }
 }
-// [END healthcare_dataset_set_iam_policy]
+// [END healthcare_patch_dataset]

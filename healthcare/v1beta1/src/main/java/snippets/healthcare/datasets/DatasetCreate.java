@@ -41,7 +41,7 @@ public class DatasetCreate {
     // String regionId = "us-central1";
     // String datasetId = "your-dataset-id";
 
-    // Initialize the Client, which will be used to interact with the service.
+    // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     // Create a new Dataset and populate with associated data.

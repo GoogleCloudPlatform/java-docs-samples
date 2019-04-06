@@ -38,7 +38,7 @@ public class DatasetDelete {
     // String datasetName =
     //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
-    // Initialize the Client, which will be used to interact with the service.
+    // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.

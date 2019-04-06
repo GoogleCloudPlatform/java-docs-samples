@@ -36,6 +36,8 @@ import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.datasets.DatasetGet;
 import snippets.healthcare.datasets.DatasetGetIamPolicy;
 import snippets.healthcare.datasets.DatasetList;
+import snippets.healthcare.datasets.DatasetPatch;
+import snippets.healthcare.datasets.DatasetSetIamPolicy;
 
 @RunWith(JUnit4.class)
 public class DatasetTests {
@@ -97,12 +99,26 @@ public class DatasetTests {
     assertThat(output, containsString("Dataset IAMPolicy retrieved:"));
   }
 
+  private void testDatasetSetIAMPolicy(String datasetName) throws IOException {
+    DatasetSetIamPolicy.datasetSetIamPolicy(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Dataset policy has been updated: "));
+  }
+
   private void testDatasetDeidentify(String srcDatasetName, String destDatasetName)
       throws IOException {
     DatasetDeIdentify.datasetDeIdentify(srcDatasetName, destDatasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("De-identified dataset created."));
+  }
+
+  private void testDataSetPatch(String datasetName) throws IOException {
+    DatasetPatch.datasetPatch(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Dataset policy has been updated: "));
   }
 
   private void testDatasetDelete(String datasetName) throws IOException {
@@ -115,14 +131,16 @@ public class DatasetTests {
   // Use a test runner to guarantee sure the tests run sequentially.
   @Test
   public void testRunner() throws IOException {
-    String firstDatasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    String firstDatasetName = String.format(DATASET_NAME, PROJECT_ID, REGION, firstDatasetId);
+    String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    String datasetName = String.format(DATASET_NAME, PROJECT_ID, REGION, datasetId);
 
-    testDatasetCreate(firstDatasetId);
-    testDatasetGet(firstDatasetName);
+    testDatasetCreate(datasetId);
+    testDatasetGet(datasetName);
     testDatasetList();
-    testDatasetGetIAMPolicy(firstDatasetName);
-    testDatasetDeidentify(firstDatasetName, firstDatasetName + "_died");
-    testDatasetDelete(firstDatasetName);
+    testDatasetSetIAMPolicy(datasetName);
+    testDatasetGetIAMPolicy(datasetName);
+    testDataSetPatch(datasetName);
+    testDatasetDeidentify(datasetName, datasetName + "_died");
+    testDatasetDelete(datasetName);
   }
 }

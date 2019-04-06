@@ -47,7 +47,7 @@ public class DatasetDeIdentify {
     // String destDatasetName =
     //    String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dest-dataset-id");
 
-    // Initialize the Client, which will be used to interact with the service.
+    // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     // Configure what information needs to be De-Identified.
