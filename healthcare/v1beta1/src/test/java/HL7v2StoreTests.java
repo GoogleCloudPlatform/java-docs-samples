@@ -68,7 +68,7 @@ public class HL7v2StoreTests extends HealthcareTestBase {
             "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages",
             DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, hl7v2StoreId);
 
-    DatasetCreate.createDataset(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
+    DatasetCreate.datasetCreate(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
   }
 
   @AfterClass

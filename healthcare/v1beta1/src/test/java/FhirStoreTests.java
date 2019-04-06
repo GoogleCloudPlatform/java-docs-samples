@@ -84,7 +84,7 @@ public class FhirStoreTests extends HealthcareTestBase {
             "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s",
             DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId, fhirResourceType2);
 
-    DatasetCreate.createDataset(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
+    DatasetCreate.datasetCreate(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
   }
 
   @AfterClass
