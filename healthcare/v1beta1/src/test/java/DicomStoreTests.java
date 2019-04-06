@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.DicomStoreImport;
 import com.google.healthcare.dicom.DicomStoreList;
 import com.google.healthcare.dicom.DicomStorePatch;
 import com.google.healthcare.dicom.DicomStoreSetIamPolicy;
@@ -38,6 +37,7 @@ import snippets.healthcare.dicom.DicomStoreDelete;
 import snippets.healthcare.dicom.DicomStoreExport;
 import snippets.healthcare.dicom.DicomStoreGet;
 import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
+import snippets.healthcare.dicom.DicomStoreImport;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -91,7 +91,7 @@ public class DicomStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_02_GetDicomStoreIamPolicy() throws Exception {
-    DicomStoreGetIamPolicy.getIamPolicy(dicomStoreName);
+    DicomStoreGetIamPolicy.dicomStoreGetIamPolicy(dicomStoreName);
     assertBoutContents("Retrieved Dicom store policy:.*etag.*ACAB");
   }
 
@@ -127,7 +127,7 @@ public class DicomStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_02_ImportDicomStore() throws Exception {
-    DicomStoreImport.importDicomStoreInstance(dicomStoreName, gcsFileName);
+    DicomStoreImport.dicomStoreImport(dicomStoreName, gcsFileName);
     assertBoutContents("Importing Dicom store op name:");
   }
 

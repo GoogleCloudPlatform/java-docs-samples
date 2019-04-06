@@ -16,7 +16,7 @@
 
 package snippets.healthcare.dicom;
 
-// [START healthcare_export_dicom_instance]
+// [START healthcare_import_dicom_instance]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -26,18 +26,18 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.ExportDicomDataRequest;
-import com.google.api.services.healthcare.v1beta1.model.GoogleCloudHealthcareV1beta1DicomGcsDestination;
+import com.google.api.services.healthcare.v1beta1.model.GoogleCloudHealthcareV1beta1DicomGcsSource;
+import com.google.api.services.healthcare.v1beta1.model.ImportDicomDataRequest;
 import com.google.api.services.healthcare.v1beta1.model.Operation;
 import java.io.IOException;
 import java.util.Collections;
 
-public class DicomStoreExport {
+public class DicomStoreImport {
   private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomStoreExport(String dicomStoreName, String gcsUri) throws IOException {
+  public static void dicomStoreImport(String dicomStoreName, String gcsUri) throws IOException {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
@@ -46,20 +46,21 @@ public class DicomStoreExport {
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure where the store will be exported too.
-    GoogleCloudHealthcareV1beta1DicomGcsDestination gcsDestination =
-        new GoogleCloudHealthcareV1beta1DicomGcsDestination().setUriPrefix(gcsUri);
-    ExportDicomDataRequest exportRequest =
-        new ExportDicomDataRequest().setGcsDestination(gcsDestination);
+    // Configure where the store should be imported from.
+    GoogleCloudHealthcareV1beta1DicomGcsSource gcsSource =
+        new GoogleCloudHealthcareV1beta1DicomGcsSource().setUri(gcsUri);
+    ImportDicomDataRequest importRequest = new ImportDicomDataRequest().setGcsSource(gcsSource);
 
     // Create request and configure any parameters.
-    DicomStores.Export request =
+    DicomStores.CloudHealthcareImport request =
         client
             .projects()
             .locations()
             .datasets()
             .dicomStores()
-            .export(dicomStoreName, exportRequest);
+            .healthcareImport(dicomStoreName, importRequest);
+
+    // Execute the request, wait for the operation to complete, and process the results.
 
     // Execute the request, wait for the operation to complete, and process the results.
     try {
@@ -76,7 +77,7 @@ public class DicomStoreExport {
                 .get(operation.getName())
                 .execute();
       }
-      System.out.println("DICOM store export complete." + operation.getResponse());
+      System.out.println("DICOM store import complete." + operation.getResponse());
     } catch (Exception ex) {
       System.out.printf("Error during request execution: %s", ex.getMessage());
     }
@@ -104,4 +105,4 @@ public class DicomStoreExport {
         .build();
   }
 }
-// [END healthcare_export_dicom_instance]
+// [END healthcare_import_dicom_instance]

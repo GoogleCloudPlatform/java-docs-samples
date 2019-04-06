@@ -20,6 +20,7 @@ import snippets.healthcare.dicom.DicomStoreDelete;
 import snippets.healthcare.dicom.DicomStoreExport;
 import snippets.healthcare.dicom.DicomStoreGet;
 import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
+import snippets.healthcare.dicom.DicomStoreImport;
 
 @RunWith(JUnit4.class)
 public class DicomStoreTests {
@@ -84,6 +85,15 @@ public class DicomStoreTests {
     assertThat(output, containsString("DICOM store IAMPolicy retrieved:"));
   }
 
+  private void testDicomStoreImport(String dicomStoreName) throws IOException {
+    String gcsPath =
+        String.format("gcs://%s/%s", GCLOUD_BUCKET_NAME, "IM-0002-0001-JPEG-BASELINE.dcm");
+    DicomStoreImport.dicomStoreImport(dicomStoreName, gcsPath);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM store deleted."));
+  }
+
   private void testDicomStoreDelete(String dicomStoreName) throws IOException {
     DicomStoreDelete.deleteDicomStore(dicomStoreName);
 
@@ -104,6 +114,7 @@ public class DicomStoreTests {
     testDicomStoreCreate(datasetName, dicomStoreId);
     testDicomStoreGet(dicomStoreName);
     testDicomStoreExport(dicomStoreName);
+    testDicomStoreImport(dicomStoreName);
     dicomStoreGetIamPolicy(dicomStoreName);
     testDicomStoreDelete(dicomStoreName);
   }
