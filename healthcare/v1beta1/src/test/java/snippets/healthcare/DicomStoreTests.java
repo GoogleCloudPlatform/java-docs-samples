@@ -23,6 +23,7 @@ import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
 import snippets.healthcare.dicom.DicomStoreImport;
 import snippets.healthcare.dicom.DicomStoreList;
 import snippets.healthcare.dicom.DicomStorePatch;
+import snippets.healthcare.dicom.DicomStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
 public class DicomStoreTests {
@@ -87,11 +88,18 @@ public class DicomStoreTests {
     assertThat(output, containsString("DICOM store export complete."));
   }
 
-  private void dicomStoreGetIamPolicy(String datasetName) throws IOException {
+  private void testDicomStoreGetIamPolicy(String datasetName) throws IOException {
     DicomStoreGetIamPolicy.dicomStoreGetIamPolicy(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM store IAMPolicy retrieved:"));
+  }
+
+  private void testDicomStoreSetIamPolicy(String datasetName) throws IOException {
+    DicomStoreSetIamPolicy.dicomStoreSetIamPolicy(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM policy has been updated: "));
   }
 
   private void testDicomStoreImport(String dicomStoreName) throws IOException {
@@ -132,7 +140,8 @@ public class DicomStoreTests {
     testDicomStoreList(dicomStoreName);
     testDicomStoreExport(dicomStoreName);
     testDicomStoreImport(dicomStoreName);
-    dicomStoreGetIamPolicy(dicomStoreName);
+    testDicomStoreGetIamPolicy(dicomStoreName);
+    testDicomStoreSetIamPolicy(dicomStoreName);
     testDicomStorePatch(dicomStoreName);
     testDicomStoreDelete(dicomStoreName);
   }

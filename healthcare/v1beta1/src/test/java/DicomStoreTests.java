@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.DicomStoreSetIamPolicy;
 import com.google.healthcare.dicom.web.DicomWebDeleteStudy;
 import com.google.healthcare.dicom.web.DicomWebRetrieveStudy;
 import com.google.healthcare.dicom.web.DicomWebSearchForInstances;
@@ -38,6 +37,7 @@ import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
 import snippets.healthcare.dicom.DicomStoreImport;
 import snippets.healthcare.dicom.DicomStoreList;
 import snippets.healthcare.dicom.DicomStorePatch;
+import snippets.healthcare.dicom.DicomStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -97,7 +97,7 @@ public class DicomStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_02_SetDicomStoreIamPolicy() throws Exception {
-    DicomStoreSetIamPolicy.setIamPolicy(
+    DicomStoreSetIamPolicy.dicomStoreSetIamPolicy(
         dicomStoreName,
         "roles/healthcare.dicomStoreViewer",
         ImmutableList.of("user:TheonStark.655151@gmail.com"));

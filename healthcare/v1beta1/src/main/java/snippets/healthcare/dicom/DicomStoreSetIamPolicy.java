@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.datasets;
+package snippets.healthcare.dicom;
 
-// [START healthcare_dataset_set_iam_policy]
+// [START healthcare_dicom_store_set_iam_policy]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,7 +24,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.Binding;
 import com.google.api.services.healthcare.v1beta1.model.Policy;
@@ -33,13 +33,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class DatasetSetIamPolicy {
+public class DicomStoreSetIamPolicy {
+  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void datasetSetIamPolicy(String datasetName) throws IOException {
-    // String datasetName =
-    //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
+  public static void dicomStoreSetIamPolicy(String dicomStoreName) throws IOException {
+    // String dicomStoreName =
+    //    String.format(
+    //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -60,12 +62,17 @@ public class DatasetSetIamPolicy {
     SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
 
     // Create request and configure any parameters.
-    Datasets.SetIamPolicy request =
-        client.projects().locations().datasets().setIamPolicy(datasetName, policyRequest);
+    DicomStores.SetIamPolicy request =
+        client
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .setIamPolicy(dicomStoreName, policyRequest);
 
     // Execute the request and process the results.
     Policy updatedPolicy = request.execute();
-    System.out.println("Dataset policy has been updated: " + updatedPolicy.toPrettyString());
+    System.out.println("DICOM policy has been updated: " + updatedPolicy.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -90,4 +97,4 @@ public class DatasetSetIamPolicy {
         .build();
   }
 }
-// [END healthcare_dataset_set_iam_policy]
+// [END healthcare_dicom_store_set_iam_policy]
