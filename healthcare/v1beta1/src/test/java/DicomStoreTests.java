@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.web.DicomWebDeleteStudy;
-import com.google.healthcare.dicom.web.DicomWebRetrieveStudy;
-import com.google.healthcare.dicom.web.DicomWebSearchForInstances;
-import com.google.healthcare.dicom.web.DicomWebStoreInstance;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
-import snippets.healthcare.dicom.DicomStoreDelete;
-import snippets.healthcare.dicom.DicomStoreExport;
-import snippets.healthcare.dicom.DicomStoreGet;
-import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
-import snippets.healthcare.dicom.DicomStoreImport;
-import snippets.healthcare.dicom.DicomStoreList;
-import snippets.healthcare.dicom.DicomStorePatch;
-import snippets.healthcare.dicom.DicomStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -81,7 +66,6 @@ public class DicomStoreTests extends HealthcareTestBase {
           DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, dicomStoreId);
       assertBoutContents("Created Dicom store:", dicomStoreName);
     }
-  */
 
   @Test
   public void test_02_GetDicomStore() throws Exception {
@@ -168,4 +152,5 @@ public class DicomStoreTests extends HealthcareTestBase {
     DicomStoreList.dicomStoreList(DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId);
     assertNotBoutContents(dicomStoreId);
   }
+    */
 }
