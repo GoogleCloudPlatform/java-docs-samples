@@ -21,6 +21,7 @@ import snippets.healthcare.dicom.DicomStoreExport;
 import snippets.healthcare.dicom.DicomStoreGet;
 import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
 import snippets.healthcare.dicom.DicomStoreImport;
+import snippets.healthcare.dicom.DicomStoreList;
 
 @RunWith(JUnit4.class)
 public class DicomStoreTests {
@@ -71,6 +72,13 @@ public class DicomStoreTests {
     assertThat(output, containsString("DICOM store created."));
   }
 
+  private void testDicomStoreList(String datasetName) throws IOException {
+    DicomStoreList.dicomStoreList(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Retrieved \\d+ DICOM stores:"));
+  }
+
   private void testDicomStoreExport(String dicomStoreName) throws IOException {
     DicomStoreExport.dicomStoreExport(dicomStoreName, GCLOUD_BUCKET_NAME);
 
@@ -91,7 +99,7 @@ public class DicomStoreTests {
     DicomStoreImport.dicomStoreImport(dicomStoreName, gcsPath);
 
     String output = bout.toString();
-    assertThat(output, containsString("DICOM store deleted."));
+    assertThat(output, containsString("DICOM store import complete."));
   }
 
   private void testDicomStoreDelete(String dicomStoreName) throws IOException {
@@ -113,6 +121,7 @@ public class DicomStoreTests {
 
     testDicomStoreCreate(datasetName, dicomStoreId);
     testDicomStoreGet(dicomStoreName);
+    testDicomStoreList(dicomStoreName);
     testDicomStoreExport(dicomStoreName);
     testDicomStoreImport(dicomStoreName);
     dicomStoreGetIamPolicy(dicomStoreName);

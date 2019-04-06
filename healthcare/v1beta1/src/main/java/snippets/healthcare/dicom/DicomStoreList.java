@@ -16,7 +16,7 @@
 
 package snippets.healthcare.dicom;
 
-// [START healthcare_dicom_store_get_iam_policy]
+// [START healthcare_list_dicom_stores]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -26,30 +26,53 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Policy;
+import com.google.api.services.healthcare.v1beta1.model.DicomStore;
+import com.google.api.services.healthcare.v1beta1.model.ListDicomStoresResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-public class DicomStoreGetIamPolicy {
+public class DicomStoreList {
   private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomStoreGetIamPolicy(String dicomStoreName) throws IOException {
-    // String dicomStoreName =
-    //    String.format(
-    //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
+  public static void dicomStoreList(String datasetName) throws IOException {
+    // String datasetName =
+    //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Create request and configure any parameters.
-    DicomStores.GetIamPolicy request =
-        client.projects().locations().datasets().dicomStores().getIamPolicy(dicomStoreName);
+    // Results are paginated, so multiple queries may be required.
+    String pageToken = null;
+    List<DicomStore> stores = new ArrayList<>();
+    do {
+      // Create request and configure any parameters.
+      DicomStores.List request =
+          client
+              .projects()
+              .locations()
+              .datasets()
+              .dicomStores()
+              .list(datasetName)
+              .setPageSize(100) // Specify pageSize up to 1000
+              .setPageToken(pageToken);
 
-    // Execute the request and process the results.
-    Policy policy = request.execute();
-    System.out.println("DICOM store IAMPolicy retrieved: \n" + policy.toPrettyString());
+      // Execute response and collect results.
+      ListDicomStoresResponse response = request.execute();
+      stores.addAll(response.getDicomStores());
+
+      // Update the page token for the next request.
+      pageToken = response.getNextPageToken();
+    } while (pageToken != null);
+
+    // Print results.
+    System.out.printf("Retrieved %s DICOM stores: \n", stores.size());
+    for (DicomStore data : stores) {
+      System.out.println("\t" + data.toPrettyString());
+    }
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -74,4 +97,4 @@ public class DicomStoreGetIamPolicy {
         .build();
   }
 }
-// [END healthcare_dicom_store_get_iam_policy]
+// [END healthcare_list_dicom_stores]
