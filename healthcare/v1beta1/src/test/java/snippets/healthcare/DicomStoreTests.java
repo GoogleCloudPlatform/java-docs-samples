@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.dicom.DicomStoreCreate;
+import snippets.healthcare.dicom.DicomStoreGet;
 
 @RunWith(JUnit4.class)
 public class DicomStoreTests {
@@ -56,6 +57,13 @@ public class DicomStoreTests {
     assertThat(output, containsString("Dataset created."));
   }
 
+  private void testDicomStoreGet(String dicomStoreName) throws IOException {
+    DicomStoreGet.dicomeStoreGet(dicomStoreName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Dataset created."));
+  }
+
   @Test
   // Use a test runner to guarantee sure the tests run sequentially.
   public void testRunner() throws IOException {
@@ -67,5 +75,6 @@ public class DicomStoreTests {
     String dicomStoreName = String.format("%s/dicomStores/%s", datasetName, dicomStoreId);
 
     testDicomStoreCreate(datasetName, dicomStoreId);
+    testDicomStoreGet(dicomStoreName);
   }
 }

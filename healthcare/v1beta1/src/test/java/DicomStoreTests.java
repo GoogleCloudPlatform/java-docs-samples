@@ -17,7 +17,6 @@
 import com.google.common.collect.ImmutableList;
 import com.google.healthcare.dicom.DicomStoreDelete;
 import com.google.healthcare.dicom.DicomStoreExport;
-import com.google.healthcare.dicom.DicomStoreGet;
 import com.google.healthcare.dicom.DicomStoreGetIamPolicy;
 import com.google.healthcare.dicom.DicomStoreImport;
 import com.google.healthcare.dicom.DicomStoreList;
@@ -38,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.dicom.DicomStoreGet;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -85,7 +85,7 @@ public class DicomStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_02_GetDicomStore() throws Exception {
-    DicomStoreGet.getDicomStore(dicomStoreName);
+    DicomStoreGet.dicomeStoreGet(dicomStoreName);
     assertBoutContents("Retrieved Dicom store:", dicomStoreName);
   }
 

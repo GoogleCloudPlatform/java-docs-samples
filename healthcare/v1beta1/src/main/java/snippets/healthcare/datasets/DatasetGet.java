@@ -47,7 +47,7 @@ public class DatasetGet {
 
     // Execute the request and process the results.
     Dataset dataset = request.execute();
-    System.out.println("Dataset retreived: \n" + dataset.toPrettyString());
+    System.out.println("Dataset retrieved: \n" + dataset.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
