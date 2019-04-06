@@ -45,6 +45,9 @@ public class DatasetTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
+  private static String datasetId;
+  private static String datasetName;
+
   private ByteArrayOutputStream bout;
 
   private static void requireEnvVar(String varName) {
@@ -59,6 +62,14 @@ public class DatasetTests {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
+  @BeforeClass
+  public static void setUp() throws IOException {
+    datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    datasetName =
+        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
+    DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
+  }
+
   @Before
   public void beforeTest() {
     bout = new ByteArrayOutputStream();
@@ -71,42 +82,40 @@ public class DatasetTests {
     bout.reset();
   }
 
-  private void testDatasetCreate(String datasetId) throws IOException {
+  @Test
+  public void test_01_DatasetCreate() throws IOException {
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset created."));
   }
 
-  private void testDatasetGet(String datasetName) throws IOException {
+  @Test
+  public void test_02_DatasetGet() throws IOException {
     DatasetGet.datasetGet(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset retrieved:"));
   }
 
-  private void testDatasetList() throws IOException {
+  @Test
+  public void test_02_DatasetList() throws IOException {
     DatasetList.datasetList(PROJECT_ID, REGION_ID);
 
     String output = bout.toString();
     assertThat(output, containsString("Retrieved \\d+ datasets:"));
   }
 
-  private void testDatasetGetIamPolicy(String datasetName) throws IOException {
-    DatasetGetIamPolicy.datasetGetIamPolicy(datasetName);
-
-    String output = bout.toString();
-    assertThat(output, containsString("Dataset IAMPolicy retrieved:"));
-  }
-
-  private void testDatasetSetIamPolicy(String datasetName) throws IOException {
-    DatasetSetIamPolicy.datasetSetIamPolicy(datasetName);
+  @Test
+  public void test_02_DataSetPatch(String datasetName) throws IOException {
+    DatasetPatch.datasetPatch(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset policy has been updated: "));
   }
 
-  private void testDatasetDeidentify(String srcDatasetName, String destDatasetName)
+  @Test
+  public void test_02_DatasetDeidentify(String srcDatasetName, String destDatasetName)
       throws IOException {
     DatasetDeIdentify.datasetDeIdentify(srcDatasetName, destDatasetName);
 
@@ -114,33 +123,27 @@ public class DatasetTests {
     assertThat(output, containsString("De-identified dataset created."));
   }
 
-  private void testDataSetPatch(String datasetName) throws IOException {
-    DatasetPatch.datasetPatch(datasetName);
+  @Test
+  public void test_02_DatasetGetIamPolicy(String datasetName) throws IOException {
+    DatasetGetIamPolicy.datasetGetIamPolicy(datasetName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Dataset IAMPolicy retrieved:"));
+  }
+
+  @Test
+  public void test_02_DatasetSetIamPolicy(String datasetName) throws IOException {
+    DatasetSetIamPolicy.datasetSetIamPolicy(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset policy has been updated: "));
   }
 
-  private void testDatasetDelete(String datasetName) throws IOException {
+  @Test
+  public void test_03_DatasetDelete(String datasetName) throws IOException {
     DatasetDelete.datasetDelete(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset deleted."));
-  }
-
-  @Test
-  // Use a test runner to guarantee sure the tests run sequentially.
-  public void testRunner() throws IOException {
-    String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    String datasetName = String.format(DATASET_NAME, PROJECT_ID, REGION_ID, datasetId);
-
-    testDatasetCreate(datasetId);
-    testDatasetGet(datasetName);
-    testDatasetList();
-    testDatasetSetIamPolicy(datasetName);
-    testDatasetGetIamPolicy(datasetName);
-    testDataSetPatch(datasetName);
-    testDatasetDeidentify(datasetName, datasetName + "_died");
-    testDatasetDelete(datasetName);
   }
 }
