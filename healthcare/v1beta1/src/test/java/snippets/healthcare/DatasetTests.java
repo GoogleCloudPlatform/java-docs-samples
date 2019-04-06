@@ -92,14 +92,14 @@ public class DatasetTests {
     assertThat(output, containsString("Retrieved \\d+ datasets:"));
   }
 
-  private void testDatasetGetIAMPolicy(String datasetName) throws IOException {
+  private void testDatasetGetIamPolicy(String datasetName) throws IOException {
     DatasetGetIamPolicy.datasetGetIamPolicy(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset IAMPolicy retrieved:"));
   }
 
-  private void testDatasetSetIAMPolicy(String datasetName) throws IOException {
+  private void testDatasetSetIamPolicy(String datasetName) throws IOException {
     DatasetSetIamPolicy.datasetSetIamPolicy(datasetName);
 
     String output = bout.toString();
@@ -137,8 +137,8 @@ public class DatasetTests {
     testDatasetCreate(datasetId);
     testDatasetGet(datasetName);
     testDatasetList();
-    testDatasetSetIAMPolicy(datasetName);
-    testDatasetGetIAMPolicy(datasetName);
+    testDatasetSetIamPolicy(datasetName);
+    testDatasetGetIamPolicy(datasetName);
     testDataSetPatch(datasetName);
     testDatasetDeidentify(datasetName, datasetName + "_died");
     testDatasetDelete(datasetName);

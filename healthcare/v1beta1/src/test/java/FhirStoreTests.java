@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import snippets.healthcare.datasets.DatasetCreate;
 import com.google.healthcare.fhir.FhirStoreCreate;
 import com.google.healthcare.fhir.FhirStoreDelete;
 import com.google.healthcare.fhir.FhirStoreExecuteBundle;
@@ -50,6 +49,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
+import snippets.healthcare.datasets.DatasetCreate;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
