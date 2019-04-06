@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.dicom.DicomStoreCreate;
+import snippets.healthcare.dicom.DicomStoreDelete;
 import snippets.healthcare.dicom.DicomStoreGet;
 
 @RunWith(JUnit4.class)
@@ -54,14 +55,21 @@ public class DicomStoreTests {
     DicomStoreCreate.dicomStoreCreate(datasetName, dicomStoreId);
 
     String output = bout.toString();
-    assertThat(output, containsString("Dataset created."));
+    assertThat(output, containsString("DICOM store created."));
   }
 
   private void testDicomStoreGet(String dicomStoreName) throws IOException {
     DicomStoreGet.dicomeStoreGet(dicomStoreName);
 
     String output = bout.toString();
-    assertThat(output, containsString("Dataset created."));
+    assertThat(output, containsString("DICOM store created."));
+  }
+
+  private void testDicomStoreDelete(String dicomStoreName) throws IOException {
+    DicomStoreDelete.deleteDicomStore(dicomStoreName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM store deleted."));
   }
 
   @Test
@@ -76,5 +84,6 @@ public class DicomStoreTests {
 
     testDicomStoreCreate(datasetName, dicomStoreId);
     testDicomStoreGet(dicomStoreName);
+    testDicomStoreDelete(dicomStoreName);
   }
 }

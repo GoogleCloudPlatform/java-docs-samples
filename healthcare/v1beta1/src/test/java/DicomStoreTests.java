@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.DicomStoreDelete;
 import com.google.healthcare.dicom.DicomStoreExport;
 import com.google.healthcare.dicom.DicomStoreGetIamPolicy;
 import com.google.healthcare.dicom.DicomStoreImport;
@@ -37,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.dicom.DicomStoreDelete;
 import snippets.healthcare.dicom.DicomStoreGet;
 
 @RunWith(JUnit4.class)
