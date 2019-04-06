@@ -24,12 +24,6 @@ import com.google.healthcare.hl7v2.HL7v2GetIamPolicy;
 import com.google.healthcare.hl7v2.HL7v2List;
 import com.google.healthcare.hl7v2.HL7v2Patch;
 import com.google.healthcare.hl7v2.HL7v2SetIamPolicy;
-import com.google.healthcare.hl7v2.messages.HL7v2MessageCreate;
-import com.google.healthcare.hl7v2.messages.HL7v2MessageDelete;
-import com.google.healthcare.hl7v2.messages.HL7v2MessageGet;
-import com.google.healthcare.hl7v2.messages.HL7v2MessageIngest;
-import com.google.healthcare.hl7v2.messages.HL7v2MessageList;
-import com.google.healthcare.hl7v2.messages.HL7v2MessagePatch;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +36,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageCreate;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageDelete;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageGet;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageIngest;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageList;
+import snippets.healthcare.hl7v2.messages.HL7v2MessagePatch;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

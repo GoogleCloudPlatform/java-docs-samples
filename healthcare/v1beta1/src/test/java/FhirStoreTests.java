@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.fhir.FhirStoreCreate;
 import com.google.healthcare.fhir.FhirStoreDelete;
 import com.google.healthcare.fhir.FhirStoreExport;
 import com.google.healthcare.fhir.FhirStoreGetIamPolicy;
@@ -48,6 +47,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.fhir.FhirStoreCreate;
 import snippets.healthcare.fhir.FhirStoreExecuteBundle;
 import snippets.healthcare.fhir.FhirStoreGet;
 
@@ -99,7 +99,7 @@ public class FhirStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_01_CreateFhirStore() throws Exception {
-    FhirStoreCreate.createFhirStore(
+    FhirStoreCreate.fhirStoreCreate(
         DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, fhirStoreId);
     assertBoutContents("Created FHIR store:", fhirStoreId);
   }

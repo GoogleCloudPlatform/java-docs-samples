@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.fhir;
+package snippets.healthcare.hl7v2.messages;
 
-// [START healthcare_delete_fhir_store]
+// [START healthcare_get_hl7v2_message]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,46 +24,33 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores.Messages;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.FhirStore;
+import com.google.api.services.healthcare.v1beta1.model.Message;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-public class FhirStoreCreate {
-  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
+public class HL7v2MessageGet {
+  private static final String MESSAGE_NAME =
+      "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreCreate(String datasetName, String fhirStoreId) throws IOException {
-    // String datasetName =
-    //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
-    // String fhirStoreId = "your-fhir-id"
+  public static void hl7v2MessageGet(String hl7v2MessageName) throws IOException {
+    // String hl7v2MessageName =
+    //    String.format(
+    //        MESSAGE_NAME, "project-id", "region-id", "dataset-id", "hl7v2-id", "message-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the FhirStore to be created.
-    Map<String, String> labels = new HashMap<String, String>();
-    labels.put("key1", "value1");
-    labels.put("key2", "value2");
-    FhirStore content = new FhirStore().setLabels(labels);
-
     // Create request and configure any parameters.
-    FhirStores.Create request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .fhirStores()
-            .create(datasetName, content)
-            .setFhirStoreId(fhirStoreId);
+    Messages.Get request =
+        client.projects().locations().datasets().hl7V2Stores().messages().get(hl7v2MessageName);
 
     // Execute the request and process the results.
-    FhirStore response = request.execute();
-    System.out.println("FHIR store created: " + response.toPrettyString());
+    Message store = request.execute();
+    System.out.println("HL7v2 message retrieved: \n" + store.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -88,4 +75,4 @@ public class FhirStoreCreate {
         .build();
   }
 }
-// [END healthcare_delete_fhir_store]
+// [END healthcare_get_hl7v2_message]
