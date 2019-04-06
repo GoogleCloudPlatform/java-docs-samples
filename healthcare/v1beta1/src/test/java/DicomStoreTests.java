@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.DicomStorePatch;
 import com.google.healthcare.dicom.DicomStoreSetIamPolicy;
 import com.google.healthcare.dicom.web.DicomWebDeleteStudy;
 import com.google.healthcare.dicom.web.DicomWebRetrieveStudy;
@@ -38,6 +37,7 @@ import snippets.healthcare.dicom.DicomStoreGet;
 import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
 import snippets.healthcare.dicom.DicomStoreImport;
 import snippets.healthcare.dicom.DicomStoreList;
+import snippets.healthcare.dicom.DicomStorePatch;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

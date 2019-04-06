@@ -22,6 +22,7 @@ import snippets.healthcare.dicom.DicomStoreGet;
 import snippets.healthcare.dicom.DicomStoreGetIamPolicy;
 import snippets.healthcare.dicom.DicomStoreImport;
 import snippets.healthcare.dicom.DicomStoreList;
+import snippets.healthcare.dicom.DicomStorePatch;
 
 @RunWith(JUnit4.class)
 public class DicomStoreTests {
@@ -102,6 +103,13 @@ public class DicomStoreTests {
     assertThat(output, containsString("DICOM store import complete."));
   }
 
+  private void testDicomStorePatch(String dicomStoreName) throws IOException {
+    DicomStorePatch.patchDicomStore(dicomStoreName, GCLOUD_PUBSUB_TOPIC);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM store patched: "));
+  }
+
   private void testDicomStoreDelete(String dicomStoreName) throws IOException {
     DicomStoreDelete.deleteDicomStore(dicomStoreName);
 
@@ -125,6 +133,7 @@ public class DicomStoreTests {
     testDicomStoreExport(dicomStoreName);
     testDicomStoreImport(dicomStoreName);
     dicomStoreGetIamPolicy(dicomStoreName);
+    testDicomStorePatch(dicomStoreName);
     testDicomStoreDelete(dicomStoreName);
   }
 }
