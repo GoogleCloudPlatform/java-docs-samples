@@ -86,7 +86,7 @@ public class DicomStoreTests {
     DicomStoreCreate.dicomStoreCreate(datasetName, dicomStoreId);
 
     String output = bout.toString();
-    assertThat(output, containsString("DICOM store created."));
+    assertThat(output, containsString("DICOM store created:"));
   }
 
   @Test
@@ -94,12 +94,12 @@ public class DicomStoreTests {
     DicomStoreGet.dicomeStoreGet(dicomStoreName);
 
     String output = bout.toString();
-    assertThat(output, containsString("DICOM store created."));
+    assertThat(output, containsString("DICOM store retrieved:"));
   }
 
   @Test
   public void test_02_DicomStoreGetIamPolicy() throws IOException {
-    DicomStoreGetIamPolicy.dicomStoreGetIamPolicy(datasetName);
+    DicomStoreGetIamPolicy.dicomStoreGetIamPolicy(dicomStoreName);
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM store IAMPolicy retrieved:"));
@@ -107,7 +107,7 @@ public class DicomStoreTests {
 
   @Test
   public void test_02_DicomStoreSetIamPolicy() throws IOException {
-    DicomStoreSetIamPolicy.dicomStoreSetIamPolicy(datasetName);
+    DicomStoreSetIamPolicy.dicomStoreSetIamPolicy(dicomStoreName);
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM policy has been updated: "));
@@ -118,7 +118,7 @@ public class DicomStoreTests {
     DicomStoreList.dicomStoreList(datasetName);
 
     String output = bout.toString();
-    assertThat(output, containsString("Retrieved \\d+ DICOM stores:"));
+    assertThat(output, containsString("Retrieved"));
   }
 
   @Test

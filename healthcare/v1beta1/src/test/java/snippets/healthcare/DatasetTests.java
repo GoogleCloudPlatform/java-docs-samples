@@ -63,11 +63,10 @@ public class DatasetTests {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException {
+  public static void setUp() {
     datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
     datasetName =
         String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
-    DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
   }
 
   @Before
@@ -103,28 +102,27 @@ public class DatasetTests {
     DatasetList.datasetList(PROJECT_ID, REGION_ID);
 
     String output = bout.toString();
-    assertThat(output, containsString("Retrieved \\d+ datasets:"));
+    assertThat(output, containsString("Retrieved"));
   }
 
   @Test
-  public void test_02_DataSetPatch(String datasetName) throws IOException {
+  public void test_02_DataSetPatch() throws IOException {
     DatasetPatch.datasetPatch(datasetName);
 
     String output = bout.toString();
-    assertThat(output, containsString("Dataset policy has been updated: "));
+    assertThat(output, containsString("Dataset patched:"));
   }
 
   @Test
-  public void test_02_DatasetDeidentify(String srcDatasetName, String destDatasetName)
-      throws IOException {
-    DatasetDeIdentify.datasetDeIdentify(srcDatasetName, destDatasetName);
+  public void test_02_DatasetDeidentify() throws IOException {
+    DatasetDeIdentify.datasetDeIdentify(datasetName, datasetName + "-died");
 
     String output = bout.toString();
     assertThat(output, containsString("De-identified dataset created."));
   }
 
   @Test
-  public void test_02_DatasetGetIamPolicy(String datasetName) throws IOException {
+  public void test_02_DatasetGetIamPolicy() throws IOException {
     DatasetGetIamPolicy.datasetGetIamPolicy(datasetName);
 
     String output = bout.toString();
@@ -132,7 +130,7 @@ public class DatasetTests {
   }
 
   @Test
-  public void test_02_DatasetSetIamPolicy(String datasetName) throws IOException {
+  public void test_02_DatasetSetIamPolicy() throws IOException {
     DatasetSetIamPolicy.datasetSetIamPolicy(datasetName);
 
     String output = bout.toString();
@@ -140,7 +138,7 @@ public class DatasetTests {
   }
 
   @Test
-  public void test_03_DatasetDelete(String datasetName) throws IOException {
+  public void test_03_DatasetDelete() throws IOException {
     DatasetDelete.datasetDelete(datasetName);
 
     String output = bout.toString();

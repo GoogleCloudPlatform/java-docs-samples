@@ -53,7 +53,6 @@ public class DatasetSetIamPolicy {
             .setMembers(
                 Arrays.asList(
                     "user:mike@example.com",
-                    "group:admins@example.com",
                     "domain:google.com",
                     "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
     Policy policy = new Policy().setBindings(Arrays.asList(binding));

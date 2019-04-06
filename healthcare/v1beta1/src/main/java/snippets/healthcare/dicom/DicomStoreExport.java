@@ -78,7 +78,7 @@ public class DicomStoreExport {
       }
       System.out.println("DICOM store export complete." + operation.getResponse());
     } catch (Exception ex) {
-      System.out.printf("Error during request execution: %s", ex.getMessage());
+      System.out.printf("Error during request execution: %s", ex.toString());
     }
   }
 

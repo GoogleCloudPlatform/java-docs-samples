@@ -81,7 +81,7 @@ public class DatasetDeIdentify {
       System.out.println(
           "De-identified Dataset created. Response content: " + operation.getResponse());
     } catch (Exception ex) {
-      System.out.printf("Error during request execution: %s", ex.getMessage());
+      System.out.printf("Error during request execution: %s", ex.toString());
     }
   }
 

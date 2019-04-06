@@ -71,7 +71,7 @@ public class DatasetCreate {
       }
       System.out.println("Dataset created. Response content: " + operation.getResponse());
     } catch (Exception ex) {
-      System.out.printf("Error during request execution: %s", ex.getMessage());
+      System.out.printf("Error during request execution: %s\n", ex.toString());
     }
   }
 
