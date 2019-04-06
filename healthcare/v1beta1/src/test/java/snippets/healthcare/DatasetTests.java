@@ -43,7 +43,7 @@ import snippets.healthcare.datasets.DatasetSetIamPolicy;
 public class DatasetTests {
   private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGION = "us-central1";
+  private static final String REGION_ID = "us-central1";
 
   private ByteArrayOutputStream bout;
 
@@ -72,7 +72,7 @@ public class DatasetTests {
   }
 
   private void testDatasetCreate(String datasetId) throws IOException {
-    DatasetCreate.datasetCreate(PROJECT_ID, REGION, datasetId);
+    DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset created."));
@@ -86,7 +86,7 @@ public class DatasetTests {
   }
 
   private void testDatasetList() throws IOException {
-    DatasetList.datasetList(PROJECT_ID, REGION);
+    DatasetList.datasetList(PROJECT_ID, REGION_ID);
 
     String output = bout.toString();
     assertThat(output, containsString("Retrieved \\d+ datasets:"));
@@ -128,11 +128,11 @@ public class DatasetTests {
     assertThat(output, containsString("Dataset deleted."));
   }
 
-  // Use a test runner to guarantee sure the tests run sequentially.
   @Test
+  // Use a test runner to guarantee sure the tests run sequentially.
   public void testRunner() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    String datasetName = String.format(DATASET_NAME, PROJECT_ID, REGION, datasetId);
+    String datasetName = String.format(DATASET_NAME, PROJECT_ID, REGION_ID, datasetId);
 
     testDatasetCreate(datasetId);
     testDatasetGet(datasetName);

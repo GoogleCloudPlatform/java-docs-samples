@@ -33,7 +33,8 @@ public class DicomWebStoreInstance {
   public static void storeInstance(String dicomStoreName, String studyId) throws IOException {
     MultipartEntityBuilder builder = MultipartEntityBuilder.create();
     File f = new File("resources/dicom_00000001_000.dcm");
-    builder.addBinaryBody("dicom", f, ContentType.create("application/dicom"), f.getName());
+    builder.addBinaryBody(
+        "dicom", f, ContentType.create("application/snippets.dicom"), f.getName());
     ByteOutputStream out = new ByteOutputStream();
     builder.build().writeTo(out);
     HttpBody body = new HttpBody();

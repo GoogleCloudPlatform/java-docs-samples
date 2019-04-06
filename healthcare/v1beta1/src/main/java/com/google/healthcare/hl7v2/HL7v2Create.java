@@ -30,6 +30,7 @@ public class HL7v2Create {
   public static void createHL7v2Store(
       String projectId, String cloudRegion, String datasetId, String hl7v2StoreId)
       throws IOException {
+
     String parentName =
         String.format("projects/%s/locations/%s/datasets/%s", projectId, cloudRegion, datasetId);
     Hl7V2Store hl7v2Store = new Hl7V2Store();

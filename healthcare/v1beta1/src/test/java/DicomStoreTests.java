@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.DicomStoreCreate;
 import com.google.healthcare.dicom.DicomStoreDelete;
 import com.google.healthcare.dicom.DicomStoreExport;
 import com.google.healthcare.dicom.DicomStoreGet;
@@ -75,12 +74,14 @@ public class DicomStoreTests extends HealthcareTestBase {
     tearDown();
   }
 
-  @Test
-  public void test_01_CreateDicomStore() throws Exception {
-    DicomStoreCreate.createDicomStore(
-        DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, dicomStoreId);
-    assertBoutContents("Created Dicom store:", dicomStoreName);
-  }
+  /*
+    @Test
+    public void test_01_CreateDicomStore() throws Exception {
+      DicomStoreCreate.dicomStoreCreate(
+          DEFAULT_PROJECT_ID, DEFAULT_CLOUD_REGION, datasetId, dicomStoreId);
+      assertBoutContents("Created Dicom store:", dicomStoreName);
+    }
+  */
 
   @Test
   public void test_02_GetDicomStore() throws Exception {

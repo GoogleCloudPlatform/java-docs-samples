@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.datasets;
+package snippets.healthcare.dicom;
 
-// [START healthcare_create_dataset]
+// [START healthcare_create_dicom_store]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,54 +24,44 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Dataset;
-import com.google.api.services.healthcare.v1beta1.model.Operation;
+import com.google.api.services.healthcare.v1beta1.model.DicomStore;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class DatasetCreate {
+public class DicomStoreCreate {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void datasetCreate(String projectId, String regionId, String datasetId)
-      throws IOException {
-    // String projectId = "your-project-id";
-    // String regionId = "us-central1";
-    // String datasetId = "your-dataset-id";
+  public static void dicomStoreCreate(String datasetName, String dicomStoreId) throws IOException {
+    // String datasetName =
+    //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the dataset to be created.
-    Dataset dataset = new Dataset();
-    dataset.setTimeZone("America/Chicago");
+    // Configure the dicomStore to be created.
+    Map<String, String> labels = new HashMap<String, String>();
+    labels.put("key1", "value1");
+    labels.put("key2", "value2");
+    DicomStore content = new DicomStore().setLabels(labels);
 
     // Create request and configure any parameters.
-    String parentName = String.format("projects/%s/locations/%s", projectId, regionId);
-    Datasets.Create request = client.projects().locations().datasets().create(parentName, dataset);
-    request.setDatasetId(datasetId);
+    DicomStores.Create request =
+        client
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .create(datasetName, content)
+            .setDicomStoreId(dicomStoreId);
 
-    // Execute the request, wait for the operation to complete, and process the results.
-    try {
-      Operation operation = request.execute();
-      while (!operation.getDone()) {
-        // Update the status of the operation with another request.
-        Thread.sleep(500); // Pause for 500ms between requests.
-        operation =
-            client
-                .projects()
-                .locations()
-                .datasets()
-                .operations()
-                .get(operation.getName())
-                .execute();
-      }
-      System.out.println("Dataset created. Response content: " + operation.getResponse());
-    } catch (Exception ex) {
-      System.out.printf("Error during request execution: %s", ex.getMessage());
-    }
+    // Execute the request and process the results.
+    DicomStore response = request.execute();
+    System.out.println("DICOM store created: " + response.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -96,4 +86,4 @@ public class DatasetCreate {
         .build();
   }
 }
-// [END healthcare_create_dataset]
+// [END healthcare_create_dicom_store]
