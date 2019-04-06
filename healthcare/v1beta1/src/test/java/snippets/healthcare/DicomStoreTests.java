@@ -26,6 +26,10 @@ import snippets.healthcare.dicom.DicomStoreImport;
 import snippets.healthcare.dicom.DicomStoreList;
 import snippets.healthcare.dicom.DicomStorePatch;
 import snippets.healthcare.dicom.DicomStoreSetIamPolicy;
+import snippets.healthcare.dicom.DicomWebDeleteStudy;
+import snippets.healthcare.dicom.DicomWebRetrieveStudy;
+import snippets.healthcare.dicom.DicomWebSearchForInstances;
+import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -41,6 +45,8 @@ public class DicomStoreTests {
 
   private static String dicomStoreId;
   private static String dicomStoreName;
+
+  private static String studyId;
 
   private ByteArrayOutputStream bout;
 
@@ -67,6 +73,8 @@ public class DicomStoreTests {
 
     dicomStoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
     dicomStoreName = String.format("%s/dicomStores/%s", datasetName, dicomStoreId);
+
+    studyId = "study-" + UUID.randomUUID().toString().replaceAll("-", "_");
   }
 
   @Before
@@ -145,6 +153,38 @@ public class DicomStoreTests {
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM store import complete."));
+  }
+
+  @Test
+  public void test_03_DicomWebStoreInstance() throws Exception {
+    DicomWebStoreInstance.dicomWebStoreInstance(
+        dicomStoreName, studyId, "src/test/resources/dicom_00000001_000.dcm");
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM instance stored:"));
+  }
+
+  @Test
+  public void test_04_DicomWebSearchInstances() throws Exception {
+    DicomWebSearchForInstances.dicomWebSearchForInstances(dicomStoreName);
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM instances found:"));
+  }
+
+  @Test
+  public void test_04_DicomWebRetrieveStudy() throws Exception {
+    DicomWebRetrieveStudy.dicomWebRetrieveStudy(dicomStoreName, studyId);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM study retrieved:"));
+  }
+
+  @Test
+  public void test_05_DicomWebDeleteStudy() throws IOException {
+    DicomWebDeleteStudy.dicomWebDeleteStudy(dicomStoreName, studyId);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM store study deleted."));
   }
 
   @Test

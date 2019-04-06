@@ -16,7 +16,7 @@
 
 package snippets.healthcare.dicom;
 
-// [START healthcare_patch_dicom_store]
+// [START healthcare_dicomweb_search_instances]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -26,46 +26,34 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.DicomStore;
-import com.google.api.services.healthcare.v1beta1.model.NotificationConfig;
+import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 import java.io.IOException;
 import java.util.Collections;
 
-public class DicomStorePatch {
+public class DicomWebSearchForInstances {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void patchDicomStore(String dicomStoreName, String pubsubTopic) throws IOException {
+  public static void dicomWebSearchForInstances(String dicomStoreName) throws IOException {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
-    // String pubsubTopic = "your-pubsub-topic";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Fetch the initial state of the DICOM store.
-    DicomStores.Get getRequest =
-        client.projects().locations().datasets().dicomStores().get(dicomStoreName);
-    DicomStore store = getRequest.execute();
-
-    // Update the DicomStore fields as needed as needed. For a full list of DicomStore fields, see:
-    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets.dicomStores#DicomStore
-    store.setNotificationConfig(new NotificationConfig().setPubsubTopic(pubsubTopic));
-
     // Create request and configure any parameters.
-    DicomStores.Patch request =
+    DicomStores.SearchForInstances request =
         client
             .projects()
             .locations()
             .datasets()
             .dicomStores()
-            .patch(dicomStoreName, store)
-            .setUpdateMask("notificationConfig");
+            .searchForInstances(dicomStoreName, "instances");
 
     // Execute the request and process the results.
-    store = request.execute();
-    System.out.println("DICOM store patched: \n" + store.toPrettyString());
+    HttpBody response = request.execute();
+    System.out.println("Dicom store instances found: \n" + response.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -90,4 +78,4 @@ public class DicomStorePatch {
         .build();
   }
 }
-// [END healthcare_patch_dicom_store]
+// [END healthcare_dicomweb_search_instances]

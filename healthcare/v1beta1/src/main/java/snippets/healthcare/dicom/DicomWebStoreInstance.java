@@ -16,7 +16,7 @@
 
 package snippets.healthcare.dicom;
 
-// [START healthcare_patch_dicom_store]
+// [START healthcare_dicomweb_store_instance]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,48 +24,54 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.DicomStore;
-import com.google.api.services.healthcare.v1beta1.model.NotificationConfig;
+import com.google.api.services.healthcare.v1beta1.model.HttpBody;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 
-public class DicomStorePatch {
+public class DicomWebStoreInstance {
+  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void patchDicomStore(String dicomStoreName, String pubsubTopic) throws IOException {
+  public static void dicomWebStoreInstance(String dicomStoreName, String studyId, String filePath)
+      throws IOException {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
-    // String pubsubTopic = "your-pubsub-topic";
+    // String studyId = "your-study-id";
+    // String filePath = "path/to/file.dcm";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Fetch the initial state of the DICOM store.
-    DicomStores.Get getRequest =
-        client.projects().locations().datasets().dicomStores().get(dicomStoreName);
-    DicomStore store = getRequest.execute();
-
-    // Update the DicomStore fields as needed as needed. For a full list of DicomStore fields, see:
-    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets.dicomStores#DicomStore
-    store.setNotificationConfig(new NotificationConfig().setPubsubTopic(pubsubTopic));
+    // Load the data from file representing the study.
+    File f = new File(filePath);
+    ByteOutputStream data = new ByteOutputStream();
+    MultipartEntityBuilder.create()
+        .addBinaryBody("dicom", f, ContentType.create("application/dicom"), f.getName())
+        .build()
+        .writeTo(data);
+    HttpBody body = new HttpBody().encodeData(data.getBytes());
 
     // Create request and configure any parameters.
-    DicomStores.Patch request =
+    Studies.StoreInstances request =
         client
             .projects()
             .locations()
             .datasets()
             .dicomStores()
-            .patch(dicomStoreName, store)
-            .setUpdateMask("notificationConfig");
+            .studies()
+            .storeInstances(dicomStoreName, "studies/" + studyId, body);
 
     // Execute the request and process the results.
-    store = request.execute();
-    System.out.println("DICOM store patched: \n" + store.toPrettyString());
+    HttpBody response = request.execute();
+    System.out.println("DICOM instance stored: " + response.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -90,4 +96,4 @@ public class DicomStorePatch {
         .build();
   }
 }
-// [END healthcare_patch_dicom_store]
+// [END healthcare_dicomweb_store_instance]

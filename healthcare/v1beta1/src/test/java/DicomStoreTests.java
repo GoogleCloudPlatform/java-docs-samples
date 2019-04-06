@@ -139,7 +139,7 @@ public class DicomStoreTests extends HealthcareTestBase {
   @Test
   @Ignore // TODO: b/128024001
   public void test_05_DicomWebDeleteStudy() throws Exception {
-    DicomWebDeleteStudy.deleteStudy(dicomStoreName, studyId);
+    DicomWebDeleteStudy.dicomWebDeleteStudy(dicomStoreName, studyId);
     DicomWebSearchForInstances.searchForInstances(dicomStoreName);
     assertNotBoutContents(studyId);
   }
