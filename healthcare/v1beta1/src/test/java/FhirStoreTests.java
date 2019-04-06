@@ -17,9 +17,7 @@
 import com.google.common.collect.ImmutableList;
 import com.google.healthcare.fhir.FhirStoreCreate;
 import com.google.healthcare.fhir.FhirStoreDelete;
-import com.google.healthcare.fhir.FhirStoreExecuteBundle;
 import com.google.healthcare.fhir.FhirStoreExport;
-import com.google.healthcare.fhir.FhirStoreGet;
 import com.google.healthcare.fhir.FhirStoreGetIamPolicy;
 import com.google.healthcare.fhir.FhirStoreImport;
 import com.google.healthcare.fhir.FhirStoreList;
@@ -50,6 +48,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.fhir.FhirStoreExecuteBundle;
+import snippets.healthcare.fhir.FhirStoreGet;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -106,7 +106,7 @@ public class FhirStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_02_GetFhirStore() throws Exception {
-    FhirStoreGet.getFhirStore(fhirStoreName);
+    FhirStoreGet.fhirStoreGet(fhirStoreName);
     assertBoutContents("Retrieved FHIR store:", fhirStoreName);
   }
 

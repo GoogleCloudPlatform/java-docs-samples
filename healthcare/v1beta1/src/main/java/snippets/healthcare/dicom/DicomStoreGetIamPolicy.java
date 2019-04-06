@@ -43,12 +43,9 @@ public class DicomStoreGetIamPolicy {
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Fetch the initial state of the DicomStore.
+    // Create request and configure any parameters.
     DicomStores.GetIamPolicy request =
         client.projects().locations().datasets().dicomStores().getIamPolicy(dicomStoreName);
-
-    // Update the DICOMStore fields as needed as needed. For a full list of DICOMStore fields, see:
-    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets#Dataset
 
     // Execute the request and process the results.
     Policy policy = request.execute();

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.dicom;
+package snippets.healthcare.fhir;
 
-// [START healthcare_dicom_store_set_iam_policy]
+// [START healthcare_import_fhir_instance]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,54 +25,61 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Binding;
-import com.google.api.services.healthcare.v1beta1.model.Policy;
-import com.google.api.services.healthcare.v1beta1.model.SetIamPolicyRequest;
+import com.google.api.services.healthcare.v1beta1.model.GoogleCloudHealthcareV1beta1FhirRestGcsSource;
+import com.google.api.services.healthcare.v1beta1.model.ImportResourcesRequest;
+import com.google.api.services.healthcare.v1beta1.model.Operation;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
-public class DicomStoreSetIamPolicy {
-  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
+public class FhirStoreImport {
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomStoreSetIamPolicy(String dicomStoreName) throws IOException {
-    // String dicomStoreName =
+  public static void fhirStoreImport(String fhirStoreName, String gcsUri) throws IOException {
+    // String fhirStoreName =
     //    String.format(
-    //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
+    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
+    // String gcsUri = "gs://your-bucket-id/path/to/destination/dir"
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the IAMPolicy to apply to the store.
-    // For more information on understanding IAM roles, see the following:
-    // https://cloud.google.com/iam/docs/understanding-roles
-    Binding binding =
-        new Binding()
-            .setRole("roles/healthcare.datasetViewer")
-            .setMembers(
-                Arrays.asList(
-                    "user:mike@example.com",
-                    "domain:google.com",
-                    "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
-    Policy policy = new Policy().setBindings(Arrays.asList(binding));
-    SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
+    // Configure where the store should be imported from.
+    GoogleCloudHealthcareV1beta1FhirRestGcsSource gcsSource =
+        new GoogleCloudHealthcareV1beta1FhirRestGcsSource().setUri(gcsUri);
+    ImportResourcesRequest importRequest = new ImportResourcesRequest().setGcsSource(gcsSource);
 
     // Create request and configure any parameters.
-    DicomStores.SetIamPolicy request =
+    FhirStores.CloudHealthcareImport request =
         client
             .projects()
             .locations()
             .datasets()
-            .dicomStores()
-            .setIamPolicy(dicomStoreName, policyRequest);
+            .fhirStores()
+            .healthcareImport(fhirStoreName, importRequest);
 
-    // Execute the request and process the results.
-    Policy updatedPolicy = request.execute();
-    System.out.println("DICOM policy has been updated: " + updatedPolicy.toPrettyString());
+    // Execute the request, wait for the operation to complete, and process the results.
+    try {
+      Operation operation = request.execute();
+      while (!operation.getDone()) {
+        // Update the status of the operation with another request.
+        Thread.sleep(500); // Pause for 500ms between requests.
+        operation =
+            client
+                .projects()
+                .locations()
+                .datasets()
+                .operations()
+                .get(operation.getName())
+                .execute();
+      }
+      System.out.println("FHIR store import complete." + operation.getResponse());
+    } catch (Exception ex) {
+      System.out.printf("Error during request execution: %s", ex.toString());
+    }
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -96,4 +104,4 @@ public class DicomStoreSetIamPolicy {
         .build();
   }
 }
-// [END healthcare_dicom_store_set_iam_policy]
+// [END healthcare_import_fhir_instance]

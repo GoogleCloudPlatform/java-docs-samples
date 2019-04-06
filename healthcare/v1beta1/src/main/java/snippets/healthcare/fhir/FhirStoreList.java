@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.dicom;
+package snippets.healthcare.fhir;
 
-// [START healthcare_dicom_store_set_iam_policy]
+// [START healthcare_list_fhir_stores]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,54 +25,56 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Binding;
-import com.google.api.services.healthcare.v1beta1.model.Policy;
-import com.google.api.services.healthcare.v1beta1.model.SetIamPolicyRequest;
+import com.google.api.services.healthcare.v1beta1.model.FhirStore;
+import com.google.api.services.healthcare.v1beta1.model.ListFhirStoresResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-public class DicomStoreSetIamPolicy {
-  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
+public class FhirStoreList {
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomStoreSetIamPolicy(String dicomStoreName) throws IOException {
-    // String dicomStoreName =
+  public static void fhirStoreList(String fhirStoreName) throws IOException {
+    // String fhirStoreName =
     //    String.format(
-    //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
+    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the IAMPolicy to apply to the store.
-    // For more information on understanding IAM roles, see the following:
-    // https://cloud.google.com/iam/docs/understanding-roles
-    Binding binding =
-        new Binding()
-            .setRole("roles/healthcare.datasetViewer")
-            .setMembers(
-                Arrays.asList(
-                    "user:mike@example.com",
-                    "domain:google.com",
-                    "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
-    Policy policy = new Policy().setBindings(Arrays.asList(binding));
-    SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
+    // Results are paginated, so multiple queries may be required.
+    String pageToken = null;
+    List<FhirStore> stores = new ArrayList<>();
+    do {
+      // Create request and configure any parameters.
+      FhirStores.List request =
+          client
+              .projects()
+              .locations()
+              .datasets()
+              .fhirStores()
+              .list(fhirStoreName)
+              .setPageSize(100) // Specify pageSize up to 1000
+              .setPageToken(pageToken);
 
-    // Create request and configure any parameters.
-    DicomStores.SetIamPolicy request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .dicomStores()
-            .setIamPolicy(dicomStoreName, policyRequest);
+      // Execute response and collect results.
+      ListFhirStoresResponse response = request.execute();
+      stores.addAll(response.getFhirStores());
 
-    // Execute the request and process the results.
-    Policy updatedPolicy = request.execute();
-    System.out.println("DICOM policy has been updated: " + updatedPolicy.toPrettyString());
+      // Update the page token for the next request.
+      pageToken = response.getNextPageToken();
+    } while (pageToken != null);
+
+    // Print results.
+    System.out.printf("Retrieved %s Fhir stores: \n", stores.size());
+    for (FhirStore data : stores) {
+      System.out.println("\t" + data.toPrettyString());
+    }
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -96,4 +99,4 @@ public class DicomStoreSetIamPolicy {
         .build();
   }
 }
-// [END healthcare_dicom_store_set_iam_policy]
+// [END healthcare_list_fhir_stores]

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.dicom;
+package snippets.healthcare.fhir;
 
-// [START healthcare_dicom_store_set_iam_policy]
+// [START healthcare_delete_dicom_store]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,54 +24,31 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.Binding;
-import com.google.api.services.healthcare.v1beta1.model.Policy;
-import com.google.api.services.healthcare.v1beta1.model.SetIamPolicyRequest;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
-public class DicomStoreSetIamPolicy {
-  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
+public class FhirStoreDelete {
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomStoreSetIamPolicy(String dicomStoreName) throws IOException {
-    // String dicomStoreName =
+  public static void fhirStoreDelete(String dicomStoreName) throws IOException {
+    // String fhirStoreName =
     //    String.format(
-    //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
+    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the IAMPolicy to apply to the store.
-    // For more information on understanding IAM roles, see the following:
-    // https://cloud.google.com/iam/docs/understanding-roles
-    Binding binding =
-        new Binding()
-            .setRole("roles/healthcare.datasetViewer")
-            .setMembers(
-                Arrays.asList(
-                    "user:mike@example.com",
-                    "domain:google.com",
-                    "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
-    Policy policy = new Policy().setBindings(Arrays.asList(binding));
-    SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
-
     // Create request and configure any parameters.
-    DicomStores.SetIamPolicy request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .dicomStores()
-            .setIamPolicy(dicomStoreName, policyRequest);
+    FhirStores.Delete request =
+        client.projects().locations().datasets().fhirStores().delete(dicomStoreName);
 
     // Execute the request and process the results.
-    Policy updatedPolicy = request.execute();
-    System.out.println("DICOM policy has been updated: " + updatedPolicy.toPrettyString());
+    request.execute();
+    System.out.println("FHIR store deleted.");
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -96,4 +73,4 @@ public class DicomStoreSetIamPolicy {
         .build();
   }
 }
-// [END healthcare_dicom_store_set_iam_policy]
+// [END healthcare_delete_dicom_store]
