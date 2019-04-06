@@ -17,6 +17,7 @@ import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.dicom.DicomStoreCreate;
 import snippets.healthcare.dicom.DicomStoreDelete;
+import snippets.healthcare.dicom.DicomStoreExport;
 import snippets.healthcare.dicom.DicomStoreGet;
 
 @RunWith(JUnit4.class)
@@ -24,6 +25,9 @@ public class DicomStoreTests {
   private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
+
+  protected static final String GCLOUD_BUCKET_NAME = System.getenv("GCLOUD_BUCKET_NAME");
+  protected static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
   private ByteArrayOutputStream bout;
 
@@ -65,6 +69,13 @@ public class DicomStoreTests {
     assertThat(output, containsString("DICOM store created."));
   }
 
+  private void testDicomStoreExport(String dicomStoreName) throws IOException {
+    DicomStoreExport.dicomStoreExport(dicomStoreName, GCLOUD_BUCKET_NAME);
+
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM store created."));
+  }
+
   private void testDicomStoreDelete(String dicomStoreName) throws IOException {
     DicomStoreDelete.deleteDicomStore(dicomStoreName);
 
@@ -84,6 +95,7 @@ public class DicomStoreTests {
 
     testDicomStoreCreate(datasetName, dicomStoreId);
     testDicomStoreGet(dicomStoreName);
+    testDicomStoreExport(dicomStoreName);
     testDicomStoreDelete(dicomStoreName);
   }
 }

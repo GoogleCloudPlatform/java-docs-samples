@@ -15,7 +15,6 @@
  */
 
 import com.google.common.collect.ImmutableList;
-import com.google.healthcare.dicom.DicomStoreExport;
 import com.google.healthcare.dicom.DicomStoreGetIamPolicy;
 import com.google.healthcare.dicom.DicomStoreImport;
 import com.google.healthcare.dicom.DicomStoreList;
@@ -37,6 +36,7 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.dicom.DicomStoreDelete;
+import snippets.healthcare.dicom.DicomStoreExport;
 import snippets.healthcare.dicom.DicomStoreGet;
 
 @RunWith(JUnit4.class)
@@ -121,7 +121,7 @@ public class DicomStoreTests extends HealthcareTestBase {
 
   @Test
   public void test_02_ExportDicomStore() throws Exception {
-    DicomStoreExport.exportDicomStoreInstance(dicomStoreName, GCLOUD_BUCKET_NAME);
+    DicomStoreExport.dicomStoreExport(dicomStoreName, GCLOUD_BUCKET_NAME);
     assertBoutContents("Exporting Dicom store op name:");
   }
 
