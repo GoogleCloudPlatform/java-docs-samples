@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.fhir;
+package snippets.healthcare.fhir.resources;
 
-// [START healthcare_delete_dicom_store]
+// [START healthcare_delete_resource_purge]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,31 +24,32 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import java.io.IOException;
 import java.util.Collections;
 
-public class FhirStoreDelete {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+public class FhirResourceDeletePurge {
+  private static final String FHIR_NAME =
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreDelete(String fhirStoreName) throws IOException {
-    // String fhirStoreName =
+  public static void deletePurgeFhirResource(String resourceName) throws IOException {
+    // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
-    FhirStores.Delete request =
-        client.projects().locations().datasets().fhirStores().delete(fhirStoreName);
+    Fhir.Delete$purge request =
+        client.projects().locations().datasets().fhirStores().fhir().delete$purge(resourceName);
 
     // Execute the request and process the results.
     request.execute();
-    System.out.println("FHIR store deleted.");
+    System.out.println("FHIR resource deleted.");
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -73,4 +74,4 @@ public class FhirStoreDelete {
         .build();
   }
 }
-// [END healthcare_delete_dicom_store]
+// [END healthcare_delete_resource_purge]
