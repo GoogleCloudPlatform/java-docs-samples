@@ -49,7 +49,7 @@ public class FhirStoreGet {
 
     // Execute the request and process the results.
     FhirStore store = request.execute();
-    System.out.println("DICOM store retrieved: \n" + store.toPrettyString());
+    System.out.println("FHIR store retrieved: \n" + store.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {

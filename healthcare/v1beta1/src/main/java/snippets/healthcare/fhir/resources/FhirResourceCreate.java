@@ -17,8 +17,6 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_create_resource]
-
-import com.google.HealthcareQuickstart;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -37,7 +35,7 @@ public class FhirResourceCreate {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void createFhirResource(String fhirStoreName) throws IOException {
+  public static void fhirResourceCreate(String fhirStoreName) throws IOException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
@@ -54,7 +52,7 @@ public class FhirResourceCreate {
 
     // Create request and configure any parameters.
     CreateResource request =
-        HealthcareQuickstart.getCloudHealthcareClient()
+        client
             .projects()
             .locations()
             .datasets()

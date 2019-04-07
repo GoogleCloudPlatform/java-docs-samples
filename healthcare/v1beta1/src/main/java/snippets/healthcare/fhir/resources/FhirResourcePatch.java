@@ -17,7 +17,6 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_patch_resource]
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -37,7 +36,7 @@ public class FhirResourcePatch {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void patchFhirResource(String resourceName) throws IOException {
+  public static void ffirResourcePatch(String resourceName) throws IOException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");

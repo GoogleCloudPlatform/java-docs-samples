@@ -35,7 +35,7 @@ public class FhirResourceDeletePurge {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void deletePurgeFhirResource(String resourceName) throws IOException {
+  public static void fhirResourceDeletePurge(String resourceName) throws IOException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");

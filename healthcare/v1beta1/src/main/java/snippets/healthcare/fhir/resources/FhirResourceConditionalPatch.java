@@ -17,7 +17,6 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_conditional_patch_resource]
-import com.google.HealthcareQuickstart;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -38,7 +37,7 @@ public class FhirResourceConditionalPatch {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void conditionalPatchFhirResource(String resourceName) throws IOException {
+  public static void fhirResourceConditionalPatch(String resourceName) throws IOException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
@@ -59,7 +58,7 @@ public class FhirResourceConditionalPatch {
 
     // Create request and configure any parameters.
     ConditionalPatchResource request =
-        HealthcareQuickstart.getCloudHealthcareClient()
+        client
             .projects()
             .locations()
             .datasets()

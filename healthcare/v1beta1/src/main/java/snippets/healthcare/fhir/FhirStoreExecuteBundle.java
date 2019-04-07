@@ -35,7 +35,7 @@ public class FhirStoreExecuteBundle {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void executeBundle(String fhirStoreName) throws IOException {
+  public static void fhirStoreExecuteBundle(String fhirStoreName) throws IOException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
