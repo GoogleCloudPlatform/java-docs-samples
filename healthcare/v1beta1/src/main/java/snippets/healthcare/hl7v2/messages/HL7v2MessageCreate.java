@@ -35,15 +35,18 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-public class Hl7v2MessageCreate {
-  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
+public class HL7v2MessageCreate {
+  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void hl7v2MessageCreate(String hl7v2StoreName, String filePath) throws IOException {
+  public static void hl7v2MessageCreate(String hl7v2StoreName, String messageId, String filePath)
+      throws IOException {
     // String hl7v2StoreName =
     //    String.format(
     //        HL7v2_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-hl7v2-id");
+    // String messageId = "your-message-id";
+    // String filePath = "path/to/file.txt";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -51,7 +54,7 @@ public class Hl7v2MessageCreate {
     // Load the data from file representing the message.
     List<String> lines = Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
     String data = String.join("\n", lines);
-    Message message = new Message().setData(data);
+    Message message = new Message().setData(data).setName(messageId);
     CreateMessageRequest createRequest = new CreateMessageRequest().setMessage(message);
 
     // Create request and configure any parameters.

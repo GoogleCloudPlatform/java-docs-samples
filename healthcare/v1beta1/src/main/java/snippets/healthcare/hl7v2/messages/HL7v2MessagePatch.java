@@ -32,9 +32,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Hl7v2MessagePatch {
+public class HL7v2MessagePatch {
   private static final String MESSAGE_NAME =
-      "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s/messages/%s";
+      "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 

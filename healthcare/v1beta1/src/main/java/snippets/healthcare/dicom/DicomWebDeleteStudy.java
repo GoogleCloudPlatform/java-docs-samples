@@ -51,7 +51,7 @@ public class DicomWebDeleteStudy {
             .datasets()
             .dicomStores()
             .studies()
-            .delete(dicomStoreName, "/studies/" + studyId);
+            .delete(dicomStoreName, "studies/" + studyId);
 
     // Execute the request and process the results.
     request.execute();

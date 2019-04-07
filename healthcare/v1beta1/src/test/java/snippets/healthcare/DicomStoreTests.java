@@ -53,7 +53,7 @@ public class DicomStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
-  private static final String GCLOUD_BUCKET_NAME = System.getenv("GCLOUD_BUCKET_NAME");
+  private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
   private static String datasetId;
@@ -64,6 +64,7 @@ public class DicomStoreTests {
 
   private static String studyId;
 
+  private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
 
   private static void requireEnvVar(String varName) {
@@ -101,7 +102,7 @@ public class DicomStoreTests {
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(originalOut);
     bout.reset();
   }
 

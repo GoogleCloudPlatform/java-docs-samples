@@ -57,7 +57,8 @@ public class DatasetCreate {
     // Execute the request, wait for the operation to complete, and process the results.
     try {
       Operation operation = request.execute();
-      while (!operation.getDone()) {
+      System.out.println(operation.toPrettyString());
+      while (operation.getDone() == null || !operation.getDone()) {
         // Update the status of the operation with another request.
         Thread.sleep(500); // Pause for 500ms between requests.
         operation =
@@ -72,6 +73,7 @@ public class DatasetCreate {
       System.out.println("Dataset created. Response content: " + operation.getResponse());
     } catch (Exception ex) {
       System.out.printf("Error during request execution: %s\n", ex.toString());
+      ex.printStackTrace(System.out);
     }
   }
 

@@ -75,6 +75,7 @@ public class FhirStoreExport {
       System.out.println("Fhir store export complete." + operation.getResponse());
     } catch (Exception ex) {
       System.out.printf("Error during request execution: %s", ex.toString());
+      ex.printStackTrace(System.out);
     }
   }
 

@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -63,7 +64,7 @@ public class FhirStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
-  private static final String GCLOUD_BUCKET_NAME = System.getenv("GCLOUD_BUCKET_NAME");
+  private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
   private static String datasetId;
@@ -75,6 +76,7 @@ public class FhirStoreTests {
   private static String fhirResourceId;
   private static String fhirResourceName;
 
+  private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
 
   private static void requireEnvVar(String varName) {
@@ -99,9 +101,9 @@ public class FhirStoreTests {
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    fhirStoreName = String.format("%s/dicomStores/%s", datasetName, fhirStoreId);
+    fhirStoreName = String.format("%s/fhirStores/%s", datasetName, fhirStoreId);
 
-    fhirResourceId = "resource-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    fhirResourceId = "resource-name/" + UUID.randomUUID().toString().replaceAll("-", "_");
     fhirResourceName = String.format("%s/fhir/%s", fhirStoreName, fhirResourceId);
   }
 
@@ -113,7 +115,7 @@ public class FhirStoreTests {
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(originalOut);
     bout.reset();
   }
 
@@ -151,7 +153,7 @@ public class FhirStoreTests {
 
   @Test
   public void test_02_FhirStoreList() throws Exception {
-    FhirStoreList.fhirStoreList(fhirStoreName);
+    FhirStoreList.fhirStoreList(datasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("Retrieved "));
@@ -182,7 +184,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_02_ExecuteFhirBundle() throws Exception {
     FhirStoreExecuteBundle.fhirStoreExecuteBundle(fhirStoreName);
 
@@ -201,16 +203,16 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
-  public void test_04_FhirResourceCreate() throws Exception {
-    FhirResourceCreate.fhirResourceCreate(fhirStoreId);
+  @Ignore // TODO: b/128844810
+  public void test_03_FhirResourceCreate() throws Exception {
+    FhirResourceCreate.fhirResourceCreate(fhirStoreName);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource created:"));
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_FhirResourceSearch() throws Exception {
     FhirResourceSearch.fhirResourceSearch(fhirStoreName);
 
@@ -219,7 +221,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_FhirResourceSearchPost() throws Exception {
     FhirResourceSearchPost.fhirResourceSearchPost(fhirStoreName);
 
@@ -228,7 +230,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_FhirResourceGet() throws Exception {
     FhirResourceGet.fhirResourceGet(fhirResourceName);
 
@@ -237,7 +239,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_FhirResourcePatch() throws Exception {
     FhirResourcePatch.ffirResourcePatch(fhirResourceName);
 
@@ -246,7 +248,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_FhirResourceConditionalPatch() throws Exception {
     FhirResourceConditionalPatch.fhirResourceConditionalPatch(fhirResourceName);
 
@@ -255,7 +257,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_FhirResourceConditionalUpdate() throws Exception {
     FhirResourceConditionalUpdate.fhirResourceConditionalUpdate(fhirResourceName);
 
@@ -273,16 +275,16 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_04_GetFhirResourceMetadata() throws Exception {
-    FhirResourceGetMetadata.fhirResourceGetMetadata(fhirResourceName);
+    FhirResourceGetMetadata.fhirResourceGetMetadata(fhirStoreName);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource metadata retrieved:"));
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_05_FhirResourceDelete() throws Exception {
     FhirResourceDelete.fhirResourceDelete(fhirResourceName);
 
@@ -291,7 +293,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_06_FhirResourceGetHistory() throws Exception {
     FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName);
 
@@ -309,7 +311,7 @@ public class FhirStoreTests {
   }
 
   @Test
-  // @Ignore // TODO: b/128844810
+  @Ignore // TODO: b/128844810
   public void test_07_DeletePurgeFhirResource() throws Exception {
     FhirResourceDeletePurge.fhirResourceDeletePurge(fhirResourceName);
 

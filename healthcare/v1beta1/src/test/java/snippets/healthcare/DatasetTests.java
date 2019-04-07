@@ -48,6 +48,7 @@ public class DatasetTests {
   private static String datasetId;
   private static String datasetName;
 
+  private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
 
   private static void requireEnvVar(String varName) {
@@ -77,7 +78,7 @@ public class DatasetTests {
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(originalOut);
     bout.reset();
   }
 

@@ -50,11 +50,7 @@ public class DatasetSetIamPolicy {
     Binding binding =
         new Binding()
             .setRole("roles/healthcare.datasetViewer")
-            .setMembers(
-                Arrays.asList(
-                    "user:mike@example.com",
-                    "domain:google.com",
-                    "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
+            .setMembers(Arrays.asList("domain:google.com"));
     Policy policy = new Policy().setBindings(Arrays.asList(binding));
     SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
 

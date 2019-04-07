@@ -79,6 +79,7 @@ public class FhirStoreImport {
       System.out.println("FHIR store import complete: " + operation.getResponse());
     } catch (Exception ex) {
       System.out.printf("Error during request execution: %s", ex.toString());
+      ex.printStackTrace(System.out);
     }
   }
 

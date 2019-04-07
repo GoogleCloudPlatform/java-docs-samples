@@ -36,10 +36,10 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-public class Hl7v2MessageIngest {
-  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
+public class HL7v2MessageIngest {
+  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final String MESSAGE_NAME =
-      "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s/messages/%s";
+      "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 

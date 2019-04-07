@@ -30,9 +30,9 @@ import com.google.api.services.healthcare.v1beta1.model.Message;
 import java.io.IOException;
 import java.util.Collections;
 
-public class Hl7v2MessageGet {
+public class HL7v2MessageGet {
   private static final String MESSAGE_NAME =
-      "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s/messages/%s";
+      "projects/%s/locations/%s/datasets/%s/hl7C2Store/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 

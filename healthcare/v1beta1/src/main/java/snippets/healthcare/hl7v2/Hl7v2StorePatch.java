@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class Hl7v2StorePatch {
-  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
+  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -51,7 +51,7 @@ public class Hl7v2StorePatch {
     Hl7V2Store store = getRequest.execute();
 
     // Update the Hl7v2Store fields as needed as needed. For a full list of Hl7v2Store fields, see:
-    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets.hl7v2Stores#Hl7v2Store
+    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets.hl7V2Store#Hl7v2Store
     store.setNotificationConfig(new NotificationConfig().setPubsubTopic(pubsubTopic));
 
     // Create request and configure any parameters.

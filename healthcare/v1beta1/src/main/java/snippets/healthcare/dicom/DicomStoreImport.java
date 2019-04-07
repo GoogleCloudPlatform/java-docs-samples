@@ -80,6 +80,7 @@ public class DicomStoreImport {
       System.out.println("DICOM store import complete." + operation.getResponse());
     } catch (Exception ex) {
       System.out.printf("Error during request execution: %s", ex.toString());
+      ex.printStackTrace(System.out);
     }
   }
 

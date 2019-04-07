@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Hl7v2StoreSetIamPolicy {
-  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
+  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -52,12 +52,8 @@ public class Hl7v2StoreSetIamPolicy {
     // https://cloud.google.com/iam/docs/understanding-roles
     Binding binding =
         new Binding()
-            .setRole("roles/healthcare.datasetViewer")
-            .setMembers(
-                Arrays.asList(
-                    "user:mike@example.com",
-                    "domain:google.com",
-                    "serviceAccount:my-other-app@appspot.gserviceaccount.com"));
+            .setRole("roles/healthcare.hl7V2Consumer")
+            .setMembers(Arrays.asList("domain:google.com"));
     Policy policy = new Policy().setBindings(Arrays.asList(binding));
     SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
 
