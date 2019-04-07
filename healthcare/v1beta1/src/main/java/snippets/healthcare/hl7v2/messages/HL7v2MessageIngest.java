@@ -36,14 +36,14 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-public class HL7v2MessageIngest {
+public class Hl7v2MessageIngest {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
   private static final String MESSAGE_NAME =
       "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void ingestHl7v2Message(String hl7v2StoreName, String filePath) throws IOException {
+  public static void hl7v2MessageIngest(String hl7v2StoreName, String filePath) throws IOException {
     // String hl7v2StoreName =
     //    String.format(
     //        HL7v2_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-hl7v2-id");

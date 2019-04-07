@@ -30,13 +30,13 @@ import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import java.io.IOException;
 import java.util.Collections;
 
-public class HL7v2MessageDelete {
+public class Hl7v2MessageDelete {
   private static final String MESSAGE_NAME =
       "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void deleteHL7v2Message(String hl7v2MessageName) throws IOException {
+  public static void hl7v2MessageDelete(String hl7v2MessageName) throws IOException {
     // String hl7v2MessageName =
     //    String.format(
     //        MESSAGE_NAME, "project-id", "region-id", "dataset-id", "hl7v2-id", "message-id");

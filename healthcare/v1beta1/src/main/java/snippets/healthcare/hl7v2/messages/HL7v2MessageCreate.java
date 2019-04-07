@@ -35,7 +35,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-public class HL7v2MessageCreate {
+public class Hl7v2MessageCreate {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();

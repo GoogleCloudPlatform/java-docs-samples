@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class HL7v2MessageList {
+public class Hl7v2MessageList {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7v2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void listHL7v2Messages(String hl7v2StoreName) throws IOException {
+  public static void hl7v2MessageList(String hl7v2StoreName) throws IOException {
     // String hl7v2StoreName =
     //    String.format(
     //        HL7v2_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-hl7v2-id");
@@ -71,7 +71,7 @@ public class HL7v2MessageList {
     } while (pageToken != null);
 
     // Print results.
-    System.out.printf("Retrieved %s DICOM stores: \n", messages.size());
+    System.out.printf("Retrieved %s HL7v2 stores: \n", messages.size());
     for (String data : messages) {
       System.out.println("\t" + data);
     }

@@ -82,7 +82,7 @@ public class FhirStoreTests {
         String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
-    fhirStoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
     fhirStoreName = String.format("%s/dicomStores/%s", datasetName, fhirStoreId);
 
     fhirResourceId = "resource-" + UUID.randomUUID().toString().replaceAll("-", "_");
@@ -187,7 +187,7 @@ public class FhirStoreTests {
   @Test
   // @Ignore // TODO: b/128844810
   public void test_04_FhirResourceCreate() throws Exception {
-    FhirResourceCreate.fhirResourceCreate(fhirStoreName);
+    FhirResourceCreate.fhirResourceCreate(fhirStoreId);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource created:"));
