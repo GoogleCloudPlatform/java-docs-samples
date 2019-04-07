@@ -52,9 +52,6 @@ public class Hl7v2StoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
-  private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";;
-  private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
-
   private static String datasetId;
   private static String datasetName;
 
