@@ -241,7 +241,7 @@ public class ModelApi {
     System.out.println(String.format("Model update time: %s", updateTime));
     System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
   }
-  // END automl_video_intelligence_classification_get_model]
+  // [END automl_video_intelligence_classification_get_model]
 
   // [START automl_video_intelligence_classification_get_model_evaluation]
   /**
