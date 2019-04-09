@@ -18,7 +18,7 @@ Copyright 2016 Google Inc.
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
-  <artifactId>appengine-mail</artifactId>
+  <artifactId>appengine-mail-j8</artifactId>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
