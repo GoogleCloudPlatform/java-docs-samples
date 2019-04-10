@@ -36,7 +36,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Quickstart {
-  private static final int EXPORT_INTERVAL = 60;
+  private static final int EXPORT_INTERVAL = 70;
   private static final MeasureLong LATENCY_MS = MeasureLong.create(
       "task_latency",
       "The task latency in milliseconds",
