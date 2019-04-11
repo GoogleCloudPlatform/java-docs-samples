@@ -69,9 +69,10 @@ public class CsvToAvroTest implements Serializable {
 
     final PCollection<GenericRecord> avroDataCollection = pipeline.apply("Read CSV files",
         TextIO.read().from(options.getInputFile()))
-        .apply("Convert CSV to Avro formatted data", ParDo.of(
-            new CsvToAvro.ConvertCsvToAvro(schemaJson, options.getCsvDelimiter())))
-        .setCoder(AvroCoder.of(GenericRecord.class, schema));
+            .apply("Parse CSV lines", ParDo.of(
+                new CsvToAvro.ParseCsv(CSVFormatUtils.getCsvFormat(options.getCsvFormat()))))
+            .apply("Convert CSVRecord to Avro formatted data", ParDo.of(
+                new CsvToAvro.ConvertCsvToAvro(schemaJson))).setCoder(AvroCoder.of(GenericRecord.class, schema));
 
     PAssert.that(avroDataCollection).containsInAnyOrder(expectedResult);
 

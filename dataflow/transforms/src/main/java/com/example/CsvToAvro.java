@@ -34,6 +34,9 @@ import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,22 +73,34 @@ public class CsvToAvro {
     }
   }
 
-  public static class ConvertCsvToAvro extends DoFn<String, GenericRecord> {
+  public static class ParseCsv extends DoFn<String, CSVRecord> {
+    private CSVFormat csvFormat;
 
-    private String delimiter;
+    public ParseCsv (CSVFormat csvFormat){
+      this.csvFormat =csvFormat;
+    }
+
+    @ProcessElement
+    public void ProcessElement(ProcessContext ctx) throws IOException {
+      String line = ctx.element();
+      CSVParser parser = CSVParser.parse(line, csvFormat);
+      // There should only be a single record. but handle multiples anyway.
+      parser.getRecords().forEach(r -> ctx.output(r));
+    }
+  }
+
+  public static class ConvertCsvToAvro extends DoFn<CSVRecord, GenericRecord> {
+
     private String schemaJson;
 
-    public ConvertCsvToAvro(String schemaJson, String delimiter) {
+    public ConvertCsvToAvro(String schemaJson) {
       this.schemaJson = schemaJson;
-      this.delimiter = delimiter;
     }
 
     @ProcessElement
     public void processElement(ProcessContext ctx) throws IllegalArgumentException {
-      // Split CSV row into using delimiter
-      String[] rowValues = ctx.element().split(delimiter);
-
       Schema schema = new Schema.Parser().parse(schemaJson);
+      CSVRecord record = ctx.element();
 
       // Create Avro Generic Record
       GenericRecord genericRecord = new GenericData.Record(schema);
@@ -97,22 +112,22 @@ public class CsvToAvro {
 
         switch (fieldType) {
           case "string":
-            genericRecord.put(field.name(), rowValues[index]);
+            genericRecord.put(field.name(), record.get(index));
             break;
           case "boolean":
-            genericRecord.put(field.name(), Boolean.valueOf(rowValues[index]));
+            genericRecord.put(field.name(), Boolean.valueOf(record.get(index)));
             break;
           case "int":
-            genericRecord.put(field.name(), Integer.valueOf(rowValues[index]));
+            genericRecord.put(field.name(), Integer.valueOf(record.get(index)));
             break;
           case "long":
-            genericRecord.put(field.name(), Long.valueOf(rowValues[index]));
+            genericRecord.put(field.name(), Long.valueOf(record.get(index)));
             break;
           case "float":
-            genericRecord.put(field.name(), Float.valueOf(rowValues[index]));
+            genericRecord.put(field.name(), Float.valueOf(record.get(index)));
             break;
           case "double":
-            genericRecord.put(field.name(), Double.valueOf(rowValues[index]));
+            genericRecord.put(field.name(), Double.valueOf(record.get(index)));
             break;
           default:
             LOG.error("Data transformation doesn't support: " + fieldType);
@@ -134,13 +149,16 @@ public class CsvToAvro {
     // Check schema field types before starting the Dataflow job
     checkFieldTypes(schema);
 
+    CSVFormat csvFormat = CSVFormatUtils.getCsvFormat(options.getCsvFormat());
+
     // Create the Pipeline object with the options we defined above.
     Pipeline pipeline = Pipeline.create(options);
 
     // Convert CSV to Avro
     pipeline.apply("Read CSV files", TextIO.read().from(options.getInputFile()))
-        .apply("Convert CSV to Avro formatted data",
-            ParDo.of(new ConvertCsvToAvro(schemaJson, options.getCsvDelimiter())))
+        .apply("Parse CSV lines", ParDo.of(new ParseCsv(csvFormat)))
+        .apply("Convert CSVRecord to Avro formatted data",
+            ParDo.of(new ConvertCsvToAvro(schemaJson)))
         .setCoder(AvroCoder.of(GenericRecord.class, schema))
         .apply("Write Avro formatted data", AvroIO.writeGenericRecords(schemaJson)
             .to(options.getOutput()).withCodec(CodecFactory.snappyCodec()).withSuffix(".avro"));

@@ -25,6 +25,7 @@ import org.apache.beam.sdk.testing.PAssert;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
+import org.apache.commons.csv.CSVFormat;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class AvroToCsvTest implements Serializable {
 
   @Test
   public void testAvroToCsv() throws Exception {
-    final List<String> expectedList = Arrays.asList("frank,natividad,1", "Karthi,thyagarajan,3");
+    final List<String> expectedList = Arrays.asList("frank,natividad,1\r\n", "Karthi,thyagarajan,3\r\n");
 
     SampleOptions options = TestPipeline.testingPipelineOptions().as(SampleOptions.class);
 
@@ -57,7 +58,7 @@ public class AvroToCsvTest implements Serializable {
     final PCollection<String> csvDataCollection = pipeline
         .apply("Read input", AvroIO.readGenericRecords(schemaJson).from(options.getInputFile()))
         .apply("Convert Avro to CSV formatted data",
-            ParDo.of(new AvroToCsv.ConvertAvroToCsv(schemaJson, options.getCsvDelimiter())));
+            ParDo.of(new AvroToCsv.ConvertAvroToCsv(schemaJson, CSVFormatUtils.getCsvFormat("Default"))));
 
     System.out.println(csvDataCollection);
     PAssert.that(csvDataCollection).containsInAnyOrder(expectedList);

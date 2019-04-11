@@ -22,6 +22,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.beam.sdk.Pipeline;
@@ -31,6 +33,7 @@ import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.commons.csv.CSVFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,33 +72,24 @@ public class AvroToCsv {
 
   public static class ConvertAvroToCsv extends DoFn<GenericRecord, String> {
 
-    private String delimiter;
+    private CSVFormat csvFormat;
     private String schemaJson;
 
-    public ConvertAvroToCsv(String schemaJson, String delimiter) {
+    public ConvertAvroToCsv(String schemaJson, CSVFormat csvFormat) {
       this.schemaJson = schemaJson;
-      this.delimiter = delimiter;
+      this.csvFormat = csvFormat;
     }
 
     @ProcessElement
-    public void processElement(ProcessContext ctx) {
+    public void processElement(ProcessContext ctx) throws IOException {
       GenericRecord genericRecord = ctx.element();
       Schema schema = new Schema.Parser().parse(schemaJson);
 
-      StringBuilder row = new StringBuilder();
-      for (Schema.Field field : schema.getFields()) {
-        String fieldType = field.schema().getType().toString().toLowerCase();
-        if (!acceptedTypes.contains(fieldType)) {
-          LOG.error("Data transformation doesn't support: " + fieldType);
-          throw new IllegalArgumentException("Field type " + fieldType + " is not supported.");
-        }
-        if (row.length() > 0) {
-          row.append(delimiter);
-        }
-
-        row.append(genericRecord.get(field.name()));
-      }
-      ctx.output(row.toString());
+      StringBuilder sb = new StringBuilder();
+      List<Object> values = schema.getFields().stream().map(
+              f -> genericRecord.get(f.name())).collect(Collectors.toList());
+      csvFormat.printRecord(sb,values.toArray());
+      ctx.output(sb.toString());
     }
   }
 
@@ -110,6 +104,8 @@ public class AvroToCsv {
     // Check schema field types before starting the Dataflow job
     checkFieldTypes(schema);
 
+    CSVFormat csvFormat = CSVFormatUtils.getCsvFormat(options.getCsvFormat());
+
     // Create the Pipeline object with the options we defined above.
     Pipeline pipeline = Pipeline.create(options);
 
@@ -117,9 +113,10 @@ public class AvroToCsv {
     pipeline.apply("Read Avro files",
         AvroIO.readGenericRecords(schemaJson).from(options.getInputFile()))
         .apply("Convert Avro to CSV formatted data",
-            ParDo.of(new ConvertAvroToCsv(schemaJson, options.getCsvDelimiter())))
-        .apply("Write CSV formatted data", TextIO.write().to(options.getOutput())
-            .withSuffix(".csv"));
+            ParDo.of(new ConvertAvroToCsv(schemaJson, csvFormat)))
+        .apply("Write CSV formatted data",
+            // we do not need a delimiter as it will be added by the previous transform
+            TextIO.write().withDelimiter(new char[0]).to(options.getOutput()).withSuffix(".csv"));
 
     // Run the pipeline.
     pipeline.run().waitUntilFinish();

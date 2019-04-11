@@ -57,15 +57,18 @@ public interface SampleOptions extends DataflowPipelineOptions {
 
   void setAvroSchema(String value);
 
+
   /**
-   * Set csvDelimiter optional parameter to specify the CSV delimiter. Default delimiter is set to a
-   * comma.
+   * Set csvFormat to one of the predefined Apache-commons CSV formats
+   *
+   * @see <a href="https://commons.apache.org/proper/commons-csv/apidocs/index.html?org/apache/commons/csv/CSVFormat.Predefined.html">
+   *     Apache docs for possible values</a>
    */
   @Description(
-      "Set csvDelimiter optional parameter to specify the CSV delimiter. Default delimiter is set"
-          + " to a comma.")
-  @Default.String(",")
-  String getCsvDelimiter();
+      "Set csvFormat to one of the predefined Apache-commons CSV formats. the Default is with" +
+              "delimiter:',' quote:'\"' recordSeparator:'\\r\\n' ignoring empty lines")
+  @Default.String("Default")
+  String getCsvFormat();
 
-  void setCsvDelimiter(String delimiter);
+  void setCsvFormat(String csvFormat);
 }
