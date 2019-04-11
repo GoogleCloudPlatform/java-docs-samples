@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-// [START storage_s3_sdk_list_buckets]
+
+// [START storage_s3_sdk_list_objects]
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.util.List;
 
-public class ListGcsBuckets {
-  public static void listGcsBuckets(String googleAccessKeyId,
-      String googleAccessKeySecret) {
+public class ListGcsObjects {
+  public static void listGcsObjects(String googleAccessKeyId,
+      String googleAccessKeySecret, String bucketName) {
 
     // String googleAccessKeyId = "your-google-access-key-id";
     // String googleAccessKeySecret = "your-google-access-key-secret";
+    // String bucketName = "bucket-name";
 
     // Create a BasicAWSCredentials using Cloud Storage HMAC credentials.
     BasicAWSCredentials googleCreds = new BasicAWSCredentials(googleAccessKeyId,
@@ -45,18 +49,17 @@ public class ListGcsBuckets {
             .withCredentials(new AWSStaticCredentialsProvider(googleCreds))
             .build();
 
-    // Call GCS to list current buckets
-    List<Bucket> buckets = interopClient.listBuckets();
+    // Call GCS to list current objects
+    ObjectListing objects = interopClient.listObjects(bucketName);
 
-    // Print bucket names
-    System.out.println("Buckets:");
-    for (Bucket bucket : buckets) {
-      System.out.println(bucket.getName());
+    // Print objects names
+    System.out.println("Objects:");
+    for (S3ObjectSummary object : objects.getObjectSummaries()) {
+      System.out.println(object.getKey());
     }
 
     // Explicitly clean up client resources.
     interopClient.shutdown();
   }
-  // [END storage_s3_sdk_list_buckets]
 }
-
+// [END storage_s3_sdk_list_objects]
