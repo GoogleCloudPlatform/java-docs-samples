@@ -19,9 +19,30 @@ If this is your first time creating an App engine application:
 ```
    gcloud app create
 ```
+
+## Setup the Sample App
+
+- Copy the sample apps to your local machine:
+```
+  git clone https://github.com/GoogleCloudPlatform/java-docs-samples
+```
+
+- Add the [appengine-simple-jetty-main](../README.md#appengine-simple-jetty-main)
+Main class to your classpath:
+```
+  cd java-docs-samples/appengine-java11/appengine-simple-jetty-main
+  mvn install
+```
+
 - [Create a Spanner instance](https://cloud.google.com/spanner/docs/quickstart-console#create_an_instance).
 
 - Update `SPANNER_INSTANCE` value in `[app.yaml](src/main/appengine/app.yaml)` with your instance id.
+
+- Move into the `appengine-java11/spanner` directory and compile the app:
+```
+  cd ../spanner
+  mvn package
+```
 
 ## Endpoints
 - `/spanner` : will run sample operations against the spanner instance in order. Individual tasks can be run

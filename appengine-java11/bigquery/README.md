@@ -24,7 +24,7 @@ The home page also provides a summary view of the metrics that have been logged 
 - Add the [appengine-simple-jetty-main](../README.md#appengine-simple-jetty-main)
 Main class to your classpath:
 ```
-  cd appengine-java11/appengine-simple-jetty-main
+  cd java-docs-samples/appengine-java11/appengine-simple-jetty-main
   mvn install
 ```
 
