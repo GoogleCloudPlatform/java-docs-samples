@@ -1,0 +1,7 @@
+runtime: java11
+instance_class: F2
+entrypoint: 'java -cp * com.google.appengine.demo.jettymain.Main oauth2.war'
+
+env_variables:
+  CLIENT_ID: '<YOUR_CLIENT_ID>'
+  CLIENT_SECRET: '<YOUR_CLIENT_SECRET>'
