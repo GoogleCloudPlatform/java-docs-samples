@@ -79,7 +79,6 @@ public class Main {
       descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
 
       admin.createTable(descriptor);
-      // [END creating_a_table]
     } catch (IOException e) {
       return "Table exists.";
     }
@@ -127,7 +126,6 @@ public class Main {
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
       String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
       result.append("Get a single greeting by row key<br>");
-      // [END getting_a_row]
       result.append("     ");
       result.append(rowKey);
       result.append("= ");
