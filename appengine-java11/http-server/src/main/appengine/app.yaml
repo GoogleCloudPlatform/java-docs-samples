@@ -1,3 +1,2 @@
 runtime: java11
-instance_class: F2
 # No need for an entrypoint with single fatjar with correct manifest class-path entry.

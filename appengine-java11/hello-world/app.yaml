@@ -1,3 +1,2 @@
 runtime: java11
-instance_class: F2
 entrypoint: java Main.java
