@@ -119,7 +119,6 @@ public class CreateTask {
     String location = params.getOptionValue(LOCATION_OPTION.getOpt());
     String payload = params.getOptionValue(PAYLOAD_OPTION.getOpt(), "default payload");
 
-    // [START cloud_tasks_appengine_create_task]
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
 
@@ -153,7 +152,6 @@ public class CreateTask {
       Task task = client.createTask(queuePath, taskBuilder.build());
       System.out.println("Task created: " + task.getName());
     }
-    // [END cloud_tasks_appengine_create_task]
   }
 
   private static void printUsage(Options options) {

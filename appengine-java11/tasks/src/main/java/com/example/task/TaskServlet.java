@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START cloud_tasks_appengine_quickstart]
 @WebServlet(
     name = "Tasks",
     description = "Create Cloud Task",
@@ -38,7 +37,7 @@ public class TaskServlet extends HttpServlet {
     String body = req.getReader()
         .lines()
         .reduce("", (accumulator, actual) -> accumulator + actual);
-        
+
     if (!body.isEmpty()) {
       log.info("Request payload: " + body);
       String output = String.format("Received task with payload %s", body);
@@ -50,4 +49,3 @@ public class TaskServlet extends HttpServlet {
     }
   }
 }
-// [END cloud_tasks_appengine_quickstart]
