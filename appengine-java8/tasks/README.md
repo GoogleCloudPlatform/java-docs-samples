@@ -105,10 +105,5 @@ Running the sample will create a task and send the task to the specific URL
 endpoint, with a payload specified:
 
 ```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateHttpTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
-    --url $URL \
-    --queue $QUEUE_ID \
-    --location $LOCATION_ID \
-    --payload hello"
+mvn exec:java -Dexec.mainClass="com.example.task.CreateHttpTask"
 ```

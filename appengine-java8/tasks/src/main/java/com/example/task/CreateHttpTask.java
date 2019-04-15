@@ -38,98 +38,12 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class CreateHttpTask {
-  private static String GOOGLE_CLOUD_PROJECT_KEY = "GOOGLE_CLOUD_PROJECT";
 
-  private static Option PROJECT_ID_OPTION = Option.builder("pid")
-      .longOpt("project-id")
-      .desc("The Google Cloud Project, if not set as GOOGLE_CLOUD_PROJECT env var.")
-      .hasArg()
-      .argName("project-id")
-      .type(String.class)
-      .build();
-
-  private static Option QUEUE_OPTION = Option.builder("q")
-      .required()
-      .longOpt("queue")
-      .desc("The Cloud Tasks queue.")
-      .hasArg()
-      .argName("queue")
-      .type(String.class)
-      .build();
-
-  private static Option LOCATION_OPTION = Option.builder("l")
-      .required()
-      .longOpt("location")
-      .desc("The region in which your queue is running.")
-      .hasArg()
-      .argName("location")
-      .type(String.class)
-      .build();
-
-  private static Option URL_OPTION = Option.builder("u")
-      .required()
-      .longOpt("url")
-      .desc("The full url path that the request will be sent to.")
-      .hasArg()
-      .argName("url")
-      .type(String.class)
-      .build();
-
-  private static Option PAYLOAD_OPTION = Option.builder("p")
-      .longOpt("payload")
-      .desc("The payload string for the task.")
-      .hasArg()
-      .argName("payload")
-      .type(String.class)
-      .build();
-
-  private static Option IN_SECONDS_OPTION = Option.builder("s")
-      .longOpt("in-seconds")
-      .desc("Schedule time for the task to create.")
-      .hasArg()
-      .argName("in-seconds")
-      .type(int.class)
-      .build();
-
-  public static void main(String... args) throws Exception {
-    Options options = new Options();
-    options.addOption(PROJECT_ID_OPTION);
-    options.addOption(QUEUE_OPTION);
-    options.addOption(LOCATION_OPTION);
-    options.addOption(URL_OPTION);
-    options.addOption(PAYLOAD_OPTION);
-    options.addOption(IN_SECONDS_OPTION);
-
-    if (args.length == 0) {
-      printUsage(options);
-      return;
-    }
-
-    CommandLineParser parser = new DefaultParser();
-    CommandLine params = null;
-    try {
-      params = parser.parse(options, args);
-    } catch (ParseException e) {
-      System.err.println("Invalid command line: " + e.getMessage());
-      printUsage(options);
-      return;
-    }
-
-    String projectId;
-    if (params.hasOption("project-id")) {
-      projectId = params.getOptionValue("project-id");
-    } else {
-      projectId = System.getenv(GOOGLE_CLOUD_PROJECT_KEY);
-    }
-    if (Strings.isNullOrEmpty(projectId)) {
-      printUsage(options);
-      return;
-    }
-
-    String queueName = params.getOptionValue(QUEUE_OPTION.getOpt());
-    String location = params.getOptionValue(LOCATION_OPTION.getOpt());
-    String url = params.getOptionValue(URL_OPTION.getOpt());
-    String payload = params.getOptionValue(PAYLOAD_OPTION.getOpt(), "default payload");
+  public static void main(String[] args) throws Exception {
+    String projectId = System.getenv("PROJECT_ID");
+    String queueName = System.getenv("QUEUE_ID");
+    String location = System.getenv("LOCATION_ID");
+    String url = System.getenv("URL");
 
     // [START cloud_tasks_create_http_task]
     // Instantiates a client.
@@ -140,7 +54,7 @@ public class CreateHttpTask {
       // queueName = "my-appengine-queue";
       // location = "us-central1";
       // url = "https://<project-id>.appspot.com/tasks/create";
-      // payload = "hello";
+      String payload = "hello";
 
       // Construct the fully qualified queue name.
       String queuePath = QueueName.of(projectId, location, queueName).toString();
@@ -154,29 +68,10 @@ public class CreateHttpTask {
               .setHttpMethod(HttpMethod.POST)
               .build());
 
-      if (params.hasOption(IN_SECONDS_OPTION.getOpt())) {
-        // Add the scheduled time to the request.
-        int seconds = Integer.parseInt(params.getOptionValue(IN_SECONDS_OPTION.getOpt()));
-        taskBuilder.setScheduleTime(Timestamp
-            .newBuilder()
-            .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));
-      }
-
       // Send create task request.
       Task task = client.createTask(queuePath, taskBuilder.build());
       System.out.println("Task created: " + task.getName());
     }
     // [END cloud_tasks_create_http_task]
   }
-
-  private static void printUsage(Options options) {
-    HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp(
-        "client",
-        "A simple Cloud Tasks command line client that creates a task with an "
-            + "HTTP endpoint.",
-        options, "", true);
-    throw new RuntimeException();
-  }
-
 }
