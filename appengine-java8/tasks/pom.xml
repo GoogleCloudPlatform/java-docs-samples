@@ -88,6 +88,7 @@ Copyright 2018 Google LLC
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <configuration>
+          <mainClass>com.example.task.CreateTask</mainClass>
           <cleanupDaemonThreads>false</cleanupDaemonThreads>
         </configuration>
       </plugin>
