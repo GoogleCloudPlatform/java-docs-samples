@@ -16,6 +16,7 @@
 
 package com.example.task;
 
+// [START cloud_tasks_create_http_task]
 import com.google.cloud.tasks.v2beta3.CloudTasksClient;
 import com.google.cloud.tasks.v2beta3.HttpMethod;
 import com.google.cloud.tasks.v2beta3.HttpRequest;
@@ -29,14 +30,6 @@ import java.nio.charset.Charset;
 import java.time.Clock;
 import java.time.Instant;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
 public class CreateHttpTask {
 
   public static void main(String[] args) throws Exception {
@@ -45,11 +38,10 @@ public class CreateHttpTask {
     String location = System.getenv("LOCATION_ID");
     String url = System.getenv("URL");
 
-    // [START cloud_tasks_create_http_task]
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
 
-      // Variables provided by the CLI.
+      // Variables provided by the system variables.
       // projectId = "my-project-id";
       // queueName = "my-appengine-queue";
       // location = "us-central1";
@@ -72,6 +64,6 @@ public class CreateHttpTask {
       Task task = client.createTask(queuePath, taskBuilder.build());
       System.out.println("Task created: " + task.getName());
     }
-    // [END cloud_tasks_create_http_task]
   }
 }
+// [END cloud_tasks_create_http_task]
