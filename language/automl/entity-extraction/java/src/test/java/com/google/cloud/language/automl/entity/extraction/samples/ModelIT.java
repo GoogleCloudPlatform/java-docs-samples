@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests for AutoML Natural Language Entity Extraction "Model API" sample. */
 @RunWith(JUnit4.class)
-public class ModelApiIT {
+public class ModelIT {
   // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID, DEPLOY_MODEL_ID
   // and UNDEPLOY_MODEL_ID before running the test cases.
   private static final String PROJECT_ID = "java-docs-samples-testing";
@@ -58,9 +58,9 @@ public class ModelApiIT {
   }
 
   @Test
-  public void testModelApi() throws IOException, InterruptedException, ExecutionException {
+  public void testModelOperations() throws IOException, InterruptedException, ExecutionException {
     // Act
-    ModelApi.createModel(PROJECT_ID, COMPUTE_REGION, DATASET_ID, MODEL_NAME);
+    CreateModel.createModel(PROJECT_ID, COMPUTE_REGION, DATASET_ID, MODEL_NAME);
 
     // Assert
     String got = bout.toString();
@@ -68,7 +68,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.listModels(PROJECT_ID, COMPUTE_REGION, FILTER);
+    ListModels.listModels(PROJECT_ID, COMPUTE_REGION, FILTER);
 
     // Assert
     got = bout.toString();
@@ -77,7 +77,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.getModel(PROJECT_ID, COMPUTE_REGION, modelId);
+    GetModel.getModel(PROJECT_ID, COMPUTE_REGION, modelId);
 
     // Assert
     got = bout.toString();
@@ -85,7 +85,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.listModelEvaluations(PROJECT_ID, COMPUTE_REGION, modelId, "");
+    ListModelEvaluations.listModelEvaluations(PROJECT_ID, COMPUTE_REGION, modelId, "");
 
     // Assert
     got = bout.toString();
@@ -94,7 +94,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.getModelEvaluation(PROJECT_ID, COMPUTE_REGION, modelId, modelEvaluationId);
+    GetModelEvaluation.getModelEvaluation(PROJECT_ID, COMPUTE_REGION, modelId, modelEvaluationId);
 
     // Assert
     got = bout.toString();
@@ -102,7 +102,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.displayEvaluation(PROJECT_ID, COMPUTE_REGION, modelId, "");
+    DisplayEvaluation.displayEvaluation(PROJECT_ID, COMPUTE_REGION, modelId, "");
 
     // Assert
     got = bout.toString();
@@ -110,7 +110,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.deleteModel(PROJECT_ID, COMPUTE_REGION, modelId);
+    DeleteModel.deleteModel(PROJECT_ID, COMPUTE_REGION, modelId);
 
     // Assert
     got = bout.toString();
@@ -120,7 +120,7 @@ public class ModelApiIT {
   @Test
   public void testDeployModel() throws Exception {
     // Act
-    ModelApi.deployModel(PROJECT_ID, COMPUTE_REGION, DEPLOY_MODEL_ID);
+    DeployModel.deployModel(PROJECT_ID, COMPUTE_REGION, DEPLOY_MODEL_ID);
 
     // Assert
     String got = bout.toString();
@@ -130,7 +130,7 @@ public class ModelApiIT {
   @Test
   public void testUndeployModel() throws Exception {
     // Act
-    ModelApi.undeployModel(PROJECT_ID, COMPUTE_REGION, UNDEPLOY_MODEL_ID);
+    UndeployModel.undeployModel(PROJECT_ID, COMPUTE_REGION, UNDEPLOY_MODEL_ID);
 
     // Assert
     String got = bout.toString();
@@ -149,7 +149,7 @@ public class ModelApiIT {
 
     // Act
     bout.reset();
-    ModelApi.getOperationStatus(operationId);
+    GetOperationStatus.getOperationStatus(operationId);
 
     // Assert
     got = bout.toString();

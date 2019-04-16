@@ -28,9 +28,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for AutoML Natural Language Entity Extraction "PredictionAPI" sample. */
 @RunWith(JUnit4.class)
-public class PredictionApiIT {
+public class PredictIT {
   // TODO(developer): Change PROJECT_ID, COMPUTE_REGION and MODEL_ID before running the
   // test cases.
   private static final String PROJECT_ID = "java-docs-samples-testing";
@@ -55,7 +54,7 @@ public class PredictionApiIT {
   @Test
   public void testPredict() throws IOException {
     // Act
-    PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, MODEL_ID, FILE_PATH);
+    Predict.predict(PROJECT_ID, COMPUTE_REGION, MODEL_ID, FILE_PATH);
 
     // Assert
     String got = bout.toString();

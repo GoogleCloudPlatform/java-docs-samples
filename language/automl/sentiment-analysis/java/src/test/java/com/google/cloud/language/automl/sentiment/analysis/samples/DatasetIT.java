@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.language.automl.entity.extraction.samples;
+package com.google.cloud.language.automl.sentiment.analysis.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,18 +29,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for AutoML Natural Language Entity Extraction "Dataset API" sample. */
+/** Tests for AutoML Natural Language Sentiment Analysis "Dataset API" sample. */
 @RunWith(JUnit4.class)
-public class DatasetApiIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID and IMPORT_DATA_CSV before
-  // running the test cases.
+public class DatasetIT {
+  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID, DATASET_NAME,
+  // SENTIMENT_MAX and IMPORT_DATA_CSV before running the test cases.
   private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String BUCKET = PROJECT_ID + "-entity";
+  private static final String BUCKET = PROJECT_ID + "-lcm";
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String DATASET_NAME = "test_language_dataset";
-  private static final String FILTER = "textExtractionDatasetMetadata:*";
-  private static final String DATASET_ID = "TEN8051890775971069952";
-  private static final String IMPORT_DATA_CSV = "gs://cloud-ml-data/NL-entity/dataset.csv";
+  private static final String DATASET_NAME = "test_language_sentiment_dataset";
+  private static final String FILTER = "textSentimentDatasetMetadata:*";
+  private static final String DATASET_ID = "TST5333718606737441899";
+  private static final String SENTIMENT_MAX = "4";
+  private static final String IMPORT_DATA_CSV =
+      "gs://" + PROJECT_ID + "-lcm/automl-sentiment/train.csv";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -60,16 +62,17 @@ public class DatasetApiIT {
   public void testCreateImportDeleteDataset()
       throws IOException, InterruptedException, ExecutionException {
     // Act
-    DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME);
+    CreateDataset.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME, SENTIMENT_MAX);
 
     // Assert
     String got = bout.toString();
-    String datasetId = got.split("\n")[0].split("/")[(got.split("\n")[0]).split("/").length - 1];
+    String datasetId =
+        got.split("\n")[0].split("/")[(got.split("\n")[0]).split("/").length - 1].trim();
     assertThat(got).contains("Dataset name:");
 
     // Act
     bout.reset();
-    DatasetApi.importData(PROJECT_ID, COMPUTE_REGION, datasetId, IMPORT_DATA_CSV);
+    ImportData.importData(PROJECT_ID, COMPUTE_REGION, datasetId, IMPORT_DATA_CSV);
 
     // Assert
     got = bout.toString();
@@ -77,7 +80,7 @@ public class DatasetApiIT {
 
     // Act
     bout.reset();
-    DatasetApi.deleteDataset(PROJECT_ID, COMPUTE_REGION, datasetId);
+    DeleteDataset.deleteDataset(PROJECT_ID, COMPUTE_REGION, datasetId);
 
     // Assert
     got = bout.toString();
@@ -87,7 +90,7 @@ public class DatasetApiIT {
   @Test
   public void testListDatasets() throws IOException {
     // Act
-    DatasetApi.listDatasets(PROJECT_ID, COMPUTE_REGION, FILTER);
+    ListDatasets.listDatasets(PROJECT_ID, COMPUTE_REGION, FILTER);
 
     // Assert
     String got = bout.toString();
@@ -97,7 +100,7 @@ public class DatasetApiIT {
   @Test
   public void testGetDataset() throws IOException {
     // Act
-    DatasetApi.getDataset(PROJECT_ID, COMPUTE_REGION, DATASET_ID);
+    GetDataset.getDataset(PROJECT_ID, COMPUTE_REGION, DATASET_ID);
 
     // Assert
     String got = bout.toString();
@@ -109,7 +112,7 @@ public class DatasetApiIT {
     String outputURI = "gs://" + BUCKET + "/" + DATASET_ID;
 
     // Act
-    DatasetApi.exportData(PROJECT_ID, COMPUTE_REGION, DATASET_ID, outputURI);
+    ExportData.exportData(PROJECT_ID, COMPUTE_REGION, DATASET_ID, outputURI);
 
     // Assert
     String got = bout.toString();

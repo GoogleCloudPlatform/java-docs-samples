@@ -44,6 +44,11 @@
     </dependency>
     <!-- [END automl_language_java_dependencies] -->
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>1.65.0</version>
+    </dependency>
+    <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
       <artifactId>argparse4j</artifactId>
       <version>0.8.1</version>
