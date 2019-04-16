@@ -24,9 +24,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.Get;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.Patient;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
+
 import java.io.IOException;
 import java.util.Collections;
 
@@ -45,14 +46,15 @@ public class FhirResourceGetPatientEverything {
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
-    Get request =
+    Patient.Get$everything request =
         client
             .projects()
             .locations()
             .datasets()
             .fhirStores()
             .fhir()
-            .get(String.format("%s/$everything", resourceName));
+            .patient()
+            .get$everything(resourceName);
 
     // Execute the request and process the results.
     HttpBody response = request.execute();

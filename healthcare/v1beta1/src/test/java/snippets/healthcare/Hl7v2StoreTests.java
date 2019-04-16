@@ -19,12 +19,17 @@ package snippets.healthcare;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -48,7 +53,7 @@ import snippets.healthcare.hl7v2.messages.HL7v2MessagePatch;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Hl7v2StoreTests {
+public class Hl7v2StoreTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -59,6 +64,7 @@ public class Hl7v2StoreTests {
   private static String hl7v2StoreName;
 
   private static String messageId;
+  private static String hl7v2MessagePrefix;
   private static String messageName;
 
   private final PrintStream originalOut = System.out;
@@ -85,11 +91,17 @@ public class Hl7v2StoreTests {
         String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
-    hl7v2StoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    hl7v2StoreId = "hl7v2-" + UUID.randomUUID().toString().replaceAll("-", "_");
     hl7v2StoreName = String.format("%s/hl7V2Stores/%s", datasetName, hl7v2StoreId);
 
     messageId = "message-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    messageName = String.format("%s/messages/%s", hl7v2StoreName, messageId);
+
+    hl7v2MessagePrefix = hl7v2StoreName + "/messages";
+  }
+
+  @AfterClass
+  public static void deleteTempItems() throws IOException {
+    deleteDatasets();
   }
 
   @Before
@@ -151,6 +163,13 @@ public class Hl7v2StoreTests {
 
     String output = bout.toString();
     assertThat(output, containsString("HL7v2 message created: "));
+    Pattern messageNamePattern =
+        Pattern.compile(String.format("\"(?<messageName>%s/[^/\"]+)\"", hl7v2MessagePrefix));
+    Matcher messageNameMatcher = messageNamePattern.matcher(bout.toString());
+    assertTrue(messageNameMatcher.find());
+    // '=' is encoded for JSON, but won't work for 'get'.
+    messageName = messageNameMatcher.group("messageName").replace("\\u003d", "=");
+    messageId = messageName.substring(messageName.indexOf("messages/") + "messages/".length());
   }
 
   @Test

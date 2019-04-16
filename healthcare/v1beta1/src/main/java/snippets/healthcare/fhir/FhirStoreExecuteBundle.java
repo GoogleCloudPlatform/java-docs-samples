@@ -17,6 +17,7 @@
 package snippets.healthcare.fhir;
 
 // [START healthcare_fhir_execute_bundle]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,35 +25,62 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.ExecuteBundle;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collections;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+
 public class FhirStoreExecuteBundle {
-  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreExecuteBundle(String fhirStoreName) throws IOException {
+  public static void fhirStoreExecuteBundle(String fhirStoreName)
+      throws IOException, URISyntaxException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
-
-    // Specify the bundle to execute on the content.
+    HttpClient httpClient = HttpClients.createDefault();
+    URIBuilder uriBuilder = new URIBuilder(client.getRootUrl() + "v1beta1/" + fhirStoreName)
+        .setParameter("access_token", getAccessToken());
     HttpBody bundle = new HttpBody();
+    StringEntity requestEntity = new StringEntity(bundle.toString());
 
-    // Create request and configure any parameters.
-    ExecuteBundle request =
-        client.projects().locations().datasets().fhirStores().executeBundle(fhirStoreName, bundle);
+    HttpUriRequest request = RequestBuilder
+        .post()
+        .setUri(uriBuilder.build())
+        .setEntity(requestEntity)
+        .addHeader("Content-Type", "application/fhir+json")
+        .addHeader("Accept-Charset", "utf-8")
+        .addHeader("Accept", "application/fhir+json; charset=utf-8")
+        .build();
 
     // Execute the request and process the results.
-    HttpBody response = request.execute();
-    System.out.println("FHIR bundle executed:" + response.toPrettyString());
+    HttpResponse response = httpClient.execute(request);
+    HttpEntity responseEntity = response.getEntity();
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      System.err.print(String.format(
+          "Exception executing FHIR bundle: %s\n", response.getStatusLine().toString()));
+      responseEntity.writeTo(System.err);
+      throw new RuntimeException();
+    }
+    System.out.print("FHIR bundle executed: ");
+    responseEntity.writeTo(System.out);
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -75,6 +103,14 @@ public class FhirStoreExecuteBundle {
     return new CloudHealthcare.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
         .setApplicationName("your-application-name")
         .build();
+  }
+
+  private static String getAccessToken() throws IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
+    credential.refreshToken();
+    return credential.getAccessToken();
   }
 }
 // [END healthcare_fhir_execute_bundle]

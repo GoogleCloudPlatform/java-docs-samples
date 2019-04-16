@@ -20,6 +20,7 @@ package snippets.healthcare.dicom;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -70,8 +71,8 @@ public class DicomWebStoreInstance {
             .storeInstances(dicomStoreName, "studies/" + studyId, body);
 
     // Execute the request and process the results.
-    HttpBody response = request.execute();
-    System.out.println("DICOM instance stored: " + response.toPrettyString());
+    HttpResponse response = request.executeUnparsed();
+    System.out.println("DICOM instance stored: " + response.toString());
   }
 
   private static CloudHealthcare createClient() throws IOException {

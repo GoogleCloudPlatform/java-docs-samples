@@ -24,12 +24,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDeIdentify;
 import snippets.healthcare.datasets.DatasetDelete;
@@ -40,6 +43,7 @@ import snippets.healthcare.datasets.DatasetPatch;
 import snippets.healthcare.datasets.DatasetSetIamPolicy;
 
 @RunWith(JUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DatasetTests {
   private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -119,7 +123,7 @@ public class DatasetTests {
     DatasetDeIdentify.datasetDeIdentify(datasetName, datasetName + "-died");
 
     String output = bout.toString();
-    assertThat(output, containsString("De-identified dataset created."));
+    assertThat(output, containsString("De-identified Dataset created."));
   }
 
   @Test

@@ -36,19 +36,23 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.fhir.FhirStoreCreate;
-import snippets.healthcare.fhir.FhirStoreDelete;
-import snippets.healthcare.fhir.FhirStoreExecuteBundle;
-import snippets.healthcare.fhir.FhirStoreExport;
-import snippets.healthcare.fhir.FhirStoreGet;
-import snippets.healthcare.fhir.FhirStoreGetIamPolicy;
-import snippets.healthcare.fhir.FhirStoreImport;
-import snippets.healthcare.fhir.FhirStoreList;
-import snippets.healthcare.fhir.FhirStorePatch;
-import snippets.healthcare.fhir.FhirStoreSetIamPolicy;
+import snippets.healthcare.fhir.resources.FhirResourceConditionalPatch;
+import snippets.healthcare.fhir.resources.FhirResourceConditionalUpdate;
+import snippets.healthcare.fhir.resources.FhirResourceCreate;
+import snippets.healthcare.fhir.resources.FhirResourceDelete;
+import snippets.healthcare.fhir.resources.FhirResourceDeletePurge;
+import snippets.healthcare.fhir.resources.FhirResourceGet;
+import snippets.healthcare.fhir.resources.FhirResourceGetHistory;
+import snippets.healthcare.fhir.resources.FhirResourceGetMetadata;
+import snippets.healthcare.fhir.resources.FhirResourceGetPatientEverything;
+import snippets.healthcare.fhir.resources.FhirResourceListHistory;
+import snippets.healthcare.fhir.resources.FhirResourcePatch;
+import snippets.healthcare.fhir.resources.FhirResourceSearch;
+import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class FhirStoreTests extends TestBase {
+public class FhirResourceTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -94,6 +98,7 @@ public class FhirStoreTests extends TestBase {
 
     fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
     fhirStoreName = String.format("%s/fhirStores/%s", datasetName, fhirStoreId);
+    FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
 
     fhirResourceId = patientType + "/" + UUID.randomUUID().toString().replaceAll("-", "_");
     fhirResourceName = String.format("%s/fhir/%s", fhirStoreName, fhirResourceId);
@@ -102,6 +107,7 @@ public class FhirStoreTests extends TestBase {
   @AfterClass
   public static void deleteTempItems() throws IOException {
     deleteDatasets();
+
   }
 
   @Before
@@ -116,83 +122,115 @@ public class FhirStoreTests extends TestBase {
     bout.reset();
   }
 
+
   @Test
-  public void test_01_FhirStoreCreate() throws Exception {
-    FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
+  public void test_01_FhirResourceCreate() throws Exception {
+    FhirResourceCreate.fhirResourceCreate(fhirStoreName, patientType);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR store created: "));
+    assertThat(output, containsString("FHIR resource created:"));
   }
 
   @Test
-  public void test_02_FhirStoreGet() throws Exception {
-    FhirStoreGet.fhirStoreGet(fhirStoreName);
+  public void test_02_FhirResourceSearch() throws Exception {
+    FhirResourceSearch.fhirResourceSearch(fhirStoreName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR store retrieved:"));
+    assertThat(output, containsString("FHIR resource search results:"));
   }
 
   @Test
-  public void test_02_FhirStoreGetIamPolicy() throws Exception {
-    FhirStoreGetIamPolicy.fhirStoreGetIamPolicy(fhirStoreName);
+  public void test_02_FhirResourceSearchPost() throws Exception {
+    FhirResourceSearchPost.fhirResourceSearchPost(fhirStoreName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR store IAMPolicy retrieved:"));
+    assertThat(output, containsString("FHIR resource search results:"));
   }
 
   @Test
-  public void test_02_FhirStoreSetIamPolicy() throws Exception {
-    FhirStoreSetIamPolicy.fhirStoreSetIamPolicy(fhirStoreName);
+  public void test_02_FhirResourceGet() throws Exception {
+    FhirResourceGet.fhirResourceGet(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR policy has been updated:"));
+    assertThat(output, containsString("FHIR resource retrieved:"));
   }
 
   @Test
-  public void test_02_FhirStoreList() throws Exception {
-    FhirStoreList.fhirStoreList(datasetName);
+  public void test_02_FhirResourcePatch() throws Exception {
+    FhirResourcePatch.fhirResourcePatch(fhirResourceName, "[{op: 'replace', path: '/active', value: false}]");
 
     String output = bout.toString();
-    assertThat(output, containsString("Retrieved "));
+    assertThat(output, containsString("FHIR resource patched:"));
+    assertThat(output, containsString("Matthews"));
   }
 
   @Test
-  public void test_02_FhirStorePatch() throws Exception {
-    FhirStorePatch.fhirStorePatch(fhirStoreName, GCLOUD_PUBSUB_TOPIC);
+  public void test_02_FhirResourceConditionalPatch() throws Exception {
+    FhirResourceConditionalPatch.fhirResourceConditionalPatch(
+        fhirStoreName,
+        patientType,
+        "{'family': 'Smith'}");
 
     String output = bout.toString();
-    assertThat(output, containsString("Fhir store patched:"));
+    assertThat(output, containsString("FHIR resource conditionally patched:"));
   }
 
   @Test
-  public void test_02_ExecuteFhirBundle() throws Exception {
-    FhirStoreExecuteBundle.fhirStoreExecuteBundle(fhirStoreName);
+  public void test_02_FhirResourceConditionalUpdate() throws Exception {
+    FhirResourceConditionalUpdate.fhirResourceConditionalUpdate(
+        fhirStoreName,
+        patientType,
+        "{'family': 'Jones'}");
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR bundle executed:"));
+    assertThat(output, containsString("FHIR resource conditionally replaced:"));
   }
 
   @Test
-  public void test_02_FhirStoreExport() throws Exception {
-    FhirStoreExport.fhirStoreExport(fhirStoreName, "gs://" + GCLOUD_PUBSUB_TOPIC);
+  public void test_02_FhirResourceGetPatientEverything() throws Exception {
+    FhirResourceGetPatientEverything.fhirResourceGetPatientEverything(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("Fhir store export complete."));
+    assertThat(output, containsString("FHIR resource search results:"));
   }
 
   @Test
-  public void test_03_FhirStoreImport() throws Exception {
-    FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + gcsFileName);
+  public void test_02_GetFhirResourceMetadata() throws Exception {
+    FhirResourceGetMetadata.fhirResourceGetMetadata(fhirStoreName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR store import complete:"));
+    assertThat(output, containsString("FHIR resource metadata retrieved:"));
   }
 
   @Test
-  public void test_08_FhirStoreDelete() throws Exception {
-    FhirStoreDelete.fhirStoreDelete(fhirStoreName);
+  public void test_03_FhirResourceDelete() throws Exception {
+    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR store deleted."));
+    assertThat(output, containsString("FHIR resource deleted."));
+  }
+
+  @Test
+  public void test_04_FhirResourceGetHistory() throws Exception {
+    FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource history retrieved:"));
+  }
+
+  @Test
+  public void test_04_FhirResourceListHistory() throws Exception {
+    FhirResourceListHistory.fhirResourceListHistory(fhirResourceName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource history list:"));
+  }
+
+  @Test
+  public void test_05_DeletePurgeFhirResource() throws Exception {
+    FhirResourceDeletePurge.fhirResourceDeletePurge(fhirResourceName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource deleted."));
   }
 }

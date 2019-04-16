@@ -14,50 +14,28 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.dicom;
+package snippets.healthcare;
 
-// [START healthcare_dicomweb_search_instances]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
+import com.google.api.services.healthcare.v1beta1.model.ListDatasetsResponse;
 
 import java.io.IOException;
 import java.util.Collections;
 
-public class DicomWebSearchForInstances {
+public class TestBase {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String REGION_ID = "us-central1";
 
-  public static void dicomWebSearchForInstances(String dicomStoreName) throws IOException {
-    // String dicomStoreName =
-    //    String.format(
-    //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
-
-    // Initialize the client, which will be used to interact with the service.
-    CloudHealthcare client = createClient();
-
-    // Create request and configure any parameters.
-    DicomStores.SearchForInstances request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .dicomStores()
-            .searchForInstances(dicomStoreName, "instances");
-
-    // Execute the request and process the results.
-    HttpResponse response = request.executeUnparsed();
-    System.out.println("Dicom store instances found: \n" + response.toString());
-  }
-
-  private static CloudHealthcare createClient() throws IOException {
+  protected static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
     GoogleCredential credential =
@@ -78,5 +56,31 @@ public class DicomWebSearchForInstances {
         .setApplicationName("your-application-name")
         .build();
   }
+
+  protected static void deleteDatasets() throws IOException {
+    CloudHealthcare client = createClient();
+
+    String parentName = String.format(
+        "projects/%s/locations/%s",
+        PROJECT_ID,
+        REGION_ID);
+    ListDatasetsResponse response = client
+        .projects()
+        .locations()
+        .datasets()
+        .list(parentName)
+        .execute();
+    if (response.getDatasets() == null) {
+      return;
+    }
+    for (int i = 0; i < response.getDatasets().size(); i++) {
+      client
+          .projects()
+          .locations()
+          .datasets()
+          .delete(response.getDatasets().get(i).getName())
+          .execute();
+    }
+  }
+
 }
-// [END healthcare_dicomweb_search_instances]

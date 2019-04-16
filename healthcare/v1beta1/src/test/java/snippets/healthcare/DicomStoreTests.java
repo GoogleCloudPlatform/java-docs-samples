@@ -24,7 +24,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -49,7 +51,7 @@ import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DicomStoreTests {
+public class DicomStoreTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -77,7 +79,6 @@ public class DicomStoreTests {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GCLOUD_BUCKET_NAME");
     requireEnvVar("GCLOUD_PUBSUB_TOPIC");
   }
 
@@ -92,6 +93,11 @@ public class DicomStoreTests {
     dicomStoreName = String.format("%s/dicomStores/%s", datasetName, dicomStoreId);
 
     studyId = "study-" + UUID.randomUUID().toString().replaceAll("-", "_");
+  }
+
+  @AfterClass
+  public static void deleteTempItems() throws IOException {
+    deleteDatasets();
   }
 
   @Before
@@ -156,16 +162,17 @@ public class DicomStoreTests {
 
   @Test
   public void test_02_DicomStoreExport() throws IOException {
-    DicomStoreExport.dicomStoreExport(dicomStoreName, GCLOUD_BUCKET_NAME);
+    String gcsPath = String.format("gs://%s", GCLOUD_BUCKET_NAME);
+    DicomStoreExport.dicomStoreExport(dicomStoreName, gcsPath);
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM store export complete."));
   }
 
   @Test
-  public void test_02_DicomStoreImport() throws IOException {
+  public void test_03_DicomStoreImport() throws IOException {
     String gcsPath =
-        String.format("gcs://%s/%s", GCLOUD_BUCKET_NAME, "IM-0002-0001-JPEG-BASELINE.dcm");
+        String.format("gs://%s/%s", GCLOUD_BUCKET_NAME, "IM-0002-0001-JPEG-BASELINE.dcm");
     DicomStoreImport.dicomStoreImport(dicomStoreName, gcsPath);
 
     String output = bout.toString();
@@ -185,7 +192,7 @@ public class DicomStoreTests {
   public void test_04_DicomWebSearchInstances() throws Exception {
     DicomWebSearchForInstances.dicomWebSearchForInstances(dicomStoreName);
     String output = bout.toString();
-    assertThat(output, containsString("DICOM instances found:"));
+    assertThat(output, containsString("Dicom store instances found:"));
   }
 
   @Test

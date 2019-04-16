@@ -64,7 +64,7 @@ public class DicomStoreExport {
     // Execute the request, wait for the operation to complete, and process the results.
     try {
       Operation operation = request.execute();
-      while (!operation.getDone()) {
+      while (operation.getDone() == null || !operation.getDone()) {
         // Update the status of the operation with another request.
         Thread.sleep(500); // Pause for 500ms between requests.
         operation =

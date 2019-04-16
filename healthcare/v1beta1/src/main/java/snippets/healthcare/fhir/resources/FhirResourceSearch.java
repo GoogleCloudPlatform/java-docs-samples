@@ -17,6 +17,7 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_search_resources_get]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,12 +25,22 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-import com.google.api.services.healthcare.v1beta1.model.SearchResourcesRequest;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collections;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceSearch {
   private static final String FHIR_NAME =
@@ -37,7 +48,7 @@ public class FhirResourceSearch {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceSearch(String resourceName) throws IOException {
+  public static void fhirResourceSearch(String resourceName) throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
@@ -46,24 +57,35 @@ public class FhirResourceSearch {
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    // Configure the resource type to search for
+    HttpClient httpClient = HttpClients.createDefault();
+    String uri = String.format(
+        "%sv1beta1/%s", client.getRootUrl(), resourceName);
+    URIBuilder uriBuilder = new URIBuilder(uri)
+        .setParameter("access_token", getAccessToken());
+    HttpBody httpBody =
+        new HttpBody().setContentType("application/fhir+json; charset=utf-8");
+    StringEntity requestEntity = new StringEntity(httpBody.toString());
 
-    SearchResourcesRequest searchRequest =
-        new SearchResourcesRequest().setResourceType(resourceType);
-
-    // Create request and configure any parameters.
-    Fhir.Search request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .fhirStores()
-            .fhir()
-            .search(resourceName, searchRequest);
+    HttpUriRequest request = RequestBuilder
+        .put()
+        .setUri(uriBuilder.build())
+        .setEntity(requestEntity)
+        .addHeader("Content-Type", "application/fhir+json")
+        .addHeader("Accept-Charset", "utf-8")
+        .addHeader("Accept", "application/fhir+json; charset=utf-8")
+        .build();
 
     // Execute the request and process the results.
-    HttpBody response = request.execute();
-    System.out.println("FHIR resource search results: " + response.toPrettyString());
+    HttpResponse response = httpClient.execute(request);
+    HttpEntity responseEntity = response.getEntity();
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      System.err.print(String.format(
+          "Exception searching FHIR resources: %s\n", response.getStatusLine().toString()));
+      responseEntity.writeTo(System.err);
+      throw new RuntimeException();
+    }
+    System.out.println("FHIR resource search results: ");
+    responseEntity.writeTo(System.out);
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -86,6 +108,14 @@ public class FhirResourceSearch {
     return new CloudHealthcare.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
         .setApplicationName("your-application-name")
         .build();
+  }
+
+  private static String getAccessToken() throws IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
+    credential.refreshToken();
+    return credential.getAccessToken();
   }
 }
 // [END healthcare_search_resources_get]
