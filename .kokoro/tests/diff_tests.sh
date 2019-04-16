@@ -31,6 +31,7 @@ gradle -v
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
 export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
 source ${KOKORO_GFILE_DIR}/aws-secrets.sh
+source ${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh
 source ${KOKORO_GFILE_DIR}/dlp_secrets.txt
 # Activate service account
 gcloud auth activate-service-account\
@@ -51,11 +52,15 @@ for file in **/pom.xml; do
     # Only tests changed projects
     git diff --quiet master.. .
     CHANGED=$?
+
     # Only test leafs to prevent testing twice
     PARENT=$(grep "<modules>" pom.xml -c)
 
+    # Get the Java version from the pom.xml
+    VERSION=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
+
     # Check for changes to the current folder
-    if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ]; then
+    if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ] && [ ",$JAVA_VERSIONS," = *",$VERSION,"* ]; then
         echo "------------------------------------------------------------"
         echo "- testing $file"
         echo "------------------------------------------------------------"
@@ -68,7 +73,7 @@ for file in **/pom.xml; do
            -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
            -Dbigtable.instanceID=instance
         EXIT=$?
-        
+
         if [ $EXIT -ne 0 ]; then
             echo -e "\n Tests failed. \n"
             RESULT=1

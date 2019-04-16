@@ -58,6 +58,8 @@
         <module>dataflow/spanner-io</module>
         <module>dataflow/transforms</module>
 
+        <module>datalabeling/beta/cloud-client</module>
+
         <module>datastore</module>
         <module>datastore/cloud-client</module>
 
@@ -95,6 +97,7 @@
 
         <module>storage/cloud-client</module>
         <module>storage/json-api</module>
+        <module>storage/s3-sdk</module>
         <module>storage/storage-transfer</module>
         <module>storage/xml-api/cmdline-sample</module>
         <module>storage/xml-api/serviceaccount-appengine-sample</module>

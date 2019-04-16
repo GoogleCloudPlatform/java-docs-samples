@@ -31,17 +31,54 @@ gradle -v
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
 export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
 source ${KOKORO_GFILE_DIR}/aws-secrets.sh
+source ${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh
 source ${KOKORO_GFILE_DIR}/dlp_secrets.txt
 # Activate service account
 gcloud auth activate-service-account\
     --key-file=$GOOGLE_APPLICATION_CREDENTIALS \
     --project=$GOOGLE_CLOUD_PROJECT
 
-# Run the tests
+echo -e "\n******************** TESTING AFFECTED PROJECTS ********************"
+set +e
+RESULT=0
 cd github/java-docs-samples
-mvn --batch-mode --fail-at-end clean verify \
-    -Dfile.encoding="UTF-8" \
-    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Dmaven.test.redirectTestOutputToFile=true \
-    -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-    -Dbigtable.instanceID=instance
+# For every pom.xml (may break on whitespace)
+for file in **/pom.xml; do
+    # Navigate to project
+    file=$(dirname "$file")
+    pushd "$file" > /dev/null
+
+    # Only test leafs to prevent testing twice
+    PARENT=$(grep "<modules>" pom.xml -c)
+
+    # Get the Java version from the pom.xml
+    VERSION=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
+
+    # Check for changes to the current folder
+    if [ "$PARENT" -eq 0 ] && [ ",$JAVA_VERSIONS," = *",$VERSION,"* ]; then
+        echo "------------------------------------------------------------"
+        echo "- testing $file"
+        echo "------------------------------------------------------------"
+
+        # Run tests and update RESULT if failed
+        mvn -q --batch-mode --fail-at-end clean verify \
+           -Dfile.encoding="UTF-8" \
+           -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+           -Dmaven.test.redirectTestOutputToFile=true \
+           -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
+           -Dbigtable.instanceID=instance
+        EXIT=$?
+
+        if [ $EXIT -ne 0 ]; then
+           echo -e "\n Tests failed. \n"
+           RESULT=1
+        else
+           echo -e "\n Tests complete. \n"
+        fi
+    fi
+
+    popd > /dev/null
+
+done
+
+exit $RESULT
