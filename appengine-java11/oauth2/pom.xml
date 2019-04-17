@@ -6,11 +6,11 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>oauth2-sample</artifactId>
 
-  <!-- <parent>
+  <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
-  </parent> -->
+    <version>1.0.11</version>
+  </parent>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
@@ -18,7 +18,7 @@
   </properties>
 
   <dependencies>
-    <!-- Compile/runtime dependencies -->
+    <!-- You must install this from appengine-java11/appengine-simple-jetty-main -->
     <dependency>
       <groupId>com.google.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>

@@ -24,16 +24,27 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * This servlet class extends AbstractAuthorizationCodeServlet which if the end-user credentials
+ * are not found, will redirect the end-user to an authorization page.
+ *
+ */
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/oauth2callback/*")
 public class Oauth2CallbackServlet extends AbstractAuthorizationCodeCallbackServlet {
 
+  /**
+   * Handles a successfully granted authorization.
+   */
   @Override
   protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
       throws ServletException, IOException {
     resp.sendRedirect("/");
   }
 
+  /**
+   * Handles an error to the authorization, such as when an end user denies authorization.
+   */
   @Override
   protected void onError(
       HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
@@ -43,16 +54,25 @@ public class Oauth2CallbackServlet extends AbstractAuthorizationCodeCallbackServ
     resp.addHeader("Content-Type", "text/html");
   }
 
+  /** Returns the redirect URI for the given HTTP servlet request. */
   @Override
   protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
     return Utils.getRedirectUri(req);
   }
 
+  /**
+   * Loads the authorization code flow to be used across all HTTP servlet requests (only called
+   * during the first HTTP servlet request with an authorization code).
+   */
   @Override
   protected AuthorizationCodeFlow initializeFlow() throws IOException {
     return Utils.newFlow();
   }
 
+  /**
+   * Returns the user ID for the given HTTP servlet request. This identifies your application's
+   * user and is used to assign and persist credentials to that user.
+   */
   @Override
   protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
     return Utils.getUserId(req);

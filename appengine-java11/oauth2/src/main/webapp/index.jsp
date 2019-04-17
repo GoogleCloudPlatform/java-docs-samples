@@ -12,6 +12,7 @@
 <body>
 <%
   String userId = request.getSession().getId();
+  // Use the session id to retrieve access token.
   Credential credential = Utils.newFlow().loadCredential(userId);
 
   if (credential == null) {
@@ -19,6 +20,7 @@
     <a href="/login">Sign In with Google</a>
 <%
   } else {
+    // Use the credentials to get user info from the OAuth2.0 API.
     String username = Utils.getUserInfo(credential);
 %>
   <p> Hello, <%= username %>!</p>
