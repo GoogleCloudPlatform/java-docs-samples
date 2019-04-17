@@ -58,6 +58,8 @@
         <module>dataflow/spanner-io</module>
         <module>dataflow/transforms</module>
 
+        <module>datalabeling/beta/cloud-client</module>
+
         <module>datastore</module>
         <module>datastore/cloud-client</module>
 
