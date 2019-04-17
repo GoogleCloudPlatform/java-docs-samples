@@ -8,15 +8,43 @@ server-side resources.
 
 [client]: https://developers.google.com/api-client-library/java/google-api-java-client/oauth2
 
-## Setup
+## Setup you Google Cloud Project
 
-1. See [Prerequisites](../README.md#Prerequisites).
-1. In the [Cloud Developers Console](https://cloud.google.com/console) >
+- Make sure [`gcloud`](https://cloud.google.com/sdk/docs/) is installed and initialized:
+```
+   gcloud init
+```
+- If this is the first time you are creating an App Engine project
+```
+   gcloud app create
+```
+
+## Setup the Sample App
+
+- Copy the sample apps to your local machine:
+```
+  git clone https://github.com/GoogleCloudPlatform/java-docs-samples
+```
+
+- Add the [appengine-simple-jetty-main](../README.md#appengine-simple-jetty-main)
+Main class to your classpath:
+```
+  cd java-docs-samples/appengine-java11/appengine-simple-jetty-main
+  mvn install
+```
+- In the [Cloud Developers Console](https://cloud.google.com/console) >
 API Manager > Credentials, create a OAuth Client ID for a Web Application.
 You will need to provide an authorized redirect URI
 origin: `https://<PROJECT_ID>.appspot.com/oauth2callback`.
-1. Replace `CLIENT_ID` and `CLIENT_SECRET` with these values in your
+
+- Replace `CLIENT_ID` and `CLIENT_SECRET` with these values in your
 [app.yaml](/src/main/appengine/app.yaml)
+
+- Move into the `appengine-java11/oauth2` directory and compile the app:
+```
+  cd ../oauth2
+  mvn package
+```
 
 ## Deploy to App Engine Standard
 
