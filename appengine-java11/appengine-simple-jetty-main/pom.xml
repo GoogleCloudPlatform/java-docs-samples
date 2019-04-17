@@ -7,11 +7,11 @@
   <version>1</version>
   <packaging>jar</packaging>
 
-  <!-- <parent>
+  <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
-  </parent> -->
+    <version>1.0.11</version>
+  </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
