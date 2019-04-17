@@ -41,6 +41,32 @@ version unless configured to do otherwise.
 ```
 mvn appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 ```
+## Setup the Sample App
+
+- Copy the sample apps to your local machine:
+```
+git clone https://github.com/GoogleCloudPlatform/java-docs-samples
+```
+
+- Add the [appengine-simple-jetty-main](../README.md#appengine-simple-jetty-main)
+Main class to your classpath:
+```
+cd java-docs-samples/appengine-java11/appengine-simple-jetty-main
+mvn install
+```
+- In the [Cloud Developers Console](https://cloud.google.com/console) >
+API Manager > Credentials, create a OAuth Client ID for a Web Application.
+You will need to provide an authorized redirect URI
+origin: `https://<PROJECT_ID>.appspot.com/oauth2callback`.
+
+- Replace `CLIENT_ID` and `CLIENT_SECRET` with these values in your
+[app.yaml](/src/main/appengine/app.yaml)
+
+- Move into the `appengine-java11/tasks` directory and compile the app:
+```
+cd ../tasks
+mvn package
+```
 
 ## Run the Sample Using the Command Line
 
@@ -49,14 +75,14 @@ Set environment variables:
 First, your project ID:
 
 ```
-export GOOGLE_CLOUD_PROJECT=<YOUR_GOOGLE_CLOUD_PROJECT>
+export GOOGLE_CLOUD_PROJECT="<YOUR_GOOGLE_CLOUD_PROJECT>"
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
 created can be listed with `gcloud beta tasks queues list`.
 
 ```
-export QUEUE_ID=my-appengine-queue
+export QUEUE_ID="my-appengine-queue"
 ```
 
 And finally the location ID, which can be discovered with
@@ -66,26 +92,15 @@ the "name" value (for instance, if the name is
 location is "us-central1").
 
 ```
-export LOCATION_ID=<YOUR_ZONE>
+export LOCATION_ID="us-central1"
 ```
 
 Create a task, targeted at the `/tasks/create` endpoint, with a payload specified:
 
 ```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
-    --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
+mvn exec:java -Dexec.mainClass="com.example.task.CreateTask"
 ```
 
 The App Engine app serves as a target for the push requests. It has an
 endpoint `/tasks/create` that reads the payload (i.e., the request body) of the
 HTTP POST request and logs it. The log output can be viewed with [Stackdriver Logging](https://console.cloud.google.com/logs/viewer?minLogLevel=0).
-
-Create a task that will be scheduled for a time in the future using the
-`--in-seconds` flag:
-
-```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
-    --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
-```
