@@ -28,14 +28,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+/** Tests for AutoML Natural Language Sentiment Analysis Prediction. */
 @RunWith(JUnit4.class)
 public class PredictIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION and MODEL_ID before running the
-  // test cases.
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String MODEL_ID = "TEN368697035118870528";
-  private static final String FILE_PATH = "./resource/entityInput.txt";
+  private static final String MODEL_ID = "TEN1974951581904273408";
+  private static final String FILE_PATH = "./resources/entityInput.txt";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -59,5 +59,6 @@ public class PredictIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("Prediction results:");
+    assertThat(got).contains("2");
   }
 }

@@ -30,11 +30,10 @@ import org.junit.runners.JUnit4;
 
 import com.google.cloud.language.automl.sentiment.analysis.samples.PredictionApi;
 
-/** Tests for AutoML Natural Language Sentiment Analysis "PredictionAPI" sample. */
+/** Tests for AutoML Natural Language Sentiment Analysis Prediction. */
 @RunWith(JUnit4.class)
 public class PredictIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION and MODEL_ID before
-  // running the test cases.
+
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String COMPUTE_REGION = "us-central1";
   private static final String MODEL_ID = "TST1520889285651364720";

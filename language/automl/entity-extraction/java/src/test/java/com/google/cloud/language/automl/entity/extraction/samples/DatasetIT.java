@@ -35,12 +35,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for AutoML Natural Language Entity Extraction "Dataset API" sample. */
+/** Tests for AutoML Natural Language Entity Extraction Dataset operations */
 @RunWith(JUnit4.class)
 public class DatasetIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID and IMPORT_DATA_CSV before
-  // running the test cases.
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String OUTPUT_PREFIX = "AUTOML_LANGUAGE_ENTITY_TEST_OUTPUT";
   private static final String COMPUTE_REGION = "us-central1";
   private static final String DATASET_NAME = "test_language_dataset";

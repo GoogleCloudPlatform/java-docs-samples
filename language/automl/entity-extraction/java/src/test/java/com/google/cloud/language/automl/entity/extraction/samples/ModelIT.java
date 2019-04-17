@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,18 +28,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for AutoML Natural Language Entity Extraction "Model API" sample. */
+/** Tests for AutoML Natural Language Entity Extraction Model operations. */
 @RunWith(JUnit4.class)
 public class ModelIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID, DEPLOY_MODEL_ID
-  // and UNDEPLOY_MODEL_ID before running the test cases.
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String COMPUTE_REGION = "us-central1";
   private static final String FILTER = "textExtractionModelMetadata:*";
-  private static final String DATASET_ID = "TEN3391966983409893376";
-  private static final String MODEL_NAME = "test_entity_model";
-  private static final String DEPLOY_MODEL_ID = "TEN7560470651006353408";
-  private static final String UNDEPLOY_MODEL_ID = "TEN6287640806320766976";
+  private static final String MODEL_ID = "TEN1974951581904273408";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -58,34 +53,26 @@ public class ModelIT {
   }
 
   @Test
-  public void testModelOperations() throws IOException, InterruptedException, ExecutionException {
-    // Act
-    CreateModel.createModel(PROJECT_ID, COMPUTE_REGION, DATASET_ID, MODEL_NAME);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Training started...");
+  public void testModelOperations() throws Exception {
 
     // Act
-    bout.reset();
     ListModels.listModels(PROJECT_ID, COMPUTE_REGION, FILTER);
 
     // Assert
-    got = bout.toString();
-    String modelId = got.split("\n")[2].split("/")[got.split("\n")[2].split("/").length - 1];
-    assertThat(got).contains("Model Id:");
+    String got = bout.toString();
+    assertThat(got).contains(MODEL_ID);
 
     // Act
     bout.reset();
-    GetModel.getModel(PROJECT_ID, COMPUTE_REGION, modelId);
+    GetModel.getModel(PROJECT_ID, COMPUTE_REGION, MODEL_ID);
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Model name:");
+    assertThat(got).contains(MODEL_ID);
 
     // Act
     bout.reset();
-    ListModelEvaluations.listModelEvaluations(PROJECT_ID, COMPUTE_REGION, modelId, "");
+    ListModelEvaluations.listModelEvaluations(PROJECT_ID, COMPUTE_REGION, MODEL_ID, "");
 
     // Assert
     got = bout.toString();
@@ -94,7 +81,7 @@ public class ModelIT {
 
     // Act
     bout.reset();
-    GetModelEvaluation.getModelEvaluation(PROJECT_ID, COMPUTE_REGION, modelId, modelEvaluationId);
+    GetModelEvaluation.getModelEvaluation(PROJECT_ID, COMPUTE_REGION, MODEL_ID, modelEvaluationId);
 
     // Assert
     got = bout.toString();
@@ -102,45 +89,18 @@ public class ModelIT {
 
     // Act
     bout.reset();
-    DisplayEvaluation.displayEvaluation(PROJECT_ID, COMPUTE_REGION, modelId, "");
+    DisplayEvaluation.displayEvaluation(PROJECT_ID, COMPUTE_REGION, MODEL_ID, "");
 
     // Assert
     got = bout.toString();
     assertThat(got).contains("Model Evaluation ID:");
 
-    // Act
-    bout.reset();
-    DeleteModel.deleteModel(PROJECT_ID, COMPUTE_REGION, modelId);
-
-    // Assert
-    got = bout.toString();
-    assertThat(got).contains("Model deletion started...");
-  }
-
-  @Test
-  public void testDeployModel() throws Exception {
-    // Act
-    DeployModel.deployModel(PROJECT_ID, COMPUTE_REGION, DEPLOY_MODEL_ID);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Name:");
-  }
-
-  @Test
-  public void testUndeployModel() throws Exception {
-    // Act
-    UndeployModel.undeployModel(PROJECT_ID, COMPUTE_REGION, UNDEPLOY_MODEL_ID);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Name:");
   }
 
   @Test
   public void testOperationStatus() throws IOException {
     // Act
-    ModelApi.listOperationsStatus(PROJECT_ID, COMPUTE_REGION, "");
+    ListOperationsStatus.listOperationsStatus(PROJECT_ID, COMPUTE_REGION, "");
 
     // Assert
     String got = bout.toString();
