@@ -24,7 +24,7 @@ import java.util.List;
 
 public class BigQueryHome {
   private static BigQueryRunner queryRunner;
-
+  // test change for comment
   private static BigQueryRunner getQueryRunner() throws IOException {
     if (queryRunner == null) {
       queryRunner = BigQueryRunner.getInstance();

@@ -47,6 +47,7 @@ cd github/java-docs-samples
 for file in **/pom.xml; do
     # Navigate to project
     file=$(dirname "$file")
+    echo $file
     pushd "$file" > /dev/null
 
     # Only tests changed projects
@@ -58,7 +59,7 @@ for file in **/pom.xml; do
 
     # Get the Java version from the pom.xml
     VERSION=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-
+    echo $VERSION
     # Check for changes to the current folder
     if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ] && [ ",$JAVA_VERSIONS," = *",$VERSION,"* ]; then
         echo "------------------------------------------------------------"
