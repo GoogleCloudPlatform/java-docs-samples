@@ -69,7 +69,7 @@ for file in **/pom.xml; do
     if [ "$PARENT" -eq 0 ]; then echo "parent"; fi
     echo $JAVA_VERSION
     echo $VERSION
-    if [ ",$JAVA_VERSION," = *",$VERSION,"* ]; then echo "version"; fi
+    if [ $JAVA_VERSIONS == *"$VERSION"* ]; then echo "version"; fi
 
     # Check for changes to the current folder
     if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ] && [ ",$JAVA_VERSION," = *",$VERSION,"* ]; then
