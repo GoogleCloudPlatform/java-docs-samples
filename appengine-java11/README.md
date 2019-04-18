@@ -51,12 +51,6 @@ To switch to an Open JDK 11 in a Cloud shell session, you can use:
    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ```
 
-## Set up
-Build the samples with maven:
-```
-mvn clean package
-```
-
 ### appengine-simple-jetty-main
 
 [appengine-simple-jetty-main](appengine-simple-jetty-main) is a shared artifact
