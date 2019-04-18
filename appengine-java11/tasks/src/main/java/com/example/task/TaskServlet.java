@@ -23,20 +23,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(
-    name = "Tasks",
-    description = "Create Cloud Task",
-    urlPatterns = "/tasks/create"
-)
+@WebServlet(name = "Tasks", description = "Create Cloud Task", urlPatterns = "/tasks/create")
 public class TaskServlet extends HttpServlet {
   private static Logger log = Logger.getLogger(TaskServlet.class.getName());
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     log.info("Received task request: " + req.getServletPath());
-    String body = req.getReader()
-        .lines()
-        .reduce("", (accumulator, actual) -> accumulator + actual);
+    String body = req.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
 
     if (!body.isEmpty()) {
       log.info("Request payload: " + body);
