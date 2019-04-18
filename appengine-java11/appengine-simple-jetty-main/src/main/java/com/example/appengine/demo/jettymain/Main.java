@@ -27,9 +27,7 @@ public class Main {
       System.err.println("Usage: need a relative path to the war file to execute");
       System.exit(1);
     }
-    System.setProperty(
-      "org.eclipse.jetty.util.log.class",
-      "org.eclipse.jetty.util.log.StrErrLog");
+    System.setProperty("org.eclipse.jetty.util.log.class", "org.eclipse.jetty.util.log.StrErrLog");
     System.setProperty("org.eclipse.jetty.LEVEL", "INFO");
 
     // Create a basic Jetty server object that will listen on port 8080.
