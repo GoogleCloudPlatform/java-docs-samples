@@ -39,9 +39,12 @@ Copyright 2019 Google LLC
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <!-- All dependencies are scoped as provided.
+    Dependent-jars are created and added to
+    ${project.build.directory}/appengine-staging -->
   <dependencies>
-    <!-- Dependency from folder `../appengine-simple-jetty-main` -->
-    <!-- See README for instructions for more information -->
+    <!-- Dependency from folder `../appengine-simple-jetty-main`
+      See README for instructions for more information -->
     <dependency>
       <groupId>com.google.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
@@ -55,12 +58,14 @@ Copyright 2019 Google LLC
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <!-- Cloud Tasks dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
       <version>0.87.0-beta</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
