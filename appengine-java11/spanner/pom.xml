@@ -31,6 +31,7 @@
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.11</version>
+    <relativePath></relativePath>
   </parent>
 
   <properties>
@@ -38,16 +39,18 @@
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <!-- All dependencies are scoped as provided.
+    Dependent-jars are created and added to
+    ${project.build.directory}/appengine-staging -->
   <dependencies>
-    <!-- Note: all dependencies are provided, and coming from the
-    dependent-jars created below that contains all deps.
-    After App Engine Staging you can see the content in
-    ${project.build.directory}/dependent-jars!-->
+    <!-- Dependency from folder `../appengine-simple-jetty-main` -->
+    <!-- See README for instructions for more information -->
     <dependency>
-      <groupId>com.example.appengine.demo</groupId>
+      <groupId>com.google.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
-      <scope>provided</scope>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/../appengine-simple-jetty-main/target/simple-jetty-main-1.jar</systemPath>
     </dependency>
 
     <dependency>

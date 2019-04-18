@@ -30,6 +30,7 @@ limitations under the License.
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.11</version>
+    <relativePath></relativePath>
   </parent>
 
   <properties>
@@ -42,6 +43,7 @@ limitations under the License.
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
       <version>1.8.0</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test Dependencies -->
