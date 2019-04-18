@@ -37,6 +37,7 @@ import org.apache.http.client.utils.URIBuilder;
     urlPatterns = "/analytics"
 )
 public class AnalyticsServlet extends HttpServlet {
+  
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
