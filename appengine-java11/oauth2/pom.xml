@@ -32,8 +32,7 @@
       <groupId>com.google.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/../appengine-simple-jetty-main/target/simple-jetty-main-*.jar</systemPath>
+      <scope>provided</scope>
     </dependency>
 
     <!-- OAuth 2.0 packages -->
