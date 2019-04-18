@@ -59,7 +59,11 @@ for file in **/pom.xml; do
 
     # Get the Java version from the pom.xml
     VERSION=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-    echo $VERSION
+
+    echo [ $JAVA_VERSIONS == *"$VERSION"* ]
+    echo [ ",$JAVA_VERSIONS," = *",$VERSION,"* ]
+    echo [ "$CHANGED" -eq 1 ]
+    echo [ "$PARENT" -eq 0 ]
     # Check for changes to the current folder
     if [ "$CHANGED" -eq 1 ] && [ "$PARENT" -eq 0 ] && [ ",$JAVA_VERSIONS," = *",$VERSION,"* ]; then
         echo "------------------------------------------------------------"
