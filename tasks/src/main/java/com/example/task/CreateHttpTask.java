@@ -22,13 +22,8 @@ import com.google.cloud.tasks.v2beta3.HttpMethod;
 import com.google.cloud.tasks.v2beta3.HttpRequest;
 import com.google.cloud.tasks.v2beta3.QueueName;
 import com.google.cloud.tasks.v2beta3.Task;
-import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Timestamp;
-
 import java.nio.charset.Charset;
-import java.time.Clock;
-import java.time.Instant;
 
 public class CreateHttpTask {
 
@@ -40,7 +35,6 @@ public class CreateHttpTask {
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
-
       // Variables provided by the system variables.
       // projectId = "my-project-id";
       // queueName = "my-appengine-queue";
@@ -52,13 +46,14 @@ public class CreateHttpTask {
       String queuePath = QueueName.of(projectId, location, queueName).toString();
 
       // Construct the task body.
-      Task.Builder taskBuilder = Task
-          .newBuilder()
-          .setHttpRequest(HttpRequest.newBuilder()
-              .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
-              .setUrl(url)
-              .setHttpMethod(HttpMethod.POST)
-              .build());
+      Task.Builder taskBuilder =
+          Task.newBuilder()
+              .setHttpRequest(
+                  HttpRequest.newBuilder()
+                      .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
+                      .setUrl(url)
+                      .setHttpMethod(HttpMethod.POST)
+                      .build());
 
       // Send create task request.
       Task task = client.createTask(queuePath, taskBuilder.build());
