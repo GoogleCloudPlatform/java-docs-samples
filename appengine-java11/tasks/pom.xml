@@ -49,8 +49,7 @@ Copyright 2019 Google LLC
       <groupId>com.google.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/../appengine-simple-jetty-main/target/simple-jetty-main-1.jar</systemPath>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
