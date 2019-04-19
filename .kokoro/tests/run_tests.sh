@@ -18,6 +18,7 @@
 set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
+trap '' HUP
 
 # `--debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
@@ -82,7 +83,7 @@ for file in **/pom.xml; do
         git diff --quiet origin/master.. .
         CHANGED=$?
         if [[ "$CHANGED" -eq 1 ]]; then
-          # echo -e "\n Skipping tests: no changes in folder.\n"
+          echo -e "\n Skipping $file: no changes in folder.\n"
           continue
         fi
     fi
