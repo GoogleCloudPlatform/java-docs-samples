@@ -36,8 +36,8 @@ fi
 
 # Verify Java versions have been specified
 if [[ -z ${JAVA_VERSION+x} ]]; then
-    echo -e "`$JAVA_VERSION` should be a comma delimited list of valid java versions."
-    return 1
+    echo -e "'JAVA_VERSION' env var should be a comma delimited list of valid java versions."
+    exit 1
 fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
@@ -49,19 +49,19 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     mvn -v
     echo "********** GRADLE INFO ***********"
     gradle -v
-
-    # Setup required env variables
-    export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
-    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
-    source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
-    source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
-    source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
-    # Activate service account
-    gcloud auth activate-service-account \
-        --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
-        --project="$GOOGLE_CLOUD_PROJECT"
-
-    cd github/java-docs-samples
+#
+#    # Setup required env variables
+#    export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
+#    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+#    source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
+#    source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
+#    source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
+#    # Activate service account
+#    gcloud auth activate-service-account \
+#        --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
+#        --project="$GOOGLE_CLOUD_PROJECT"
+#
+#    cd github/java-docs-samples
 fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
@@ -109,19 +109,13 @@ for file in **/pom.xml; do
         continue
     fi
 
-    # Skip full tests when debugging the script.
-    if [[ "$SCRIPT_DEBUG" = "true" ]]; then
-      SKIP="-DskipTests"
-    fi
-
     # Use maven to execute the tests for the project.
     mvn -q --batch-mode --fail-at-end clean verify \
        -Dfile.encoding="UTF-8" \
        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
        -Dmaven.test.redirectTestOutputToFile=true \
        -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-       -Dbigtable.instanceID=instance \
-       "$SKIP"
+       -Dbigtable.instanceID=instance
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then
