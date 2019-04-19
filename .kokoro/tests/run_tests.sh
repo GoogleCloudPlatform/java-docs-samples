@@ -122,7 +122,7 @@ for file in **/pom.xml; do
       RTN=1
       echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"
     else
-      echo -e "\n Testing completed.. \n"
+      echo -e "\n Testing completed.\n"
     fi
 
 done
