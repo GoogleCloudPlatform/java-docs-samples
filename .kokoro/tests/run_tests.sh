@@ -79,7 +79,7 @@ for file in **/pom.xml; do
 
     # If $DIFF_ONLY is true, skip projects without changes.
     if [[ "$ONLY_DIFF" = "true" ]]; then
-        git diff --quiet master.. .
+        git diff --quiet origin/master.. .
         CHANGED=$?
         if [[ "$CHANGED" -eq 1 ]]; then
           # echo -e "\n Skipping tests: no changes in folder.\n"
