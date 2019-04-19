@@ -49,19 +49,19 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     mvn -v
     echo "********** GRADLE INFO ***********"
     gradle -v
-#
-#    # Setup required env variables
-#    export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
-#    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
-#    source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
-#    source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
-#    source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
-#    # Activate service account
-#    gcloud auth activate-service-account \
-#        --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
-#        --project="$GOOGLE_CLOUD_PROJECT"
-#
-#    cd github/java-docs-samples
+
+    # Setup required env variables
+    export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
+    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+    source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
+    source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
+    source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
+    # Activate service account
+    gcloud auth activate-service-account \
+        --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
+        --project="$GOOGLE_CLOUD_PROJECT"
+
+    cd github/java-docs-samples
 fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
