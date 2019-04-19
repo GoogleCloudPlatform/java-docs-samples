@@ -16,25 +16,12 @@
 
 package com.example.guestbook;
 
-import static com.example.guestbook.Persistence.getFirestore;
 
-import com.google.cloud.Timestamp;
 import com.google.common.base.MoreObjects;
 import java.util.Date;
-import java.util.Objects;
-
-import com.google.cloud.firestore.DocumentReference;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.Query;
-import com.google.cloud.firestore.Query.Direction;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("JavadocMethod")
 public class Greeting {
@@ -61,22 +48,14 @@ public class Greeting {
     authorName = name;
   }
 
-  // public Greeting(DocumentReference greetingRef) {
-  //   ApiFuture<DocumentSnapshot> query = greetingRef.get();
-  //   DocumentSnapshot greetingSnapshot = query.get();
-  //
-  //   id = greetingSnapshot.getId();
-  //   authorName = greetingSnapshot.getString("authorName");
-  //   date = greetingSnapshot.getString("date"); //.toSqlTimestamp()
-  //   content = greetingSnapshot.getString("content");
-  // }
-
   public void save() {
+    // Construct a Greeting.
     Map<String, Object> greetingData = new HashMap<>();
     greetingData.put("date", date);
     greetingData.put("content", content);
     greetingData.put("authorName", authorName);
 
+    // Add Greeting to Guestbook with random id.
     book.getBookRef().collection("Greetings").add(greetingData);
   }
 

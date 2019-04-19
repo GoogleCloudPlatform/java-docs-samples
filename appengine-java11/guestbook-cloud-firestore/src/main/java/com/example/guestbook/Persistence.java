@@ -27,12 +27,9 @@ public class Persistence {
   @SuppressWarnings("JavadocMethod")
   public static Firestore getFirestore() {
     if (firestore.get() == null) {
-       // Authorized Firestore service
-      firestore.set(FirestoreOptions.newBuilder()
-                          .setProjectId("your-project-id")
-                          .build()
-                          .getService()
-                    );
+      // Authorized Firestore service
+      firestore.set(
+          FirestoreOptions.newBuilder().setProjectId("your-project-id").build().getService());
     }
 
     return firestore.get();

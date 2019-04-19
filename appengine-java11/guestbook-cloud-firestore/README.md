@@ -24,6 +24,13 @@ Standard.
 
 * Replace `your-project-id` in [`Persistence.java`](/src/main/java/com/example/guestbook/Persistence.java)  with your project Id you created.
 
+* Create a Cloud Firestore in Native mode database by going to the
+[Cloud Firestore UI](https://console.cloud.google.com/firestore/data) and
+from the Select a database service screen:
+  * Choose Cloud Firestore in Native mode.
+  * Select a Cloud Firestore location.
+  * Click Create Database.
+
 ## Deploying
 
 Deploy your application using the maven plugin:

@@ -18,41 +18,38 @@ package com.example.guestbook;
 
 import static com.example.guestbook.Persistence.getFirestore;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
-import java.util.List;
-import java.util.Objects;
-
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
-
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-// import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.Query.Direction;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
-// import com.google.cloud.firestore.WriteResult;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("JavadocMethod")
 public class Guestbook {
 
   // private static final KeyFactory keyFactory = getKeyFactory(Guestbook.class);
   private final DocumentReference bookRef;
+  private static final long TIMEOUT_SECONDS = 5;
 
   public final String book;
 
   public Guestbook(String book) {
     this.book = book == null ? "default" : book;
-    // Create the Guestbook document.
+
+    // Construct the Guestbook data.
+    Map<String, Object> bookData = new HashMap<>();
+    bookData.put("name", this.book);
+
+    // Get Guestbook reference in the collection.
     bookRef = getFirestore().collection("Guestbooks").document(this.book);
-    // key = keyFactory.newKey(this.book);
+    // Add Guestbook to collection.
+    bookRef.set(bookData);
   }
 
   public DocumentReference getBookRef() {
@@ -60,24 +57,23 @@ public class Guestbook {
   }
 
   public List<Greeting> getGreetings() {
-    ImmutableList.Builder<Greeting> greetingList = new ImmutableList.Builder<Greeting>();
-    ApiFuture<QuerySnapshot> query = bookRef.collection("Greetings").orderBy("date", Direction.DESCENDING).get();
-    System.out.println("Query");
+    // Initialize a List for Greetings.
+    ImmutableList.Builder<Greeting> greetings = new ImmutableList.Builder<Greeting>();
+    // Construct query.
+    ApiFuture<QuerySnapshot> query =
+        bookRef.collection("Greetings").orderBy("date", Direction.DESCENDING).get();
+
     try {
+      // Get query documents.
       QuerySnapshot querySnapshot = query.get();
-      List<QueryDocumentSnapshot> greetings = querySnapshot.getDocuments();
-      for (QueryDocumentSnapshot greeting : greetings) {
-        System.out.println(greeting.getId());
-        Greeting newGreeting = greeting.toObject(Greeting.class);
-        System.out.println(newGreeting);
-        greetingList.add(greeting.toObject(Greeting.class));
+      for (QueryDocumentSnapshot greeting : querySnapshot.getDocuments()) {
+        greetings.add(greeting.toObject(Greeting.class));
       }
-    }
-    catch(Exception InterruptedException) {
-      System.out.println("Nothing");
+    } catch (Exception InterruptedException) {
+      System.out.println("Nothing to query.");
     }
 
-    return greetingList.build();
+    return greetings.build();
   }
 
   @Override
@@ -86,8 +82,7 @@ public class Guestbook {
       return false;
     }
     Guestbook guestbook = (Guestbook) obj;
-    return Objects.equals(book, guestbook.book)
-        && Objects.equals(bookRef, guestbook.bookRef);
+    return Objects.equals(book, guestbook.book) && Objects.equals(bookRef, guestbook.bookRef);
   }
 
   @Override
@@ -97,9 +92,6 @@ public class Guestbook {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("book", book)
-        .add("bookRef", bookRef)
-        .toString();
+    return MoreObjects.toStringHelper(this).add("book", book).add("bookRef", bookRef).toString();
   }
 }
