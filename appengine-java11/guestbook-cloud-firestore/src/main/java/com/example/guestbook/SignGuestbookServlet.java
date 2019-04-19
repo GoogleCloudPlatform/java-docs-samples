@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet to sace the form data to your Firestore instance. */
 @SuppressWarnings("serial")
 @WebServlet(name = "SignGuestbookServlet", value="/sign")
 public class SignGuestbookServlet extends HttpServlet {

@@ -30,12 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/** Guestbook model. */
 @SuppressWarnings("JavadocMethod")
 public class Guestbook {
 
-  // private static final KeyFactory keyFactory = getKeyFactory(Guestbook.class);
-  private final DocumentReference bookRef;
   private static final long TIMEOUT_SECONDS = 5;
+
+  private final DocumentReference bookRef;
 
   public final String book;
 
@@ -56,6 +57,7 @@ public class Guestbook {
     return bookRef;
   }
 
+  /** Get greetings for the Guestbook */
   public List<Greeting> getGreetings() {
     // Initialize a List for Greetings.
     ImmutableList.Builder<Greeting> greetings = new ImmutableList.Builder<Greeting>();

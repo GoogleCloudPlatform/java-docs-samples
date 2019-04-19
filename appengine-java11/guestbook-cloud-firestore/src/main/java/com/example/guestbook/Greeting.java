@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/** Greeting model. */
 @SuppressWarnings("JavadocMethod")
 public class Greeting {
 
@@ -48,6 +49,7 @@ public class Greeting {
     authorName = name;
   }
 
+  /** Save the Greeting in the guestbook */
   public void save() {
     // Construct a Greeting.
     Map<String, Object> greetingData = new HashMap<>();

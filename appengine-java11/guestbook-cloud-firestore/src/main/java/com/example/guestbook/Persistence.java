@@ -20,6 +20,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import java.util.concurrent.atomic.AtomicReference;
 
+/** Create a persistence connection to your Firestore instance. */
 public class Persistence {
 
   private static AtomicReference<Firestore> firestore = new AtomicReference<>();
@@ -29,7 +30,7 @@ public class Persistence {
     if (firestore.get() == null) {
       // Authorized Firestore service
       firestore.set(
-          FirestoreOptions.newBuilder().setProjectId("your-project-id").build().getService());
+          FirestoreOptions.newBuilder().setProjectId("YOUR-PROJECT-ID").build().getService());
     }
 
     return firestore.get();
