@@ -22,7 +22,7 @@ shopt -s globstar
 # `--debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
-    JAVA_VERSION="1.8,11"
+    JAVA_VERSION="1.8"
 else
     SCRIPT_DEBUG="false"
 fi
