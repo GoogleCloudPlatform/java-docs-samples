@@ -69,26 +69,17 @@ location is "us-central1").
 export LOCATION_ID=<YOUR_ZONE>
 ```
 
-### Using App Engine Queues
-Create a task, targeted at the `/tasks/create` endpoint, with a payload specified:
+### Using HTTP Push Queues
 
+Set an environment variable for the endpoint to your task handler. This is an
+example url to send requests to the App Engine task handler:
 ```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
-    --queue $QUEUE_ID \
-    --location $LOCATION_ID \
-    --payload hello"
+export URL=https://${PROJECT_ID}.appspot.com/tasks/create
 ```
 
-The App Engine app serves as a target for the push requests. It has an
-endpoint `/tasks/create` that reads the payload (i.e., the request body) of the
-HTTP POST request and logs it. The log output can be viewed with [Stackdriver Logging](https://console.cloud.google.com/logs/viewer?minLogLevel=0).
-
-Create a task that will be scheduled for a time in the future using the
-`--in-seconds` flag:
+Running the sample will create a task and send the task to the specific URL
+endpoint, with a payload specified:
 
 ```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
-    -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
-    --queue $QUEUE_ID --location $LOCATION_ID --payload hello --in-seconds 30"
+mvn exec:java -Dexec.mainClass="com.example.task.CreateHttpTask"
 ```

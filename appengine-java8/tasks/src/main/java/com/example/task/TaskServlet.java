@@ -38,7 +38,7 @@ public class TaskServlet extends HttpServlet {
     String body = req.getReader()
         .lines()
         .reduce("", (accumulator, actual) -> accumulator + actual);
-        
+
     if (!body.isEmpty()) {
       log.info("Request payload: " + body);
       String output = String.format("Received task with payload %s", body);
