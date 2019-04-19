@@ -28,10 +28,10 @@ else
 fi
 
 # `--only-changed` will only run tests on projects container changes from the master branch.
-if [[ $* == *--only-changed* ]]; then
-    ONLY_CHANGED="true"
+if [[ $* == *--only-diff* ]]; then
+    ONLY_DIFF="true"
 else
-    ONLY_CHANGED="false"
+    ONLY_DIFF="false"
 fi
 
 # Verify Java versions have been specified
@@ -77,8 +77,8 @@ for file in **/pom.xml; do
     file=$(dirname "$file")
     cd "$file"
 
-    # If $ONLY_CHANGED is true, skip projects without changes.
-    if [[ "$ONLY_CHANGED" = "true" ]]; then
+    # If $DIFF_ONLY is true, skip projects without changes.
+    if [[ "$ONLY_DIFF" = "true" ]]; then
         git diff --quiet master.. .
         CHANGED=$?
         if [[ "$CHANGED" -eq 1 ]]; then
