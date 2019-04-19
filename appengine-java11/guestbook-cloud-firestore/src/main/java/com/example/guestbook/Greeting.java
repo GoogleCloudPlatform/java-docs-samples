@@ -29,13 +29,24 @@ import java.util.Date;
 import java.util.Objects;
 
 import com.google.cloud.firestore.DocumentReference;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.Query.Direction;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("JavadocMethod")
 public class Greeting {
 
   private Guestbook book;
 
-  public String is;
+  public String id;
   public String authorName;
   public String content;
   public Date date;
@@ -55,15 +66,15 @@ public class Greeting {
     authorName = name;
   }
 
-  public Greeting(DocumentReference greetingRef) {
-    ApiFuture<DocumentSnapshot> query = greetingRef.get()
-    DocumentSnapshot greetingSnapshot = query.get();
-
-    id = greetingSnapshot.getId();
-    authorName = greetingSnapshot.getString("authorName");
-    date = greetingSnapshot.getString("date").toSqlTimestamp();
-    content = greetingSnapshot.getString("content");
-  }
+  // public Greeting(DocumentReference greetingRef) {
+  //   ApiFuture<DocumentSnapshot> query = greetingRef.get();
+  //   DocumentSnapshot greetingSnapshot = query.get();
+  //
+  //   id = greetingSnapshot.getId();
+  //   authorName = greetingSnapshot.getString("authorName");
+  //   date = greetingSnapshot.getString("date"); //.toSqlTimestamp()
+  //   content = greetingSnapshot.getString("content");
+  // }
 
   public void save() {
     Map<String, Object> greetingData = new HashMap<>();
@@ -71,7 +82,8 @@ public class Greeting {
     greetingData.put("content", content);
     greetingData.put("authorName", authorName);
 
-    getFirestore.add(greetingData);
+    // getFirestore()
+    book.getBookRef().collection("Greetings").add(greetingData);
     // if (key == null) {
     //   // Get an unique key for the greeting.
     //   key = getFirestore().allocateId(makeIncompleteKey());
@@ -101,7 +113,7 @@ public class Greeting {
       return false;
     }
     Greeting greeting = (Greeting) obj;
-    return Objects.equals(key, greeting.key)
+    return Objects.equals(id, greeting.id)
         && Objects.equals(authorName, greeting.authorName)
         && Objects.equals(content, greeting.content)
         && Objects.equals(date, greeting.date);
@@ -109,13 +121,13 @@ public class Greeting {
 
   @Override
   public int hashCode() {
-    return Objects.hash(key, authorName, content, date);
+    return Objects.hash(id, authorName, content, date);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("key", key)
+        .add("id", id)
         .add("authorName", authorName)
         .add("content", content)
         .add("date", date)

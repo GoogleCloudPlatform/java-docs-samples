@@ -18,8 +18,8 @@ package com.example.guestbook;
 
 import static com.example.guestbook.Persistence.getFirestore;
 // import static com.example.guestbook.Persistence.getKeyFactory;
-import static com.google.cloud.datastore.StructuredQuery.OrderBy.desc;
-import static com.google.cloud.datastore.StructuredQuery.PropertyFilter.hasAncestor;
+// import static com.google.cloud.datastore.StructuredQuery.OrderBy.desc;
+// import static com.google.cloud.datastore.StructuredQuery.PropertyFilter.hasAncestor;
 
 // import com.google.cloud.datastore.Entity;
 // import com.google.cloud.datastore.EntityQuery;
@@ -27,9 +27,9 @@ import static com.google.cloud.datastore.StructuredQuery.PropertyFilter.hasAnces
 // import com.google.cloud.datastore.KeyFactory;
 // import com.google.cloud.datastore.Query;
 // import com.google.cloud.datastore.QueryResults;
-// import com.google.common.base.MoreObjects;
-// import com.google.common.collect.ImmutableList;
-// import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,45 +39,60 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 
 import com.google.api.core.ApiFuture;
-import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+// import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.Query.Direction;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
+// import com.google.cloud.firestore.WriteResult;
 
 @SuppressWarnings("JavadocMethod")
 public class Guestbook {
 
   // private static final KeyFactory keyFactory = getKeyFactory(Guestbook.class);
-  private final CollectionReference bookRef;
+  private final DocumentReference bookRef;
 
   public final String book;
 
   public Guestbook(String book) {
     this.book = book == null ? "default" : book;
-    // Create the Guestbook parent key.
+    // Create the Guestbook document.
     bookRef = getFirestore().collection("Guestbooks").document(this.book);
     // key = keyFactory.newKey(this.book);
   }
 
-  // public Key getKey() {
-  //   return key;
-  // }
   public DocumentReference getBookRef() {
     return bookRef;
   }
 
   public List<Greeting> getGreetings() {
-    // This query requires the index to be defined in index.yaml.
+    // Query query = bookRef.collection("Greetings").orderBy("date", Direction.DESCENDING).limit(5);
+    // ApiFuture<QuerySnapshot> querySnapshot = query.get().get();
+    // QuerySnapshot
+    ImmutableList.Builder<Greeting> greetingList = new ImmutableList.Builder<Greeting>();
+    // // Builder<Greeting> resultListBuilder = ImmutableList.builder();
+    // for (DocumentSnapshot greeting : querySnapshot.get().getDocuments()) {
+    //   // resultListBuilder.add(greeting.toObject(Greeting.class));
+    //   System.out.println(greeting.getId());
+    //   // greetings.add(); //greeting.toObject(Greeting.class)
+    // }
+    ApiFuture<QuerySnapshot> query = bookRef.collection("Greetings").orderBy("date", Direction.DESCENDING).get();
+    try {
+      QuerySnapshot querySnapshot = query.get();
+      List<QueryDocumentSnapshot> greetings = querySnapshot.getDocuments();
+      for (QueryDocumentSnapshot greeting : greetings) {
+        greetingList.add(greeting.toObject(Greeting.class));
+      }
+    }
+    catch(Exception InterruptedException) {
 
-    Query query = bookRef.collection("Greeting").orderBy("date", Direction.DESCENDING).limit(5);
-    ApiFuture<QuerySnapshot> querySnapshot = query.get();
-    return querySnapshot.toObjects("Greeting");
+    }
+
+    return greetingList.build();
+    // This query requires the index to be defined in index.yaml.
     // EntityQuery query =
     //     Query.newEntityQueryBuilder()
     //         .setKind("Greeting")
@@ -96,20 +111,18 @@ public class Guestbook {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Guestbook)) {
       return false;
     }
-    Guestbook guestbook = (Guestbook) o;
-    return Objects.equals(book, guestbook.book) && Objects.equals(key, guestbook.key);
+    Guestbook guestbook = (Guestbook) obj;
+    return Objects.equals(book, guestbook.book)
+        && Objects.equals(bookRef, guestbook.bookRef);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(book, key);
+    return Objects.hash(book, bookRef);
   }
 
   @Override

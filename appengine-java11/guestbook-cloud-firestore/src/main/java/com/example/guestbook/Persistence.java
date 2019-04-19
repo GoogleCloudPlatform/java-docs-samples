@@ -16,11 +16,8 @@
 
 package com.example.guestbook;
 
-// import com.google.cloud.datastore.Datastore;
-// import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.datastore.KeyFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Persistence {
@@ -42,10 +39,6 @@ public class Persistence {
   }
 
   public static void setFirestore(Firestore firestore) {
-    Persistence.datastore.set(firestore);
+    Persistence.firestore.set(firestore);
   }
-
-  // public static KeyFactory getKeyFactory(Class<?> c) {
-  //   return getFirestore().newKeyFactory().setKind(c.getSimpleName());
-  // }
 }

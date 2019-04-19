@@ -4,7 +4,7 @@
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 This sample demonstrates how to handle form data using
-[Cloud Datastore](https://cloud.google.com/datastore/) on Google App Engine
+[Cloud Firestore](https://cloud.google.com/firestore/) on Google App Engine
 Standard.
 
 ## Setup
@@ -30,12 +30,6 @@ Deploy your application using the maven plugin:
 
 ```
 mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
-```
-
-Deploy the Cloud Datastore index.yaml file using `gcloud`:
-
-```
-gcloud app deploy index.yaml
 ```
 
 View your application:
