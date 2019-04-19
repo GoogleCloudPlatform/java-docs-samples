@@ -77,26 +77,19 @@ for file in **/pom.xml; do
     file=$(dirname "$file")
     cd "$file"
 
-    echo "------------------------------------------------------------"
-    echo "- testing $file"
-    echo "------------------------------------------------------------"
-
-    # Skip POMs with 'modules' to avoid testing multiple times.
-    PARENT=$(grep "<modules>" pom.xml -c)
-    if [[ "$PARENT" -gt 0 ]]; then
-        echo -e "\n Skipping tests: POM is a parent pom.\n"
-        continue
-    fi
-
     # If $ONLY_CHANGED is true, skip projects without changes.
     if [[ "$ONLY_CHANGED" = "true" ]]; then
         git diff --quiet master.. .
         CHANGED=$?
         if [[ "$CHANGED" -eq 1 ]]; then
-        echo -e "\n Skipping tests: no changes in folder.\n"
+          # echo -e "\n Skipping tests: no changes in folder.\n"
           continue
         fi
     fi
+
+    echo "------------------------------------------------------------"
+    echo "- testing $file"
+    echo "------------------------------------------------------------"
 
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
@@ -133,9 +126,9 @@ for file in **/pom.xml; do
 
     if [[ $EXIT -ne 0 ]]; then
       RTN=1
-      echo -e "\n Tests failed: Maven returns a non-zero exit code. \n"
+      echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"
     else
-      echo -e "\n Tests completed successfully. \n"
+      echo -e "\n Testing completed.. \n"
     fi
 
 done
