@@ -16,24 +16,26 @@
 
 package com.example.guestbook;
 
-import static com.example.guestbook.Persistence.getDatastore;
+import static com.example.guestbook.Persistence.getFirestore;
 
 import com.google.cloud.Timestamp;
-import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.FullEntity;
-import com.google.cloud.datastore.FullEntity.Builder;
-import com.google.cloud.datastore.IncompleteKey;
-import com.google.cloud.datastore.Key;
+// import com.google.cloud.datastore.Entity;
+// import com.google.cloud.datastore.FullEntity;
+// import com.google.cloud.datastore.FullEntity.Builder;
+// import com.google.cloud.datastore.IncompleteKey;
+// import com.google.cloud.datastore.Key;
 import com.google.common.base.MoreObjects;
 import java.util.Date;
 import java.util.Objects;
+
+import com.google.cloud.firestore.DocumentReference;
 
 @SuppressWarnings("JavadocMethod")
 public class Greeting {
 
   private Guestbook book;
 
-  public Key key;
+  public String is;
   public String authorName;
   public String content;
   public Date date;
@@ -53,43 +55,52 @@ public class Greeting {
     authorName = name;
   }
 
-  public Greeting(Entity entity) {
-    key = entity.hasKey() ? entity.getKey() : null;
-    authorName = entity.contains("authorName") ? entity.getString("authorName") : null;
-    date = entity.contains("date") ? entity.getTimestamp("date").toSqlTimestamp() : null;
-    content = entity.contains("content") ? entity.getString("content") : null;
+  public Greeting(DocumentReference greetingRef) {
+    ApiFuture<DocumentSnapshot> query = greetingRef.get()
+    DocumentSnapshot greetingSnapshot = query.get();
+
+    id = greetingSnapshot.getId();
+    authorName = greetingSnapshot.getString("authorName");
+    date = greetingSnapshot.getString("date").toSqlTimestamp();
+    content = greetingSnapshot.getString("content");
   }
 
   public void save() {
-    if (key == null) {
-      // Get an unique key for the greeting.
-      key = getDatastore().allocateId(makeIncompleteKey());
-    }
+    Map<String, Object> greetingData = new HashMap<>();
+    greetingData.put("date", date);
+    greetingData.put("content", content);
+    greetingData.put("authorName", authorName);
 
-    Builder<Key> builder = FullEntity.newBuilder(key);
-
-    builder.set("authorName", authorName);
-    builder.set("content", content);
-    builder.set("date", Timestamp.of(date));
-
-    // Save greeting.
-    getDatastore().put(builder.build());
+    getFirestore.add(greetingData);
+    // if (key == null) {
+    //   // Get an unique key for the greeting.
+    //   key = getFirestore().allocateId(makeIncompleteKey());
+    // }
+    //
+    // Builder<Key> builder = FullEntity.newBuilder(key);
+    //
+    // builder.set("authorName", authorName);
+    // builder.set("content", content);
+    // builder.set("date", Timestamp.of(date));
+    //
+    // // Save greeting.
+    // getFirestore().put(builder.build());
   }
 
-  private IncompleteKey makeIncompleteKey() {
-    // Create key with the book as the ancestor key.
-    return Key.newBuilder(book.getKey(), "Greeting").build();
-  }
-
+  // private IncompleteKey makeIncompleteKey() {
+  //   // Create key with the book as the ancestor key.
+  //   return Key.newBuilder(book.getKey(), "Greeting").build();
+  // }
+// ****************************************************************
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    Greeting greeting = (Greeting) o;
+    Greeting greeting = (Greeting) obj;
     return Objects.equals(key, greeting.key)
         && Objects.equals(authorName, greeting.authorName)
         && Objects.equals(content, greeting.content)

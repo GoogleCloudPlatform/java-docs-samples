@@ -16,34 +16,36 @@
 
 package com.example.guestbook;
 
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
+// import com.google.cloud.datastore.Datastore;
+// import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.datastore.KeyFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Persistence {
 
-  private static AtomicReference<Datastore> datastore = new AtomicReference<>();
+  private static AtomicReference<Firestore> firestore = new AtomicReference<>();
 
   @SuppressWarnings("JavadocMethod")
-  public static Datastore getDatastore() {
-    if (datastore.get() == null) {
-       // Authorized Datastore service
-      datastore.set(DatastoreOptions.newBuilder()
+  public static Firestore getFirestore() {
+    if (firestore.get() == null) {
+       // Authorized Firestore service
+      firestore.set(FirestoreOptions.newBuilder()
                           .setProjectId("your-project-id")
                           .build()
                           .getService()
                     );
     }
 
-    return datastore.get();
+    return firestore.get();
   }
 
-  public static void setDatastore(Datastore datastore) {
-    Persistence.datastore.set(datastore);
+  public static void setFirestore(Firestore firestore) {
+    Persistence.datastore.set(firestore);
   }
 
-  public static KeyFactory getKeyFactory(Class<?> c) {
-    return getDatastore().newKeyFactory().setKind(c.getSimpleName());
-  }
+  // public static KeyFactory getKeyFactory(Class<?> c) {
+  //   return getFirestore().newKeyFactory().setKind(c.getSimpleName());
+  // }
 }

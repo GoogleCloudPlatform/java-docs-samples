@@ -21,10 +21,17 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
+    <!-- <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
       <version>1.62.0</version>
+      <scope>provided</scope>
+    </dependency> -->
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-firestore</artifactId>
+      <version>0.81.0-beta</version>
       <scope>provided</scope>
     </dependency>
 
