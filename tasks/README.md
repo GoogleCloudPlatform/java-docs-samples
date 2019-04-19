@@ -81,5 +81,15 @@ Running the sample will create a task and send the task to the specific URL
 endpoint, with a payload specified:
 
 ```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateHttpTask"
+mvn exec:java@HttpTask"
+```
+
+### Using HTTP Targets with Authentication Headers
+
+In `CreateHttpTaskWithToken.java`, add your service account email in place of
+`<SERVICE_ACCOUNT_EMAIL>` to authenticate the OIDC token.
+
+Running the sample with command:
+```
+mvn exec:java@WithToken"
 ```

@@ -27,12 +27,12 @@ Copyright 2018 Google LLC
     The parent pom defines common style checks and testing strategies for our samples.
     Removing or replacing it should not affect the execution of the samples in anyway.
   -->
-  <parent>
+  <!-- <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.11</version>
     <relativePath></relativePath>
-  </parent>
+  </parent> -->
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -54,10 +54,28 @@ Copyright 2018 Google LLC
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
-        <configuration>
-          <mainClass>com.example.task.CreateHttpTask</mainClass>
-          <cleanupDaemonThreads>false</cleanupDaemonThreads>
-        </configuration>
+        <executions>
+          <execution>
+              <id>HttpTask</id>
+              <goals>
+                  <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>com.example.task.CreateHttpTask</mainClass>
+                <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              </configuration>
+          </execution>
+          <execution>
+              <id>WithToken</id>
+              <goals>
+                  <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>com.example.task.CreateHttpTaskWithToken</mainClass>
+                <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
