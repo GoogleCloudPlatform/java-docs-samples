@@ -12,8 +12,12 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <!-- All dependencies are scoped as provided.
+    Dependent-jars are created and added to
+    ${project.build.directory}/appengine-staging -->
   <dependencies>
-    <!-- Compile/runtime dependencies -->
+    <!-- Dependency from folder `../appengine-simple-jetty-main`
+      See README for instructions for more information -->
     <dependency>
       <groupId>com.google.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
