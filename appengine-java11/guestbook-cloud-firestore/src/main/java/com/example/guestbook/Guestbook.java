@@ -17,16 +17,7 @@
 package com.example.guestbook;
 
 import static com.example.guestbook.Persistence.getFirestore;
-// import static com.example.guestbook.Persistence.getKeyFactory;
-// import static com.google.cloud.datastore.StructuredQuery.OrderBy.desc;
-// import static com.google.cloud.datastore.StructuredQuery.PropertyFilter.hasAncestor;
 
-// import com.google.cloud.datastore.Entity;
-// import com.google.cloud.datastore.EntityQuery;
-// import com.google.cloud.datastore.Key;
-// import com.google.cloud.datastore.KeyFactory;
-// import com.google.cloud.datastore.Query;
-// import com.google.cloud.datastore.QueryResults;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -69,45 +60,24 @@ public class Guestbook {
   }
 
   public List<Greeting> getGreetings() {
-    // Query query = bookRef.collection("Greetings").orderBy("date", Direction.DESCENDING).limit(5);
-    // ApiFuture<QuerySnapshot> querySnapshot = query.get().get();
-    // QuerySnapshot
     ImmutableList.Builder<Greeting> greetingList = new ImmutableList.Builder<Greeting>();
-    // // Builder<Greeting> resultListBuilder = ImmutableList.builder();
-    // for (DocumentSnapshot greeting : querySnapshot.get().getDocuments()) {
-    //   // resultListBuilder.add(greeting.toObject(Greeting.class));
-    //   System.out.println(greeting.getId());
-    //   // greetings.add(); //greeting.toObject(Greeting.class)
-    // }
     ApiFuture<QuerySnapshot> query = bookRef.collection("Greetings").orderBy("date", Direction.DESCENDING).get();
+    System.out.println("Query");
     try {
       QuerySnapshot querySnapshot = query.get();
       List<QueryDocumentSnapshot> greetings = querySnapshot.getDocuments();
       for (QueryDocumentSnapshot greeting : greetings) {
+        System.out.println(greeting.getId());
+        Greeting newGreeting = greeting.toObject(Greeting.class);
+        System.out.println(newGreeting);
         greetingList.add(greeting.toObject(Greeting.class));
       }
     }
     catch(Exception InterruptedException) {
-
+      System.out.println("Nothing");
     }
 
     return greetingList.build();
-    // This query requires the index to be defined in index.yaml.
-    // EntityQuery query =
-    //     Query.newEntityQueryBuilder()
-    //         .setKind("Greeting")
-    //         .setFilter(hasAncestor(key))
-    //         .setOrderBy(desc("date"))
-    //         .build();
-    //
-    // QueryResults<Entity> results = getDatastore().run(query);
-
-    // Builder<Greeting> resultListBuilder = ImmutableList.builder();
-    // while (results.hasNext()) {
-    //   resultListBuilder.add(new Greeting(results.next()));
-    // }
-    //
-    // return resultListBuilder.build();
   }
 
   @Override
@@ -131,6 +101,5 @@ public class Guestbook {
         .add("book", book)
         .add("bookRef", bookRef)
         .toString();
-        // .add("keyFactory", keyFactory)
   }
 }

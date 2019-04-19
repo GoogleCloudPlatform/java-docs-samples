@@ -19,11 +19,6 @@ package com.example.guestbook;
 import static com.example.guestbook.Persistence.getFirestore;
 
 import com.google.cloud.Timestamp;
-// import com.google.cloud.datastore.Entity;
-// import com.google.cloud.datastore.FullEntity;
-// import com.google.cloud.datastore.FullEntity.Builder;
-// import com.google.cloud.datastore.IncompleteKey;
-// import com.google.cloud.datastore.Key;
 import com.google.common.base.MoreObjects;
 import java.util.Date;
 import java.util.Objects;
@@ -82,28 +77,9 @@ public class Greeting {
     greetingData.put("content", content);
     greetingData.put("authorName", authorName);
 
-    // getFirestore()
     book.getBookRef().collection("Greetings").add(greetingData);
-    // if (key == null) {
-    //   // Get an unique key for the greeting.
-    //   key = getFirestore().allocateId(makeIncompleteKey());
-    // }
-    //
-    // Builder<Key> builder = FullEntity.newBuilder(key);
-    //
-    // builder.set("authorName", authorName);
-    // builder.set("content", content);
-    // builder.set("date", Timestamp.of(date));
-    //
-    // // Save greeting.
-    // getFirestore().put(builder.build());
   }
 
-  // private IncompleteKey makeIncompleteKey() {
-  //   // Create key with the book as the ancestor key.
-  //   return Key.newBuilder(book.getKey(), "Greeting").build();
-  // }
-// ****************************************************************
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
