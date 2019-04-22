@@ -86,7 +86,7 @@ public class ModelIT {
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Model evaluation name:");
+    assertThat(got).contains(modelEvaluationId);
 
     // Act
     bout.reset();
@@ -114,6 +114,6 @@ public class ModelIT {
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Operation details:");
+    assertThat(got).contains(operationId);
   }
 }

@@ -16,6 +16,7 @@
 
 package com.google.cloud.language.automl.sentiment.analysis.samples;
 
+// [START automl_natural_language_sentiment_delete_dataset]
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.protobuf.Empty;
@@ -24,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 class DeleteDataset {
 
-  // [START automl_natural_language_sentiment_delete_dataset]
+  // Delete a dataset
   static void deleteDataset(String projectId, String computeRegion, String datasetId)
       throws InterruptedException, ExecutionException, IOException {
     // String projectId = "YOUR_PROJECT_ID";

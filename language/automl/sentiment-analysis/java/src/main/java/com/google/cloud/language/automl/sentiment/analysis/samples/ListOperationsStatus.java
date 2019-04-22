@@ -25,6 +25,7 @@ import java.io.IOException;
 
 class ListOperationsStatus {
 
+  // List all operation statuses for a given project based on the filter expression
   static void listOperationsStatus(String projectId, String computeRegion, String filter)
       throws IOException {
     // String projectId = "YOUR_PROJECT_ID";

@@ -29,9 +29,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class GetModelEvaluation {
+class GetModelEvaluation {
 
-  public static void getModelEvaluation(
+  // Get a given Model Evaluation
+  static void getModelEvaluation(
       String projectId, String computeRegion, String modelId, String modelEvaluationId)
       throws IOException {
     // String projectId = "YOUR_PROJECT_ID";

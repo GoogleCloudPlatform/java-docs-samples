@@ -28,16 +28,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.google.cloud.language.automl.sentiment.analysis.samples.PredictionApi;
-
 /** Tests for AutoML Natural Language Sentiment Analysis Prediction. */
 @RunWith(JUnit4.class)
 public class PredictIT {
 
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String MODEL_ID = "TST1520889285651364720";
-  private static final String FILE_PATH = "./resource/sentimentInput.txt";
+  private static final String MODEL_ID = "TST864310464894223026";
+  private static final String FILE_PATH = "./resources/sentimentInput.txt";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -60,6 +58,6 @@ public class PredictIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Prediction results:");
+    assertThat(got).contains("Predicted sentiment label: 2");
   }
 }

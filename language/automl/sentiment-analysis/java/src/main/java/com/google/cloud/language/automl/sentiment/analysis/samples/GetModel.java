@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 
 class GetModel {
 
+  // Get a given model
   static void getModel(String projectId, String computeRegion, String modelId) throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
     // String datasetId = "YOUR_DATASET_ID";

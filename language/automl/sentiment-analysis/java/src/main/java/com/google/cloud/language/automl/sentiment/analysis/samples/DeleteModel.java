@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 class DeleteModel {
 
+  // Delete a model
   static void deleteModel(String projectId, String computeRegion, String modelId)
       throws InterruptedException, ExecutionException, IOException {
     // String projectId = "YOUR_PROJECT_ID";

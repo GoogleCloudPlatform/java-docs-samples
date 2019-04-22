@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class DatasetIT {
 
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String EXPORT_PROJECT_ID = "java-docs-samples-testing-lcm";
   private static final String OUTPUT_PREFIX = "AUTOML_LANGUAGE_SENTIMENT_TEST_OUTPUT";
   private static final String COMPUTE_REGION = "us-central1";
@@ -65,7 +66,7 @@ public class DatasetIT {
 
   @Test
   public void testCreateImportDeleteDataset()
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Act
     CreateDataset.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME, SENTIMENT_MAX);
 
@@ -73,7 +74,7 @@ public class DatasetIT {
     String got = bout.toString();
     String datasetId =
         got.split("\n")[0].split("/")[(got.split("\n")[0]).split("/").length - 1].trim();
-    assertThat(got).contains("Dataset name:");
+    assertThat(got).contains(datasetId);
 
     // Act
     bout.reset();
@@ -99,7 +100,7 @@ public class DatasetIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Dataset Id:");
+    assertThat(got).contains(DATASET_ID);
   }
 
   @Test
@@ -109,7 +110,7 @@ public class DatasetIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Dataset Id:");
+    assertThat(got).contains(DATASET_ID);
   }
 
   @Test

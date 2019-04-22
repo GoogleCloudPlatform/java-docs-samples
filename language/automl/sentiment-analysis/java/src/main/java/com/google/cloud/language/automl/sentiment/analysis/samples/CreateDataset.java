@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 
 class CreateDataset {
 
-  // Create a dataset
+  // Create an empty dataset
   static void createDataset(
       String projectId, String computeRegion, String datasetName, String sentimentMax)
       throws IOException {

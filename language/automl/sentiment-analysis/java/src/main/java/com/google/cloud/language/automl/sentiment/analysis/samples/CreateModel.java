@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 class CreateModel {
 
+  // Create a model
   static void createModel(
       String projectId, String computeRegion, String datasetId, String modelName)
       throws IOException, InterruptedException, ExecutionException {

@@ -26,6 +26,7 @@ import com.google.protobuf.Empty;
 
 class UndeployModel {
 
+  // Undeploy a given model
   public static void undeployModel(String projectId, String computeRegion, String modelId)
       throws Exception {
     // String projectId = "YOUR_PROJECT_ID";
@@ -43,7 +44,8 @@ class UndeployModel {
         UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
 
     // Undeploy a model with the undeploy model request.
-    OperationFuture<Empty, OperationMetadata> response = client.undeployModelAsync(undeployModelRequest);
+    OperationFuture<Empty, OperationMetadata> response =
+        client.undeployModelAsync(undeployModelRequest);
 
     // Display the undeployment details of model.
     System.out.println(String.format("Undeployment Details:"));
@@ -51,6 +53,5 @@ class UndeployModel {
     System.out.println(String.format("\tMetadata:"));
     System.out.println(response.getMetadata().toString());
   }
-  // [END automl_natural_language_sentiment_undeploy_model]
-
 }
+// [END automl_natural_language_sentiment_undeploy_model]

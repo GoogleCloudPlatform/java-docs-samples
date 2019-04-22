@@ -17,18 +17,25 @@
 package com.google.cloud.language.automl.sentiment.analysis.samples;
 
 // [START automl_natural_language_sentiment_import_data]
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.cloud.automl.v1beta1.GcsSource;
+import com.google.cloud.automl.v1beta1.ImportDataRequest;
 import com.google.cloud.automl.v1beta1.InputConfig;
+import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
+import com.sun.tools.internal.ws.wsdl.document.Import;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class ImportData {
 
+  // Import data from Google Cloud Storage into a dataset
   static void importData(String projectId, String computeRegion, String datasetId, String gcsPath)
-      throws InterruptedException, ExecutionException, IOException {
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // String projectId = "YOUR_PROJECT_ID";
     // String computeRegion = "YOUR_COMPUTE_REGION";
     // String datasetId = "YOUR_DATASET_ID";
@@ -50,10 +57,13 @@ class ImportData {
 
     // Import data from the input URI
     InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
-    System.out.println("Processing import...");
 
-    Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
-    System.out.println(String.format("Dataset imported. %s", response));
+    OperationFuture<Empty, OperationMetadata> response = client.importDataAsync(datasetFullId, inputConfig);
+
+    System.out.format("Import data operation name: %s \n",response.getInitialFuture().get().getName());
+    System.out.println("Processing import...");
+    //Cancel operation to prevent charges when testing
+    client.getOperationsClient().cancelOperation(response.getInitialFuture().get().getName());
   }
 }
 // [END automl_natural_language_sentiment_import_data]
