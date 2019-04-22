@@ -10,7 +10,7 @@ locally to push tasks to it, which could also be called on App Engine.
 `CreateTask.java` is a simple command-line program to create
 tasks to be pushed to the App Engine app.
 
-`TaskServlet.java` is the main App Engine app. This app serves as an endpoint to receive
+Directory `task-handler/` is the main App Engine app. This app serves as an endpoint to receive
 App Engine task attempts.
 
 
@@ -35,40 +35,32 @@ Note: A newly created queue will route to the default App Engine service and
 version unless configured to do otherwise.
 
 ## Deploying the App Engine app
+
 [Using Maven and the App Engine Plugin](https://cloud.google.com/appengine/docs/flexible/java/using-maven)
 & [Maven Plugin Goals and Parameters](https://cloud.google.com/appengine/docs/flexible/java/maven-reference)
-
-```
-mvn appengine:deploy -Dapp.deploy.projectId=<your-project-id>
-```
-## Setup the Sample App
 
 - Copy the sample apps to your local machine:
 ```
 git clone https://github.com/GoogleCloudPlatform/java-docs-samples
 ```
 
-- Add the [appengine-simple-jetty-main](../README.md#appengine-simple-jetty-main)
-Main class to your classpath:
+- Move into the `task-handler` directory:
 ```
-cd java-docs-samples/appengine-java11/appengine-simple-jetty-main
-mvn install
+cd java-docs-samples/appengine-java11/task-handler
 ```
-- In the [Cloud Developers Console](https://cloud.google.com/console) >
-API Manager > Credentials, create a OAuth Client ID for a Web Application.
-You will need to provide an authorized redirect URI
-origin: `https://<PROJECT_ID>.appspot.com/oauth2callback`.
 
-- Replace `CLIENT_ID` and `CLIENT_SECRET` with these values in your
-[app.yaml](/src/main/appengine/app.yaml)
+- Deploy the app
+```
+mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+```
+
+## Run the Sample Using the Command Line
 
 - Move into the `appengine-java11/tasks` directory and compile the app:
 ```
 cd ../tasks
 mvn package
 ```
-
-## Run the Sample Using the Command Line
 
 Set environment variables:
 

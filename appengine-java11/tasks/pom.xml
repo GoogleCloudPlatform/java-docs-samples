@@ -39,26 +39,7 @@ Copyright 2019 Google LLC
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
-  <!-- All dependencies are scoped as provided.
-    Dependent-jars are created and added to
-    ${project.build.directory}/appengine-staging -->
   <dependencies>
-    <!-- Dependency from folder `../appengine-simple-jetty-main`
-      See README for instructions for more information -->
-    <dependency>
-      <groupId>com.google.appengine.demo</groupId>
-      <artifactId>simple-jetty-main</artifactId>
-      <version>1</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-      <type>jar</type>
-      <scope>provided</scope>
-    </dependency>
     <!-- Cloud Tasks dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -69,39 +50,12 @@ Copyright 2019 Google LLC
   </dependencies>
 
   <build>
-    <finalName>tasks-servlet</finalName>
+    <finalName>tasks</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.2</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>copy</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>
-                ${project.build.directory}/appengine-staging
-              </outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.0.0-rc5</version>
-        <configuration>
-          <version>tasks</version>
-        </configuration>
       </plugin>
 
       <plugin>
