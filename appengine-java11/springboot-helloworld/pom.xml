@@ -6,6 +6,7 @@
   <artifactId>springboot-helloworld-j11</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
+  <!-- For Spring Boot starter dependencies -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
