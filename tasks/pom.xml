@@ -54,10 +54,28 @@ Copyright 2018 Google LLC
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
-        <configuration>
-          <mainClass>com.example.task.CreateHttpTask</mainClass>
-          <cleanupDaemonThreads>false</cleanupDaemonThreads>
-        </configuration>
+        <executions>
+          <execution>
+              <id>HttpTask</id>
+              <goals>
+                  <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>com.example.task.CreateHttpTask</mainClass>
+                <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              </configuration>
+          </execution>
+          <execution>
+              <id>WithToken</id>
+              <goals>
+                  <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>com.example.task.CreateHttpTaskWithToken</mainClass>
+                <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
