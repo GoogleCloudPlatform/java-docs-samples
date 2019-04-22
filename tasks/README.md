@@ -7,12 +7,11 @@ App Engine queues push tasks to an App Engine HTTP target. This directory
 contains both the App Engine app to deploy, as well as the snippets to run
 locally to push tasks to it, which could also be called on App Engine.
 
-`CreateTask.java` is a simple command-line program to create
-tasks to be pushed to the App Engine app.
+`CreateHTTPTask.java` constructs a task with an HTTP target and pushes it
+to your queue.
 
-`TaskServlet.java` is the main App Engine app. This app serves as an endpoint to receive
-App Engine task attempts.
-
+`CreateHTTPTask.java` constructs a task with an HTTP target and OIDC token and pushes it
+to your queue.
 
 ## Initial Setup
 
@@ -28,7 +27,7 @@ App Engine task attempts.
 To create a queue using the Cloud SDK, use the following gcloud command:
 
 ```
-gcloud beta tasks queues create-app-engine-queue my-appengine-queue
+gcloud beta tasks queues create-app-engine-queue my-queue
 ```
 
 Note: A newly created queue will route to the default App Engine service and
@@ -56,7 +55,7 @@ Then the queue ID, as specified at queue creation time. Queue IDs already
 created can be listed with `gcloud beta tasks queues list`.
 
 ```
-export QUEUE_ID=my-appengine-queue
+export QUEUE_ID=my-queue
 ```
 
 And finally the location ID, which can be discovered with
@@ -81,5 +80,15 @@ Running the sample will create a task and send the task to the specific URL
 endpoint, with a payload specified:
 
 ```
-mvn exec:java -Dexec.mainClass="com.example.task.CreateHttpTask"
+mvn exec:java@HttpTask"
+```
+
+### Using HTTP Targets with Authentication Headers
+
+In `CreateHttpTaskWithToken.java`, add your service account email in place of
+`<SERVICE_ACCOUNT_EMAIL>` to authenticate the OIDC token.
+
+Running the sample with command:
+```
+mvn exec:java@WithToken"
 ```
