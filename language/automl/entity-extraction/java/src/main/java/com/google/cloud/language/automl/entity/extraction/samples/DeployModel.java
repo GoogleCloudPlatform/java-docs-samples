@@ -10,6 +10,7 @@ import com.google.protobuf.Empty;
 
 class DeployModel {
 
+  // Deploy a model
   static void deployModel(String projectId, String computeRegion, String modelId) throws Exception {
     // String projectId = "YOUR_PROJECT_ID";
     // String computeRegion = "YOUR_COMPUTE_REGION";

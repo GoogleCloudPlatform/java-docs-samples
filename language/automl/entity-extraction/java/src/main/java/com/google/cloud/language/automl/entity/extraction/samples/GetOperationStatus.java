@@ -7,6 +7,7 @@ import java.io.IOException;
 
 class GetOperationStatus {
 
+  // Get the status of a given operation
   static void getOperationStatus(String operationFullId) throws IOException {
     // String operationFullId = "COMPLETE_NAME_OF_OPERATION";
     // like: projects/[projectId]/locations/us-central1/operations/[operationId]

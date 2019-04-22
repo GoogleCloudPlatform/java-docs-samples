@@ -58,7 +58,6 @@ public class PredictIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Prediction results:");
-    assertThat(got).contains("2");
+    assertThat(got).contains("Predicted Text Extract Entity Content :VLCAD deficiency");
   }
 }

@@ -70,7 +70,7 @@ public class DatasetIT {
     // Assert
     String got = bout.toString();
     String datasetId = got.split("\n")[0].split("/")[(got.split("\n")[0]).split("/").length - 1];
-    assertThat(got).contains("Dataset display name: test_language_dataset");
+    assertThat(got).contains("test_language_dataset");
 
     // Act
     bout.reset();
@@ -96,7 +96,7 @@ public class DatasetIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Dataset Id:");
+    assertThat(got).contains(DATASET_ID);
   }
 
   @Test
@@ -106,7 +106,7 @@ public class DatasetIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Dataset Id:");
+    assertThat(got).contains(DATASET_ID);
   }
 
   @Test

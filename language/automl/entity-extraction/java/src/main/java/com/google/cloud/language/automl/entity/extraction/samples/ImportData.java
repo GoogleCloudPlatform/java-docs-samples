@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 class ImportData {
 
+  // Import data from Google Cloud Storage into a dataset
   static void importData(String projectId, String computeRegion, String datasetId, String path)
       throws InterruptedException, ExecutionException, IOException {
     // String projectId = "YOUR_PROJECT_ID";

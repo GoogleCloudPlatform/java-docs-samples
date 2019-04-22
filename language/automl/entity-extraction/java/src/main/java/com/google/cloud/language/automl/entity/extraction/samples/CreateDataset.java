@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 
 class CreateDataset {
 
+  // Create an empty dataset
   static void createDataset(String projectId, String computeRegion, String datasetName)
       throws IOException {
     // String projectId = "YOUR_PROJECT_ID";

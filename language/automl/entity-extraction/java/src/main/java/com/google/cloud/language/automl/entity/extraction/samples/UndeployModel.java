@@ -10,6 +10,7 @@ import com.google.protobuf.Empty;
 
 class UndeployModel {
 
+  // Undeploy a given model
   static void undeployModel(String projectId, String computeRegion, String modelId)
       throws Exception {
     // String projectId = "YOUR_PROJECT_ID";

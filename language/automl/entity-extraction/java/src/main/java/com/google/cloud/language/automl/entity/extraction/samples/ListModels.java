@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 
 class ListModels {
 
+  // List all models for a given project based on the filter expression
   static void listModels(String projectId, String computeRegion, String filter) throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
     // String computeRegion = "YOUR_COMPUTE_REGION";

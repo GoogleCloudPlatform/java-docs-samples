@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 class DeleteDataset {
 
+  // Delete a dataset
   static void deleteDataset(String projectId, String computeRegion, String datasetId)
       throws InterruptedException, ExecutionException, IOException {
     // String projectId = "YOUR_PROJECT_ID";

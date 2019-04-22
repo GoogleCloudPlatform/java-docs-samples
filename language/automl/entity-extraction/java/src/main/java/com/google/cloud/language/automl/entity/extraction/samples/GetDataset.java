@@ -26,7 +26,8 @@ import java.text.SimpleDateFormat;
 
 class GetDataset {
 
-  public static void getDataset(String projectId, String computeRegion, String datasetId)
+  // Get a given dataset
+   static void getDataset(String projectId, String computeRegion, String datasetId)
       throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
     // String computeRegion = "YOUR_COMPUTE_REGION";

@@ -27,7 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 class ExportData {
 
-  public static void exportData(
+  // Export data to Google Cloud Storage
+   static void exportData(
       String projectId, String computeRegion, String datasetId, String gcsUri)
       throws IOException, InterruptedException, ExecutionException {
     // String projectId = "YOUR_PROJECT_ID";

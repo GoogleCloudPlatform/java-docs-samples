@@ -9,6 +9,10 @@ import java.io.IOException;
 
 class ListOperationsStatus {
 
+  public static void main(String[] args) throws IOException {
+    ListOperationsStatus.listOperationsStatus("java-docs-samples-testing", "us-central1", "");
+  }
+  // List all operation statuses for a given project based on the filter expression
   static void listOperationsStatus(String projectId, String computeRegion, String filter)
       throws IOException {
     // String projectId = "YOUR_PROJECT_ID";

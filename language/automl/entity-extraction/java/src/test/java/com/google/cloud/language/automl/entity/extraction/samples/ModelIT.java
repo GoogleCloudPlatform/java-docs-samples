@@ -77,7 +77,7 @@ public class ModelIT {
     // Assert
     got = bout.toString();
     String modelEvaluationId = got.split("Model evaluation name: ")[1].split("/")[7].split("\n")[0];
-    assertThat(got).contains("name:");
+    assertThat(got).contains("1195072363916475857");
 
     // Act
     bout.reset();
@@ -85,7 +85,7 @@ public class ModelIT {
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Model evaluation name:");
+    assertThat(got).contains(modelEvaluationId);
 
     // Act
     bout.reset();
@@ -93,7 +93,7 @@ public class ModelIT {
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Model Evaluation ID:");
+    assertThat(got).contains("Model Evaluation ID:6184534264814397965");
 
   }
 
@@ -113,6 +113,6 @@ public class ModelIT {
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Operation details:");
+    assertThat(got).contains(operationId);
   }
 }

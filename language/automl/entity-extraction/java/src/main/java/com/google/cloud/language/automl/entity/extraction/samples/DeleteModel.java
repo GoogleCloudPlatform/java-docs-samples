@@ -9,9 +9,10 @@ import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class DeleteModel {
+class DeleteModel {
 
-  public static void deleteModel(String projectId, String computeRegion, String modelId)
+  // Delete a model
+  static void deleteModel(String projectId, String computeRegion, String modelId)
       throws IOException, InterruptedException, ExecutionException {
     // String projectId = "YOUR_PROJECT_ID";
     // String computeRegion = "YOUR_COMPUTE_REGION";
