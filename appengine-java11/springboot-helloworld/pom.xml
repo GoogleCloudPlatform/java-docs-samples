@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.appengine</groupId>
+  <artifactId>springboot-helloworld-j11</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.1.RELEASE</version>
+    <relativePath/>  <!-- lookup parent from repository -->
+  </parent>
+
+  <properties>
+    <java.version>11</java.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <!-- Exclude the Tomcat dependency -->
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jetty</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <dependencies>
+          <!-- package as a thin jar -->
+          <dependency>
+            <groupId>org.springframework.boot.experimental</groupId>
+            <artifactId>spring-boot-thin-layout</artifactId>
+            <version>1.0.13.RELEASE</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <!-- Copy thin jar dependencies to appengine-staging directory -->
+      <plugin>
+        <groupId>org.springframework.boot.experimental</groupId>
+        <artifactId>spring-boot-thin-maven-plugin</artifactId>
+        <version>1.0.13.RELEASE</version>
+        <configuration>
+          <outputDirectory>${project.build.directory}/appengine-staging</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>resolve</id>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+            <inherited>false</inherited>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>2.0.0-rc5</version>
+        <configuration>
+          <version>springboot-helloworld</version>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
