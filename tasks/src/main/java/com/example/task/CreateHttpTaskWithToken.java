@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,8 @@ public class CreateHttpTaskWithToken {
       // Construct the fully qualified queue name.
       String queuePath = QueueName.of(projectId, location, queueName).toString();
 
-      // Construct OIDC token
+      // Add your service account email to construct the OIDC token.
+      // in order to add an authentication header to the request.
       OidcToken.Builder oidcTokenBuilder =
           OidcToken.newBuilder().setServiceAccountEmail("<SERVICE_ACCOUNT_EMAIL>");
 
