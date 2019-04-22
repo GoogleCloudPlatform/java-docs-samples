@@ -37,6 +37,7 @@ Copyright 2019 Google LLC
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
   <dependencies>
