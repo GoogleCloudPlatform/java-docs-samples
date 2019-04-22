@@ -1,0 +1,6 @@
+runtime: java11
+instance_class: F2
+# The entrypoint here is mandatory as the appengine-staging area contains an exploded
+# fatjar, and not the fatjar itself, so we cannot detect what to run from the exploded
+# area.
+entrypoint: 'java -XX:MaxRAM=256m -XX:ActiveProcessorCount=2 -Xmx32m -Dthin.root=. -jar springboot-thin-j11-0.0.1-SNAPSHOT.jar'
