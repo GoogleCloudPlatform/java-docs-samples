@@ -45,11 +45,10 @@
     <!-- Dependency from folder `../appengine-simple-jetty-main` -->
     <!-- See README for instructions for more information -->
     <dependency>
-      <groupId>com.google.appengine.demo</groupId>
+      <groupId>com.example.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/../appengine-simple-jetty-main/target/simple-jetty-main-1.jar</systemPath>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
