@@ -61,10 +61,14 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
         --project="$GOOGLE_CLOUD_PROJECT"
 
-    # Package local jetty dependency for Java11 samples
-    cd github/java-docs-samples/appengine-java11/appengine-simple-jetty-main/
-    mvn package
-    cd ../../
+    cd github/java-docs-samples
+fi
+
+# Package local jetty dependency for Java11 samples
+if [[ "$JAVA_VERSION" == "11" ]]; then
+  cd appengine-java11/appengine-simple-jetty-main/
+  mvn package
+  cd ../../
 fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
