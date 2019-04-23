@@ -18,22 +18,21 @@ package com.example.bigtable;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /** Unit tests for {@link Main}. */
 @RunWith(JUnit4.class)
-public class ITBigtableHelloWorld {
+public class BigtableHelloWorldTests {
 
   @Test
   public void bigtable_test() {
-  //   String result = Main.doHelloWorld();
-  //   assertThat(result).contains("Write some greetings to the table");
-  //   assertThat(result).contains("Get a single greeting by row key");
-  //   assertThat(result).contains("greeting0= Hello World!");
-  //   assertThat(result).contains("Hello Cloud Bigtable!");
-  //   assertThat(result).contains("Hello HBase!");
+    String result = Main.doHelloWorld();
+    assertThat(result).contains("Write some greetings to the table");
+    assertThat(result).contains("Get a single greeting by row key");
+    assertThat(result).contains("greeting0= Hello World!");
+    assertThat(result).contains("Hello Cloud Bigtable!");
+    assertThat(result).contains("Hello HBase!");
   }
 }
