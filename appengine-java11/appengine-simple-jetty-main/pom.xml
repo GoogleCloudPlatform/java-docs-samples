@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.appengine.demo</groupId>
+  <artifactId>simple-jetty-main</artifactId>
+  <name>simplejettymain-j11</name>
+  <version>1</version>
+  <packaging>jar</packaging>
+
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.4.14.v20181114</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>9.4.14.v20181114</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>9.4.14.v20181114</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-annotations</artifactId>
+      <version>9.4.14.v20181114</version>
+      <type>jar</type>
+    </dependency>
+    <!-- extra explicit dependency needed because there is a JSP in the sample-->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>apache-jsp</artifactId>
+      <version>9.4.14.v20181114</version>
+    </dependency>
+  </dependencies>
+</project>

@@ -64,6 +64,13 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     cd github/java-docs-samples
 fi
 
+# Package local jetty dependency for Java11 samples
+if [[ "$JAVA_VERSION" == "11" ]]; then
+  cd appengine-java11/appengine-simple-jetty-main/
+  mvn package
+  cd ../../
+fi
+
 echo -e "\n******************** TESTING PROJECTS ********************"
 # Switch to 'fail at end' to allow all tests to complete before exiting.
 set +e
