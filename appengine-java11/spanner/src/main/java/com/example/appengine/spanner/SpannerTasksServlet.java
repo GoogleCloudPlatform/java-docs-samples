@@ -32,11 +32,16 @@ import javax.servlet.http.HttpServletResponse;
  * Example code for using the Cloud Spanner API. This example demonstrates all the common operations
  * that can be done on Cloud Spanner. These are:
  *
- * <p><ul><li>Creating a Cloud Spanner database. <li>Writing, reading and executing SQL queries.
- * <li>Writing data using a read-write transaction. <li>Using an index to read and execute SQL
- * queries over data. </ul>
+ * <p>
  *
- * <p></p>Individual tasks can be run using "tasks" query parameter. {@link SpannerTasks.Task} lists
+ * <ul>
+ *   <li>Creating a Cloud Spanner database.
+ *   <li>Writing, reading and executing SQL queries.
+ *   <li>Writing data using a read-write transaction.
+ *   <li>Using an index to read and execute SQL queries over data.
+ * </ul>
+ *
+ * <p>Individual tasks can be run using "tasks" query parameter. {@link SpannerTasks.Task} lists
  * supported tasks. All tasks are run in order if no parameter or "tasks=all" is provided.
  */
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.

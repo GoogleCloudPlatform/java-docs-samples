@@ -92,7 +92,7 @@ public class SpannerClient implements ServletContextListener {
         INSTANCE_ID = sc.getInitParameter("SPANNER_INSTANCE");
       }
     }
-    //try system properties
+    // try system properties
     if (INSTANCE_ID == null) {
       INSTANCE_ID = System.getProperty("SPANNER_INSTANCE");
     }

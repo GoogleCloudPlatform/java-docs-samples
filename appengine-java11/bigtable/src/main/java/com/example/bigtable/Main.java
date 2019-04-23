@@ -1,16 +1,35 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package com.example.bigtable;
 
-import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -18,17 +37,8 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import org.apache.hadoop.hbase.client.Connection;
 
-/**
- * Trivial http server that listens to port 8080
- */
+/** Trivial http server that listens to port 8080 */
 public class Main {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT)");
@@ -85,10 +95,7 @@ public class Main {
     return "Create table " + Bytes.toString(TABLE_NAME);
   }
 
-  /**
-   * Connects to Cloud Bigtable, runs some basic operations and prints the
-   * results.
-   */
+  /** Connects to Cloud Bigtable, runs some basic operations and prints the results. */
   static String doHelloWorld() {
 
     StringBuilder result = new StringBuilder();
