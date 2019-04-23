@@ -1,3 +1,0 @@
-runtime: java11
-instance_class: F2
-entrypoint: 'java -cp * com.example.bigtable.Main'
