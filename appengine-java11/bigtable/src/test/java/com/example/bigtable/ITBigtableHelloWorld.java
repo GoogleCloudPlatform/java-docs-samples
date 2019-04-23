@@ -27,13 +27,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ITBigtableHelloWorld {
 
-  // @Test
-  // public void bigtable_test() {
+  @Test
+  public void bigtable_test() {
   //   String result = Main.doHelloWorld();
   //   assertThat(result).contains("Write some greetings to the table");
   //   assertThat(result).contains("Get a single greeting by row key");
   //   assertThat(result).contains("greeting0= Hello World!");
   //   assertThat(result).contains("Hello Cloud Bigtable!");
   //   assertThat(result).contains("Hello HBase!");
-  // }
+  }
 }
