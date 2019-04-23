@@ -46,7 +46,7 @@ public class Main {
   private static final String INSTANCE_ID = "cluster";
 
   private static final int PORT = 8080;
-  static Connection connection = null;
+
   // Refer to table metadata names by byte array in the HBase API
   private static final byte[] TABLE_NAME = Bytes.toBytes("Hello-Bigtable");
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("cf1");
@@ -59,10 +59,12 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     System.err.println("Starting Main");
+    Connection connection;
     try {
       connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
     } catch (Exception e) {
       e.printStackTrace();
+      return;
     }
     System.err.println("Starting: connection is: " + connection);
 
@@ -100,7 +102,8 @@ public class Main {
 
     StringBuilder result = new StringBuilder();
 
-    // Create the Bigtable connection, use try-with-resources to make sure it gets closed
+    // Create the Bigtable connection
+    Connection connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
     result.append(create(connection));
     result.append("<br><br>");
     try (Table table = connection.getTable(TableName.valueOf(TABLE_NAME))) {
