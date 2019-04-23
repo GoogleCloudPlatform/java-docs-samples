@@ -25,26 +25,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This servlet class extends AbstractAuthorizationCodeServlet which if the end-user credentials
- * are not found, will redirect the end-user to an authorization page.
- *
+ * This servlet class extends AbstractAuthorizationCodeServlet which if the end-user credentials are
+ * not found, will redirect the end-user to an authorization page.
  */
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/oauth2callback/*")
 public class Oauth2CallbackServlet extends AbstractAuthorizationCodeCallbackServlet {
 
-  /**
-   * Handles a successfully granted authorization.
-   */
+  /** Handles a successfully granted authorization. */
   @Override
   protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
       throws ServletException, IOException {
     resp.sendRedirect("/");
   }
 
-  /**
-   * Handles an error to the authorization, such as when an end user denies authorization.
-   */
+  /** Handles an error to the authorization, such as when an end user denies authorization. */
   @Override
   protected void onError(
       HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
@@ -70,8 +65,8 @@ public class Oauth2CallbackServlet extends AbstractAuthorizationCodeCallbackServ
   }
 
   /**
-   * Returns the user ID for the given HTTP servlet request. This identifies your application's
-   * user and is used to assign and persist credentials to that user.
+   * Returns the user ID for the given HTTP servlet request. This identifies your application's user
+   * and is used to assign and persist credentials to that user.
    */
   @Override
   protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
