@@ -47,7 +47,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 
 /**
  * Google Cloud AutoML Natural Language API sample application. Example usage: mvn package exec:java
- * -Dexec.mainClass ='com.google.cloud.vision.samples.automl.ModelApi' -Dexec.args='create_model
+ * -Dexec.mainClass ='com.google.cloud.language.samples.automl.ModelApi' -Dexec.args='create_model
  * [datasetId] test_model'
  */
 public class ModelApi {
@@ -168,10 +168,10 @@ public class ModelApi {
     AutoMlClient client = AutoMlClient.create();
 
     // Get the full path of the model.
-    ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
+    ModelName modelName = ModelName.of(projectId, computeRegion, modelId);
 
     // Get complete detail of the model.
-    Model model = client.getModel(modelFullId);
+    Model model = client.getModel(modelName.toString());
 
     // Display the model information.
     System.out.println(String.format("Model name: %s", model.getName()));
@@ -183,6 +183,9 @@ public class ModelApi {
     System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
     System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
     System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
+
+    // Deploy model so it can be used for Prediction
+    client.deployModelAsync(modelName.toString());
   }
   // [END automl_language_get_model]
 

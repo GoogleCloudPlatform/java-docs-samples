@@ -33,12 +33,10 @@ import org.junit.runners.JUnit4;
 public class ModelApiIT {
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String COMPUTE_REGION = "us-central1";
+  private static final String MODEL_ID = "TCN342705131419266916";
+  private static final String MODEL_EVALUATION_ID = "3666189665418739402";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private ModelApi app;
-  private String modelId;
-  private String modelIdGetevaluation = "342705131419266916";
-  private String modelEvaluationId = "3666189665418739402";
 
   @Before
   public void setUp() {
@@ -60,18 +58,17 @@ public class ModelApiIT {
 
     // Assert
     String got = bout.toString();
-    modelId = got.split("\n")[1].split("/")[got.split("\n")[1].split("/").length - 1];
     assertThat(got).contains("Model id:");
 
     // Act
-    ModelApi.getModel(PROJECT_ID, COMPUTE_REGION, modelId);
+    ModelApi.getModel(PROJECT_ID, COMPUTE_REGION, MODEL_ID);
 
     // Assert
     got = bout.toString();
     assertThat(got).contains("Model name:");
 
     // Act
-    ModelApi.listModelEvaluations(PROJECT_ID, COMPUTE_REGION, modelId, "");
+    ModelApi.listModelEvaluations(PROJECT_ID, COMPUTE_REGION, MODEL_ID, "");
 
     // Assert
     got = bout.toString();
@@ -83,7 +80,7 @@ public class ModelApiIT {
 
     // Act
     ModelApi.getModelEvaluation(
-        PROJECT_ID, COMPUTE_REGION, modelIdGetevaluation, modelEvaluationId);
+        PROJECT_ID, COMPUTE_REGION, MODEL_ID, MODEL_EVALUATION_ID);
 
     // Assert
     String got = bout.toString();
