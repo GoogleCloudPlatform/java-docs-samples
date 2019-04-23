@@ -161,8 +161,8 @@ public class CreateTask {
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp(
         "client",
-        "A simple Cloud Tasks command line client that triggers a call to an AppEngine "
-            + "endpoint.",
+        "A simple Cloud Tasks command line client that creates a task with an "
+            + "App Engine endpoint.",
         options, "", true);
     throw new RuntimeException();
   }
