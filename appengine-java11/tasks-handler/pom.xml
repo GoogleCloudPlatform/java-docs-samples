@@ -21,17 +21,17 @@ limitations under the License.
     <artifactId>task-handler-j11</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-		<!--
-	    The parent pom defines common style checks and testing strategies for our samples.
-	    Removing or replacing it should not affect the execution of the samples in anyway.
-	  -->
-	  <parent>
-	    <groupId>com.google.cloud.samples</groupId>
-	    <artifactId>shared-configuration</artifactId>
-	    <version>1.0.11</version>
-	    <relativePath></relativePath>
-	  </parent>
-		
+    <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+    <parent>
+        <groupId>com.google.cloud.samples</groupId>
+        <artifactId>shared-configuration</artifactId>
+        <version>1.0.11</version>
+        <relativePath></relativePath>
+    </parent>
+
     <properties>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
@@ -39,14 +39,14 @@ limitations under the License.
 
     <dependencyManagement>
         <dependencies>
-						<dependency>
-								<!-- Import dependency management from Spring Boot -->
-								<groupId>org.springframework.boot</groupId>
-								<artifactId>spring-boot-dependencies</artifactId>
-								<version>2.1.4.RELEASE</version>
-								<type>pom</type>
-								<scope>import</scope>
-						</dependency>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.1.4.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -63,7 +63,7 @@ limitations under the License.
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-						<version>2.1.4.RELEASE</version>
+            <version>2.1.4.RELEASE</version>
             <exclusions>
                 <!-- Exclude the Tomcat dependency -->
                 <exclusion>
@@ -75,7 +75,7 @@ limitations under the License.
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jetty</artifactId>
-						<version>2.1.4.RELEASE</version>
+            <version>2.1.4.RELEASE</version>
         </dependency>
 
     </dependencies>
@@ -83,17 +83,17 @@ limitations under the License.
     <build>
         <plugins>
             <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.1.4.RELEASE</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>repackage</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.4.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
