@@ -29,7 +29,7 @@ public class ListLogs {
 
   /** Expects an existing Stackdriver log name as an argument. */
   public static void main(String... args) throws Exception {
-    // [START listlogs]
+    // [START logging_list_log_entries]
     // Instantiates a client
     LoggingOptions options = LoggingOptions.getDefaultInstance();
 
@@ -50,6 +50,6 @@ public class ListLogs {
       } while (entries != null);
 
     }
-    // [END listlogs]
+    // [END logging_list_log_entries]
   }
 }

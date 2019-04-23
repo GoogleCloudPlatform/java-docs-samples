@@ -26,11 +26,13 @@ import org.apache.commons.cli.ParseException;
 
 /** Command line options for the Device Manager example. */
 public class DeviceRegistryExampleOptions {
+  static final Options options = new Options();
   String projectId;
   String ecPublicKeyFile = "ec_public.pem";
   String rsaCertificateFile = "rsa_cert.pem";
   String cloudRegion = "us-central1";
   String command = "help";
+  String commandData = "Specify with --data";
   String configuration = "Specify with -configuration";
   String deviceId; // Default to UUID?
   String pubsubTopic;
@@ -38,7 +40,6 @@ public class DeviceRegistryExampleOptions {
   String member;
   String role;
   long version = 0;
-  static final Options options = new Options();
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
   public static DeviceRegistryExampleOptions fromFlags(String[] args) {
@@ -46,39 +47,39 @@ public class DeviceRegistryExampleOptions {
     options.addOption(
         Option.builder()
             .type(String.class)
-            .longOpt("pubsub_topic")
-            .hasArg()
-            .desc("Pub/Sub topic to create registry in.")
-            .required()
-            .build());
-    options.addOption(
-        Option.builder()
-            .type(String.class)
             .longOpt("command")
             .hasArg()
             .desc(
                 "Command to run:"
-                + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
-                + "\n\tcreate-rsa"
-                + "\n\tcreate-es"
-                + "\n\tcreate-unauth"
-                + "\n\tcreate-registry"
-                + "\n\tdelete-device"
-                + "\n\tdelete-registry"
-                + "\n\tget-device"
-                + "\n\tget-device-state"
-                + "\n\tget-iam-permissions"
-                + "\n\tget-registry"
-                + "\n\tlist-devices"
-                + "\n\tlist-registries"
-                + "\n\tpatch-device-es"
-                + "\n\tpatch-device-rsa"
-                + "\n\tset-config"
-                + "\n\tset-iam-permissions")
+                    + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
+                    + "\n\tcreate-rsa"
+                    + "\n\tcreate-es"
+                    + "\n\tcreate-unauth"
+                    + "\n\tcreate-registry"
+                    + "\n\tdelete-device"
+                    + "\n\tdelete-registry"
+                    + "\n\tget-device"
+                    + "\n\tget-device-state"
+                    + "\n\tget-iam-permissions"
+                    + "\n\tget-registry"
+                    + "\n\tlist-devices"
+                    + "\n\tlist-registries"
+                    + "\n\tpatch-device-es"
+                    + "\n\tpatch-device-rsa"
+                    + "\n\tset-config"
+                    + "\n\tset-iam-permissions"
+                    + "\n\tsend-command")
             .required()
             .build());
 
     // Optional arguments.
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("pubsub_topic")
+            .hasArg()
+            .desc("Pub/Sub topic to create registry in.")
+            .build());
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -124,6 +125,13 @@ public class DeviceRegistryExampleOptions {
     options.addOption(
         Option.builder()
             .type(String.class)
+            .longOpt("data")
+            .hasArg()
+            .desc("The command data (string or JSON) to send to the specified device.")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
             .longOpt("configuration")
             .hasArg()
             .desc("The configuration (string or JSON) to set the specified device to.")
@@ -160,6 +168,16 @@ public class DeviceRegistryExampleOptions {
 
       if (res.command.equals("help") || res.command.equals("")) {
         throw new ParseException("Invalid command, showing help.");
+      }
+
+      if (commandLine.hasOption("cloud_region")) {
+        res.cloudRegion = commandLine.getOptionValue("cloud_region");
+      }
+      if (commandLine.hasOption("data")) {
+        res.commandData = commandLine.getOptionValue("data");
+      }
+      if (commandLine.hasOption("device_id")) {
+        res.deviceId = commandLine.getOptionValue("device_id");
       }
 
       if (commandLine.hasOption("project_id")) {
@@ -212,8 +230,8 @@ public class DeviceRegistryExampleOptions {
       String footer = "\nhttps://cloud.google.com/iot-core";
 
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("DeviceRegistryExample", header, options, footer,
-          true);
+      formatter.printHelp(
+              "DeviceRegistryExample", header, options, footer, true);
 
       System.err.println(e.getMessage());
       return null;

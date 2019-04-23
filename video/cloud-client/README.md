@@ -53,6 +53,11 @@ Detect Shots
 mvn exec:java -DDetect -Dexec.args="shots gs://demomaker/gbikes_dinosaur.mp4"
 ```
 
+Transcribe Speech
+```
+mvn exec:java -DDetect -Dexec.args="speech-transcription gs://python-docs-samples-tests/video/googlework_short.mp4"
+```
+
 From Windows, you may need to supply your classpath differently, for example:
 ```
 mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"

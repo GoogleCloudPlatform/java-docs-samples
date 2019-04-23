@@ -78,9 +78,6 @@ public class FirebaseEventProxy {
           public void onDataChange(DataSnapshot snapshot) {
             if (snapshot.exists()) {
               try {
-                // Convert value to JSON using Jackson
-                String json = new ObjectMapper().writeValueAsString(snapshot.getValue(false));
-
                 // Replace the URL with the url of your own listener app.
                 URL dest = new URL("http://gae-firebase-listener-python.appspot.com/log");
                 HttpURLConnection connection = (HttpURLConnection) dest.openConnection();
@@ -96,6 +93,9 @@ public class FirebaseEventProxy {
                     != SystemProperty.Environment.Value.Production) {
                   connection.setRequestProperty("X-Appengine-Inbound-Appid", "dev-instance");
                 }
+
+                // Convert value to JSON using Jackson
+                String json = new ObjectMapper().writeValueAsString(snapshot.getValue(false));
 
                 // Put Firebase data into http request
                 StringBuilder stringBuilder = new StringBuilder();
