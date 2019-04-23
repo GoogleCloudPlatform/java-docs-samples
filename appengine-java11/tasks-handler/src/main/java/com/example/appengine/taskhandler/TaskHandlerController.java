@@ -16,21 +16,20 @@
 
 package com.example.appengine.taskhandler;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Map;
 
 @RestController
 public class TaskHandlerController {
 
-  @RequestMapping(value = "/tasks/create", method = RequestMethod.POST, consumes = "application/octet-stream")
+  @RequestMapping(
+      value = "/tasks/create",
+      method = RequestMethod.POST,
+      consumes = "application/octet-stream")
   @ResponseStatus(HttpStatus.OK)
   public String taskHandler(@RequestBody String body) {
     String output;
