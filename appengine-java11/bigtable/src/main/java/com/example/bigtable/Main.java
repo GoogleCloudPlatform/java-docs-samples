@@ -41,9 +41,9 @@ import org.apache.hadoop.hbase.util.Bytes;
 /** Trivial http server that listens to port 8080 */
 public class Main {
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT)");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static final String INSTANCE_ID = "test-instance";
+  private static final String INSTANCE_ID = "cluster";
 
   private static final int PORT = 8080;
   static Connection connection = null;
