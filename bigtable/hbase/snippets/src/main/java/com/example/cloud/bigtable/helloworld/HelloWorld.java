@@ -19,6 +19,7 @@
  */
 package com.example.cloud.bigtable.helloworld;
 
+// [START bigtable_hw_imports]
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -35,10 +36,11 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+// [END bigtable_hw_imports]
 
 /**
- * A minimal application that connects to Cloud Bigtable using the native HBase API
- * and performs some basic operations.
+ * A minimal application that connects to Cloud Bigtable using the native HBase API and performs
+ * some basic operations.
  */
 public class HelloWorld {
 
@@ -48,32 +50,31 @@ public class HelloWorld {
   private static final byte[] COLUMN_NAME = Bytes.toBytes("greeting");
 
   // Write some friendly greetings to Cloud Bigtable
-  private static final String[] GREETINGS =
-      { "Hello World!", "Hello Cloud Bigtable!", "Hello HBase!" };
+  private static final String[] GREETINGS = {
+    "Hello World!", "Hello Cloud Bigtable!", "Hello HBase!"
+  };
 
-  /**
-   * Connects to Cloud Bigtable, runs some basic operations and prints the results.
-   */
+  /** Connects to Cloud Bigtable, runs some basic operations and prints the results. */
   private static void doHelloWorld(String projectId, String instanceId) {
 
-    // [START connecting_to_bigtable]
+    // [START bigtable_hw_connect]
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
 
       // The admin API lets us create, manage and delete tables
       Admin admin = connection.getAdmin();
-      // [END connecting_to_bigtable]
+      // [END bigtable_hw_connect]
 
-      // [START creating_a_table]
+      // [START bigtable_hw_create_table]
       // Create a table with a single column family
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_NAME));
       descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
 
       print("Create table " + descriptor.getNameAsString());
       admin.createTable(descriptor);
-      // [END creating_a_table]
+      // [END bigtable_hw_create_table]
 
-      // [START writing_rows]
+      // [START bigtable_hw_write_rows]
       // Retrieve the table we just created so we can do some reads and writes
       Table table = connection.getTable(TableName.valueOf(TABLE_NAME));
 
@@ -98,18 +99,18 @@ public class HelloWorld {
         put.addColumn(COLUMN_FAMILY_NAME, COLUMN_NAME, Bytes.toBytes(GREETINGS[i]));
         table.put(put);
       }
-      // [END writing_rows]
+      // [END bigtable_hw_write_rows]
 
-      // [START getting_a_row]
+      // [START bigtable_hw_get_by_key]
       // Get the first greeting by row key
       String rowKey = "greeting0";
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
       String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
       System.out.println("Get a single greeting by row key");
       System.out.printf("\t%s = %s\n", rowKey, greeting);
-      // [END getting_a_row]
+      // [END bigtable_hw_get_by_key]
 
-      // [START scanning_all_rows]
+      // [START bigtable_hw_scan_all]
       // Now scan across all rows.
       Scan scan = new Scan();
 
@@ -119,14 +120,14 @@ public class HelloWorld {
         byte[] valueBytes = row.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME);
         System.out.println('\t' + Bytes.toString(valueBytes));
       }
-      // [END scanning_all_rows]
+      // [END bigtable_hw_scan_all]
 
-      // [START deleting_a_table]
+      // [START bigtable_hw_delete_table]
       // Clean up by disabling and then deleting the table
       print("Delete the table");
       admin.disableTable(table.getName());
       admin.deleteTable(table.getName());
-      // [END deleting_a_table]
+      // [END bigtable_hw_delete_table]
 
     } catch (IOException e) {
       System.err.println("Exception while running HelloWorld: " + e.getMessage());
@@ -156,5 +157,4 @@ public class HelloWorld {
     }
     return value;
   }
-
 }
