@@ -16,6 +16,7 @@
 
 package com.example.containeranalysis;
 
+// [START containeranalysis_imports_samples]
 import static java.lang.Thread.sleep;
 
 import com.google.cloud.devtools.containeranalysis.v1beta1.ContainerAnalysisV1Beta1Client;
@@ -46,13 +47,14 @@ import io.grafeas.v1beta1.vulnerability.Vulnerability;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.lang.InterruptedException;
+// [END containeranalysis_imports_samples]
 
 /**
  * API usage samples
  */
 public class Samples {
 
-  // [START create_note]
+  // [START containeranalysis_create_note]
   /**
    * Creates and returns a new vulnerability Note
    * @param client The Grafeas client used to perform the API requests.
@@ -71,10 +73,9 @@ public class Samples {
     final String projectName = ProjectName.format(projectId);
     return client.createNote(projectName, noteId, newNote);
   }
-  // [END create_note]
+  // [END containeranalysis_create_note]
 
-
-  // [START create_occurrence]
+  // [START containeranalysis_create_occurrence]
   /**
    * Creates and returns a new Occurrence of a previously created vulnerability Note
    * @param client The Grafeas client used to perform the API requests.
@@ -102,10 +103,9 @@ public class Samples {
     Occurrence newOcc = occBuilder.build();
     return client.createOccurrence(occProjectName, newOcc);
   }
-  // [END create_occurrence]
+  // [END containeranalysis_create_occurrence]
 
-
-  // [START delete_note]
+  // [START containeranalysis_delete_note]
   /**
    * Deletes an existing Note from the server
    * @param client The Grafeas client used to perform the API requests.
@@ -116,9 +116,9 @@ public class Samples {
     final NoteName noteName = NoteName.of(projectId, noteId);
     client.deleteNote(noteName);
   }
-  // [END delete_note]
+  // [END containeranalysis_delete_note]
 
-  // [START delete_occurrence]
+  // [START containeranalysis_delete_occurrence]
   /**
    * Deletes an existing Occurrence from the server
    * @param client The Grafeas client used to perform the API requests.
@@ -128,10 +128,9 @@ public class Samples {
   public static void deleteOccurrence(GrafeasV1Beta1Client client, String occurrenceName) {
     client.deleteOccurrence(occurrenceName);
   }
-  // [END delete_occurrence]
+  // [END containeranalysis_delete_occurrence]
 
-
-  // [START get_occurrence]
+  // [START containeranalysis_get_occurrence]
   /**
    * Retrieves and prints a specified Occurrence from the server
    * @param client The Grafeas client used to perform the API requests.
@@ -144,9 +143,9 @@ public class Samples {
     System.out.println(occ);
     return occ;
   }
-  // [END get_occurrence]
+  // [END containeranalysis_get_occurrence]
 
-  // [START get_note]
+  // [START containeranalysis_get_note]
   /**
    * Retrieves and prints a specified Note from the server
    * @param client The Grafeas client used to perform the API requests.
@@ -161,9 +160,9 @@ public class Samples {
     System.out.println(n);
     return n;
   }
-  // [END get_note]
+  // [END containeranalysis_get_note]
 
-  // [START discovery_info]
+  // [START containeranalysis_discovery_info]
   /**
    * Retrieves and prints the Discovery Occurrence created for a specified image
    * The Discovery Occurrence contains information about the initial scan on the image
@@ -181,9 +180,9 @@ public class Samples {
       System.out.println(o);
     }
   }
-  // [END discovery_info]
+  // [END containeranalysis_discovery_info]
 
-  // [START occurrences_for_note]
+  // [START containeranalysis_occurrences_for_note]
   /**
    * Retrieves all the Occurrences associated with a specified Note
    * Here, all Occurrences are printed and counted
@@ -207,10 +206,9 @@ public class Samples {
     }
     return i;
   }
-  // [END occurrences_for_note]
+  // [END containeranalysis_occurrences_for_note]
 
-
-  // [START occurrences_for_image]
+  // [START containeranalysis_occurrences_for_image]
   /**
    * Retrieves all the Occurrences associated with a specified image
    * Here, all Occurrences are simply printed and counted
@@ -233,9 +231,9 @@ public class Samples {
     }
     return i;
   }
-  // [END occurrences_for_image]
+  // [END containeranalysis_occurrences_for_image]
 
-  // [START pubsub]
+  // [START containeranalysis_pubsub]
   /**
    * Handle incoming Occurrences using a Cloud Pub/Sub subscription
    * @param subId the user-specified identifier for the Pub/Sub subscription
@@ -306,5 +304,5 @@ public class Samples {
     Subscription sub = client.createSubscription(subName, topicName, config, 0);
     return sub;
   } 
-  // [END pubsub]
+  // [END containeranalysis_pubsub]
 }
