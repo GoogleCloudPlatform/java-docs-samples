@@ -17,7 +17,6 @@
 package com.example.containeranalysis;
 
 import static java.lang.Thread.sleep;
-import static junit.framework.Assert.fail;
 import static junit.framework.TestCase.assertEquals;
 
 import com.google.api.gax.rpc.NotFoundException;
@@ -33,6 +32,7 @@ import io.grpc.StatusRuntimeException;
 import java.util.Date;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -107,7 +107,7 @@ public class SamplesTest {
     try {
       Samples.getNote(noteId, PROJECT_ID);
       // above should throw, because note was deleted
-      fail("note not deleted");
+      Assert.fail("note not deleted");
     } catch (NotFoundException e) {
       // test passes
     }
@@ -137,7 +137,7 @@ public class SamplesTest {
     try {
       Samples.getOccurrence(occId, PROJECT_ID);
       // getOccurrence should fail, because occurrence was deleted
-      fail("failed to delete occurrence");
+      Assert.fail("failed to delete occurrence");
     } catch (NotFoundException e) {
       // test passes
     }
