@@ -35,7 +35,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for AutoML Natural Language Entity Extraction Dataset operations */
+/**
+ * Tests for AutoML Natural Language Entity Extraction Dataset operations
+ */
 @RunWith(JUnit4.class)
 public class DatasetIT {
 
@@ -111,10 +113,10 @@ public class DatasetIT {
 
   @Test
   public void testExportDataset() throws IOException, InterruptedException, ExecutionException {
-    String outputURI = String.format("gs://%s/%s/%s",PROJECT_ID,OUTPUT_PREFIX,DATASET_ID);
+    String outputUri = String.format("gs://%s/%s/%s", PROJECT_ID, OUTPUT_PREFIX, DATASET_ID);
 
     // Act
-    ExportData.exportData(PROJECT_ID, COMPUTE_REGION, DATASET_ID, outputURI);
+    ExportData.exportData(PROJECT_ID, COMPUTE_REGION, DATASET_ID, outputUri);
 
     // Assert
     String got = bout.toString();
@@ -122,16 +124,18 @@ public class DatasetIT {
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
 
-    Page<Blob> blobs = storage.list(PROJECT_ID, BlobListOption.currentDirectory(), BlobListOption.prefix(OUTPUT_PREFIX + "/"));
+    Page<Blob> blobs = storage.list(PROJECT_ID, BlobListOption.currentDirectory(),
+        BlobListOption.prefix(OUTPUT_PREFIX + "/"));
 
-    deleteDirectory(storage,blobs);
+    deleteDirectory(storage, blobs);
   }
 
-  private void deleteDirectory(Storage storage, Page<Blob> blobs){
-    for(Blob blob:blobs.iterateAll()){
+  private void deleteDirectory(Storage storage, Page<Blob> blobs) {
+    for (Blob blob : blobs.iterateAll()) {
       System.out.println(blob.getName());
-      if(!blob.delete()){
-        Page<Blob> subBlobs = storage.list(PROJECT_ID, BlobListOption.currentDirectory(),BlobListOption.prefix(blob.getName()));
+      if (!blob.delete()) {
+        Page<Blob> subBlobs = storage.list(PROJECT_ID, BlobListOption.currentDirectory(),
+            BlobListOption.prefix(blob.getName()));
 
         deleteDirectory(storage, subBlobs);
       }

@@ -17,6 +17,7 @@
 package com.google.cloud.language.automl.entity.extraction.samples;
 
 // [START automl_natural_language_entity_get_dataset]
+
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.DatasetName;
@@ -27,7 +28,7 @@ import java.text.SimpleDateFormat;
 class GetDataset {
 
   // Get a given dataset
-   static void getDataset(String projectId, String computeRegion, String datasetId)
+  static void getDataset(String projectId, String computeRegion, String datasetId)
       throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
     // String computeRegion = "YOUR_COMPUTE_REGION";

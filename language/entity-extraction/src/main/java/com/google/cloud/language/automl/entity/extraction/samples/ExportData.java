@@ -17,6 +17,7 @@
 package com.google.cloud.language.automl.entity.extraction.samples;
 
 // [START automl_natural_language_entity_export_data]
+
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.cloud.automl.v1beta1.GcsDestination;
@@ -28,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 class ExportData {
 
   // Export data to Google Cloud Storage
-   static void exportData(
+  static void exportData(
       String projectId, String computeRegion, String datasetId, String gcsUri)
       throws IOException, InterruptedException, ExecutionException {
     // String projectId = "YOUR_PROJECT_ID";

@@ -28,7 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for AutoML Natural Language Entity Extraction Model operations. */
+/**
+ * Tests for AutoML Natural Language Entity Extraction Model operations.
+ */
 @RunWith(JUnit4.class)
 public class ModelIT {
 
