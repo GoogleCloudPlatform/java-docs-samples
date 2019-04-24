@@ -104,42 +104,6 @@ public class Samples {
   }
   // [END create_occurrence]
 
-  // [START update_note]
-  /**
-   * Pushes an update to a Note that already exists on the server
-   * @param client The Grafeas client used to perform the API requests.
-   * @param updated a Note object representing the desired updates to push
-   * @param noteId the identifier of the existing Note
-   * @param projectId the GCP project the Note belongs to
-   */
-  public static Note updateNote(GrafeasV1Beta1Client client, Note updated, String noteId, 
-      String projectId) {
-    final NoteName noteName = NoteName.of(projectId, noteId);
-    UpdateNoteRequest request = UpdateNoteRequest.newBuilder()
-                                                 .setName(noteName.toString())
-                                                 .setNote(updated)
-                                                 .build();
-    return client.updateNote(request);
-  }
-  // [END update_note]
-
-  // [START update_occurrence]
-  /**
-   * Pushes an update to an Occurrence that already exists on the server
-   * @param client The Grafeas client used to perform the API requests.
-   * @param occurrenceName the name of the Occurrence to delete.
-   *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
-   * @param updated an Occurrence object representing the desired updates to push
-   */
-  public static Occurrence updateOccurrence(GrafeasV1Beta1Client client, String occurrenceName,
-      Occurrence updated) {
-    UpdateOccurrenceRequest request = UpdateOccurrenceRequest.newBuilder()
-                                                             .setName(occurrenceName)
-                                                             .setOccurrence(updated)
-                                                             .build();
-    return client.updateOccurrence(request);
-  }
-  // [END update_occurrence]
 
   // [START delete_note]
   /**

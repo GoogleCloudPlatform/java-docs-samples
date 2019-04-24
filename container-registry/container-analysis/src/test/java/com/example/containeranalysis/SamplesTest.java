@@ -119,19 +119,6 @@ public class SamplesTest {
   }
 
   @Test
-  public void testUpdateNote() throws Exception {
-    String descriptionText = "updated";
-
-    Note.Builder builder = Note.newBuilder(noteObj);
-    builder.setShortDescription(descriptionText);
-    Note returned = Samples.updateNote(client, builder.build(), noteId, PROJECT_ID);
-    assertEquals(descriptionText, returned.getShortDescription());
-
-    Note updated = Samples.getNote(client, noteId, PROJECT_ID);
-    assertEquals(descriptionText, updated.getShortDescription());
-  }
-
-  @Test
   public void testCreateOccurrence() throws Exception {
     Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     Occurrence retrieved = Samples.getOccurrence(client, o.getName());
@@ -155,26 +142,6 @@ public class SamplesTest {
     } catch (NotFoundException e) {
       // test passes
     }
-  }
-
-  @Test
-  public void testUpdateOccurrence() throws Exception {
-    String typeId = "newType";
-
-    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
-
-    Occurrence.Builder b = Occurrence.newBuilder(o);
-    Details.Builder d = Details.newBuilder();
-    d.setType(typeId);
-    b.setVulnerability(d);
-
-    Occurrence returned = Samples.updateOccurrence(client, o.getName(), b.build());
-    assertEquals(typeId, returned.getVulnerability().getType());
-    Occurrence got = Samples.getOccurrence(client, o.getName());
-    assertEquals(typeId, got.getVulnerability().getType());
-
-    // clean up
-    Samples.deleteOccurrence(client, o.getName());
   }
 
   @Test
