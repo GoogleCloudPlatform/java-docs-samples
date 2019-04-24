@@ -50,7 +50,6 @@ public class SamplesTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String subId = "CA-Occurrences-" + (new Date()).getTime();
-  private static GrafeasV1Beta1Client client;
   private String noteId;
   private String imageUrl;
   private Note noteObj;
@@ -60,15 +59,11 @@ public class SamplesTest {
   @Rule
   public TestName name = new TestName();
 
-  @BeforeClass
-  public static void setUpClass() throws Exception {
-    client = GrafeasV1Beta1Client.create();
-  } 
+
 
   @AfterClass
   public static void tearDownClass() {
     try {
-      client.shutdownNow();
       SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create();
       ProjectSubscriptionName subName = ProjectSubscriptionName.of(PROJECT_ID, subId);
       subscriptionAdminClient.deleteSubscription(subName);
@@ -85,13 +80,13 @@ public class SamplesTest {
     System.out.println(name.getMethodName());
     noteId =  "note-" + (new Date()).getTime() + name.getMethodName();
     imageUrl = "www." + (new Date()).getTime() + name.getMethodName() + ".com";
-    noteObj = Samples.createNote(client, noteId, PROJECT_ID);
+    noteObj = Samples.createNote(noteId, PROJECT_ID);
   }
 
   @After
   public void tearDown() {
     try {
-      Samples.deleteNote(client, noteId, PROJECT_ID);
+      Samples.deleteNote(noteId, PROJECT_ID);
     } catch (Exception e) {
       // these exceptions aren't relevant to the tests
       System.out.println("TearDown Error: " + e.toString());
@@ -101,16 +96,16 @@ public class SamplesTest {
   @Test
   public void testCreateNote() throws Exception {
     // note should have been created as part of set up. verify that it succeeded
-    Note n = Samples.getNote(client, noteId, PROJECT_ID);
+    Note n = Samples.getNote(noteId, PROJECT_ID);
 
     assertEquals(n.getName(), noteObj.getName());
   }
 
   @Test
   public void testDeleteNote() throws Exception {
-    Samples.deleteNote(client, noteId, PROJECT_ID);
+    Samples.deleteNote(noteId, PROJECT_ID);
     try {
-      Samples.getNote(client, noteId, PROJECT_ID);
+      Samples.getNote(noteId, PROJECT_ID);
       // above should throw, because note was deleted
       fail("note not deleted");
     } catch (NotFoundException e) {
@@ -120,23 +115,23 @@ public class SamplesTest {
 
   @Test
   public void testCreateOccurrence() throws Exception {
-    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
-    Occurrence retrieved = Samples.getOccurrence(client, o.getName());
+    Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    Occurrence retrieved = Samples.getOccurrence(o.getName());
     assertEquals(o.getName(), retrieved.getName());
 
     // clean up
-    Samples.deleteOccurrence(client, o.getName());
+    Samples.deleteOccurrence(o.getName());
   }
 
   @Test
   public void testDeleteOccurrence() throws Exception {
-    Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     String occName = o.getName();
 
-    Samples.deleteOccurrence(client, occName);
+    Samples.deleteOccurrence(occName);
 
     try {
-      Samples.getOccurrence(client, occName);
+      Samples.getOccurrence(occName);
       // getOccurrence should fail, because occurrence was deleted
       fail("failed to delete occurrence");
     } catch (NotFoundException e) {
@@ -148,10 +143,10 @@ public class SamplesTest {
   public void testOccurrencesForImage() throws Exception {
     int newCount;
     int tries = 0;
-    int origCount = Samples.getOccurrencesForImage(client, imageUrl, PROJECT_ID);
-    final Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    int origCount = Samples.getOccurrencesForImage(imageUrl, PROJECT_ID);
+    final Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
-      newCount = Samples.getOccurrencesForImage(client, imageUrl, PROJECT_ID);
+      newCount = Samples.getOccurrencesForImage(imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME);
       tries += 1;
     } while (newCount != 1 && tries < TRY_LIMIT);
@@ -159,17 +154,17 @@ public class SamplesTest {
     assertEquals(0, origCount);
 
     // clean up
-    Samples.deleteOccurrence(client, o.getName());
+    Samples.deleteOccurrence(o.getName());
   }
 
   @Test
   public void testOccurrencesForNote() throws Exception {
     int newCount;
     int tries = 0;
-    int origCount = Samples.getOccurrencesForNote(client, noteId, PROJECT_ID);
-    final Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    int origCount = Samples.getOccurrencesForNote(noteId, PROJECT_ID);
+    final Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
-      newCount = Samples.getOccurrencesForNote(client, noteId, PROJECT_ID);
+      newCount = Samples.getOccurrencesForNote(noteId, PROJECT_ID);
       sleep(SLEEP_TIME);
       tries += 1;
     } while (newCount != 1 && tries < TRY_LIMIT);
@@ -177,7 +172,7 @@ public class SamplesTest {
     assertEquals(1, newCount);
 
     // clean up
-    Samples.deleteOccurrence(client, o.getName());
+    Samples.deleteOccurrence(o.getName());
   }
 
   @Test
@@ -202,7 +197,7 @@ public class SamplesTest {
     // now, we can test adding 3 more occurrences
     int endVal = startVal + 3;
     for (int i = startVal; i <= endVal; i++) {
-      Occurrence o = Samples.createOccurrence(client, imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+      Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
       System.out.println("CREATED: " + o.getName());
       tries = 0;
       do {
@@ -212,7 +207,7 @@ public class SamplesTest {
       } while (newCount != i && tries < TRY_LIMIT);
       System.out.println(receiver.messageCount + " : " + i);
       assertEquals(i, receiver.messageCount);
-      Samples.deleteOccurrence(client, o.getName());
+      Samples.deleteOccurrence(o.getName());
     }
     if (subscriber != null) {
       subscriber.stopAsync();
