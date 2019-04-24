@@ -47,6 +47,7 @@ import io.grafeas.v1beta1.vulnerability.Vulnerability;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.lang.InterruptedException;
+import java.util.concurrent.TimeUnit;
 // [END containeranalysis_imports_samples]
 
 /**
@@ -61,9 +62,11 @@ public class Samples {
    * @param projectId the GCP project the Note will be created under
    * @return the newly created Note object
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static Note createNote(String noteId, String projectId) throws IOException {
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+  public static Note createNote(String noteId, String projectId) 
+      throws IOException, InterruptedException {
+    final String projectName = ProjectName.format(projectId);
 
     Note.Builder noteBuilder = Note.newBuilder();
     Vulnerability.Builder vulBuilder = Vulnerability.newBuilder();
@@ -72,8 +75,11 @@ public class Samples {
     noteBuilder.setVulnerability(vulBuilder);
     Note newNote = noteBuilder.build();
 
-    final String projectName = ProjectName.format(projectId);
-    return client.createNote(projectName, noteId, newNote);
+    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    Note result = client.createNote(projectName, noteId, newNote);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
+    return result;
   }
   // [END containeranalysis_create_note]
 
@@ -87,9 +93,10 @@ public class Samples {
    * @param noteProjectId the GCP project the associated Note belongs to
    * @return the newly created Occurrence object
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
-      String occProjectId, String noteProjectId) throws IOException {
+      String occProjectId, String noteProjectId) throws IOException, InterruptedException {
     final NoteName noteName = NoteName.of(noteProjectId, noteId);
     final String occProjectName = ProjectName.format(occProjectId);
 
@@ -105,7 +112,10 @@ public class Samples {
     Occurrence newOcc = occBuilder.build();
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
-    return client.createOccurrence(occProjectName, newOcc);
+    Occurrence result = client.createOccurrence(occProjectName, newOcc);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
+    return result;
   }
   // [END containeranalysis_create_occurrence]
 
@@ -115,12 +125,16 @@ public class Samples {
    * @param noteId the identifier of the Note to delete
    * @param projectId the GCP project the Note belongs to
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static void deleteNote(String noteId, String projectId) throws IOException {
+  public static void deleteNote(String noteId, String projectId) 
+      throws IOException, InterruptedException {
     final NoteName noteName = NoteName.of(projectId, noteId);
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.deleteNote(noteName);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
   }
   // [END containeranalysis_delete_note]
 
@@ -130,10 +144,14 @@ public class Samples {
    * @param occurrenceName the name of the Occurrence to delete
    *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static void deleteOccurrence(String occurrenceName) throws IOException {
+  public static void deleteOccurrence(String occurrenceName) 
+      throws IOException, InterruptedException {
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.deleteOccurrence(occurrenceName);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
   }
   // [END containeranalysis_delete_occurrence]
 
@@ -144,10 +162,14 @@ public class Samples {
    *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
    * @return the requested Occurrence object
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static Occurrence getOccurrence(String occurrenceName) throws IOException {
+  public static Occurrence getOccurrence(String occurrenceName) 
+      throws IOException, InterruptedException {
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Occurrence occ = client.getOccurrence(occurrenceName);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
     System.out.println(occ);
     return occ;
   }
@@ -160,13 +182,16 @@ public class Samples {
    * @param projectId the GCP project the Note belongs to
    * @return the requested Note object
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
   public static Note getNote(String noteId, String projectId) 
-      throws IOException {
+      throws IOException, InterruptedException {
     final NoteName noteName = NoteName.of(projectId, noteId);
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Note n = client.getNote(noteName);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
     System.out.println(n);
     return n;
   }
@@ -180,8 +205,10 @@ public class Samples {
    *                 example: "https://gcr.io/project/image@sha256:foo"
    * @param projectId the GCP project the image belongs to
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static void getDiscoveryInfo(String resourceUrl,String projectId) throws IOException {
+  public static void getDiscoveryInfo(String resourceUrl,String projectId) 
+      throws IOException, InterruptedException {
     String filterStr = "kind=\"DISCOVERY\" AND resourceUrl=\"" + resourceUrl + "\"";
     final String projectName = ProjectName.format(projectId);
 
@@ -189,6 +216,8 @@ public class Samples {
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
       System.out.println(o);
     }
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
   }
   // [END containeranalysis_discovery_info]
 
@@ -200,8 +229,10 @@ public class Samples {
    * @param projectId the GCP project the Note belongs to
    * @return number of Occurrences found
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static int getOccurrencesForNote(String noteId, String projectId) throws IOException {
+  public static int getOccurrencesForNote(String noteId, String projectId) 
+      throws IOException, InterruptedException {
     final NoteName noteName = NoteName.of(projectId, noteId);
     int i = 0;
 
@@ -215,6 +246,8 @@ public class Samples {
       System.out.println(o.getName());
       i = i + 1;
     }
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
     return i;
   }
   // [END containeranalysis_occurrences_for_note]
@@ -228,9 +261,10 @@ public class Samples {
    * @param projectId the GCP project to search for Occurrences in
    * @return number of Occurrences found
    * @throws IOException on errors creating the Grafeas client
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
   public static int getOccurrencesForImage(String resourceUrl, String projectId)
-      throws IOException {
+      throws IOException, InterruptedException {
     final String filterStr = "resourceUrl=\"" + resourceUrl + "\"";
     final String projectName = ProjectName.format(projectId);
     int i = 0;
@@ -241,6 +275,8 @@ public class Samples {
       System.out.println(o.getName());
       i = i + 1;
     }
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
     return i;
   }
   // [END containeranalysis_occurrences_for_image]
@@ -303,9 +339,10 @@ public class Samples {
    * @param projectId the GCP project to create the subscription under
    * @throws IOException thrown on errors with the subscription client
    * @throws StatusRuntimeException if subscription already exists
+   * @throws InterruptedException on errors shutting down the Grafeas client
    */
   public static Subscription createOccurrenceSubscription(String subId, String projectId) 
-      throws IOException, StatusRuntimeException {
+      throws IOException, StatusRuntimeException, InterruptedException {
     // This topic id will automatically receive messages when Occurrences are added or modified
     String topicId = "container-analysis-occurrences-v1beta1";
     SubscriptionAdminClient client = SubscriptionAdminClient.create();
@@ -313,6 +350,8 @@ public class Samples {
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
     Subscription sub = client.createSubscription(subName, topicName, config, 0);
+    client.shutdownNow();
+    client.awaitTermination(10, TimeUnit.SECONDS);
     return sub;
   } 
   // [END containeranalysis_pubsub]
