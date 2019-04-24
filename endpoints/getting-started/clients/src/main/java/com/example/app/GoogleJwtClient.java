@@ -81,13 +81,13 @@ public class GoogleJwtClient {
   /**
    * Makes an authorized request to the endpoint.
    */
-  public static String makeJwtRequest(final String singedJwt, final URL url)
+  public static String makeJwtRequest(final String signedJwt, final URL url)
       throws IOException, ProtocolException {
 
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Content-Type", "application/json");
-    con.setRequestProperty("Authorization", "Bearer " + singedJwt);
+    con.setRequestProperty("Authorization", "Bearer " + signedJwt);
 
     InputStreamReader reader = new InputStreamReader(con.getInputStream());
     BufferedReader buffReader = new BufferedReader(reader);
