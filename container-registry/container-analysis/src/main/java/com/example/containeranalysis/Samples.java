@@ -28,6 +28,7 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.containeranalysis.v1beta1.NoteName;
+import com.google.containeranalysis.v1beta1.OccurrenceName;
 import com.google.containeranalysis.v1beta1.ProjectName;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
@@ -141,13 +142,15 @@ public class Samples {
   // [START containeranalysis_delete_occurrence]
   /**
    * Deletes an existing Occurrence from the server
-   * @param occurrenceName the name of the Occurrence to delete
-   *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
+   * @param occurrenceId the identifier of the Occurrence to delete
+   * @param projectId the GCP project the Occurrence belongs to
    * @throws IOException on errors creating the Grafeas client
    * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static void deleteOccurrence(String occurrenceName) 
+  public static void deleteOccurrence(String occurrenceId, String projectId) 
       throws IOException, InterruptedException {
+    final OccurrenceName occurrenceName = OccurrenceName.of(projectId, occurrenceId);
+
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.deleteOccurrence(occurrenceName);
     client.shutdownNow();
@@ -158,14 +161,15 @@ public class Samples {
   // [START containeranalysis_get_occurrence]
   /**
    * Retrieves and prints a specified Occurrence from the server
-   * @param occurrenceName the name of the Occurrence to delete
-   *                       format: "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]"
+   * @param occurrenceId the identifier of the Occurrence to retrieve
+   * @param projectId the GCP project the Occurrence belongs to
    * @return the requested Occurrence object
    * @throws IOException on errors creating the Grafeas client
    * @throws InterruptedException on errors shutting down the Grafeas client
    */
-  public static Occurrence getOccurrence(String occurrenceName) 
+  public static Occurrence getOccurrence(String occurrenceId, String projectId) 
       throws IOException, InterruptedException {
+    final OccurrenceName occurrenceName = OccurrenceName.of(projectId, occurrenceId);
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Occurrence occ = client.getOccurrence(occurrenceName);
     client.shutdownNow();

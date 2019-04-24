@@ -116,22 +116,26 @@ public class SamplesTest {
   @Test
   public void testCreateOccurrence() throws Exception {
     Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
-    Occurrence retrieved = Samples.getOccurrence(o.getName());
+    String[] nameArr = o.getName().split("/");
+    String occId = nameArr[nameArr.length - 1];
+    Occurrence retrieved = Samples.getOccurrence(occId, PROJECT_ID);
     assertEquals(o.getName(), retrieved.getName());
 
     // clean up
-    Samples.deleteOccurrence(o.getName());
+    Samples.deleteOccurrence(occId, PROJECT_ID);
   }
 
   @Test
   public void testDeleteOccurrence() throws Exception {
     Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     String occName = o.getName();
+    String[] nameArr = occName.split("/");
+    String occId = nameArr[nameArr.length - 1];
 
-    Samples.deleteOccurrence(occName);
+    Samples.deleteOccurrence(occId, PROJECT_ID);
 
     try {
-      Samples.getOccurrence(occName);
+      Samples.getOccurrence(occId, PROJECT_ID);
       // getOccurrence should fail, because occurrence was deleted
       fail("failed to delete occurrence");
     } catch (NotFoundException e) {
@@ -154,7 +158,9 @@ public class SamplesTest {
     assertEquals(0, origCount);
 
     // clean up
-    Samples.deleteOccurrence(o.getName());
+    String[] nameArr = o.getName().split("/");
+    String occId = nameArr[nameArr.length - 1];
+    Samples.deleteOccurrence(occId, PROJECT_ID);
   }
 
   @Test
@@ -172,7 +178,9 @@ public class SamplesTest {
     assertEquals(1, newCount);
 
     // clean up
-    Samples.deleteOccurrence(o.getName());
+    String[] nameArr = o.getName().split("/");
+    String occId = nameArr[nameArr.length - 1];
+    Samples.deleteOccurrence(occId, PROJECT_ID);
   }
 
   @Test
@@ -207,7 +215,9 @@ public class SamplesTest {
       } while (newCount != i && tries < TRY_LIMIT);
       System.out.println(receiver.messageCount + " : " + i);
       assertEquals(i, receiver.messageCount);
-      Samples.deleteOccurrence(o.getName());
+      String[] nameArr = o.getName().split("/");
+      String occId = nameArr[nameArr.length - 1];
+      Samples.deleteOccurrence(occId, PROJECT_ID);
     }
     if (subscriber != null) {
       subscriber.stopAsync();
