@@ -17,6 +17,7 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_search_resources_post]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -24,9 +25,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.SearchResources;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.Search;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.HttpBody;
+import com.google.api.services.healthcare.v1beta1.model.SearchResourcesRequest;
+
 import java.io.IOException;
 import java.util.Collections;
 
@@ -45,15 +48,18 @@ public class FhirResourceSearchPost {
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
+    SearchResourcesRequest searchRequest = new SearchResourcesRequest()
+        .setResourceType(resourceType);
+
     // Create request and configure any parameters.
-    SearchResources request =
+    Search request =
         client
             .projects()
             .locations()
             .datasets()
             .fhirStores()
             .fhir()
-            .searchResources(resourceName, resourceType);
+            .search(resourceName, searchRequest);
 
     // Execute the request and process the results.
     HttpBody response = request.execute();

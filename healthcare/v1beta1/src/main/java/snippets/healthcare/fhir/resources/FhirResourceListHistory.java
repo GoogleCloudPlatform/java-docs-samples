@@ -44,8 +44,8 @@ public class FhirResourceListHistory {
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
-    Fhir.History.List request =
-        client.projects().locations().datasets().fhirStores().fhir().history().list(resourceName);
+    Fhir.History request =
+        client.projects().locations().datasets().fhirStores().fhir().history(resourceName);
 
     // Execute the request and process the results.
     HttpBody store = request.execute();

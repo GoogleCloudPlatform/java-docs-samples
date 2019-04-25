@@ -24,7 +24,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.FhirStores.Fhir.ResourcePurge;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import java.io.IOException;
 import java.util.Collections;
@@ -44,8 +44,8 @@ public class FhirResourceDeletePurge {
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
-    Fhir.Delete$purge request =
-        client.projects().locations().datasets().fhirStores().fhir().delete$purge(resourceName);
+    ResourcePurge request =
+        client.projects().locations().datasets().fhirStores().fhir().resourcePurge(resourceName);
 
     // Execute the request and process the results.
     request.execute();
