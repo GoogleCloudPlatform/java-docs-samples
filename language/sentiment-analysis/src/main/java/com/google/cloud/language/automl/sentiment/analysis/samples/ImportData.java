@@ -21,14 +21,11 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.cloud.automl.v1beta1.GcsSource;
-import com.google.cloud.automl.v1beta1.ImportDataRequest;
 import com.google.cloud.automl.v1beta1.InputConfig;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
-import com.sun.tools.internal.ws.wsdl.document.Import;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 class ImportData {
