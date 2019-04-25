@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class PredictIT {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
+  private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String COMPUTE_REGION = "us-central1";
   private static final String MODEL_ID = "TEN1974951581904273408";
   private static final String FILE_PATH = "src/test/resources/entityInput.txt";
