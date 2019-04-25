@@ -78,8 +78,6 @@ public class Samples {
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Note result = client.createNote(projectName, noteId, newNote);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     return result;
   }
   // [END containeranalysis_create_note]
@@ -114,8 +112,6 @@ public class Samples {
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Occurrence result = client.createOccurrence(occProjectName, newOcc);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     return result;
   }
   // [END containeranalysis_create_occurrence]
@@ -134,8 +130,6 @@ public class Samples {
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.deleteNote(noteName);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
   }
   // [END containeranalysis_delete_note]
 
@@ -153,8 +147,6 @@ public class Samples {
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.deleteOccurrence(occurrenceName);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
   }
   // [END containeranalysis_delete_occurrence]
 
@@ -172,8 +164,6 @@ public class Samples {
     final OccurrenceName occurrenceName = OccurrenceName.of(projectId, occurrenceId);
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Occurrence occ = client.getOccurrence(occurrenceName);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     System.out.println(occ);
     return occ;
   }
@@ -194,8 +184,6 @@ public class Samples {
 
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Note n = client.getNote(noteName);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     System.out.println(n);
     return n;
   }
@@ -220,8 +208,6 @@ public class Samples {
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
       System.out.println(o);
     }
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
   }
   // [END containeranalysis_discovery_info]
 
@@ -250,8 +236,6 @@ public class Samples {
       System.out.println(o.getName());
       i = i + 1;
     }
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     return i;
   }
   // [END containeranalysis_occurrences_for_note]
@@ -279,8 +263,6 @@ public class Samples {
       System.out.println(o.getName());
       i = i + 1;
     }
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     return i;
   }
   // [END containeranalysis_occurrences_for_image]
@@ -354,8 +336,6 @@ public class Samples {
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
     Subscription sub = client.createSubscription(subName, topicName, config, 0);
-    client.shutdownNow();
-    client.awaitTermination(10, TimeUnit.SECONDS);
     return sub;
   } 
   // [END containeranalysis_pubsub]
