@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ModelIT {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
+  private static final String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static final String COMPUTE_REGION = "us-central1";
   private static final String FILTER = "textSentimentModelMetadata:*";
   private static final String MODEL_ID = "TST864310464894223026";

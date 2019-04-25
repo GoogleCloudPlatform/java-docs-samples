@@ -32,10 +32,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class PredictIT {
 
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+  private static final String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static final String COMPUTE_REGION = "us-central1";
   private static final String MODEL_ID = "TST864310464894223026";
-  private static final String FILE_PATH = "./resources/sentimentInput.txt";
+  private static final String FILE_PATH = "src/test/resources/sentimentInput.txt";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 

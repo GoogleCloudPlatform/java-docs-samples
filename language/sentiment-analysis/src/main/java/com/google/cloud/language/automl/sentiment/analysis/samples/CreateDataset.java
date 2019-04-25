@@ -57,7 +57,7 @@ class CreateDataset {
 
     // Create a dataset with the dataset metadata in the region.
     Dataset dataset = client.createDataset(projectLocation, myDataset);
-
+    client.close();
     // Display the dataset information.
     System.out.println(String.format("Dataset name: %s", dataset.getName()));
     System.out.println(

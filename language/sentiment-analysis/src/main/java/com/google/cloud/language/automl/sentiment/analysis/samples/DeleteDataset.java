@@ -41,6 +41,7 @@ class DeleteDataset {
     // Delete a dataset.
     Empty response = client.deleteDatasetAsync(datasetFullId).get();
     System.out.println(String.format("Dataset deleted. %s", response));
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_delete_dataset]

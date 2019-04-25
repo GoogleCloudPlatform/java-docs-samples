@@ -128,6 +128,7 @@ class ListModelEvaluations {
       }
       System.out.print("\n");
     }
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_list_model_evaluations]

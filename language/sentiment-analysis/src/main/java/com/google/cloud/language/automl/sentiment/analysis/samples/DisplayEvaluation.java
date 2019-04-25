@@ -117,6 +117,7 @@ public class DisplayEvaluation {
     for (String annotationSpecId : annotationSpecIdList) {
       System.out.println(String.format("Annotation spec Id: " + annotationSpecId));
     }
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_display_evaluation]

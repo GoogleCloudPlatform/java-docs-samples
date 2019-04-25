@@ -119,6 +119,7 @@ class GetModelEvaluation {
         System.out.println(String.format("\tAnnotation spec Id: " + annotationSpecId));
       }
     }
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_get_model_evaluation]

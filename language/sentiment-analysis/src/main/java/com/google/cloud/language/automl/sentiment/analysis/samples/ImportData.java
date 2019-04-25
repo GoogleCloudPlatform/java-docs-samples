@@ -17,6 +17,7 @@
 package com.google.cloud.language.automl.sentiment.analysis.samples;
 
 // [START automl_natural_language_sentiment_import_data]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
@@ -55,12 +56,15 @@ class ImportData {
     // Import data from the input URI
     InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
 
-    OperationFuture<Empty, OperationMetadata> response = client.importDataAsync(datasetFullId, inputConfig);
+    OperationFuture<Empty, OperationMetadata> response = client
+        .importDataAsync(datasetFullId, inputConfig);
 
-    System.out.format("Import data operation name: %s \n",response.getInitialFuture().get().getName());
+    System.out
+        .format("Import data operation name: %s \n", response.getInitialFuture().get().getName());
     System.out.println("Processing import...");
     //Cancel operation to prevent charges when testing
     client.getOperationsClient().cancelOperation(response.getInitialFuture().get().getName());
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_import_data]

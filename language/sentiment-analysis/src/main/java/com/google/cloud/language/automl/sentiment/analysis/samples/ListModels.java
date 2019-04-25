@@ -65,6 +65,7 @@ class ListModels {
       System.out.println(String.format("Model create time: %s", createTime));
       System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
     }
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_list_models]

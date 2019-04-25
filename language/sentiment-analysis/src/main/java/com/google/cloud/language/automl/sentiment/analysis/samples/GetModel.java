@@ -40,7 +40,7 @@ class GetModel {
 
     // Get complete detail of the model.
     Model model = client.getModel(modelFullId);
-
+    client.close();
     // Display the model information.
     System.out.println(String.format("Model name: %s", model.getName()));
     System.out.println(

@@ -56,7 +56,7 @@ class Predict {
     // currently there is no additional parameters supported.
     Map<String, String> params = new HashMap<String, String>();
     PredictResponse response = predictionClient.predict(modelName, payload, params);
-
+    predictionClient.close();
     System.out.println("Prediction results:");
     for (AnnotationPayload annotationPayload : response.getPayloadList()) {
       System.out.println(

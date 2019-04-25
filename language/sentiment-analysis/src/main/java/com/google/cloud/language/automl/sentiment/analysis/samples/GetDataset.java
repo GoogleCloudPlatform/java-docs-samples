@@ -42,6 +42,8 @@ class GetDataset {
     // Get all the information about a given dataset.
     Dataset dataset = client.getDataset(datasetFullId);
 
+    client.close();
+
     // Display the dataset information.
     System.out.println(String.format("Dataset name: %s", dataset.getName()));
     System.out.println(

@@ -55,6 +55,7 @@ class GetOperationStatus {
       System.out.println(String.format("\t\tError code: %s", response.getError().getCode()));
       System.out.println(String.format("\t\tError message: %s", response.getError().getMessage()));
     }
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_get_operation_status]

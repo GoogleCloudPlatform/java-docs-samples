@@ -50,6 +50,9 @@ class ExportData {
 
     // Export the data in the destination URI.
     Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
+
+    client.close();
+
     System.out.println(String.format("Dataset exported. %s", response));
   }
 }

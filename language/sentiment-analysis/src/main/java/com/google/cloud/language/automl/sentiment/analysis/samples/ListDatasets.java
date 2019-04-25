@@ -65,6 +65,7 @@ class ListDatasets {
           dateFormat.format(new java.util.Date(dataset.getCreateTime().getSeconds() * 1000));
       System.out.println(String.format("Dataset create time: %s", createTime));
     }
+    client.close();
   }
 }
 // [END automl_natural_language_sentiment_list_datasets]
