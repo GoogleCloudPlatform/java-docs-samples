@@ -161,4 +161,9 @@ public class City {
         && Objects.equals(capital, city.capital)
         && Objects.equals(regions, city.regions);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, state, country, capital, population, regions);
+  }
 }
