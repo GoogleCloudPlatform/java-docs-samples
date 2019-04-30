@@ -15,7 +15,7 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloud.language.automl.entity.extraction.samples</groupId>
+  <groupId>com.google.cloud.language.automl.entityextraction.samples</groupId>
   <artifactId>language-automl-entity-extraction</artifactId>
   <packaging>jar</packaging>
 
