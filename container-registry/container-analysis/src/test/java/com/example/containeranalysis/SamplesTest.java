@@ -80,13 +80,13 @@ public class SamplesTest {
     System.out.println(name.getMethodName());
     noteId =  "note-" + (new Date()).getTime() + name.getMethodName();
     imageUrl = "www." + (new Date()).getTime() + name.getMethodName() + ".com";
-    noteObj = Samples.createNote(noteId, PROJECT_ID);
+    noteObj = CreateNote.createNote(noteId, PROJECT_ID);
   }
 
   @After
   public void tearDown() {
     try {
-      Samples.deleteNote(noteId, PROJECT_ID);
+      DeleteNote.deleteNote(noteId, PROJECT_ID);
     } catch (Exception e) {
       // these exceptions aren't relevant to the tests
       System.out.println("TearDown Error: " + e.toString());
@@ -96,16 +96,16 @@ public class SamplesTest {
   @Test
   public void testCreateNote() throws Exception {
     // note should have been created as part of set up. verify that it succeeded
-    Note n = Samples.getNote(noteId, PROJECT_ID);
+    Note n = GetNote.getNote(noteId, PROJECT_ID);
 
     assertEquals(n.getName(), noteObj.getName());
   }
 
   @Test
   public void testDeleteNote() throws Exception {
-    Samples.deleteNote(noteId, PROJECT_ID);
+    DeleteNote.deleteNote(noteId, PROJECT_ID);
     try {
-      Samples.getNote(noteId, PROJECT_ID);
+      GetNote.getNote(noteId, PROJECT_ID);
       // above should throw, because note was deleted
       Assert.fail("note not deleted");
     } catch (NotFoundException e) {
@@ -115,27 +115,27 @@ public class SamplesTest {
 
   @Test
   public void testCreateOccurrence() throws Exception {
-    Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    Occurrence o = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     String[] nameArr = o.getName().split("/");
     String occId = nameArr[nameArr.length - 1];
-    Occurrence retrieved = Samples.getOccurrence(occId, PROJECT_ID);
+    Occurrence retrieved = GetOccurrence.getOccurrence(occId, PROJECT_ID);
     assertEquals(o.getName(), retrieved.getName());
 
     // clean up
-    Samples.deleteOccurrence(occId, PROJECT_ID);
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
   }
 
   @Test
   public void testDeleteOccurrence() throws Exception {
-    Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    Occurrence o = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     String occName = o.getName();
     String[] nameArr = occName.split("/");
     String occId = nameArr[nameArr.length - 1];
 
-    Samples.deleteOccurrence(occId, PROJECT_ID);
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
 
     try {
-      Samples.getOccurrence(occId, PROJECT_ID);
+      GetOccurrence.getOccurrence(occId, PROJECT_ID);
       // getOccurrence should fail, because occurrence was deleted
       Assert.fail("failed to delete occurrence");
     } catch (NotFoundException e) {
@@ -147,10 +147,11 @@ public class SamplesTest {
   public void testOccurrencesForImage() throws Exception {
     int newCount;
     int tries = 0;
-    int origCount = Samples.getOccurrencesForImage(imageUrl, PROJECT_ID);
-    final Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    int origCount = OccurrencesForImage.getOccurrencesForImage(imageUrl, PROJECT_ID);
+    final Occurrence o = CreateOccurrence.createOccurrence(
+        imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
-      newCount = Samples.getOccurrencesForImage(imageUrl, PROJECT_ID);
+      newCount = OccurrencesForImage.getOccurrencesForImage(imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME);
       tries += 1;
     } while (newCount != 1 && tries < TRY_LIMIT);
@@ -160,17 +161,18 @@ public class SamplesTest {
     // clean up
     String[] nameArr = o.getName().split("/");
     String occId = nameArr[nameArr.length - 1];
-    Samples.deleteOccurrence(occId, PROJECT_ID);
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
   }
 
   @Test
   public void testOccurrencesForNote() throws Exception {
     int newCount;
     int tries = 0;
-    int origCount = Samples.getOccurrencesForNote(noteId, PROJECT_ID);
-    final Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    int origCount = OccurrencesForNote.getOccurrencesForNote(noteId, PROJECT_ID);
+    final Occurrence o = CreateOccurrence.createOccurrence(
+        imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
-      newCount = Samples.getOccurrencesForNote(noteId, PROJECT_ID);
+      newCount = OccurrencesForNote.getOccurrencesForNote(noteId, PROJECT_ID);
       sleep(SLEEP_TIME);
       tries += 1;
     } while (newCount != 1 && tries < TRY_LIMIT);
@@ -180,7 +182,7 @@ public class SamplesTest {
     // clean up
     String[] nameArr = o.getName().split("/");
     String occId = nameArr[nameArr.length - 1];
-    Samples.deleteOccurrence(occId, PROJECT_ID);
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
   }
 
   @Test
@@ -189,12 +191,12 @@ public class SamplesTest {
     int tries;
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(PROJECT_ID, subId);
     try {
-      Samples.createOccurrenceSubscription(subId, PROJECT_ID);
+      PubSub.createOccurrenceSubscription(subId, PROJECT_ID);
     } catch (StatusRuntimeException e) {
       System.out.println("subscription " + subId + " already exists");
     }
     Subscriber subscriber = null;
-    Samples.MessageReceiverExample receiver = new Samples.MessageReceiverExample();
+    PubSub.MessageReceiverExample receiver = new PubSub.MessageReceiverExample();
 
     subscriber = Subscriber.newBuilder(subName, receiver).build();
     subscriber.startAsync().awaitRunning();
@@ -205,7 +207,7 @@ public class SamplesTest {
     // now, we can test adding 3 more occurrences
     int endVal = startVal + 3;
     for (int i = startVal; i <= endVal; i++) {
-      Occurrence o = Samples.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+      Occurrence o = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
       System.out.println("CREATED: " + o.getName());
       tries = 0;
       do {
@@ -217,7 +219,7 @@ public class SamplesTest {
       assertEquals(i, receiver.messageCount);
       String[] nameArr = o.getName().split("/");
       String occId = nameArr[nameArr.length - 1];
-      Samples.deleteOccurrence(occId, PROJECT_ID);
+      DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
     }
     if (subscriber != null) {
       subscriber.stopAsync();
