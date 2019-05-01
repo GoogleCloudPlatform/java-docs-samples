@@ -18,6 +18,7 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_pubsub]
 import static java.lang.Thread.sleep;
+
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;

@@ -23,13 +23,22 @@ import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.containeranalysis.v1beta1.NoteName;
+import com.google.containeranalysis.v1beta1.ProjectName;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import io.grafeas.v1beta1.Note;
 import io.grafeas.v1beta1.Occurrence;
+import io.grafeas.v1beta1.Resource;
+import io.grafeas.v1beta1.discovery.Discovered;
+import io.grafeas.v1beta1.discovery.Discovered.AnalysisStatus;
+import io.grafeas.v1beta1.discovery.Discovery;
 import io.grafeas.v1beta1.vulnerability.Details;
+import io.grafeas.v1beta1.vulnerability.Severity;
 import io.grafeas.v1beta1.vulnerability.Vulnerability;
 import io.grpc.StatusRuntimeException;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -224,5 +233,126 @@ public class SamplesTest {
     if (subscriber != null) {
       subscriber.stopAsync();
     }
+  }
+
+  @Test 
+  public void testPollDiscoveryOccurrenceFinished() throws Exception {
+    try {
+      // expect fail on first try
+      PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(imageUrl, PROJECT_ID, 5);
+      Assert.fail("found unexpected discovery occurrence");
+    } catch (TimeoutException e) {
+      // test passes
+    }
+    // create discovery occurrence
+    String discNoteId = "discovery-note-" + (new Date()).getTime();
+    NoteName noteName = NoteName.of(PROJECT_ID, discNoteId);
+    Note.Builder noteBuilder = Note.newBuilder();
+    Discovery.Builder discoveryBuilder = Discovery.newBuilder();
+    noteBuilder.setDiscovery(discoveryBuilder);
+    Note newNote = noteBuilder.build();
+    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    client.createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
+
+    Occurrence.Builder occBuilder = Occurrence.newBuilder();
+    occBuilder.setNoteName(noteName.toString());
+    Discovered.Builder discoveredBuilder = Discovered.newBuilder();
+    discoveredBuilder.setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS);
+    io.grafeas.v1beta1.discovery.Details.Builder detailsBuilder = 
+        io.grafeas.v1beta1.discovery.Details.newBuilder();
+    detailsBuilder.setDiscovered(discoveredBuilder);
+    occBuilder.setDiscovered(detailsBuilder);
+    Resource.Builder resourceBuilder = Resource.newBuilder();
+    resourceBuilder.setUri(imageUrl);
+    occBuilder.setResource(resourceBuilder);
+    Occurrence newOcc = occBuilder.build();
+    Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
+    // poll again
+    Occurrence found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
+        imageUrl, PROJECT_ID, 5);
+    AnalysisStatus foundStatus = found.getDiscovered().getDiscovered().getAnalysisStatus();
+    assertEquals(foundStatus, AnalysisStatus.FINISHED_SUCCESS);
+
+    // clean up
+    String[] nameArr = found.getName().split("/");
+    String occId = nameArr[nameArr.length - 1];
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
+    DeleteNote.deleteNote(discNoteId, PROJECT_ID);
+  }
+
+  @Test 
+  public void testFindVulnerabilitiesForImage() throws Exception {
+    List<Occurrence> result = VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
+        imageUrl, PROJECT_ID);
+    assertEquals(result.size(), 0);
+    Occurrence o = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    int tries = 0;
+    do {
+      result = VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
+          imageUrl, PROJECT_ID);
+      sleep(SLEEP_TIME);
+      tries += 1;
+    } while (result.size() != 1 && tries < TRY_LIMIT);
+    assertEquals(result.size(), 1);
+
+    // clean up
+    String[] nameArr = o.getName().split("/");
+    String occId = nameArr[nameArr.length - 1];
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
+  }
+
+  @Test 
+  public void testFindHighSeverityVulnerabilitiesForImage() throws Exception {
+    // check before creation
+    List<Occurrence> result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
+        imageUrl, PROJECT_ID);
+    assertEquals(0, result.size());
+
+    // create low severity occurrence
+    Occurrence low;
+    low = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
+        imageUrl, PROJECT_ID);
+    assertEquals(0, result.size());
+
+    // create high severity occurrence
+    String vulnNoteId = "discovery-note-" + (new Date()).getTime();
+    Note.Builder noteBuilder = Note.newBuilder();
+    Vulnerability.Builder vulnBuilder = Vulnerability.newBuilder();
+    vulnBuilder.setSeverity(Severity.CRITICAL);
+    noteBuilder.setVulnerability(vulnBuilder);
+    Note newNote = noteBuilder.build();
+    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    client.createNote(ProjectName.format(PROJECT_ID), vulnNoteId, newNote);
+
+    Occurrence.Builder occBuilder = Occurrence.newBuilder();
+    NoteName noteName = NoteName.of(PROJECT_ID, vulnNoteId);
+    occBuilder.setNoteName(noteName.toString());
+    Details.Builder detailsBuilder = Details.newBuilder();
+    occBuilder.setVulnerability(detailsBuilder);
+    Resource.Builder resourceBuilder = Resource.newBuilder();
+    resourceBuilder.setUri(imageUrl);
+    occBuilder.setResource(resourceBuilder);
+    Occurrence critical = occBuilder.build();
+    critical = client.createOccurrence(ProjectName.format(PROJECT_ID), critical);
+
+    // check again
+    int tries = 0;
+    do {
+      result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
+          imageUrl, PROJECT_ID);
+      sleep(SLEEP_TIME);
+      tries += 1;
+    } while (result.size() != 1 && tries < TRY_LIMIT);
+    assertEquals(1, result.size());
+
+    // clean up
+    String[] lowNameArr = low.getName().split("/");
+    String lowId = lowNameArr[lowNameArr.length - 1];
+    DeleteOccurrence.deleteOccurrence(lowId, PROJECT_ID);
+    String[] nameArr = critical.getName().split("/");
+    String occId = nameArr[nameArr.length - 1];
+    DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
+    DeleteNote.deleteNote(vulnNoteId, PROJECT_ID);
   }
 }
