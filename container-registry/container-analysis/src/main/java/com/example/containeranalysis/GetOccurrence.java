@@ -35,6 +35,8 @@ public class GetOccurrence {
   public static Occurrence getOccurrence(String occurrenceId, String projectId) 
       throws IOException, InterruptedException {
     final OccurrenceName occurrenceName = OccurrenceName.of(projectId, occurrenceId);
+    // Initialize client that will be used to send requests. After completing all of your requests, 
+    // call the "close" method on the client to safely clean up any remaining background resources.
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Occurrence occ = client.getOccurrence(occurrenceName);
     System.out.println(occ);

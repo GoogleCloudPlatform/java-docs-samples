@@ -46,6 +46,8 @@ public class CreateNote {
     noteBuilder.setVulnerability(vulBuilder);
     Note newNote = noteBuilder.build();
 
+    // Initialize client that will be used to send requests. After completing all of your requests, 
+    // call the "close" method on the client to safely clean up any remaining background resources.
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     Note result = client.createNote(projectName, noteId, newNote);
     return result;

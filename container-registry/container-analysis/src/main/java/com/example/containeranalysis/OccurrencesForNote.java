@@ -45,6 +45,8 @@ public class OccurrencesForNote {
                                                                    .setName(noteName.toString())
                                                                    .build();
 
+    // Initialize client that will be used to send requests. After completing all of your requests, 
+    // call the "close" method on the client to safely clean up any remaining background resources.
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     for (Occurrence o : client.listNoteOccurrences(request).iterateAll()) {
       // Write custom code to process each Occurrence here

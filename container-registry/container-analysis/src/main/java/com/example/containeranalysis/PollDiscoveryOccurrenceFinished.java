@@ -31,8 +31,11 @@ public class PollDiscoveryOccurrenceFinished {
   public static Occurrence pollDiscoveryOccurrenceFinished(String resourceUrl, String projectId,
       long timeoutSeconds) throws IOException, TimeoutException, InterruptedException {
     final String projectName = ProjectName.format(projectId);
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     long deadline = System.currentTimeMillis() + timeoutSeconds * 1000;
+
+    // Initialize client that will be used to send requests. After completing all of your requests, 
+    // call the "close" method on the client to safely clean up any remaining background resources.
+    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
 
     // find the discovery occurrence using a filter string
     Occurrence discoveryOccurrence = null;
