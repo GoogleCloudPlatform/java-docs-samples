@@ -17,8 +17,6 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_pubsub]
-import static java.lang.Thread.sleep;
-
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -31,6 +29,7 @@ import com.google.pubsub.v1.Subscription;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.lang.InterruptedException;
+import java.util.concurrent.TimeUnit;
 
 public class PubSub {
   // Handle incoming Occurrences using a Cloud Pub/Sub subscription
@@ -47,10 +46,8 @@ public class PubSub {
       ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
       subscriber = Subscriber.newBuilder(subName, receiver).build();
       subscriber.startAsync().awaitRunning();
-      // Listen to messages for 'timeout' seconds
-      for (int i = 0; i < timeout; i++) {
-        sleep(1000);
-      }
+      // Sleep to listen for messages
+      TimeUnit.SECONDS.sleep(timeoutSeconds);
     } finally {
       // Stop listening to the channel
       if (subscriber != null) {

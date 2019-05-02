@@ -17,14 +17,13 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_poll_discovery_occurrence_finished]i
-import static java.lang.Thread.sleep;
-
 import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
 import com.google.containeranalysis.v1beta1.ProjectName;
 import io.grafeas.v1beta1.Occurrence;
 import io.grafeas.v1beta1.discovery.Discovered.AnalysisStatus;
 import java.io.IOException;
 import java.lang.InterruptedException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class PollDiscoveryOccurrenceFinished {
@@ -52,7 +51,7 @@ public class PollDiscoveryOccurrenceFinished {
           discoveryOccurrence = o;
         }
       }
-      sleep(1);
+      TimeUnit.SECONDS.sleep(1);
       // check for timeout
       if (System.currentTimeMillis() > deadline) {
         throw new TimeoutException("discovery occurrence not found");
@@ -67,7 +66,7 @@ public class PollDiscoveryOccurrenceFinished {
       // update the occurrence state
       discoveryOccurrence = client.getOccurrence(discoveryOccurrence.getName());
       status = discoveryOccurrence.getDiscovered().getDiscovered().getAnalysisStatus();
-      sleep(1);
+      TimeUnit.SECONDS.sleep(1);
       // check for timeout
       if (System.currentTimeMillis() > deadline) {
         throw new TimeoutException("discovery occurrence not in terminal state");
