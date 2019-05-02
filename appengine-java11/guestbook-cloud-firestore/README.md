@@ -42,7 +42,6 @@ Main class to your classpath:
   mvn package
 ```
 
-
 * Setup [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) by
 [creating a service account](https://cloud.google.com/docs/authentication/production#creating_a_service_account) and downloading the JSON key file.
 

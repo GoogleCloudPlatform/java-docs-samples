@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
  Copyright 2019 Google LLC
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,7 +11,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
