@@ -28,6 +28,8 @@ import java.lang.InterruptedException;
 import java.util.concurrent.TimeoutException;
 
 public class PollDiscoveryOccurrenceFinished {
+  // Repeatedly query the Container Analysis API for the latest discovery occurrence until it is
+  // either in a terminal state, or the timeout value has been exceeded
   public static Occurrence pollDiscoveryOccurrenceFinished(String resourceUrl, String projectId,
       long timeoutSeconds) throws IOException, TimeoutException, InterruptedException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:foo";

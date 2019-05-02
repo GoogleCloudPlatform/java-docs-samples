@@ -24,16 +24,9 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class GetDiscoveryInfo {
-  /**
-   * Retrieves and prints the Discovery Occurrence created for a specified image
-   * The Discovery Occurrence contains information about the initial scan on the image
-   * @param resourceUrl the Container Registry URL associated with the image
-   *                 example: "https://gcr.io/project/image@sha256:foo"
-   * @param projectId the GCP project the image belongs to
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
-  public static void getDiscoveryInfo(String resourceUrl,String projectId) 
+  // Retrieves and prints the Discovery Occurrence created for a specified image
+  // The Discovery Occurrence contains information about the initial scan on the image
+  public static void getDiscoveryInfo(String resourceUrl, String projectId) 
       throws IOException, InterruptedException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
     // String projectId = "my-project-id";

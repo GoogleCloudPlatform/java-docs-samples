@@ -33,15 +33,8 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class PubSub {
-  /**
-   * Handle incoming Occurrences using a Cloud Pub/Sub subscription
-   * @param subId the user-specified identifier for the Pub/Sub subscription
-   * @param timeout the amount of time to listen for Pub/Sub messages (in seconds)
-   * @param projectId the GCP project the Pub/Sub subscription belongs to
-   * @return number of Occurrence Pub/Sub messages received before exiting
-   * @throws InterruptedException on errors with the subscription client
-   */
-  public static int pubSub(String subId, int timeout, String projectId)
+  // Handle incoming Occurrences using a Cloud Pub/Sub subscription
+  public static int pubSub(String subId, long timeoutSeconds, String projectId)
       throws InterruptedException {
     // String subId = "my-occurrence-subscription";
     // long timeoutSeconds = 20;
@@ -69,10 +62,8 @@ public class PubSub {
     return receiver.messageCount;
   }
 
-  /**
-   * Custom class to handle incoming Pub/Sub messages
-   * In this case, the class will simply log and count each message as it comes in
-   */
+  // Custom class to handle incoming Pub/Sub messages
+  // In this case, the class will simply log and count each message as it comes in
   static class MessageReceiverExample implements MessageReceiver {
     public int messageCount = 0;
 
@@ -86,14 +77,7 @@ public class PubSub {
     }
   }
 
-  /**
-   * Creates and returns a Pub/Sub subscription object listening to the Occurrence topic
-   * @param subId the identifier you want to associate with the subscription
-   * @param projectId the GCP project to create the subscription under
-   * @throws IOException thrown on errors with the subscription client
-   * @throws StatusRuntimeException if subscription already exists
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Creates and returns a Pub/Sub subscription object listening to the Occurrence topic
   public static Subscription createOccurrenceSubscription(String subId, String projectId) 
       throws IOException, StatusRuntimeException, InterruptedException {
     // This topic id will automatically receive messages when Occurrences are added or modified

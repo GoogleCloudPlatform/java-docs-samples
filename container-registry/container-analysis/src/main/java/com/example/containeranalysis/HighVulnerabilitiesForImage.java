@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class HighVulnerabilitiesForImage {
+  // Retrieve a list of vulnerability occurrences with a severity level of 'HIGH' or greater
   public static List<Occurrence> findHighSeverityVulnerabilitiesForImage(String resourceUrl,
       String projectId) throws IOException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:foo";

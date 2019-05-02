@@ -23,13 +23,7 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class DeleteNote {
-  /**
-   * Deletes an existing Note from the server
-   * @param noteId the identifier of the Note to delete
-   * @param projectId the GCP project the Note belongs to
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Deletes an existing Note from the server
   public static void deleteNote(String noteId, String projectId) 
       throws IOException, InterruptedException {
     // String noteId = "my-note";

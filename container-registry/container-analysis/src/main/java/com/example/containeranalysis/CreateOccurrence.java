@@ -27,17 +27,7 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class CreateOccurrence {
-  /**
-   * Creates and returns a new Occurrence associated with an existing Note
-   * @param resourceUrl the Container Registry URL associated with the image
-   *                 example: "https://gcr.io/project/image@sha256:foo"
-   * @param noteId the identifier of the Note associated with this Occurrence
-   * @param occProjectId the GCP project the Occurrence will be created under
-   * @param noteProjectId the GCP project the associated Note belongs to
-   * @return the newly created Occurrence object
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Creates and returns a new Occurrence associated with an existing Note
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
       String occProjectId, String noteProjectId) throws IOException, InterruptedException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:foo";

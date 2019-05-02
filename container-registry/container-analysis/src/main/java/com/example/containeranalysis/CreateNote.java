@@ -27,15 +27,8 @@ import java.lang.InterruptedException;
 
 public class CreateNote {
 
-  /**
-   * Creates and returns a new Note
-   * @param noteId A user-specified identifier for the Note.
-   * @param projectId the GCP project the Note will be created under
-   * @return the newly created Note object
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
-  public static Note createNote(String noteId, String projectId) 
+  // Creates and returns a new Note
+  public static Note createNote(String noteId, String projectId)
       throws IOException, InterruptedException {
     // String noteId = "my-note";
     // String projectId = "my-project-id";

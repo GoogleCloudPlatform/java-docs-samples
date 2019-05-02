@@ -23,13 +23,7 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class DeleteOccurrence {
-  /**
-   * Deletes an existing Occurrence from the server
-   * @param occurrenceId the identifier of the Occurrence to delete
-   * @param projectId the GCP project the Occurrence belongs to
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Deletes an existing Occurrence from the server
   public static void deleteOccurrence(String occurrenceId, String projectId) 
       throws IOException, InterruptedException {
     // String occurrenceId = "123-456-789";

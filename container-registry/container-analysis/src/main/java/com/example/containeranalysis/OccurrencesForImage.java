@@ -24,16 +24,8 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class OccurrencesForImage {
-  /**
-   * Retrieves all the Occurrences associated with a specified image
-   * Here, all Occurrences are simply printed and counted
-   * @param resourceUrl the Container Registry URL associated with the image
-   *                 example: "https://gcr.io/project/image@sha256:foo"
-   * @param projectId the GCP project to search for Occurrences in
-   * @return number of Occurrences found
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Retrieves all the Occurrences associated with a specified image
+  // Here, all Occurrences are simply printed and counted
   public static int getOccurrencesForImage(String resourceUrl, String projectId)
       throws IOException, InterruptedException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:foo";

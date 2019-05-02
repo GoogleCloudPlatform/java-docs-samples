@@ -24,14 +24,7 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class GetOccurrence {
-  /**
-   * Retrieves and prints a specified Occurrence from the server
-   * @param occurrenceId the identifier of the Occurrence to retrieve
-   * @param projectId the GCP project the Occurrence belongs to
-   * @return the requested Occurrence object
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Retrieves and prints a specified Occurrence from the server
   public static Occurrence getOccurrence(String occurrenceId, String projectId) 
       throws IOException, InterruptedException {
     // String occurrenceId = "123-456-789";

@@ -27,15 +27,8 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class OccurrencesForNote {  
-  /**
-   * Retrieves all the Occurrences associated with a specified Note
-   * Here, all Occurrences are printed and counted
-   * @param noteId the Note's unique identifier
-   * @param projectId the GCP project the Note belongs to
-   * @return number of Occurrences found
-   * @throws IOException on errors creating the Grafeas client
-   * @throws InterruptedException on errors shutting down the Grafeas client
-   */
+  // Retrieves all the Occurrences associated with a specified Note
+  // Here, all Occurrences are printed and counted
   public static int getOccurrencesForNote(String noteId, String projectId) 
       throws IOException, InterruptedException {
     // String noteId = "my-note";
