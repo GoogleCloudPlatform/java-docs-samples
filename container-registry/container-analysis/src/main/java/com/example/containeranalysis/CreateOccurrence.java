@@ -40,6 +40,10 @@ public class CreateOccurrence {
    */
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
       String occProjectId, String noteProjectId) throws IOException, InterruptedException {
+    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String noteId = "my-note";
+    // String occProjectId = "my-project-id";
+    // String noteProjectId = "my-project-id";
     final NoteName noteName = NoteName.of(noteProjectId, noteId);
     final String occProjectName = ProjectName.format(occProjectId);
 

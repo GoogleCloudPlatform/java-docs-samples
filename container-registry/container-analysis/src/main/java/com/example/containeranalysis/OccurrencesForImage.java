@@ -36,13 +36,15 @@ public class OccurrencesForImage {
    */
   public static int getOccurrencesForImage(String resourceUrl, String projectId)
       throws IOException, InterruptedException {
-    final String filterStr = "resourceUrl=\"" + resourceUrl + "\"";
+    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
-    int i = 0;
+    final String filterStr = "resourceUrl=\"" + resourceUrl + "\"";
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    int i = 0;
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
       // Write custom code to process each Occurrence here
       System.out.println(o.getName());

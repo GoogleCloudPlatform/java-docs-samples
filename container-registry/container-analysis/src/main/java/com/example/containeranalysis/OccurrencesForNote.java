@@ -38,8 +38,9 @@ public class OccurrencesForNote {
    */
   public static int getOccurrencesForNote(String noteId, String projectId) 
       throws IOException, InterruptedException {
+    // String noteId = "my-note";
+    // String projectId = "my-project-id";
     final NoteName noteName = NoteName.of(projectId, noteId);
-    int i = 0;
 
     ListNoteOccurrencesRequest request = ListNoteOccurrencesRequest.newBuilder()
                                                                    .setName(noteName.toString())
@@ -48,6 +49,7 @@ public class OccurrencesForNote {
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    int i = 0;
     for (Occurrence o : client.listNoteOccurrences(request).iterateAll()) {
       // Write custom code to process each Occurrence here
       System.out.println(o.getName());

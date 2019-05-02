@@ -28,6 +28,8 @@ import java.util.List;
 public class HighVulnerabilitiesForImage {
   public static List<Occurrence> findHighSeverityVulnerabilitiesForImage(String resourceUrl,
       String projectId) throws IOException {
+    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
     String filterStr = "kind=\"VULNERABILITY\" AND resourceUrl=\"" + resourceUrl + "\"";
 

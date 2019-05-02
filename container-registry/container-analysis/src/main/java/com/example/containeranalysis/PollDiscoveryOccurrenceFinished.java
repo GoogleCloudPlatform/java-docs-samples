@@ -30,6 +30,9 @@ import java.util.concurrent.TimeoutException;
 public class PollDiscoveryOccurrenceFinished {
   public static Occurrence pollDiscoveryOccurrenceFinished(String resourceUrl, String projectId,
       long timeoutSeconds) throws IOException, TimeoutException, InterruptedException {
+    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String projectId = "my-project-id";
+    // long timeoutSeconds = 30;
     final String projectName = ProjectName.format(projectId);
     long deadline = System.currentTimeMillis() + timeoutSeconds * 1000;
 

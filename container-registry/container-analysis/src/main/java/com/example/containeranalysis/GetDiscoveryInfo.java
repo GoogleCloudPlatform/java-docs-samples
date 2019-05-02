@@ -35,6 +35,8 @@ public class GetDiscoveryInfo {
    */
   public static void getDiscoveryInfo(String resourceUrl,String projectId) 
       throws IOException, InterruptedException {
+    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String projectId = "my-project-id";
     String filterStr = "kind=\"DISCOVERY\" AND resourceUrl=\"" + resourceUrl + "\"";
     final String projectName = ProjectName.format(projectId);
 

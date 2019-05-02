@@ -43,6 +43,9 @@ public class PubSub {
    */
   public static int pubSub(String subId, int timeout, String projectId)
       throws InterruptedException {
+    // String subId = "my-occurrence-subscription";
+    // long timeoutSeconds = 20;
+    // String projectId = "my-project-id";
     Subscriber subscriber = null;
     MessageReceiverExample receiver = new MessageReceiverExample();
 

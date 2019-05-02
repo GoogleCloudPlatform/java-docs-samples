@@ -32,6 +32,8 @@ public class DeleteNote {
    */
   public static void deleteNote(String noteId, String projectId) 
       throws IOException, InterruptedException {
+    // String noteId = "my-note";
+    // String projectId = "my-project-id";
     final NoteName noteName = NoteName.of(projectId, noteId);
 
     // Initialize client that will be used to send requests. After completing all of your requests, 

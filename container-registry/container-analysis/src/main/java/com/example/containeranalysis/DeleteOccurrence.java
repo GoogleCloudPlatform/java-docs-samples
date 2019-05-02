@@ -32,6 +32,8 @@ public class DeleteOccurrence {
    */
   public static void deleteOccurrence(String occurrenceId, String projectId) 
       throws IOException, InterruptedException {
+    // String occurrenceId = "123-456-789";
+    // String projectId = "my-project-id";
     final OccurrenceName occurrenceName = OccurrenceName.of(projectId, occurrenceId);
 
     // Initialize client that will be used to send requests. After completing all of your requests, 

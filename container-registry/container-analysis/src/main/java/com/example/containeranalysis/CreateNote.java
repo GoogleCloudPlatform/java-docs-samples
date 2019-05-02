@@ -37,6 +37,8 @@ public class CreateNote {
    */
   public static Note createNote(String noteId, String projectId) 
       throws IOException, InterruptedException {
+    // String noteId = "my-note";
+    // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
 
     Note.Builder noteBuilder = Note.newBuilder();
