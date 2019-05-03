@@ -39,8 +39,10 @@ public class CreateOccurrence {
 
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
     occBuilder.setNoteName(noteName.toString());
+    // Associate the Occurrence with the metadata type (should match the parent Note's type)
+    // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
+    // Here, we use the type "vulnerability"
     Details.Builder detailsBuilder = Details.newBuilder();
-    // Details about the vulnerability instance can be added here
     occBuilder.setVulnerability(detailsBuilder);
     // Attach the occurrence to the associated image uri
     Resource.Builder resourceBuilder = Resource.newBuilder();
