@@ -29,7 +29,7 @@ public class HighVulnerabilitiesForImage {
   // Retrieve a list of vulnerability occurrences with a severity level of 'HIGH' or greater
   public static List<Occurrence> findHighSeverityVulnerabilitiesForImage(String resourceUrl,
       String projectId) throws IOException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
     String filterStr = "kind=\"VULNERABILITY\" AND resourceUrl=\"" + resourceUrl + "\"";

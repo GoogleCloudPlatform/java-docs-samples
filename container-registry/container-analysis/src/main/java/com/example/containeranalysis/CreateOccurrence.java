@@ -30,7 +30,7 @@ public class CreateOccurrence {
   // Creates and returns a new Occurrence associated with an existing Note
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
       String occProjectId, String noteProjectId) throws IOException, InterruptedException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
     // String noteId = "my-note";
     // String occProjectId = "my-project-id";
     // String noteProjectId = "my-project-id";

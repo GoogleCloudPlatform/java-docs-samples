@@ -28,7 +28,7 @@ public class OccurrencesForImage {
   // Here, all Occurrences are simply printed and counted
   public static int getOccurrencesForImage(String resourceUrl, String projectId)
       throws IOException, InterruptedException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:foo";
+    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
     final String filterStr = "resourceUrl=\"" + resourceUrl + "\"";
