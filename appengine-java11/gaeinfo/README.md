@@ -1,10 +1,24 @@
 # Google App Engine Information App for Java11
 
-<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/ludoch/samples&page=editor&open_in_editor==appengine-java11/gaeinfo/README.md">
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor==appengine-java11/gaeinfo/README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 This sample demonstrates how to show all system environment metadata and properties on Google App
 Engine standard app.
+
+## Setup your Google Cloud Platform Project
+
+* If you haven't already, Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
+
+    `gcloud init`
+
+* If you haven't already, Create an App Engine app within the current Google Cloud Project
+
+    `gcloud app create`
+
+* If you haven't already, Setup [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+
+    `gcloud auth application-default login`
 
 ## Setup the Sample App
 
@@ -25,20 +39,6 @@ Main class to your classpath:
   cd ../gaeinfo
   mvn package
 ```
-
-## Setup you Google Cloud Project
-
-* If you haven't already, Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
-
-    `gcloud init`
-
-* If you haven't already, Create an App Engine app within the current Google Cloud Project
-
-    `gcloud app create`
-
-* If you haven't already, Setup [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
-
-    `gcloud auth application-default login`
 
 ## Deploy
 
