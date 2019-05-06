@@ -119,3 +119,12 @@ Use of environment variables over system properties is strongly preferred for co
 Any additional files required should be stored in `src/test/resources`.
 
 ## Additional Best Practices 
+
+The following are some general Java best practices that should be followed in samples to remain
+idiomatic. 
+
+### Time
+Use the `java.time` package when dealing with units of time in some manner. 
+
+### Logging
+Use `java.util.logging` for consistent logging in web applications. 
