@@ -79,12 +79,13 @@ public class PubSub {
       throws IOException, StatusRuntimeException, InterruptedException {
     // This topic id will automatically receive messages when Occurrences are added or modified
     String topicId = "container-analysis-occurrences-v1beta1";
-    SubscriptionAdminClient client = SubscriptionAdminClient.create();
-    PushConfig config = PushConfig.getDefaultInstance();
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
+
+    SubscriptionAdminClient client = SubscriptionAdminClient.create();
+    PushConfig config = PushConfig.getDefaultInstance();
     Subscription sub = client.createSubscription(subName, topicName, config, 0);
     return sub;
-  } 
+  }
 }
 // [END containeranalysis_pubsub]

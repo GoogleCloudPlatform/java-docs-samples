@@ -32,7 +32,7 @@ public class HighVulnerabilitiesForImage {
     // String resourceUrl = "https://gcr.io/project/image@sha256:123";
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
-    String filterStr = "kind=\"VULNERABILITY\" AND resourceUrl=\"" + resourceUrl + "\"";
+    String filterStr = String.format("kind=\"VULNERABILITY\" AND resourceUrl=\"%s\"", resourceUrl);
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.

@@ -31,7 +31,7 @@ public class OccurrencesForImage {
     // String resourceUrl = "https://gcr.io/project/image@sha256:123";
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
-    final String filterStr = "resourceUrl=\"" + resourceUrl + "\"";
+    final String filterStr = String.format("resourceUrl=\"%s\"", resourceUrl);
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.

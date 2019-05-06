@@ -244,7 +244,7 @@ public class SamplesTest {
     } catch (TimeoutException e) {
       // test passes
     }
-    // create discovery occurrence
+    // create discovery note
     String discNoteId = "discovery-note-" + (new Date()).getTime();
     NoteName noteName = NoteName.of(PROJECT_ID, discNoteId);
     Note.Builder noteBuilder = Note.newBuilder();
@@ -254,6 +254,7 @@ public class SamplesTest {
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
 
+    // create discovery occurrence
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
     occBuilder.setNoteName(noteName.toString());
     Discovered.Builder discoveredBuilder = Discovered.newBuilder();
@@ -267,6 +268,7 @@ public class SamplesTest {
     occBuilder.setResource(resourceBuilder);
     Occurrence newOcc = occBuilder.build();
     Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
+
     // poll again
     Occurrence found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
         imageUrl, PROJECT_ID, 5);
@@ -315,7 +317,7 @@ public class SamplesTest {
         imageUrl, PROJECT_ID);
     assertEquals(0, result.size());
 
-    // create high severity occurrence
+    // create high severity note
     String vulnNoteId = "discovery-note-" + (new Date()).getTime();
     Note.Builder noteBuilder = Note.newBuilder();
     Vulnerability.Builder vulnBuilder = Vulnerability.newBuilder();
@@ -325,6 +327,7 @@ public class SamplesTest {
     GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
     client.createNote(ProjectName.format(PROJECT_ID), vulnNoteId, newNote);
 
+    // create high severity occurrence
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
     NoteName noteName = NoteName.of(PROJECT_ID, vulnNoteId);
     occBuilder.setNoteName(noteName.toString());
