@@ -16,27 +16,32 @@
 
 package com.example.guestbook;
 
+// [START gae_java11_firestore_dependencies]
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
+// [END gae_java11_firestore_dependencies]
 import java.util.concurrent.atomic.AtomicReference;
 
 /** Create a persistence connection to your Firestore instance. */
 public class Persistence {
 
-  private static AtomicReference<Firestore> firestore = new AtomicReference<>();
+  private static AtomicReference<Firestore> firestoreRef = new AtomicReference<>();
 
   @SuppressWarnings("JavadocMethod")
   public static Firestore getFirestore() {
-    if (firestore.get() == null) {
+    if (firestoreRef.get() == null) {
       // Authorized Firestore service
-      firestore.set(
-          FirestoreOptions.newBuilder().setProjectId("YOUR-PROJECT-ID").build().getService());
+      // [START gae_java11_firestore]
+      Firestore db =
+          FirestoreOptions.newBuilder().setProjectId("YOUR-PROJECT-ID").build().getService();
+      // [END gae_java11_firestore]
+      firestoreRef.set(db);
     }
 
-    return firestore.get();
+    return firestoreRef.get();
   }
 
   public static void setFirestore(Firestore firestore) {
-    Persistence.firestore.set(firestore);
+    Persistence.firestoreRef.set(firestore);
   }
 }

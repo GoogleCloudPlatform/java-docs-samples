@@ -16,6 +16,7 @@
 
 package com.example.guestbook;
 
+// [START gae_java11_form_data]
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
@@ -44,3 +45,4 @@ public class SignGuestbookServlet extends HttpServlet {
     resp.sendRedirect("/index.jsp?guestbookName=" + guestbookName);
   }
 }
+// [END gae_java11_form_data]
