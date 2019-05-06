@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_java11_simple_yaml]
+# [START gae_java11_custom_entrypoint]
 runtime: java11
 entrypoint: java Main.java
-# [END gae_java11_simple_yaml]
+# [END gae_java11_custom_entrypoint]
