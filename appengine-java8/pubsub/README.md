@@ -56,7 +56,7 @@ gcloud beta pubsub subscriptions create <your-subscription-name> \
 - Create a subscription for authenticated pushes to send messages to a Google Cloud Project URL such as https://<your-project-id>.appspot.com/authenticated-push.
 
 The push auth service account must have Service Account Token Creator Role assigned, which can be done in the Cloud Console [IAM & admin](https://console.cloud.google.com/iam-admin/iam) UI.
-`--push-auth-token-audience` is optional. If set, remember to modify the audience field check in [PubSubAuthenticatedPush.java](src/main/java/com/example/appengine/pubsub/PubSubAuthenticatedPush.java#L36).
+`--push-auth-token-audience` is optional. If set, remember to modify the audience field check in [PubSubAuthenticatedPush.java](src/main/java/com/example/appengine/pubsub/PubSubAuthenticatedPush.java#L48).
 
 ```
 gcloud beta pubsub subscriptions create <your-subscription-name> \
