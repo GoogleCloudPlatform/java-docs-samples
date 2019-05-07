@@ -16,6 +16,7 @@
 
 package com.example.appengine;
 
+// [START gae_java11_oauth2_callback]
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeResponseUrl;
 import com.google.api.client.auth.oauth2.Credential;
@@ -75,3 +76,4 @@ public class Oauth2CallbackServlet extends AbstractAuthorizationCodeCallbackServ
     return Utils.getUserId(req);
   }
 }
+// [END gae_java11_oauth2_callback]
