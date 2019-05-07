@@ -73,7 +73,7 @@ public class Guestbook {
       for (QueryDocumentSnapshot greeting : querySnapshot.getDocuments()) {
         greetings.add(greeting.toObject(Greeting.class));
       }
-    } catch (InterruptedException e) {
+    } catch (Exception e) {
       System.out.println(e.getMessage());
     }
 
