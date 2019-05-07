@@ -47,6 +47,11 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.googlecode.jatl</groupId>
+      <artifactId>jatl</artifactId>
+      <version>0.2.2</version>
+    </dependency>
 
     <!-- [START dependencies] -->
     <dependency>
