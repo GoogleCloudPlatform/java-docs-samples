@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START gae_flex_pubsub_push]
+// [START gae_standard_pubsub_push]
 @WebServlet(value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
 
@@ -80,4 +80,4 @@ public class PubSubPush extends HttpServlet {
     this.messageRepository = MessageRepositoryImpl.getInstance();
   }
 }
-// [END gae_flex_pubsub_push]
+// [END gae_standard_pubsub_push]

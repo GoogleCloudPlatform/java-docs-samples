@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START gae_flex_pubsub_auth_push]
+// [START gae_standard_pubsub_auth_push]
 @WebServlet(value = "/pubsub/authenticated-push")
 public class PubSubAuthenticatedPush extends HttpServlet {
   private final String pubsubVerificationToken = System.getenv("PUBSUB_VERIFICATION_TOKEN");
@@ -109,4 +109,4 @@ public class PubSubAuthenticatedPush extends HttpServlet {
     this(MessageRepositoryImpl.getInstance());
   }
 }
-// [END gae_flex_pubsub_auth_push]
+// [END gae_standard_pubsub_auth_push]
