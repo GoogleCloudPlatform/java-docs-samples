@@ -78,7 +78,9 @@ Example:
 ```java
 try {
   // Do something
-} catch (Exception e) {
+} catch (IllegalArgumentException e) {
+  // IllegalArgumentException's are thrown when an invalid argument has been passed to a function.
+  // This error should be logged to that the root cause can be debugged and prevented in the future.
   System.out.println("Error during functionName: \n" + e.toString());
 }
 ```
