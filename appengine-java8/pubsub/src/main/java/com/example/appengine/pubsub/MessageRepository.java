@@ -37,7 +37,7 @@ public interface MessageRepository {
   /**
    * Retrieve most recent stored claims.
    *
-   * @param limit
+   * @param limit number of messages
    * @return list of claims
    */
   List<String> retrieveClaims(int limit);
@@ -48,7 +48,7 @@ public interface MessageRepository {
   /**
    * Retrieve most recent stored tokens.
    *
-   * @param limit
+   * @param limit number of messages
    * @return list of tokens
    */
   List<String> retrieveTokens(int limit);
