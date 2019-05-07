@@ -16,7 +16,6 @@
 
 package com.example.guestbook;
 
-
 import com.google.common.base.MoreObjects;
 import java.util.Date;
 import java.util.HashMap;
