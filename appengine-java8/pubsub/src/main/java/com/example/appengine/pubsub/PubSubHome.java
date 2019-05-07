@@ -33,6 +33,26 @@ public class PubSubHome {
     return convertToHtmlTable(messageList);
   }
 
+  /**
+   * Retrieve received claims in html.
+   *
+   * @return html representation of claims (one per row)
+   */
+  public static String getReceivedClaims() {
+    List<String> claimList = messageRepository.retrieveClaims(MAX_MESSAGES);
+    return convertStringsToHtmlTable(claimList);
+  }
+
+  /**
+   * Retrieve received tokens in html.
+   *
+   * @return html representation of tokens (one per row)
+   */
+  public static String getReceivedTokens() {
+    List<String> tokenList = messageRepository.retrieveTokens(MAX_MESSAGES);
+    return convertStringsToHtmlTable(tokenList);
+  }
+
   private static String convertToHtmlTable(List<Message> messages) {
     StringBuilder sb = new StringBuilder();
     for (Message message : messages) {
@@ -45,5 +65,15 @@ public class PubSubHome {
     return sb.toString();
   }
 
-  private PubSubHome() { }
+  private static String convertStringsToHtmlTable(List<String> strings) {
+    StringBuilder sb = new StringBuilder();
+    for (String string : strings) {
+      sb.append("<tr>");
+      sb.append("<td>" + string + "</td>");
+      sb.append("</tr>");
+    }
+    return sb.toString();
+  }
+
+  private PubSubHome() {}
 }

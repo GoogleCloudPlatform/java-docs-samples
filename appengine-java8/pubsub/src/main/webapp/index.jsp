@@ -11,6 +11,20 @@
       <input id="payload" type="input" name="payload" />
       <input id="submit"  type="submit" value="Send" />
     </form>
+    <h3> Last received tokens </h3>
+    <table border="1" cellpadding="10">
+      <tr>
+      <th>Token</th>
+      </tr>
+      <%= PubSubHome.getReceivedTokens() %>
+    </table>
+    <h3> Last received claims </h3>
+    <table border="1" cellpadding="10">
+      <tr>
+      <th>Claim</th>
+      </tr>
+      <%= PubSubHome.getReceivedClaims() %>
+    </table>
     <h3> Last received messages </h3>
     <table border="1" cellpadding="10">
       <tr>
