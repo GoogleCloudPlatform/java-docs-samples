@@ -20,30 +20,46 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// [START gae_flex_pubsub_auth_push]
 @WebServlet(value = "/pubsub/authenticated-push")
-public class PubSubAuthenticatedPush extends PubSubPush {
+public class PubSubAuthenticatedPush extends HttpServlet {
   private final String pubsubVerificationToken = System.getenv("PUBSUB_VERIFICATION_TOKEN");
   private final MessageRepository messageRepository;
   private final GoogleIdTokenVerifier verifier =
       new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
+          /**
+           * Please change example.com to match with value you are providing while creating
+           * subscription as provided in @see <a
+           * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/appengine-java8/pubsub">README</a>.
+           */
           .setAudience(Collections.singletonList("example.com"))
           .build();
+  private final Gson gson = new Gson();
+  private final JsonParser jsonParser = new JsonParser();
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
 
+    // Verify that the request originates from the application.
     if (req.getParameter("token").compareTo(pubsubVerificationToken) != 0) {
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
+    // Get the Cloud Pub/Sub-generated JWT in the "Authorization" header.
     String authorizationHeader = req.getHeader("Authorization");
     if (authorizationHeader == null
         || authorizationHeader.isEmpty()
@@ -54,17 +70,38 @@ public class PubSubAuthenticatedPush extends PubSubPush {
     String authorization = authorizationHeader.split(" ")[1];
 
     try {
+      // Verify and decode the JWT.
       GoogleIdToken idToken = verifier.verify(authorization);
       messageRepository.saveToken(authorization);
       messageRepository.saveClaim(idToken.getPayload().toPrettyString());
+      // parse message object from "message" field in the request body json
+      // decode message data from base64
+      Message message = getMessage(req);
+      messageRepository.save(message);
+      // 200, 201, 204, 102 status codes are interpreted as success by the Pub/Sub system
+      resp.setStatus(102);
       super.doPost(req, resp);
     } catch (Exception e) {
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
   }
 
+  private Message getMessage(HttpServletRequest request) throws IOException {
+    String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
+    JsonElement jsonRoot = jsonParser.parse(requestBody);
+    String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
+    Message message = gson.fromJson(messageStr, Message.class);
+    // decode from base64
+    String decoded = decode(message.getData());
+    message.setData(decoded);
+    return message;
+  }
+
+  private String decode(String data) {
+    return new String(Base64.getDecoder().decode(data));
+  }
+
   PubSubAuthenticatedPush(MessageRepository messageRepository) {
-    super(messageRepository);
     this.messageRepository = messageRepository;
   }
 
@@ -72,3 +109,4 @@ public class PubSubAuthenticatedPush extends PubSubPush {
     this(MessageRepositoryImpl.getInstance());
   }
 }
+// [END gae_flex_pubsub_auth_push]
