@@ -16,6 +16,7 @@
 
 package com.example.appengine.taskhandler;
 
+// [START gae_java11_task_handler]
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,3 +40,4 @@ public class TaskHandlerController {
     return output;
   }
 }
+// [END gae_java11_task_handler]

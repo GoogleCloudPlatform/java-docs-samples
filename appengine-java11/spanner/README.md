@@ -10,7 +10,7 @@ from [Google App Engine standard Java 11 environment][ae-docs].
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
 
-## Setup
+## Setup your Google Cloud Platform Project
 - Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run:
 ```
    gcloud init

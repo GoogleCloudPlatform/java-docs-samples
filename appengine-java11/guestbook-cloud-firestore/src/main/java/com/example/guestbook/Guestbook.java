@@ -46,17 +46,19 @@ public class Guestbook {
     // Construct the Guestbook data.
     Map<String, Object> bookData = new HashMap<>();
     bookData.put("name", this.book);
-
+    // [START gae_java11_firestore_book]
     // Get Guestbook reference in the collection.
     bookRef = getFirestore().collection("Guestbooks").document(this.book);
     // Add Guestbook to collection.
     bookRef.set(bookData);
+    // [END gae_java11_firestore_book]
   }
 
   public DocumentReference getBookRef() {
     return bookRef;
   }
 
+  // [START gae_java11_firestore_get_greetings]
   /** Get greetings for the Guestbook */
   public List<Greeting> getGreetings() {
     // Initialize a List for Greetings.
@@ -71,12 +73,13 @@ public class Guestbook {
       for (QueryDocumentSnapshot greeting : querySnapshot.getDocuments()) {
         greetings.add(greeting.toObject(Greeting.class));
       }
-    } catch (Exception InterruptedException) {
-      System.out.println("Nothing to query.");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
 
     return greetings.build();
   }
+  // [END gae_java11_firestore_get_greetings]
 
   @Override
   public boolean equals(Object obj) {

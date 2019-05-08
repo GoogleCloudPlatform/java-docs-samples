@@ -53,6 +53,21 @@ gcloud beta pubsub subscriptions create <your-subscription-name> \
   --ack-deadline 30
 ```
 
+- Create a subscription for authenticated pushes to send messages to a Google Cloud Project URL such as https://<your-project-id>.appspot.com/authenticated-push.
+
+The push auth service account must have Service Account Token Creator Role assigned, which can be done in the Cloud Console [IAM & admin](https://console.cloud.google.com/iam-admin/iam) UI.
+`--push-auth-token-audience` is optional. If set, remember to modify the audience field check in [PubSubAuthenticatedPush.java](src/main/java/com/example/appengine/pubsub/PubSubAuthenticatedPush.java#L48).
+
+```
+gcloud beta pubsub subscriptions create <your-subscription-name> \
+  --topic <your-topic-name> \
+  --push-endpoint \
+    https://<your-project-id>.appspot.com/pubsub/authenticated-push?token=<your-verification-token> \
+  --ack-deadline 30 \
+  --push-auth-service-account=[your-service-account-email] \
+  --push-auth-token-audience=example.com
+```
+
 ## Run locally
 Set the following environment variables and run using shown Maven command. You can then
 direct your browser to `http://localhost:8080/`
@@ -68,6 +83,15 @@ mvn appengine:run
 ```
    curl -H "Content-Type: application/json" -i --data @sample_message.json
    "localhost:8080/pubsub/push?token=<your-token>"
+```
+
+### Authenticated push notifications
+
+Simulating authenticated push requests will fail because requests need to contain a Cloud Pub/Sub-generated JWT in the "Authorization" header.
+
+```
+   curl -H "Content-Type: application/json" -i --data @sample_message.json
+   "localhost:8080/pubsub/authenticated-push?token=<your-token>"
 ```
 
 ## Deploy

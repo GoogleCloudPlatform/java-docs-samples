@@ -52,6 +52,7 @@
         </dependency>
 
         <!-- OAuth 2.0 packages -->
+        <!-- [START gae_java11_oauth2_dependencies] -->
         <dependency>
             <groupId>com.google.oauth-client</groupId>
             <artifactId>google-oauth-client</artifactId>
@@ -72,6 +73,7 @@
             <version>v2-rev131-1.23.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- [END gae_java11_oauth2_dependencies] -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
