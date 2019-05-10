@@ -17,4 +17,4 @@ To view your app, use command:
 ```
 gcloud app browse
 ```
-Or navigate to http://<project-id>.appspot.com/hello URL.
+Or navigate to http://<project-id>.appspot.com URL.

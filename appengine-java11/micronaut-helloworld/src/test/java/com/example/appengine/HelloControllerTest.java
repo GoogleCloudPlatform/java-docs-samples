@@ -16,30 +16,48 @@
 
 package com.example.appengine;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.env.Environment;
 import io.micronaut.http.HttpRequest;
-import io.micronaut.http.client.RxHttpClient;
-import io.micronaut.http.client.annotation.Client;
-import io.micronaut.test.annotation.MicronautTest;
-import org.junit.jupiter.api.Test;
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.runtime.server.EmbeddedServer;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import javax.inject.Inject;
+import java.util.HashMap;
 
-@MicronautTest
+import static org.junit.Assert.assertEquals;
+
+
 public class HelloControllerTest {
+    private static EmbeddedServer server;
+    private static HttpClient client;
 
-    @Inject
-    @Client("/")
-    RxHttpClient client;
+    @BeforeClass
+    public static void setupServer() {
+
+        server = ApplicationContext.run(EmbeddedServer.class);
+
+        client = server
+                .getApplicationContext()
+                .createBean(HttpClient.class, server.getURL());
+    }
+
+    @AfterClass
+    public static void stopServer() {
+        if (client != null) {
+            client.stop();
+        }
+        if (server != null) {
+            server.stop();
+        }
+    }
 
     @Test
-    public void testHello() throws Exception {
-        HttpRequest request = HttpRequest.GET("/hello");
-        String body = client.toBlocking().retrieve(request);
-
-        assertNotNull(body);
-        assertEquals(body, "Hello World!");
+    public void testHelloWorldResponse() {
+        String response = client.toBlocking()
+                .retrieve(HttpRequest.GET("/"));
+        assertEquals("Hello World!", response);
     }
 }
