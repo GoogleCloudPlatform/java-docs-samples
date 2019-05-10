@@ -29,7 +29,8 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(ShutDownUrl.ApplicationCallFeature) {
-        // The URL that will be intercepted (you can also use the application.conf's ktor.deployment.shutdown.url key)
+        // The URL that will be intercepted. You can also use the
+        // application.conf's ktor.deployment.shutdown.url key.
         shutDownUrl = "/_ah/stop"
 
         // A function that will be executed to get the exit code of the process
