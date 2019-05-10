@@ -22,8 +22,7 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.validation.Validated;
 
-@Validated
-@Controller("/")
+@Controller("/hello")
 public class HelloController {
     @Get("/")
     @Produces(MediaType.TEXT_PLAIN)

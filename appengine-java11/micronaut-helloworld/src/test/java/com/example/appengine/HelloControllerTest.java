@@ -36,7 +36,7 @@ public class HelloControllerTest {
 
     @Test
     public void testHello() throws Exception {
-        HttpRequest request = HttpRequest.GET("/");
+        HttpRequest request = HttpRequest.GET("/hello");
         String body = client.toBlocking().retrieve(request);
 
         assertNotNull(body);
