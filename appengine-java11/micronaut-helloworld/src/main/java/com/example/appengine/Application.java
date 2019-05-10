@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
- package com.example.appengine;
+package com.example.appengine;
 
 import io.micronaut.runtime.Micronaut;
 
 public class Application {
 
-    public static void main(String[] args) {
-        Micronaut.run(Application.class);
-    }
+  public static void main(String[] args) {
+    Micronaut.run(Application.class);
+  }
 }

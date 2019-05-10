@@ -37,7 +37,8 @@ public class Application extends AbstractVerticle {
     Router router = Router.router(vertx);
     router.route().handler(this::handleDefault);
 
-    vertx.createHttpServer()
+    vertx
+        .createHttpServer()
         .requestHandler(router)
         .listen(8080, ar -> startFuture.handle(ar.mapEmpty()));
   }
@@ -47,15 +48,17 @@ public class Application extends AbstractVerticle {
         .get(METADATA_PORT, METADATA_HOST, "/computeMetadata/v1/project/project-id")
         .putHeader("Metadata-Flavor", "Google")
         .expect(ResponsePredicate.SC_OK)
-        .send(res -> {
-          if (res.succeeded()) {
-            HttpResponse<Buffer> response = res.result();
-            routingContext.response()
-                .putHeader("content-type", "text/html")
-                .end("Hello World! from " + response.body());
-          } else {
-            routingContext.fail(res.cause());
-          }
-        });
+        .send(
+            res -> {
+              if (res.succeeded()) {
+                HttpResponse<Buffer> response = res.result();
+                routingContext
+                    .response()
+                    .putHeader("content-type", "text/html")
+                    .end("Hello World! from " + response.body());
+              } else {
+                routingContext.fail(res.cause());
+              }
+            });
   }
 }

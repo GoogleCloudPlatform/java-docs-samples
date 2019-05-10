@@ -42,9 +42,13 @@ public class ApplicationTest {
   private static void startMetadataServer(TestContext ctx) {
     Application.METADATA_HOST = "localhost";
     Application.METADATA_PORT = 8081;
-    vertx.createHttpServer().requestHandler(req -> {
-      req.response().end("this-is-your-project");
-    }).listen(8081, ctx.asyncAssertSuccess());
+    vertx
+        .createHttpServer()
+        .requestHandler(
+            req -> {
+              req.response().end("this-is-your-project");
+            })
+        .listen(8081, ctx.asyncAssertSuccess());
   }
 
   @AfterClass
@@ -55,10 +59,14 @@ public class ApplicationTest {
   @Test
   public void test(TestContext ctx) {
     WebClient client = WebClient.create(vertx);
-    client.get(8080, "localhost", "/")
+    client
+        .get(8080, "localhost", "/")
         .expect(ResponsePredicate.SC_OK)
-        .send(ctx.asyncAssertSuccess(response -> {
-          ctx.assertEquals("Hello World! from this-is-your-project" , response.bodyAsString());
-        }));
+        .send(
+            ctx.asyncAssertSuccess(
+                response -> {
+                  ctx.assertEquals(
+                      "Hello World! from this-is-your-project", response.bodyAsString());
+                }));
   }
 }

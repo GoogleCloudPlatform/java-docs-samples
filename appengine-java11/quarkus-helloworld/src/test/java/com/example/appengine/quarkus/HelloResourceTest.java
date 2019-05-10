@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
- package com.example.appengine.quarkus;
-
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
+package com.example.appengine.quarkus;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.Test;
+
 @QuarkusTest
 public class HelloResourceTest {
 
-    @Test
-    public void testHelloEndpoint() {
-        given()
-          .when().get("/")
-          .then()
-             .statusCode(200)
-             .body(is("Hello World!"));
-    }
-
+  @Test
+  public void testHelloEndpoint() {
+    given().when().get("/").then().statusCode(200).body(is("Hello World!"));
+  }
 }
