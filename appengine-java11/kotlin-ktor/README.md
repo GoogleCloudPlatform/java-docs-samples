@@ -1,7 +1,7 @@
-# Spring Boot Application Google App Engine Standard with Java 11
+# Ktor Application on Google App Engine Standard with Kotlin
 
-This sample shows how to deploy a [Spring Boot](https://spring.io/projects/spring-boot)
-application to Google App Engine stadndard.
+This sample shows how to deploy a [Ktor](https://ktor.io/)
+application to Google App Engine standard.
 
 ## Setup
 
