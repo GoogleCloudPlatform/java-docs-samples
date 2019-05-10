@@ -16,13 +16,13 @@
 
 package com.example.appengine.sparkdemo;
 
-import static spark.Spark.*;
+import spark.Spark;
 
 public class Main {
 
   public static void main(String[] args) {
     // Starts the webapp on localhost:8080.
-    port(8080);
-    get("/", (req, res) -> "Hello World!");
+    Spark.port(8080);
+    Spark.get("/", (req, res) -> "Hello World!");
   }
 }
