@@ -35,7 +35,11 @@ public class LookupEntryExample {
 
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       return dataCatalogClient.lookupEntry(request);
+    } catch (ApiException e) {
+      System.out.print(e.getStatusCode().getCode());
     }
+
+    return null;
   }
 
   private static Entry lookupBigQueryDatasetSqlResource(String projectId,
@@ -49,7 +53,11 @@ public class LookupEntryExample {
 
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       return dataCatalogClient.lookupEntry(request);
+    } catch (ApiException e) {
+      System.out.print(e.getStatusCode().getCode());
     }
+
+    return null;
   }
 
   private static Entry lookupBigQueryTable(String projectId, String datasetId,
@@ -64,7 +72,11 @@ public class LookupEntryExample {
 
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       return dataCatalogClient.lookupEntry(request);
+    } catch (ApiException e) {
+      System.out.print(e.getStatusCode().getCode());
     }
+
+    return null;
   }
 
   private static Entry lookupBigQueryTableSqlResource(String projectId,
@@ -78,7 +90,11 @@ public class LookupEntryExample {
 
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       return dataCatalogClient.lookupEntry(request);
+    } catch (ApiException e) {
+      System.out.print(e.getStatusCode().getCode());
     }
+
+    return null;
   }
 
   private static Entry lookupPubSubTopic(String projectId, String topicId)
@@ -92,7 +108,11 @@ public class LookupEntryExample {
 
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       return dataCatalogClient.lookupEntry(request);
+    } catch (ApiException e) {
+      System.out.print(e.getStatusCode().getCode());
     }
+
+    return null;
   }
 
   private static Entry lookupPubSubTopicSqlResource(String projectId,
@@ -106,30 +126,31 @@ public class LookupEntryExample {
 
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       return dataCatalogClient.lookupEntry(request);
+    } catch (ApiException e) {
+      System.out.print(e.getStatusCode().getCode());
     }
+
+    return null;
   }
 
   /**
    * Lookup a catalog entry.
    *
    * @param args projectId
-   *             resourceType
    *             { bigquery-dataset | bigquery-table | pubsub-topic },
-   *             datasetId,
-   *             tableId,
-   *             topicId,
-   *             useSqlResource (optional)
-   * @throws Exception exception thrown if operation is unsuccessful
+   *             datasetId | topicId,
+   *             tableId (required when looking for tables),
+   *             --sql-resource (optional)
    */
-  public static void main(String... args) throws Exception {
+  public static void main(String... args) {
 
     try {
       Entry entry = lookupEntry(args);
       if (entry != null) {
-        System.out.printf("Entry name: %s:\n", entry.getName());
+        System.out.printf("Entry name: %s\n", entry.getName());
       }
-    } catch (ApiException e) {
-      System.out.print(e.getStatusCode().getCode());
+    } catch (Exception e) {
+      System.out.print("Error during lookupEntry:\n" + e.toString());
     }
   }
 
@@ -154,6 +175,7 @@ public class LookupEntryExample {
             lookupPubSubTopicSqlResource(projectId, args[2]) :
             lookupPubSubTopic(projectId, args[2]);
       default:
+        System.out.printf("Invalid resource type: %s\n", resourceType);
         return null;
     }
   }

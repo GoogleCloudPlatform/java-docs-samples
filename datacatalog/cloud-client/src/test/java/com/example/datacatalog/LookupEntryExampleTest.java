@@ -53,60 +53,68 @@ public class LookupEntryExampleTest {
   }
 
   @Test
-  public void testLookupBigQueryDataset() throws Exception {
+  public void testLookupBigQueryDataset() {
     LookupEntryExample
         .main(BIGQUERY_PROJECT, "bigquery-dataset", BIGQUERY_DATASET);
     String got = bout.toString();
-    assertThat(got).contains("projects/" + BIGQUERY_PROJECT);
-    assertThat(got).contains("entryGroups/@bigquery/entries");
+    assertThat(got).containsMatch("projects/" + BIGQUERY_PROJECT
+        + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
   }
 
   @Test
-  public void testLookupBigQueryDatasetSqlResource() throws Exception {
+  public void testLookupBigQueryDatasetSqlResource() {
     LookupEntryExample
         .main(BIGQUERY_PROJECT, "bigquery-dataset", BIGQUERY_DATASET,
             "--sql-resource");
     String got = bout.toString();
-    assertThat(got).contains("projects/" + BIGQUERY_PROJECT);
-    assertThat(got).contains("entryGroups/@bigquery/entries");
+    assertThat(got).containsMatch("projects/" + BIGQUERY_PROJECT
+        + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
   }
 
   @Test
-  public void testLookupBigQueryTable() throws Exception {
+  public void testLookupBigQueryTable() {
     LookupEntryExample
         .main(BIGQUERY_PROJECT, "bigquery-table", BIGQUERY_DATASET,
             BIGQUERY_TABLE);
     String got = bout.toString();
-    assertThat(got).contains("projects/" + BIGQUERY_PROJECT);
-    assertThat(got).contains("entryGroups/@bigquery/entries");
+    assertThat(got).containsMatch("projects/" + BIGQUERY_PROJECT
+        + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
   }
 
   @Test
-  public void testLookupBigQueryTableSqlResource() throws Exception {
+  public void testLookupBigQueryTableSqlResource() {
     LookupEntryExample
         .main(BIGQUERY_PROJECT, "bigquery-table", BIGQUERY_DATASET,
             BIGQUERY_TABLE, "--sql-resource");
     String got = bout.toString();
-    assertThat(got).contains("projects/" + BIGQUERY_PROJECT);
-    assertThat(got).contains("entryGroups/@bigquery/entries");
+    assertThat(got).containsMatch("projects/" + BIGQUERY_PROJECT
+        + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
   }
 
   @Test
-  public void testLookupPubSubTopic() throws Exception {
+  public void testLookupPubSubTopic() {
     LookupEntryExample
         .main(PUBSUB_PROJECT, "pubsub-topic", PUBSUB_TOPIC);
     String got = bout.toString();
-    assertThat(got).contains("projects/" + PUBSUB_PROJECT);
-    assertThat(got).contains("entryGroups/@pubsub/entries");
+    assertThat(got).containsMatch("projects/" + PUBSUB_PROJECT
+        + "/locations/.+?/entryGroups/@pubsub/entries/.+?$");
   }
 
   @Test
-  public void testLookupPubSubTopicSqlResource() throws Exception {
+  public void testLookupPubSubTopicSqlResource() {
     LookupEntryExample
         .main(PUBSUB_PROJECT, "pubsub-topic", PUBSUB_TOPIC,
             "--sql-resource");
     String got = bout.toString();
-    assertThat(got).contains("projects/" + PUBSUB_PROJECT);
-    assertThat(got).contains("entryGroups/@pubsub/entries");
+    assertThat(got).containsMatch("projects/" + PUBSUB_PROJECT
+        + "/locations/.+?/entryGroups/@pubsub/entries/.+?$");
+  }
+
+  @Test
+  public void testInvalidResourceType() {
+    LookupEntryExample.main(BIGQUERY_PROJECT, "dataset",
+        BIGQUERY_DATASET);
+    String got = bout.toString();
+    assertThat(got).startsWith("Invalid resource type: dataset");
   }
 }
