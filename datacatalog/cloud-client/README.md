@@ -26,21 +26,21 @@ the [Google Cloud Client Library for Java][google-cloud-java].
 
 #### Lookup a BigQuery Dataset
 ```
-  mvn exec:java -Dexec.mainClass=com.example.datacatalog.LookupEntryExample -Dexec.args="my-project bigquery-dataset my_dataset"
+  mvn exec:java -Dexec.mainClass=com.example.datacatalog.LookupEntryBigQueryDataset -Dexec.args="my-project my_dataset"
 ```
 
 #### Lookup a BigQuery Table
 ```
-  mvn exec:java -Dexec.mainClass=com.example.datacatalog.LookupEntryExample -Dexec.args="my-project bigquery-table my_dataset my_table"
+  mvn exec:java -Dexec.mainClass=com.example.datacatalog.LookupEntryBigQueryTable -Dexec.args="my-project my_dataset my_table"
 ```
 
 #### Lookup a Pub/Sub Topic
 ```
-  mvn exec:java -Dexec.mainClass=com.example.datacatalog.LookupEntryExample -Dexec.args="my-project pubsub-topic my-topic"
+  mvn exec:java -Dexec.mainClass=com.example.datacatalog.LookupEntryPubSubTopic -Dexec.args="my-project my-topic"
 ```
 
 #### Lookup by Sql Resource
-Append `--sql-resource` to command args to lookup by Sql Resource instead of Linked Resource.
+Append `-lookupBySqlResource` to command args to lookup by Sql Resource instead of Linked Resource.
 
 #### Testing
 Run the test with Maven.
