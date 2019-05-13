@@ -43,7 +43,7 @@ public class PollDiscoveryOccurrenceFinished {
 
     // find the discovery occurrence using a filter string
     Occurrence discoveryOccurrence = null;
-    // vulbnerability discovery occurrences are always published under the
+    // vulbnerability discovery occurrences are always associated with the
     // PACKAGE_VULNERABILITY note in the "goog-analysis" GCP project
     String filter =  String.format("resourceUrl=\"%s\" AND noteProjectId=\"%s\" AND noteId=\"%s\"", 
         resourceUrl, "goog-analysis",  "PACKAGE_VULNERABILITY");
