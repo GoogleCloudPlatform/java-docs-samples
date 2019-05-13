@@ -200,12 +200,12 @@ public class SamplesTest {
     int tries;
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(PROJECT_ID, subId);
     try {
-      PubSub.createOccurrenceSubscription(subId, PROJECT_ID);
+      Subscriptions.createOccurrenceSubscription(subId, PROJECT_ID);
     } catch (StatusRuntimeException e) {
       System.out.println("subscription " + subId + " already exists");
     }
     Subscriber subscriber = null;
-    PubSub.MessageReceiverExample receiver = new PubSub.MessageReceiverExample();
+    Subscriptions.MessageReceiverExample receiver = new Subscriptions.MessageReceiverExample();
 
     subscriber = Subscriber.newBuilder(subName, receiver).build();
     subscriber.startAsync().awaitRunning();
