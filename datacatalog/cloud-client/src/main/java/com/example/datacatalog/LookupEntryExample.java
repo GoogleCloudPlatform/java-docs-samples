@@ -23,12 +23,98 @@ import com.google.cloud.datacatalog.v1beta1.DataCatalogClient;
 
 public class LookupEntryExample {
 
+  private static Entry lookupBigQueryDataset(String projectId,
+      String datasetId) throws Exception {
+
+    String linkedResource = String.format(
+        "//bigquery.googleapis.com/projects/%s/datasets/%s",
+        projectId, datasetId);
+
+    LookupEntryRequest request = LookupEntryRequest.newBuilder()
+        .setLinkedResource(linkedResource).build();
+
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      return dataCatalogClient.lookupEntry(request);
+    }
+  }
+
+  private static Entry lookupBigQueryDatasetSqlResource(String projectId,
+      String datasetId) throws Exception {
+
+    String sqlResource = String.format(
+        "bigquery.dataset.`%s`.`%s`", projectId, datasetId);
+
+    LookupEntryRequest request = LookupEntryRequest.newBuilder()
+        .setSqlResource(sqlResource).build();
+
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      return dataCatalogClient.lookupEntry(request);
+    }
+  }
+
+  private static Entry lookupBigQueryTable(String projectId, String datasetId,
+      String tableId) throws Exception {
+
+    String linkedResource = String.format(
+        "//bigquery.googleapis.com/projects/%s/datasets/%s/tables/%s",
+        projectId, datasetId, tableId);
+
+    LookupEntryRequest request = LookupEntryRequest.newBuilder()
+        .setLinkedResource(linkedResource).build();
+
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      return dataCatalogClient.lookupEntry(request);
+    }
+  }
+
+  private static Entry lookupBigQueryTableSqlResource(String projectId,
+      String datasetId, String tableId) throws Exception {
+
+    String sqlResource = String.format(
+        "bigquery.table.`%s`.`%s`.`%s`", projectId, datasetId, tableId);
+
+    LookupEntryRequest request = LookupEntryRequest.newBuilder()
+        .setSqlResource(sqlResource).build();
+
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      return dataCatalogClient.lookupEntry(request);
+    }
+  }
+
+  private static Entry lookupPubSubTopic(String projectId, String topicId)
+      throws Exception {
+
+    String linkedResource = String.format(
+        "//pubsub.googleapis.com/projects/%s/topics/%s", projectId, topicId);
+
+    LookupEntryRequest request = LookupEntryRequest.newBuilder()
+        .setLinkedResource(linkedResource).build();
+
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      return dataCatalogClient.lookupEntry(request);
+    }
+  }
+
+  private static Entry lookupPubSubTopicSqlResource(String projectId,
+      String topicId) throws Exception {
+
+    String sqlResource = String.format(
+        "pubsub.topic.`%s`.`%s`", projectId, topicId);
+
+    LookupEntryRequest request = LookupEntryRequest.newBuilder()
+        .setSqlResource(sqlResource).build();
+
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      return dataCatalogClient.lookupEntry(request);
+    }
+  }
+
   /**
    * Lookup a catalog entry.
    *
    * @param args projectId
    *             resourceType
-   *                { bigquery-dataset | bigquery-table | pubsub-topic },
+   *             { bigquery-dataset | bigquery-table | pubsub-topic },
    *             datasetId,
    *             tableId,
    *             topicId,
@@ -37,80 +123,38 @@ public class LookupEntryExample {
    */
   public static void main(String... args) throws Exception {
 
-    LookupEntryRequest request = buildRequest(args);
-    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
-      Entry entry = dataCatalogClient.lookupEntry(request);
-      System.out.printf("Entry name: %s:\n", entry.getName());
+    try {
+      Entry entry = lookupEntry(args);
+      if (entry != null) {
+        System.out.printf("Entry name: %s:\n", entry.getName());
+      }
     } catch (ApiException e) {
       System.out.print(e.getStatusCode().getCode());
-      System.out.print(e.isRetryable());
     }
   }
 
-  private static LookupEntryRequest buildRequest(String... args) {
+  private static Entry lookupEntry(String... args) throws Exception {
 
     String projectId = args[0];
     String resourceType = args[1];
 
     boolean useSqlResource = "--sql-resource".equals(args[args.length - 1]);
 
-    return useSqlResource
-        ? buildSqlResourceRequest(projectId, resourceType, args)
-        : buildLinkedResourceRequest(projectId, resourceType, args);
-  }
-
-  private static LookupEntryRequest buildLinkedResourceRequest(
-      String projectId, String resourceType, String... args) {
-
-    String linkedResource = null;
-
     switch (resourceType) {
       case "bigquery-dataset":
-        linkedResource = String.format(
-            "//bigquery.googleapis.com/projects/%s/datasets/%s",
-            projectId, args[2]);
-        break;
+        return useSqlResource ?
+            lookupBigQueryDatasetSqlResource(projectId, args[2]) :
+            lookupBigQueryDataset(projectId, args[2]);
       case "bigquery-table":
-        linkedResource = String.format(
-            "//bigquery.googleapis.com/projects/%s/datasets/%s/tables/%s",
-            projectId, args[2], args[3]);
-        break;
+        return useSqlResource ?
+            lookupBigQueryTableSqlResource(projectId, args[2], args[3]) :
+            lookupBigQueryTable(projectId, args[2], args[3]);
       case "pubsub-topic":
-        linkedResource = String.format(
-            "//pubsub.googleapis.com/projects/%s/topics/%s",
-            projectId, args[2]);
-        break;
+        return useSqlResource ?
+            lookupPubSubTopicSqlResource(projectId, args[2]) :
+            lookupPubSubTopic(projectId, args[2]);
       default:
-        break;
+        return null;
     }
-
-    return LookupEntryRequest.newBuilder()
-        .setLinkedResource(linkedResource).build();
-  }
-
-  private static LookupEntryRequest buildSqlResourceRequest(
-      String projectId, String resourceType, String... args) {
-
-    String sqlResource = null;
-
-    switch (resourceType) {
-      case "bigquery-dataset":
-        sqlResource = String.format("bigquery.dataset.`%s`.`%s`",
-            projectId, args[2]);
-        break;
-      case "bigquery-table":
-        sqlResource = String.format("bigquery.table.`%s`.`%s`.`%s`",
-            projectId, args[2], args[3]);
-        break;
-      case "pubsub-topic":
-        sqlResource = String.format("pubsub.topic.`%s`.`%s`",
-            projectId, args[2]);
-        break;
-      default:
-        break;
-    }
-
-    return LookupEntryRequest.newBuilder()
-        .setSqlResource(sqlResource).build();
   }
 }
