@@ -27,23 +27,21 @@ public class LookupEntryPubSubTopic {
    *
    * @param projectId The project ID to which the Dataset belongs, e.g. 'my-project'
    * @param topicId The topic ID to which the Catalog Entry refers, e.g. 'my-topic'
-   * @param lookupBySqlResource Indicates whether the lookup should be performed by Sql Resource
-   *     instead of Linked Resource, e.g. 'false'
    */
-  private static void lookupEntryPubSubTopic(
-      String projectId, String topicId, boolean lookupBySqlResource) {
+  public static void lookupEntry(String projectId, String topicId) {
+    // String projectId = "my-project"
+    // String topicId = "my-topic"
 
-    LookupEntryRequest request;
+    // Get an entry by the resource name from the source Google Cloud Platform service.
+    String linkedResource =
+        String.format("//pubsub.googleapis.com/projects/%s/topics/%s", projectId, topicId);
+    LookupEntryRequest request =
+        LookupEntryRequest.newBuilder().setLinkedResource(linkedResource).build();
 
-    // Construct the Lookup request to be sent by the client.
-    if (lookupBySqlResource) {
-      String sqlResource = String.format("pubsub.topic.`%s`.`%s`", projectId, topicId);
-      request = LookupEntryRequest.newBuilder().setSqlResource(sqlResource).build();
-    } else {
-      String linkedResource =
-          String.format("//pubsub.googleapis.com/projects/%s/topics/%s", projectId, topicId);
-      request = LookupEntryRequest.newBuilder().setLinkedResource(linkedResource).build();
-    }
+    // Alternatively, lookup by the SQL name of the entry would have the same result:
+    // String sqlResource = String.format("pubsub.topic.`%s`.`%s`", projectId, topicId);
+    // LookupEntryRequest request =
+    // LookupEntryRequest.newBuilder().setSqlResource(sqlResource).build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -54,19 +52,5 @@ public class LookupEntryPubSubTopic {
     } catch (Exception e) {
       System.out.print("Error during lookupEntryPubSubTopic:\n" + e.toString());
     }
-  }
-
-  /**
-   * Command line application to lookup the Data Catalog entry referring to a Pub/Sub Topic.
-   * Requires 2 positional args: projectId and topicId. A third arg is optional: lookupBySqlResource
-   * (when set, the lookup is done by Sql Resource instead of Linked Resource).
-   */
-  public static void main(String... args) {
-
-    String projectId = args[0];
-    String topicId = args[1];
-    boolean lookupBySqlResource = "-lookupBySqlResource".equals(args[args.length - 1]);
-
-    lookupEntryPubSubTopic(projectId, topicId, lookupBySqlResource);
   }
 }

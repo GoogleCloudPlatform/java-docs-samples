@@ -28,10 +28,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class LookupEntryBigQueryDatasetTest {
+public class LookupEntryTests {
 
   private static final String BIGQUERY_PROJECT = "bigquery-public-data";
   private static final String BIGQUERY_DATASET = "new_york_taxi_trips";
+  private static final String BIGQUERY_TABLE = "taxi_zone_geom";
+
+  private static final String PUBSUB_PROJECT = "pubsub-public-data";
+  private static final String PUBSUB_TOPIC = "taxirides-realtime";
 
   private ByteArrayOutputStream bout;
 
@@ -50,7 +54,7 @@ public class LookupEntryBigQueryDatasetTest {
 
   @Test
   public void testLookupEntryBigQueryDataset() {
-    LookupEntryBigQueryDataset.main(BIGQUERY_PROJECT, BIGQUERY_DATASET);
+    LookupEntryBigQueryDataset.lookupEntry(BIGQUERY_PROJECT, BIGQUERY_DATASET);
     String got = bout.toString();
     assertThat(got)
         .containsMatch(
@@ -58,11 +62,20 @@ public class LookupEntryBigQueryDatasetTest {
   }
 
   @Test
-  public void testLookupEntryBigQueryDatasetSqlResource() {
-    LookupEntryBigQueryDataset.main(BIGQUERY_PROJECT, BIGQUERY_DATASET, "-lookupBySqlResource");
+  public void testLookupEntryBigQueryTable() {
+    LookupEntryBigQueryTable.lookupEntry(BIGQUERY_PROJECT, BIGQUERY_DATASET, BIGQUERY_TABLE);
     String got = bout.toString();
     assertThat(got)
         .containsMatch(
             "projects/" + BIGQUERY_PROJECT + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
+  }
+
+  @Test
+  public void testLookupPubSubTopic() {
+    LookupEntryPubSubTopic.lookupEntry(PUBSUB_PROJECT, PUBSUB_TOPIC);
+    String got = bout.toString();
+    assertThat(got)
+        .containsMatch(
+            "projects/" + PUBSUB_PROJECT + "/locations/.+?/entryGroups/@pubsub/entries/.+?$");
   }
 }

@@ -28,26 +28,25 @@ public class LookupEntryBigQueryTable {
    * @param projectId The project ID to which the Dataset belongs, e.g. 'my-project'
    * @param datasetId The dataset ID to which the Table belongs, e.g. 'my_dataset'
    * @param tableId The table ID to which the Catalog Entry refers, e.g. 'my_table'
-   * @param lookupBySqlResource Indicates whether the lookup should be performed by Sql Resource
-   *     instead of Linked Resource, e.g. 'false'
    */
-  private static void lookupEntryBigQueryTable(
-      String projectId, String datasetId, String tableId, boolean lookupBySqlResource) {
+  public static void lookupEntry(String projectId, String datasetId, String tableId) {
+    // String projectId = "my-project"
+    // String datasetId = "my_dataset"
+    // String tableId = "my_table"
 
-    LookupEntryRequest request;
+    // Get an entry by the resource name from the source Google Cloud Platform service.
+    String linkedResource =
+        String.format(
+            "//bigquery.googleapis.com/projects/%s/datasets/%s/tables/%s",
+            projectId, datasetId, tableId);
+    LookupEntryRequest request =
+        LookupEntryRequest.newBuilder().setLinkedResource(linkedResource).build();
 
-    // Construct the Lookup request to be sent by the client.
-    if (lookupBySqlResource) {
-      String sqlResource =
-          String.format("bigquery.table.`%s`.`%s`.`%s`", projectId, datasetId, tableId);
-      request = LookupEntryRequest.newBuilder().setSqlResource(sqlResource).build();
-    } else {
-      String linkedResource =
-          String.format(
-              "//bigquery.googleapis.com/projects/%s/datasets/%s/tables/%s",
-              projectId, datasetId, tableId);
-      request = LookupEntryRequest.newBuilder().setLinkedResource(linkedResource).build();
-    }
+    // Alternatively, lookup by the SQL name of the entry would have the same result:
+    // String sqlResource = String.format("bigquery.table.`%s`.`%s`.`%s`", projectId, datasetId,
+    // tableId);
+    // LookupEntryRequest request =
+    // LookupEntryRequest.newBuilder().setSqlResource(sqlResource).build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -58,20 +57,5 @@ public class LookupEntryBigQueryTable {
     } catch (Exception e) {
       System.out.print("Error during lookupEntryBigQueryTable:\n" + e.toString());
     }
-  }
-
-  /**
-   * Command line application to lookup the Data Catalog entry referring to a BigQuery Table.
-   * Requires 3 positional args: projectId, datasetId, and tableId. A fourth arg is optional:
-   * lookupBySqlResource (when set, the lookup is done by Sql Resource instead of Linked Resource).
-   */
-  public static void main(String... args) {
-
-    String projectId = args[0];
-    String datasetId = args[1];
-    String tableId = args[2];
-    boolean lookupBySqlResource = "-lookupBySqlResource".equals(args[args.length - 1]);
-
-    lookupEntryBigQueryTable(projectId, datasetId, tableId, lookupBySqlResource);
   }
 }
