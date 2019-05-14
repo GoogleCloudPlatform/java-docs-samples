@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,20 @@ package com.example.speech;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1.RecognitionConfig;
-import com.google.cloud.speech.v1.SpeechClient;
-import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1.StreamingRecognitionConfig;
-import com.google.cloud.speech.v1.StreamingRecognitionResult;
-import com.google.cloud.speech.v1.StreamingRecognizeRequest;
-import com.google.cloud.speech.v1.StreamingRecognizeResponse;
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.SpeechClient;
+import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognitionResult;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
+import com.google.protobuf.Duration;
 import com.google.protobuf.ByteString;
-import java.util.ArrayList;
+import java.lang.Math;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.text.DecimalFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -39,10 +42,28 @@ import javax.sound.sampled.TargetDataLine;
 
 public class InfiniteStreamRecognize {
 
+  private static final int STREAMING_LIMIT = 10000; // 10 seconds
+
+  public static final String RED = "\033[0;31m";
+  public static final String GREEN = "\033[0;32m";
+  public static final String YELLOW = "\033[0;33m";
+
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
   private static TargetDataLine targetDataLine;
   private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
+
+  private static int restartCounter = 0;
+  private static ArrayList<ByteString> audioInput  = new ArrayList<ByteString>();
+  private static ArrayList<ByteString> lastAudioInput = new ArrayList<ByteString>();
+  private static int resultEndTimeInMS = 0;
+  private static int isFinalEndTime = 0;
+  private static int finalRequestEndTime = 0;
+  private static boolean newStream = true;
+  private static double bridgingOffset = 0;
+  private static boolean lastTranscriptWasFinal = false;
+  private static StreamController referenceToStreamController;
+  private static ByteString tempByteString;
 
   public static void main(String... args) {
     try {
@@ -60,6 +81,7 @@ public class InfiniteStreamRecognize {
 
       @Override
       public void run() {
+        System.out.println(YELLOW);
         System.out.println("Start speaking...Press Ctrl-C to stop");
         targetDataLine.start();
         byte[] data = new byte[BYTES_PER_BUFFER];
@@ -88,23 +110,51 @@ public class InfiniteStreamRecognize {
 
             ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
-            public void onStart(StreamController controller) {}
+            public void onStart(StreamController controller) {
+              referenceToStreamController = controller;
+            }
 
             public void onResponse(StreamingRecognizeResponse response) {
+
               responses.add(response);
+
               StreamingRecognitionResult result = response.getResultsList().get(0);
-              // There can be several alternative transcripts for a given chunk of speech. Just
-              // use the first (most likely) one here.
+
+              Duration resultEndTime = result.getResultEndTime();
+
+              resultEndTimeInMS = (int) ((resultEndTime.getSeconds() * 1000) +
+                                        (resultEndTime.getNanos() / 1000000));
+
+              double correctedTime = resultEndTimeInMS - bridgingOffset +
+                                            (STREAMING_LIMIT * restartCounter);
+              DecimalFormat format = new DecimalFormat("0.#");
+
+              System.out.printf("\nresultEndTime: %d  bridgingOffset: %.2f  correctedTime: %.2f  restartCounter: %d\n",
+              resultEndTimeInMS, bridgingOffset, correctedTime, restartCounter);
+
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-              System.out.printf("Transcript : %s\n", alternative.getTranscript());
-            }
+              if(result.getIsFinal()){
+                System.out.print(GREEN);
+                System.out.print("\033[2K\r");
+                System.out.printf("%s: %s\n", format.format(correctedTime), alternative.getTranscript());
 
+                isFinalEndTime = resultEndTimeInMS;
+                lastTranscriptWasFinal = true;
+              }
+              else {
+                System.out.print(RED);
+                System.out.print("\033[2K\r");
+                System.out.printf("%s: %s", format.format(correctedTime), alternative.getTranscript());
+
+                lastTranscriptWasFinal = false;
+              }
+
+            }
             public void onComplete() {
-              System.out.println("Done");
+              // Should be cancrestartStream();
             }
-
             public void onError(Throwable t) {
-              System.out.println(t);
+              // Error indicates canceled observer, do nothing.
             }
           };
 
@@ -116,8 +166,12 @@ public class InfiniteStreamRecognize {
               .setLanguageCode("en-US")
               .setSampleRateHertz(16000)
               .build();
+
       StreamingRecognitionConfig streamingRecognitionConfig =
-          StreamingRecognitionConfig.newBuilder().setConfig(recognitionConfig).build();
+          StreamingRecognitionConfig.newBuilder()
+              .setConfig(recognitionConfig)
+              .setInterimResults(true)
+              .build();
 
       StreamingRecognizeRequest request =
           StreamingRecognizeRequest.newBuilder()
@@ -151,9 +205,28 @@ public class InfiniteStreamRecognize {
 
           long estimatedTime = System.currentTimeMillis() - startTime;
 
-          if (estimatedTime >= 55000) {
+          if (estimatedTime >= STREAMING_LIMIT) {
 
             clientStream.closeSend();
+            referenceToStreamController.cancel(); // remove Observer
+
+            if (resultEndTimeInMS > 0) {
+              finalRequestEndTime = isFinalEndTime;
+            }
+            resultEndTimeInMS = 0;
+
+            lastAudioInput = null;
+            lastAudioInput = audioInput;
+            audioInput = new ArrayList<ByteString>();
+
+            restartCounter++;
+
+            if (!lastTranscriptWasFinal) {
+              System.out.print('\n');
+            }
+
+            newStream = true;
+
             clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
             request =
@@ -161,13 +234,47 @@ public class InfiniteStreamRecognize {
                     .setStreamingConfig(streamingRecognitionConfig)
                     .build();
 
+            System.out.println(YELLOW);
+            System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
+
             startTime = System.currentTimeMillis();
 
           } else {
+
+            if((newStream) && (lastAudioInput.size() > 0)){
+              System.out.println("gonna send that stuff");
+              double chunkTime = STREAMING_LIMIT / lastAudioInput.size(); // in ms
+              if(chunkTime != 0){
+                if(bridgingOffset < 0){
+                  bridgingOffset = 0;
+                }
+                if(bridgingOffset > finalRequestEndTime){
+                  bridgingOffset = finalRequestEndTime;
+                }
+                int chunksFromMS = (int) Math.floor((finalRequestEndTime - bridgingOffset) / chunkTime);
+                bridgingOffset = (int) Math.floor((lastAudioInput.size() - chunksFromMS) * chunkTime);
+                System.out.printf("finalEndTime: %d  chunkTime: %.2f  chunksFromMS: %d   bridgingOffset:  %.2f\n", finalRequestEndTime, chunkTime, chunksFromMS, bridgingOffset);
+                for(int i = chunksFromMS; i< lastAudioInput.size(); i++){
+                //System.out.println(i);
+                  request =
+                      StreamingRecognizeRequest.newBuilder()
+                          .setAudioContent(lastAudioInput.get(i))
+                          .build();
+
+                }
+              }
+              newStream = false;
+            }
+
+            tempByteString = ByteString.copyFrom(sharedQueue.take());
+
             request =
                 StreamingRecognizeRequest.newBuilder()
-                    .setAudioContent(ByteString.copyFrom(sharedQueue.take()))
+                    .setAudioContent(tempByteString)
                     .build();
+
+            audioInput.add(tempByteString);
+
           }
 
           clientStream.send(request);
