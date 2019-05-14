@@ -36,6 +36,8 @@ public class LookupEntryBigQueryDataset {
     LookupEntryRequest request;
 
     // Construct the Lookup request to be sent by the client.
+    LookupEntryRequest request;
+    if (lookupBySqlResource) {
     if (lookupBySqlResource) {
       String sqlResource = String.format("bigquery.dataset.`%s`.`%s`", projectId, datasetId);
       request = LookupEntryRequest.newBuilder().setSqlResource(sqlResource).build();
