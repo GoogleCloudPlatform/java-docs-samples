@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 import java.util.concurrent.TimeUnit;
 
-public class PubSub {
+public class Subscriptions {
   // Handle incoming Occurrences using a Cloud Pub/Sub subscription
   public static int pubSub(String subId, long timeoutSeconds, String projectId)
       throws InterruptedException {
