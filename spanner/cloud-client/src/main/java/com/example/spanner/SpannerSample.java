@@ -1013,6 +1013,29 @@ public class SpannerSample {
   }
   // [END spanner_dml_getting_started_insert]
 
+  // [START spanner_query_with_parameter]
+  static void queryWithParameter(DatabaseClient dbClient) {
+    Statement statement =
+        Statement
+            .newBuilder(
+                "SELECT SingerId, FirstName, LastName\n"
+                    + "FROM Singers\n"
+                    + "WHERE LastName = @lastName")
+            .bind("lastName")
+            .to("Garcia")
+            .build();
+
+    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
+    while (resultSet.next()) {
+      System.out.printf(
+          "%d %s %s\n",
+          resultSet.getLong("SingerId"),
+          resultSet.getString("FirstName"),
+          resultSet.getString("LastName"));
+    }
+  }
+  // [END spanner_query_with_parameter]
+
   // [START spanner_dml_getting_started_update]
   static void writeWithTransactionUsingDml(DatabaseClient dbClient) {
     dbClient
@@ -1229,6 +1252,9 @@ public class SpannerSample {
       case "writeusingdml":
         writeUsingDml(dbClient);
         break;
+      case "querywithparameter":
+        queryWithParameter(dbClient);
+        break;
       case "writewithtransactionusingdml":
         writeWithTransactionUsingDml(dbClient);
         break;
@@ -1286,6 +1312,7 @@ public class SpannerSample {
     System.err.println("    SpannerExample writeandreadusingdml my-instance example-db");
     System.err.println("    SpannerExample updateusingdmlwithstruct my-instance example-db");
     System.err.println("    SpannerExample writeusingdml my-instance example-db");
+    System.err.println("    SpannerExample queryWithParameter my-instance example-db");
     System.err.println("    SpannerExample writewithtransactionusingdml my-instance example-db");
     System.err.println("    SpannerExample updateusingpartitioneddml my-instance example-db");
     System.err.println("    SpannerExample deleteusingpartitioneddml my-instance example-db");
