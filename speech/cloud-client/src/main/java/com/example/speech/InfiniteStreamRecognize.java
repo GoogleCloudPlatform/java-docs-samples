@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -238,9 +238,15 @@ public class InfiniteStreamRecognize {
           } else {
 
             if ((newStream) && (lastAudioInput.size() > 0)) {
-              double chunkTime = STREAMING_LIMIT / lastAudioInput.size(); // ms
+              // if this is the first audio from a new request
+              // calculate amount of unfinalized audio from last request
+              // resend the audio to the speech client before incoming audio
+              double chunkTime = STREAMING_LIMIT / lastAudioInput.size();
+              // ms length of each chunk in previous request audio arrayList
               if (chunkTime != 0) {
                 if (bridgingOffset < 0) {
+                  // bridging Offset accounts for time of resent audio
+                  // calculated from last request
                   bridgingOffset = 0;
                 }
                 if (bridgingOffset > finalRequestEndTime) {
@@ -248,8 +254,10 @@ public class InfiniteStreamRecognize {
                 }
                 int chunksFromMS = (int) Math.floor((finalRequestEndTime
                                                 - bridgingOffset) / chunkTime);
+                // chunks from MS is number of chunks to resend
                 bridgingOffset = (int) Math.floor((lastAudioInput.size()
                                                 - chunksFromMS) * chunkTime);
+                // set bridging offset for next request
                 for (int i = chunksFromMS; i < lastAudioInput.size(); i++) {
 
                   request =
