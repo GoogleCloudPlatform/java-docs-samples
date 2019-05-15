@@ -2,10 +2,10 @@
 
 This sample demonstrates using the Cloud Tasks client library.
 
-`CreateHTTPTask.java` constructs a task with an HTTP target and pushes it
+`CreateHttpTask.java` constructs a task with an HTTP target and pushes it
 to your queue.
 
-`CreateHTTPTask.java` constructs a task with an HTTP target and OIDC token and
+`CreateHttpTask.java` constructs a task with an HTTP target and OIDC token and
 pushes it to your queue.
 
 ## Initial Setup
