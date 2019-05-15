@@ -129,9 +129,6 @@ public class InfiniteStreamRecognize {
                                             (STREAMING_LIMIT * restartCounter);
               DecimalFormat format = new DecimalFormat("0.#");
 
-              System.out.printf("\nresultEndTime: %d  bridgingOffset: %.2f  correctedTime: %.2f  restartCounter: %d\n",
-              resultEndTimeInMS, bridgingOffset, correctedTime, restartCounter);
-
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               if(result.getIsFinal()){
                 System.out.print(GREEN);
@@ -242,7 +239,6 @@ public class InfiniteStreamRecognize {
           } else {
 
             if((newStream) && (lastAudioInput.size() > 0)){
-              System.out.println("gonna send that stuff");
               double chunkTime = STREAMING_LIMIT / lastAudioInput.size(); // in ms
               if(chunkTime != 0){
                 if(bridgingOffset < 0){
@@ -253,14 +249,13 @@ public class InfiniteStreamRecognize {
                 }
                 int chunksFromMS = (int) Math.floor((finalRequestEndTime - bridgingOffset) / chunkTime);
                 bridgingOffset = (int) Math.floor((lastAudioInput.size() - chunksFromMS) * chunkTime);
-                System.out.printf("finalEndTime: %d  chunkTime: %.2f  chunksFromMS: %d   bridgingOffset:  %.2f\n", finalRequestEndTime, chunkTime, chunksFromMS, bridgingOffset);
                 for(int i = chunksFromMS; i< lastAudioInput.size(); i++){
-                //System.out.println(i);
+
                   request =
                       StreamingRecognizeRequest.newBuilder()
                           .setAudioContent(lastAudioInput.get(i))
                           .build();
-
+                  clientStream.send(request);
                 }
               }
               newStream = false;
