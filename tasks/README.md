@@ -2,10 +2,10 @@
 
 This sample demonstrates using the Cloud Tasks client library.
 
-`CreateHTTPTask.java` constructs a task with an HTTP target and pushes it
+`CreateHttpTask.java` constructs a task with an HTTP target and pushes it
 to your queue.
 
-`CreateHTTPTask.java` constructs a task with an HTTP target and OIDC token and
+`CreateHttpTask.java` constructs a task with an HTTP target and OIDC token and
 pushes it to your queue.
 
 ## Initial Setup
@@ -39,7 +39,7 @@ Then the queue ID, as specified at queue creation time. Queue IDs already
 created can be listed with `gcloud beta tasks queues list`.
 
 ```
-export QUEUE_ID=my-queue
+export QUEUE_ID=<QUEUE_NAME>
 ```
 
 And finally the location ID, which can be discovered with
@@ -52,7 +52,7 @@ location is "us-central1").
 export LOCATION_ID=<YOUR_ZONE>
 ```
 
-### Using HTTP Push Queues
+### Creating Tasks with HTTP Targets
 
 Set an environment variable for the endpoint to your task handler. This is an
 example url:
