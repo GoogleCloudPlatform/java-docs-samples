@@ -11,6 +11,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# [START gae_java11_firestore_yaml]
 runtime: java11
 instance_class: F2
 entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main guestbook.war'
+# [END gae_java11_firestore_yaml]

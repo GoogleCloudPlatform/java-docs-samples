@@ -1,5 +1,5 @@
 <!--
-Copyright 2019 Google Inc.
+Copyright 2019 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ Copyright 2019 Google Inc.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.0.0-rc5</version>
+        <version>2.0.0-rc6</version>
         <configuration>
           <version>gaeinfo</version>
         </configuration>

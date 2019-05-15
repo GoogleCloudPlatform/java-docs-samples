@@ -16,7 +16,6 @@
 
 package com.example.guestbook;
 
-
 import com.google.common.base.MoreObjects;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +50,7 @@ public class Greeting {
 
   /** Save the Greeting in the guestbook */
   public void save() {
+    // [START gae_java11_firestore_greeting]
     // Construct a Greeting.
     Map<String, Object> greetingData = new HashMap<>();
     greetingData.put("date", date);
@@ -59,6 +59,7 @@ public class Greeting {
 
     // Add Greeting to Guestbook with random id.
     book.getBookRef().collection("Greetings").add(greetingData);
+    // [END gae_java11_firestore_greeting]
   }
 
   @Override

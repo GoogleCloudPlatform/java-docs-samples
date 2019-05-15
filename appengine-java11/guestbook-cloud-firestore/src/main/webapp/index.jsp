@@ -51,9 +51,9 @@ limitations under the License.
     <div><input type="submit" value="Switch Guestbook"/></div>
   </form>
 
-  <h3>Write Your Greeting</h3>
-
   <%-- Guestbook form --%>
+  <h3>Write Your Greeting</h3>
+  <%-- [START gae_java11_form] --%>
   <form method="POST" action="/sign">
     <div>
       <label for="name">Name</label>
@@ -72,8 +72,9 @@ limitations under the License.
     <div><input type="submit" value="Sign"/></div>
     <input type="hidden" name="guestbookName" value="${fn:escapeXml(guestbookName)}"/>
   </form>
+  <%-- [END gae_java11_form] --%>
 
-
+  <%-- List greetings --%>
   <h3>Greetings:</h3>
 
   <% if (greetings.isEmpty()) { %>

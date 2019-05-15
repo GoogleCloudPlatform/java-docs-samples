@@ -69,6 +69,7 @@ public class SpannerReadAll {
     // [START spanner_dataflow_readall]
     PCollection<Struct> allRecords = p.apply(SpannerIO.read()
         .withSpannerConfig(spannerConfig)
+        .withBatching(false)
         .withQuery("SELECT t.table_name FROM information_schema.tables AS t WHERE t"
             + ".table_catalog = '' AND t.table_schema = ''")).apply(
         MapElements.into(TypeDescriptor.of(ReadOperation.class))
