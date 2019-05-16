@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+  <servlet>
+    <servlet-name>MessageProcessor</servlet-name>
+    <servlet-class>com.google.cloud.solutions.flexenv.backend.MessageProcessorServlet</servlet-class>
+    <init-param>
+      <param-name>channels</param-name>
+      <param-value>books,game,music,sports,travel</param-value>
+    </init-param>
+    <init-param>
+      <param-name>credential</param-name>
+      <param-value>/WEB-INF/JSON_FILE_NAME</param-value>
+    </init-param>
+    <init-param>
+      <param-name>databaseUrl</param-name>
+      <param-value>FIREBASE_URL</param-value>
+    </init-param>
+    <init-param>
+      <param-name>purgeLogs</param-name>
+      <param-value>100</param-value>
+    </init-param>
+    <init-param>
+      <param-name>purgeInterval</param-name>
+      <param-value>20000</param-value>
+    </init-param>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>MessageProcessor</servlet-name>
+     <url-pattern>/printLogs</url-pattern>
+  </servlet-mapping>
+</web-app>
