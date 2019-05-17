@@ -28,7 +28,7 @@ App Engine task attempts.
 To create a queue using the Cloud SDK, use the following gcloud command:
 
 ```
-gcloud beta tasks queues create-app-engine-queue my-appengine-queue
+gcloud beta tasks queues create my-appengine-queue
 ```
 
 Note: A newly created queue will route to the default App Engine service and
