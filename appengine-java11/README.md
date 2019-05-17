@@ -10,11 +10,6 @@ standard Java 11 environment.
 
 ## Prerequisites
 
-**Private Alpha**
-To access the Java 11 Google App Engine standard runtime, you'll need to apply
-to become part of the App Engine [Alpha program](https://docs.google.com/forms/d/e/1FAIpQLSf5uE5eknJjFEmcVBI6sMitBU0QQ1LX_J7VrA_OTQabo6EEEw/viewform).
-
-
 ### Download Maven
 
 These samples use the [Apache Maven][maven] build system. Before getting

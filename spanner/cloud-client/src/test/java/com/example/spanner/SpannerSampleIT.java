@@ -144,7 +144,7 @@ public class SpannerSampleIT {
     assertThat(out).startsWith("6\n");
 
     out = runSample("querywitharrayofstruct");
-    assertThat(out).startsWith("6\n7");
+    assertThat(out).startsWith("8\n7\n6");
 
     out = runSample("querystructfield");
     assertThat(out).startsWith("6\n");
@@ -181,6 +181,8 @@ public class SpannerSampleIT {
     assertThat(out).contains("Russell Morales");
     assertThat(out).contains("Jacqueline Long");
     assertThat(out).contains("Dylan Shaw");
+    out = runSample("querywithparameter");
+    assertThat(out).contains("12 Melissa Garcia");
 
     runSample("writewithtransactionusingdml");
     out = runSample("querymarketingbudget");    

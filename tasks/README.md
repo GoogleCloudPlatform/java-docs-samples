@@ -1,17 +1,12 @@
-# Google Cloud Tasks App Engine Queue Samples
+# Google Cloud Tasks Samples
 
-Sample command-line program for interacting with the Cloud Tasks API
-using App Engine queues.
+This sample demonstrates using the Cloud Tasks client library.
 
-App Engine queues push tasks to an App Engine HTTP target. This directory
-contains both the App Engine app to deploy, as well as the snippets to run
-locally to push tasks to it, which could also be called on App Engine.
-
-`CreateHTTPTask.java` constructs a task with an HTTP target and pushes it
+`CreateHttpTask.java` constructs a task with an HTTP target and pushes it
 to your queue.
 
-`CreateHTTPTask.java` constructs a task with an HTTP target and OIDC token and pushes it
-to your queue.
+`CreateHttpTask.java` constructs a task with an HTTP target and OIDC token and
+pushes it to your queue.
 
 ## Initial Setup
 
@@ -27,18 +22,7 @@ to your queue.
 To create a queue using the Cloud SDK, use the following gcloud command:
 
 ```
-gcloud beta tasks queues create-app-engine-queue my-queue
-```
-
-Note: A newly created queue will route to the default App Engine service and
-version unless configured to do otherwise.
-
-## Deploying the App Engine app
-[Using Maven and the App Engine Plugin](https://cloud.google.com/appengine/docs/flexible/java/using-maven)
-& [Maven Plugin Goals and Parameters](https://cloud.google.com/appengine/docs/flexible/java/maven-reference)
-
-```
-mvn appengine:deploy
+gcloud beta tasks queues create <QUEUE_NAME>
 ```
 
 ## Run the Sample Using the Command Line
@@ -55,40 +39,48 @@ Then the queue ID, as specified at queue creation time. Queue IDs already
 created can be listed with `gcloud beta tasks queues list`.
 
 ```
-export QUEUE_ID=my-queue
+export QUEUE_ID=<QUEUE_NAME>
 ```
 
 And finally the location ID, which can be discovered with
 `gcloud beta tasks queues describe $QUEUE_ID`, with the location embedded in
 the "name" value (for instance, if the name is
-"projects/my-project/locations/us-central1/queues/my-appengine-queue", then the
+"projects/my-project/locations/us-central1/queues/my-queue", then the
 location is "us-central1").
 
 ```
 export LOCATION_ID=<YOUR_ZONE>
 ```
 
-### Using HTTP Push Queues
+### Creating Tasks with HTTP Targets
 
 Set an environment variable for the endpoint to your task handler. This is an
-example url to send requests to the App Engine task handler:
+example url:
 ```
-export URL=https://${PROJECT_ID}.appspot.com/tasks/create
+export URL=https://example.com/taskshandler
 ```
 
-Running the sample will create a task and send the task to the specific URL
-endpoint, with a payload specified:
+Running the sample will create a task and add it to your queue. As the queue
+processes each task, it will send the task to the specific URL endpoint:
 
 ```
 mvn exec:java@HttpTask"
 ```
 
-### Using HTTP Targets with Authentication Headers
+### Using HTTP Targets with Authentication Tokens
 
-In `CreateHttpTaskWithToken.java`, add your service account email in place of
-`<SERVICE_ACCOUNT_EMAIL>` to authenticate the OIDC token.
+Your Cloud Tasks [service account][sa],
+(service-<project-number>@gcp-sa-cloudtasks.iam.gserviceaccount.com), must
+have the role of: `Service Account Token Creator` to generate a tokens.
+
+Create or use an existing [service account][sa] to replace `<SERVICE_ACCOUNT_EMAIL>`
+in `CreateHttpTaskWithToken.java`. This service account will be used to
+authenticate the OIDC token.
 
 Running the sample with command:
 ```
 mvn exec:java@WithToken"
 ```
+
+
+[sa]: https://cloud.google.com/iam/docs/service-accounts
