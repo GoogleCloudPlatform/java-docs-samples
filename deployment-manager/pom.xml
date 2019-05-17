@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example.deploymentmanager</groupId>
+    <artifactId>com.example.deploymentmanager.DeploymentManagerDemo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-deploymentmanager</artifactId>
+            <version>v2-rev71-1.25.0</version>
+        </dependency>
+    </dependencies>
+      <properties>
+      <!-- set this to the version of hte JDK you have installed or if you get
+       > mvn compile
+        [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) on project com.example.deploymentmanager.DeploymentManagerDemo: Compilation failure: Compilation failure:
+        [ERROR] Source option 6 is no longer supported. Use 7 or later.
+        [ERROR] Target option 6 is no longer supported. Use 7 or later.
+       -->
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <mainClass>com.example.deploymentmanager.DeploymentManagerDemo</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,69 @@
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+resources:
+- name: umig-test-vm-1
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-b
+    machineType: https://www.googleapis.com/compute/v1/projects/lucky-era-233023/zones/us-west1-b/machineTypes/f1-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/lucky-era-233023/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+- name: umig-test-vm-2
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-b
+    machineType: https://www.googleapis.com/compute/v1/projects/lucky-era-233023/zones/us-west1-b/machineTypes/g1-small
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/lucky-era-233023/global/networks/default
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+- name: the-umig
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/lucky-era-233023/global/networks/default
+    subnetwork: https://www.googleapis.com/compute/v1/projects/lucky-era-233023/regions/us-west1/subnetworks/default
+    zone: us-west1-b
+  type: compute.v1.instanceGroup
+- action: gcp-types/compute-v1:compute.instanceGroups.addInstances
+  name: addInstance-umig-vm-1
+  properties:
+    instanceGroup: the-umig
+    instances:
+    - instance: $(ref.umig-test-vm-1.selfLink)
+    zone: us-west1-b
+  metadata:
+    runtimePolicy:
+    - CREATE
+    dependsOn:
+    - the-umig
+- action: gcp-types/compute-v1:compute.instanceGroups.addInstances
+  name: addInstance-umig-vm-2
+  properties:
+    instanceGroup: the-umig
+    instances:
+    - instance: $(ref.umig-test-vm-2.selfLink)
+    zone: us-west1-b
+  metadata:
+    runtimePolicy:
+    - CREATE
+    dependsOn:
+    - the-umig
+
