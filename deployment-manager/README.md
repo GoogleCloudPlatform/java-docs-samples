@@ -3,7 +3,7 @@
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=deployment-manager/README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
-[Deployment Manager] (https://cloud.google.com/deployment-manager/docs/) is an infrastructure deployment service that automates the creation and management of Google Cloud Platform resources. Write flexible template and configuration files and use them to create deployments that have a variety of Cloud Platform services, such as Google Cloud Storage, Google Compute Engine, and Google Cloud SQL, configured to work together.
+[Deployment Manager](https://cloud.google.com/deployment-manager/docs/) is an infrastructure deployment service that automates the creation and management of Google Cloud Platform resources. Write flexible template and configuration files and use them to create deployments that have a variety of Cloud Platform services, such as Google Cloud Storage, Google Compute Engine, and Google Cloud SQL, configured to work together.
 
 ## Quickstart
 
