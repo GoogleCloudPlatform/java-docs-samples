@@ -1,4 +1,4 @@
-# Single Fat Jar Application on Google App Engine Standard with Java 11
+# Standalone HTTP Server on Google App Engine Standard with Java 11
 
 This sample shows how to deploy an application to Google App Engine using the
 a fat jar. There is no `entrypoint` field listed in the [`app.yaml`](src/main/appengine/app.yaml),
