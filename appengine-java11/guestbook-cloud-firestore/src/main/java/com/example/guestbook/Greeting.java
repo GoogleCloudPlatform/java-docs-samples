@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/** Greeting model. */
+/** Represents a greeting: id, guestbook reference, author, content, date. */
 @SuppressWarnings("JavadocMethod")
 public class Greeting {
 

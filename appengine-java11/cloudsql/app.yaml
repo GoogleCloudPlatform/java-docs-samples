@@ -12,7 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_java11_runtime]
 runtime: java11
-# No need for an entrypoint with single fatjar with correct manifest class-path entry.
-# [END gae_java11_runtime]
+instance_class: F2
+entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main cloudsql.war'
+
+env_variables:
+  CLOUD_SQL_CONNECTION_NAME: "my-project:region:instance"
+  DB_NAME: "my_db"
+  DB_USER: "my-db-user"
+  DB_PASS: "my-db-password"

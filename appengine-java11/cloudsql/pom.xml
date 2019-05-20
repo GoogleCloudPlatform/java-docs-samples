@@ -14,14 +14,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <groupId>com.example.appengine</groupId>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>appengine-spanner-j11</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <groupId>com.example.cloudsql</groupId>
+  <artifactId>cloudsql</artifactId>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -36,6 +35,7 @@
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
   <!-- All dependencies are scoped as provided.
@@ -50,24 +50,47 @@
       <version>1</version>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner</artifactId>
-      <version>1.7.0</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.25</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Dependencies for Cloud SQL -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.11</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>mysql-socket-factory-connector-j-8</artifactId>
+      <version>1.0.12</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>3.3.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <finalName>spanner</finalName>
+    <finalName>cloudsql</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -94,11 +117,28 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/appengine-staging/cprof</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.0.0</version>
         <configuration>
-          <version>spanner</version>
+          <version>cloudsql</version>
         </configuration>
       </plugin>
     </plugins>
