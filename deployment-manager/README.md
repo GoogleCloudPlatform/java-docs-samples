@@ -10,7 +10,7 @@
  - Authentication uses the GOOGLE_APPLICATION_CREDENTIALS environment variable.
  - Run `gcloud auth application-default login` to create/update the file locally
  - The default path on macos is `GOOGLE_APPLICATION_CREDENTIALS=/Users/[username]/.config/gcloud/application_default_credentials.json`
- - In intellij you can set this environment variable in the runtime config next to the run button. 
+ - In IntelliJ you can set this environment variable in the runtime config next to the run button. 
  - javadoc reference for deployment manger is [here](https://developers.google.com/resources/api-libraries/documentation/deploymentmanager/v2/java/latest/)
 
 

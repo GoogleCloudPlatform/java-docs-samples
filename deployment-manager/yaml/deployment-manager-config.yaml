@@ -1,4 +1,4 @@
-# Copyright 2018 Google Inc.
+# Copyright 2019 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 # This deployment 
 # - Creates 2 instances named 'umig-test-vm-1' and 'umig-test-vm-2'
 # - Creates an unmanaged instance group named 'the-umig'
-# - Adds the 'umig-test-vm-1' and 'umig-test-vm-2' to the unmanaged instance group 'the-umig'
+# - Adds the instance 'umig-test-vm-1' and 'umig-test-vm-2' to the unmanaged instance group 'the-umig'
 #
 resources:
 - name: umig-test-vm-1
