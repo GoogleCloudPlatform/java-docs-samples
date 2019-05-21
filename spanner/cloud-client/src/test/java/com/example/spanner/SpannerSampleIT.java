@@ -22,7 +22,6 @@ import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -32,9 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Unit tests for {@code SpannerSample}
- */
+/** Unit tests for {@code SpannerSample} */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
@@ -50,7 +47,7 @@ public class SpannerSampleIT {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    SpannerSample.main(new String[]{command, instanceId, databaseId});
+    SpannerSample.main(new String[] {command, instanceId, databaseId});
     System.setOut(stdOut);
     return bout.toString();
   }
@@ -101,8 +98,8 @@ public class SpannerSampleIT {
     assertThat(out).contains("1 1 NULL");
     runSample("writetransaction");
     out = runSample("querymarketingbudget");
-    assertThat(out).contains("1 1 300000");
-    assertThat(out).contains("2 2 300000");
+    assertThat(out).contains("1 1 0");
+    assertThat(out).contains("2 2 600000");
 
     runSample("addindex");
     out = runSample("queryindex");
@@ -117,7 +114,7 @@ public class SpannerSampleIT {
 
     runSample("addstoringindex");
     out = runSample("readstoringindex");
-    assertThat(out).contains("300000");
+    assertThat(out).contains("600000");
 
     out = runSample("readonlytransaction");
     assertThat(out.replaceAll("[\r\n]+", " ")).containsMatch("(Total Junk.*){2}");
@@ -185,13 +182,13 @@ public class SpannerSampleIT {
     assertThat(out).contains("12 Melissa Garcia");
 
     runSample("writewithtransactionusingdml");
-    out = runSample("querymarketingbudget");    
-    assertThat(out).contains("1 1 1800000");
-    assertThat(out).contains("2 2 200000");
-    
+    out = runSample("querymarketingbudget");
+    assertThat(out).contains("1 1 1900000");
+    assertThat(out).contains("2 2 100000");
+
     runSample("updateusingpartitioneddml");
     out = runSample("querymarketingbudget");
-    assertThat(out).contains("1 1 1800000");
+    assertThat(out).contains("1 1 1900000");
     assertThat(out).contains("2 2 100000");
 
     runSample("deleteusingpartitioneddml");
