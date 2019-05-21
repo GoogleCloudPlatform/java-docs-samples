@@ -18,6 +18,7 @@ limitations under the License.
   <groupId>com.example.spanner</groupId>
   <artifactId>spanner-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
+  <version>${revision}</version>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -30,6 +31,7 @@ limitations under the License.
   </parent>
 
   <properties>
+    <revision>${project.parent.version}</revision>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
