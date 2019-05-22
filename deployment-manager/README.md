@@ -19,7 +19,7 @@ Install [Maven](http://maven.apache.org/).
 
 Build 
 
-```xml
+```bash
 mvn clean
 ```
 
