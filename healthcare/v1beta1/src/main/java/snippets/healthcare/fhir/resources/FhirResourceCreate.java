@@ -26,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -61,11 +60,8 @@ public class FhirResourceCreate {
         "%sv1beta1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
-    HttpBody httpBody =
-        new HttpBody()
-            .setContentType("application/fhir+json; charset=utf-8")
-            .setData("{'resourceType': '" + resourceType + "', 'language': 'en'}");
-    StringEntity requestEntity = new StringEntity(httpBody.toString());
+    StringEntity requestEntity = new StringEntity(
+        "{\"resourceType\": \"" + resourceType + "\", \"language\": \"en\"}");
 
     HttpUriRequest request = RequestBuilder
         .post()
@@ -79,7 +75,7 @@ public class FhirResourceCreate {
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
-    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
       System.err.print(String.format(
           "Exception creating FHIR resource: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);

@@ -29,11 +29,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.fhir.FhirStoreCreate;
 import snippets.healthcare.fhir.FhirStoreDelete;
@@ -47,7 +45,6 @@ import snippets.healthcare.fhir.FhirStorePatch;
 import snippets.healthcare.fhir.FhirStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FhirStoreTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
@@ -58,16 +55,9 @@ public class FhirStoreTests extends TestBase {
   private static String storageFileName = "IM-0002-0001-JPEG-BASELINE.dcm";
   private static String gcsFileName = GCLOUD_BUCKET_NAME + "/" + storageFileName;
 
-  private static String datasetId;
   private static String datasetName;
 
-  private static String fhirStoreId;
   private static String fhirStoreName;
-
-  private static String fhirResourceId;
-  private static String fhirResourceName;
-
-  private static String patientType = "Patient";
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -87,16 +77,10 @@ public class FhirStoreTests extends TestBase {
 
   @BeforeClass
   public static void setUp() throws IOException {
-    datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
     datasetName =
         String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
-
-    fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    fhirStoreName = String.format("%s/fhirStores/%s", datasetName, fhirStoreId);
-
-    fhirResourceId = patientType + "/" + UUID.randomUUID().toString().replaceAll("-", "_");
-    fhirResourceName = String.format("%s/fhir/%s", fhirStoreName, fhirResourceId);
   }
 
   @AfterClass
@@ -105,7 +89,15 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Before
-  public void beforeTest() {
+  public void beforeTest() throws IOException {
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+
+    String fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    fhirStoreName = String.format("%s/fhirStores/%s", datasetName, fhirStoreId);
+
+    FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
+
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
@@ -117,15 +109,15 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_01_FhirStoreCreate() throws Exception {
-    FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
+  public void test_FhirStoreCreate() throws IOException {
+    FhirStoreCreate.fhirStoreCreate(datasetName, "new-fhir-store");
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR store created: "));
   }
 
   @Test
-  public void test_02_FhirStoreGet() throws Exception {
+  public void test_FhirStoreGet() throws Exception {
     FhirStoreGet.fhirStoreGet(fhirStoreName);
 
     String output = bout.toString();
@@ -133,7 +125,7 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_FhirStoreGetIamPolicy() throws Exception {
+  public void test_FhirStoreGetIamPolicy() throws Exception {
     FhirStoreGetIamPolicy.fhirStoreGetIamPolicy(fhirStoreName);
 
     String output = bout.toString();
@@ -141,7 +133,7 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_FhirStoreSetIamPolicy() throws Exception {
+  public void test_FhirStoreSetIamPolicy() throws Exception {
     FhirStoreSetIamPolicy.fhirStoreSetIamPolicy(fhirStoreName);
 
     String output = bout.toString();
@@ -149,7 +141,7 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_FhirStoreList() throws Exception {
+  public void test_FhirStoreList() throws Exception {
     FhirStoreList.fhirStoreList(datasetName);
 
     String output = bout.toString();
@@ -157,7 +149,7 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_FhirStorePatch() throws Exception {
+  public void test_FhirStorePatch() throws Exception {
     FhirStorePatch.fhirStorePatch(fhirStoreName, GCLOUD_PUBSUB_TOPIC);
 
     String output = bout.toString();
@@ -165,23 +157,25 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_ExecuteFhirBundle() throws Exception {
-    FhirStoreExecuteBundle.fhirStoreExecuteBundle(fhirStoreName);
+  public void test_ExecuteFhirBundle() throws Exception {
+    FhirStoreExecuteBundle.fhirStoreExecuteBundle(
+        fhirStoreName,
+        "{\"resourceType\": \"Bundle\",\"type\": \"batch\",\"entry\": []}");
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR bundle executed:"));
   }
 
   @Test
-  public void test_02_FhirStoreExport() throws Exception {
-    FhirStoreExport.fhirStoreExport(fhirStoreName, "gs://" + GCLOUD_PUBSUB_TOPIC);
+  public void test_FhirStoreExport() throws Exception {
+    FhirStoreExport.fhirStoreExport(fhirStoreName, "gs://" + GCLOUD_BUCKET_NAME);
 
     String output = bout.toString();
     assertThat(output, containsString("Fhir store export complete."));
   }
 
   @Test
-  public void test_03_FhirStoreImport() throws Exception {
+  public void test_FhirStoreImport() throws Exception {
     FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + gcsFileName);
 
     String output = bout.toString();
@@ -189,7 +183,7 @@ public class FhirStoreTests extends TestBase {
   }
 
   @Test
-  public void test_08_FhirStoreDelete() throws Exception {
+  public void test_FhirStoreDelete() throws Exception {
     FhirStoreDelete.fhirStoreDelete(fhirStoreName);
 
     String output = bout.toString();

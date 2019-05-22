@@ -17,62 +17,75 @@
 package snippets.healthcare.dicom;
 
 // [START healthcare_dicomweb_store_instance]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.HttpClients;
 
 public class DicomWebStoreInstance {
   private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomWebStoreInstance(String dicomStoreName, String studyId, String filePath)
-      throws IOException {
+  public static void dicomWebStoreInstance(String dicomStoreName, String filePath)
+      throws IOException, URISyntaxException {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
-    // String studyId = "your-study-id";
     // String filePath = "path/to/file.dcm";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
+    HttpClient httpClient = HttpClients.createDefault();
+    String uri = String.format(
+        "%sv1beta1/%s/dicomWeb/studies", client.getRootUrl(), dicomStoreName);
+    URIBuilder uriBuilder = new URIBuilder(uri)
+        .setParameter("access_token", getAccessToken());
     // Load the data from file representing the study.
     File f = new File(filePath);
-    ByteOutputStream data = new ByteOutputStream();
-    MultipartEntityBuilder.create()
-        .addBinaryBody("dicom", f, ContentType.create("application/dicom"), f.getName())
-        .build()
-        .writeTo(data);
-    HttpBody body = new HttpBody().encodeData(data.getBytes());
+    byte[] dicomBytes = Files.readAllBytes(Paths.get(filePath));
+    ByteArrayEntity requestEntity = new ByteArrayEntity(dicomBytes);
 
-    // Create request and configure any parameters.
-    Studies.StoreInstances request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .dicomStores()
-            .studies()
-            .storeInstances(dicomStoreName, "studies/" + studyId, body);
+    HttpUriRequest request = RequestBuilder
+        .post(uriBuilder.build())
+        .setEntity(requestEntity)
+        .addHeader("Content-Type","application/dicom")
+        .build();
 
     // Execute the request and process the results.
-    HttpResponse response = request.executeUnparsed();
-    System.out.println("DICOM instance stored: " + response.toString());
+    HttpResponse response = httpClient.execute(request);
+    HttpEntity responseEntity = response.getEntity();
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      System.err.print(String.format(
+          "Exception storing DICOM instance: %s\n", response.getStatusLine().toString()));
+      responseEntity.writeTo(System.err);
+      throw new RuntimeException();
+    }
+    System.out.println("DICOM instance stored: ");
+    responseEntity.writeTo(System.out);
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -95,6 +108,14 @@ public class DicomWebStoreInstance {
     return new CloudHealthcare.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
         .setApplicationName("your-application-name")
         .build();
+  }
+
+  private static String getAccessToken() throws IOException {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
+    credential.refreshToken();
+    return credential.getAccessToken();
   }
 }
 // [END healthcare_dicomweb_store_instance]

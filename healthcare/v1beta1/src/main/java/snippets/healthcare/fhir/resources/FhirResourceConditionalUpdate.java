@@ -26,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -56,7 +55,7 @@ public class FhirResourceConditionalUpdate {
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
     // String resourceType = "Patient";
-    // String data = "{'family': 'Smith'}";
+    // String data = "[{\"id\": \"resource-id\", \"language\": \"en_US\"}]";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -65,15 +64,11 @@ public class FhirResourceConditionalUpdate {
     String uri = String.format(
         "%sv1beta1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
     URIBuilder uriBuilder = new URIBuilder(uri)
-        .setParameter("access_token", getAccessToken())
-        .setParameter("data", data);
-    HttpBody httpBody =
-        new HttpBody().setContentType("application/fhir+json; charset=utf-8");
-    StringEntity requestEntity = new StringEntity(httpBody.toString());
+        .setParameter("access_token", getAccessToken());
+    StringEntity requestEntity = new StringEntity(data);
 
     HttpUriRequest request = RequestBuilder
-        .put()
-        .setUri(uriBuilder.build())
+        .put(uriBuilder.build())
         .setEntity(requestEntity)
         .addHeader("Content-Type", "application/fhir+json")
         .addHeader("Accept-Charset", "utf-8")

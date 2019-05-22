@@ -52,7 +52,7 @@ public class FhirResourcePatch {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
-    // String data = "{'family': 'Smith'}";
+    // String data = "[{\"op\": \"replace\", \"path\": \"/active\", \"value\": false}]";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -65,12 +65,11 @@ public class FhirResourcePatch {
     StringEntity requestEntity = new StringEntity(data);
 
     HttpUriRequest request = RequestBuilder
-        .put()
-        .setUri(uriBuilder.build())
+        .patch(uriBuilder.build())
         .setEntity(requestEntity)
-        .addHeader("Content-Type", "application/json")
+        .addHeader("Content-Type", "application/json-patch+json")
         .addHeader("Accept-Charset", "utf-8")
-        .addHeader("Accept", "application/json; charset=utf-8")
+        .addHeader("Accept", "application/fhir+json; charset=utf-8")
         .build();
 
     // Execute the request and process the results.

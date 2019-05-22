@@ -26,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,7 +38,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceGet {
@@ -60,28 +58,21 @@ public class FhirResourceGet {
         "%sv1beta1/%s", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
-    HttpBody httpBody =
-        new HttpBody()
-            .setContentType("application/fhir+json; charset=utf-8");
-    StringEntity requestEntity = new StringEntity(httpBody.toString());
 
     HttpUriRequest request = RequestBuilder
         .get()
         .setUri(uriBuilder.build())
-        .setEntity(requestEntity)
-        .addHeader("Content-Type", "application/fhir+json")
-        .addHeader("Accept-Charset", "utf-8")
-        .addHeader("Accept", "application/fhir+json; charset=utf-8")
         .build();
 
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      System.err.print(String.format(
-          "Exception retrieving FHIR resource: %s\n", response.getStatusLine().toString()));
+      String errorMessage = String.format(
+          "Exception retrieving FHIR resource: %s\n", response.getStatusLine().toString());
+      System.err.print(errorMessage);
       responseEntity.writeTo(System.err);
-      throw new RuntimeException();
+      throw new RuntimeException(errorMessage);
     }
     System.out.println("FHIR resource retrieved: ");
     responseEntity.writeTo(System.out);

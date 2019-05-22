@@ -26,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,7 +38,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceSearch {
@@ -48,11 +46,11 @@ public class FhirResourceSearch {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceSearch(String resourceName) throws IOException, URISyntaxException {
+  public static void fhirResourceSearch(String resourceName)
+      throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
-    String resourceType = "Patient";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -62,14 +60,10 @@ public class FhirResourceSearch {
         "%sv1beta1/%s", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
-    HttpBody httpBody =
-        new HttpBody().setContentType("application/fhir+json; charset=utf-8");
-    StringEntity requestEntity = new StringEntity(httpBody.toString());
 
     HttpUriRequest request = RequestBuilder
-        .put()
+        .get()
         .setUri(uriBuilder.build())
-        .setEntity(requestEntity)
         .addHeader("Content-Type", "application/fhir+json")
         .addHeader("Accept-Charset", "utf-8")
         .addHeader("Accept", "application/fhir+json; charset=utf-8")

@@ -29,11 +29,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.dicom.DicomStoreCreate;
 import snippets.healthcare.dicom.DicomStoreDelete;
@@ -44,13 +42,8 @@ import snippets.healthcare.dicom.DicomStoreImport;
 import snippets.healthcare.dicom.DicomStoreList;
 import snippets.healthcare.dicom.DicomStorePatch;
 import snippets.healthcare.dicom.DicomStoreSetIamPolicy;
-import snippets.healthcare.dicom.DicomWebDeleteStudy;
-import snippets.healthcare.dicom.DicomWebRetrieveStudy;
-import snippets.healthcare.dicom.DicomWebSearchForInstances;
-import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DicomStoreTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
@@ -58,13 +51,9 @@ public class DicomStoreTests extends TestBase {
   private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
-  private static String datasetId;
   private static String datasetName;
 
-  private static String dicomStoreId;
   private static String dicomStoreName;
-
-  private static String studyId;
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -84,15 +73,10 @@ public class DicomStoreTests extends TestBase {
 
   @BeforeClass
   public static void setUp() throws IOException {
-    datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
     datasetName =
         String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
-
-    dicomStoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    dicomStoreName = String.format("%s/dicomStores/%s", datasetName, dicomStoreId);
-
-    studyId = "study-" + UUID.randomUUID().toString().replaceAll("-", "_");
   }
 
   @AfterClass
@@ -101,7 +85,15 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Before
-  public void beforeTest() {
+  public void beforeTest() throws IOException {
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+
+    String dicomStoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
+    dicomStoreName = String.format("%s/dicomStores/%s", datasetName, dicomStoreId);
+
+    DicomStoreCreate.dicomStoreCreate(datasetName, dicomStoreId);
+
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
@@ -113,15 +105,15 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_01_DicomStoreCreate() throws IOException {
-    DicomStoreCreate.dicomStoreCreate(datasetName, dicomStoreId);
+  public void test_DicomStoreCreate() throws IOException {
+    DicomStoreCreate.dicomStoreCreate(datasetName, "new-dicom-store");
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM store created:"));
   }
 
   @Test
-  public void test_02_DicomStoreGet() throws IOException {
+  public void test_DicomStoreGet() throws IOException {
     DicomStoreGet.dicomeStoreGet(dicomStoreName);
 
     String output = bout.toString();
@@ -129,7 +121,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_DicomStoreGetIamPolicy() throws IOException {
+  public void test_DicomStoreGetIamPolicy() throws IOException {
     DicomStoreGetIamPolicy.dicomStoreGetIamPolicy(dicomStoreName);
 
     String output = bout.toString();
@@ -137,7 +129,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_DicomStoreSetIamPolicy() throws IOException {
+  public void test_DicomStoreSetIamPolicy() throws IOException {
     DicomStoreSetIamPolicy.dicomStoreSetIamPolicy(dicomStoreName);
 
     String output = bout.toString();
@@ -145,7 +137,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_DicomStoreList() throws IOException {
+  public void test_DicomStoreList() throws IOException {
     DicomStoreList.dicomStoreList(datasetName);
 
     String output = bout.toString();
@@ -153,7 +145,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_DicomStorePatch() throws IOException {
+  public void test_DicomStorePatch() throws IOException {
     DicomStorePatch.patchDicomStore(dicomStoreName, GCLOUD_PUBSUB_TOPIC);
 
     String output = bout.toString();
@@ -161,7 +153,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_02_DicomStoreExport() throws IOException {
+  public void test_DicomStoreExport() throws IOException {
     String gcsPath = String.format("gs://%s", GCLOUD_BUCKET_NAME);
     DicomStoreExport.dicomStoreExport(dicomStoreName, gcsPath);
 
@@ -170,7 +162,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_03_DicomStoreImport() throws IOException {
+  public void test_DicomStoreImport() throws IOException {
     String gcsPath =
         String.format("gs://%s/%s", GCLOUD_BUCKET_NAME, "IM-0002-0001-JPEG-BASELINE.dcm");
     DicomStoreImport.dicomStoreImport(dicomStoreName, gcsPath);
@@ -180,39 +172,7 @@ public class DicomStoreTests extends TestBase {
   }
 
   @Test
-  public void test_03_DicomWebStoreInstance() throws Exception {
-    DicomWebStoreInstance.dicomWebStoreInstance(
-        dicomStoreName, studyId, "src/test/resources/dicom_00000001_000.dcm");
-
-    String output = bout.toString();
-    assertThat(output, containsString("DICOM instance stored:"));
-  }
-
-  @Test
-  public void test_04_DicomWebSearchInstances() throws Exception {
-    DicomWebSearchForInstances.dicomWebSearchForInstances(dicomStoreName);
-    String output = bout.toString();
-    assertThat(output, containsString("Dicom store instances found:"));
-  }
-
-  @Test
-  public void test_04_DicomWebRetrieveStudy() throws Exception {
-    DicomWebRetrieveStudy.dicomWebRetrieveStudy(dicomStoreName, studyId);
-
-    String output = bout.toString();
-    assertThat(output, containsString("DICOM study retrieved:"));
-  }
-
-  @Test
-  public void test_05_DicomWebDeleteStudy() throws IOException {
-    DicomWebDeleteStudy.dicomWebDeleteStudy(dicomStoreName, studyId);
-
-    String output = bout.toString();
-    assertThat(output, containsString("DICOM store study deleted."));
-  }
-
-  @Test
-  public void test_06_DicomStoreDelete() throws IOException {
+  public void test_DicomStoreDelete() throws IOException {
     DicomStoreDelete.deleteDicomStore(dicomStoreName);
 
     String output = bout.toString();

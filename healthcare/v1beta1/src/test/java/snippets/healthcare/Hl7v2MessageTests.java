@@ -19,11 +19,14 @@ package snippets.healthcare;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -34,20 +37,23 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.hl7v2.Hl7v2StoreCreate;
-import snippets.healthcare.hl7v2.Hl7v2StoreDelete;
-import snippets.healthcare.hl7v2.Hl7v2StoreGet;
-import snippets.healthcare.hl7v2.Hl7v2StoreGetIamPolicy;
-import snippets.healthcare.hl7v2.Hl7v2StoreList;
-import snippets.healthcare.hl7v2.Hl7v2StoreSetIamPolicy;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageCreate;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageDelete;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageGet;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageIngest;
+import snippets.healthcare.hl7v2.messages.HL7v2MessageList;
+import snippets.healthcare.hl7v2.messages.HL7v2MessagePatch;
 
 @RunWith(JUnit4.class)
-public class Hl7v2StoreTests extends TestBase {
+public class Hl7v2MessageTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
   private static String datasetName;
 
   private static String hl7v2StoreName;
+
+  private static String messageName;
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -86,6 +92,21 @@ public class Hl7v2StoreTests extends TestBase {
     hl7v2StoreName = String.format("%s/hl7V2Stores/%s", datasetName, hl7v2StoreId);
     Hl7v2StoreCreate.hl7v2StoreCreate(datasetName, hl7v2StoreId);
 
+    String messageId = "message-" + UUID.randomUUID().toString().replaceAll("-", "_");
+
+    String hl7v2MessagePrefix = hl7v2StoreName + "/messages";
+
+    HL7v2MessageCreate.hl7v2MessageCreate(
+        hl7v2StoreName, messageId, "src/test/resources/hl7v2-sample-ingest.txt");
+
+    Pattern messageNamePattern =
+        Pattern.compile(String.format("\"(?<messageName>%s/[^/\"]+)\"", hl7v2MessagePrefix));
+    Matcher messageNameMatcher = messageNamePattern.matcher(bout.toString());
+    assertTrue(messageNameMatcher.find());
+    // '=' is encoded for JSON, but won't work for 'get'.
+    messageName = messageNameMatcher.group("messageName").replace("\\u003d", "=");
+    messageId = messageName.substring(messageName.indexOf("messages/") + "messages/".length());
+
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
@@ -97,50 +118,52 @@ public class Hl7v2StoreTests extends TestBase {
   }
 
   @Test
-  public void test_Hl7v2StoreCreate() throws Exception {
-    Hl7v2StoreCreate.hl7v2StoreCreate(datasetName, "new-hlv2store");
+  public void test_HL7v2MessageCreate() throws Exception {
+    HL7v2MessageCreate.hl7v2MessageCreate(
+        hl7v2StoreName, "new-hl7v2-message", "src/test/resources/hl7v2-sample-ingest.txt");
 
     String output = bout.toString();
-    assertThat(output, containsString("Hl7V2Store store created:"));
+    assertThat(output, containsString("HL7v2 message created: "));
   }
 
   @Test
-  public void test_Hl7v2StoreGet() throws Exception {
-    Hl7v2StoreGet.hl7v2eStoreGet(hl7v2StoreName);
+  public void test_GetHL7v2Message() throws Exception {
+    HL7v2MessageGet.hl7v2MessageGet(messageName);
 
     String output = bout.toString();
-    assertThat(output, containsString("HL7v2 store retrieved:"));
+    assertThat(output, containsString("HL7v2 message retrieved:"));
   }
 
   @Test
-  public void test_Hl7v2StoreGetIamPolicy() throws Exception {
-    Hl7v2StoreGetIamPolicy.hl7v2StoreGetIamPolicy(hl7v2StoreName);
+  public void test_Hl7v2MessageList() throws Exception {
+    HL7v2MessageList.hl7v2MessageList(hl7v2StoreName);
 
     String output = bout.toString();
-    assertThat(output, containsString("HL7v2 store IAMPolicy retrieved:"));
+    assertThat(output, containsString("Retrieved "));
   }
 
   @Test
-  public void test_Hl7v2StoreSetIamPolicy() throws Exception {
-    Hl7v2StoreSetIamPolicy.hl7v2StoreSetIamPolicy(hl7v2StoreName);
+  public void test_Hl7v2MessagePatch() throws Exception {
+    HL7v2MessagePatch.hl7v2MessagePatch(messageName);
 
     String output = bout.toString();
-    assertThat(output, containsString("HL7v2 policy has been updated:"));
+    assertThat(output, containsString("HL7v2 message patched:"));
   }
 
   @Test
-  public void test_Hl7v2StoreList() throws Exception {
-    Hl7v2StoreList.hl7v2StoreList(datasetName);
+  public void test_Hl7v2MessageIngest() throws Exception {
+    HL7v2MessageIngest.hl7v2MessageIngest(
+        hl7v2StoreName, "src/test/resources/hl7v2-sample-ingest.txt");
 
     String output = bout.toString();
-    assertThat(output, containsString("Retrieved"));
+    assertThat(output, containsString("HL7v2 message ingested:"));
   }
 
   @Test
-  public void test_Hl7v2StoreDelete() throws Exception {
-    Hl7v2StoreDelete.hl7v2StoreDelete(hl7v2StoreName);
+  public void test_DeleteHL7v2Message() throws Exception {
+    HL7v2MessageDelete.hl7v2MessageDelete(messageName);
 
     String output = bout.toString();
-    assertThat(output, containsString("HL7v2 store deleted."));
+    assertThat(output, containsString("HL7v2 message deleted."));
   }
 }

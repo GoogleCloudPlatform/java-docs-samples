@@ -26,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -45,22 +44,21 @@ import org.apache.http.impl.client.HttpClients;
 public class FhirResourceConditionalPatch {
   private static final String FHIR_NAME =
       "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
-  private static final String FHIR_RESOURCE_NAME =
-      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s/%s/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
   public static void fhirResourceConditionalPatch(
       String fhirStoreName,
       String resourceType,
+      String fhirResourceId,
       String data) throws IOException, URISyntaxException {
-    // String resourceName =
+    // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
     // String resourceType = "Patient";
-    // String data = "{'family': 'Smith'}";
+    // String resourceType = "patient-123";
+    // String data = "[{\"op\": \"replace\", \"path\": \"/active\", \"value\": false}]";
 
-    // Initialize the client, which will be used to interact with the service.
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
@@ -69,16 +67,13 @@ public class FhirResourceConditionalPatch {
         "%sv1beta1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken())
-        .setParameter("data", data);
-    HttpBody httpBody =
-        new HttpBody().setContentType("application/fhir+json; charset=utf-8");
-    StringEntity requestEntity = new StringEntity(httpBody.toString());
+        .setParameter("_id", fhirResourceId);
+    StringEntity requestEntity = new StringEntity(data);
 
     HttpUriRequest request = RequestBuilder
-        .post()
-        .setUri(uriBuilder.build())
+        .patch(uriBuilder.build())
         .setEntity(requestEntity)
-        .addHeader("Content-Type", "application/fhir+json")
+        .addHeader("Content-Type", "application/json-patch+json")
         .addHeader("Accept-Charset", "utf-8")
         .addHeader("Accept", "application/fhir+json; charset=utf-8")
         .build();

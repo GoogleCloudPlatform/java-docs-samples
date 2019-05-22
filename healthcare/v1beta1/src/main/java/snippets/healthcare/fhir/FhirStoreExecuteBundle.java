@@ -26,7 +26,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -47,19 +46,20 @@ public class FhirStoreExecuteBundle {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreExecuteBundle(String fhirStoreName)
+  public static void fhirStoreExecuteBundle(String fhirStoreName, String data)
       throws IOException, URISyntaxException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
+    // String data = "[{\"op\": \"add\", \"path\": \"/active\", \"value\": true}]";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
     HttpClient httpClient = HttpClients.createDefault();
-    URIBuilder uriBuilder = new URIBuilder(client.getRootUrl() + "v1beta1/" + fhirStoreName)
+    String baseUri = String.format("%sv1beta1/%s/fhir", client.getRootUrl(), fhirStoreName);
+    URIBuilder uriBuilder = new URIBuilder(baseUri)
         .setParameter("access_token", getAccessToken());
-    HttpBody bundle = new HttpBody();
-    StringEntity requestEntity = new StringEntity(bundle.toString());
+    StringEntity requestEntity = new StringEntity(data);
 
     HttpUriRequest request = RequestBuilder
         .post()

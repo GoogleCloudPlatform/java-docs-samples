@@ -21,15 +21,19 @@ package snippets.healthcare.dicom;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1beta1.model.HttpBody;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class DicomWebRetrieveStudy {
   private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
@@ -57,8 +61,16 @@ public class DicomWebRetrieveStudy {
             .retrieveStudy(dicomStoreName, "studies/" + studyId);
 
     // Execute the request and process the results.
-    HttpBody response = request.execute();
-    System.out.println("DICOM study retrieved: \n" + response.toPrettyString());
+    HttpResponse response = request.executeUnparsed();
+    String content = new BufferedReader(
+        new InputStreamReader(response.getContent())).lines().collect(Collectors.joining("\n"));
+    if (!response.isSuccessStatusCode()) {
+      System.err.print(String.format(
+          "Exception storing DICOM instance: %s\n", response.getStatusMessage()));
+      System.out.println(content);
+      throw new RuntimeException();
+    }
+    System.out.println("DICOM study retrieved: \n" + content);
   }
 
   private static CloudHealthcare createClient() throws IOException {
