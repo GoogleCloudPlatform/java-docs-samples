@@ -957,7 +957,7 @@ public class DeviceRegistryExample {
       String certificateFilePath,
       String algorithm)
       throws GeneralSecurityException, IOException {
-    // [START create_gateway]
+    // [START iot_create_gateway]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -1004,12 +1004,12 @@ public class DeviceRegistryExample {
             .execute();
 
     System.out.println("Created gateway: " + createdDevice.toPrettyString());
-    // [END create_gateway]
+    // [END iot_create_gateway]
   }
 
   public static void listGateways(String projectId, String cloudRegion, String registryName)
       throws IOException, GeneralSecurityException {
-    // [START list_gateways]
+    // [START iot_list_gateways]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -1047,14 +1047,14 @@ public class DeviceRegistryExample {
     } else {
       System.out.println("Registry has no devices.");
     }
-    // [END list_gateways]
+    // [END iot_list_gateways]
   }
 
   /** List devices bound to a gateway. */
   public static void listDevicesForGateway(
       String projectId, String cloudRegion, String registryName, String gatewayId)
       throws IOException, GeneralSecurityException {
-    // [START list_devices_for_gateway]
+    // [START iot_list_devices_for_gateway]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -1087,7 +1087,7 @@ public class DeviceRegistryExample {
     } else {
       System.out.println("Gateway has no bound devices.");
     }
-    // [END list_devices_for_gateway]
+    // [END iot_list_devices_for_gateway]
   }
 
   /** Entry poit for CLI. */
