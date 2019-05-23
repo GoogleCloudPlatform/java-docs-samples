@@ -24,6 +24,7 @@
   </properties>
 
   <dependencies>
+    <!-- Embedded Jetty dependencies -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -53,4 +54,22 @@
       <version>9.4.14.v20181114</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Exec Maven Plugin provides goals to help execute Main class locally -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution><goals><goal>java</goal></goals></execution>
+        </executions>
+        <configuration>
+          <mainClass>com.example.appengine.demo.jettymain.Main</mainClass>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 </project>
