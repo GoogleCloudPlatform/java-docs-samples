@@ -6,7 +6,7 @@
 This is a repository that contains Java code samples for [Google App Engine][ae-docs]
 standard Java 11 environment.
 
-[ae-docs]: https://cloud.google.com/appengine/docs/java/
+[ae-docs]: https://cloud.google.com/appengine/docs/standard/java11/
 
 ## Prerequisites
 
@@ -46,11 +46,29 @@ To switch to an Open JDK 11 in a Cloud shell session, you can use:
    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ```
 
-### appengine-simple-jetty-main
+## Java 11 runtime
 
+### Servlet Runtime
+
+To migrate to the Java 11 runtime, your application must have a
+`Main` class that starts a web server.
 [`appengine-simple-jetty-main`](appengine-simple-jetty-main) is a shared artifact
 that provides a Jetty Web Server for the servlet based runtime. Packaged as a
 jar, the Main Class will load a war file, passed as an argument, as the
 context root of the web application listening to port 8080.
 Some samples create a `<sample-name>.war` which is used as an argument in the
 App Engine `app.yaml` entrypoint field.
+
+### App Engine Staging Directory
+
+The App Engine Plugin will stage all the files to upload into App Engine
+runtime in `${build.directory}/appengine-staging`. When deploying an Uber JAR,
+the JAR is automatically copied into this staging directory and uploaded.
+It's possible to copy other files into this staging directory (such as
+additional JVM Agents) and having them available in the deployed App Engine
+runtime directory.
+
+- To stage the files to be uploaded:
+```
+mvn appengine:stage
+```
