@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-// [START example]
+// [START bigtable_app_engine_standard_hw]
 
 /**
  * A minimal application that connects to Cloud Bigtable using the native HBase API and performs
@@ -63,7 +63,6 @@ public class BigtableHelloWorld {
       descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
 
       admin.createTable(descriptor);
-      // [END creating_a_table]
     } catch (IOException e) {
       return "Table exists.";
     }
@@ -110,7 +109,7 @@ public class BigtableHelloWorld {
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
       String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
       result.append("Get a single greeting by row key<br>");
-      // [END getting_a_row]
+
       result.append("     ");
       result.append(rowKey);
       result.append("= ");
@@ -138,4 +137,4 @@ public class BigtableHelloWorld {
     return result.toString();
   }
 }
-// [END example]
+// [END bigtable_app_engine_standard_hw]
