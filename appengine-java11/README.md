@@ -48,9 +48,9 @@ To switch to an Open JDK 11 in a Cloud shell session, you can use:
 
 ### appengine-simple-jetty-main
 
-[appengine-simple-jetty-main](appengine-simple-jetty-main) is a shared artifact
+[`appengine-simple-jetty-main`](appengine-simple-jetty-main) is a shared artifact
 that provides a Jetty Web Server for the servlet based runtime. Packaged as a
 jar, the Main Class will load a war file, passed as an argument, as the
 context root of the web application listening to port 8080.
 Some samples create a `<sample-name>.war` which is used as an argument in the
-App Engine app.yaml entrypoint field.
+App Engine `app.yaml` entrypoint field.
