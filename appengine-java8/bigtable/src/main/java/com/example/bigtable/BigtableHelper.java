@@ -100,10 +100,10 @@ public class BigtableHelper implements ServletContextListener {
     }
 
     if (PROJECT_ID == null) {
-      PROJECT_ID = System.getProperty("BIGTABLE_PROJECT");
+      PROJECT_ID = System.getProperty("bigtable.projectID");
     }
     if (INSTANCE_ID == null) {
-      INSTANCE_ID = System.getProperty("BIGTABLE_INSTANCE");
+      INSTANCE_ID = System.getProperty("bigtable.instanceID");
     }
 
     try {
