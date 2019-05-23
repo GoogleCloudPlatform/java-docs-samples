@@ -63,9 +63,14 @@ entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main helloworld.war
 ```
 
 ## Running locally
-The `exec-maven-plugin` has been added so you can run your application locally.
+The [Exec Maven Plugin][exec-plugin] has been added so you can run your
+application locally. It is possible to use the [Jetty Maven Plugin][jetty-plugin]
+for rapid development and testing, but using the Exec Maven Plugin will ensure
+the provided server is running your application as expected.
 
 - Start the server with your `WAR` file as an argument:
 ```
 mvn exec:java -Dexec.args="<path/to/your/war/file"
 ```
+
+[jetty-plugin]: https://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html

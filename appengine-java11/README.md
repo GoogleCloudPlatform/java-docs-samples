@@ -62,13 +62,15 @@ App Engine `app.yaml` entrypoint field.
 ### App Engine Staging Directory
 
 The App Engine Plugin will stage all the files to upload into App Engine
-runtime in `${build.directory}/appengine-staging`. When deploying an Uber JAR,
-the JAR is automatically copied into this staging directory and uploaded.
-It's possible to copy other files into this staging directory (such as
-additional JVM Agents) and having them available in the deployed App Engine
-runtime directory.
+runtime in `${build.directory}/appengine-staging`. When deploying an
+[Uber JAR][uber-jar], the JAR is automatically copied into this staging
+directory and uploaded. It's possible to copy other files into this staging
+directory (such as additional JVM Agents) and having them available in the
+deployed App Engine runtime directory.
 
 - To stage the files to be uploaded:
 ```
 mvn appengine:stage
 ```
+
+[uber-jar]: https://stackoverflow.com/questions/11947037/what-is-an-uber-jar
