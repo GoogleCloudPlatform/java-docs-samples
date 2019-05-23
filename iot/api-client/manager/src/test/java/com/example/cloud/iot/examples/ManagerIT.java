@@ -615,7 +615,7 @@ public class ManagerIT {
         new Thread() {
           public void run() {
             try {
-              DeviceRegistryExample.attachDeviceToGateway(client, "garbage-device");
+              MqttExample.attachDeviceToGateway(client, "garbage-device");
               MqttExample.attachCallback(client, "garbage-device");
             } catch (Exception e) {
               // TODO: Fail
