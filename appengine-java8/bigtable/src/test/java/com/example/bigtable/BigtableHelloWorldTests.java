@@ -25,8 +25,7 @@ import org.junit.runners.JUnit4;
 
 /** Unit tests for {@link BigtableHelloWorld}. */
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class ITBigtableHelloWorld {
+public class BigtableHelloWorldTests {
 
   private BigtableHelper helper;
 
