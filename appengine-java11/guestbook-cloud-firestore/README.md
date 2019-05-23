@@ -11,7 +11,7 @@ This sample also uses packages from [Guava](https://github.com/google/guava),
 which provides some basic utility libraries and collections from Google's core
 libraries.
 
-## Setup
+## Setup your Google Cloud Platform Project
 
 * Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
 
@@ -20,6 +20,26 @@ libraries.
 * If this is your first time creating an App Engine application:
 ```
    gcloud app create
+```
+
+## Setup the Sample App
+
+- Copy the sample apps to your local machine:
+```
+  git clone https://github.com/GoogleCloudPlatform/java-docs-samples
+```
+
+- Add the [appengine-simple-jetty-main](../README.md#appengine-simple-jetty-main)
+Main class to your classpath:
+```
+  cd java-docs-samples/appengine-java11/appengine-simple-jetty-main
+  mvn install
+```
+
+- Move into the `appengine-java11/guestbook-cloud-firestore` directory and compile the app:
+```
+  cd ../guestbook-cloud-firestore
+  mvn package
 ```
 
 * Setup [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) by

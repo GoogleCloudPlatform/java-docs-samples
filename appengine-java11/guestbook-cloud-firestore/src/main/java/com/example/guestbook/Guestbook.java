@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Guestbook model. */
+/** Represents a guestbook: book name, book document reference. */
 @SuppressWarnings("JavadocMethod")
 public class Guestbook {
 
@@ -42,22 +42,24 @@ public class Guestbook {
 
   public Guestbook(String book) {
     this.book = book == null ? "default" : book;
-
     // Construct the Guestbook data.
     Map<String, Object> bookData = new HashMap<>();
     bookData.put("name", this.book);
-
-    // Get Guestbook reference in the collection.
+    // [START gae_java11_firestore_book]
+    // The Guestbook document reference in the collection.
     bookRef = getFirestore().collection("Guestbooks").document(this.book);
-    // Add Guestbook to collection.
+    // Add the Guestbook to collection.
     bookRef.set(bookData);
+    // [END gae_java11_firestore_book]
   }
 
+  /** Get the Firestore reference to the Guestbook document **/
   public DocumentReference getBookRef() {
     return bookRef;
   }
 
-  /** Get greetings for the Guestbook */
+  // [START gae_java11_firestore_get_greetings]
+  /** Query Firstore for Guestbook greetings */
   public List<Greeting> getGreetings() {
     // Initialize a List for Greetings.
     ImmutableList.Builder<Greeting> greetings = new ImmutableList.Builder<Greeting>();
@@ -71,12 +73,13 @@ public class Guestbook {
       for (QueryDocumentSnapshot greeting : querySnapshot.getDocuments()) {
         greetings.add(greeting.toObject(Greeting.class));
       }
-    } catch (Exception InterruptedException) {
-      System.out.println("Nothing to query.");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
 
     return greetings.build();
   }
+  // [END gae_java11_firestore_get_greetings]
 
   @Override
   public boolean equals(Object obj) {
