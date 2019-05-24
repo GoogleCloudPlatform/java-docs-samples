@@ -42,8 +42,9 @@
     Dependent-jars are created and added to
     ${project.build.directory}/appengine-staging -->
   <dependencies>
-    <!-- Dependency from folder `../appengine-simple-jetty-main` -->
-    <!-- See README for instructions for more information -->
+    <!-- Dependency needs to be locally install from directory -->
+		<!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
+		<!-- See the README for more information -->
     <dependency>
       <groupId>com.example.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
