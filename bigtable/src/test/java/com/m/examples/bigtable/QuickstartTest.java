@@ -35,16 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /** Integration tests for {@link Quickstart} */
-@SuppressWarnings("Duplicates")
 public class QuickstartTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-
-  private static void requireEnvVar(String varName) {
-    assertNotNull(
-        System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
-  }
-
   private static void requireSysProp(String varName) {
     assertNotNull(
         System.getenv(varName),
@@ -53,8 +44,6 @@ public class QuickstartTest {
 
   @BeforeClass
   public static void checkRequirements() {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireSysProp(PROJECT_PROPERTY_NAME);
     requireSysProp(INSTANCE_PROPERTY_NAME);
   }
@@ -101,12 +90,6 @@ public class QuickstartTest {
     }
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
-  }
-
-  @After
-  public void tearDown() {
-    System.setOut(null);
-    bout.reset();
   }
 
   @Test
