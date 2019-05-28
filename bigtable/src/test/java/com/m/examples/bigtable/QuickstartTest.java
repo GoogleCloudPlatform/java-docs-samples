@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,13 @@ import org.junit.Test;
 
 /** Integration tests for {@link Quickstart} */
 public class QuickstartTest {
+  private static final String PROJECT_PROPERTY_NAME = "bigtable.project";
+  private static final String INSTANCE_PROPERTY_NAME = "bigtable.instance";
+  private static final String TABLE_ID = "quickstart-table";
+  private static String projectId;
+  private static String instanceId;
+  private ByteArrayOutputStream bout;
+
   private static void requireSysProp(String varName) {
     assertNotNull(
         System.getenv(varName),
@@ -48,46 +55,15 @@ public class QuickstartTest {
     requireSysProp(INSTANCE_PROPERTY_NAME);
   }
 
-  private static final String PROJECT_PROPERTY_NAME = "bigtable.project";
-  private static final String INSTANCE_PROPERTY_NAME = "bigtable.instance";
-  private static final String TABLE_ID = "quickstart-table";
-  private static BigtableDataClient dataClient;
-  private static BigtableTableAdminClient adminClient;
-  private static String projectId;
-  private static String instanceId;
-  private ByteArrayOutputStream bout;
-
   @BeforeClass
-  public static void beforeClass() throws IOException {
+  public static void beforeClass() {
     projectId = System.getProperty(PROJECT_PROPERTY_NAME);
     instanceId = System.getProperty(INSTANCE_PROPERTY_NAME);
-
-    BigtableDataSettings settings =
-        BigtableDataSettings.newBuilder().setProjectId(projectId).setInstanceId(instanceId).build();
-    dataClient = BigtableDataClient.create(settings);
-    BigtableTableAdminSettings adminSettings =
-        BigtableTableAdminSettings.newBuilder()
-            .setProjectId(projectId)
-            .setInstanceId(instanceId)
-            .build();
-    adminClient = BigtableTableAdminClient.create(adminSettings);
   }
 
-  @AfterClass
-  public static void afterClass() throws Exception {
-    dataClient.close();
-    adminClient.close();
-  }
 
   @Before
-  public void setup() throws IOException {
-    if (adminClient == null || dataClient == null) {
-      throw new AssumptionViolatedException(
-          PROJECT_PROPERTY_NAME
-              + " or "
-              + INSTANCE_PROPERTY_NAME
-              + " property is not set, skipping integration tests.");
-    }
+  public void setupStream() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
