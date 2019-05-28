@@ -23,34 +23,57 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <!-- [START gae_java11_server_dependencies] -->
   <dependencies>
+    <!-- Embedded Jetty dependencies -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.4.14.v20181114</version>
+      <version>9.4.18.v20190429</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>9.4.14.v20181114</version>
+      <version>9.4.18.v20190429</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.4.14.v20181114</version>
+      <version>9.4.18.v20190429</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
-      <version>9.4.14.v20181114</version>
+      <version>9.4.18.v20190429</version>
       <type>jar</type>
     </dependency>
     <!-- extra explicit dependency needed because there is a JSP in the sample-->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
-      <version>9.4.14.v20181114</version>
+      <version>9.4.18.v20190429</version>
     </dependency>
   </dependencies>
+  <!-- [END gae_java11_server_dependencies] -->
+
+  <build>
+    <plugins>
+      <!-- Exec Maven Plugin provides goals to help execute Main class locally -->
+      <!-- [START gae_java11_exec_plugin] -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution><goals><goal>java</goal></goals></execution>
+        </executions>
+        <configuration>
+          <mainClass>com.example.appengine.demo.jettymain.Main</mainClass>
+        </configuration>
+      </plugin>
+      <!-- [END gae_java11_exec_plugin] -->
+
+    </plugins>
+  </build>
 </project>
