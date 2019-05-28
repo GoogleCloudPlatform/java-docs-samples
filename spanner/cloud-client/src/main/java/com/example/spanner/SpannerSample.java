@@ -1055,7 +1055,7 @@ public class SpannerSample {
                       "SELECT MarketingBudget from Albums WHERE SingerId = 1 and AlbumId = 1";
                   ResultSet resultSet2 = transaction.executeQuery(Statement.of(sql2));
                   long album1Budget = 0;
-                  while (resultSet.next()) {
+                  while (resultSet2.next()) {
                     album1Budget = resultSet2.getLong("MarketingBudget");
                   }
                   album1Budget += transfer;

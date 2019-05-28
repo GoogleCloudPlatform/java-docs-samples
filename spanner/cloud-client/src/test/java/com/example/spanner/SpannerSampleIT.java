@@ -183,12 +183,12 @@ public class SpannerSampleIT {
 
     runSample("writewithtransactionusingdml");
     out = runSample("querymarketingbudget");
-    assertThat(out).contains("1 1 200000");
+    assertThat(out).contains("1 1 2200000");
     assertThat(out).contains("2 2 550000");
 
     runSample("updateusingpartitioneddml");
     out = runSample("querymarketingbudget");
-    assertThat(out).contains("1 1 200000");
+    assertThat(out).contains("1 1 2200000");
     assertThat(out).contains("2 2 100000");
 
     runSample("deleteusingpartitioneddml");
