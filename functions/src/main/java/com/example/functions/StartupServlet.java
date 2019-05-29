@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine;
+package com.example.functions;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServlet;

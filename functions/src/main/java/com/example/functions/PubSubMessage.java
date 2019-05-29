@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.appengine;
+package com.example.functions;
 
-import java.util.Base64;
-import java.util.logging.Logger;
+import java.util.Map;
 
-public class HelloPubSubSample {
-  private static Logger logger = Logger.getLogger(HelloPubSubSample.class.getName());
-
-  public void helloPubSub(PubSubMessage message) throws Exception {
-    String name = "world";
-    if (message.data != null) {
-      name = new String(Base64.getDecoder().decode(message.data.getBytes("UTF-8")));
-    }
-    logger.info(String.format("Hello %s!", name));
-  }
+public class PubSubMessage {
+  String data;
+  Map<String, String> attributes;
+  String messageId;
+  String publishTime;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine;
+package com.example.functions;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

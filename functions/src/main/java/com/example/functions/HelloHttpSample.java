@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine;
+package com.example.functions;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
