@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_http_unit_test]
 package com.example.functions;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -33,9 +34,12 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+// [END functions_http_unit_test]
+
 /**
  * Unit tests for {@link HelloHttpSample}.
  */
+// [START functions_http_unit_test]
 @RunWith(JUnit4.class)
 public class HelloHttpSampleTest {
 
@@ -82,3 +86,4 @@ public class HelloHttpSampleTest {
     assertThat(responseWriter.toString()).named("gcfSamples response").isEqualTo("Hello Jane!");
   }
 }
+// [END functions_http_unit_test]

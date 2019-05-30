@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_helloworld_gcs_event]
 package com.example.functions;
 
 public class GcsEvent {
@@ -21,3 +22,4 @@ public class GcsEvent {
   String name;
   String metageneration;
 }
+// [END functions_helloworld_gcs_event]

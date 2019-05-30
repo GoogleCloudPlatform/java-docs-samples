@@ -37,7 +37,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 public class HelloGcsSampleTest {
 
-
   private HelloGcsSample sampleUnderTest;
   @Mock private Logger loggerInstance;
 

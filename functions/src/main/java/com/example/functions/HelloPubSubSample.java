@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// [START functions_background_helloworld]
+// [START functions_helloworld_pubsub]
 package com.example.functions;
 
 import java.util.Base64;
@@ -30,3 +32,5 @@ public class HelloPubSubSample {
     logger.info(String.format("Hello %s!", name));
   }
 }
+// [END functions_background_helloworld]
+// [END functions_helloworld_pubsub]

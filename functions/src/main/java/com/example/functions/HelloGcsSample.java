@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_helloworld_storage]
 package com.example.functions;
 
 import java.util.logging.Logger;
@@ -33,3 +34,4 @@ public class HelloGcsSample {
     }
   }
 }
+// [END functions_helloworld_storage]

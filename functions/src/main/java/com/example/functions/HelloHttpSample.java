@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_helloworld_http]
 package com.example.functions;
 
 import com.google.gson.JsonElement;
@@ -57,3 +58,4 @@ public class HelloHttpSample {
     writer.write(String.format("Hello %s!", name));
   }
 }
+// [END functions_helloworld_http]

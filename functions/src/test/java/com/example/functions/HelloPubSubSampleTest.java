@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_pubsub_unit_test]
 package com.example.functions;
 
 import static org.mockito.Mockito.mock;
@@ -33,9 +34,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+// [END functions_pubsub_unit_test]
+
 /**
  * Unit tests for {@link HelloPubSubSample}.
  */
+// [START functions_pubsub_unit_test]
 @RunWith(PowerMockRunner.class)
 public class HelloPubSubSampleTest {
 
@@ -76,3 +80,4 @@ public class HelloPubSubSampleTest {
     verify(loggerInstance, times(1)).info("Hello world!");
   }
 }
+// [END functions_pubsub_unit_test]

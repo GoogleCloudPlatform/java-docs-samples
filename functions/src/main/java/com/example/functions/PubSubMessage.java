@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_helloworld_pubsub_message]
 package com.example.functions;
 
 import java.util.Map;
@@ -24,3 +25,4 @@ public class PubSubMessage {
   String messageId;
   String publishTime;
 }
+// [START functions_helloworld_pubsub_message]
