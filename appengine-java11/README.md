@@ -48,6 +48,18 @@ To switch to an Open JDK 11 in a Cloud shell session, you can use:
 
 ## Java 11 runtime
 
+The simplest way to deploy to App Engine Java 11 is using an executable [Uber JAR][uber-jar]. App Engine will automatically configure the `entrypoint` to run the JAR file.
+
+* [`springboot-helloworld`](springboot-helloworld): Build a fat JAR with Spring Boot
+* [`http-server`](http-server): Build a JAR using the Maven JAR Plugin
+
+In addition, App Engine allows you to execute the `java` command directly in the `app.yaml` `entrypoint` field, so you can further customize your app's startup.
+
+* [`custom-entrypoint`](custom-entrypoint): Run a simple server
+* [`helloworld-servlet`](helloworld-servlet): Run a WAR package servlet
+
+With a custom `entrypoint`, you can also construct and package your application as a thin JAR (or an exploded JAR). When you deploy your application, the App Engine plugin will only upload the files that changed, rather than the entire [Uber JAR][uber-jar] package.
+
 ### Servlet Runtime
 
 To migrate to the Java 11 runtime, your application must have a
