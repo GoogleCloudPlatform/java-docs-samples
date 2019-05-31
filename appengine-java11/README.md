@@ -60,6 +60,11 @@ In addition, App Engine allows you to execute the `java` command directly in the
 
 With a custom `entrypoint`, you can also construct and package your application as a thin JAR (or an exploded JAR). When you deploy your application, the App Engine plugin will only upload the files that changed, rather than the entire [Uber JAR][uber-jar] package.
 
+For more information on the Java 11 runtime, see
+[Building an App](https://cloud.google.com/appengine/docs/standard/java11/building-app/)
+and [Migrating your App Engine app from Java 8 to Java 11](https://cloud.google.com/appengine/docs/standard/java11/java-differences).
+
+
 ### Servlet Runtime
 
 To migrate to the Java 11 runtime, your application must have a
@@ -70,6 +75,7 @@ jar, the Main Class will load a war file, passed as an argument, as the
 context root of the web application listening to port 8080.
 Some samples create a `<sample-name>.war` which is used as an argument in the
 App Engine `app.yaml` entrypoint field.
+
 
 ### App Engine Staging Directory
 
