@@ -34,33 +34,29 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** Integration tests for {@link Quickstart} */
+/**
+ * Integration tests for {@link Quickstart}
+ */
 public class QuickstartTest {
-  private static final String PROJECT_PROPERTY_NAME = "bigtable.project";
-  private static final String INSTANCE_PROPERTY_NAME = "bigtable.instance";
+
+  private static final String INSTANCE_PROPERTY_NAME = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID = "quickstart-table";
   private static String projectId;
   private static String instanceId;
   private ByteArrayOutputStream bout;
 
-  private static void requireSysProp(String varName) {
+  private static String requireEnv(String varName) {
     assertNotNull(
         System.getenv(varName),
         "System property '%s' is required to perform these tests.".format(varName));
-  }
-
-  @BeforeClass
-  public static void checkRequirements() {
-    requireSysProp(PROJECT_PROPERTY_NAME);
-    requireSysProp(INSTANCE_PROPERTY_NAME);
+    return System.getenv(varName);
   }
 
   @BeforeClass
   public static void beforeClass() {
-    projectId = System.getProperty(PROJECT_PROPERTY_NAME);
-    instanceId = System.getProperty(INSTANCE_PROPERTY_NAME);
+    projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
+    instanceId = requireEnv(INSTANCE_PROPERTY_NAME);
   }
-
 
   @Before
   public void setupStream() {
