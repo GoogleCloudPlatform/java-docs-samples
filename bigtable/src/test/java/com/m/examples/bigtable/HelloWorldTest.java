@@ -52,7 +52,7 @@ public class HelloWorldTest {
   private static String requireEnv(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "System property '%s' is required to perform these tests.".format(varName));
+        "Environment variable '%s' is required to perform these tests.".format(varName));
     return System.getenv(varName);
   }
 

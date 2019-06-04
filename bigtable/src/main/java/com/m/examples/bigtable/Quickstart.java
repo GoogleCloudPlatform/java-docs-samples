@@ -52,7 +52,7 @@ public class Quickstart {
       }
 
     } catch (Exception e) {
-      System.out.println("Error during functionName: \n" + e.toString());
+      System.out.println("Error during quickstart: \n" + e.toString());
     }
   }
 }

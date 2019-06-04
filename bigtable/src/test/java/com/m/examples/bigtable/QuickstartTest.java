@@ -19,17 +19,9 @@ package com.m.examples.bigtable;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
-import com.google.cloud.bigtable.admin.v2.BigtableTableAdminSettings;
-import com.google.cloud.bigtable.data.v2.BigtableDataClient;
-import com.google.cloud.bigtable.data.v2.BigtableDataSettings;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,7 +40,7 @@ public class QuickstartTest {
   private static String requireEnv(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "System property '%s' is required to perform these tests.".format(varName));
+        "Environment variable '%s' is required to perform these tests.".format(varName));
     return System.getenv(varName);
   }
 
@@ -66,12 +58,7 @@ public class QuickstartTest {
 
   @Test
   public void testQuickstart() {
-    try {
-      Quickstart.quickstart(projectId, instanceId, TABLE_ID);
-    } catch (Exception e) {
-      System.out.println("Failed to run quickstart.");
-      System.out.println(e);
-    }
+    Quickstart.quickstart(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
     assertThat(output, CoreMatchers.containsString("Reading a single row by row key"));
