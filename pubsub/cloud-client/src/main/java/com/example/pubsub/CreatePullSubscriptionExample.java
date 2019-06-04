@@ -55,15 +55,15 @@ public class CreatePullSubscriptionExample {
       Subscription subscription =
           subscriptionAdminClient.createSubscription(
               subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
+      System.out.printf(
+          "Subscription %s:%s created.\n",
+          subscriptionName.getProject(), subscriptionName.getSubscription());
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies subscription already exists
       System.out.print(e.getStatusCode().getCode());
       System.out.print(e.isRetryable());
     }
 
-    System.out.printf(
-        "Subscription %s:%s created.\n",
-        subscriptionName.getProject(), subscriptionName.getSubscription());
   }
 }
 // [END pubsub_quickstart_create_subscription]
