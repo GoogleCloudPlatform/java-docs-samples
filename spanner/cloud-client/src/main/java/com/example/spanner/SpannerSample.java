@@ -282,6 +282,7 @@ public class SpannerSample {
       System.out.printf(
           "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
     }
+    resultSet.close();
   }
   // [END spanner_query_data]
 
@@ -300,6 +301,7 @@ public class SpannerSample {
       System.out.printf(
           "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
     }
+    resultSet.close();
   }
   // [END spanner_read_data]
 
@@ -421,6 +423,7 @@ public class SpannerSample {
           // non null values.
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
+    resultSet.close();
   }
   // [END spanner_query_data_with_new_column]
 
@@ -475,6 +478,7 @@ public class SpannerSample {
           resultSet.getString("AlbumTitle"),
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
+    resultSet.close();
   }
   // [END spanner_query_data_with_index]
 
@@ -491,6 +495,7 @@ public class SpannerSample {
     while (resultSet.next()) {
       System.out.printf("%d %s\n", resultSet.getLong(0), resultSet.getString(1));
     }
+    resultSet.close();
   }
   // [END spanner_read_data_with_index]
 
@@ -539,6 +544,7 @@ public class SpannerSample {
           resultSet.getString(1),
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
+    resultSet.close();
   }
   // [END spanner_read_data_with_storing_index]
 
@@ -563,6 +569,7 @@ public class SpannerSample {
             "%d %d %s\n",
             readResultSet.getLong(0), readResultSet.getLong(1), readResultSet.getString(2));
       }
+      readResultSet.close();
     }
   }
   // [END spanner_read_only_transaction]
@@ -580,6 +587,7 @@ public class SpannerSample {
           resultSet.getLong(1),
           resultSet.isNull(2) ? "NULL" : resultSet.getLong("MarketingBudget"));
     }
+    resultSet.close();
   }
   // [END spanner_read_stale_data]
 
@@ -664,6 +672,7 @@ public class SpannerSample {
           resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"),
           resultSet.isNull("LastUpdateTime") ? "NULL" : resultSet.getTimestamp("LastUpdateTime"));
     }
+    resultSet.close();
   }
   // [END spanner_query_data_with_timestamp_column]
 
@@ -679,6 +688,7 @@ public class SpannerSample {
           resultSet.getString("FirstName"),
           resultSet.getString("LastName"));
     }
+    resultSet.close();
   }
 
   static void queryPerformancesTable(DatabaseClient dbClient) {
@@ -702,6 +712,7 @@ public class SpannerSample {
           resultSet.isNull("Revenue") ? "NULL" : resultSet.getLong("Revenue"),
           resultSet.getTimestamp("LastUpdateTime"));
     }
+    resultSet.close();
   }
 
   // [START spanner_write_data_for_struct_queries]
@@ -750,6 +761,7 @@ public class SpannerSample {
     while (resultSet.next()) {
       System.out.printf("%d\n", resultSet.getLong("SingerId"));
     }
+    resultSet.close();
     // [END spanner_query_data_with_struct]
   }
 
@@ -786,6 +798,7 @@ public class SpannerSample {
     while (resultSet.next()) {
       System.out.printf("%d\n", resultSet.getLong("SingerId"));
     }
+    resultSet.close();
     // [END spanner_query_data_with_array_of_struct]
   }
 
@@ -807,6 +820,7 @@ public class SpannerSample {
     while (resultSet.next()) {
       System.out.printf("%d\n", resultSet.getLong("SingerId"));
     }
+    resultSet.close();
   }
   // [END spanner_field_access_on_struct_parameters]
 
@@ -853,6 +867,7 @@ public class SpannerSample {
     while (resultSet.next()) {
       System.out.printf("%d %s\n", resultSet.getLong("SingerId"), resultSet.getString(1));
     }
+    resultSet.close();
   }
   // [END spanner_field_access_on_nested_struct_parameters]
 
@@ -952,6 +967,7 @@ public class SpannerSample {
                   System.out.printf(
                       "%s %s\n", resultSet.getString("FirstName"), resultSet.getString("LastName"));
                 }
+                resultSet.close();
                 return null;
               }
             });
@@ -1026,6 +1042,7 @@ public class SpannerSample {
           resultSet.getString("FirstName"),
           resultSet.getString("LastName"));
     }
+    resultSet.close();
   }
   // [END spanner_query_with_parameter]
 
@@ -1337,11 +1354,14 @@ public class SpannerSample {
       // [START init_client]
       DatabaseClient dbClient = spanner.getDatabaseClient(db);
       DatabaseAdminClient dbAdminClient = spanner.getDatabaseAdminClient();
+      // Use client here...
       // [END init_client]
       run(dbClient, dbAdminClient, command, db);
+    // [START init_client]
     } finally {
       spanner.close();
     }
+    // [END init_client]
     System.out.println("Closed client");
   }
 }
