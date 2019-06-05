@@ -21,7 +21,6 @@ See the [documentation](https://cloud.google.com/docs/authentication/production#
 
 Install [Maven](http://maven.apache.org/).
 
-
 Compile 
 
 ```bash

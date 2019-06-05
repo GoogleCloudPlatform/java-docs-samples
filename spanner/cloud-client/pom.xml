@@ -140,6 +140,7 @@ limitations under the License.
     </dependency>
   </dependencies>
   <build>
+    <finalName>spanner-google-cloud-samples</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
