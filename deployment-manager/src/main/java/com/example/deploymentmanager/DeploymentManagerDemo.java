@@ -37,75 +37,140 @@ import java.util.List;
 
 public class DeploymentManagerDemo {
 
-  private static String CONFIG_YAML = "yaml/deployment-manager-config.yaml";
-  private static String DEPLOYMENT = "my-deployment-1";
+  private static String
+          GOOGLE_PROJECT_ID,
+          DEPLOYMENT_NAME,
+          CONFIG_YAML = "yaml/deployment-manager-config.yaml";
+  
+  private static DeploymentManager _dm = null;
 
-  public static void main(String args[]) throws GeneralSecurityException, IOException {
+  public static void main(String args[]) {
+    init();
+    runDemo();
+    // cleanup(); // Optionally delete resources.
+  }
 
-    String GOOGLE_PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
-    if (GOOGLE_PROJECT_ID == null || GOOGLE_PROJECT_ID.compareTo("") == 0) {‰
-      System.out.println("GOOGLE_PROJECT_ID is not set");
+  /*
+  Initialize google api
+   */
+  public static void init() {
+
+    GOOGLE_PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+    if (GOOGLE_PROJECT_ID == null || GOOGLE_PROJECT_ID.compareTo("") == 0) {
+      System.out.println("GOOGLE_PROJECT_ID environment variable is not set");
       System.exit(-1);
     }
 
-    // best practice is to use application default credential. If inside a GCE
-    // instance it is set automatically.
-    
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    DEPLOYMENT_NAME = "my-deploy-2-3";//System.getenv("DEPLOYMENT_NAME");
+    if (DEPLOYMENT_NAME == null || DEPLOYMENT_NAME.compareTo("") == 0) {
+      System.out.println("DEPLOYMENT_NAME environment variable is not set");
+      System.exit(-1);
+    }
 
-    // to load from somewhere else use this
-    // GoogleCredential credential = GoogleCredential.fromStream(new
-    // FileInputStream(path_to_key));
+    try {
+      // Use the "Application Default Credentials" to authenticate the application. For more detail, see:
+      // https://cloud.google.com/docs/authentication/production
+      GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+      // To load an application key from a file use:
+      // GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(path_to_key));
 
-    DeploymentManager dm2 = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("New_Application").build();
+      HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+      _dm = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
+              .setApplicationName("New_Application")
+              .build();
+    } catch (IOException ex) {
+      System.out.println("Could not load default application credentials. " + ex.getMessage());
+      System.exit(-1);
+    } catch (GeneralSecurityException ex) {
+      System.out.println("Could not initialize Trusted Transport. " + ex.getMessage());
+      System.exit(-1);
+    }
+  }
+  /* 
+  Delete the deployment
+  */
+  public static void cleanup() {
+    try {
+      Operation response;
+      response = _dm.deployments()
+                    .delete(DEPLOYMENT_NAME,GOOGLE_PROJECT_ID)
+                    .execute();
 
-    Deployment deploy = new Deployment();
-    // Optional we want some labels: Map of labels; provided by the client when the
-    // resource is created or updated.
-    List<DeploymentLabelEntry> labels = new ArrayList<DeploymentLabelEntry>();
+    } catch (IOException ex) {
+      System.out.println("Could not delete deployment. " + ex.getMessage());
+      System.exit(-1);
+    }
+  }
 
-    labels.add(new DeploymentLabelEntry().setKey("test-label-1").setValue("good-fella"));
 
-    deploy.setLabels(labels);
+  public static void runDemo() {   
+    // Grab a list of existing deployments.
+    List<Deployment> deployments = null;
+    try {
+      DeploymentsListResponse response;
+      response = _dm.deployments()
+              .list(GOOGLE_PROJECT_ID)
+              .execute();
 
-    // load the config file contents and setup target conrfiguration
-    ConfigFile config = new ConfigFile().setContent(readYaml());
+      deployments = response.getDeployments();
+    } catch (IOException ex) {
+      System.out.println("Could not get deployments. " + ex.getMessage());
+      System.exit(-1);
+    }
 
-    TargetConfiguration target = new TargetConfiguration().setConfig(config);
-
-    deploy.setTarget(target);
-    deploy.setName(DEPLOYMENT);
-
-    List<Deployment> deployments = dm2.deployments().list(GOOGLE_PROJECT_ID).execute().getDeployments();
-
-    Deployment foundDeployment = null;
+    // Grab the existing deployment by DEPLOYMENT_NAME. If not found we will insert a new one.
+    boolean updateDeployment = false;
+    Deployment deploymentToInsertOrUpdate = new Deployment();
     if (deployments != null) {
       System.out.println("Existing Deployments: ");
       for (Deployment deployment : deployments) {
         System.out.println(deployment.getName());
-        if (deployment.getName().compareTo(DEPLOYMENT) == 0) {
-          foundDeployment = deployment;
+        if (deployment.getName().compareTo(DEPLOYMENT_NAME) == 0) {
+          deploymentToInsertOrUpdate = deployment;
+          updateDeployment = true;
         }
       }
     }
 
     // Alternatively look the deployment directly;
-    // Deployment foundDeployment =
-    // dm2.deployments().get(PROJECT_ID,DEPLOYMENT).execute();
+    // Deployment foundDeployment = dm2.deployments().get(PROJECT_ID,DEPLOYMENT).execute();
 
-    if (foundDeployment != null) {
-      System.out.println("Updating Existing Deployment " + deploy.getName());
+    // Optional we want some labels: Map of labels; provided by the client when the
+    // resource is created or updated.
+    List<DeploymentLabelEntry> labels = new ArrayList<DeploymentLabelEntry>();
+    labels.add(new DeploymentLabelEntry()
+            .setKey("test-label-1")
+            .setValue("good-fella"));
 
-      // replace Configuration with new one
-      foundDeployment.setTarget(target);
-      dm2.deployments().update(GOOGLE_PROJECT_ID, DEPLOYMENT, foundDeployment).execute();
-    } else {
-      System.out.println("Creating New Deployment " + deploy.getName());
-      dm2.deployments().insert(GOOGLE_PROJECT_ID, deploy).execute();
+    // Note, if this is an Update, existing labels will be overwritten.
+    deploymentToInsertOrUpdate.setLabels(labels);
+
+    try {
+      // Load the config file contents and setup target configuration.
+      ConfigFile config = new ConfigFile().setContent(readYaml());
+
+      TargetConfiguration target = new TargetConfiguration().setConfig(config);
+      deploymentToInsertOrUpdate.setTarget(target);
+      deploymentToInsertOrUpdate.setName(DEPLOYMENT_NAME);
+
+    } catch (IOException ex) {
+      System.out.println("Could not load deployment manager config file: '" + CONFIG_YAML + "'. " + ex.getMessage());
+      System.exit(-1);
+    }
+
+    try {
+      if (updateDeployment) {
+        System.out.println("Updating Existing Deployment " + deploymentToInsertOrUpdate.getName());
+        _dm.deployments().update(GOOGLE_PROJECT_ID, DEPLOYMENT_NAME, deploymentToInsertOrUpdate).execute();
+      } else {
+        System.out.println("Creating New Deployment " + deploymentToInsertOrUpdate.getName());
+        _dm.deployments().insert(GOOGLE_PROJECT_ID, deploymentToInsertOrUpdate).execute();
+      }
+    } catch (IOException ex) {
+      System.out.println("Could not insert/update deployment. " + ex.getMessage());
+      System.exit(-1);
     }
   }
 

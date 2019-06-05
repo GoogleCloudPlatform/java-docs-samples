@@ -36,16 +36,16 @@
       <artifactId>google-api-services-deploymentmanager</artifactId>
       <version>v2-rev71-1.25.0</version>
     </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+    </dependency>
   </dependencies>
     <properties>
-    <!-- set this to the version of hte JDK you have installed or if you get
-     > mvn compile
-    [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) on project com.example.deploymentmanager.DeploymentManagerDemo: Compilation failure: Compilation failure:
-    [ERROR] Source option 6 is no longer supported. Use 7 or later.
-    [ERROR] Target option 6 is no longer supported. Use 7 or later.
-     -->
-  <maven.compiler.source>1.7</maven.compiler.source>
-  <maven.compiler.target>1.7</maven.compiler.target>
+  <maven.compiler.source>1.8</maven.compiler.source>
+  <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <build>
   <plugins>
