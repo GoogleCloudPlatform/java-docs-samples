@@ -14,7 +14,7 @@ See [Prerequisites](../README.md#Prerequisites).
 ```
 
 ## See the application page
-Navigate to http://yourprojectid.appspot.com URL.
+Navigate to `https://<your-project-id>.appspot.com`.
 
 ## The application
 
