@@ -273,32 +273,31 @@ public class SpannerSample {
 
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
-    // singleUse() can be used to execute a single read or query against Cloud Spanner.
-    ResultSet resultSet =
-        dbClient
-            .singleUse()
-            .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient 
+            .singleUse() // Execute a single read or query against Cloud Spanner.
+            .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+      }
     }
   }
   // [END spanner_query_data]
 
   // [START spanner_read_data]
   static void read(DatabaseClient dbClient) {
-    ResultSet resultSet =
-        dbClient
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .read(
                 "Albums",
-                // KeySet.all() can be used to read all rows in a table. KeySet exposes other
-                // methods to read only a subset of the table.
-                KeySet.all(),
-                Arrays.asList("SingerId", "AlbumId", "AlbumTitle"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+                KeySet.all(), // Read all rows in a table.
+                Arrays.asList("SingerId", "AlbumId", "AlbumTitle"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+      }
     }
   }
   // [END spanner_read_data]
@@ -407,19 +406,20 @@ public class SpannerSample {
   // [START spanner_query_data_with_new_column]
   static void queryMarketingBudget(DatabaseClient dbClient) {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
-    // null.
-    ResultSet resultSet =
-        dbClient
+    // null. A try-with-resource block is used to automatically release resources held by 
+    // ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
-            .executeQuery(Statement.of("SELECT SingerId, AlbumId, MarketingBudget FROM Albums"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %d %s\n",
-          resultSet.getLong("SingerId"),
-          resultSet.getLong("AlbumId"),
-          // We check that the value is non null. ResultSet getters can only be used to retrieve
-          // non null values.
-          resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
+            .executeQuery(Statement.of("SELECT SingerId, AlbumId, MarketingBudget FROM Albums"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s\n",
+            resultSet.getLong("SingerId"),
+            resultSet.getLong("AlbumId"),
+            // We check that the value is non null. ResultSet getters can only be used to retrieve
+            // non null values.
+            resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
+      }
     }
   }
   // [END spanner_query_data_with_new_column]
@@ -466,30 +466,32 @@ public class SpannerSample {
             .bind("EndTitle")
             .to("Goo")
             .build();
-
-    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %s %s\n",
-          resultSet.getLong("AlbumId"),
-          resultSet.getString("AlbumTitle"),
-          resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s\n",
+            resultSet.getLong("AlbumId"),
+            resultSet.getString("AlbumTitle"),
+            resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
+      }
     }
   }
   // [END spanner_query_data_with_index]
 
   // [START spanner_read_data_with_index]
   static void readUsingIndex(DatabaseClient dbClient) {
-    ResultSet resultSet =
-        dbClient
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .readUsingIndex(
                 "Albums",
                 "AlbumsByAlbumTitle",
                 KeySet.all(),
-                Arrays.asList("AlbumId", "AlbumTitle"));
-    while (resultSet.next()) {
-      System.out.printf("%d %s\n", resultSet.getLong(0), resultSet.getString(1));
+                Arrays.asList("AlbumId", "AlbumTitle"))) {
+      while (resultSet.next()) {
+        System.out.printf("%d %s\n", resultSet.getLong(0), resultSet.getString(1));
+      }
     }
   }
   // [END spanner_read_data_with_index]
@@ -524,20 +526,21 @@ public class SpannerSample {
   // [START spanner_read_data_with_storing_index]
   static void readStoringIndex(DatabaseClient dbClient) {
     // We can read MarketingBudget also from the index since it stores a copy of MarketingBudget.
-    ResultSet resultSet =
-        dbClient
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .readUsingIndex(
                 "Albums",
                 "AlbumsByAlbumTitle2",
                 KeySet.all(),
-                Arrays.asList("AlbumId", "AlbumTitle", "MarketingBudget"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %s %s\n",
-          resultSet.getLong(0),
-          resultSet.getString(1),
-          resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
+                Arrays.asList("AlbumId", "AlbumTitle", "MarketingBudget"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s\n",
+            resultSet.getLong(0),
+            resultSet.getString(1),
+            resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"));
+      }
     }
   }
   // [END spanner_read_data_with_storing_index]
@@ -555,13 +558,15 @@ public class SpannerSample {
             "%d %d %s\n",
             queryResultSet.getLong(0), queryResultSet.getLong(1), queryResultSet.getString(2));
       }
-      ResultSet readResultSet =
+      // We use a try-with-resource block to automatically release resources held by ResultSet.
+      try (ResultSet readResultSet =
           transaction.read(
-              "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "AlbumTitle"));
-      while (readResultSet.next()) {
-        System.out.printf(
-            "%d %d %s\n",
-            readResultSet.getLong(0), readResultSet.getLong(1), readResultSet.getString(2));
+              "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "AlbumTitle"))) {
+        while (readResultSet.next()) {
+          System.out.printf(
+              "%d %d %s\n",
+              readResultSet.getLong(0), readResultSet.getLong(1), readResultSet.getString(2));
+        }
       }
     }
   }
@@ -569,16 +574,18 @@ public class SpannerSample {
 
   // [START spanner_read_stale_data]
   static void readStaleData(DatabaseClient dbClient) {
-    ResultSet resultSet =
-        dbClient
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse(TimestampBound.ofExactStaleness(15, TimeUnit.SECONDS))
-            .read("Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %d %s\n",
-          resultSet.getLong(0),
-          resultSet.getLong(1),
-          resultSet.isNull(2) ? "NULL" : resultSet.getLong("MarketingBudget"));
+            .read(
+              "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s\n",
+            resultSet.getLong(0),
+            resultSet.getLong(1),
+            resultSet.isNull(2) ? "NULL" : resultSet.getLong("MarketingBudget"));
+      }
     }
   }
   // [END spanner_read_stale_data]
@@ -646,61 +653,64 @@ public class SpannerSample {
   // [START spanner_query_data_with_timestamp_column]
   static void queryMarketingBudgetWithTimestamp(DatabaseClient dbClient) {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
-    // null.
-    ResultSet resultSet =
-        dbClient
+    // null. A try-with-resource block is used to automatically release resources held by
+    // ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .executeQuery(
                 Statement.of(
                     "SELECT SingerId, AlbumId, MarketingBudget, LastUpdateTime FROM Albums"
-                        + " ORDER BY LastUpdateTime DESC"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %d %s %s\n",
-          resultSet.getLong("SingerId"),
-          resultSet.getLong("AlbumId"),
-          // We check that the value is non null. ResultSet getters can only be used to retrieve
-          // non null values.
-          resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"),
-          resultSet.isNull("LastUpdateTime") ? "NULL" : resultSet.getTimestamp("LastUpdateTime"));
+                        + " ORDER BY LastUpdateTime DESC"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s %s\n",
+            resultSet.getLong("SingerId"),
+            resultSet.getLong("AlbumId"),
+            // We check that the value is non null. ResultSet getters can only be used to retrieve
+            // non null values.
+            resultSet.isNull("MarketingBudget") ? "NULL" : resultSet.getLong("MarketingBudget"),
+            resultSet.isNull("LastUpdateTime") ? "NULL" : resultSet.getTimestamp("LastUpdateTime"));
+      }
     }
   }
   // [END spanner_query_data_with_timestamp_column]
 
   static void querySingersTable(DatabaseClient dbClient) {
-    ResultSet resultSet =
-        dbClient
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
-            .executeQuery(Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%s %s %s\n",
-          resultSet.getLong("SingerId"),
-          resultSet.getString("FirstName"),
-          resultSet.getString("LastName"));
+            .executeQuery(Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%s %s %s\n",
+            resultSet.getLong("SingerId"),
+            resultSet.getString("FirstName"),
+            resultSet.getString("LastName"));
+      }
     }
   }
 
   static void queryPerformancesTable(DatabaseClient dbClient) {
     // Rows without an explicit value for Revenue will have a Revenue equal to
-    // null.
-    ResultSet resultSet =
-        dbClient
+    // null. A try-with-resource block is used to automatically release resources held by
+    // ResultSet.
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .executeQuery(
                 Statement.of(
                     "SELECT SingerId, VenueId, EventDate, Revenue, LastUpdateTime "
-                        + "FROM Performances ORDER BY LastUpdateTime DESC"));
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %d %s %s %s\n",
-          resultSet.getLong("SingerId"),
-          resultSet.getLong("VenueId"),
-          resultSet.getDate("EventDate"),
-          // We check that the value is non null. ResultSet getters can only be used to retrieve
-          // non null values.
-          resultSet.isNull("Revenue") ? "NULL" : resultSet.getLong("Revenue"),
-          resultSet.getTimestamp("LastUpdateTime"));
+                        + "FROM Performances ORDER BY LastUpdateTime DESC"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s %s %s\n",
+            resultSet.getLong("SingerId"),
+            resultSet.getLong("VenueId"),
+            resultSet.getDate("EventDate"),
+            // We check that the value is non null. ResultSet getters can only be used to retrieve
+            // non null values.
+            resultSet.isNull("Revenue") ? "NULL" : resultSet.getLong("Revenue"),
+            resultSet.getTimestamp("LastUpdateTime"));
+      }
     }
   }
 
@@ -745,10 +755,11 @@ public class SpannerSample {
             .bind("name")
             .to(name)
             .build();
-
-    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
-    while (resultSet.next()) {
-      System.out.printf("%d\n", resultSet.getLong("SingerId"));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(s)) {
+      while (resultSet.next()) {
+        System.out.printf("%d\n", resultSet.getLong("SingerId"));
+      }
     }
     // [END spanner_query_data_with_struct]
   }
@@ -781,10 +792,11 @@ public class SpannerSample {
             .bind("names")
             .toStructArray(nameType, bandMembers)
             .build();
-
-    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
-    while (resultSet.next()) {
-      System.out.printf("%d\n", resultSet.getLong("SingerId"));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(s)) {
+      while (resultSet.next()) {
+        System.out.printf("%d\n", resultSet.getLong("SingerId"));
+      }
     }
     // [END spanner_query_data_with_array_of_struct]
   }
@@ -802,10 +814,11 @@ public class SpannerSample {
                     .to("Campbell")
                     .build())
             .build();
-
-    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
-    while (resultSet.next()) {
-      System.out.printf("%d\n", resultSet.getLong("SingerId"));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(s)) {
+      while (resultSet.next()) {
+        System.out.printf("%d\n", resultSet.getLong("SingerId"));
+      }
     }
   }
   // [END spanner_field_access_on_struct_parameters]
@@ -848,10 +861,11 @@ public class SpannerSample {
             .bind("song_info")
             .to(songInfo)
             .build();
-
-    ResultSet resultSet = dbClient.singleUse().executeQuery(s);
-    while (resultSet.next()) {
-      System.out.printf("%d %s\n", resultSet.getLong("SingerId"), resultSet.getString(1));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(s)) {
+      while (resultSet.next()) {
+        System.out.printf("%d %s\n", resultSet.getLong("SingerId"), resultSet.getString(1));
+      }
     }
   }
   // [END spanner_field_access_on_nested_struct_parameters]
@@ -947,10 +961,15 @@ public class SpannerSample {
                 System.out.printf("%d record inserted.\n", rowCount);
                 // Read newly inserted record.
                 sql = "SELECT FirstName, LastName FROM Singers WHERE SingerId = 11";
-                ResultSet resultSet = transaction.executeQuery(Statement.of(sql));
-                while (resultSet.next()) {
-                  System.out.printf(
-                      "%s %s\n", resultSet.getString("FirstName"), resultSet.getString("LastName"));
+                // We use a try-with-resource block to automatically release resources held by
+                // ResultSet.
+                try (ResultSet resultSet = transaction.executeQuery(Statement.of(sql))) {
+                  while (resultSet.next()) {
+                    System.out.printf(
+                        "%s %s\n", 
+                        resultSet.getString("FirstName"), 
+                        resultSet.getString("LastName"));
+                  }
                 }
                 return null;
               }
@@ -1017,14 +1036,15 @@ public class SpannerSample {
             .bind("lastName")
             .to("Garcia")
             .build();
-
-    ResultSet resultSet = dbClient.singleUse().executeQuery(statement);
-    while (resultSet.next()) {
-      System.out.printf(
-          "%d %s %s\n",
-          resultSet.getLong("SingerId"),
-          resultSet.getString("FirstName"),
-          resultSet.getString("LastName"));
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s\n",
+            resultSet.getLong("SingerId"),
+            resultSet.getString("FirstName"),
+            resultSet.getString("LastName"));
+      }
     }
   }
   // [END spanner_query_with_parameter]
@@ -1337,11 +1357,14 @@ public class SpannerSample {
       // [START init_client]
       DatabaseClient dbClient = spanner.getDatabaseClient(db);
       DatabaseAdminClient dbAdminClient = spanner.getDatabaseAdminClient();
+      // Use client here...
       // [END init_client]
       run(dbClient, dbAdminClient, command, db);
+    // [START init_client]
     } finally {
       spanner.close();
     }
+    // [END init_client]
     System.out.println("Closed client");
   }
 }
