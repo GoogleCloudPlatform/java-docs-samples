@@ -586,7 +586,8 @@ public class SpannerSample {
     try (ResultSet resultSet =
         dbClient
             .singleUse(TimestampBound.ofExactStaleness(15, TimeUnit.SECONDS))
-            .read("Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"))) {
+            .read(
+              "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"))) {
       while (resultSet.next()) {
         System.out.printf(
             "%d %d %s\n",
@@ -977,7 +978,9 @@ public class SpannerSample {
                 try (ResultSet resultSet = transaction.executeQuery(Statement.of(sql))) {
                   while (resultSet.next()) {
                     System.out.printf(
-                        "%s %s\n", resultSet.getString("FirstName"), resultSet.getString("LastName"));
+                        "%s %s\n", 
+                        resultSet.getString("FirstName"), 
+                        resultSet.getString("LastName"));
                   }
                 }
                 return null;
