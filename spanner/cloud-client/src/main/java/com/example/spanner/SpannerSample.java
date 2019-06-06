@@ -274,10 +274,8 @@ public class SpannerSample {
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
     // We use a try-with-resource block to automatically release resources held by ResultSet.
-    try (ResultSet resultSet =
-        dbClient
-            // singleUse() can be used to execute a single read or query against Cloud Spanner.
-            .singleUse()
+    try (ResultSet resultSet = dbClient 
+            .singleUse() // Execute a single read or query against Cloud Spanner.
             .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
       while (resultSet.next()) {
         System.out.printf(
@@ -290,14 +288,11 @@ public class SpannerSample {
   // [START spanner_read_data]
   static void read(DatabaseClient dbClient) {
     // We use a try-with-resource block to automatically release resources held by ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .read(
                 "Albums",
-                // KeySet.all() can be used to read all rows in a table. KeySet exposes other
-                // methods to read only a subset of the table.
-                KeySet.all(),
+                KeySet.all(), // Read all rows in a table.
                 Arrays.asList("SingerId", "AlbumId", "AlbumTitle"))) {
       while (resultSet.next()) {
         System.out.printf(
@@ -413,8 +408,7 @@ public class SpannerSample {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
     // null. A try-with-resource block is used to automatically release resources held by 
     // ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .executeQuery(Statement.of("SELECT SingerId, AlbumId, MarketingBudget FROM Albums"))) {
       while (resultSet.next()) {
@@ -488,8 +482,7 @@ public class SpannerSample {
   // [START spanner_read_data_with_index]
   static void readUsingIndex(DatabaseClient dbClient) {
     // We use a try-with-resource block to automatically release resources held by ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .readUsingIndex(
                 "Albums",
@@ -534,8 +527,7 @@ public class SpannerSample {
   static void readStoringIndex(DatabaseClient dbClient) {
     // We can read MarketingBudget also from the index since it stores a copy of MarketingBudget.
     // We use a try-with-resource block to automatically release resources held by ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .readUsingIndex(
                 "Albums",
@@ -583,8 +575,7 @@ public class SpannerSample {
   // [START spanner_read_stale_data]
   static void readStaleData(DatabaseClient dbClient) {
     // We use a try-with-resource block to automatically release resources held by ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse(TimestampBound.ofExactStaleness(15, TimeUnit.SECONDS))
             .read(
               "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"))) {
@@ -664,8 +655,7 @@ public class SpannerSample {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
     // null. A try-with-resource block is used to automatically release resources held by
     // ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .executeQuery(
                 Statement.of(
@@ -687,8 +677,7 @@ public class SpannerSample {
 
   static void querySingersTable(DatabaseClient dbClient) {
     // We use a try-with-resource block to automatically release resources held by ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .executeQuery(Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"))) {
       while (resultSet.next()) {
@@ -705,8 +694,7 @@ public class SpannerSample {
     // Rows without an explicit value for Revenue will have a Revenue equal to
     // null. A try-with-resource block is used to automatically release resources held by
     // ResultSet.
-    try (ResultSet resultSet =
-        dbClient
+    try (ResultSet resultSet = dbClient
             .singleUse()
             .executeQuery(
                 Statement.of(
