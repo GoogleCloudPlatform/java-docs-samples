@@ -1326,7 +1326,7 @@ public class SpannerSample {
     System.err.println("    SpannerExample writeandreadusingdml my-instance example-db");
     System.err.println("    SpannerExample updateusingdmlwithstruct my-instance example-db");
     System.err.println("    SpannerExample writeusingdml my-instance example-db");
-    System.err.println("    SpannerExample queryWithParameter my-instance example-db");
+    System.err.println("    SpannerExample querywithparameter my-instance example-db");
     System.err.println("    SpannerExample writewithtransactionusingdml my-instance example-db");
     System.err.println("    SpannerExample updateusingpartitioneddml my-instance example-db");
     System.err.println("    SpannerExample deleteusingpartitioneddml my-instance example-db");
