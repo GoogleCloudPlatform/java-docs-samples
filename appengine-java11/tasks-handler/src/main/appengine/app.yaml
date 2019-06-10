@@ -14,3 +14,10 @@
 
 runtime: java11
 instance_class: F4
+
+# [START gae_java11_task_handler_secured]
+handlers:
+- url: /tasks/create
+  script: field required but not used
+  login: admin
+# [END gae_java11_task_handler_secured]

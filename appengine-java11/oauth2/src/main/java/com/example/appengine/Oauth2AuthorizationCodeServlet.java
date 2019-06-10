@@ -16,6 +16,7 @@
 
 package com.example.appengine;
 
+// [START gae_java11_oauth2_login]
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.extensions.servlet.auth.oauth2.AbstractAuthorizationCodeServlet;
 import java.io.IOException;
@@ -49,3 +50,4 @@ public class Oauth2AuthorizationCodeServlet extends AbstractAuthorizationCodeSer
     return Utils.getUserId(req);
   }
 }
+// [START gae_java11_oauth2_login]

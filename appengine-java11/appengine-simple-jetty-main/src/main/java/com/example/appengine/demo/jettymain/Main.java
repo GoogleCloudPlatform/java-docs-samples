@@ -16,6 +16,7 @@
 
 package com.example.appengine.demo.jettymain;
 
+// [START gae_java11_server]
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.Configuration.ClassList;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -61,3 +62,4 @@ public class Main {
     server.join();
   }
 }
+// [END gae_java11_server]

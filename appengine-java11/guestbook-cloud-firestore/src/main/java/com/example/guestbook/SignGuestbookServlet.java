@@ -16,16 +16,17 @@
 
 package com.example.guestbook;
 
+// [START gae_java11_form_data]
 import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet to sace the form data to your Firestore instance. */
 @SuppressWarnings("serial")
-@WebServlet(name = "SignGuestbookServlet", value="/sign")
+@WebServlet(name = "SignGuestbookServlet", value = "/sign")
 public class SignGuestbookServlet extends HttpServlet {
 
   // Process the HTTP POST of the form
@@ -44,3 +45,4 @@ public class SignGuestbookServlet extends HttpServlet {
     resp.sendRedirect("/index.jsp?guestbookName=" + guestbookName);
   }
 }
+// [END gae_java11_form_data]

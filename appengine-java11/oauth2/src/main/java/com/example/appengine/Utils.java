@@ -68,6 +68,7 @@ public class Utils {
     return url.build();
   }
 
+  // [START gae_java11_oauth2_code_flow]
   /**
    * Loads the authorization code flow to be used across all HTTP servlet requests. It is only
    * called during the first HTTP servlet request.
@@ -79,6 +80,7 @@ public class Utils {
         .setAccessType("offline")
         .build();
   }
+  // [END gae_java11_oauth2_code_flow]
 
   /**
    * Returns the user ID for the given HTTP servlet request. This identifies your application's user
@@ -89,6 +91,7 @@ public class Utils {
     return req.getSession().getId();
   }
 
+  // [START gae_java11_oauth2_get_user]
   /** Obtain end-user authorization grant for Google APIs and return username */
   public static String getUserInfo(Credential credential) throws IOException {
     Oauth2 oauth2Client =
@@ -101,4 +104,5 @@ public class Utils {
     String username = userInfo.getGivenName();
     return username;
   }
+  // [END gae_java11_oauth2_get_user]
 }

@@ -16,6 +16,7 @@
 
 package com.example.task;
 
+// [START gae_java11_create_task]
 import com.google.cloud.tasks.v2.AppEngineHttpRequest;
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.HttpMethod;
@@ -63,3 +64,4 @@ public class CreateTask {
     }
   }
 }
+// [END gae_java11_create_task]
