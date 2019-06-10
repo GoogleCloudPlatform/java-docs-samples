@@ -18,4 +18,4 @@ To view your app, use command:
 ```
 gcloud app browse
 ```
-Or navigate to http://<project-id>.appspot.com URL.
+Or navigate to `https://<your-project-id>.appspot.com`.

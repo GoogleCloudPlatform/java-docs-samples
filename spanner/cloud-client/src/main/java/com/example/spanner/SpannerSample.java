@@ -60,8 +60,8 @@ import java.util.concurrent.TimeUnit;
  *   <li>Writing data using a read-write transaction.
  *   <li>Using an index to read and execute SQL queries over data.
  *   <li>Using commit timestamp for tracking when a record was last updated.
- *   <li>Using Google API Extensions for Java to make thread-safe requests via
- *       long-running operations. http://googleapis.github.io/gax-java/
+ *   <li>Using Google API Extensions for Java to make thread-safe requests via long-running
+ *       operations. http://googleapis.github.io/gax-java/
  * </ul>
  */
 public class SpannerSample {
@@ -262,13 +262,13 @@ public class SpannerSample {
     // KeySet.singleKey() can be used to delete one row at a time.
     for (Singer singer : SINGERS) {
       mutations.add(
-          Mutation.delete("Singers", 
-              KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
+          Mutation.delete(
+              "Singers", KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
     }
 
     dbClient.write(mutations);
     System.out.printf("Records deleted.\n");
-  } 
+  }
   // [END spanner_delete_data]
 
   // [START spanner_query_data]
@@ -306,12 +306,11 @@ public class SpannerSample {
   // [START spanner_add_column]
   static void addMarketingBudget(DatabaseAdminClient adminClient, DatabaseId dbId) {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
-        adminClient
-          .updateDatabaseDdl(
-              dbId.getInstanceId().getInstance(),
-              dbId.getDatabase(),
-              Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
-              null);
+        adminClient.updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList("ALTER TABLE Albums ADD COLUMN MarketingBudget INT64"),
+            null);
     try {
       // Initiate the request which returns an OperationFuture.
       op.get();
@@ -372,12 +371,12 @@ public class SpannerSample {
                 // Transaction will only be committed if this condition still holds at the time of
                 // commit. Otherwise it will be aborted and the callable will be rerun by the
                 // client library.
-                if (album2Budget >= 300000) {
+                long transfer = 200000;
+                if (album2Budget >= transfer) {
                   long album1Budget =
                       transaction
                           .readRow("Albums", Key.of(1, 1), Arrays.asList("MarketingBudget"))
                           .getLong(0);
-                  long transfer = 200000;
                   album1Budget += transfer;
                   album2Budget -= transfer;
                   transaction.buffer(
@@ -428,12 +427,11 @@ public class SpannerSample {
   // [START spanner_create_index]
   static void addIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
-        adminClient
-          .updateDatabaseDdl(
-              dbId.getInstanceId().getInstance(),
-              dbId.getDatabase(),
-              Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
-              null);
+        adminClient.updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList("CREATE INDEX AlbumsByAlbumTitle ON Albums(AlbumTitle)"),
+            null);
     try {
       // Initiate the request which returns an OperationFuture.
       op.get();
@@ -499,14 +497,13 @@ public class SpannerSample {
   // [START spanner_create_storing_index]
   static void addStoringIndex(DatabaseAdminClient adminClient, DatabaseId dbId) {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
-        adminClient
-          .updateDatabaseDdl(
-              dbId.getInstanceId().getInstance(),
-              dbId.getDatabase(),
-              Arrays.asList(
-                  "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) "
-                      + "STORING (MarketingBudget)"),
-              null); 
+        adminClient.updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList(
+                "CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) "
+                    + "STORING (MarketingBudget)"),
+            null);
     try {
       // Initiate the request which returns an OperationFuture.
       op.get();
@@ -589,14 +586,13 @@ public class SpannerSample {
   // [START spanner_add_timestamp_column]
   static void addCommitTimestamp(DatabaseAdminClient adminClient, DatabaseId dbId) {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
-        adminClient
-          .updateDatabaseDdl(
-              dbId.getInstanceId().getInstance(),
-              dbId.getDatabase(),
-              Arrays.asList(
-                  "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
-                      + "OPTIONS (allow_commit_timestamp=true)"),
-              null); 
+        adminClient.updateDatabaseDdl(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList(
+                "ALTER TABLE Albums ADD COLUMN LastUpdateTime TIMESTAMP "
+                    + "OPTIONS (allow_commit_timestamp=true)"),
+            null);
     try {
       // Initiate the request which returns an OperationFuture.
       op.get();
@@ -675,9 +671,7 @@ public class SpannerSample {
     ResultSet resultSet =
         dbClient
             .singleUse()
-            .executeQuery(
-                Statement.of(
-                    "SELECT SingerId, FirstName, LastName FROM Singers"));
+            .executeQuery(Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"));
     while (resultSet.next()) {
       System.out.printf(
           "%s %s %s\n",
@@ -1016,8 +1010,7 @@ public class SpannerSample {
   // [START spanner_query_with_parameter]
   static void queryWithParameter(DatabaseClient dbClient) {
     Statement statement =
-        Statement
-            .newBuilder(
+        Statement.newBuilder(
                 "SELECT SingerId, FirstName, LastName\n"
                     + "FROM Singers\n"
                     + "WHERE LastName = @lastName")
@@ -1047,40 +1040,40 @@ public class SpannerSample {
                 // Transfer marketing budget from one album to another. We do it in a transaction to
                 // ensure that the transfer is atomic.
                 String sql1 =
-                    "SELECT MarketingBudget from Albums WHERE SingerId = 1 and AlbumId = 1";
+                    "SELECT MarketingBudget from Albums WHERE SingerId = 2 and AlbumId = 2";
                 ResultSet resultSet = transaction.executeQuery(Statement.of(sql1));
-                long album1Budget = 0;
+                long album2Budget = 0;
                 while (resultSet.next()) {
-                  album1Budget = resultSet.getLong("MarketingBudget");
+                  album2Budget = resultSet.getLong("MarketingBudget");
                 }
                 // Transaction will only be committed if this condition still holds at the time of
                 // commit. Otherwise it will be aborted and the callable will be rerun by the
                 // client library.
-                if (album1Budget >= 300000) {
+                long transfer = 200000;
+                if (album2Budget >= transfer) {
                   String sql2 =
-                      "SELECT MarketingBudget from Albums WHERE SingerId = 2 and AlbumId = 2";
+                      "SELECT MarketingBudget from Albums WHERE SingerId = 1 and AlbumId = 1";
                   ResultSet resultSet2 = transaction.executeQuery(Statement.of(sql2));
-                  long album2Budget = 0;
-                  while (resultSet.next()) {
-                    album2Budget = resultSet2.getLong("MarketingBudget");
+                  long album1Budget = 0;
+                  while (resultSet2.next()) {
+                    album1Budget = resultSet2.getLong("MarketingBudget");
                   }
-                  long transfer = 200000;
-                  album2Budget += transfer;
-                  album1Budget -= transfer;
+                  album1Budget += transfer;
+                  album2Budget -= transfer;
                   Statement updateStatement =
                       Statement.newBuilder(
-                          "UPDATE Albums "
-                              + "SET MarketingBudget = @AlbumBudget "
-                              + "WHERE SingerId = 1 and AlbumId = 1")
+                              "UPDATE Albums "
+                                  + "SET MarketingBudget = @AlbumBudget "
+                                  + "WHERE SingerId = 1 and AlbumId = 1")
                           .bind("AlbumBudget")
                           .to(album1Budget)
                           .build();
                   transaction.executeUpdate(updateStatement);
                   Statement updateStatement2 =
                       Statement.newBuilder(
-                          "UPDATE Albums "
-                              + "SET MarketingBudget = @AlbumBudget "
-                              + "WHERE SingerId = 2 and AlbumId = 2")
+                              "UPDATE Albums "
+                                  + "SET MarketingBudget = @AlbumBudget "
+                                  + "WHERE SingerId = 2 and AlbumId = 2")
                           .bind("AlbumBudget")
                           .to(album2Budget)
                           .build();
@@ -1108,7 +1101,7 @@ public class SpannerSample {
   }
   // [END spanner_dml_partitioned_delete]
 
-  // [START spanner_dml_batch_update]  
+  // [START spanner_dml_batch_update]
   static void updateUsingBatchDml(DatabaseClient dbClient) {
     dbClient
         .readWriteTransaction()
@@ -1117,23 +1110,24 @@ public class SpannerSample {
               @Override
               public Void run(TransactionContext transaction) throws Exception {
                 List<Statement> stmts = new ArrayList<Statement>();
-                String sql = "INSERT INTO Albums "
-                            + "(SingerId, AlbumId, AlbumTitle, MarketingBudget) "
-                            + "VALUES (1, 3, 'Test Album Title', 10000) ";
+                String sql =
+                    "INSERT INTO Albums "
+                        + "(SingerId, AlbumId, AlbumTitle, MarketingBudget) "
+                        + "VALUES (1, 3, 'Test Album Title', 10000) ";
                 stmts.add(Statement.of(sql));
-                sql = "UPDATE Albums "
+                sql =
+                    "UPDATE Albums "
                         + "SET MarketingBudget = MarketingBudget * 2 "
                         + "WHERE SingerId = 1 and AlbumId = 3";
                 stmts.add(Statement.of(sql));
-                long [] rowCounts;
+                long[] rowCounts;
                 try {
                   rowCounts = transaction.batchUpdate(stmts);
                 } catch (SpannerBatchUpdateException e) {
                   rowCounts = e.getUpdateCounts();
                 }
                 for (int i = 0; i < rowCounts.length; i++) {
-                  System.out.printf(
-                      "%d record updated by stmt %d.\n", rowCounts[i], i);
+                  System.out.printf("%d record updated by stmt %d.\n", rowCounts[i], i);
                 }
                 return null;
               }
@@ -1298,7 +1292,7 @@ public class SpannerSample {
     System.err.println("    SpannerExample querywithtimestamp my-instance example-db");
     System.err.println("    SpannerExample createtablewithtimestamp my-instance example-db");
     System.err.println("    SpannerExample writewithtimestamp my-instance example-db");
-    System.err.println("    SpannerExample querysingerstable my-instance example-db");    
+    System.err.println("    SpannerExample querysingerstable my-instance example-db");
     System.err.println("    SpannerExample queryperformancestable my-instance example-db");
     System.err.println("    SpannerExample writestructdata my-instance example-db");
     System.err.println("    SpannerExample querywithstruct my-instance example-db");
