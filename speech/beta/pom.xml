@@ -40,7 +40,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
-      <version>0.56.0-beta</version>
+      <version>1.7.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.4</version>
     </dependency>
     <!-- [END speech_quickstart_dependencies] -->
 
