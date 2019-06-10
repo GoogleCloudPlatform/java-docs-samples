@@ -98,7 +98,7 @@ public class DatastoreExportServlet extends HttpServlet {
       String[] kinds = request.getParameterValues("kind");
       if (kinds != null) {
         JSONArray kindsJson = new JSONArray(kinds);
-        entityFilter.put("kinds", kinds);
+        entityFilter.put("kinds", kindsJson);
       }
 
       // Read namespace parameters and add to export request if not null

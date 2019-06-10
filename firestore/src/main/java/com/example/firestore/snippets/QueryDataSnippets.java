@@ -17,11 +17,9 @@
 package com.example.firestore.snippets;
 
 import com.example.firestore.snippets.model.City;
-
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
@@ -29,11 +27,9 @@ import com.google.cloud.firestore.Query.Direction;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-
-import com.google.firestore.v1beta1.Document;
-import com.google.protobuf.Api;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -382,5 +378,67 @@ class QueryDataSnippets {
     docs = future.get(30, TimeUnit.SECONDS).getDocuments();
     // [END fs_paginate_cursor]
     return Arrays.asList(firstPage, secondPage);
+  }
+
+  void collectionGroupQuery() throws ExecutionException, InterruptedException {
+    //CHECKSTYLE OFF: Indentation
+    //CHECKSTYLE OFF: RightCurlyAlone
+    // [START fs_collection_group_query_data_setup]
+    CollectionReference cities = db.collection("cities");
+
+    final List<ApiFuture<WriteResult>> futures = Arrays.asList(
+      cities.document("SF").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Golden Gate Bridge");
+        put("type", "bridge");
+      }}),
+      cities.document("SF").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Legion of Honor");
+        put("type", "museum");
+      }}),
+      cities.document("LA").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Griffith Park");
+        put("type", "park");
+      }}),
+      cities.document("LA").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "The Getty");
+        put("type", "museum");
+      }}),
+      cities.document("DC").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Lincoln Memorial");
+        put("type", "memorial");
+      }}),
+      cities.document("DC").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "National Air and Space Museum");
+        put("type", "museum");
+      }}),
+      cities.document("TOK").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Ueno Park");
+        put("type", "park");
+      }}),
+      cities.document("TOK").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "National Museum of Nature and Science");
+        put("type", "museum");
+      }}),
+      cities.document("BJ").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Jingshan Park");
+        put("type", "park");
+      }}),
+      cities.document("BJ").collection("landmarks").document().set(new HashMap<String, String>() {{
+        put("name", "Beijing Ancient Observatory");
+        put("type", "museum");
+      }})
+    );
+    final List<WriteResult> landmarks = ApiFutures.allAsList(futures).get();
+    // [END fs_collection_group_query_data_setup]
+
+    // [START fs_collection_group_query]
+    final Query museums = db.collectionGroup("landmarks").whereEqualTo("type", "museum");
+    final ApiFuture<QuerySnapshot> querySnapshot = museums.get();
+    for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+      System.out.println(document.getId());
+    }
+    // [END fs_collection_group_query]
+    //CHECKSTYLE ON: RightCurlyAlone
+    //CHECKSTYLE ON: Indentation
   }
 }

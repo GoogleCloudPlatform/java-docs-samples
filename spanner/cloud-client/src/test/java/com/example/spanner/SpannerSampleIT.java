@@ -22,7 +22,6 @@ import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -32,9 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Unit tests for {@code SpannerSample}
- */
+/** Unit tests for {@code SpannerSample} */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
@@ -50,7 +47,7 @@ public class SpannerSampleIT {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    SpannerSample.main(new String[]{command, instanceId, databaseId});
+    SpannerSample.main(new String[] {command, instanceId, databaseId});
     System.setOut(stdOut);
     return bout.toString();
   }
@@ -144,7 +141,7 @@ public class SpannerSampleIT {
     assertThat(out).startsWith("6\n");
 
     out = runSample("querywitharrayofstruct");
-    assertThat(out).startsWith("6\n7");
+    assertThat(out).startsWith("8\n7\n6");
 
     out = runSample("querystructfield");
     assertThat(out).startsWith("6\n");
@@ -181,15 +178,17 @@ public class SpannerSampleIT {
     assertThat(out).contains("Russell Morales");
     assertThat(out).contains("Jacqueline Long");
     assertThat(out).contains("Dylan Shaw");
+    out = runSample("querywithparameter");
+    assertThat(out).contains("12 Melissa Garcia");
 
     runSample("writewithtransactionusingdml");
-    out = runSample("querymarketingbudget");    
-    assertThat(out).contains("1 1 1800000");
-    assertThat(out).contains("2 2 200000");
-    
+    out = runSample("querymarketingbudget");
+    assertThat(out).contains("1 1 2200000");
+    assertThat(out).contains("2 2 550000");
+
     runSample("updateusingpartitioneddml");
     out = runSample("querymarketingbudget");
-    assertThat(out).contains("1 1 1800000");
+    assertThat(out).contains("1 1 2200000");
     assertThat(out).contains("2 2 100000");
 
     runSample("deleteusingpartitioneddml");
@@ -199,6 +198,10 @@ public class SpannerSampleIT {
     assertThat(out).doesNotContain("Russell Morales");
     assertThat(out).doesNotContain("Jacqueline Long");
     assertThat(out).doesNotContain("Dylan Shaw");
+
+    out = runSample("updateusingbatchdml");
+    assertThat(out).contains("1 record updated by stmt 0");
+    assertThat(out).contains("1 record updated by stmt 1");
   }
 
   private String formatForTest(String name) {

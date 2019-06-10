@@ -541,55 +541,10 @@ public class ManagerIT {
     }
   }
 
-  // Manager tests
   @Test
-  public void testCreateGateway() throws Exception {
-    final String gatewayName = "rsa-create-gateway";
-    topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
-    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
-    DeviceRegistryExample.createGateway(
-        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, gatewayName, RSA_PATH, "RS256");
-
-    // Assertions
-    String got = bout.toString();
-    System.out.println(got);
-    Assert.assertTrue(got.contains("Created gateway:"));
-
-    // Clean up
-    DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
-    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
-    }
-  }
-
-  @Test
-  public void testListGateways() throws Exception {
-    final String gatewayName = "rsa-list-gateway";
-    topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
-    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
-    DeviceRegistryExample.createGateway(
-        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, gatewayName, RSA_PATH, "RS256");
-    DeviceRegistryExample.listGateways(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
-
-    // Assertions
-    String got = bout.toString();
-    System.out.println(got);
-    Assert.assertTrue(got.contains("Found 1 devices"));
-    Assert.assertTrue(got.contains(String.format("Id: %s", gatewayName)));
-
-    // Clean up
-    DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
-    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
-    }
-  }
-
-  @Test
-  public void testBindDeviceToGatewayAndUnbind() throws Exception {
-    final String gatewayName = "rsa-bind-gateway";
-    final String deviceName = "rsa-bind-device";
+  public void testGatewayListenForDevice() throws Exception {
+    final String gatewayName = "rsa-listen-gateway";
+    final String deviceName = "rsa-listen-device";
     topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
     DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
     DeviceRegistryExample.createGateway(
@@ -597,16 +552,138 @@ public class ManagerIT {
     DeviceRegistryExample.createDevice(PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName);
     DeviceRegistryExample.bindDeviceToGateway(
         PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName, gatewayName);
-    DeviceRegistryExample.unbindDeviceFromGateway(
-        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName, gatewayName);
+
+    Thread deviceThread =
+        new Thread() {
+          public void run() {
+            try {
+              MqttExample.listenForConfigMessages(
+                  "mqtt.googleapis.com",
+                  (short) 443,
+                  PROJECT_ID,
+                  CLOUD_REGION,
+                  REGISTRY_ID,
+                  gatewayName,
+                  PKCS_PATH,
+                  "RS256",
+                  deviceName);
+            } catch (Exception e) {
+              // TODO: Fail
+              System.out.println("Failure on Exception");
+            }
+          }
+        };
+    deviceThread.start();
+    Thread.sleep(3000); // Give the device a chance to connect / receive configurations
+    deviceThread.join();
 
     // Assertions
     String got = bout.toString();
     System.out.println(got);
-    Assert.assertTrue(got.contains("Device bound: "));
-    Assert.assertTrue(got.contains("Device unbound: "));
+    Assert.assertTrue(got.contains("Payload"));
 
     // Clean up
+    DeviceRegistryExample.unbindDeviceFromGateway(
+        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName, gatewayName);
+    DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testErrorTopic() throws Exception {
+    final String gatewayName = "rsa-listen-gateway-test";
+    topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createGateway(
+        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, gatewayName, RSA_PATH, "RS256");
+    MqttClient client =
+        MqttExample.startMqtt(
+            "mqtt.googleapis.com",
+            (short) 443,
+            PROJECT_ID,
+            CLOUD_REGION,
+            REGISTRY_ID,
+            gatewayName,
+            PKCS_PATH,
+            "RS256");
+
+    Thread deviceThread =
+        new Thread() {
+          public void run() {
+            try {
+              MqttExample.attachDeviceToGateway(client, "garbage-device");
+              MqttExample.attachCallback(client, "garbage-device");
+            } catch (Exception e) {
+              // TODO: Fail
+              System.out.println("Failure on Exception :" + e.toString());
+            }
+          }
+        };
+
+    deviceThread.start();
+    Thread.sleep(4000);
+
+    String got = bout.toString();
+    Assert.assertTrue(got.contains("error_type"));
+
+    // Clean up
+    DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+    DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+    }
+  }
+
+  @Test
+  public void testSendDataForBoundDevice() throws Exception {
+    final String gatewayName = "rsa-send-gateway";
+    final String deviceName = "rsa-send-device";
+    topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
+    DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    DeviceRegistryExample.createGateway(
+        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, gatewayName, RSA_PATH, "RS256");
+    DeviceRegistryExample.createDevice(PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName);
+    DeviceRegistryExample.bindDeviceToGateway(
+        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName, gatewayName);
+
+    Thread deviceThread =
+        new Thread() {
+          public void run() {
+            try {
+              MqttExample.sendDataFromBoundDevice(
+                  "mqtt.googleapis.com",
+                  (short) 443,
+                  PROJECT_ID,
+                  CLOUD_REGION,
+                  REGISTRY_ID,
+                  gatewayName,
+                  PKCS_PATH,
+                  "RS256",
+                  deviceName,
+                  "state",
+                  "Cookies are delish");
+            } catch (Exception e) {
+              // TODO: Fail
+              System.out.println("Failure on Exception");
+            }
+          }
+        };
+    deviceThread.start();
+    Thread.sleep(3000); // Give the device a chance to connect / receive configurations
+    deviceThread.join();
+
+    // Assertions
+    String got = bout.toString();
+    System.out.println(got);
+    Assert.assertTrue(got.contains("Data sent"));
+
+    // Clean up
+    DeviceRegistryExample.unbindDeviceFromGateway(
+        PROJECT_ID, CLOUD_REGION, REGISTRY_ID, deviceName, gatewayName);
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);

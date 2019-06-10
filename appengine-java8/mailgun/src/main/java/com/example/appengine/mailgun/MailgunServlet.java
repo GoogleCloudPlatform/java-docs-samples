@@ -75,8 +75,6 @@ public class MailgunServlet extends HttpServlet {
   private ClientResponse sendComplexMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
-    WebResource webResource =
-        client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     FormDataMultiPart formData = new FormDataMultiPart();
     formData.field("from", "Mailgun User <mailgun@" + MAILGUN_DOMAIN_NAME + ">");
     formData.field("to", recipient);
@@ -85,6 +83,8 @@ public class MailgunServlet extends HttpServlet {
     ClassLoader classLoader = getClass().getClassLoader();
     File txtFile = new File(classLoader.getResource("example-attachment.txt").getFile());
     formData.bodyPart(new FileDataBodyPart("attachment", txtFile, MediaType.TEXT_PLAIN_TYPE));
+    WebResource webResource =
+        client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     return webResource
         .type(MediaType.MULTIPART_FORM_DATA_TYPE)
         .post(ClientResponse.class, formData);

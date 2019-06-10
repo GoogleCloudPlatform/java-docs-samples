@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <relativePath></relativePath>
   </parent>
 
@@ -63,7 +63,7 @@
       <plugin> <!-- Integration / System Tests -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
+        <version>3.0.0-M3</version>
         <configuration>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           <forkCount>3</forkCount>
