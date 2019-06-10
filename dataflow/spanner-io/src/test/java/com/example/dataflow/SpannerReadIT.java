@@ -18,12 +18,13 @@ package com.example.dataflow;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Operation;
+// import com.google.cloud.spanner.OperationFuture;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
@@ -65,7 +66,7 @@ public class SpannerReadIT {
       // Does not exist, ignore.
     }
 
-    Operation<Database, CreateDatabaseMetadata> op = adminClient
+    OperationFuture<Database, CreateDatabaseMetadata> op = adminClient
         .createDatabase(instanceId, databaseId, Arrays.asList("CREATE TABLE Singers "
                 + "(singerId INT64 NOT NULL, firstName STRING(MAX) NOT NULL, "
                 + "lastName STRING(MAX) NOT NULL,) PRIMARY KEY (singerId)",
