@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.73</version>
     </dependency>
 
     <dependency>
@@ -53,8 +53,14 @@
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value</artifactId>
-      <version>1.5.4</version>
+      <version>1.6.5</version>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>1.6.5</version>
     </dependency>
 
     <dependency>
@@ -92,25 +98,25 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.73</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.73</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.73</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <version>0.44</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -126,6 +132,20 @@
         <configuration>
           <deploy.promote>true</deploy.promote>
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <annotationProcessorPath>
+              <groupId>com.google.auto.value</groupId>
+              <artifactId>auto-value</artifactId>
+              <version>1.6.5</version>
+            </annotationProcessorPath>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>
