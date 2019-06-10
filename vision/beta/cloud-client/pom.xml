@@ -40,12 +40,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>1.70.0</version>
+      <version>1.64.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.70.0</version>
+      <version>1.62.0</version>
     </dependency>
     <!-- [END vision_java_dependencies_beta] -->
 
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.44</version>
+      <version>0.42</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

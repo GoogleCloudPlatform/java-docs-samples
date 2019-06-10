@@ -39,7 +39,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>1.70.0</version>
+      <version>1.62.0</version>
     </dependency>
     <!-- [END language_java_dependencies] -->
     <dependency>
@@ -57,7 +57,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.44</version>
+      <version>0.42</version>
     </dependency>
   </dependencies>
   <build>

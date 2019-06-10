@@ -31,22 +31,22 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-containeranalysis</artifactId>
-      <version>0.88.0-beta</version>
+      <version>0.80.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.70.0</version>
+      <version>1.62.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
-      <version>1.44.0</version>
+      <version>1.38.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax-grpc</artifactId>
-      <version>1.44.0</version>
+      <version>1.38.0</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
