@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class QuickstartTest {
 
-  private static final String INSTANCE_PROPERTY_NAME = "BIGTABLE_TESTING_INSTANCE";
+  private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID = "quickstart-table";
   private static String projectId;
   private static String instanceId;
@@ -47,11 +47,11 @@ public class QuickstartTest {
   @BeforeClass
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
-    instanceId = requireEnv(INSTANCE_PROPERTY_NAME);
+    instanceId = requireEnv(INSTANCE_ENV);
   }
 
   @Before
-  public void setupStream() {
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }

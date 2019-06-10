@@ -60,10 +60,6 @@ public class InstanceAdminExampleTest {
   @BeforeClass
   public static void beforeClass() throws IOException {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
-    if (projectId == null) {
-      adminClient = null;
-      return;
-    }
     BigtableInstanceAdminSettings instanceAdminSettings =
         BigtableInstanceAdminSettings.newBuilder().setProjectId(projectId).build();
     adminClient = BigtableInstanceAdminClient.create(instanceAdminSettings);

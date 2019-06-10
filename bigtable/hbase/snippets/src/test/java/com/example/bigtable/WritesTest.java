@@ -41,7 +41,7 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WritesTest {
 
-  private static final String INSTANCE_PROPERTY_NAME = "BIGTABLE_TESTING_INSTANCE";
+  private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID =
       "mobile-time-series-" + UUID.randomUUID().toString().substring(0, 20);
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("stats_summary");
@@ -59,7 +59,7 @@ public class WritesTest {
   @BeforeClass
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
-    instanceId = requireEnv(INSTANCE_PROPERTY_NAME);
+    instanceId = requireEnv(INSTANCE_ENV);
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Admin admin = connection.getAdmin();
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_ID));
