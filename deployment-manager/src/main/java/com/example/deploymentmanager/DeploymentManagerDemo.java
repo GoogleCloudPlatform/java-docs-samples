@@ -51,8 +51,8 @@ public class DeploymentManagerDemo {
   }
 
   /*
-  Initialize google api
-   */
+   Initialize Google api.
+  */
   public static void init() {
 
     GOOGLE_PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
@@ -61,7 +61,7 @@ public class DeploymentManagerDemo {
       System.exit(-1);
     }
 
-    DEPLOYMENT_NAME = "my-deploy-2-3";//System.getenv("DEPLOYMENT_NAME");
+    DEPLOYMENT_NAME = System.getenv("DEPLOYMENT_NAME");
     if (DEPLOYMENT_NAME == null || DEPLOYMENT_NAME.compareTo("") == 0) {
       System.out.println("DEPLOYMENT_NAME environment variable is not set");
       System.exit(-1);
@@ -89,7 +89,7 @@ public class DeploymentManagerDemo {
     }
   }
   /* 
-  Delete the deployment
+   Delete the deployment.
   */
   public static void cleanup() {
     try {
