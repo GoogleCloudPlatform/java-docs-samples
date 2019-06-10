@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018-19 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,9 +153,9 @@ public class ModelApi {
       System.out.println(String.format("Model display name: %s", model.getDisplayName()));
       System.out.println("Image classification model metadata:");
       System.out.println(
-          "Tranning budget: " + model.getImageClassificationModelMetadata().getTrainBudget());
+          "Training budget: " + model.getImageClassificationModelMetadata().getTrainBudget());
       System.out.println(
-          "Tranning cost: " + model.getImageClassificationModelMetadata().getTrainCost());
+          "Training cost: " + model.getImageClassificationModelMetadata().getTrainCost());
       System.out.println(
           String.format(
               "Stop reason: %s", model.getImageClassificationModelMetadata().getStopReason()));
@@ -197,9 +197,9 @@ public class ModelApi {
     System.out.println(String.format("Model display name: %s", model.getDisplayName()));
     System.out.println("Image classification model metadata:");
     System.out.println(
-        "Tranning budget: " + model.getImageClassificationModelMetadata().getTrainBudget());
+        "Training budget: " + model.getImageClassificationModelMetadata().getTrainBudget());
     System.out.println(
-        "Tranning cost:" + model.getImageClassificationModelMetadata().getTrainCost());
+        "Training cost:" + model.getImageClassificationModelMetadata().getTrainCost());
     System.out.println(
         String.format(
             "Stop reason: %s", model.getImageClassificationModelMetadata().getStopReason()));
