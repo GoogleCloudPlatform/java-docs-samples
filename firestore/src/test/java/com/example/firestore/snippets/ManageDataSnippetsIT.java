@@ -125,8 +125,8 @@ public class ManageDataSnippetsIT extends BaseIntegrationTest {
   public void testUpdateServerTimestamp() throws Exception {
     manageDataSnippets.updateServerTimestamp();
     DocumentReference docRef = db.collection("objects").document("some-id");
-    Map<String, Object> data = getDocumentDataAsMap(docRef);
-    assertTrue(data.get("timestamp") instanceof Date);
+    DocumentSnapshot data = getDocumentData(docRef);
+    assertTrue(data.getDate("timestamp") instanceof Date);
   }
 
   @Test

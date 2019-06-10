@@ -69,12 +69,15 @@ location is "us-central1").
 export LOCATION_ID=<YOUR_ZONE>
 ```
 
+### Using App Engine Queues
 Create a task, targeted at the `/tasks/create` endpoint, with a payload specified:
 
 ```
 mvn exec:java -Dexec.mainClass="com.example.task.CreateTask" \
     -Dexec.args="--project-id $GOOGLE_CLOUD_PROJECT \
-    --queue $QUEUE_ID --location $LOCATION_ID --payload hello"
+    --queue $QUEUE_ID \
+    --location $LOCATION_ID \
+    --payload hello"
 ```
 
 The App Engine app serves as a target for the push requests. It has an

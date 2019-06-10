@@ -30,7 +30,7 @@ limitations under the License.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -46,7 +46,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>1.6.0</version>
+      <version>1.8.0</version>
     </dependency>
 
     <!-- Compile/runtime dependencies -->
@@ -75,7 +75,7 @@ limitations under the License.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -139,7 +139,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.20.1</version>
+        <version>3.0.0-M3</version>
         <configuration>
           <systemPropertyVariables>
             <BIGTABLE_PROJECT>${bigtable.projectID}</BIGTABLE_PROJECT>

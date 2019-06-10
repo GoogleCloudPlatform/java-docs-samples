@@ -17,12 +17,17 @@
 package com.example.cloud.iot.examples;
 
 // [START iot_mqtt_includes]
+
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Properties;
 
@@ -62,8 +67,12 @@ import org.joda.time.DateTime;
  */
 public class MqttExample {
   // [START iot_mqtt_jwt]
+  // [START iot_mqtt_configcallback]
+  static MqttCallback mCallback;
+
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
-  private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
+  private static String createJwtRsa(String projectId, String privateKeyFile)
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
     DateTime now = new DateTime();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
@@ -80,9 +89,11 @@ public class MqttExample {
 
     return jwtBuilder.signWith(SignatureAlgorithm.RS256, kf.generatePrivate(spec)).compact();
   }
+  // [END iot_mqtt_jwt]
 
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given ES key. */
-  private static String createJwtEs(String projectId, String privateKeyFile) throws Exception {
+  private static String createJwtEs(String projectId, String privateKeyFile)
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
     DateTime now = new DateTime();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
@@ -99,51 +110,215 @@ public class MqttExample {
 
     return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
-  // [END iot_mqtt_jwt]
 
-  // [START iot_mqtt_configcallback]
-  static MqttCallback mCallback;
+  /** Connects the gateway to the MQTT bridge. */
+  public static MqttClient startMqtt(
+      String mqttBridgeHostname,
+      int mqttBridgePort,
+      String projectId,
+      String cloudRegion,
+      String registryId,
+      String gatewayId,
+      String privateKeyFile,
+      String algorithm)
+      throws NoSuchAlgorithmException, IOException, MqttException, InterruptedException,
+          InvalidKeySpecException {
+    // [START iot_gateway_start_mqtt]
 
-  /** Attaches the callback used when configuration changes occur. */
-  public static void attachCallback(MqttClient client, String deviceId) throws MqttException {
-    mCallback = new MqttCallback() {
-      @Override
-      public void connectionLost(Throwable cause) {
-        // Do nothing...
-      }
+    // Build the connection string for Google's Cloud IoT Core MQTT server. Only SSL
+    // connections are accepted. For server authentication, the JVM's root certificates
+    // are used.
+    final String mqttServerAddress =
+        String.format("ssl://%s:%s", mqttBridgeHostname, mqttBridgePort);
 
-      @Override
-      public void messageArrived(String topic, MqttMessage message) throws Exception {
-        String payload = new String(message.getPayload());
-        System.out.println("Payload : " + payload);
-        // TODO: Insert your parsing / handling of the configuration message here.
-      }
+    // Create our MQTT client. The mqttClientId is a unique string that identifies this device. For
+    // Google Cloud IoT Core, it must be in the format below.
+    final String mqttClientId =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryId, gatewayId);
 
-      @Override
-      public void deliveryComplete(IMqttDeliveryToken token) {
-        // Do nothing;
-      }
-    };
+    MqttConnectOptions connectOptions = new MqttConnectOptions();
+    // Note that the Google Cloud IoT Core only supports MQTT 3.1.1, and Paho requires that we
+    // explictly set this. If you don't set MQTT version, the server will immediately close its
+    // connection to your device.
+    connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
 
-    String configTopic = String.format("/devices/%s/config", deviceId);
-    client.subscribe(configTopic, 1);
+    Properties sslProps = new Properties();
+    sslProps.setProperty("com.ibm.ssl.protocol", "TLSv1.2");
+    connectOptions.setSSLProperties(sslProps);
 
-    String commandTopic = String.format("/devices/%s/commands/#", deviceId);
-    client.subscribe(commandTopic, 1);
+    // With Google Cloud IoT Core, the username field is ignored, however it must be set for the
+    // Paho client library to send the password field. The password field is used to transmit a JWT
+    // to authorize the device.
+    connectOptions.setUserName("unused");
 
-    client.setCallback(mCallback);
-  }
-  // [END iot_mqtt_configcallback]
-
-  /** Parse arguments, configure MQTT, and publish messages. */
-  public static void main(String[] args) throws Exception {
-    // [START iot_mqtt_configuremqtt]
-    MqttExampleOptions options = MqttExampleOptions.fromFlags(args);
-    if (options == null) {
-      // Could not parse.
-      System.exit(1);
+    DateTime iat = new DateTime();
+    if (algorithm.equals("RS256")) {
+      connectOptions.setPassword(createJwtRsa(projectId, privateKeyFile).toCharArray());
+    } else if (algorithm.equals("ES256")) {
+      connectOptions.setPassword(createJwtEs(projectId, privateKeyFile).toCharArray());
+    } else {
+      throw new IllegalArgumentException(
+          "Invalid algorithm " + algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
 
+    System.out.println(String.format(mqttClientId));
+
+    // Create a client, and connect to the Google MQTT bridge.
+    MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
+
+    // Both connect and publish operations may fail. If they do, allow retries but with an
+    // exponential backoff time period.
+    long initialConnectIntervalMillis = 500L;
+    long maxConnectIntervalMillis = 6000L;
+    long maxConnectRetryTimeElapsedMillis = 900000L;
+    float intervalMultiplier = 1.5f;
+
+    long retryIntervalMs = initialConnectIntervalMillis;
+    long totalRetryTimeMs = 0;
+
+    while (!client.isConnected() && totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) {
+      try {
+        client.connect(connectOptions);
+      } catch (MqttException e) {
+        int reason = e.getReasonCode();
+
+        // If the connection is lost or if the server cannot be connected, allow retries, but with
+        // exponential backoff.
+        System.out.println("An error occurred: " + e.getMessage());
+        if (reason == MqttException.REASON_CODE_CONNECTION_LOST
+            || reason == MqttException.REASON_CODE_SERVER_CONNECT_ERROR) {
+          System.out.println("Retrying in " + retryIntervalMs / 1000.0 + " seconds.");
+          Thread.sleep(retryIntervalMs);
+          totalRetryTimeMs += retryIntervalMs;
+          retryIntervalMs *= intervalMultiplier;
+          if (retryIntervalMs > maxConnectIntervalMillis) {
+            retryIntervalMs = maxConnectIntervalMillis;
+          }
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    attachCallback(client, gatewayId);
+
+    // The topic gateways receive error updates on. QoS must be 0.
+    String errorTopic = String.format("/devices/%s/errors", gatewayId);
+    System.out.println(String.format("Listening on %s", errorTopic));
+
+    client.subscribe(errorTopic, 0);
+
+    return client;
+    // [END iot_gateway_start_mqtt]
+  }
+
+  public static void sendDataFromDevice(
+      MqttClient client, String deviceId, String messageType, String data) throws MqttException {
+    // [START send_data_from_bound_device]
+    if (!messageType.equals("events") && !messageType.equals("state")) {
+      System.err.println("Invalid message type, must ether be 'state' or events'");
+      return;
+    }
+    final String dataTopic = String.format("/devices/%s/%s", deviceId, messageType);
+    MqttMessage message = new MqttMessage(data.getBytes());
+    message.setQos(1);
+    client.publish(dataTopic, message);
+    System.out.println("Data sent");
+    // [END send_data_from_bound_device]
+  }
+
+  /** Sends data on behalf of a bound device using the Gateway. */
+  public static void sendDataFromBoundDevice(
+      String mqttBridgeHostname,
+      short mqttBridgePort,
+      String projectId,
+      String cloudRegion,
+      String registryName,
+      String gatewayId,
+      String privateKeyFile,
+      String algorithm,
+      String deviceId,
+      String messageType,
+      String telemetryData)
+      throws MqttException, IOException, InvalidKeySpecException, InterruptedException,
+          NoSuchAlgorithmException {
+    // [START send_data_from_bound_device]
+    MqttClient client =
+        startMqtt(
+            mqttBridgeHostname,
+            mqttBridgePort,
+            projectId,
+            cloudRegion,
+            registryName,
+            gatewayId,
+            privateKeyFile,
+            algorithm);
+    attachDeviceToGateway(client, deviceId);
+    sendDataFromDevice(client, deviceId, messageType, telemetryData);
+    detachDeviceFromGateway(client, deviceId);
+    // [END send_data_from_bound_device]
+  }
+
+  public static void listenForConfigMessages(
+      String mqttBridgeHostname,
+      short mqttBridgePort,
+      String projectId,
+      String cloudRegion,
+      String registryName,
+      String gatewayId,
+      String privateKeyFile,
+      String algorithm,
+      String deviceId)
+      throws MqttException, IOException, InvalidKeySpecException, InterruptedException,
+          NoSuchAlgorithmException {
+    // Connect the Gateway
+    MqttClient client =
+        startMqtt(
+            mqttBridgeHostname,
+            mqttBridgePort,
+            projectId,
+            cloudRegion,
+            registryName,
+            gatewayId,
+            privateKeyFile,
+            algorithm);
+    // Connect the bound device and listen for configuration messages.
+    attachDeviceToGateway(client, deviceId);
+    attachCallback(client, deviceId);
+
+    detachDeviceFromGateway(client, deviceId);
+  }
+
+  public static void attachDeviceToGateway(MqttClient client, String deviceId)
+      throws MqttException {
+    // [START iot_attach_device]
+    final String attachTopic = String.format("/devices/%s/attach", deviceId);
+    System.out.println(String.format("Attaching: %s", attachTopic));
+    String attachPayload = "{}";
+    MqttMessage message = new MqttMessage(attachPayload.getBytes());
+    message.setQos(1);
+    client.publish(attachTopic, message);
+    // [END iot_attach_device]
+  }
+
+  /** Detaches a bound device from the Gateway. */
+  public static void detachDeviceFromGateway(MqttClient client, String deviceId)
+      throws MqttException {
+    // [START iot_detach_device]
+    final String detachTopic = String.format("/devices/%s/detach", deviceId);
+    System.out.println(String.format("Detaching: %s", detachTopic));
+    String attachPayload = "{}";
+    MqttMessage message = new MqttMessage(attachPayload.getBytes());
+    message.setQos(1);
+    client.publish(detachTopic, message);
+    // [END iot_detach_device]
+  }
+
+  public static void mqttDeviceDemo(MqttExampleOptions options)
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, MqttException,
+          InterruptedException {
     // Build the connection string for Google's Cloud IoT Core MQTT server. Only SSL
     // connections are accepted. For server authentication, the JVM's root certificates
     // are used.
@@ -254,8 +429,7 @@ public class MqttExample {
               createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
         } else {
           throw new IllegalArgumentException(
-              "Invalid algorithm " + options.algorithm
-                  + ". Should be one of 'RS256' or 'ES256'.");
+              "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
         }
         client.disconnect();
         client.connect();
@@ -285,7 +459,6 @@ public class MqttExample {
     }
     System.out.println("");
 
-
     // Disconnect the client if still connected, and finish the run.
     if (client.isConnected()) {
       client.disconnect();
@@ -294,5 +467,84 @@ public class MqttExample {
     System.out.println("Finished loop successfully. Goodbye!");
     client.close();
     // [END iot_mqtt_publish]
+  }
+
+  /** Attaches the callback used when configuration changes occur. */
+  public static void attachCallback(MqttClient client, String deviceId) throws MqttException {
+    mCallback =
+        new MqttCallback() {
+          @Override
+          public void connectionLost(Throwable cause) {
+            // Do nothing...
+          }
+
+          @Override
+          public void messageArrived(String topic, MqttMessage message) throws Exception {
+            String payload = new String(message.getPayload());
+            System.out.println("Payload : " + payload);
+            // TODO: Insert your parsing / handling of the configuration message here.
+          }
+
+          @Override
+          public void deliveryComplete(IMqttDeliveryToken token) {
+            // Do nothing;
+          }
+        };
+
+    String commandTopic = String.format("/devices/%s/commands/#", deviceId);
+    System.out.println(String.format("Listening on %s", commandTopic));
+
+    String configTopic = String.format("/devices/%s/config", deviceId);
+    System.out.println(String.format("Listening on %s", configTopic));
+
+    client.subscribe(configTopic, 1);
+    client.subscribe(commandTopic, 1);
+    client.setCallback(mCallback);
+  }
+  // [END iot_mqtt_configcallback]
+
+  /** Parse arguments, configure MQTT, and publish messages. */
+  public static void main(String[] args) throws Exception {
+    // [START iot_mqtt_configuremqtt]
+    MqttExampleOptions options = MqttExampleOptions.fromFlags(args);
+    if (options == null) {
+      // Could not parse.
+      System.exit(1);
+    }
+
+    switch (options.command) {
+      case "listen-for-config-messages":
+        System.out.println(
+            String.format("Listening for configuration messages for %s:", options.deviceId));
+        listenForConfigMessages(
+            options.mqttBridgeHostname,
+            options.mqttBridgePort,
+            options.projectId,
+            options.cloudRegion,
+            options.registryId,
+            options.gatewayId,
+            options.privateKeyFile,
+            options.algorithm,
+            options.deviceId);
+        break;
+      case "send-data-from-bound-device":
+        System.out.println("Sending data on behalf of device:");
+        sendDataFromBoundDevice(
+            options.mqttBridgeHostname,
+            options.mqttBridgePort,
+            options.projectId,
+            options.cloudRegion,
+            options.registryId,
+            options.gatewayId,
+            options.privateKeyFile,
+            options.algorithm,
+            options.deviceId,
+            options.messageType,
+            options.telemetryData);
+        break;
+      default:
+        System.out.println("Starting mqtt demo:");
+        mqttDeviceDemo(options);
+    }
   }
 }

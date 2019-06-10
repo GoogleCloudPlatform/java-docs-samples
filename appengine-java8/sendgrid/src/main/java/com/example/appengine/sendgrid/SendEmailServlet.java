@@ -73,7 +73,7 @@ public class SendEmailServlet extends HttpServlet {
       Response response = sendgrid.api(request);
 
       if (response.getStatusCode() != 202) {
-        resp.getWriter().print(String.format("An error occured: %s", response.getStatusCode()));
+        resp.getWriter().print(String.format("An error occurred: %s", response.getStatusCode()));
         return;
       }
 

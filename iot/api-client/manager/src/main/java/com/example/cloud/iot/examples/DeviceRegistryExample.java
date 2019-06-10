@@ -24,12 +24,15 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Charsets;
 import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
+import com.google.api.services.cloudiot.v1.model.BindDeviceToGatewayRequest;
+import com.google.api.services.cloudiot.v1.model.BindDeviceToGatewayResponse;
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceConfig;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.api.services.cloudiot.v1.model.DeviceState;
 import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
+import com.google.api.services.cloudiot.v1.model.GatewayConfig;
 import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
@@ -37,6 +40,9 @@ import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceRequest;
 import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
 import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
+import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayRequest;
+import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayResponse;
+
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
@@ -46,13 +52,14 @@ import com.google.pubsub.v1.TopicName;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import org.apache.commons.cli.HelpFormatter;
 
+import org.apache.commons.cli.HelpFormatter;
 /**
  * Example of using Cloud IoT device manager API to administer devices, registries and projects.
  *
@@ -66,9 +73,9 @@ import org.apache.commons.cli.HelpFormatter;
  *
  * <p>Before running the example, we have to create private and public keys, as described in
  * cloud.google.com/iot. Since we are interacting with the device manager, we will only use the
- * public keys. The private keys are used to sign JWTs to authenticate devices. See the
- * <a href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client/mqtt_example">MQTT client example</a>
- * for more information.
+ * public keys. The private keys are used to sign JWTs to authenticate devices. See the <a
+ * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client/mqtt_example">MQTT
+ * client example</a> for more information.
  *
  * <p>Finally, compile and run the example with:
  *
@@ -84,6 +91,7 @@ import org.apache.commons.cli.HelpFormatter;
  * </code>
  * </pre>
  */
+
 public class DeviceRegistryExample {
 
   static final String APP_NAME = "DeviceRegistryExample";
@@ -114,16 +122,17 @@ public class DeviceRegistryExample {
 
   // [START iot_create_registry]
   /** Create a registry for Cloud IoT. */
-  public static void createRegistry(String cloudRegion, String projectId, String registryName,
-                                    String pubsubTopicPath)
+  public static void createRegistry(
+      String cloudRegion, String projectId, String registryName, String pubsubTopicPath)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
     final String projectPath = "projects/" + projectId + "/locations/" + cloudRegion;
     final String fullPubsubPath = "projects/" + projectId + "/topics/" + pubsubTopicPath;
@@ -136,8 +145,8 @@ public class DeviceRegistryExample {
     registry.setEventNotificationConfigs(notificationConfigs);
     registry.setId(registryName);
 
-    DeviceRegistry reg = service.projects().locations().registries().create(projectPath,
-        registry).execute();
+    DeviceRegistry reg =
+        service.projects().locations().registries().create(projectPath, registry).execute();
     System.out.println("Created registry: " + reg.getName());
   }
   // [END iot_create_registry]
@@ -150,12 +159,14 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     System.out.println("Deleting: " + registryPath);
     service.projects().locations().registries().delete(registryPath).execute();
@@ -164,18 +175,20 @@ public class DeviceRegistryExample {
 
   // [START iot_list_devices]
   /** Print all of the devices in this registry to standard out. */
-  public static void listDevices(String projectId, String cloudRegion, String registryName) throws
-      GeneralSecurityException, IOException {
+  public static void listDevices(String projectId, String cloudRegion, String registryName)
+      throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     List<Device> devices =
         service
@@ -205,26 +218,32 @@ public class DeviceRegistryExample {
 
   // [START iot_create_es_device]
   /** Create a device that is authenticated using ES256. */
-  public static void createDeviceWithEs256(String deviceId, String publicKeyFilePath,
-      String projectId, String cloudRegion, String registryName)
+  public static void createDeviceWithEs256(
+      String deviceId,
+      String publicKeyFilePath,
+      String projectId,
+      String cloudRegion,
+      String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     final String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
     publicKeyCredential.setKey(key);
     publicKeyCredential.setFormat("ES256_PEM");
 
-    DeviceCredential devCredential  = new DeviceCredential();
+    DeviceCredential devCredential = new DeviceCredential();
     devCredential.setPublicKey(publicKeyCredential);
 
     System.out.println("Creating device with id: " + deviceId);
@@ -247,20 +266,25 @@ public class DeviceRegistryExample {
 
   // [START iot_create_rsa_device]
   /** Create a device that is authenticated using RS256. */
-  public static void createDeviceWithRs256(String deviceId, String certificateFilePath,
-                                           String projectId, String cloudRegion,
-                                           String registryName)
+  public static void createDeviceWithRs256(
+      String deviceId,
+      String certificateFilePath,
+      String projectId,
+      String cloudRegion,
+      String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     String key = Files.toString(new File(certificateFilePath), Charsets.UTF_8);
@@ -294,19 +318,20 @@ public class DeviceRegistryExample {
    * <p>This is a valid way to construct a device, however until it is patched with a credential the
    * device will not be able to connect to Cloud IoT.
    */
-  public static void createDeviceWithNoAuth(String deviceId, String projectId, String cloudRegion,
-                                            String registryName)
+  public static void createDeviceWithNoAuth(
+      String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = "projects/" + projectId + "/locations/" + cloudRegion
-        + "/registries/" + registryName;
+    final String registryPath =
+        "projects/" + projectId + "/locations/" + cloudRegion + "/registries/" + registryName;
 
     System.out.println("Creating device with id: " + deviceId);
     Device device = new Device();
@@ -327,19 +352,22 @@ public class DeviceRegistryExample {
 
   // [START iot_delete_device]
   /** Delete the given device from the registry. */
-  public static void deleteDevice(String deviceId, String projectId, String cloudRegion,
-                                  String registryName)
+  public static void deleteDevice(
+      String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-            GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-            .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     System.out.println("Deleting device " + devicePath);
     service.projects().locations().registries().devices().delete(devicePath).execute();
@@ -347,19 +375,23 @@ public class DeviceRegistryExample {
   // [END iot_delete_device]
 
   // [START iot_get_device]
-  /** Retrieves device metadata from a registry. **/
-  public static Device getDevice(String deviceId, String projectId, String cloudRegion,
-                                 String registryName) throws GeneralSecurityException, IOException {
+  /** Retrieves device metadata from a registry. * */
+  public static Device getDevice(
+      String deviceId, String projectId, String cloudRegion, String registryName)
+      throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     System.out.println("Retrieving device " + devicePath);
     return service.projects().locations().registries().devices().get(devicePath).execute();
@@ -367,7 +399,7 @@ public class DeviceRegistryExample {
   // [END iot_get_device]
 
   // [START iot_get_device_state]
-  /** Retrieves device metadata from a registry. **/
+  /** Retrieves device metadata from a registry. * */
   public static List<DeviceState> getDeviceStates(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
@@ -375,29 +407,27 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     System.out.println("Retrieving device states " + devicePath);
 
-    ListDeviceStatesResponse resp  = service
-        .projects()
-        .locations()
-        .registries()
-        .devices()
-        .states()
-        .list(devicePath).execute();
+    ListDeviceStatesResponse resp =
+        service.projects().locations().registries().devices().states().list(devicePath).execute();
 
     return resp.getDeviceStates();
   }
   // [END iot_get_device_state]
 
   // [START iot_get_registry]
-  /** Retrieves registry metadata from a project. **/
+  /** Retrieves registry metadata from a project. * */
   public static DeviceRegistry getRegistry(
       String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
@@ -405,12 +435,14 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     return service.projects().locations().registries().get(registryPath).execute();
   }
@@ -425,12 +457,15 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     System.out.println("Listing device configs for " + devicePath);
     List<DeviceConfig> deviceConfigs =
@@ -460,9 +495,10 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
     final String projectPath = "projects/" + projectId + "/locations/" + cloudRegion;
 
@@ -477,7 +513,7 @@ public class DeviceRegistryExample {
 
     if (registries != null) {
       System.out.println("Found " + registries.size() + " registries");
-      for (DeviceRegistry r: registries) {
+      for (DeviceRegistry r : registries) {
         System.out.println("Id: " + r.getId());
         System.out.println("Name: " + r.getName());
         if (r.getMqttConfig() != null) {
@@ -493,19 +529,26 @@ public class DeviceRegistryExample {
 
   // [START iot_patch_es]
   /** Patch the device to add an ES256 key for authentication. */
-  public static void patchEs256ForAuth(String deviceId, String publicKeyFilePath, String projectId,
-                                       String cloudRegion, String registryName)
+  public static void patchEs256ForAuth(
+      String deviceId,
+      String publicKeyFilePath,
+      String projectId,
+      String cloudRegion,
+      String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
@@ -534,20 +577,26 @@ public class DeviceRegistryExample {
 
   // [START iot_patch_rsa]
   /** Patch the device to add an RSA256 key for authentication. */
-  public static void patchRsa256ForAuth(String deviceId, String publicKeyFilePath, String projectId,
-                                        String cloudRegion,
-                                        String registryName)
+  public static void patchRsa256ForAuth(
+      String deviceId,
+      String publicKeyFilePath,
+      String projectId,
+      String cloudRegion,
+      String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
@@ -577,19 +626,26 @@ public class DeviceRegistryExample {
   // [START iot_set_device_config]
   /** Set a device configuration to the specified data (string, JSON) and version (0 for latest). */
   public static void setDeviceConfiguration(
-      String deviceId, String projectId, String cloudRegion, String registryName,
-      String data, long version)
+      String deviceId,
+      String projectId,
+      String cloudRegion,
+      String registryName,
+      String data,
+      long version)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     ModifyCloudToDeviceConfigRequest req = new ModifyCloudToDeviceConfigRequest();
     req.setVersionToUpdate(version);
@@ -605,7 +661,8 @@ public class DeviceRegistryExample {
             .locations()
             .registries()
             .devices()
-            .modifyCloudToDeviceConfig(devicePath, req).execute();
+            .modifyCloudToDeviceConfig(devicePath, req)
+            .execute();
 
     System.out.println("Updated: " + config.getVersion());
   }
@@ -613,26 +670,28 @@ public class DeviceRegistryExample {
 
   // [START iot_get_iam_policy]
   /** Retrieves IAM permissions for the given registry. */
-  public static void getIamPermissions(
-      String projectId, String cloudRegion, String registryName)
+  public static void getIamPermissions(String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     com.google.api.services.cloudiot.v1.model.Policy policy =
         service
             .projects()
             .locations()
             .registries()
-            .getIamPolicy(registryPath, new GetIamPolicyRequest()).execute();
+            .getIamPolicy(registryPath, new GetIamPolicyRequest())
+            .execute();
 
     System.out.println("Policy ETAG: " + policy.getEtag());
 
@@ -653,29 +712,30 @@ public class DeviceRegistryExample {
   // [START iot_set_iam_policy]
   /** Sets IAM permissions for the given registry. */
   public static void setIamPermissions(
-      String projectId, String cloudRegion, String registryName,
-      String member, String role)
+      String projectId, String cloudRegion, String registryName, String member, String role)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String registryPath = String.format("projects/%s/locations/%s/registries/%s",
-        projectId, cloudRegion, registryName);
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     com.google.api.services.cloudiot.v1.model.Policy policy =
         service
             .projects()
             .locations()
             .registries()
-            .getIamPolicy(registryPath, new GetIamPolicyRequest()).execute();
+            .getIamPolicy(registryPath, new GetIamPolicyRequest())
+            .execute();
 
-    List<com.google.api.services.cloudiot.v1.model.Binding> bindings =
-        policy.getBindings();
+    List<com.google.api.services.cloudiot.v1.model.Binding> bindings = policy.getBindings();
 
     boolean addNewRole = true;
     if (bindings != null) {
@@ -705,15 +765,10 @@ public class DeviceRegistryExample {
     policy.setBindings(bindings);
     SetIamPolicyRequest req = new SetIamPolicyRequest().setPolicy(policy);
 
-    policy =
-        service
-            .projects()
-            .locations()
-            .registries()
-            .setIamPolicy(registryPath, req).execute();
+    policy = service.projects().locations().registries().setIamPolicy(registryPath, req).execute();
 
     System.out.println("Policy ETAG: " + policy.getEtag());
-    for (com.google.api.services.cloudiot.v1.model.Binding binding: policy.getBindings()) {
+    for (com.google.api.services.cloudiot.v1.model.Binding binding : policy.getBindings()) {
       System.out.println(String.format("Role: %s", binding.getRole()));
       System.out.println("Binding members: ");
       for (String mem : binding.getMembers()) {
@@ -723,8 +778,8 @@ public class DeviceRegistryExample {
   }
   // [END iot_set_iam_policy]
 
-  /** Send a command to a device. **/
-  // [START send_command]
+  /** Send a command to a device. * */
+  // [START iot_send_command]
   public static void sendCommand(
       String deviceId, String projectId, String cloudRegion, String registryName, String data)
       throws GeneralSecurityException, IOException {
@@ -732,12 +787,15 @@ public class DeviceRegistryExample {
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
-    final CloudIot service = new CloudIot.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),jsonFactory, init)
-        .setApplicationName(APP_NAME).build();
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
 
-    final String devicePath = String.format("projects/%s/locations/%s/registries/%s/devices/%s",
-        projectId, cloudRegion, registryName, deviceId);
+    final String devicePath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s/devices/%s",
+            projectId, cloudRegion, registryName, deviceId);
 
     SendCommandToDeviceRequest req = new SendCommandToDeviceRequest();
 
@@ -753,11 +811,284 @@ public class DeviceRegistryExample {
             .locations()
             .registries()
             .devices()
-            .sendCommandToDevice(devicePath, req).execute();
+            .sendCommandToDevice(devicePath, req)
+            .execute();
 
     System.out.println("Command response: " + res.toString());
   }
-  // [END send_command]
+  // [END iot_send_command]
+
+  public static void bindDeviceToGateway(
+      String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
+      throws GeneralSecurityException, IOException {
+    // [START iot_bind_device_to_gateway]
+    createDevice(projectId, cloudRegion, registryName, deviceId);
+
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
+
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+
+    BindDeviceToGatewayRequest request = new BindDeviceToGatewayRequest();
+    request.setDeviceId(deviceId);
+    request.setGatewayId(gatewayId);
+
+    BindDeviceToGatewayResponse response =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .bindDeviceToGateway(registryPath, request)
+            .execute();
+
+    System.out.println(String.format("Device bound: %s", response.toPrettyString()));
+    // [END iot_bind_device_to_gateway]
+  }
+
+  public static void unbindDeviceFromGateway(
+      String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
+      throws GeneralSecurityException, IOException {
+    // [START iot_unbind_device_from_gateway]
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
+
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+
+    UnbindDeviceFromGatewayRequest request = new UnbindDeviceFromGatewayRequest();
+    request.setDeviceId(deviceId);
+    request.setGatewayId(gatewayId);
+
+    UnbindDeviceFromGatewayResponse response =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .unbindDeviceFromGateway(registryPath, request)
+            .execute();
+
+    System.out.println(String.format("Device unbound: %s", response.toPrettyString()));
+    // [END iot_unbind_device_from_gateway]
+  }
+
+  /** Create a device to bind to a gateway. */
+  public static void createDevice(
+      String projectId, String cloudRegion, String registryName, String deviceId)
+      throws GeneralSecurityException, IOException {
+    // [START iot_create_device]
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
+
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+
+    List<Device> devices =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .list(registryPath)
+            .setFieldMask("config,gatewayConfig")
+            .execute()
+            .getDevices();
+
+    if (devices != null) {
+      System.out.println("Found " + devices.size() + " devices");
+      for (Device d : devices) {
+        if ((d.getId() != null && d.getId().equals(deviceId))
+            || (d.getName() != null && d.getName().equals(deviceId))) {
+          System.out.println("Device exists, skipping.");
+          return;
+        }
+      }
+    }
+
+    System.out.println("Creating device with id: " + deviceId);
+    Device device = new Device();
+    device.setId(deviceId);
+
+    GatewayConfig gwConfig = new GatewayConfig();
+    gwConfig.setGatewayType("NON_GATEWAY");
+    gwConfig.setGatewayAuthMethod("ASSOCIATION_ONLY");
+
+    device.setGatewayConfig(gwConfig);
+    Device createdDevice =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .create(registryPath, device)
+            .execute();
+
+    System.out.println("Created device: " + createdDevice.toPrettyString());
+    // [END iot_create_device]
+  }
+
+  /** Create a gateway to bind devices to. */
+  public static void createGateway(
+      String projectId,
+      String cloudRegion,
+      String registryName,
+      String gatewayId,
+      String certificateFilePath,
+      String algorithm)
+      throws GeneralSecurityException, IOException {
+    // [START iot_create_gateway]
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
+
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+
+    System.out.println("Creating gateway with id: " + gatewayId);
+    Device device = new Device();
+    device.setId(gatewayId);
+
+    GatewayConfig gwConfig = new GatewayConfig();
+    gwConfig.setGatewayType("GATEWAY");
+    gwConfig.setGatewayAuthMethod("ASSOCIATION_ONLY");
+
+    String keyFormat = "RSA_X509_PEM";
+    if (algorithm == "ES256") {
+      keyFormat = "ES256_PEM";
+    }
+
+    PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
+
+    byte[] keyBytes = java.nio.file.Files.readAllBytes(Paths.get(certificateFilePath));
+    publicKeyCredential.setKey(new String(keyBytes));
+    publicKeyCredential.setFormat(keyFormat);
+    DeviceCredential deviceCredential = new DeviceCredential();
+    deviceCredential.setPublicKey(publicKeyCredential);
+
+    device.setGatewayConfig(gwConfig);
+    device.setCredentials(Arrays.asList(deviceCredential));
+    Device createdDevice =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .create(registryPath, device)
+            .execute();
+
+    System.out.println("Created gateway: " + createdDevice.toPrettyString());
+    // [END iot_create_gateway]
+  }
+
+  public static void listGateways(String projectId, String cloudRegion, String registryName)
+      throws IOException, GeneralSecurityException {
+    // [START iot_list_gateways]
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
+
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+
+    List<Device> gateways =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .list(registryPath)
+            .setGatewayListOptionsGatewayType("GATEWAY")
+            .execute()
+            .getDevices();
+
+    if (gateways != null) {
+      System.out.println("Found " + gateways.size() + " devices");
+      for (Device d : gateways) {
+        System.out.println("Id: " + d.getId());
+        if (d.getConfig() != null) {
+          // Note that this will show the device config in Base64 encoded format.
+          System.out.println("Config: " + d.getGatewayConfig().toPrettyString());
+        }
+        System.out.println();
+      }
+    } else {
+      System.out.println("Registry has no devices.");
+    }
+    // [END iot_list_gateways]
+  }
+
+  /** List devices bound to a gateway. */
+  public static void listDevicesForGateway(
+      String projectId, String cloudRegion, String registryName, String gatewayId)
+      throws IOException, GeneralSecurityException {
+    // [START iot_list_devices_for_gateway]
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName(APP_NAME)
+            .build();
+
+    final String registryPath =
+        String.format(
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+
+    List<Device> deviceNumIds =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .list(registryPath)
+            .setGatewayListOptionsAssociationsGatewayId(gatewayId)
+            .execute()
+            .getDevices();
+
+    if (deviceNumIds != null) {
+      System.out.println("Found " + deviceNumIds.size() + " devices");
+      for (Device device : deviceNumIds) {
+        System.out.println(String.format("ID: %s", device.getId()));
+      }
+    } else {
+      System.out.println("Gateway has no bound devices.");
+    }
+    // [END iot_list_devices_for_gateway]
+  }
 
   /** Entry poit for CLI. */
   public static void main(String[] args) throws Exception {
@@ -774,28 +1105,36 @@ public class DeviceRegistryExample {
         break;
       case "create-es":
         System.out.println("Create ES Device:");
-        createDeviceWithEs256(options.deviceId, options.ecPublicKeyFile, options.projectId,
-            options.cloudRegion, options.registryName);
+        createDeviceWithEs256(
+            options.deviceId,
+            options.ecPublicKeyFile,
+            options.projectId,
+            options.cloudRegion,
+            options.registryName);
         break;
       case "create-rsa":
         System.out.println("Create RSA Device:");
-        createDeviceWithRs256(options.deviceId, options.rsaCertificateFile, options.projectId,
-            options.cloudRegion, options.registryName);
+        createDeviceWithRs256(
+            options.deviceId,
+            options.rsaCertificateFile,
+            options.projectId,
+            options.cloudRegion,
+            options.registryName);
         break;
       case "create-unauth":
         System.out.println("Create Unauth Device");
-        createDeviceWithNoAuth(options.deviceId, options.projectId, options.cloudRegion,
-            options.registryName);
+        createDeviceWithNoAuth(
+            options.deviceId, options.projectId, options.cloudRegion, options.registryName);
         break;
       case "create-registry":
         System.out.println("Create registry");
-        createRegistry(options.cloudRegion, options.projectId, options.registryName,
-            options.pubsubTopic);
+        createRegistry(
+            options.cloudRegion, options.projectId, options.registryName, options.pubsubTopic);
         break;
       case "delete-device":
         System.out.println("Delete device");
-        deleteDevice(options.deviceId, options.projectId, options.cloudRegion,
-            options.registryName);
+        deleteDevice(
+            options.deviceId, options.projectId, options.cloudRegion, options.registryName);
         break;
       case "delete-registry":
         System.out.println("Delete registry");
@@ -803,9 +1142,10 @@ public class DeviceRegistryExample {
         break;
       case "get-device":
         System.out.println("Get device");
-        System.out.println(getDevice(options.deviceId, options.projectId, options.cloudRegion,
-            options.registryName)
-            .toPrettyString());
+        System.out.println(
+            getDevice(
+                    options.deviceId, options.projectId, options.cloudRegion, options.registryName)
+                .toPrettyString());
         break;
       case "get-iam-permissions":
         System.out.println("Get iam permissions");
@@ -813,16 +1153,17 @@ public class DeviceRegistryExample {
         break;
       case "get-device-state":
         System.out.println("Get device state");
-        List<DeviceState> states = getDeviceStates(options.deviceId, options.projectId,
-            options.cloudRegion, options.registryName);
-        for (DeviceState state: states) {
+        List<DeviceState> states =
+            getDeviceStates(
+                options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+        for (DeviceState state : states) {
           System.out.println(state.toPrettyString());
         }
         break;
       case "get-registry":
         System.out.println("Get registry");
-        System.out.println(getRegistry(options.projectId, options.cloudRegion,
-            options.registryName));
+        System.out.println(
+            getRegistry(options.projectId, options.cloudRegion, options.registryName));
         break;
       case "list-devices":
         System.out.println("List devices");
@@ -834,21 +1175,34 @@ public class DeviceRegistryExample {
         break;
       case "patch-device-es":
         System.out.println("Patch device with ES");
-        patchEs256ForAuth(options.deviceId, options.ecPublicKeyFile, options.projectId,
-            options.cloudRegion, options.registryName);
+        patchEs256ForAuth(
+            options.deviceId,
+            options.ecPublicKeyFile,
+            options.projectId,
+            options.cloudRegion,
+            options.registryName);
         break;
       case "patch-device-rsa":
         System.out.println("Patch device with RSA");
-        patchRsa256ForAuth(options.deviceId, options.rsaCertificateFile, options.projectId,
-            options.cloudRegion, options.registryName);
+        patchRsa256ForAuth(
+            options.deviceId,
+            options.rsaCertificateFile,
+            options.projectId,
+            options.cloudRegion,
+            options.registryName);
         break;
       case "set-config":
         if (options.deviceId == null) {
           System.out.println("Specify device_id for the device you are updating.");
         } else {
           System.out.println("Setting device configuration");
-          setDeviceConfiguration(options.deviceId, options.projectId, options.cloudRegion,
-              options.registryName, options.configuration, options.version);
+          setDeviceConfiguration(
+              options.deviceId,
+              options.projectId,
+              options.cloudRegion,
+              options.registryName,
+              options.configuration,
+              options.version);
         }
         break;
       case "set-iam-permissions":
@@ -856,13 +1210,30 @@ public class DeviceRegistryExample {
           System.out.println("Specify member and role for the policy you are updating.");
         } else {
           System.out.println("Setting iam permissions");
-          setIamPermissions(options.projectId, options.cloudRegion, options.registryName,
-              options.member, options.role);
+          setIamPermissions(
+              options.projectId,
+              options.cloudRegion,
+              options.registryName,
+              options.member,
+              options.role);
         }
+        break;
+      case "list-gateways":
+        System.out.println("Listing gateways: ");
+        listGateways(options.projectId, options.cloudRegion, options.registryName);
+        break;
+      case "list-devices-for-gateway":
+        System.out.println("Listing devices for a gateway: ");
+        listDevicesForGateway(
+            options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
         break;
       case "send-command":
         System.out.println("Sending command to device:");
-        sendCommand(options.deviceId, options.projectId, options.cloudRegion, options.registryName,
+        sendCommand(
+            options.deviceId,
+            options.projectId,
+            options.cloudRegion,
+            options.registryName,
             options.commandData);
         break;
       default:
@@ -870,8 +1241,7 @@ public class DeviceRegistryExample {
         String footer = "\nhttps://cloud.google.com/iot-core";
 
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("DeviceRegistryExample", header, options.options, footer,
-            true);
+        formatter.printHelp("DeviceRegistryExample", header, options.options, footer, true);
         break;
     }
   }

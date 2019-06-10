@@ -23,7 +23,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-asset</artifactId>
-      <version>0.63.0-beta</version>
+      <version>0.86.0-beta</version>
     </dependency>
     <!-- [END asset_java_dependencies] -->
 
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.38.0</version>
+      <version>1.68.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

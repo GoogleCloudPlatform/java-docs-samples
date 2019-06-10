@@ -22,17 +22,22 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /** Command line options for the MQTT example. */
 public class MqttExampleOptions {
   String projectId;
   String registryId;
+  String command = "mqtt-demo";
   String deviceId;
+  String gatewayId;
   String privateKeyFile;
   String algorithm;
   String cloudRegion = "us-central1";
   int numMessages = 100;
   int tokenExpMins = 20;
+  String telemetryData = "Specify with -telemetry_data";
+
   String mqttBridgeHostname = "mqtt.googleapis.com";
   short mqttBridgePort = 8883;
   String messageType = "event";
@@ -69,6 +74,13 @@ public class MqttExampleOptions {
     options.addOption(
         Option.builder()
             .type(String.class)
+            .longOpt("gateway_id")
+            .hasArg()
+            .desc("The identifier for the Gateway.")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
             .longOpt("private_key_file")
             .hasArg()
             .desc("Path to private key file.")
@@ -84,6 +96,24 @@ public class MqttExampleOptions {
             .build());
 
     // Optional arguments.
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("command")
+            .hasArg()
+            .desc(
+                "Command to run:"
+                    + "\n\tlisten-for-config-messages"
+                    + "\n\tsend-data-from-bound-device")
+            .build());
+    options.addOption(
+        Option.builder()
+            .type(String.class)
+            .longOpt("telemetry_data")
+            .hasArg()
+            .desc("The telemetry data (string or JSON) to send on behalf of the delegated device.")
+            .build());
+
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -145,11 +175,20 @@ public class MqttExampleOptions {
       res.deviceId = commandLine.getOptionValue("device_id");
       res.privateKeyFile = commandLine.getOptionValue("private_key_file");
       res.algorithm = commandLine.getOptionValue("algorithm");
+      if (commandLine.hasOption("command")) {
+        res.command = commandLine.getOptionValue("command");
+      }
+      if (commandLine.hasOption("gateway_id")) {
+        res.gatewayId = commandLine.getOptionValue("gateway_id");
+      }
       if (commandLine.hasOption("wait_time")) {
         res.waitTime = ((Number) commandLine.getParsedOptionValue("wait_time")).intValue();
       }
       if (commandLine.hasOption("cloud_region")) {
         res.cloudRegion = commandLine.getOptionValue("cloud_region");
+      }
+      if (commandLine.hasOption("telemetry_data")) {
+        res.telemetryData = commandLine.getOptionValue("telemetry_data");
       }
       if (commandLine.hasOption("num_messages")) {
         res.numMessages = ((Number) commandLine.getParsedOptionValue("num_messages")).intValue();
