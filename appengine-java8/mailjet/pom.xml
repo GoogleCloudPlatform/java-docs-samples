@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.mailjet</groupId>
       <artifactId>mailjet-client</artifactId>
-      <version>4.1.1</version>
+      <version>4.2.1</version>
     </dependency>
 
     <dependency>
