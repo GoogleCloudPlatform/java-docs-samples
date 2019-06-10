@@ -47,7 +47,7 @@ mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetAp
 
 #### Import data
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="import_data [dataset-id] gs://java-docs-samples-testing/flower_traindata.csv"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="import_data [dataset-id] gs://cloud-ml-data/img/flower_photos/train_set.csv"
 ```
 
 ### Model API
