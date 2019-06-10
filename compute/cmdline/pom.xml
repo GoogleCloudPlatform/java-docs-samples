@@ -32,7 +32,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <project.compute.version>v1-rev20190107-1.28.0</project.compute.version>
+    <project.compute.version>v1-rev20190320-1.28.0</project.compute.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
