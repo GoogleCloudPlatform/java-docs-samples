@@ -27,6 +27,7 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.vision.v1p4beta1.AnnotateImageRequest;
 import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesRequest;
 import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesResponse.Builder;
 import com.google.cloud.vision.v1p4beta1.Feature;
 import com.google.cloud.vision.v1p4beta1.Feature.Type;
