@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -38,19 +38,19 @@
    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.11.445</version>
+      <version>1.11.537</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.36</version>
+      <version>0.44</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

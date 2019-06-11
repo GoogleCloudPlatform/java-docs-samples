@@ -6,4 +6,13 @@
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
+  <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>export</web-resource-name>
+            <url-pattern>/cloud-datastore-export</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 </web-app>

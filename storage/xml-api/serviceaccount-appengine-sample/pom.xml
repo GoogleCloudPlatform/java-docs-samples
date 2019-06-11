@@ -23,7 +23,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
   </parent>
 
   <groupId>com.google.apis-samples</groupId>
@@ -33,8 +33,8 @@
   <packaging>war</packaging>
 
   <properties>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
     <google-api-client.version>1.28.0</google-api-client.version>
     <webappDirectory>${project.build.directory}/${project.build.finalName}
     </webappDirectory>
@@ -112,7 +112,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.73</version>
     </dependency>
 
     <dependency>
