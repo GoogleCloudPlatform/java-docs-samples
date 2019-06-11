@@ -17,7 +17,6 @@
 package com.example.vision;
 
 // [START vision_async_batch_annotate_images_beta]
-import com.google.api.core.ApiFuture;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
@@ -25,11 +24,18 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.vision.v1p4beta1.*;
+import com.google.cloud.vision.v1p4beta1.AnnotateImageRequest;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesRequest;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesResponse.Builder;
+import com.google.cloud.vision.v1p4beta1.Feature;
 import com.google.cloud.vision.v1p4beta1.Feature.Type;
-
-import com.google.longrunning.Operation;
+import com.google.cloud.vision.v1p4beta1.GcsDestination;
+import com.google.cloud.vision.v1p4beta1.Image;
+import com.google.cloud.vision.v1p4beta1.ImageAnnotatorClient;
+import com.google.cloud.vision.v1p4beta1.ImageSource;
+import com.google.cloud.vision.v1p4beta1.OperationMetadata;
+import com.google.cloud.vision.v1p4beta1.OutputConfig;
 import com.google.protobuf.util.JsonFormat;
 import java.util.ArrayList;
 import java.util.List;
