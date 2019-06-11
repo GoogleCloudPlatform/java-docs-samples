@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <relativePath></relativePath>
   </parent>
 
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.62.0</version>
+      <version>1.70.0</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <version>0.44</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -63,7 +63,7 @@
       <plugin> <!-- Integration / System Tests -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.18.1</version>
+        <version>3.0.0-M3</version>
         <configuration>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           <forkCount>3</forkCount>

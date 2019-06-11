@@ -6,12 +6,12 @@ using the [Google Cloud Client Library for Java](https://github.com/GoogleCloudP
 
 This sample requires [Java](https://www.java.com/en/download/) and [Maven](http://maven.apache.org/) for building the application.
 
-This sample includes extra directories `step5`, `step6`, and `step7` that contain partial versions of this sample application. These directories are intended to provide guidance as part of a separate Codelab walk-through where the application is built in the following stages
+This sample includes extra directories `step4`, `step5`, and `step6` that contain partial versions of this sample application. These directories are intended to provide guidance as part of a separate Codelab walk-through where the application is built in the following stages
 that correspond to the steps in Codelab:
 
-* step5 - Create the sample database along with the tables Players and Scores.
-* step6 - Populate the Players and Scores tables with sample data.
-* step7 - Run sample queries including sorting the results by timestamp.
+* step4 - Create the sample database along with the tables Players and Scores.
+* step5 - Populate the Players and Scores tables with sample data.
+* step6 - Run sample queries including sorting the results by timestamp.
 
 If you only want to run the complete sample refer to the application in the `complete` directory.
 

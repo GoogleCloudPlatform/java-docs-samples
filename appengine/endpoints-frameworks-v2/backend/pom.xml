@@ -28,7 +28,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
   </parent>
 
   <prerequisites>
@@ -41,8 +41,8 @@
     <endpoints.framework.version>2.2.1</endpoints.framework.version>
 
     <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
     <appengine.maven.plugin.version>1.3.2</appengine.maven.plugin.version>
   </properties>
 
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.73</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

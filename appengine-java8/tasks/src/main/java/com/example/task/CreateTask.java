@@ -16,11 +16,11 @@
 
 package com.example.task;
 
-import com.google.cloud.tasks.v2beta3.AppEngineHttpRequest;
-import com.google.cloud.tasks.v2beta3.CloudTasksClient;
-import com.google.cloud.tasks.v2beta3.HttpMethod;
-import com.google.cloud.tasks.v2beta3.QueueName;
-import com.google.cloud.tasks.v2beta3.Task;
+import com.google.cloud.tasks.v2.AppEngineHttpRequest;
+import com.google.cloud.tasks.v2.CloudTasksClient;
+import com.google.cloud.tasks.v2.HttpMethod;
+import com.google.cloud.tasks.v2.QueueName;
+import com.google.cloud.tasks.v2.Task;
 import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
@@ -161,8 +161,8 @@ public class CreateTask {
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp(
         "client",
-        "A simple Cloud Tasks command line client that triggers a call to an AppEngine "
-            + "endpoint.",
+        "A simple Cloud Tasks command line client that creates a task with an "
+            + "App Engine endpoint.",
         options, "", true);
     throw new RuntimeException();
   }

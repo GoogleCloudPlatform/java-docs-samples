@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
-      <version>3.0.1</version>
+      <version>3.1.0-m1</version>
     </dependency>
     <!-- [END memorystore_dependencies] -->
   </dependencies>

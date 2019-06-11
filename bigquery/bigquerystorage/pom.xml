@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -39,7 +39,7 @@
     <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-bigquerystorage</artifactId>
-    <version>0.80.0-alpha</version>
+    <version>0.88.0-alpha</version>
     </dependency>
 
     <dependency>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <version>0.44</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

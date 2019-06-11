@@ -35,6 +35,7 @@ public class DeviceRegistryExampleOptions {
   String commandData = "Specify with --data";
   String configuration = "Specify with -configuration";
   String deviceId; // Default to UUID?
+  String gatewayId;
   String pubsubTopic;
   String registryName;
   String member;
@@ -123,6 +124,13 @@ public class DeviceRegistryExampleOptions {
             .desc("Name for your Device.")
             .build());
     options.addOption(
+            Option.builder()
+                    .type(String.class)
+                    .longOpt("gateway_id")
+                    .hasArg()
+                    .desc("Name for your Device.")
+                    .build());
+    options.addOption(
         Option.builder()
             .type(String.class)
             .longOpt("data")
@@ -180,6 +188,10 @@ public class DeviceRegistryExampleOptions {
         res.deviceId = commandLine.getOptionValue("device_id");
       }
 
+      if (commandLine.hasOption("device_id")) {
+        res.gatewayId = commandLine.getOptionValue("gateway_id");
+      }
+
       if (commandLine.hasOption("project_id")) {
         res.projectId = commandLine.getOptionValue("project_id");
       } else {
@@ -210,6 +222,9 @@ public class DeviceRegistryExampleOptions {
       }
       if (commandLine.hasOption("device_id")) {
         res.deviceId = commandLine.getOptionValue("device_id");
+      }
+      if (commandLine.hasOption("gateway_id")) {
+        res.gatewayId = commandLine.getOptionValue("gateway_id");
       }
       if (commandLine.hasOption("configuration")) {
         res.configuration = commandLine.getOptionValue("configuration");
