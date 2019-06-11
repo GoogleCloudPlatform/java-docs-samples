@@ -17,6 +17,7 @@
 package com.example.cloud.iot.examples;
 
 // [START iot_mqtt_includes]
+
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -254,9 +255,9 @@ public class MqttExample {
             gatewayId,
             privateKeyFile,
             algorithm);
-    DeviceRegistryExample.attachDeviceToGateway(client, deviceId);
+    attachDeviceToGateway(client, deviceId);
     sendDataFromDevice(client, deviceId, messageType, telemetryData);
-    DeviceRegistryExample.detachDeviceFromGateway(client, deviceId);
+    detachDeviceFromGateway(client, deviceId);
     // [END send_data_from_bound_device]
   }
 
@@ -284,10 +285,35 @@ public class MqttExample {
             privateKeyFile,
             algorithm);
     // Connect the bound device and listen for configuration messages.
-    DeviceRegistryExample.attachDeviceToGateway(client, deviceId);
+    attachDeviceToGateway(client, deviceId);
     attachCallback(client, deviceId);
 
-    DeviceRegistryExample.detachDeviceFromGateway(client, deviceId);
+    detachDeviceFromGateway(client, deviceId);
+  }
+
+  public static void attachDeviceToGateway(MqttClient client, String deviceId)
+      throws MqttException {
+    // [START iot_attach_device]
+    final String attachTopic = String.format("/devices/%s/attach", deviceId);
+    System.out.println(String.format("Attaching: %s", attachTopic));
+    String attachPayload = "{}";
+    MqttMessage message = new MqttMessage(attachPayload.getBytes());
+    message.setQos(1);
+    client.publish(attachTopic, message);
+    // [END iot_attach_device]
+  }
+
+  /** Detaches a bound device from the Gateway. */
+  public static void detachDeviceFromGateway(MqttClient client, String deviceId)
+      throws MqttException {
+    // [START iot_detach_device]
+    final String detachTopic = String.format("/devices/%s/detach", deviceId);
+    System.out.println(String.format("Detaching: %s", detachTopic));
+    String attachPayload = "{}";
+    MqttMessage message = new MqttMessage(attachPayload.getBytes());
+    message.setQos(1);
+    client.publish(detachTopic, message);
+    // [END iot_detach_device]
   }
 
   public static void mqttDeviceDemo(MqttExampleOptions options)

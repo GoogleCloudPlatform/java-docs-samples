@@ -13,6 +13,7 @@ This is a repository that contains java code snippets on [Cloud Platform Documen
 Technology Samples:
 
 * [Bigquery](bigquery)
+* [Data Catalog](datacatalog)
 * [Datastore](datastore)
 * [Endpoints](endpoints)
 * [Identity-Aware Proxy](iap)

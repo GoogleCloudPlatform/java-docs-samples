@@ -16,6 +16,9 @@
 
 package com.example.appengine.pubsub;
 
+import com.googlecode.jatl.Html;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 
 public class PubSubHome {
@@ -28,22 +31,92 @@ public class PubSubHome {
    *
    * @return html representation of messages (one per row)
    */
-  public static String getReceivedMessages() {
+  public static List<Message> getReceivedMessages() {
     List<Message> messageList = messageRepository.retrieve(MAX_MESSAGES);
-    return convertToHtmlTable(messageList);
+    return messageList;
   }
 
-  private static String convertToHtmlTable(List<Message> messages) {
-    StringBuilder sb = new StringBuilder();
-    for (Message message : messages) {
-      sb.append("<tr>");
-      sb.append("<td>" + message.getMessageId() + "</td>");
-      sb.append("<td>" + message.getData() + "</td>");
-      sb.append("<td>" + message.getPublishTime() + "</td>");
-      sb.append("</tr>");
-    }
-    return sb.toString();
+  /**
+   * Retrieve received claims in html.
+   *
+   * @return html representation of claims (one per row)
+   */
+  public static List<String> getReceivedClaims() {
+    List<String> claimList = messageRepository.retrieveClaims(MAX_MESSAGES);
+    return claimList;
   }
 
-  private PubSubHome() { }
+  /**
+   * Retrieve received tokens in html.
+   *
+   * @return html representation of tokens (one per row)
+   */
+  public static List<String> getReceivedTokens() {
+    List<String> tokenList = messageRepository.retrieveTokens(MAX_MESSAGES);
+    return tokenList;
+  }
+
+  public static String convertToHtml() {
+    Writer writer = new StringWriter(1024);
+    new Html(writer) {
+      {
+        html();
+        head();
+        meta().httpEquiv("refresh").content("10").end();
+        end();
+        body();
+        h3().text("Publish a message").end();
+        form().action("pubsub/publish").method("POST");
+        label().text("Message:").end();
+        input().id("payload").type("input").name("payload").end();
+        input().id("submit").type("submit").value("Send").end();
+        end();
+        h3().text("Last received tokens").end();
+        table().border("1").cellpadding("10");
+        tr();
+        th().text("Tokens").end();
+        end();
+        markupString(getReceivedTokens());
+        h3().text("Last received claims").end();
+        table().border("1").cellpadding("10");
+        tr();
+        th().text("Claims").end();
+        end();
+        markupString(getReceivedClaims());
+        h3().text("Last received messages").end();
+        table().border("1").cellpadding("10");
+        tr();
+        th().text("Id").end();
+        th().text("Data").end();
+        th().text("PublishTime").end();
+        end();
+        markupMessage(getReceivedMessages());
+        endAll();
+        done();
+      }
+
+      Html markupString(List<String> strings) {
+        for (String string : strings) {
+          tr();
+          th().text(string).end();
+          end();
+        }
+        return end();
+      }
+
+      Html markupMessage(List<Message> messages) {
+        for (Message message : messages) {
+          tr();
+          th().text(message.getMessageId()).end();
+          th().text(message.getData()).end();
+          th().text(message.getPublishTime()).end();
+          end();
+        }
+        return end();
+      }
+    };
+    return ((StringWriter) writer).getBuffer().toString();
+  }
+
+  private PubSubHome() {}
 }
