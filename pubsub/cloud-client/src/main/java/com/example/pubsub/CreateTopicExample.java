@@ -44,13 +44,12 @@ public class CreateTopicExample {
     ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.createTopic(topic);
+      System.out.printf("Topic %s:%s created.\n", topic.getProject(), topic.getTopic());
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies topic already exists
       System.out.print(e.getStatusCode().getCode());
       System.out.print(e.isRetryable());
     }
-
-    System.out.printf("Topic %s:%s created.\n", topic.getProject(), topic.getTopic());
   }
 }
 // [END pubsub_quickstart_create_topic]
