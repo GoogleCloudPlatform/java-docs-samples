@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
   </parent>
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.mailjet</groupId>
       <artifactId>mailjet-client</artifactId>
-      <version>4.1.1</version>
+      <version>4.2.1</version>
     </dependency>
 
     <dependency>

@@ -40,36 +40,8 @@ To get started, [download][maven-download] and [install][maven-install] it.
 [text-to-speech-api]: https://console.cloud.google.com/apis/api/texttospeech.googleapis.com/overview?project=_
 [auth]: https://cloud.google.com/docs/authentication/getting-started
 
-## Quckstart
-Synthesize text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/QuickstartSample.java)
+## Snippets
+To verify the snippets are running correctly, you can run the tests via:
 ```
-mvn exec:java -DQuickstart
-```
-
-## List Voices
-This sample lists all the supported voices. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/ListAllSupportedVoices.java)
-```
-mvn exec:java -DListVoices
-```
-
-## Synthesize Text
-This sample synthesizes text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
-```
-mvn exec:java -DSynthesizeText -Dexec.args='--text "hello"'
-```
-
-This sample synthesizes ssml to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
-```
-mvn exec:java -DSynthesizeText -Dexec.args='--ssml "<speak>Hello there.</speak>"'
-```
-
-## Synthesize File
-This sample synthesizes a text file to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeFile.java)
-```
-mvn exec:java -DSynthesizeFile -Dexec.args='--text resources/hello.txt'
-```
-
-This sample synthesizes a ssml file to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeFile.java)
-```
-mvn exec:java -DSynthesizeFile -Dexec.args='--ssml resources/hello.ssml'
+mvn clean verify
 ```

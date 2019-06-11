@@ -97,7 +97,7 @@ public class UrlFetchServlet extends HttpServlet {
     int respCode = conn.getResponseCode(); // New items get NOT_FOUND on PUT
     if (respCode == HttpURLConnection.HTTP_OK || respCode == HttpURLConnection.HTTP_NOT_FOUND) {
       req.setAttribute("error", "");
-      StringBuffer response = new StringBuffer();
+      StringBuilder response = new StringBuilder();
       String line;
 
       // Read input data stream.

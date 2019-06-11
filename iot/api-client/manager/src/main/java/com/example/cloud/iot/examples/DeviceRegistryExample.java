@@ -42,6 +42,7 @@ import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
 import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayResponse;
+
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
@@ -57,11 +58,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import org.apache.commons.cli.HelpFormatter;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import org.apache.commons.cli.HelpFormatter;
 /**
  * Example of using Cloud IoT device manager API to administer devices, registries and projects.
  *
@@ -85,7 +83,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  * <code>
  * $ mvn clean compile assembly:single
  * $ mvn exec:java \
- *       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+ *       -Dexec.mainClass="com.google.cloud.iot.examples.DeviceRegistryExample" \
  *       -Dexec.args="-project_id=my-project-id \
  *                    -pubsub_topic=projects/my-project-id/topics/my-topic-id \
  *                    -ec_public_key_file=/path/to/ec_public.pem \
@@ -93,6 +91,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  * </code>
  * </pre>
  */
+
 public class DeviceRegistryExample {
 
   static final String APP_NAME = "DeviceRegistryExample";
@@ -780,7 +779,7 @@ public class DeviceRegistryExample {
   // [END iot_set_iam_policy]
 
   /** Send a command to a device. * */
-  // [START send_command]
+  // [START iot_send_command]
   public static void sendCommand(
       String deviceId, String projectId, String cloudRegion, String registryName, String data)
       throws GeneralSecurityException, IOException {
@@ -817,12 +816,12 @@ public class DeviceRegistryExample {
 
     System.out.println("Command response: " + res.toString());
   }
-  // [END send_command]
+  // [END iot_send_command]
 
   public static void bindDeviceToGateway(
       String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
       throws GeneralSecurityException, IOException {
-    // [START bind_device_to_gateway]
+    // [START iot_bind_device_to_gateway]
     createDevice(projectId, cloudRegion, registryName, deviceId);
 
     GoogleCredential credential =
@@ -851,13 +850,13 @@ public class DeviceRegistryExample {
             .execute();
 
     System.out.println(String.format("Device bound: %s", response.toPrettyString()));
-    // [END bind_device_to_gateway]
+    // [END iot_bind_device_to_gateway]
   }
 
   public static void unbindDeviceFromGateway(
       String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
       throws GeneralSecurityException, IOException {
-    // [START unbind_device_from_gateway]
+    // [START iot_unbind_device_from_gateway]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -884,56 +883,14 @@ public class DeviceRegistryExample {
             .execute();
 
     System.out.println(String.format("Device unbound: %s", response.toPrettyString()));
-    // [END unbind_device_from_gateway]
-  }
-
-  public static void sendDataFromDevice(
-      MqttClient client, String deviceId, String messageType, String data) throws MqttException {
-    // [START send_data_from_bound_device]
-    if (!messageType.equals("events") && !messageType.equals("state")) {
-      System.err.println(
-          String.format(
-              "%s is invalid message type, must ether be 'state' or events'", messageType));
-      return;
-    }
-    final String dataTopic = String.format("/devices/%s/%s", deviceId, messageType);
-    MqttMessage message = new MqttMessage(data.getBytes());
-    message.setQos(1);
-    client.publish(dataTopic, message);
-    System.out.println("Data sent");
-    // [END send_data_from_bound_device]
-  }
-
-  public static void attachDeviceToGateway(MqttClient client, String deviceId)
-      throws MqttException {
-    // [START attach_device]
-    final String attachTopic = String.format("/devices/%s/attach", deviceId);
-    System.out.println(String.format("Attaching: %s", attachTopic));
-    String attachPayload = "{}";
-    MqttMessage message = new MqttMessage(attachPayload.getBytes());
-    message.setQos(1);
-    client.publish(attachTopic, message);
-    // [END attach_device]
-  }
-
-  /** Detaches a bound device from the Gateway. */
-  public static void detachDeviceFromGateway(MqttClient client, String deviceId)
-      throws MqttException {
-    // [START detach_device]
-    final String detachTopic = String.format("/devices/%s/detach", deviceId);
-    System.out.println(String.format("Detaching: %s", detachTopic));
-    String attachPayload = "{}";
-    MqttMessage message = new MqttMessage(attachPayload.getBytes());
-    message.setQos(1);
-    client.publish(detachTopic, message);
-    // [END detach_device]
+    // [END iot_unbind_device_from_gateway]
   }
 
   /** Create a device to bind to a gateway. */
   public static void createDevice(
       String projectId, String cloudRegion, String registryName, String deviceId)
       throws GeneralSecurityException, IOException {
-    // [START create_device]
+    // [START iot_create_device]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -988,7 +945,7 @@ public class DeviceRegistryExample {
             .execute();
 
     System.out.println("Created device: " + createdDevice.toPrettyString());
-    // [END create_device]
+    // [END iot_create_device]
   }
 
   /** Create a gateway to bind devices to. */
@@ -1000,7 +957,7 @@ public class DeviceRegistryExample {
       String certificateFilePath,
       String algorithm)
       throws GeneralSecurityException, IOException {
-    // [START create_gateway]
+    // [START iot_create_gateway]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -1047,12 +1004,12 @@ public class DeviceRegistryExample {
             .execute();
 
     System.out.println("Created gateway: " + createdDevice.toPrettyString());
-    // [END create_gateway]
+    // [END iot_create_gateway]
   }
 
   public static void listGateways(String projectId, String cloudRegion, String registryName)
       throws IOException, GeneralSecurityException {
-    // [START list_gateways]
+    // [START iot_list_gateways]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -1066,42 +1023,38 @@ public class DeviceRegistryExample {
         String.format(
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
-    List<Device> devices =
+    List<Device> gateways =
         service
             .projects()
             .locations()
             .registries()
             .devices()
             .list(registryPath)
-            .setFieldMask("config,gatewayConfig")
+            .setGatewayListOptionsGatewayType("GATEWAY")
             .execute()
             .getDevices();
 
-    if (devices != null) {
-      System.out.println("Found " + devices.size() + " devices");
-      for (Device d : devices) {
-        if (d.getGatewayConfig() != null
-            && d.getGatewayConfig().getGatewayType() != null
-            && d.getGatewayConfig().getGatewayType().equals("GATEWAY")) {
-          System.out.println("Id: " + d.getId());
-          if (d.getConfig() != null) {
-            // Note that this will show the device config in Base64 encoded format.
-            System.out.println("Config: " + d.getGatewayConfig().toPrettyString());
-          }
-          System.out.println();
+    if (gateways != null) {
+      System.out.println("Found " + gateways.size() + " devices");
+      for (Device d : gateways) {
+        System.out.println("Id: " + d.getId());
+        if (d.getConfig() != null) {
+          // Note that this will show the device config in Base64 encoded format.
+          System.out.println("Config: " + d.getGatewayConfig().toPrettyString());
         }
+        System.out.println();
       }
     } else {
       System.out.println("Registry has no devices.");
     }
-    // [END list_gateways]
+    // [END iot_list_gateways]
   }
 
   /** List devices bound to a gateway. */
   public static void listDevicesForGateway(
       String projectId, String cloudRegion, String registryName, String gatewayId)
       throws IOException, GeneralSecurityException {
-    // [START list_devices_for_gateway]
+    // [START iot_list_devices_for_gateway]
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -1110,11 +1063,6 @@ public class DeviceRegistryExample {
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
             .build();
-
-    final String gatewayPath =
-        String.format(
-            "projects/%s/locations/%s/registries/%s/devices/%s",
-            projectId, cloudRegion, registryName, gatewayId);
 
     final String registryPath =
         String.format(
@@ -1139,7 +1087,7 @@ public class DeviceRegistryExample {
     } else {
       System.out.println("Gateway has no bound devices.");
     }
-    // [END list_devices_for_gateway]
+    // [END iot_list_devices_for_gateway]
   }
 
   /** Entry poit for CLI. */
@@ -1151,25 +1099,6 @@ public class DeviceRegistryExample {
     }
 
     switch (options.command) {
-      case "bind-device-to-gateway":
-        System.out.println("Binding device to gateway:");
-        bindDeviceToGateway(
-            options.projectId,
-            options.cloudRegion,
-            options.registryName,
-            options.deviceId,
-            options.gatewayId);
-        break;
-      case "create-gateway":
-        System.out.println("Creating Gateway:");
-        createGateway(
-            options.projectId,
-            options.cloudRegion,
-            options.registryName,
-            options.gatewayId,
-            options.publicKeyFile,
-            options.algorithm);
-        break;
       case "create-iot-topic":
         System.out.println("Create IoT Topic:");
         createIotTopic(options.projectId, options.pubsubTopic);
@@ -1240,16 +1169,6 @@ public class DeviceRegistryExample {
         System.out.println("List devices");
         listDevices(options.projectId, options.cloudRegion, options.registryName);
         break;
-      case "list-gateways":
-        System.out.println("Listing gateways:");
-        listGateways(options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "list-devices-for-gateway":
-        System.out.println("Listing devices for gateway:");
-        listDevicesForGateway(
-            options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
-
-        break;
       case "list-registries":
         System.out.println("List registries");
         listRegistries(options.projectId, options.cloudRegion);
@@ -1298,6 +1217,15 @@ public class DeviceRegistryExample {
               options.member,
               options.role);
         }
+        break;
+      case "list-gateways":
+        System.out.println("Listing gateways: ");
+        listGateways(options.projectId, options.cloudRegion, options.registryName);
+        break;
+      case "list-devices-for-gateway":
+        System.out.println("Listing devices for a gateway: ");
+        listDevicesForGateway(
+            options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
         break;
       case "send-command":
         System.out.println("Sending command to device:");
