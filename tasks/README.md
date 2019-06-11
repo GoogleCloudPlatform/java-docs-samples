@@ -22,7 +22,7 @@ pushes it to your queue.
 To create a queue using the Cloud SDK, use the following gcloud command:
 
 ```
-gcloud beta tasks queues create <QUEUE_NAME>
+gcloud tasks queues create <QUEUE_NAME>
 ```
 
 ## Run the Sample Using the Command Line
@@ -36,14 +36,14 @@ export GOOGLE_CLOUD_PROJECT=<YOUR_GOOGLE_CLOUD_PROJECT>
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
-created can be listed with `gcloud beta tasks queues list`.
+created can be listed with `gcloud tasks queues list`.
 
 ```
 export QUEUE_ID=<QUEUE_NAME>
 ```
 
 And finally the location ID, which can be discovered with
-`gcloud beta tasks queues describe $QUEUE_ID`, with the location embedded in
+`gcloud tasks queues describe $QUEUE_ID`, with the location embedded in
 the "name" value (for instance, if the name is
 "projects/my-project/locations/us-central1/queues/my-queue", then the
 location is "us-central1").
