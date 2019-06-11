@@ -54,17 +54,13 @@ export LOCATION_ID=<YOUR_ZONE>
 
 ### Creating Tasks with HTTP Targets
 
-Set an environment variable for the endpoint to your task handler. This is an
-example url:
-```
-export URL=https://example.com/taskshandler
-```
-
-Running the sample will create a task and add it to your queue. As the queue
-processes each task, it will send the task to the specific URL endpoint:
+Set an endpoint to your task handler by replacing the variable `url` with your
+HTTP target. Running the sample will create a task and add it to your queue.
+As the queue processes each task, it will send the task to the specific URL
+endpoint:
 
 ```
-mvn exec:java@HttpTask"
+mvn exec:java@HttpTask
 ```
 
 ### Using HTTP Targets with Authentication Tokens
@@ -73,13 +69,11 @@ Your Cloud Tasks [service account][sa],
 (service-<project-number>@gcp-sa-cloudtasks.iam.gserviceaccount.com), must
 have the role of: `Service Account Token Creator` to generate a tokens.
 
-Create or use an existing [service account][sa] to replace `<SERVICE_ACCOUNT_EMAIL>`
-in `CreateHttpTaskWithToken.java`. This service account will be used to
-authenticate the OIDC token.
+Create or use an existing [service account][sa] to authenticate the OIDC token.
 
 Running the sample with command:
 ```
-mvn exec:java@WithToken"
+mvn exec:java@WithToken -Dexec.args="<SERVICE_ACCOUNT_EMAIL>"
 ```
 
 

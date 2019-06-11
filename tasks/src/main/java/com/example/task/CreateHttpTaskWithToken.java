@@ -32,7 +32,6 @@ public class CreateHttpTaskWithToken {
     String projectId = System.getenv("PROJECT_ID");
     String queueName = System.getenv("QUEUE_ID");
     String location = System.getenv("LOCATION_ID");
-    String url = System.getenv("URL");
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
@@ -40,16 +39,17 @@ public class CreateHttpTaskWithToken {
       // projectId = "my-project-id";
       // queueName = "my-queue";
       // location = "us-central1";
-      // url = "https://example.com/taskhandler";
-      String payload = "hello";
+      String email = args[0]; // Cloud IAM service account
+      String url =
+          "https://example.com/taskhandler"; // The full url path that the request will be sent to
+      String payload = "Hello, World!"; // The task HTTP request body
 
       // Construct the fully qualified queue name.
       String queuePath = QueueName.of(projectId, location, queueName).toString();
 
       // Add your service account email to construct the OIDC token.
       // in order to add an authentication header to the request.
-      OidcToken.Builder oidcTokenBuilder =
-          OidcToken.newBuilder().setServiceAccountEmail("<SERVICE_ACCOUNT_EMAIL>");
+      OidcToken.Builder oidcTokenBuilder = OidcToken.newBuilder().setServiceAccountEmail(email);
 
       // Construct the task body.
       Task.Builder taskBuilder =

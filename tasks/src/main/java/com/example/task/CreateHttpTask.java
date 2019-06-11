@@ -27,11 +27,10 @@ import java.nio.charset.Charset;
 
 public class CreateHttpTask {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String... args) throws Exception {
     String projectId = System.getenv("PROJECT_ID");
     String queueName = System.getenv("QUEUE_ID");
     String location = System.getenv("LOCATION_ID");
-    String url = System.getenv("URL");
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
@@ -39,7 +38,7 @@ public class CreateHttpTask {
       // projectId = "my-project-id";
       // queueName = "my-queue";
       // location = "us-central1";
-      // url = "https://example.com/taskhandler";
+      String url = "https://example.com/taskhandler";
       String payload = "hello";
 
       // Construct the fully qualified queue name.
