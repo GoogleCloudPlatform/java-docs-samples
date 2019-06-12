@@ -45,7 +45,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>0.88.0-beta</version>
+      <version>1.4.0</version>
     </dependency>
   </dependencies>
   <build>
