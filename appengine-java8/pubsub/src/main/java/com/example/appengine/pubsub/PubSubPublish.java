@@ -40,10 +40,11 @@ public class PubSubPublish extends HttpServlet {
       String topicId = System.getenv("PUBSUB_TOPIC");
       // create a publisher on the topic
       if (publisher == null) {
-        ProjectTopicName topicName = ProjectTopicName.newBuilder()
-            .setProject(ServiceOptions.getDefaultProjectId())
-            .setTopic(topicId)
-            .build();
+        ProjectTopicName topicName =
+            ProjectTopicName.newBuilder()
+                .setProject(ServiceOptions.getDefaultProjectId())
+                .setTopic(topicId)
+                .build();
         publisher = Publisher.newBuilder(topicName).build();
       }
       // construct a pubsub message from the payload
@@ -61,7 +62,7 @@ public class PubSubPublish extends HttpServlet {
 
   private Publisher publisher;
 
-  public PubSubPublish() { }
+  public PubSubPublish() {}
 
   PubSubPublish(Publisher publisher) {
     this.publisher = publisher;

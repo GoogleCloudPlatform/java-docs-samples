@@ -25,8 +25,8 @@
     <properties>
         <objectify.version>5.1.21</objectify.version>
         <guava.version>20.0</guava.version>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <!--
@@ -36,7 +36,7 @@
     <parent>
         <groupId>com.google.cloud.samples</groupId>
         <artifactId>shared-configuration</artifactId>
-        <version>1.0.9</version>
+    <version>1.0.11</version>
     </parent>
 
     <!-- [START set_versions] -->
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.73</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13-beta-2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -90,25 +90,25 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.73</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.73</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-tools-sdk</artifactId>
-            <version>1.9.68</version>
+            <version>1.9.73</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>0.42</version>
+            <version>0.44</version>
             <scope>test</scope>
         </dependency>
 

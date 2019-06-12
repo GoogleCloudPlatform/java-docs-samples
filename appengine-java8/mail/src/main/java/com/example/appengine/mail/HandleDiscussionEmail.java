@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,25 @@
 
 package com.example.appengine.mail;
 
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 // [START example]
 public class HandleDiscussionEmail extends MailHandlerBase {
 
   private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
-  public HandleDiscussionEmail() { super("discuss-(.*)@(.*)"); }
+
+  public HandleDiscussionEmail() {
+    super("discuss-(.*)@(.*)");
+  }
 
   @Override
   protected boolean processMessage(HttpServletRequest req, HttpServletResponse res)
-    throws ServletException
-  {
+      throws ServletException {
     log.info("Received e-mail sent to discuss list.");
     MimeMessage msg = getMessageFromRequest(req);
     Matcher match = getMatcherFromRequest(req);

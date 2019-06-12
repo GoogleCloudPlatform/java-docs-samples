@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// [START endpoints_auth_info_backend]
 /**
  * A servlet that returns authentication information.
  * See openapi.yaml for authentication mechanisms (e.g. JWT tokens, Google ID token).
@@ -57,3 +58,4 @@ public class AuthInfoServlet extends HttpServlet {
     }
   }
 }
+// [END endpoints_auth_info_backend]

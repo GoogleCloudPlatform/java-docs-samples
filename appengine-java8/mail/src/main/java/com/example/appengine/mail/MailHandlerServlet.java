@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,13 @@
 package com.example.appengine.mail;
 
 // [START mail_handler_servlet]
-import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.Properties;
 
+import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

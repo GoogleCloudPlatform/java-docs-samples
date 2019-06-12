@@ -28,7 +28,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -40,12 +40,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev20181031-1.27.0</version>
+      <version>v1-rev20190125-1.28.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.27.0</version>
+      <version>1.28.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -84,11 +84,20 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.3</version>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <compilerArgs>
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-Xplugin:ErrorProne</arg>
+          </compilerArgs>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>2.3.3</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>

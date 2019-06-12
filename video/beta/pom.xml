@@ -26,7 +26,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -36,17 +36,24 @@
   </properties>
 
   <dependencies>
+    <!-- [START video_java_dependencies_beta] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.70.0-beta</version>
+      <version>0.84.0-beta</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>1.65.0</version>
+    </dependency>
+    <!-- [END video_java_dependencies_beta] -->
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>

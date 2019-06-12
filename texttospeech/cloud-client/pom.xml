@@ -16,12 +16,14 @@
   <artifactId>tts-samples</artifactId>
   <packaging>jar</packaging>
 
-  <!-- Parent defines config for testing & linting. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -35,7 +37,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-texttospeech</artifactId>
-      <version>0.70.0-beta</version>
+      <version>0.88.0-beta</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
@@ -48,137 +50,14 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <version>0.44</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-
-  <profiles>
-    <!--Quickstart-->
-    <profile>
-      <id>Quickstart</id>
-      <activation>
-        <property>
-          <name>Quickstart</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <mainClass>com.example.texttospeech.QuickstartSample</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <!--ListVoices-->
-    <profile>
-      <id>ListVoices</id>
-      <activation>
-        <property>
-          <name>ListVoices</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <mainClass>com.example.texttospeech.ListAllSupportedVoices</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <!--SynthesizeFile-->
-    <profile>
-      <id>SynthesizeFile</id>
-      <activation>
-        <property>
-          <name>SynthesizeFile</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <mainClass>com.example.texttospeech.SynthesizeFile</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <!--SynthesizeText-->
-    <profile>
-      <id>SynthesizeText</id>
-      <activation>
-        <property>
-          <name>SynthesizeText</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <mainClass>com.example.texttospeech.SynthesizeText</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
