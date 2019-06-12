@@ -17,7 +17,6 @@
 package com.google.cloud.vision.samples.automl;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.lang.Boolean.FALSE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -39,7 +38,6 @@ public class DatasetApiIT {
   private static final String DATASET_NAME = "test_vision_dataset";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private DatasetApi app;
   private String datasetId;
 
   @Before
@@ -55,9 +53,9 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testCreateImportDeleteDataset() throws Exception {
+  public void testCreateImportDeleteDataset() {
     // Act
-    DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME, FALSE);
+    DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME, false);
 
     // Assert
     String got = bout.toString();
@@ -84,7 +82,7 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testListGetDatasets() throws Exception {
+  public void testListGetDatasets() {
     // Act
     DatasetApi.listDatasets(PROJECT_ID, COMPUTE_REGION, "imageClassificationDatasetMetadata:*");
 
