@@ -57,7 +57,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client</artifactId>
-      <version>1.28.0</version>
+      <version>1.29.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <version>0.44</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
