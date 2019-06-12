@@ -148,7 +148,7 @@ public class Analyze {
 
       // Print the response
       for (Entity entity : response.getEntitiesList()) {
-        System.out.printf("Entity: %s\n", entity.getName());
+        System.out.printf("Entity: %s", entity.getName());
         System.out.printf("Salience: %.3f\n", entity.getSalience());
         System.out.println("Metadata: ");
         for (Map.Entry<String, String> entry : entity.getMetadataMap().entrySet()) {

@@ -42,7 +42,7 @@ import javax.sound.sampled.TargetDataLine;
 
 public class InfiniteStreamRecognize {
 
-  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+  private static final int STREAMING_LIMIT = 10000; // 10 seconds
 
   public static final String RED = "\033[0;31m";
   public static final String GREEN = "\033[0;32m";
