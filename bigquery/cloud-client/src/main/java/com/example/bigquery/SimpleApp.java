@@ -69,8 +69,6 @@ public class SimpleApp {
 
     // [START bigquery_simple_app_print]
     // Get the results.
-    QueryResponse response = bigquery.getQueryResults(jobId);
-
     TableResult result = queryJob.getQueryResults();
 
     // Print all pages of the results.

@@ -22,11 +22,14 @@
   <groupId>com.example.endpoints</groupId>
   <artifactId>endpoints</artifactId>
 
+  <!--
+  The parent pom defines common style checks and testing strategies for our samples.
+  Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -34,10 +37,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <maven.war.plugin>2.6</maven.war.plugin>
-
-    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
-    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
-
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
 
@@ -65,14 +64,14 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.maven.plugin}</version>
+        <version>2.0.0</version>
         <configuration>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.maven.plugin}</version>
+        <version>9.4.18.v20190429</version>
       </plugin>
     </plugins>
   </build>
