@@ -216,7 +216,6 @@ public class ModelApi {
       e.printStackTrace();
     }
   }
-
   // [END automl_vision_get_model]
 
   // [START automl_vision_list_model_evaluations]
@@ -264,9 +263,7 @@ public class ModelApi {
    * @param modelId the Id of the model.
    * @param modelEvaluationId the Id of your model evaluation.
    */
-  static void 
-
-Evaluation(
+  static void getModelEvaluation(
       String projectId, String computeRegion, String modelId, String modelEvaluationId) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
