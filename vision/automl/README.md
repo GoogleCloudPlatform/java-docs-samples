@@ -16,7 +16,7 @@ using the [Google Cloud Client Library for Java][google-cloud-java].
 
 ## Set the environment variables
 
-PROJECT_ID = [Id of the project]
+GOOGLE_CLOUD_PROJECT = [Id of the project]
 REGION_NAME = [Region name]
 ## Build the sample
 
@@ -32,58 +32,69 @@ mvn clean package
 
 #### Create a new dataset
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="create_dataset test_dataset"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" \
+-Dexec.args="create_dataset test_dataset"
 ```
 
 #### List datasets
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="list_datasets"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" \
+-Dexec.args="list_datasets"
 ```
 
 #### Get dataset
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="get_dataset [dataset-id]"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" \
+-Dexec.args="get_dataset [dataset-id]"
 ```
 
 #### Import data
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" -Dexec.args="import_data [dataset-id] gs://java-docs-samples-testing/flower_traindata.csv"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.DatasetApi" \
+-Dexec.args="import_data [dataset-id] gs://java-docs-samples-testing/flower_traindata.csv"
 ```
 
 ### Model API
 
 #### Create Model
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="create_model [dataset-id] test_model [training-budget] "
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" \
+-Dexec.args="create_model [dataset-id] test_model [training-budget] "
 ```
 
 #### List Models
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="list_models"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" \
+-Dexec.args="list_models"
 ```
 
 #### Get Model
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="get_model [model-id]"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" \
+-Dexec.args="get_model [model-id]"
 ```
 
 #### List Model Evaluations
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="list_model_evaluation [model-id]"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" \
+-Dexec.args="list_model_evaluation [model-id]"
 ```
 
 #### Get Model Evaluation
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="get_model_evaluation [model-id] [model-evaluation-id]"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" \
+-Dexec.args="get_model_evaluation [model-id] [model-evaluation-id]"
 ```
 
 #### Delete Model
 ```
-mvn exec:java-Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" -Dexec.args="delete_model [model-id]"
+mvn exec:java-Dexec.mainClass="com.google.cloud.vision.samples.automl.ModelApi" \
+-Dexec.args="delete_model [model-id]"
 ```
 ### Predict API
 
 ```
-mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.PredictApi" -Dexec.args="predict [model-id] ./resources/dandelion.jpg 0.7"
+mvn exec:java -Dexec.mainClass="com.google.cloud.vision.samples.automl.PredictionApi" \
+-Dexec.args="[model-id] ./resources/dandelion.jpg 0.7"
 ```
 
