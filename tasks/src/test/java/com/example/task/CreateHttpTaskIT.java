@@ -22,7 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -30,7 +32,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateHttpTaskIT {
   private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String LOCATION_ID = "us-central1";
+  private static final String LOCATION_ID = "us-east1";
   private static final String QUEUE_ID = "default";
   private static final String EMAIL = "tasks-test@java-docs-samples-tests.iam.gserviceaccount.com";
   private ByteArrayOutputStream bout;
