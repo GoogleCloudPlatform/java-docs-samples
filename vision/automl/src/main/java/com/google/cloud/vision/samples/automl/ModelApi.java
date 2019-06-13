@@ -199,9 +199,9 @@ public class ModelApi {
       System.out.println(String.format("Model display name: %s", model.getDisplayName()));
       System.out.println("Image classification model metadata:");
       System.out.println(
-          "Training budget: " + model.getImageClassificationModelMetadata().getTrainBudget());
+          "Tranning budget: " + model.getImageClassificationModelMetadata().getTrainBudget());
       System.out.println(
-          "Training cost: " + model.getImageClassificationModelMetadata().getTrainCost());
+          "Tranning cost:" + model.getImageClassificationModelMetadata().getTrainCost());
       System.out.println(
           String.format(
               "Stop reason: %s", model.getImageClassificationModelMetadata().getStopReason()));

@@ -40,7 +40,7 @@ Copyright 2016 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-maven-plugin</artifactId>
-      <version>1.9.75</version>
+      <version>1.9.74</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
