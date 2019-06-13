@@ -50,6 +50,11 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-logging-logback</artifactId>
+      <version>0.95.0-alpha</version>
+    </dependency>
 
   </dependencies>
   <!-- [END gae_flex_libraries_dependencies] -->
