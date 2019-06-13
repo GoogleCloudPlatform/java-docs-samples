@@ -22,19 +22,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /** Tests for creating Tasks with HTTP targets. */
 @RunWith(JUnit4.class)
 public class CreateHttpTaskIT {
-
+  private static final String PROJECT_ID = "java-docs-samples-testing";
+  private static final String LOCATION_ID = "us-central1";
+  private static final String QUEUE_ID = "default";
+  private static final String EMAIL = "tasks-test@java-docs-samples-tests.iam.gserviceaccount.com";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  // @Rule public Timeout globalTimeout = Timeout.seconds(300); // 5 minute timeout
 
   @Before
   public void setUp() {
@@ -50,15 +50,14 @@ public class CreateHttpTaskIT {
 
   @Test
   public void testCreateHttpTask() throws Exception {
-    CreateHttpTask.main();
+    CreateHttpTask.createTask(PROJECT_ID, LOCATION_ID, QUEUE_ID);
     String got = bout.toString();
     assertThat(got).contains("Task created:");
   }
 
   @Test
   public void testCreateHttpTaskWithToken() throws Exception {
-    String[] args = {" tasks-test@java-docs-samples-tests.iam.gserviceaccount.com"};
-    CreateHttpTaskWithToken.main(args);
+    CreateHttpTaskWithToken.createTask(PROJECT_ID, LOCATION_ID, QUEUE_ID, EMAIL);
     String got = bout.toString();
     assertThat(got).contains("Task created:");
   }

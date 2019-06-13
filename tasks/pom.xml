@@ -61,7 +61,7 @@ Copyright 2018 Google LLC
     </dependency>
   </dependencies>
 
-  <build>
+  <!-- <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -91,5 +91,5 @@ Copyright 2018 Google LLC
         </executions>
       </plugin>
     </plugins>
-  </build>
+  </build> -->
 </project>
