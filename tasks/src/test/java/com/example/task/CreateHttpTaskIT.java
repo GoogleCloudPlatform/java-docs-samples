@@ -33,18 +33,18 @@ import org.junit.runners.JUnit4;
 public class CreateHttpTaskIT {
 
   private ByteArrayOutputStream bout;
-
-  @Rule public Timeout globalTimeout = Timeout.seconds(300); // 5 minute timeout
+  private PrintStream out;
+  // @Rule public Timeout globalTimeout = Timeout.seconds(300); // 5 minute timeout
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
+    out = new PrintStream(bout);
     System.setOut(out);
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     System.setOut(null);
   }
 
