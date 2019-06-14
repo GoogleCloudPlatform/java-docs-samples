@@ -1,8 +1,8 @@
 <configuration>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <!-- "value is a path to generate log file -->
+        <!-- "specify filepath where log file will generate -->
         <!-- "application-name" is a variable -->
-        <File>/home/abhinav/Desktop/logs/${application-name}.log</File>
+        <File>filepath/${application-name}.log</File>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>%d %p %t %c - %m%n</Pattern>
         </layout>
