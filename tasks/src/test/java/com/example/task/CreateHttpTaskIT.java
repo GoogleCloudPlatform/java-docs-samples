@@ -35,7 +35,7 @@ public class CreateHttpTaskIT {
   private static final String LOCATION_ID = "us-east1";
   private static final String QUEUE_ID = "default";
   private static final String EMAIL =
-      "java-docs-samples@cloud-samples-tests.iam.gserviceaccount.com";
+      "java-docs-samples-testing@java-docs-samples-testing.iam.gserviceaccount.com";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
