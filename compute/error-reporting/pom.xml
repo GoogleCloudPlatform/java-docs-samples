@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.fluentd</groupId>
       <artifactId>fluent-logger</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.4</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
