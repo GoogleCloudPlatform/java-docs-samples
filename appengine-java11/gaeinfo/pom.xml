@@ -59,7 +59,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>3.12.1</version>
+      <version>4.0.0-RC1</version>
       <scope>provided</scope>
     </dependency>
 
