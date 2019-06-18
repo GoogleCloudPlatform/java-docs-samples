@@ -35,7 +35,6 @@ public class ModelApiIT {
   private static final String COMPUTE_REGION = "us-central1";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private ModelApi app;
   private String modelId;
   private String modelEvaluationId;
 
@@ -53,7 +52,7 @@ public class ModelApiIT {
   }
 
   @Test
-  public void testModelApi() throws Exception {
+  public void testModelApi() {
     // Act
     ModelApi.listModels(PROJECT_ID, COMPUTE_REGION, "");
 

@@ -32,7 +32,7 @@ import com.google.api.services.discovery.model.RestMethod;
 import java.io.File;
 
 /*
- * Sample code for doing Cloud Machine Learning Engine online prediction in Java.
+ * Sample code for sending an online prediction request to Cloud Machine Learning Engine.
  */
 
 public class OnlinePredictionSample {
