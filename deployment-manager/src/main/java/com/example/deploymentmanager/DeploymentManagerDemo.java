@@ -37,80 +37,19 @@ import java.util.List;
 
 public class DeploymentManagerDemo {
 
-  private static String
-          GOOGLE_PROJECT_ID,
-          DEPLOYMENT_NAME,
-          CONFIG_YAML = "yaml/deployment-manager-config.yaml";
-  
-  private static DeploymentManager _dm = null;
-
-  public static void main(String args[]) {
-    init();
-    runDemo();
-    // cleanup(); // Optionally delete resources.
-  }
-
-  /*
-   Initialize Google api.
-  */
-  public static void init() {
-
-    GOOGLE_PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
-    if (GOOGLE_PROJECT_ID == null || GOOGLE_PROJECT_ID.compareTo("") == 0) {
-      System.out.println("GOOGLE_PROJECT_ID environment variable is not set");
-      System.exit(-1);
-    }
-
-    DEPLOYMENT_NAME = System.getenv("DEPLOYMENT_NAME");
-    if (DEPLOYMENT_NAME == null || DEPLOYMENT_NAME.compareTo("") == 0) {
-      System.out.println("DEPLOYMENT_NAME environment variable is not set");
-      System.exit(-1);
-    }
-
-    try {
-      // Use the "Application Default Credentials" to authenticate the application. For more detail, see:
-      // https://cloud.google.com/docs/authentication/production
-      GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-      // To load an application key from a file use:
-      // GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(path_to_key));
-
-      HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-      _dm = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
-              .setApplicationName("New_Application")
-              .build();
-    } catch (IOException ex) {
-      System.out.println("Could not load default application credentials. " + ex.getMessage());
-      System.exit(-1);
-    } catch (GeneralSecurityException ex) {
-      System.out.println("Could not initialize Trusted Transport. " + ex.getMessage());
-      System.exit(-1);
-    }
-  }
-  /* 
-   Delete the deployment.
-  */
-  public static void cleanup() {
-    try {
-      Operation response;
-      response = _dm.deployments()
-                    .delete(DEPLOYMENT_NAME,GOOGLE_PROJECT_ID)
-                    .execute();
-
-    } catch (IOException ex) {
-      System.out.println("Could not delete deployment. " + ex.getMessage());
-      System.exit(-1);
-    }
-  }
+  private static String GOOGLE_PROJECT_ID; 
+  private static String DEPLOYMENT_NAME = "your-deployment-name";
+  private static String CONFIG_YAML = "yaml/deployment-manager-config.yaml";
 
 
   public static void runDemo() {   
+    
+    DeploymentManager client = createClient();
     // Grab a list of existing deployments.
     List<Deployment> deployments = null;
     try {
       DeploymentsListResponse response;
-      response = _dm.deployments()
+      response = client.deployments()
               .list(GOOGLE_PROJECT_ID)
               .execute();
 
@@ -163,15 +102,62 @@ public class DeploymentManagerDemo {
     try {
       if (updateDeployment) {
         System.out.println("Updating Existing Deployment " + deploymentToInsertOrUpdate.getName());
-        _dm.deployments().update(GOOGLE_PROJECT_ID, DEPLOYMENT_NAME, deploymentToInsertOrUpdate).execute();
+        client.deployments().update(GOOGLE_PROJECT_ID, DEPLOYMENT_NAME, deploymentToInsertOrUpdate).execute();
       } else {
         System.out.println("Creating New Deployment " + deploymentToInsertOrUpdate.getName());
-        _dm.deployments().insert(GOOGLE_PROJECT_ID, deploymentToInsertOrUpdate).execute();
+        client.deployments().insert(GOOGLE_PROJECT_ID, deploymentToInsertOrUpdate).execute();
       }
     } catch (IOException ex) {
       System.out.println("Could not insert/update deployment. " + ex.getMessage());
       System.exit(-1);
     }
+  }
+  // Delete the deployment.  
+  public static void cleanup() {
+    DeploymentManager client = createClient();
+    
+    try {
+      Operation response;
+      response = client.deployments()
+                    .delete(DEPLOYMENT_NAME,GOOGLE_PROJECT_ID)
+                    .execute();
+
+    } catch (IOException ex) {
+      System.out.println("Could not delete deployment. " + ex.getMessage());
+      System.exit(-1);
+    }
+  }
+
+  // Initialize Google api and get deployment manager client object;
+  private static DeploymentManager createClient() {
+
+    GOOGLE_PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+    if (GOOGLE_PROJECT_ID == null || GOOGLE_PROJECT_ID.compareTo("") == 0) {
+      System.out.println("GOOGLE_PROJECT_ID environment variable is not set");
+      System.exit(-1);
+    }
+
+    try {
+      // Use the "Application Default Credentials" to authenticate the application. For more detail, see:
+      // https://cloud.google.com/docs/authentication/production
+      GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+      // To load an application key from a file use:
+      // GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(path_to_key));
+
+      HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+      return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
+              .setApplicationName("your-application-name")
+              .build();
+    } catch (IOException ex) {
+      System.out.println("Could not load default application credentials. " + ex.getMessage());
+      System.exit(-1);
+    } catch (GeneralSecurityException ex) {
+      System.out.println("Could not initialize Trusted Transport. " + ex.getMessage());
+      System.exit(-1);
+    }
+    return null;
   }
 
   private static String readYaml() throws IOException {

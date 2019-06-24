@@ -28,10 +28,9 @@ mvn clean
 mvn compile
 ```
 
-Set the environment variables `GOOGLE_PROJECT_ID` and `DEPLOYMENT_NAME` appropriately
+Set the environment variable `GOOGLE_PROJECT_ID` 
 ```bash
 export GOOGLE_PROJECT_ID=<yourprojectid>
-export DEPLOYMENT_NAME=my-deployment-name
 ```
 
 Run the Deployment Manager Demo, which lists deployments and either updates or inserts a new deployment based on name. The deployment template is located in `yaml/deployment-manager-config.yaml` 
