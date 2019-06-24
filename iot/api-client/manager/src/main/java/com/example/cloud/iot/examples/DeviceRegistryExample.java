@@ -35,7 +35,6 @@ import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
 import com.google.api.services.cloudiot.v1.model.GatewayConfig;
 import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
-import com.google.api.services.cloudiot.v1.model.ListDevicesRequest;
 import com.google.api.services.cloudiot.v1.model.ListDevicesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
@@ -209,16 +208,15 @@ public class DeviceRegistryExample {
         String.format(
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
-    ListDevicesRequest listGatewaysReq =
-        service
-            .projects()
-            .locations()
-            .registries()
-            .devices()
-            .list(registryPath)
-            .setGatewayListOptionsGatewayType("GATEWAY");
-
-    ListDevicesResponse listGatewaysRes = listGatewaysReq.execute();
+    ListDevicesResponse listGatewaysRes =
+      service
+          .projects()
+          .locations()
+          .registries()
+          .devices()
+          .list(registryPath)
+          .setGatewayListOptionsGatewayType("GATEWAY")
+          .execute();
     List<Device> gateways = listGatewaysRes.getDevices();
 
     // Unbind all devices from all gateways
@@ -228,16 +226,15 @@ public class DeviceRegistryExample {
         String gatewayId = g.getId();
         System.out.println("Id: " + gatewayId);
 
-        ListDevicesRequest req =
+        ListDevicesResponse res = 
             service
                 .projects()
                 .locations()
                 .registries()
                 .devices()
                 .list(registryPath)
-                .setGatewayListOptionsAssociationsGatewayId(gatewayId);
-
-        ListDevicesResponse res = req.execute();
+                .setGatewayListOptionsAssociationsGatewayId(gatewayId)
+                .execute();
         List<Device> deviceNumIds = res.getDevices();
 
         if (deviceNumIds != null) {
