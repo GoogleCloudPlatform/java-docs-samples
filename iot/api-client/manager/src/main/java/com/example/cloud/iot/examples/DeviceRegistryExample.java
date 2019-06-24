@@ -34,9 +34,9 @@ import com.google.api.services.cloudiot.v1.model.DeviceState;
 import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
 import com.google.api.services.cloudiot.v1.model.GatewayConfig;
 import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
+import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
 import com.google.api.services.cloudiot.v1.model.ListDevicesRequest;
 import com.google.api.services.cloudiot.v1.model.ListDevicesResponse;
-import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceRequest;
@@ -166,9 +166,9 @@ public class DeviceRegistryExample {
             .setApplicationName(APP_NAME)
             .build();
 
-      final String registryPath =
+    final String registryPath =
         String.format(
-            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+          "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     System.out.println("Deleting: " + registryPath);
     service.projects().locations().registries().delete(registryPath).execute();
@@ -181,7 +181,7 @@ public class DeviceRegistryExample {
    *    <li>Registries can't be deleted if they contain devices,</li>
    *    <li>Gateways (a type of device) can't be deleted if they have bound devices</li>
    *    <li>Devices can't be deleted if bound to gateways...</li>
-   *   <ul>
+   *   </ul>
    *   To completely remove a registry, you must unbind all devices from gateways,
    *   then remove all devices in a registry before removing the registry.
    *   As pseudocode:
@@ -237,7 +237,7 @@ public class DeviceRegistryExample {
                 .list(registryPath)
                 .setGatewayListOptionsAssociationsGatewayId(gatewayId);
 
-        ListDevicesResponse res = req.execute()
+        ListDevicesResponse res = req.execute();
         List<Device> deviceNumIds = res.getDevices();
 
         if (deviceNumIds != null) {
