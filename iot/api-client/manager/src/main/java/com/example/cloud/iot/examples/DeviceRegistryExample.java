@@ -228,6 +228,13 @@ public class DeviceRegistryExample {
             UnbindDeviceFromGatewayRequest request = new UnbindDeviceFromGatewayRequest();
             request.setDeviceId(deviceId);
             request.setGatewayId(gatewayId);
+            UnbindDeviceFromGatewayResponse response =
+                service
+                    .projects()
+                    .locations()
+                    .registries()
+                    .unbindDeviceFromGateway(registryPath, request)
+                    .execute();
           }
         } else {
           System.out.println("Gateway has no bound devices.");
@@ -249,6 +256,7 @@ public class DeviceRegistryExample {
     if (devices != null) {
       System.out.println("Found " + devices.size() + " devices");
       for (Device d : devices) {
+        String deviceId = d.getId();
         String devicePath = String.format(
             "%s/devices/%s", registryPath, deviceId);
         service.projects().locations().registries().devices().delete(devicePath).execute();
@@ -1188,6 +1196,10 @@ public class DeviceRegistryExample {
     }
 
     switch (options.command) {
+      case "clear-registry":
+        System.out.println("Clear registry");
+        clearRegistry(options.cloudRegion, options.projectId, options.registryName);
+        break;
       case "create-iot-topic":
         System.out.println("Create IoT Topic:");
         createIotTopic(options.projectId, options.pubsubTopic);
