@@ -34,6 +34,8 @@ import com.google.api.services.cloudiot.v1.model.DeviceState;
 import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
 import com.google.api.services.cloudiot.v1.model.GatewayConfig;
 import com.google.api.services.cloudiot.v1.model.GetIamPolicyRequest;
+import com.google.api.services.cloudiot.v1.model.ListDevicesRequest;
+import com.google.api.services.cloudiot.v1.model.ListDevicesResponse;
 import com.google.api.services.cloudiot.v1.model.ListDeviceStatesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
@@ -164,7 +166,7 @@ public class DeviceRegistryExample {
             .setApplicationName(APP_NAME)
             .build();
 
-    final String registryPath =
+      final String registryPath =
         String.format(
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
@@ -173,8 +175,26 @@ public class DeviceRegistryExample {
   }
   // [END iot_delete_registry]
 
+  /**
+   * clearRegistry
+   *   <ul>
+   *    <li>Registries can't be deleted if they contain devices,</li>
+   *    <li>Gateways (a type of device) can't be deleted if they have bound devices</li>
+   *    <li>Devices can't be deleted if bound to gateways...</li>
+   *   <ul>
+   *   To completely remove a registry, you must unbind all devices from gateways,
+   *   then remove all devices in a registry before removing the registry.
+   *   As pseudocode:
+   *   <code>
+   *   ForAll gateways
+   *     ForAll devicesBoundToGateway
+   *       unbindDeviceFromGateway
+   *   ForAll devices
+   *     Delete device by ID
+   *   Delete registry
+   *  </code>
+   */
   // [START iot_clear_registry]
-  /** Delete this registry from Cloud IoT. */
   public static void clearRegistry(String cloudRegion, String projectId, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -189,34 +209,36 @@ public class DeviceRegistryExample {
         String.format(
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
-    // Clean up all gateways
-    List<Device> gateways =
+    ListDevicesRequest listGatewaysReq =
         service
             .projects()
             .locations()
             .registries()
             .devices()
             .list(registryPath)
-            .setGatewayListOptionsGatewayType("GATEWAY")
-            .execute()
-            .getDevices();
+            .setGatewayListOptionsGatewayType("GATEWAY");
 
+    ListDevicesResponse listGatewaysRes = listGatewaysReq.execute();
+    List<Device> gateways = listGatewaysRes.getDevices();
+
+    // Unbind all devices from all gateways
     if (gateways != null) {
       System.out.println("Found " + gateways.size() + " devices");
       for (Device g : gateways) {
         String gatewayId = g.getId();
         System.out.println("Id: " + gatewayId);
 
-        List<Device> deviceNumIds =
+        ListDevicesRequest req =
             service
                 .projects()
                 .locations()
                 .registries()
                 .devices()
                 .list(registryPath)
-                .setGatewayListOptionsAssociationsGatewayId(gatewayId)
-                .execute()
-                .getDevices();
+                .setGatewayListOptionsAssociationsGatewayId(gatewayId);
+
+        ListDevicesResponse res = req.execute()
+        List<Device> deviceNumIds = res.getDevices();
 
         if (deviceNumIds != null) {
           System.out.println("Found " + deviceNumIds.size() + " devices");
