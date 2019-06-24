@@ -16,10 +16,10 @@
 
 package com.example.spanner;
 
-
+// [START spring_data_spanner_repository_sample]
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
 
 /**
  * A quick start code for Spring Data Cloud Spanner.
@@ -27,8 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * generated from interface definitions.
  *
  */
-// [START spring_data_spanner_repository_sample]
-@SpringBootApplication
+@Component
 public class SpannerRepositorySample {
 
   @Autowired

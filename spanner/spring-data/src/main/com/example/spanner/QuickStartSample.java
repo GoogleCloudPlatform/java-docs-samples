@@ -18,11 +18,13 @@ package com.example.spanner;
 
 import com.example.spanner.Singer.Name;
 import java.util.Arrays;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * A quick-start sample that uses Spring Data Cloud Spanner to perform read, write, and DDL
  * operations.
  */
+@SpringBootApplication
 public class QuickStartSample {
 
   public static void main(String[] args) throws InterruptedException {
@@ -41,7 +43,7 @@ public class QuickStartSample {
         , new Album(1L, 20L, "album2", 12L));
 
     /*
-      This call inserts the signer and performs a read query using a SpannerTemplate instance.
+      This call inserts the singer and performs a read query using a SpannerTemplate instance.
      */
     new SpannerTemplateSample().runTemplateExample(singer);
 

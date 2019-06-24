@@ -16,20 +16,20 @@
 
 package com.example.spanner;
 
-
+// [START spring_data_spanner_template_sample]
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Statement;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * A quick start code for Spring Data Cloud Spanner. It demonstrates how to use SpannerTemplate to
  * execute DML and SQL queries, save POJOs, and read entities.
  */
 // [START spring_data_spanner_template_sample]
-@SpringBootApplication
+@Component
 public class SpannerTemplateSample {
 
   @Autowired

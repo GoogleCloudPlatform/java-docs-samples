@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+//[START spring_data_spanner_singer]
 import java.util.Date;
 import java.util.List;
 import org.springframework.cloud.gcp.data.spanner.core.mapping.Embedded;
@@ -26,7 +27,6 @@ import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
 /**
  * An entity and table holding singers.
  */
-//[START spring_data_spanner_singer]
 @Table(name = "Singers")
 public class Singer {
   @PrimaryKey

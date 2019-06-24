@@ -16,17 +16,17 @@
 
 package com.example.spanner;
 
+//[START spring_data_spanner_schema_sample]
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import org.springframework.cloud.gcp.data.spanner.core.admin.SpannerSchemaUtils;
+import org.springframework.stereotype.Component;
 
 /**
  * This sample demonstrates how to generate schemas for interleaved tables from POJOs and how to
  * execute DDL.
  */
-//[START spring_data_spanner_schema_sample]
-@SpringBootApplication
+@Component
 public class SpannerSchemaToolsSample {
 
   @Autowired

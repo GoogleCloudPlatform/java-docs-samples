@@ -26,7 +26,7 @@ read, write, and database admin operations.
 
 4.  Supply your instance and database name in `resources/application.properties`
 
-5.  Run the following Maven command to run `QuickStartSample`, which runs the operations described above:
+5.  Run the following Maven command to run `QuickStartSample`, which runs table creation, write, and read operations:
     ```
     mvn exec:java -Dexec.mainClass="com.example.spanner.QuickStartSample"
     ```
