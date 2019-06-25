@@ -33,7 +33,7 @@ public class CreateTask {
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
       // Variables provided by system variables.
-      String projectId = System.getenv("PROJECT_ID");
+      String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
       String queueName = System.getenv("QUEUE_ID");
       String location = System.getenv("LOCATION_ID");
       // Optional variables.
