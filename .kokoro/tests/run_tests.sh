@@ -53,6 +53,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Setup required env variables
     export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
     export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+    export QUEUE_ID=my-appengine-queue
+    export LOCATION_ID=us-central1
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
