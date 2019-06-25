@@ -209,14 +209,14 @@ public class DeviceRegistryExample {
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     ListDevicesResponse listGatewaysRes =
-      service
-          .projects()
-          .locations()
-          .registries()
-          .devices()
-          .list(registryPath)
-          .setGatewayListOptionsGatewayType("GATEWAY")
-          .execute();
+        service
+            .projects()
+            .locations()
+            .registries()
+            .devices()
+            .list(registryPath)
+            .setGatewayListOptionsGatewayType("GATEWAY")
+            .execute();
     List<Device> gateways = listGatewaysRes.getDevices();
 
     // Unbind all devices from all gateways
