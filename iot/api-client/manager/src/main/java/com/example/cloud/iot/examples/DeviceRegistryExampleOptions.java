@@ -52,6 +52,7 @@ public class DeviceRegistryExampleOptions {
             .hasArg()
             .desc(
                 "Command to run:"
+                    + "\n\tclear-registry"
                     + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
                     + "\n\tcreate-rsa"
                     + "\n\tcreate-es"

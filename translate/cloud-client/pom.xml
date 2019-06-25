@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
-      <version>1.77.0</version>
+      <version>1.79.0</version>
     </dependency>
     <!-- [END translate_java_dependencies] -->
 
