@@ -106,7 +106,7 @@ public class DetectIT {
 
   @Test
   public void testTrackObjects() throws Exception {
-    VideoAnnotationResults result = TrackObjects.trackObjects("resources/cat.mp4");
+    VideoAnnotationResults result = TrackObjects.trackObjects(LABEL_FILE_LOCATION);
 
     boolean textExists = false;
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
@@ -121,8 +121,7 @@ public class DetectIT {
 
   @Test
   public void testTrackObjectsGcs() throws Exception {
-    VideoAnnotationResults result = TrackObjects.trackObjectsGcs(
-            "gs://cloud-samples-data/video/cat.mp4");
+    VideoAnnotationResults result = TrackObjects.trackObjectsGcs(LABEL_GCS_LOCATION);
 
     boolean textExists = false;
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
