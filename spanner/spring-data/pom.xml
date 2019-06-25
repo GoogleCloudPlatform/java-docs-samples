@@ -52,6 +52,7 @@ limitations under the License.
       <artifactId>spring-cloud-gcp-starter-data-spanner</artifactId>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
