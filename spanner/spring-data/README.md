@@ -1,6 +1,6 @@
 # Spring Data Cloud Spanner Sample
 
-An example that demonstrate read, write, and administrative operations
+An example that demonstrates read, write, and administrative operations
 using [Spring Data Cloud Spanner](https://github.com/spring-cloud/spring-cloud-gcp/blob/master/docs/src/main/asciidoc/spanner.adoc).
 
 This sample requires [Java](https://www.java.com/en/download/) and [Maven](http://maven.apache.org/) for building the application.
