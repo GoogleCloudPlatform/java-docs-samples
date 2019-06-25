@@ -50,9 +50,8 @@ public class TestDeploymentManagerDemo {
     @Test
     public void testDemo() // TODO: refactor sample and do proper unit testing.
     {
-        DeploymentManagerDemo.init();
         DeploymentManagerDemo.runDemo();
-        DeploymentManagerDemo.cleanup();
+        //DeploymentManagerDemo.cleanup();
     }
 }
 

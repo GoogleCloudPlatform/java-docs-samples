@@ -81,7 +81,7 @@ public class DeploymentManagerDemo {
     List<DeploymentLabelEntry> labels = new ArrayList<DeploymentLabelEntry>();
     labels.add(new DeploymentLabelEntry()
             .setKey("test-label-1")
-            .setValue("good-fella"));
+            .setValue("test-value-1"));
 
     // Note, if this is an Update, existing labels will be overwritten.
     deploymentToInsertOrUpdate.setLabels(labels);
