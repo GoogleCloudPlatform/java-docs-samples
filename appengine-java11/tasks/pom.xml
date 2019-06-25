@@ -53,6 +53,7 @@ Copyright 2019 Google LLC
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13-beta-2</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
