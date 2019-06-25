@@ -31,9 +31,6 @@ import org.junit.runners.JUnit4;
 /** Tests for creating Tasks with App Engine targets. */
 @RunWith(JUnit4.class)
 public class CreateTaskIT {
-  private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String LOCATION_ID = "us-east1";
-  private static final String QUEUE_ID = "default";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
