@@ -49,8 +49,8 @@ import org.junit.runners.JUnit4;
 public class KnowledgeBaseManagementIT {
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
-  private static String TEST_KNOWLEDGE_BASE_ID = "NjYxNjYwMTQ5MTIxMTgxMjg2NA";
-  private static String TEST_DOCUMENT_ID = "MTIzOTcyMjY2OTk2Mzk0ODg1MTI";
+  private static String TEST_KNOWLEDGE_BASE_ID = "NjcyODA2NTU4MTk4OTIzMjY0MA";
+  private static String TEST_DOCUMENT_ID = "NjY2NDk4ODc5ODkyNjk3OTA3Mg";
   private static String SESSION_ID = "fake_session_for_testing";
   private static String LANGUAGE_CODE = "en-US";
   private static String KNOWLEDGE_BASE_NAME = "fake_knowledge_base_name";
