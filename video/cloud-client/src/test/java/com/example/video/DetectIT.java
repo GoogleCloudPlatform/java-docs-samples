@@ -38,10 +38,10 @@ public class DetectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  static final String LABEL_GCS_LOCATION = "gs://demomaker/cat.mp4";
+  static final String LABEL_GCS_LOCATION = "gs://cloud-samples-data/video/cat.mp4";
   static final String LABEL_FILE_LOCATION = "./resources/cat.mp4";
-  static final String SHOTS_FILE_LOCATION = "gs://demomaker/gbikes_dinosaur.mp4";
-  static final String EXPLICIT_CONTENT_LOCATION =  "gs://demomaker/cat.mp4";
+  static final String SHOTS_FILE_LOCATION = "gs://cloud-samples-data/video/gbikes_dinosaur.mp4";
+  static final String EXPLICIT_CONTENT_LOCATION =  "gs://cloud-samples-data/video/cat.mp4";
   static final String SPEECH_GCS_LOCATION =
           "gs://java-docs-samples-testing/video/googlework_short.mp4";
   private static final List<String> POSSIBLE_TEXTS = Arrays.asList(
@@ -121,7 +121,8 @@ public class DetectIT {
 
   @Test
   public void testTrackObjectsGcs() throws Exception {
-    VideoAnnotationResults result = TrackObjects.trackObjectsGcs("gs://demomaker/cat.mp4");
+    VideoAnnotationResults result = TrackObjects.trackObjectsGcs(
+            "gs://cloud-samples-data/video/cat.mp4");
 
     boolean textExists = false;
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
