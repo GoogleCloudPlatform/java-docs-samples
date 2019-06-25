@@ -16,7 +16,7 @@
 
 package snippets.healthcare.dicom;
 
-// [START healthcare_export_dicom_instance]
+// [START healthcare_export_dicom_instance_gcs]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -105,4 +105,4 @@ public class DicomStoreExport {
         .build();
   }
 }
-// [END healthcare_export_dicom_instance]
+// [END healthcare_export_dicom_instance_gcs]
