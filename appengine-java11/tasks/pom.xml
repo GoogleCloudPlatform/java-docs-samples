@@ -45,10 +45,22 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>1.6.0</version>
-      <scope>provided</scope>
+      <version>1.3.0</version>
     </dependency>
     <!-- [END gae_java11_task_pom] -->
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13-beta-2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.44</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
