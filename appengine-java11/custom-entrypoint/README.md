@@ -1,4 +1,4 @@
-# Hello World App for Google App Engine Standard with Java 11
+# Using a Custom Entrypoint on Google App Engine Standard with Java 11
 
 This sample shows how to deploy an application to Google App Engine, using the
 `entrypoint` element in the [app.yaml](app.yaml) to start your application. The
@@ -17,4 +17,4 @@ To view your app, use command:
 ```
 gcloud app browse
 ```
-Or navigate to http://<project-id>.appspot.com URL.
+Or navigate to `https://<your-project-id>.appspot.com`.

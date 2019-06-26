@@ -47,7 +47,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.75</version>
     </dependency>
 
     <dependency>
@@ -61,7 +61,7 @@
       <!-- jsoup HTML parser library @ http://jsoup.org/ -->
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
-      <version>1.11.3</version>
+      <version>1.12.1</version>
     </dependency>
   </dependencies>
 

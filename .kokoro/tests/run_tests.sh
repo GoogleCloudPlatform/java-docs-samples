@@ -53,9 +53,12 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Setup required env variables
     export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
     export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+    export QUEUE_ID=my-appengine-queue
+    export LOCATION_ID=us-east1
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
+    source "${KOKORO_GFILE_DIR}/bigtable_secrets.txt"
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \

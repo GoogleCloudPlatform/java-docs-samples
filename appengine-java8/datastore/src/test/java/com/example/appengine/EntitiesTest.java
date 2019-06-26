@@ -218,6 +218,7 @@ public class EntitiesTest {
     assertThat(retrievedFruits).containsExactlyElementsIn(favoriteFruit).inOrder();
   }
 
+  // CHECKSTYLE.OFF: VariableDeclarationUsageDistance
   @SuppressWarnings("VariableDeclarationUsageDistance")
   @Test
   public void embeddedEntity_fromEmbedded_embedsProperties() throws Exception {
@@ -240,6 +241,7 @@ public class EntitiesTest {
         .named("got.homeAddress")
         .isEqualTo("123 Fake St, Made, UP 45678");
   }
+  // CHECKSTYLE.ON: VariableDeclarationUsageDistance
 
   private Key putEmployeeWithContactInfo(Entity contactInfo) {
     Entity employee = new Entity("Employee");
