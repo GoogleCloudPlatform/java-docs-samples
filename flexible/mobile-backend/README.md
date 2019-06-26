@@ -101,6 +101,15 @@ To build and run the backend module locally:
 mvn clean package appengine:run
 ```
 
+> **Note:** If you run into the following error with the previous command:
+>   ```
+>   agent library failed to init: instrument
+>   ```
+>   Update Google Cloud SDK to version `240`:
+>   ```
+>   gcloud components update --version 240.0.0
+>   ```
+
 To deploy the backend module to App Engine:
 
 ```bash
