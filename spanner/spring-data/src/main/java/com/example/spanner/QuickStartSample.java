@@ -65,7 +65,7 @@ public class QuickStartSample implements CommandLineRunner {
     /*
       This call inserts the singer and performs a read query using a SpannerTemplate instance.
      */
-    LOG.info("(SpannerTemplateSample): Saving one singer using.");
+    LOG.info("(SpannerTemplateSample): Saving one singer.");
     spannerTemplateSample.runTemplateExample(singer);
 
     /*
