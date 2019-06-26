@@ -32,7 +32,7 @@ limitations under the License.
   </parent>
 
   <groupId>com.example.spanner</groupId>
-  <artifactId>spanner-google-cloud-spring-data-sample</artifactId>
+  <artifactId>spring-data</artifactId>
   <name>Spring Data Spanner Code Sample</name>
 
   <dependencyManagement>

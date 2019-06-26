@@ -33,7 +33,7 @@ public class SpannerRepositorySample {
   @Autowired
   SingerRepository singerRepository;
 
-  public void runRepositoryExample(){
+  public void runRepositoryExample() {
     List<Singer> lastNameSingers = this.singerRepository.findByLastName("a last name");
 
     int fistNameCount = this.singerRepository.countByFirstName("a first name");

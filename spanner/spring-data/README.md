@@ -24,9 +24,11 @@ read, write, and database admin operations.
 3.  Create a Cloud Spanner instance and database via the Cloud Plaform Console's
     [Cloud Spanner section](http://console.cloud.google.com/spanner).
 
-4.  Supply your instance and database name in `resources/application.properties`
+4.  Enable application default credentials by running the command `gcloud auth application-default login`.
 
-5.  Run the following Maven command to run `QuickStartSample`, which runs table creation, write, and read operations:
+5.  Supply your instance and database name in `src/main/resources/application.properties`
+
+6.  Run the following Maven command to run `QuickStartSample`, which runs table creation, write, and read operations:
     ```
-    mvn exec:java -Dexec.mainClass="com.example.spanner.QuickStartSample"
+    mvn clean spring-boot:run
     ```

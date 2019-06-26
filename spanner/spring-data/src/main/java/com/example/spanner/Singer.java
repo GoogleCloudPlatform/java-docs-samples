@@ -32,23 +32,13 @@ public class Singer {
   @PrimaryKey
   long singerId;
 
-  @Embedded
-  Name singerName;
+  String firstName;
+
+  String lastName;
 
   Date birthDate;
 
   @Interleaved
   List<Album> albums;
-
-  public static class Name {
-    String firstName;
-
-    String lastName;
-
-    public Name(String firstName, String lastName) {
-      this.firstName = firstName;
-      this.lastName = lastName;
-    }
-  }
 }
 //[END spring_data_spanner_singer]
