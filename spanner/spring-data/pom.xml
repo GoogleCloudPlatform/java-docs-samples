@@ -35,6 +35,7 @@ limitations under the License.
   <artifactId>spring-data</artifactId>
   <name>Spring Data Spanner Code Sample</name>
 
+  <!-- [START spring_data_spanner_pom_sample] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -53,6 +54,7 @@ limitations under the License.
       <artifactId>spring-cloud-gcp-starter-data-spanner</artifactId>
     </dependency>
   </dependencies>
+  <!-- [END spring_data_spanner_pom_sample] -->
 
   <build>
     <plugins>
