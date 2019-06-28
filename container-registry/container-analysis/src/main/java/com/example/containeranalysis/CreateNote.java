@@ -42,16 +42,16 @@ public class CreateNote {
     // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
     // Here, we use the type "vulnerability"
     VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
-    VulnerabilityNote.Detail.Builder detailBuiler = VulnerabilityNote.Detail.newBuilder();
+    VulnerabilityNote.Detail.Builder detailBuilder = VulnerabilityNote.Detail.newBuilder();
     // Set details relevant to your vulnerability here
-    detailBuiler.setAffectedCpeUri("your-uri-here");
-    detailBuiler.setAffectedPackage("your-package-here");
+    detailBuilder.setAffectedCpeUri("your-uri-here");
+    detailBuilder.setAffectedPackage("your-package-here");
     Version.Builder startBuilder = Version.newBuilder();
     startBuilder.setKind(Version.VersionKind.MINIMUM);
-    detailBuiler.setAffectedVersionStart(startBuilder);
+    detailBuilder.setAffectedVersionStart(startBuilder);
     Version.Builder endBuilder = Version.newBuilder();
     endBuilder.setKind(Version.VersionKind.MAXIMUM);
-    detailBuiler.setAffectedVersionEnd(endBuilder);
+    detailBuilder.setAffectedVersionEnd(endBuilder);
     noteBuilder.setVulnerability(vulBuilder);
     // Build the Note object
     Note newNote = noteBuilder.build();
