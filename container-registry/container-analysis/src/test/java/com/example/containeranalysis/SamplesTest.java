@@ -331,6 +331,7 @@ public class SamplesTest {
     Version.Builder endBuilder = Version.newBuilder();
     endBuilder.setKind(Version.VersionKind.MAXIMUM);
     detailBuilder.setAffectedVersionEnd(endBuilder);
+    vulBuilder.addDetails(detailBuilder);
     noteBuilder.setVulnerability(vulBuilder);
     Note newNote = noteBuilder.build();
 
