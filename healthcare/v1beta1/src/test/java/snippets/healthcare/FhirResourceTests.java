@@ -33,6 +33,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -155,6 +156,7 @@ public class FhirResourceTests extends TestBase {
   }
 
   @Test
+  @Ignore("b/135536409")
   public void test_FhirResourcePatch() throws Exception {
     FhirResourcePatch.fhirResourcePatch(
         fhirResourceName,
