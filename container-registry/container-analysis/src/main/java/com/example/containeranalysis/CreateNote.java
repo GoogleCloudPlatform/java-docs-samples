@@ -36,26 +36,20 @@ public class CreateNote {
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
 
-    // Associate the Note with the metadata type
-    // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
-    // Here, we use the type "vulnerability"
-    VulnerabilityNote.Detail.Builder detailBuilder = VulnerabilityNote.Detail.newBuilder();
-    // Set details relevant to your vulnerability here
-    detailBuilder.setAffectedCpeUri("your-uri-here");
-    detailBuilder.setAffectedPackage("your-package-here");
-    Version.Builder startBuilder = Version.newBuilder();
-    startBuilder.setKind(Version.VersionKind.MINIMUM);
-    detailBuilder.setAffectedVersionStart(startBuilder);
-    Version.Builder endBuilder = Version.newBuilder();
-    endBuilder.setKind(Version.VersionKind.MAXIMUM);
-    detailBuilder.setAffectedVersionEnd(endBuilder);
-  
-    VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
-    vulBuilder.addDetails(detailBuilder);
-    // Build the Note object
-    Note.Builder noteBuilder = Note.newBuilder();
-    noteBuilder.setVulnerability(vulBuilder);
-    Note newNote = noteBuilder.build();
+
+    Note newNote = Note.newBuilder()
+        // Associate the Note with the metadata type
+        // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
+        // Here, we use the type "vulnerability"
+        .setVulnerability(VulnerabilityNote.newBuilder()
+            .addDetails(VulnerabilityNote.Detail.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersionStart(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setAffectedVersionEnd(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.

@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class CreateOccurrence {
-  // Creates and returns a new Occurrence associated with an existing Note
+  // Creates and returns a new vulnerability Occurrence associated with an existing Note
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
       String occProjectId, String noteProjectId) throws IOException, InterruptedException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:123";
@@ -39,27 +39,18 @@ public class CreateOccurrence {
     final NoteName noteName = NoteName.of(noteProjectId, noteId);
     final String occProjectName = ProjectName.format(occProjectId);
 
-    Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    occBuilder.setNoteName(noteName.toString());
-    occBuilder.setResourceUri(resourceUrl);
-    // Associate the Occurrence with the metadata type (should match the parent Note's type)
-    // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
-    // Here, we use the type "vulnerability"
-    PackageIssue.Builder issueBuilder = PackageIssue.newBuilder();
-    issueBuilder.setAffectedCpeUri("your-uri-here");
-    issueBuilder.setAffectedPackage("your-package-here");
-    Version.Builder affectedVersionBuilder = Version.newBuilder();
-    affectedVersionBuilder.setKind(Version.VersionKind.MINIMUM);
-    issueBuilder.setAffectedVersion(affectedVersionBuilder);
-    Version.Builder fixedVersionBuilder = Version.newBuilder();
-    fixedVersionBuilder.setKind(Version.VersionKind.MAXIMUM);
-    issueBuilder.setFixedVersion(fixedVersionBuilder);
-
-    VulnerabilityOccurrence.Builder vulBuilder = VulnerabilityOccurrence.newBuilder();
-    vulBuilder.addPackageIssue(issueBuilder);
-
-    occBuilder.setVulnerability(vulBuilder);
-    Occurrence newOcc = occBuilder.build();
+    Occurrence newOcc = Occurrence.newBuilder()
+        .setNoteName(noteName.toString())
+        .setResourceUri(resourceUrl)
+        .setVulnerability(VulnerabilityOccurrence.newBuilder()
+            .addPackageIssue(PackageIssue.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setFixedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
