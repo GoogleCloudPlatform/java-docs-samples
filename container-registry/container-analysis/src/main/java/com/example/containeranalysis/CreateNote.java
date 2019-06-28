@@ -17,12 +17,13 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_create_note]
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Note;
-import io.grafeas.v1beta1.vulnerability.Severity;
-import io.grafeas.v1beta1.vulnerability.Vulnerability;
-import io.grafeas.v1beta1.vulnerability.Vulnerability.Detail;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+
+import io.grafeas.v1.Note;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.Version;
+import io.grafeas.v1.VulnerabilityNote;
+
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -40,20 +41,25 @@ public class CreateNote {
     // Associate the Note with the metadata type
     // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
     // Here, we use the type "vulnerability"
-    Vulnerability.Builder vulBuilder = Vulnerability.newBuilder();
+    VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
+    VulnerabilityNote.Detail.Builder detailBuiler = VulnerabilityNote.Detail.newBuilder();
+    // Set details relevant to your vulnerability here
+    detailBuiler.setAffectedCpeUri("your-uri-here");
+    detailBuiler.setAffectedPackage("your-package-here");
+    Version.Builder startBuilder = Version.newBuilder();
+    startBuilder.setKind(Version.VersionKind.MINIMUM);
+    detailBuiler.setAffectedVersionStart(startBuilder);
+    Version.Builder endBuilder = Version.newBuilder();
+    endBuilder.setKind(Version.VersionKind.MAXIMUM);
+    detailBuiler.setAffectedVersionEnd(endBuilder);
     noteBuilder.setVulnerability(vulBuilder);
-    // Set additional information specific to your new vulnerability note
-    Detail.Builder detailsBuilder = Detail.newBuilder();
-    detailsBuilder.setDescription("my new vulnerability note");
-    vulBuilder.setSeverity(Severity.LOW);
-    vulBuilder.addDetails(detailsBuilder);
     // Build the Note object
     Note newNote = noteBuilder.build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
-    Note result = client.createNote(projectName, noteId, newNote);
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
+    Note result = client.getGrafeasClient().createNote(projectName, noteId, newNote);
     return result;
   }
 }
