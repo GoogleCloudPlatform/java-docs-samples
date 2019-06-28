@@ -20,6 +20,8 @@ import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 import static com.google.cloud.spanner.Type.StructField;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.ByteArray;
+import com.google.cloud.Date;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -40,8 +42,11 @@ import com.google.cloud.spanner.TimestampBound;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
+import com.google.common.io.BaseEncoding;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,6 +115,31 @@ public class SpannerSample {
     }
   }
 
+  /** Class to contain venue sample data. */
+  static class Venue {
+
+    final long venueId;
+    final String venueName;
+    final String venueInfo;
+    final long capacity;
+    final Value availableDates;
+    final String lastContactDate;
+    final boolean outdoorVenue;
+    final float popularityScore;
+
+    Venue(long venueId, String venueName, String venueInfo, long capacity, Value availableDates,
+        String lastContactDate, boolean outdoorVenue, float popularityScore) {
+      this.venueId = venueId;
+      this.venueName = venueName;
+      this.venueInfo = venueInfo;
+      this.capacity = capacity;
+      this.availableDates = availableDates;
+      this.lastContactDate = lastContactDate;
+      this.outdoorVenue = outdoorVenue;
+      this.popularityScore = popularityScore;
+    }
+  }
+
   // [START spanner_insert_data]
   static final List<Singer> SINGERS =
       Arrays.asList(
@@ -135,6 +165,31 @@ public class SpannerSample {
           new Performance(1, 19, "2017-11-02", 15000),
           new Performance(2, 42, "2017-12-23", 7000));
   // [END spanner_insert_data_with_timestamp_column]
+
+  // [START spanner_insert_datatypes_data]
+  static Value availableDates1 = Value.dateArray(Arrays.asList(
+    Date.parseDate("2020-12-01"), 
+    Date.parseDate("2020-12-02"),
+    Date.parseDate("2020-12-03")));
+  static Value availableDates2 = Value.dateArray(Arrays.asList(
+    Date.parseDate("2020-11-01"), 
+    Date.parseDate("2020-11-05"),
+    Date.parseDate("2020-11-15")));
+  static Value availableDates3 = Value.dateArray(Arrays.asList(
+      Date.parseDate("2020-10-01"),
+      Date.parseDate("2020-10-07")));
+  static String exampleBytes1 = BaseEncoding.base64().encode("Hello World 1".getBytes());
+  static String exampleBytes2 = BaseEncoding.base64().encode("Hello World 2".getBytes());
+  static String exampleBytes3 = BaseEncoding.base64().encode("Hello World 3".getBytes());
+  static final List<Venue> VENUES =
+      Arrays.asList(
+        new Venue(4, "Venue 4", exampleBytes1, 1800,
+          availableDates1, "2018-09-02", false, 0.85543f),
+        new Venue(19, "Venue 19", exampleBytes2, 6300, 
+          availableDates2, "2019-01-15", true, 0.98716f),
+        new Venue(42, "Venue 42", exampleBytes3, 3000,
+          availableDates3, "2018-10-01", false, 0.72598f));
+  // [END spanner_insert_datatypes_data]
 
   // [START spanner_create_database]
   static void createDatabase(DatabaseAdminClient dbAdminClient, DatabaseId id) {
@@ -1155,6 +1210,255 @@ public class SpannerSample {
   }
   // [END spanner_dml_batch_update]
 
+  // [START spanner_create_table_with_datatypes]
+  static void createTableWithDatatypes(DatabaseAdminClient dbAdminClient, DatabaseId id) {
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> op =
+        dbAdminClient.updateDatabaseDdl(
+            id.getInstanceId().getInstance(),
+            id.getDatabase(),
+            Arrays.asList(
+                "CREATE TABLE Venues (\n"
+                    + "  VenueId         INT64 NOT NULL,\n"
+                    + "  VenueName       STRING(100),\n"
+                    + "  VenueInfo       BYTES(MAX),\n"
+                    + "  Capacity        INT64,\n"
+                    + "  AvailableDates  ARRAY<DATE>,\n"
+                    + "  LastContactDate DATE,\n"
+                    + "  OutdoorVenue    BOOL, \n"
+                    + "  PopularityScore FLOAT64, \n"
+                    + "  LastUpdateTime  TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true)\n"
+                    + ") PRIMARY KEY (VenueId)"),
+            null);
+    try {
+      // Initiate the request which returns an OperationFuture.
+      op.get();
+      System.out.println("Created Venues table in database: [" + id + "]");
+    } catch (ExecutionException e) {
+      // If the operation failed during execution, expose the cause.
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      // Throw when a thread is waiting, sleeping, or otherwise occupied,
+      // and the thread is interrupted, either before or during the activity.
+      throw SpannerExceptionFactory.propagateInterrupt(e);
+    }
+  }
+  // [END spanner_create_table_with_datatypes]
+
+  // [START spanner_insert_datatypes_data]
+  static void writeDatatypesData(DatabaseClient dbClient) {
+    List<Mutation> mutations = new ArrayList<>();
+    for (Venue venue : VENUES) {
+      mutations.add(
+          Mutation.newInsertBuilder("Venues")
+              .set("VenueId")
+              .to(venue.venueId)
+              .set("VenueName")
+              .to(venue.venueName)
+              .set("VenueInfo")
+              .to(venue.venueInfo)
+              .set("Capacity")
+              .to(venue.capacity)
+              .set("AvailableDates")
+              .to(venue.availableDates)
+              .set("LastContactDate")
+              .to(venue.lastContactDate)
+              .set("OutdoorVenue")
+              .to(venue.outdoorVenue)
+              .set("PopularityScore")
+              .to(venue.popularityScore)
+              .set("LastUpdateTime")
+              .to(Value.COMMIT_TIMESTAMP)
+              .build());
+    }
+    dbClient.write(mutations);
+  }
+  // [END spanner_insert_datatypes_data]
+
+  // [START spanner_query_with_array_parameter]
+  static void queryWithArray(DatabaseClient dbClient) {
+    Value exampleArray = Value.dateArray(Arrays.asList(
+        Date.parseDate("2020-10-01"), 
+        Date.parseDate("2020-11-01")));
+
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, AvailableDate FROM Venues v, \n"
+                    + "UNNEST(v.AvailableDates) as AvailableDate \n"
+                    + "WHERE AvailableDate in UNNEST(@availableDates)")
+            .bind("availableDates")
+            .to(exampleArray)
+            .build();
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getDate("AvailableDate"));
+      }
+    }
+  }
+  // [END spanner_query_with_array_parameter]
+
+  // [START spanner_query_with_bool_parameter]
+  static void queryWithBool(DatabaseClient dbClient) {
+    boolean exampleBool = true;
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, OutdoorVenue FROM Venues \n"
+                    + "WHERE OutdoorVenue = @outdoorVenue")
+            .bind("outdoorVenue")
+            .to(exampleBool)
+            .build();
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %b\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getBoolean("OutdoorVenue"));
+      }
+    }
+  }
+  // [END spanner_query_with_bool_parameter]
+
+  // [START spanner_query_with_bytes_parameter]
+  static void queryWithBytes(DatabaseClient dbClient) {
+    ByteArray exampleBytes = ByteArray.fromBase64(BaseEncoding.base64().encode("Hello World 1".getBytes()));
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName FROM Venues \n"
+                    + "WHERE VenueInfo = @venueInfo")
+            .bind("venueInfo")
+            .to(exampleBytes)
+            .build();
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"));
+      }
+    }
+  } 
+  // [END spanner_query_with_bytes_parameter]
+
+  // [START spanner_query_with_date_parameter]
+  static void queryWithDate(DatabaseClient dbClient) {
+    String exampleDate = "2019-01-01";
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, LastContactDate FROM Venues \n"
+                    + "WHERE LastContactDate < @lastContactDate")
+            .bind("lastContactDate")
+            .to(exampleDate)
+            .build();
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getDate("LastContactDate"));
+      }
+    }
+  }
+  // [END spanner_query_with_date_parameter]
+
+  // [START spanner_query_with_float_parameter]
+  static void queryWithFloat(DatabaseClient dbClient) {
+    float exampleFloat = 0.8f;
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, PopularityScore FROM Venues \n"
+                    + "WHERE PopularityScore > @popularityScore")
+            .bind("popularityScore")
+            .to(exampleFloat)
+            .build();
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %f\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getDouble("PopularityScore"));
+      }
+    }
+  }
+  // [END spanner_query_with_float_parameter]
+
+  // [START spanner_query_with_int_parameter]
+  static void queryWithInt(DatabaseClient dbClient) {
+    long exampleInt = 3000;
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, Capacity FROM Venues \n"
+                    + "WHERE Capacity >= @capacity")
+            .bind("capacity")
+            .to(exampleInt)
+            .build();
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %d\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getLong("Capacity"));
+      }
+    }
+  }
+  // [END spanner_query_with_int_parameter]
+
+  // [START spanner_query_with_string_parameter]
+  static void queryWithString(DatabaseClient dbClient) {
+    String exampleString = "Venue 42";
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName FROM Venues \n"
+                    + "WHERE VenueName = @venueName")
+            .bind("venueName")
+            .to(exampleString)
+            .build();
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"));
+      }
+    }
+  }
+  // [END spanner_query_with_string_parameter]
+
+  // [START spanner_query_with_timestamp_parameter]
+  static void queryWithTimestampParameter(DatabaseClient dbClient) {
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    Instant exampleTimestamp = timestamp.toInstant();
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, LastUpdateTime FROM Venues \n"
+                    + "WHERE LastUpdateTime < @lastUpdateTime")
+            .bind("lastUpdateTime")
+            .to(exampleTimestamp.toString())
+            .build();
+    // We use a try-with-resource block to automatically release resources held by ResultSet.
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s\n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getTimestamp("LastUpdateTime"));
+      }
+    }
+  }
+  // [END spanner_query_with_timestamp_parameter]
+
   static void run(
       DatabaseClient dbClient,
       DatabaseAdminClient dbAdminClient,
@@ -1281,6 +1585,36 @@ public class SpannerSample {
       case "updateusingbatchdml":
         updateUsingBatchDml(dbClient);
         break;
+      case "createtablewithdatatypes":
+        createTableWithDatatypes(dbAdminClient, database);
+        break;
+      case "writedatatypesdata":
+        writeDatatypesData(dbClient);
+        break;
+      case "querywitharray":
+        queryWithArray(dbClient);
+        break;
+      case "querywithbool":
+        queryWithBool(dbClient);
+        break;
+      case "querywithbytes":
+        queryWithBytes(dbClient);
+        break;
+      case "querywithdate":
+        queryWithDate(dbClient);
+        break;
+      case "querywithfloat":
+        queryWithFloat(dbClient);
+        break;
+      case "querywithint":
+        queryWithInt(dbClient);
+        break;
+      case "querywithstring":
+        queryWithString(dbClient);
+        break;
+      case "querywithtimestampparameter":
+        queryWithTimestampParameter(dbClient);
+        break;
       default:
         printUsageAndExit();
     }
@@ -1331,6 +1665,16 @@ public class SpannerSample {
     System.err.println("    SpannerExample updateusingpartitioneddml my-instance example-db");
     System.err.println("    SpannerExample deleteusingpartitioneddml my-instance example-db");
     System.err.println("    SpannerExample updateusingbatchdml my-instance example-db");
+    System.err.println("    SpannerExample createtablewithdatatypes my-instance example-db");
+    System.err.println("    SpannerExample writedatatypesdata my-instance example-db");
+    System.err.println("    SpannerExample querywitharray my-instance example-db");
+    System.err.println("    SpannerExample querywithbool my-instance example-db");
+    System.err.println("    SpannerExample querywithbytes my-instance example-db");
+    System.err.println("    SpannerExample querywithdate my-instance example-db");
+    System.err.println("    SpannerExample querywithfloat my-instance example-db");
+    System.err.println("    SpannerExample querywithint my-instance example-db");
+    System.err.println("    SpannerExample querywithstring my-instance example-db");
+    System.err.println("    SpannerExample querywithtimestampparameter my-instance example-db");
     System.exit(1);
   }
 
