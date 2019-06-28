@@ -1326,7 +1326,7 @@ public class SpannerSample {
   // [START spanner_query_with_bytes_parameter]
   static void queryWithBytes(DatabaseClient dbClient) {
     ByteArray exampleBytes = ByteArray.fromBase64(
-      BaseEncoding.base64().encode("Hello World 1".getBytes()));
+        BaseEncoding.base64().encode("Hello World 1".getBytes()));
     Statement statement =
         Statement.newBuilder(
                 "SELECT VenueId, VenueName FROM Venues \n"
