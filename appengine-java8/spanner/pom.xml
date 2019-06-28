@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>1.15.0</version>
+      <version>1.24.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.73</version>
+      <version>1.9.75</version>
     </dependency>
   </dependencies>
 
