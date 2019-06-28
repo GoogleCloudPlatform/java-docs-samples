@@ -19,10 +19,10 @@ package com.example.containeranalysis;
 // [START containeranalysis_occurrences_for_note]
 import static java.lang.Thread.sleep;
 
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.NoteName;
-import io.grafeas.v1beta1.ListNoteOccurrencesRequest;
-import io.grafeas.v1beta1.Occurrence;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.NoteName;
+import io.grafeas.v1.ListNoteOccurrencesRequest;
+import io.grafeas.v1.Occurrence;
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -41,9 +41,9 @@ public class OccurrencesForNote {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
     int i = 0;
-    for (Occurrence o : client.listNoteOccurrences(request).iterateAll()) {
+    for (Occurrence o : client.getGrafeasClient().listNoteOccurrences(request).iterateAll()) {
       // Write custom code to process each Occurrence here
       System.out.println(o.getName());
       i = i + 1;

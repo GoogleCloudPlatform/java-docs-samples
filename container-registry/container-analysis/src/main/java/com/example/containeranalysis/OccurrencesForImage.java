@@ -17,9 +17,9 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_occurrences_for_image]
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Occurrence;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.Occurrence;
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -35,9 +35,9 @@ public class OccurrencesForImage {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
     int i = 0;
-    for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
+    for (Occurrence o : client.getGrafeasClient().listOccurrences(projectName, filterStr).iterateAll()) {
       // Write custom code to process each Occurrence here
       System.out.println(o.getName());
       i = i + 1;

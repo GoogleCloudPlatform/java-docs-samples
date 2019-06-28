@@ -17,12 +17,15 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_create_occurrence]
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.NoteName;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Occurrence;
-import io.grafeas.v1beta1.Resource;
-import io.grafeas.v1beta1.vulnerability.Details;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+
+import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.NoteName;
+import io.grafeas.v1.Version;
+import io.grafeas.v1.VulnerabilityOccurrence;
+import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
+
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -39,21 +42,30 @@ public class CreateOccurrence {
 
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
     occBuilder.setNoteName(noteName.toString());
+    occBuilder.setResourceUri(resourceUrl);
     // Associate the Occurrence with the metadata type (should match the parent Note's type)
     // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
     // Here, we use the type "vulnerability"
-    Details.Builder detailsBuilder = Details.newBuilder();
-    occBuilder.setVulnerability(detailsBuilder);
-    // Attach the occurrence to the associated image uri
-    Resource.Builder resourceBuilder = Resource.newBuilder();
-    resourceBuilder.setUri(resourceUrl);
-    occBuilder.setResource(resourceBuilder);
+    VulnerabilityOccurrence.Builder vulBuilder = VulnerabilityOccurrence.newBuilder();
+
+    PackageIssue.Builder issueBuilder = PackageIssue.newBuilder();
+    issueBuilder.setAffectedCpeUri("your-uri-here");
+    issueBuilder.setAffectedPackage("your-package-here");
+    Version.Builder affectedVersionBuilder = Version.newBuilder();
+    affectedVersionBuilder.setKind(Version.VersionKind.MINIMUM);
+    issueBuilder.setAffectedVersion(affectedVersionBuilder);
+    Version.Builder fixedVersionBuilder = Version.newBuilder();
+    fixedVersionBuilder.setKind(Version.VersionKind.MAXIMUM);
+    issueBuilder.setFixedVersion(fixedVersionBuilder);
+    vulBuilder.addPackageIssue(issueBuilder);
+
+    occBuilder.setVulnerability(vulBuilder);
     Occurrence newOcc = occBuilder.build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
-    Occurrence result = client.createOccurrence(occProjectName, newOcc);
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
+    Occurrence result = client.getGrafeasClient().createOccurrence(occProjectName, newOcc);
     return result;
   }
 }

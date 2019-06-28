@@ -17,9 +17,9 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_discovery_info]
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Occurrence;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.Occurrence;
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -35,8 +35,8 @@ public class GetDiscoveryInfo {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
-    for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
+    for (Occurrence o : client.getGrafeasClient().listOccurrences(projectName, filterStr).iterateAll()) {
       System.out.println(o);
     }
   }

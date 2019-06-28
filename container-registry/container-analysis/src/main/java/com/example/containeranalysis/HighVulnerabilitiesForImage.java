@@ -17,10 +17,10 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_filter_vulnerability_occurrences]
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Occurrence;
-import io.grafeas.v1beta1.vulnerability.Severity;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.Severity;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +36,9 @@ public class HighVulnerabilitiesForImage {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
     LinkedList<Occurrence> vulnerabilitylist = new LinkedList<Occurrence>();
-    for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
+    for (Occurrence o : client.getGrafeasClient().listOccurrences(projectName, filterStr).iterateAll()) {
       Severity severity = o.getVulnerability().getSeverity();
       if (severity == Severity.HIGH || severity == Severity.CRITICAL) {
         vulnerabilitylist.add(o);
