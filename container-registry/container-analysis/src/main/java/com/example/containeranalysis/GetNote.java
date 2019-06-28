@@ -18,8 +18,8 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_get_note]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
-import io.grafeas.v1.NoteName;
 import io.grafeas.v1.Note;
+import io.grafeas.v1.NoteName;
 import java.io.IOException;
 import java.lang.InterruptedException;
 

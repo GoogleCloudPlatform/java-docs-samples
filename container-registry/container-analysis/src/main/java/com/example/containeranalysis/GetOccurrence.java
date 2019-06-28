@@ -18,8 +18,8 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_get_occurrence]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
-import io.grafeas.v1.OccurrenceName;
 import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.OccurrenceName;
 import java.io.IOException;
 import java.lang.InterruptedException;
 

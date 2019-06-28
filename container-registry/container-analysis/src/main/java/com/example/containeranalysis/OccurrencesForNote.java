@@ -20,8 +20,8 @@ package com.example.containeranalysis;
 import static java.lang.Thread.sleep;
 
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
-import io.grafeas.v1.NoteName;
 import io.grafeas.v1.ListNoteOccurrencesRequest;
+import io.grafeas.v1.NoteName;
 import io.grafeas.v1.Occurrence;
 import java.io.IOException;
 import java.lang.InterruptedException;

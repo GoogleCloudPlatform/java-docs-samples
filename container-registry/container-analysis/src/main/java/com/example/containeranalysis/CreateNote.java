@@ -18,12 +18,10 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_create_note]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
-
 import io.grafeas.v1.Note;
 import io.grafeas.v1.ProjectName;
 import io.grafeas.v1.Version;
 import io.grafeas.v1.VulnerabilityNote;
-
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -37,11 +35,9 @@ public class CreateNote {
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
 
-    Note.Builder noteBuilder = Note.newBuilder();
     // Associate the Note with the metadata type
     // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
     // Here, we use the type "vulnerability"
-    VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
     VulnerabilityNote.Detail.Builder detailBuilder = VulnerabilityNote.Detail.newBuilder();
     // Set details relevant to your vulnerability here
     detailBuilder.setAffectedCpeUri("your-uri-here");
@@ -52,9 +48,12 @@ public class CreateNote {
     Version.Builder endBuilder = Version.newBuilder();
     endBuilder.setKind(Version.VersionKind.MAXIMUM);
     detailBuilder.setAffectedVersionEnd(endBuilder);
+  
+    VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
     vulBuilder.addDetails(detailBuilder);
-    noteBuilder.setVulnerability(vulBuilder);
     // Build the Note object
+    Note.Builder noteBuilder = Note.newBuilder();
+    noteBuilder.setVulnerability(vulBuilder);
     Note newNote = noteBuilder.build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 

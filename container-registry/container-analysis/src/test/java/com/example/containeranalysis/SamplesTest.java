@@ -23,20 +23,21 @@ import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
-import io.grafeas.v1.NoteName;
-import io.grafeas.v1.ProjectName;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import io.grafeas.v1.Note;
-import io.grafeas.v1.Occurrence;
-import io.grafeas.v1.Version;
-import io.grafeas.v1.VulnerabilityOccurrence;
-import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
-import io.grafeas.v1.VulnerabilityNote;
 import io.grafeas.v1.DiscoveryNote;
 import io.grafeas.v1.DiscoveryOccurrence;
 import io.grafeas.v1.DiscoveryOccurrence.AnalysisStatus;
+import io.grafeas.v1.GrafeasClient;
+import io.grafeas.v1.Note;
 import io.grafeas.v1.NoteKind;
+import io.grafeas.v1.NoteName;
+import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.ProjectName;
 import io.grafeas.v1.Severity;
+import io.grafeas.v1.Version;
+import io.grafeas.v1.VulnerabilityNote;
+import io.grafeas.v1.VulnerabilityOccurrence;
+import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
 
 import io.grpc.StatusRuntimeException;
 import java.util.Date;
@@ -257,8 +258,8 @@ public class SamplesTest {
 
     String discNoteId = "discovery-note-" + (new Date()).getTime();
     NoteName noteName = NoteName.of(PROJECT_ID, discNoteId);
-    ContainerAnalysisClient client = ContainerAnalysisClient.create();
-    client.getGrafeasClient().createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
+    client.createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
 
     // create discovery occurrence
     Occurrence.Builder occBuilder = Occurrence.newBuilder();
@@ -268,7 +269,7 @@ public class SamplesTest {
     discOccBuilder.setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS);
     occBuilder.setDiscovery(discOccBuilder);
     Occurrence newOcc = occBuilder.build();
-    Occurrence result = client.getGrafeasClient().createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
+    Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
 
     // poll again
     Occurrence found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
@@ -319,7 +320,6 @@ public class SamplesTest {
     assertEquals(0, result.size());
 
     // create high severity note
-    Note.Builder noteBuilder = Note.newBuilder();
     VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
     vulBuilder.setSeverity(Severity.CRITICAL);
     VulnerabilityNote.Detail.Builder detailBuilder = VulnerabilityNote.Detail.newBuilder();
@@ -332,6 +332,7 @@ public class SamplesTest {
     endBuilder.setKind(Version.VersionKind.MAXIMUM);
     detailBuilder.setAffectedVersionEnd(endBuilder);
     vulBuilder.addDetails(detailBuilder);
+    Note.Builder noteBuilder = Note.newBuilder();
     noteBuilder.setVulnerability(vulBuilder);
     Note newNote = noteBuilder.build();
 
@@ -344,7 +345,6 @@ public class SamplesTest {
     NoteName noteName = NoteName.of(PROJECT_ID, vulnNoteId);
     occBuilder.setNoteName(noteName.toString());
     occBuilder.setResourceUri(imageUrl);
-    VulnerabilityOccurrence.Builder vulOccBuilder = VulnerabilityOccurrence.newBuilder();
     PackageIssue.Builder issueBuilder = PackageIssue.newBuilder();
     issueBuilder.setAffectedCpeUri("your-uri-here");
     issueBuilder.setAffectedPackage("your-package-here");
@@ -354,6 +354,7 @@ public class SamplesTest {
     Version.Builder fixedVersionBuilder = Version.newBuilder();
     fixedVersionBuilder.setKind(Version.VersionKind.MAXIMUM);
     issueBuilder.setFixedVersion(fixedVersionBuilder);
+    VulnerabilityOccurrence.Builder vulOccBuilder = VulnerabilityOccurrence.newBuilder();
     vulOccBuilder.addPackageIssue(issueBuilder);
     occBuilder.setVulnerability(vulOccBuilder);
     Occurrence critical = occBuilder.build();

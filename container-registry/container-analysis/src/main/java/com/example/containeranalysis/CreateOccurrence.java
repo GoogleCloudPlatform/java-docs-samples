@@ -18,14 +18,12 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_create_occurrence]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
-
+import io.grafeas.v1.NoteName;
 import io.grafeas.v1.Occurrence;
 import io.grafeas.v1.ProjectName;
-import io.grafeas.v1.NoteName;
 import io.grafeas.v1.Version;
 import io.grafeas.v1.VulnerabilityOccurrence;
 import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
-
 import java.io.IOException;
 import java.lang.InterruptedException;
 
@@ -46,8 +44,6 @@ public class CreateOccurrence {
     // Associate the Occurrence with the metadata type (should match the parent Note's type)
     // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
     // Here, we use the type "vulnerability"
-    VulnerabilityOccurrence.Builder vulBuilder = VulnerabilityOccurrence.newBuilder();
-
     PackageIssue.Builder issueBuilder = PackageIssue.newBuilder();
     issueBuilder.setAffectedCpeUri("your-uri-here");
     issueBuilder.setAffectedPackage("your-package-here");
@@ -57,6 +53,8 @@ public class CreateOccurrence {
     Version.Builder fixedVersionBuilder = Version.newBuilder();
     fixedVersionBuilder.setKind(Version.VersionKind.MAXIMUM);
     issueBuilder.setFixedVersion(fixedVersionBuilder);
+
+    VulnerabilityOccurrence.Builder vulBuilder = VulnerabilityOccurrence.newBuilder();
     vulBuilder.addPackageIssue(issueBuilder);
 
     occBuilder.setVulnerability(vulBuilder);
