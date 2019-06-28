@@ -249,12 +249,10 @@ public class SamplesTest {
       // test passes
     }
     // create discovery note
-
-    Note.Builder noteBuilder = Note.newBuilder();
-    DiscoveryNote.Builder discBuilder = DiscoveryNote.newBuilder();
-    discBuilder.setAnalysisKind(NoteKind.DISCOVERY);
-    noteBuilder.setDiscovery(discBuilder);
-    Note newNote = noteBuilder.build();
+    Note newNote = Note.newBuilder()
+        .setDiscovery(DiscoveryNote.newBuilder()
+            .setAnalysisKind(NoteKind.DISCOVERY))
+        .build();
 
     String discNoteId = "discovery-note-" + (new Date()).getTime();
     NoteName noteName = NoteName.of(PROJECT_ID, discNoteId);
@@ -262,13 +260,12 @@ public class SamplesTest {
     client.createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
 
     // create discovery occurrence
-    Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    occBuilder.setNoteName(noteName.toString());
-    occBuilder.setResourceUri(imageUrl);
-    DiscoveryOccurrence.Builder discOccBuilder = DiscoveryOccurrence.newBuilder();
-    discOccBuilder.setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS);
-    occBuilder.setDiscovery(discOccBuilder);
-    Occurrence newOcc = occBuilder.build();
+    Occurrence newOcc = Occurrence.newBuilder()
+        .setNoteName(noteName.toString())
+        .setResourceUri(imageUrl)
+        .setDiscovery(DiscoveryOccurrence.newBuilder()
+            .setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS))
+        .build();
     Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
 
     // poll again
@@ -320,44 +317,36 @@ public class SamplesTest {
     assertEquals(0, result.size());
 
     // create high severity note
-    VulnerabilityNote.Builder vulBuilder = VulnerabilityNote.newBuilder();
-    vulBuilder.setSeverity(Severity.CRITICAL);
-    VulnerabilityNote.Detail.Builder detailBuilder = VulnerabilityNote.Detail.newBuilder();
-    detailBuilder.setAffectedCpeUri("your-uri-here");
-    detailBuilder.setAffectedPackage("your-package-here");
-    Version.Builder startBuilder = Version.newBuilder();
-    startBuilder.setKind(Version.VersionKind.MINIMUM);
-    detailBuilder.setAffectedVersionStart(startBuilder);
-    Version.Builder endBuilder = Version.newBuilder();
-    endBuilder.setKind(Version.VersionKind.MAXIMUM);
-    detailBuilder.setAffectedVersionEnd(endBuilder);
-    vulBuilder.addDetails(detailBuilder);
-    Note.Builder noteBuilder = Note.newBuilder();
-    noteBuilder.setVulnerability(vulBuilder);
-    Note newNote = noteBuilder.build();
+    Note newNote = Note.newBuilder()
+        .setVulnerability(VulnerabilityNote.newBuilder()
+            .setSeverity(Severity.CRITICAL)
+            .addDetails(VulnerabilityNote.Detail.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersionStart(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setAffectedVersionEnd(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
 
     String vulnNoteId = "severe-note-" + (new Date()).getTime();
     ContainerAnalysisClient client = ContainerAnalysisClient.create();
     client.getGrafeasClient().createNote(ProjectName.format(PROJECT_ID), vulnNoteId, newNote);
 
     // create high severity occurrence
-    Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    NoteName noteName = NoteName.of(PROJECT_ID, vulnNoteId);
-    occBuilder.setNoteName(noteName.toString());
-    occBuilder.setResourceUri(imageUrl);
-    PackageIssue.Builder issueBuilder = PackageIssue.newBuilder();
-    issueBuilder.setAffectedCpeUri("your-uri-here");
-    issueBuilder.setAffectedPackage("your-package-here");
-    Version.Builder affectedVersionBuilder = Version.newBuilder();
-    affectedVersionBuilder.setKind(Version.VersionKind.MINIMUM);
-    issueBuilder.setAffectedVersion(affectedVersionBuilder);
-    Version.Builder fixedVersionBuilder = Version.newBuilder();
-    fixedVersionBuilder.setKind(Version.VersionKind.MAXIMUM);
-    issueBuilder.setFixedVersion(fixedVersionBuilder);
-    VulnerabilityOccurrence.Builder vulOccBuilder = VulnerabilityOccurrence.newBuilder();
-    vulOccBuilder.addPackageIssue(issueBuilder);
-    occBuilder.setVulnerability(vulOccBuilder);
-    Occurrence critical = occBuilder.build();
+    Occurrence critical = Occurrence.newBuilder()
+        .setNoteName(NoteName.of(PROJECT_ID, vulnNoteId).toString())
+        .setResourceUri(imageUrl)
+        .setVulnerability(VulnerabilityOccurrence.newBuilder()
+            .addPackageIssue(PackageIssue.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setFixedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
+
     critical = client.getGrafeasClient().createOccurrence(ProjectName.format(PROJECT_ID), critical);
 
     // check again
