@@ -168,13 +168,13 @@ public class SpannerSample {
 
   // [START spanner_insert_datatypes_data]
   static Value availableDates1 = Value.dateArray(Arrays.asList(
-    Date.parseDate("2020-12-01"), 
-    Date.parseDate("2020-12-02"),
-    Date.parseDate("2020-12-03")));
+      Date.parseDate("2020-12-01"), 
+      Date.parseDate("2020-12-02"),
+      Date.parseDate("2020-12-03")));
   static Value availableDates2 = Value.dateArray(Arrays.asList(
-    Date.parseDate("2020-11-01"), 
-    Date.parseDate("2020-11-05"),
-    Date.parseDate("2020-11-15")));
+      Date.parseDate("2020-11-01"), 
+      Date.parseDate("2020-11-05"),
+      Date.parseDate("2020-11-15")));
   static Value availableDates3 = Value.dateArray(Arrays.asList(
       Date.parseDate("2020-10-01"),
       Date.parseDate("2020-10-07")));
@@ -1325,7 +1325,8 @@ public class SpannerSample {
 
   // [START spanner_query_with_bytes_parameter]
   static void queryWithBytes(DatabaseClient dbClient) {
-    ByteArray exampleBytes = ByteArray.fromBase64(BaseEncoding.base64().encode("Hello World 1".getBytes()));
+    ByteArray exampleBytes = ByteArray.fromBase64(
+      BaseEncoding.base64().encode("Hello World 1".getBytes()));
     Statement statement =
         Statement.newBuilder(
                 "SELECT VenueId, VenueName FROM Venues \n"
