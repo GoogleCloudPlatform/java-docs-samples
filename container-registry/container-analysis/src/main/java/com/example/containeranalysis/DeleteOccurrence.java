@@ -18,6 +18,7 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_delete_occurrence]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.GrafeasClient;
 import io.grafeas.v1.OccurrenceName;
 import java.io.IOException;
 import java.lang.InterruptedException;
@@ -32,8 +33,8 @@ public class DeleteOccurrence {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    ContainerAnalysisClient client = ContainerAnalysisClient.create();
-    client.getGrafeasClient().deleteOccurrence(occurrenceName);
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
+    client.deleteOccurrence(occurrenceName);
   }
 }
 // [END containeranalysis_delete_occurrence]

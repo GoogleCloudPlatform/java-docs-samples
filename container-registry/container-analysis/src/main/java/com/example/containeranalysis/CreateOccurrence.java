@@ -18,6 +18,7 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_create_occurrence]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.GrafeasClient;
 import io.grafeas.v1.NoteName;
 import io.grafeas.v1.Occurrence;
 import io.grafeas.v1.ProjectName;
@@ -62,8 +63,8 @@ public class CreateOccurrence {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    ContainerAnalysisClient client = ContainerAnalysisClient.create();
-    Occurrence result = client.getGrafeasClient().createOccurrence(occProjectName, newOcc);
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
+    Occurrence result = client.createOccurrence(occProjectName, newOcc);
     return result;
   }
 }

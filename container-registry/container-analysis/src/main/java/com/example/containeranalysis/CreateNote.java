@@ -18,6 +18,7 @@ package com.example.containeranalysis;
 
 // [START containeranalysis_create_note]
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.GrafeasClient;
 import io.grafeas.v1.Note;
 import io.grafeas.v1.ProjectName;
 import io.grafeas.v1.Version;
@@ -58,8 +59,8 @@ public class CreateNote {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    ContainerAnalysisClient client = ContainerAnalysisClient.create();
-    Note result = client.getGrafeasClient().createNote(projectName, noteId, newNote);
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
+    Note result = client.createNote(projectName, noteId, newNote);
     return result;
   }
 }
