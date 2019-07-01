@@ -1,2 +1,2 @@
-FROM gcr.io/google_appengine/jetty9-compat:githubheadasync
+FROM gcr.io/google-appengine/jetty:latest
 ADD . /app
