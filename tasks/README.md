@@ -19,68 +19,38 @@ pushes it to your queue.
 
 ## Creating a queue
 
-To create a queue using the Cloud SDK, use the following gcloud command:
+To create a queue using the Cloud SDK, use the following `gcloud` command:
 
 ```
-gcloud beta tasks queues create <QUEUE_NAME>
+gcloud tasks queues create <QUEUE_NAME>
 ```
 
-## Run the Sample Using the Command Line
-
-Set environment variables:
-
-First, your project ID:
+The location of your queue is the same as your Google Cloud Project. It can be discovered by using the following `gcloud` command:
 
 ```
-export GOOGLE_CLOUD_PROJECT=<YOUR_GOOGLE_CLOUD_PROJECT>
+gcloud tasks queues describe <QUEUE_NAME>
 ```
-
-Then the queue ID, as specified at queue creation time. Queue IDs already
-created can be listed with `gcloud beta tasks queues list`.
-
-```
-export QUEUE_ID=<QUEUE_NAME>
-```
-
-And finally the location ID, which can be discovered with
-`gcloud beta tasks queues describe $QUEUE_ID`, with the location embedded in
-the "name" value (for instance, if the name is
+the location embedded in the "name" value (for instance, if the name is
 "projects/my-project/locations/us-central1/queues/my-queue", then the
 location is "us-central1").
 
-```
-export LOCATION_ID=<YOUR_ZONE>
-```
+## Creating Tasks with HTTP Targets
 
-### Creating Tasks with HTTP Targets
+Set an endpoint to your task handler by replacing the variable `url` with your
+HTTP target in `CreateHttpTask.java`.
 
-Set an environment variable for the endpoint to your task handler. This is an
-example url:
-```
-export URL=https://example.com/taskshandler
-```
+The sample will create a task and add it to your queue. As the queue processes
+each task, it will send the task to the specific URL endpoint.
 
-Running the sample will create a task and add it to your queue. As the queue
-processes each task, it will send the task to the specific URL endpoint:
+## Using HTTP Targets with Authentication Tokens
 
-```
-mvn exec:java@HttpTask"
-```
-
-### Using HTTP Targets with Authentication Tokens
+Set an endpoint to your task handler by replacing the variable `url` with your
+HTTP target in `CreateHttpTaskWithToken.java`.
 
 Your Cloud Tasks [service account][sa],
 (service-<project-number>@gcp-sa-cloudtasks.iam.gserviceaccount.com), must
 have the role of: `Service Account Token Creator` to generate a tokens.
 
-Create or use an existing [service account][sa] to replace `<SERVICE_ACCOUNT_EMAIL>`
-in `CreateHttpTaskWithToken.java`. This service account will be used to
-authenticate the OIDC token.
-
-Running the sample with command:
-```
-mvn exec:java@WithToken"
-```
-
+Create or use an existing [service account][sa] to authenticate the OIDC token.
 
 [sa]: https://cloud.google.com/iam/docs/service-accounts

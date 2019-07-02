@@ -28,7 +28,7 @@ App Engine task attempts.
 To create a queue using the Cloud SDK, use the following gcloud command:
 
 ```
-gcloud beta tasks queues create-app-engine-queue my-appengine-queue
+gcloud tasks queues create my-appengine-queue
 ```
 
 Note: A newly created queue will route to the default App Engine service and
@@ -53,14 +53,14 @@ export GOOGLE_CLOUD_PROJECT=<YOUR_GOOGLE_CLOUD_PROJECT>
 ```
 
 Then the queue ID, as specified at queue creation time. Queue IDs already
-created can be listed with `gcloud beta tasks queues list`.
+created can be listed with `gcloud tasks queues list`.
 
 ```
 export QUEUE_ID=my-appengine-queue
 ```
 
 And finally the location ID, which can be discovered with
-`gcloud beta tasks queues describe $QUEUE_ID`, with the location embedded in
+`gcloud tasks queues describe $QUEUE_ID`, with the location embedded in
 the "name" value (for instance, if the name is
 "projects/my-project/locations/us-central1/queues/my-appengine-queue", then the
 location is "us-central1").

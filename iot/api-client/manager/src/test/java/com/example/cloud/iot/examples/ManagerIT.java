@@ -16,11 +16,21 @@
 
 package com.example.cloud.iot.examples;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.cloudiot.v1.CloudIot;
+import com.google.api.services.cloudiot.v1.CloudIotScopes;
+import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.Topic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+
+import java.util.List;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.junit.After;
@@ -29,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
 
 /** Tests for iot "Management" sample. */
 @RunWith(JUnit4.class)
@@ -49,9 +60,15 @@ public class ManagerIT {
   private static final String ROLE = "roles/viewer";
 
   private static Topic topic;
+  private static boolean hasCleared = false;
 
   @Before
   public void setUp() throws Exception {
+    if (!hasCleared) {
+      clearTestRegistries(); // Remove old / unused registries
+      hasCleared = true;
+    }
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -60,6 +77,46 @@ public class ManagerIT {
   @After
   public void tearDown() throws Exception {
     System.setOut(null);
+  }
+
+  public void clearTestRegistries() throws Exception {
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    final CloudIot service =
+        new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
+            .setApplicationName("TEST")
+            .build();
+
+    final String projectPath = "projects/" + PROJECT_ID + "/locations/" + CLOUD_REGION;
+
+    List<DeviceRegistry> registries =
+        service
+            .projects()
+            .locations()
+            .registries()
+            .list(projectPath)
+            .execute()
+            .getDeviceRegistries();
+
+    if (registries != null) {
+      for (DeviceRegistry r : registries) {
+        String registryId = r.getId();
+        if (registryId.startsWith("java-reg-")) {
+          long currSecs = System.currentTimeMillis() / 1000L;
+          long regSecs = Long.parseLong(registryId.substring(
+              "java-reg-".length(), registryId.length()));
+          long diffSecs = currSecs - regSecs;
+          if (diffSecs > (60 * 60 * 24 * 7)) { // tests from last week or older
+            System.out.println("Remove Id: " + r.getId());
+            DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, registryId);
+          }
+        }
+      }
+    } else {
+      System.out.println("Project has no registries.");
+    }
   }
 
   @Test

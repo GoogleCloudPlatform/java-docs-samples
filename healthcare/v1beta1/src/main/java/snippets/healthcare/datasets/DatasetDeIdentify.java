@@ -16,7 +16,7 @@
 
 package snippets.healthcare.datasets;
 
-// [START healthcare_deidentify_dataset]
+// [START healthcare_dicom_keeplist_deidentify_dataset]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -108,4 +108,4 @@ public class DatasetDeIdentify {
         .build();
   }
 }
-// [END healthcare_deidentify_dataset]
+// [END healthcare_dicom_keeplist_deidentify_dataset]
