@@ -1,4 +1,4 @@
-# java-docs-samples
+# Google Cloud Platform Java Samples
 
 ![Kokoro Build Status](https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples.png)
 [![Coverage Status](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples/branch/master/graph/badge.svg)](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples)
@@ -6,39 +6,43 @@
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
-While this library is still supported, we suggest trying the newer [Cloud Client Library](https://developers.google.com/api-client-library/java/apis/vision/v1) for Google Cloud Vision, especially for new projects. For more information, please see the notice on the [API Client Library Page](https://developers.google.com/api-client-library/java/apis/vision/v1).
+This repository holds sample code written in Go that demonstrates the
+[Google Cloud Platform](https://cloud.google.com/docs/).
 
-This is a repository that contains java code snippets on [Cloud Platform Documentation](https://cloud.google.com/docs/).
+Some samples have accompanying guides on <cloud.google.com>. See respective
+README files for details.
 
-Technology Samples:
+## Set Up
 
-* [Bigquery](bigquery)
-* [Data Catalog](datacatalog)
-* [Datastore](datastore)
-* [Endpoints](endpoints)
-* [Identity-Aware Proxy](iap)
-* [Key Management Service](kms)
-* [Logging](logging)
-* [Monitoring](monitoring)
-* [Natural Language](language)
-* [PubSub](pubsub)
-* [Cloud Spanner](spanner)
-* [Speech](speech)
-* [Cloud Storage](storage)
-* [Translate](translate)
-* [Vision](vision)
+1. [Set up your Java Development Environment](https://cloud.google.com/java/docs/setup)
 
-## Credentials Example
+1. Clone this repository:
 
-The documentation for [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials).
+        git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 
-`BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();`
+1. Obtain authentication credentials.
 
-The client library looks for credentials using the following rules:
+    Create local credentials by running the following command and following the
+    oauth2 flow (read more about the command [here][auth_command]):
 
-1. `GOOGLE_APPLICATION_CREDENTIALS` environment variable, pointing to a service account key JSON file path.
-2. Cloud SDK credentials `gcloud auth application-default login`
-3. App Engine standard environment credentials.
-4. Compute Engine credentials.
+        gcloud auth application-default login
 
-You can override this behavior using setCredentials in `BigQueryOptions.newBuilder()` by adding `setCredentials(Credentials credentials)` from [ServiceOptions.builder](http://googlecloudplatform.github.io/google-cloud-java/0.12.0/apidocs/com/google/cloud/ServiceOptions.Builder.html#setCredentials-com.google.auth.Credentials-) and [Credentials](http://google.github.io/google-auth-library-java/releases/0.6.0/apidocs/com/google/auth/Credentials.html?is-external=true).
+    Or manually set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable
+    to point to a service account key JSON file path.
+
+    Learn more at [Setting Up Authentication for Server to Server Production Applications](ADC).
+
+    *Note:* Application Default Credentials is able to implicitly find the credentials as long as the application is running on Compute Engine, Kubernetes Engine, App Engine, or Cloud Functions.
+
+## Contributing
+
+* See the [Contributing Guide](CONTRIBUTING.md)
+
+## Licensing
+
+* See [LICENSE](LICENSE)
+
+[ADC]: https://developers.google.com/identity/protocols/application-default-credentials
+[cred]: http://google.github.io/google-auth-library-java/releases/0.6.0/apidocs/com/google/auth/Credentials.html?is-external=true
+[options]: http://googlecloudplatform.github.io/google-cloud-java/0.12.0/apidocs/com/google/cloud/ServiceOptions.Builder.html#setCredentials-com.google.auth.Credentials-
+[auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
