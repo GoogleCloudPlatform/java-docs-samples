@@ -29,6 +29,7 @@ import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
+
 import java.lang.Math;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -66,15 +67,21 @@ public class InfiniteStreamRecognize {
   private static ByteString tempByteString;
 
   public static void main(String... args) {
+    InfiniteStreamRecognizeOptions options = InfiniteStreamRecognizeOptions.fromFlags(args);
+    if (options == null) {
+      // Could not parse.
+      System.exit(1);
+    }
+
     try {
-      infiniteStreamingRecognize();
+      infiniteStreamingRecognize(options.langCode);
     } catch (Exception e) {
       System.out.println("Exception caught: " + e);
     }
   }
 
   /** Performs infinite streaming speech recognition */
-  public static void infiniteStreamingRecognize() throws Exception {
+  public static void infiniteStreamingRecognize(String languageCode) throws Exception {
 
     // Microphone Input buffering
     class MicBuffer implements Runnable {
@@ -159,7 +166,7 @@ public class InfiniteStreamRecognize {
       RecognitionConfig recognitionConfig =
           RecognitionConfig.newBuilder()
               .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-              .setLanguageCode("en-US")
+              .setLanguageCode(languageCode)
               .setSampleRateHertz(16000)
               .build();
 

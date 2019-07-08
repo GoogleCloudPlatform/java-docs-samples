@@ -155,7 +155,11 @@ mvn exec:java -DRecognize -Dexec.args="word-level-conf gs://cloud-samples-tests/
 ```
 
 ## Infinite Streaming
-Continuously stream audio to the speech API over multiple requests 
+Continuously stream audio to the speech API over multiple requests (by default en-US).
 ```
 mvn exec:java -DInfiniteStreamRecognize
+```
+If stream audio is in different language, you could also pass language code as a command line argument (for example, korea).
+```
+mvn exec:java -Dexec.args="-lang_code=ko-KR" -DInfiniteStreamRecognize
 ```
