@@ -35,6 +35,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -80,6 +81,15 @@ public class InfiniteStreamRecognize {
     }
   }
 
+  public static String convertMillisToDate(double milliSeconds, DecimalFormat format) {
+    long millis = (long) milliSeconds;
+    return String.format("%s min : %s sec",
+            format.format( TimeUnit.MILLISECONDS.toMinutes(millis)),
+            format.format(  TimeUnit.MILLISECONDS.toSeconds(millis) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
+    );
+
+  }
   /** Performs infinite streaming speech recognition */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
 
@@ -134,21 +144,22 @@ public class InfiniteStreamRecognize {
 
               double correctedTime = resultEndTimeInMS - bridgingOffset
                                           + (STREAMING_LIMIT * restartCounter);
-              DecimalFormat format = new DecimalFormat("0.#");
+              DecimalFormat format = new DecimalFormat();
+              format.setMinimumIntegerDigits(2);
 
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               if (result.getIsFinal()) {
                 System.out.print(GREEN);
                 System.out.print("\033[2K\r");
-                System.out.printf("%s: %s\n", format.format(correctedTime),
-                                                  alternative.getTranscript());
+                System.out.printf("%s: %s\n", convertMillisToDate(correctedTime, format),
+                                                  alternative.getTranscript() + " - " + alternative.getConfidence());
 
                 isFinalEndTime = resultEndTimeInMS;
                 lastTranscriptWasFinal = true;
               } else {
                 System.out.print(RED);
                 System.out.print("\033[2K\r");
-                System.out.printf("%s: %s", format.format(correctedTime),
+                System.out.printf("%s: %s", convertMillisToDate(correctedTime, format),
                                                   alternative.getTranscript());
 
                 lastTranscriptWasFinal = false;
