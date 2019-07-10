@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,6 @@ import javax.servlet.http.HttpServletResponse;
  * A startup handler to populate the datastore with example entities.
  */
 public class StartupServlet extends HttpServlet {
-
-  static final String IS_POPULATED_ENTITY = "IsPopulated";
-  static final String IS_POPULATED_KEY_NAME = "is-populated";
-
-  private static final String PERSON_ENTITY = "Person";
-  private static final String NAME_PROPERTY = "name";
-
   private static final HelloHttpSample samples = new HelloHttpSample();
 
   @Override

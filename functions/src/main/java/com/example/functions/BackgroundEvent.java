@@ -16,10 +16,8 @@
 
 package com.example.functions;
 
-// [START functions_helloworld_gcs_event]
-public class GcsEvent {
-  String bucket;
+// [START functions_helloworld_background_event]
+public class BackgroundEvent {
   String name;
-  String metageneration;
 }
-// [END functions_helloworld_gcs_event]
+// [START functions_helloworld_background_event]

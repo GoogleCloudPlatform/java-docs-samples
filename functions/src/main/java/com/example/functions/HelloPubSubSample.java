@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-// [START functions_background_helloworld]
-// [START functions_helloworld_pubsub]
 package com.example.functions;
 
+// [START functions_background_helloworld]
+// [START functions_helloworld_pubsub]
 import java.util.Base64;
 import java.util.logging.Logger;
 

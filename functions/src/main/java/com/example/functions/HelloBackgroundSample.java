@@ -16,10 +16,18 @@
 
 package com.example.functions;
 
-// [START functions_helloworld_gcs_event]
-public class GcsEvent {
-  String bucket;
-  String name;
-  String metageneration;
+// [START functions_background_helloworld]
+import java.util.logging.Logger;
+
+public class HelloBackgroundSample {
+  private static Logger logger = Logger.getLogger(HelloBackgroundSample.class.getName());
+
+  public void helloBackground(BackgroundEvent data) throws Exception {
+    String name = "world";
+    if (data.name != null) {
+      name = data.name;
+    }
+    logger.info(String.format("Hello %s!", name));
+  }
 }
-// [END functions_helloworld_gcs_event]
+// [END functions_background_helloworld]
