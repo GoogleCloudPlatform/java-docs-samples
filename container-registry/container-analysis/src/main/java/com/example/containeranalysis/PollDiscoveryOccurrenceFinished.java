@@ -16,11 +16,13 @@
 
 package com.example.containeranalysis;
 
-// [START containeranalysis_poll_discovery_occurrence_finished]i
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Occurrence;
-import io.grafeas.v1beta1.discovery.Discovered.AnalysisStatus;
+// [START containeranalysis_poll_discovery_occurrence_finished]
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.DiscoveryOccurrence;
+import io.grafeas.v1.DiscoveryOccurrence.AnalysisStatus;
+import io.grafeas.v1.GrafeasClient;
+import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.ProjectName;
 import java.io.IOException;
 import java.lang.InterruptedException;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +41,7 @@ public class PollDiscoveryOccurrenceFinished {
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
 
     // find the discovery occurrence using a filter string
     Occurrence discoveryOccurrence = null;
@@ -54,7 +56,7 @@ public class PollDiscoveryOccurrenceFinished {
     // [START containeranalysis_poll_discovery_occurrence_finished]
     while (discoveryOccurrence == null) {
       for (Occurrence o : client.listOccurrences(projectName, filter).iterateAll()) {
-        if (o.getDiscovered() != null) {
+        if (o.getDiscovery() != null) {
           // there should be only one valid discovery occurrence returned by the given filter
           discoveryOccurrence = o;
         }
@@ -73,7 +75,7 @@ public class PollDiscoveryOccurrenceFinished {
         && status != AnalysisStatus.FINISHED_UNSUPPORTED) {
       // update the occurrence state
       discoveryOccurrence = client.getOccurrence(discoveryOccurrence.getName());
-      status = discoveryOccurrence.getDiscovered().getDiscovered().getAnalysisStatus();
+      status = discoveryOccurrence.getDiscovery().getAnalysisStatus();
       TimeUnit.SECONDS.sleep(1);
       // check for timeout
       if (System.currentTimeMillis() > deadline) {

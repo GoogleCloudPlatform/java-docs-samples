@@ -20,21 +20,27 @@ import static java.lang.Thread.sleep;
 import static junit.framework.TestCase.assertEquals;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
-import com.google.containeranalysis.v1beta1.NoteName;
-import com.google.containeranalysis.v1beta1.ProjectName;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import io.grafeas.v1beta1.Note;
-import io.grafeas.v1beta1.Occurrence;
-import io.grafeas.v1beta1.Resource;
-import io.grafeas.v1beta1.discovery.Discovered;
-import io.grafeas.v1beta1.discovery.Discovered.AnalysisStatus;
-import io.grafeas.v1beta1.discovery.Discovery;
-import io.grafeas.v1beta1.vulnerability.Details;
-import io.grafeas.v1beta1.vulnerability.Severity;
-import io.grafeas.v1beta1.vulnerability.Vulnerability;
+import com.google.pubsub.v1.ProjectTopicName;
+import io.grafeas.v1.DiscoveryNote;
+import io.grafeas.v1.DiscoveryOccurrence;
+import io.grafeas.v1.DiscoveryOccurrence.AnalysisStatus;
+import io.grafeas.v1.GrafeasClient;
+import io.grafeas.v1.Note;
+import io.grafeas.v1.NoteKind;
+import io.grafeas.v1.NoteName;
+import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.Severity;
+import io.grafeas.v1.Version;
+import io.grafeas.v1.VulnerabilityNote;
+import io.grafeas.v1.VulnerabilityOccurrence;
+import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
+
 import io.grpc.StatusRuntimeException;
 import java.util.Date;
 import java.util.List;
@@ -198,6 +204,14 @@ public class SamplesTest {
   public void testPubSub() throws Exception {
     int newCount;
     int tries;
+    // create new topic and subscription if needed
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      String topicId = "container-analysis-occurrences-v1";
+      ProjectTopicName topicName = ProjectTopicName.of(PROJECT_ID, topicId);
+      topicAdminClient.createTopic(topicName);
+    } catch (StatusRuntimeException e) {
+      System.out.println("Topic already exists");
+    }
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(PROJECT_ID, subId);
     try {
       Subscriptions.createOccurrenceSubscription(subId, PROJECT_ID);
@@ -245,34 +259,29 @@ public class SamplesTest {
       // test passes
     }
     // create discovery note
+    Note newNote = Note.newBuilder()
+        .setDiscovery(DiscoveryNote.newBuilder()
+            .setAnalysisKind(NoteKind.DISCOVERY))
+        .build();
+
     String discNoteId = "discovery-note-" + (new Date()).getTime();
     NoteName noteName = NoteName.of(PROJECT_ID, discNoteId);
-    Note.Builder noteBuilder = Note.newBuilder();
-    Discovery.Builder discoveryBuilder = Discovery.newBuilder();
-    noteBuilder.setDiscovery(discoveryBuilder);
-    Note newNote = noteBuilder.build();
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
     client.createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
 
     // create discovery occurrence
-    Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    occBuilder.setNoteName(noteName.toString());
-    Discovered.Builder discoveredBuilder = Discovered.newBuilder();
-    discoveredBuilder.setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS);
-    io.grafeas.v1beta1.discovery.Details.Builder detailsBuilder = 
-        io.grafeas.v1beta1.discovery.Details.newBuilder();
-    detailsBuilder.setDiscovered(discoveredBuilder);
-    occBuilder.setDiscovered(detailsBuilder);
-    Resource.Builder resourceBuilder = Resource.newBuilder();
-    resourceBuilder.setUri(imageUrl);
-    occBuilder.setResource(resourceBuilder);
-    Occurrence newOcc = occBuilder.build();
+    Occurrence newOcc = Occurrence.newBuilder()
+        .setNoteName(noteName.toString())
+        .setResourceUri(imageUrl)
+        .setDiscovery(DiscoveryOccurrence.newBuilder()
+            .setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS))
+        .build();
     Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
 
     // poll again
     Occurrence found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
         imageUrl, PROJECT_ID, 5);
-    AnalysisStatus foundStatus = found.getDiscovered().getDiscovered().getAnalysisStatus();
+    AnalysisStatus foundStatus = found.getDiscovery().getAnalysisStatus();
     assertEquals(foundStatus, AnalysisStatus.FINISHED_SUCCESS);
 
     // clean up
@@ -318,26 +327,37 @@ public class SamplesTest {
     assertEquals(0, result.size());
 
     // create high severity note
-    String vulnNoteId = "discovery-note-" + (new Date()).getTime();
-    Note.Builder noteBuilder = Note.newBuilder();
-    Vulnerability.Builder vulnBuilder = Vulnerability.newBuilder();
-    vulnBuilder.setSeverity(Severity.CRITICAL);
-    noteBuilder.setVulnerability(vulnBuilder);
-    Note newNote = noteBuilder.build();
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
-    client.createNote(ProjectName.format(PROJECT_ID), vulnNoteId, newNote);
+    Note newNote = Note.newBuilder()
+        .setVulnerability(VulnerabilityNote.newBuilder()
+            .setSeverity(Severity.CRITICAL)
+            .addDetails(VulnerabilityNote.Detail.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersionStart(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setAffectedVersionEnd(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
+
+    String vulnNoteId = "severe-note-" + (new Date()).getTime();
+    ContainerAnalysisClient client = ContainerAnalysisClient.create();
+    client.getGrafeasClient().createNote(ProjectName.format(PROJECT_ID), vulnNoteId, newNote);
 
     // create high severity occurrence
-    Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    NoteName noteName = NoteName.of(PROJECT_ID, vulnNoteId);
-    occBuilder.setNoteName(noteName.toString());
-    Details.Builder detailsBuilder = Details.newBuilder();
-    occBuilder.setVulnerability(detailsBuilder);
-    Resource.Builder resourceBuilder = Resource.newBuilder();
-    resourceBuilder.setUri(imageUrl);
-    occBuilder.setResource(resourceBuilder);
-    Occurrence critical = occBuilder.build();
-    critical = client.createOccurrence(ProjectName.format(PROJECT_ID), critical);
+    Occurrence critical = Occurrence.newBuilder()
+        .setNoteName(NoteName.of(PROJECT_ID, vulnNoteId).toString())
+        .setResourceUri(imageUrl)
+        .setVulnerability(VulnerabilityOccurrence.newBuilder()
+            .addPackageIssue(PackageIssue.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setFixedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
+
+    critical = client.getGrafeasClient().createOccurrence(ProjectName.format(PROJECT_ID), critical);
 
     // check again
     int tries = 0;
