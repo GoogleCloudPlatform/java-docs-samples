@@ -90,9 +90,7 @@ public class InfiniteStreamRecognize {
 
   }
 
-  /**
-   * Performs infinite streaming speech recognition
-   */
+  /** Performs infinite streaming speech recognition */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
 
     // Microphone Input buffering
@@ -143,6 +141,7 @@ public class InfiniteStreamRecognize {
                       + (STREAMING_LIMIT * restartCounter);
               DecimalFormat format = new DecimalFormat();
               format.setMinimumIntegerDigits(2);
+
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               if (result.getIsFinal()) {
                 System.out.print(GREEN);
