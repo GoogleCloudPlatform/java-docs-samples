@@ -6,7 +6,7 @@
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
-This repository holds sample code written in Go that demonstrates the
+This repository holds sample code written in Java that demonstrates the
 [Google Cloud Platform](https://cloud.google.com/docs/).
 
 Some samples have accompanying guides on <cloud.google.com>. See respective
