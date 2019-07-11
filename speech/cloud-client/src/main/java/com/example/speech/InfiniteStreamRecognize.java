@@ -45,10 +45,12 @@ import javax.sound.sampled.TargetDataLine;
 
 public class InfiniteStreamRecognize {
 
+  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+
   public static final String RED = "\033[0;31m";
   public static final String GREEN = "\033[0;32m";
   public static final String YELLOW = "\033[0;33m";
-  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
   private static TargetDataLine targetDataLine;
@@ -121,10 +123,10 @@ public class InfiniteStreamRecognize {
     Thread micThread = new Thread(micrunnable);
     ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
     try (SpeechClient client = SpeechClient.create()) {
-
       ClientStream<StreamingRecognizeRequest> clientStream;
       responseObserver =
           new ResponseObserver<StreamingRecognizeResponse>() {
+
             ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
             public void onStart(StreamController controller) {
@@ -146,7 +148,8 @@ public class InfiniteStreamRecognize {
               if (result.getIsFinal()) {
                 System.out.print(GREEN);
                 System.out.print("\033[2K\r");
-                System.out.printf("%s: %s [confidence: %.2f]\n", convertMillisToDate(correctedTime, format),
+                System.out.printf("%s: %s [confidence: %.2f]\n",
+                        convertMillisToDate(correctedTime, format),
                         alternative.getTranscript(),
                         alternative.getConfidence()
                 );
@@ -170,24 +173,23 @@ public class InfiniteStreamRecognize {
           };
       clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
-
       RecognitionConfig recognitionConfig =
-              RecognitionConfig.newBuilder()
-                      .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-                      .setLanguageCode(languageCode)
-                      .setSampleRateHertz(16000)
-                      .build();
+          RecognitionConfig.newBuilder()
+              .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+              .setLanguageCode("en-US")
+              .setSampleRateHertz(16000)
+              .build();
 
       StreamingRecognitionConfig streamingRecognitionConfig =
-              StreamingRecognitionConfig.newBuilder()
-                      .setConfig(recognitionConfig)
-                      .setInterimResults(true)
-                      .build();
+          StreamingRecognitionConfig.newBuilder()
+              .setConfig(recognitionConfig)
+              .setInterimResults(true)
+              .build();
 
       StreamingRecognizeRequest request =
-              StreamingRecognizeRequest.newBuilder()
-                      .setStreamingConfig(streamingRecognitionConfig)
-                      .build(); // The first request in a streaming call has to be a config
+          StreamingRecognizeRequest.newBuilder()
+              .setStreamingConfig(streamingRecognitionConfig)
+              .build(); // The first request in a streaming call has to be a config
 
       clientStream.send(request);
 
@@ -196,9 +198,9 @@ public class InfiniteStreamRecognize {
         // bigEndian: false
         AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
         DataLine.Info targetInfo =
-                new Info(
-                      TargetDataLine.class,
-                      audioFormat); // Set the system information to read from the microphone audio
+            new Info(
+                TargetDataLine.class,
+                audioFormat); // Set the system information to read from the microphone audio
         // stream
 
         if (!AudioSystem.isLineSupported(targetInfo)) {
@@ -241,9 +243,9 @@ public class InfiniteStreamRecognize {
             clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
             request =
-                    StreamingRecognizeRequest.newBuilder()
-                            .setStreamingConfig(streamingRecognitionConfig)
-                            .build();
+                StreamingRecognizeRequest.newBuilder()
+                      .setStreamingConfig(streamingRecognitionConfig)
+                      .build();
 
             System.out.println(YELLOW);
             System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
@@ -275,9 +277,9 @@ public class InfiniteStreamRecognize {
                 // set bridging offset for next request
                 for (int i = chunksFromMS; i < lastAudioInput.size(); i++) {
                   request =
-                          StreamingRecognizeRequest.newBuilder()
-                                  .setAudioContent(lastAudioInput.get(i))
-                                  .build();
+                      StreamingRecognizeRequest.newBuilder()
+                          .setAudioContent(lastAudioInput.get(i))
+                          .build();
                   clientStream.send(request);
                 }
               }
@@ -287,9 +289,9 @@ public class InfiniteStreamRecognize {
             tempByteString = ByteString.copyFrom(sharedQueue.take());
 
             request =
-                    StreamingRecognizeRequest.newBuilder()
-                            .setAudioContent(tempByteString)
-                            .build();
+                StreamingRecognizeRequest.newBuilder()
+                    .setAudioContent(tempByteString)
+                    .build();
 
             audioInput.add(tempByteString);
 
