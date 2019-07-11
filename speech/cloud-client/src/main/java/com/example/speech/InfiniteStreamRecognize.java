@@ -17,6 +17,7 @@
 package com.example.speech;
 
 // [START speech_transcribe_infinite_streaming]
+
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
@@ -44,19 +45,17 @@ import javax.sound.sampled.TargetDataLine;
 
 public class InfiniteStreamRecognize {
 
-  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
-
   public static final String RED = "\033[0;31m";
   public static final String GREEN = "\033[0;32m";
   public static final String YELLOW = "\033[0;33m";
-
+  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
   private static TargetDataLine targetDataLine;
   private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
 
   private static int restartCounter = 0;
-  private static ArrayList<ByteString> audioInput  = new ArrayList<ByteString>();
+  private static ArrayList<ByteString> audioInput = new ArrayList<ByteString>();
   private static ArrayList<ByteString> lastAudioInput = new ArrayList<ByteString>();
   private static int resultEndTimeInMS = 0;
   private static int isFinalEndTime = 0;
@@ -83,14 +82,17 @@ public class InfiniteStreamRecognize {
 
   public static String convertMillisToDate(double milliSeconds, DecimalFormat format) {
     long millis = (long) milliSeconds;
-    return String.format("%s min : %s sec",
-            format.format( TimeUnit.MILLISECONDS.toMinutes(millis)),
-            format.format(  TimeUnit.MILLISECONDS.toSeconds(millis) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
+    return String.format("%s:%s /",
+            format.format(TimeUnit.MILLISECONDS.toMinutes(millis)),
+            format.format(TimeUnit.MILLISECONDS.toSeconds(millis)
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
     );
 
   }
-  /** Performs infinite streaming speech recognition */
+
+  /**
+   * Performs infinite streaming speech recognition
+   */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
 
     // Microphone Input buffering
@@ -121,10 +123,10 @@ public class InfiniteStreamRecognize {
     Thread micThread = new Thread(micrunnable);
     ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
     try (SpeechClient client = SpeechClient.create()) {
+
       ClientStream<StreamingRecognizeRequest> clientStream;
       responseObserver =
           new ResponseObserver<StreamingRecognizeResponse>() {
-
             ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
             public void onStart(StreamController controller) {
@@ -132,65 +134,61 @@ public class InfiniteStreamRecognize {
             }
 
             public void onResponse(StreamingRecognizeResponse response) {
-
               responses.add(response);
-
               StreamingRecognitionResult result = response.getResultsList().get(0);
-
               Duration resultEndTime = result.getResultEndTime();
-
               resultEndTimeInMS = (int) ((resultEndTime.getSeconds() * 1000)
-                                        + (resultEndTime.getNanos() / 1000000));
-
+                      + (resultEndTime.getNanos() / 1000000));
               double correctedTime = resultEndTimeInMS - bridgingOffset
-                                          + (STREAMING_LIMIT * restartCounter);
+                      + (STREAMING_LIMIT * restartCounter);
               DecimalFormat format = new DecimalFormat();
               format.setMinimumIntegerDigits(2);
-
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               if (result.getIsFinal()) {
                 System.out.print(GREEN);
                 System.out.print("\033[2K\r");
-                System.out.printf("%s: %s\n", convertMillisToDate(correctedTime, format),
-                                                  alternative.getTranscript() + " - " + alternative.getConfidence());
-
+                System.out.printf("%s: %s [confidence: %.2f]\n", convertMillisToDate(correctedTime, format),
+                        alternative.getTranscript(),
+                        alternative.getConfidence()
+                );
                 isFinalEndTime = resultEndTimeInMS;
                 lastTranscriptWasFinal = true;
               } else {
                 System.out.print(RED);
                 System.out.print("\033[2K\r");
-                System.out.printf("%s: %s", convertMillisToDate(correctedTime, format),
-                                                  alternative.getTranscript());
-
+                System.out.printf("%s: %s", format.format(correctedTime),
+                        alternative.getTranscript()
+                );
                 lastTranscriptWasFinal = false;
               }
             }
 
-            public void onComplete() {}
+            public void onComplete() {
+            }
 
-            public void onError(Throwable t) {}
-
+            public void onError(Throwable t) {
+            }
           };
-
       clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
+
       RecognitionConfig recognitionConfig =
-          RecognitionConfig.newBuilder()
-              .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-              .setLanguageCode(languageCode)
-              .setSampleRateHertz(16000)
-              .build();
+              RecognitionConfig.newBuilder()
+                      .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+                      .setLanguageCode(languageCode)
+                      .setSampleRateHertz(16000)
+                      .build();
 
       StreamingRecognitionConfig streamingRecognitionConfig =
-          StreamingRecognitionConfig.newBuilder()
-              .setConfig(recognitionConfig)
-              .setInterimResults(true)
-              .build();
+              StreamingRecognitionConfig.newBuilder()
+                      .setConfig(recognitionConfig)
+                      .setInterimResults(true)
+                      .build();
 
       StreamingRecognizeRequest request =
-          StreamingRecognizeRequest.newBuilder()
-              .setStreamingConfig(streamingRecognitionConfig)
-              .build(); // The first request in a streaming call has to be a config
+              StreamingRecognizeRequest.newBuilder()
+                      .setStreamingConfig(streamingRecognitionConfig)
+                      .build(); // The first request in a streaming call has to be a config
 
       clientStream.send(request);
 
@@ -199,9 +197,9 @@ public class InfiniteStreamRecognize {
         // bigEndian: false
         AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
         DataLine.Info targetInfo =
-            new Info(
-                TargetDataLine.class,
-                audioFormat); // Set the system information to read from the microphone audio
+                new Info(
+                      TargetDataLine.class,
+                      audioFormat); // Set the system information to read from the microphone audio
         // stream
 
         if (!AudioSystem.isLineSupported(targetInfo)) {
@@ -244,9 +242,9 @@ public class InfiniteStreamRecognize {
             clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
             request =
-                StreamingRecognizeRequest.newBuilder()
-                    .setStreamingConfig(streamingRecognitionConfig)
-                    .build();
+                    StreamingRecognizeRequest.newBuilder()
+                            .setStreamingConfig(streamingRecognitionConfig)
+                            .build();
 
             System.out.println(YELLOW);
             System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
@@ -271,17 +269,16 @@ public class InfiniteStreamRecognize {
                   bridgingOffset = finalRequestEndTime;
                 }
                 int chunksFromMS = (int) Math.floor((finalRequestEndTime
-                                                - bridgingOffset) / chunkTime);
+                        - bridgingOffset) / chunkTime);
                 // chunks from MS is number of chunks to resend
                 bridgingOffset = (int) Math.floor((lastAudioInput.size()
-                                                - chunksFromMS) * chunkTime);
+                        - chunksFromMS) * chunkTime);
                 // set bridging offset for next request
                 for (int i = chunksFromMS; i < lastAudioInput.size(); i++) {
-
                   request =
-                      StreamingRecognizeRequest.newBuilder()
-                          .setAudioContent(lastAudioInput.get(i))
-                          .build();
+                          StreamingRecognizeRequest.newBuilder()
+                                  .setAudioContent(lastAudioInput.get(i))
+                                  .build();
                   clientStream.send(request);
                 }
               }
@@ -291,9 +288,9 @@ public class InfiniteStreamRecognize {
             tempByteString = ByteString.copyFrom(sharedQueue.take());
 
             request =
-                StreamingRecognizeRequest.newBuilder()
-                    .setAudioContent(tempByteString)
-                    .build();
+                    StreamingRecognizeRequest.newBuilder()
+                            .setAudioContent(tempByteString)
+                            .build();
 
             audioInput.add(tempByteString);
 
@@ -306,5 +303,6 @@ public class InfiniteStreamRecognize {
       }
     }
   }
+
 }
 // [END speech_transcribe_infinite_streaming]
