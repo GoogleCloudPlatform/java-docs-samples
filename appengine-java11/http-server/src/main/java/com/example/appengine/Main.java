@@ -25,7 +25,11 @@ public class Main {
 
   public static void main(String[] args) throws IOException {
     // Create an instance of HttpServer with port 8080.
-    HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+    HttpServer server = HttpServer.create(new InetSocketAddress(
+                System.getenv().containsKey("PORT")
+                ? Integer.parseInt(System.getenv().get("PORT"))
+                : 8080
+        ), 0);
 
     // Set root URI path.
     server.createContext("/", (var t) -> {
