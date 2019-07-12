@@ -22,6 +22,7 @@ import com.google.api.gax.rpc.ServerStream;
 import com.google.cloud.bigquery.storage.v1beta1.AvroProto.AvroRows;
 import com.google.cloud.bigquery.storage.v1beta1.BigQueryStorageClient;
 import com.google.cloud.bigquery.storage.v1beta1.ReadOptions.TableReadOptions;
+import com.google.cloud.bigquery.storage.v1beta1.Storage;
 import com.google.cloud.bigquery.storage.v1beta1.Storage.CreateReadSessionRequest;
 import com.google.cloud.bigquery.storage.v1beta1.Storage.DataFormat;
 import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadRowsRequest;
@@ -39,7 +40,6 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DecoderFactory;
-
 
 public class StorageSample {
 
@@ -68,8 +68,9 @@ public class StorageSample {
      * @param avroRows object returned from the ReadRowsResponse.
      */
     public void processRows(AvroRows avroRows) throws IOException {
-      decoder = DecoderFactory.get()
-          .binaryDecoder(avroRows.getSerializedBinaryRows().toByteArray(), decoder);
+      decoder =
+          DecoderFactory.get()
+              .binaryDecoder(avroRows.getSerializedBinaryRows().toByteArray(), decoder);
 
       while (!decoder.isEnd()) {
         // Reusing object row
@@ -92,46 +93,55 @@ public class StorageSample {
       String parent = String.format("projects/%s", projectId);
 
       // This example uses baby name data from the public datasets.
-      TableReference tableReference = TableReference.newBuilder()
-          .setProjectId("bigquery-public-data")
-          .setDatasetId("usa_names")
-          .setTableId("usa_1910_current")
-          .build();
+      TableReference tableReference =
+          TableReference.newBuilder()
+              .setProjectId("bigquery-public-data")
+              .setDatasetId("usa_names")
+              .setTableId("usa_1910_current")
+              .build();
 
       // We specify the columns to be projected by adding them to the selected fields,
       // and set a simple filter to restrict which rows are transmitted.
-      TableReadOptions options = TableReadOptions.newBuilder()
-          .addSelectedFields("name")
-          .addSelectedFields("number")
-          .addSelectedFields("state")
-          .setRowRestriction("state = \"WA\"")
-          .build();
+      TableReadOptions options =
+          TableReadOptions.newBuilder()
+              .addSelectedFields("name")
+              .addSelectedFields("number")
+              .addSelectedFields("state")
+              .setRowRestriction("state = \"WA\"")
+              .build();
 
       // Begin building the session request.
-      CreateReadSessionRequest.Builder builder = CreateReadSessionRequest.newBuilder()
-          .setParent(parent)
-          .setTableReference(tableReference)
-          .setReadOptions(options)
-          .setRequestedStreams(1)
-          .setFormat(DataFormat.AVRO);
+      CreateReadSessionRequest.Builder builder =
+          CreateReadSessionRequest.newBuilder()
+              .setParent(parent)
+              .setTableReference(tableReference)
+              .setReadOptions(options)
+              // This API can also deliver data serialized in Apache Arrow format.
+              // This example leverages Apache Avro.
+              .setFormat(DataFormat.AVRO)
+              // We use a LIQUID strategy in this example because we only
+              // read from a single stream.  Consider BALANCED if you're consuming
+              // multiple streams concurrently and want more consistent stream sizes.
+              .setShardingStrategy(Storage.ShardingStrategy.LIQUID)
+              .setRequestedStreams(1)
+              .setFormat(DataFormat.AVRO);
 
       // Optionally specify the snapshot time.  When unspecified, snapshot time is "now".
       if (snapshotMillis != null) {
-        Timestamp t = Timestamp.newBuilder()
-            .setSeconds(snapshotMillis / 1000)
-            .setNanos((int) ((snapshotMillis % 1000) * 1000000))
-            .build();
-        TableModifiers modifiers = TableModifiers.newBuilder()
-            .setSnapshotTime(t)
-            .build();
+        Timestamp t =
+            Timestamp.newBuilder()
+                .setSeconds(snapshotMillis / 1000)
+                .setNanos((int) ((snapshotMillis % 1000) * 1000000))
+                .build();
+        TableModifiers modifiers = TableModifiers.newBuilder().setSnapshotTime(t).build();
         builder.setTableModifiers(modifiers);
       }
 
       // Request the session creation.
       ReadSession session = client.createReadSession(builder.build());
 
-      SimpleRowReader reader = new SimpleRowReader(
-          new Schema.Parser().parse(session.getAvroSchema().getSchema()));
+      SimpleRowReader reader =
+          new SimpleRowReader(new Schema.Parser().parse(session.getAvroSchema().getSchema()));
 
       // Assert that there are streams available in the session.  An empty table may not have
       // data available.  If no sessions are available for an anonymous (cached) table, consider
@@ -139,13 +149,11 @@ public class StorageSample {
       Preconditions.checkState(session.getStreamsCount() > 0);
 
       // Use the first stream to perform reading.
-      StreamPosition readPosition = StreamPosition.newBuilder()
-          .setStream(session.getStreams(0))
-          .build();
+      StreamPosition readPosition =
+          StreamPosition.newBuilder().setStream(session.getStreams(0)).build();
 
-      ReadRowsRequest readRowsRequest = ReadRowsRequest.newBuilder()
-          .setReadPosition(readPosition)
-          .build();
+      ReadRowsRequest readRowsRequest =
+          ReadRowsRequest.newBuilder().setReadPosition(readPosition).build();
 
       // Process each block of rows as they arrive and decode using our simple row reader.
       ServerStream<ReadRowsResponse> stream = client.readRowsCallable().call(readRowsRequest);
