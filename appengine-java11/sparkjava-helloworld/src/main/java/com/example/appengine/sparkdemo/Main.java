@@ -22,7 +22,11 @@ public class Main {
 
   public static void main(String[] args) {
     // Starts the webapp on localhost:8080.
-    Spark.port(8080);
+    Spark.port(
+                System.getenv().containsKey("PORT")
+                ? Integer.parseInt(System.getenv().get("PORT"))
+                : 8080
+        );
     Spark.get("/", (req, res) -> "Hello World!");
   }
 }
