@@ -123,8 +123,7 @@ public class StorageSample {
               // read from a single stream.  Consider BALANCED if you're consuming
               // multiple streams concurrently and want more consistent stream sizes.
               .setShardingStrategy(Storage.ShardingStrategy.LIQUID)
-              .setRequestedStreams(1)
-              .setFormat(DataFormat.AVRO);
+              .setRequestedStreams(1);
 
       // Optionally specify the snapshot time.  When unspecified, snapshot time is "now".
       if (snapshotMillis != null) {
