@@ -36,7 +36,11 @@ public class Main {
     // Note: If you set this to port 0, a randomly available port will be
     // assigned. You can find the assigned port in the logs or programmatically
     // obtain it.
-    Server server = new Server(8080);
+    Server server = new Server(
+                System.getenv().containsKey("PORT")
+                ? Integer.parseInt(System.getenv().get("PORT"))
+                : 8080
+        );
 
     // The WebAppContext is the interface to provide configuration for a web
     // application. In this example, the context path is being set to "/" so
