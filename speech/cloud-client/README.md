@@ -154,3 +154,8 @@ Transcribe an audio file hosted on GCS with word level confidence
 mvn exec:java -DRecognize -Dexec.args="word-level-conf gs://cloud-samples-tests/speech/brooklyn.flac"
 ```
 
+## Infinite Streaming
+Continuously stream audio to the speech API over multiple requests 
+```
+mvn exec:java -DInfiniteStreamRecognize
+```

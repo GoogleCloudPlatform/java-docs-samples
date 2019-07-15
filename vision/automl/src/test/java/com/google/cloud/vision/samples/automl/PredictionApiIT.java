@@ -33,12 +33,11 @@ import org.junit.runners.JUnit4;
 public class PredictionApiIT {
   private static final String COMPUTE_REGION = "us-central1";
   private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String modelId = "620201829169141520";
+  private static final String modelId = "ICN620201829169141520";
   private static final String filePath = "./resources/dandelion.jpg";
   private static final String scoreThreshold = "0.7";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private PredictionApi app;
 
   @Before
   public void setUp() {
@@ -53,7 +52,7 @@ public class PredictionApiIT {
   }
 
   @Test
-  public void testPredict() throws Exception {
+  public void testPredict() {
     // Act
     PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, modelId, filePath, scoreThreshold);
 

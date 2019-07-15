@@ -1,6 +1,6 @@
 # Getting Started with BigQuery and the Google Java API Client library
 
-<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=bigquery/cloud-client/README.md">
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md&cloudshell_working_dir=bigquery/cloud-client/">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 [Google's BigQuery Service][BigQuery] features a REST-based API that allows

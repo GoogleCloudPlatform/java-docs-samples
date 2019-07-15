@@ -1,4 +1,4 @@
-# Vertx Application on Google App Engine Standard with Java 11
+# Vert.x Application on Google App Engine Standard with Java 11
 
 This sample shows how to deploy a [Vert.x](https://vertx.io/)
 application to Google App Engine stadndard.
@@ -14,7 +14,7 @@ See [Prerequisites](../README.md#Prerequisites).
 ```
 
 ## See the application page
-Navigate to http://yourprojectid.appspot.com URL.
+Navigate to `https://<your-project-id>.appspot.com`.
 
 ## The application
 

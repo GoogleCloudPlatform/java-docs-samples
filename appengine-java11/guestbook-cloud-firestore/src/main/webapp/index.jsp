@@ -35,10 +35,10 @@ limitations under the License.
     }
     pageContext.setAttribute("guestbookName", guestbookName);
 
-    // Create the correct Ancestor key
+    // Create a Guestbook object.
     Guestbook theBook = new Guestbook(guestbookName);
 
-    // Run an ancestor query to ensure we see the most up-to-date
+    // Run an query to ensure we see the most up-to-date
     // view of the Greetings belonging to the selected Guestbook.
     List<Greeting> greetings = theBook.getGreetings();
   %>
