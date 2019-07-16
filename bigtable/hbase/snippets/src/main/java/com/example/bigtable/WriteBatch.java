@@ -38,14 +38,13 @@ public class WriteBatch {
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(tableId)));
       long timestamp = System.currentTimeMillis();
+      byte[] one = new byte[] {0, 0, 0, 0, 0, 0, 0, 1};
 
       List<Put> puts = new ArrayList<Put>();
       puts.add(new Put(Bytes.toBytes("tablet#a0b81f74#20190501")));
       puts.add(new Put(Bytes.toBytes("tablet#a0b81f74#20190502")));
 
-      puts.get(0)
-          .addColumn(
-              COLUMN_FAMILY_NAME, Bytes.toBytes("connected_wifi"), timestamp, Bytes.toBytes(1));
+      puts.get(0).addColumn(COLUMN_FAMILY_NAME, Bytes.toBytes("connected_wifi"), timestamp, one);
       puts.get(0)
           .addColumn(
               COLUMN_FAMILY_NAME,
@@ -53,9 +52,7 @@ public class WriteBatch {
               timestamp,
               Bytes.toBytes("12155.0.0-rc1"));
 
-      puts.get(1)
-          .addColumn(
-              COLUMN_FAMILY_NAME, Bytes.toBytes("connected_wifi"), timestamp, Bytes.toBytes(1));
+      puts.get(1).addColumn(COLUMN_FAMILY_NAME, Bytes.toBytes("connected_wifi"), timestamp, one);
       puts.get(1)
           .addColumn(
               COLUMN_FAMILY_NAME,
