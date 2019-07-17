@@ -14,6 +14,12 @@ using the [Google Cloud Client Library for Java][google-cloud-java].
 
 ## Setup
 
+Before you begin, complete the following steps as listed on the [Speech-to-Text Docs pages for Getting Started](https://cloud.google.com/speech-to-text/docs/quickstart-client-libraries#before-you-begin)
+ * Create or select a project.
+ * Enable the Google Speech-to-Text API for that project.
+ * Create a service account.
+ * Download a private key as JSON.
+
 Install [Maven](http://maven.apache.org/).
 
 Build your project with:
