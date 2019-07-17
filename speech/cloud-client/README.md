@@ -19,6 +19,10 @@ Before you begin, complete the following steps as listed on the [Speech-to-Text 
  * Enable the Google Speech-to-Text API for that project.
  * Create a service account.
  * Download a private key as JSON.
+ * Set `GOOGLE_APPLICATION_CREDENTIALS`
+  ```
+  export GOOGLE_APPLICATION_CREDENTIALS=path_to_your_downloaded_json_file
+  ```
 
 Install [Maven](http://maven.apache.org/).
 
