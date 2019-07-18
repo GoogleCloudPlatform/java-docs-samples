@@ -18,9 +18,9 @@ package com.google.cloud.gameservices.samples.allocationpolicies;
 
 // [START cloud_game_servers_allocation_policy_delete]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.AllocationPoliciesServiceClient;
+import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -29,23 +29,23 @@ import java.util.concurrent.TimeoutException;
 
 public class DeleteAllocationPolicy {
 
-  public static void deleteAllocationPolicy(String projectId, String policyId)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void deleteAllocationPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AllocationPoliciesServiceClient client = AllocationPoliciesServiceClient.create()) {
       String parent = String.format("projects/%s/locations/global", projectId);
       String policyName = String.format("%s/allocationPolicies/%s", parent, policyId);
 
-      RetryingFuture<OperationSnapshot> poll = client
-          .deleteAllocationPolicyAsync(policyName)
-          .getPollingFuture();
+      OperationFuture<Empty, Empty> call = client.deleteAllocationPolicyAsync(policyName);
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        System.out.println("Allocation Policy deleted: " + policyName);
-      } else {
-        throw new RuntimeException("Allocation Policy delete request unsuccessful.");
-      }
+      call.get(1, TimeUnit.MINUTES);
+      System.out.println("Allocation Policy deleted: " + policyName);
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Allocation Policy delete request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

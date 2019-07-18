@@ -25,16 +25,12 @@ import com.google.cloud.gameservices.samples.realms.ListRealms;
 import com.google.cloud.gameservices.samples.realms.UpdateRealm;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,8 +56,7 @@ public class RealmTests {
   }
 
   @BeforeClass
-  public static void init()
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void init() {
     GameServicesTestUtil.deleteExistingRealms(parentName);
     CreateRealm.createRealm(PROJECT_ID, REGION_ID, realmId);
   }
@@ -78,35 +73,33 @@ public class RealmTests {
   }
 
   @Test
-  public void createDeleteRealmTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void createDeleteRealmTest() {
     String newRealmId = "realm-2";
     String newRealmName = String.format(
         "projects/%s/locations/%s/realms/%s", PROJECT_ID, REGION_ID, newRealmId);
     CreateRealm.createRealm(PROJECT_ID, REGION_ID, newRealmId);
     DeleteRealm.deleteRealm(PROJECT_ID, REGION_ID, newRealmId);
-    assertTrue(bout.toString().contains("Realm created: " + newRealmName));
-    assertTrue(bout.toString().contains("Realm deleted: " + newRealmName));
+    String output = bout.toString();
+    assertTrue(output.contains("Realm created: " + newRealmName));
+    assertTrue(output.contains("Realm deleted: " + newRealmName));
   }
 
   @Test
-  public void getRealmTest() throws IOException {
+  public void getRealmTest() {
     GetRealm.getRealm(PROJECT_ID, REGION_ID, realmId);
 
     assertTrue(bout.toString().contains("Realm found: " + realmName));
   }
 
   @Test
-  public void listRealmsTest() throws IOException {
+  public void listRealmsTest() {
     ListRealms.listRealms(PROJECT_ID, REGION_ID);
 
     assertTrue(bout.toString().contains("Realm found: " + realmName));
   }
 
   @Test
-  @Ignore("b/135051878")
-  public void updateRealmTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void updateRealmTest() {
     UpdateRealm.updateRealm(PROJECT_ID, REGION_ID, realmId);
 
     assertTrue(bout.toString().contains("Realm updated: " + realmName));

@@ -18,11 +18,11 @@ package com.google.cloud.gameservices.samples.realms;
 
 // [START cloud_game_servers_realm_create]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.CreateRealmRequest;
 import com.google.cloud.gaming.v1alpha.Realm;
 import com.google.cloud.gaming.v1alpha.RealmsServiceClient;
+import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -30,11 +30,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class CreateRealm {
-  public static void createRealm(String projectId, String regionId, String realmId)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void createRealm(String projectId, String regionId, String realmId) {
     // String projectId = "your-project-id";
     // String regionId = "us-central1-f";
     // String realmId = "your-realm-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (RealmsServiceClient client = RealmsServiceClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, regionId);
       String realmName = String.format("%s/realms/%s", parent, realmId);
@@ -45,19 +47,20 @@ public class CreateRealm {
           .setTimeZone("America/Los_Angeles")
           .build();
 
-      RetryingFuture<OperationSnapshot> poll = client.createRealmAsync(
-          CreateRealmRequest
-              .newBuilder()
-              .setParent(parent)
-              .setRealmId(realmId)
-              .setRealm(realm)
-              .build()).getPollingFuture();
+      CreateRealmRequest request = CreateRealmRequest
+          .newBuilder()
+          .setParent(parent)
+          .setRealmId(realmId)
+          .setRealm(realm)
+          .build();
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        System.out.println("Realm created: " + realm.getName());
-      } else {
-        throw new RuntimeException("Realm create request unsuccessful.");
-      }
+      OperationFuture<Realm, Empty> call = client.createRealmAsync(request);
+      Realm result = call.get(1, TimeUnit.MINUTES);
+
+      System.out.println("Realm created: " + result.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Realm create request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

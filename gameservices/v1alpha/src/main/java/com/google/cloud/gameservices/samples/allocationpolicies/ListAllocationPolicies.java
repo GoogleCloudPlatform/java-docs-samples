@@ -21,20 +21,38 @@ package com.google.cloud.gameservices.samples.allocationpolicies;
 import com.google.cloud.gaming.v1alpha.AllocationPoliciesServiceClient;
 import com.google.cloud.gaming.v1alpha.AllocationPoliciesServiceClient.ListAllocationPoliciesPagedResponse;
 import com.google.cloud.gaming.v1alpha.AllocationPolicy;
+import com.google.cloud.gaming.v1alpha.ListAllocationPoliciesRequest;
+import com.google.common.base.Strings;
 
 import java.io.IOException;
 
 public class ListAllocationPolicies {
-  public static void listAllocationPolicies(String projectId) throws IOException {
+  public static void listAllocationPolicies(String projectId) {
     // String projectId = "your-project-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AllocationPoliciesServiceClient client = AllocationPoliciesServiceClient.create()) {
       String parent = String.format("projects/%s/locations/global", projectId);
 
       ListAllocationPoliciesPagedResponse response = client.listAllocationPolicies(parent);
-
       for (AllocationPolicy policy : response.iterateAll()) {
         System.out.println("Allocation Policy found: " + policy.getName());
       }
+
+      while (!Strings.isNullOrEmpty(response.getNextPageToken())) {
+        ListAllocationPoliciesRequest request = ListAllocationPoliciesRequest
+            .newBuilder()
+            .setParent(parent)
+            .setPageToken(response.getNextPageToken())
+            .build();
+        response = client.listAllocationPolicies(request);
+        for (AllocationPolicy policy : response.iterateAll()) {
+          System.out.println("Allocation Policy found: " + policy.getName());
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

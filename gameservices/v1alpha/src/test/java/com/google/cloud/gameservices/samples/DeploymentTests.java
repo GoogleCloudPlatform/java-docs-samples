@@ -30,10 +30,7 @@ import com.google.cloud.gameservices.samples.deployments.StartRollout;
 import com.google.cloud.gameservices.samples.deployments.UpdateDeployment;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -63,8 +60,7 @@ public class DeploymentTests {
   }
 
   @BeforeClass
-  public static void init()
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void init() {
     GameServicesTestUtil.deleteExistingDeployments(parentName);
     CreateDeployment.createGameServerDeployment(PROJECT_ID, deploymentId);
   }
@@ -81,8 +77,7 @@ public class DeploymentTests {
   }
 
   @Test
-  public void createDeleteGameServerDeploymentTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void createDeleteGameServerDeploymentTest() {
     String newDeploymentId = "deployment-2";
     String newDeploymentName = String.format(
         "%s/gameServerDeployments/%s", parentName, newDeploymentId);
@@ -93,50 +88,43 @@ public class DeploymentTests {
   }
 
   @Test
-  public void getGameServerDeploymentTest() throws IOException {
+  public void getGameServerDeploymentTest() {
     GetDeployment.getGameServerDeployment(PROJECT_ID, deploymentId);
 
     assertTrue(bout.toString().contains("Game Server Deployment found: " + deploymentName));
   }
 
   @Test
-  public void listGameServerDeploymentsTest() throws IOException {
+  public void listGameServerDeploymentsTest() {
     ListDeployments.listGameServerDeployments(PROJECT_ID);
 
     assertTrue(bout.toString().contains("Game Server Deployment found: " + deploymentName));
   }
 
   @Test
-  @Ignore("b/135051878")
-  public void updateGameServerDeploymentTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void updateGameServerDeploymentTest() {
     UpdateDeployment.updateGameServerDeployment(PROJECT_ID, deploymentId);
     assertTrue(bout.toString().contains("Game Server Deployment updated: " + deploymentName));
   }
 
   @Test
   @Ignore("b/135051878")
-  public void rolloutStartSetGetTargetCommitTests()
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public void rolloutStartSetGetTargetCommitTests() {
     GetDeploymentTarget.getDeploymentTarget(deploymentName);
-    assertTrue(bout.toString().contains("Found target with "));
-
     RevertRollout.revertRollout(deploymentName);
-    assertTrue(bout.toString().contains("Rollout reverted:"));
-
     StartRollout.startRollout(deploymentName, "new-template");
-    assertTrue(bout.toString().contains("Rollout started:"));
-
     SetRolloutTarget.setRolloutTarget(deploymentName);
-    assertTrue(bout.toString().contains("Rollout target set:"));
-
     CommitRollout.commitRollout(deploymentName);
+
+    assertTrue(bout.toString().contains("Found target with "));
+    assertTrue(bout.toString().contains("Rollout reverted:"));
+    assertTrue(bout.toString().contains("Rollout started:"));
+    assertTrue(bout.toString().contains("Rollout target set:"));
     assertTrue(bout.toString().contains("Rollout target set:"));
   }
 
   @Test
-  public void rolloutRevertTest()
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public void rolloutRevertTest() {
     RevertRollout.revertRollout(deploymentName);
     assertTrue(bout.toString().contains("Rollout reverted:"));
 

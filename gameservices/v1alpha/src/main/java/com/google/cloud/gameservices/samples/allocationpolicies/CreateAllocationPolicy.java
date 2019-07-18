@@ -18,11 +18,11 @@ package com.google.cloud.gameservices.samples.allocationpolicies;
 
 // [START cloud_game_servers_allocation_policy_create]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.AllocationPoliciesServiceClient;
 import com.google.cloud.gaming.v1alpha.AllocationPolicy;
 import com.google.cloud.gaming.v1alpha.CreateAllocationPolicyRequest;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 
 import java.io.IOException;
@@ -31,10 +31,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class CreateAllocationPolicy {
-  public static void createAllocationPolicy(String projectId, String policyId)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void createAllocationPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AllocationPoliciesServiceClient client = AllocationPoliciesServiceClient.create()) {
       String parent = String.format("projects/%s/locations/global", projectId);
       String policyName = String.format("%s/allocationPolicies/%s", parent, policyId);
@@ -45,19 +47,20 @@ public class CreateAllocationPolicy {
           .setPriority(Int32Value.newBuilder().setValue(1))
           .build();
 
-      RetryingFuture<OperationSnapshot> poll = client.createAllocationPolicyAsync(
-          CreateAllocationPolicyRequest
-              .newBuilder()
-              .setParent(parent)
-              .setAllocationPolicyId(policyId)
-              .setAllocationPolicy(policy)
-              .build()).getPollingFuture();
+      CreateAllocationPolicyRequest request = CreateAllocationPolicyRequest
+          .newBuilder()
+          .setParent(parent)
+          .setAllocationPolicyId(policyId)
+          .setAllocationPolicy(policy)
+          .build();
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        System.out.println("Allocation Policy created: " + policy.getName());
-      } else {
-        throw new RuntimeException("Allocation Policy create request unsuccessful.");
-      }
+      OperationFuture<AllocationPolicy, Empty> call = client.createAllocationPolicyAsync(request);
+
+      AllocationPolicy result = call.get(1, TimeUnit.MINUTES);
+      System.out.println("Allocation Policy created: " + result.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Allocation Policy create request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

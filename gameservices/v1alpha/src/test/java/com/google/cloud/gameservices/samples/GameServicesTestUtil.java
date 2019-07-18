@@ -36,7 +36,7 @@ import com.google.cloud.gaming.v1alpha.ScalingPolicy;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class GameServicesTestUtil {
+class GameServicesTestUtil {
   private static AllocationPoliciesServiceClient allocationsClient;
   private static GameServerClustersServiceClient clustersClient;
   private static GameServerDeploymentsServiceClient deploymentsClient;

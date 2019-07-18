@@ -25,10 +25,7 @@ import com.google.cloud.gameservices.samples.allocationpolicies.ListAllocationPo
 import com.google.cloud.gameservices.samples.allocationpolicies.UpdateAllocationPolicy;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -58,8 +55,7 @@ public class AllocationPolicyTests {
   }
 
   @BeforeClass
-  public static void init()
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void init() {
     GameServicesTestUtil.deleteExistingAllocationPolicies(parentName);
     CreateAllocationPolicy.createAllocationPolicy(PROJECT_ID, policyId);
   }
@@ -76,8 +72,7 @@ public class AllocationPolicyTests {
   }
 
   @Test
-  public void createDeleteAllocationPolicyTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void createDeleteAllocationPolicyTest() {
     String newPolicyId = "policy-2";
     String newPolicyName = String.format("%s/allocationPolicies/%s", parentName, newPolicyId);
     CreateAllocationPolicy.createAllocationPolicy(PROJECT_ID, newPolicyId);
@@ -88,22 +83,21 @@ public class AllocationPolicyTests {
   }
 
   @Test
-  public void getAllocationPolicyTest() throws IOException {
+  public void getAllocationPolicyTest() {
     GetAllocationPolicy.getAllocationPolicy(PROJECT_ID, policyId);
 
     assertTrue(bout.toString().contains("Allocation Policy found: " + policyName));
   }
 
   @Test
-  public void listAllocationPoliciesTest() throws IOException {
+  public void listAllocationPoliciesTest() {
     ListAllocationPolicies.listAllocationPolicies(PROJECT_ID);
 
     assertTrue(bout.toString().contains("Allocation Policy found: " + policyName));
   }
 
   @Test
-  public void updateAllocationPoliciesTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void updateAllocationPoliciesTest() {
     UpdateAllocationPolicy.updateAllocationPolicy(PROJECT_ID, policyId);
 
     assertTrue(bout.toString().contains("Allocation Policy updated: " + policyName));

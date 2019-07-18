@@ -26,16 +26,12 @@ import com.google.cloud.gameservices.samples.clusters.UpdateCluster;
 import com.google.cloud.gameservices.samples.realms.CreateRealm;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -67,8 +63,7 @@ public class ClusterTests {
   }
 
   @BeforeClass
-  public static void init()
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void init() {
     // Delete all existing clusters and realms.
     GameServicesTestUtil.deleteExistingClusters(realmName);
     GameServicesTestUtil.deleteExistingRealms(parentName);
@@ -90,8 +85,7 @@ public class ClusterTests {
   }
 
   @Test
-  public void createDeleteClusterTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void createDeleteClusterTest() {
     String newClusterId = "cluster-2";
     String newClusterName = String.format(
         "%s/gameServerClusters/%s", realmName, newClusterId);
@@ -103,23 +97,21 @@ public class ClusterTests {
   }
 
   @Test
-  public void getClusterTest() throws IOException {
+  public void getClusterTest() {
     GetCluster.getGameServerCluster(PROJECT_ID, REGION_ID, realmId, clusterId);
 
     assertTrue(bout.toString().contains("Game Server Cluster found: " + clusterName));
   }
 
   @Test
-  public void listClustersTest() throws IOException {
+  public void listClustersTest() {
     ListClusters.listGameServerClusters(PROJECT_ID, REGION_ID, realmId);
 
     assertTrue(bout.toString().contains("Game Server Cluster found: " + clusterName));
   }
 
   @Test
-  @Ignore("b/135051878")
-  public void updateClusterTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void updateClusterTest() {
     UpdateCluster.updateGameServerCluster(PROJECT_ID, REGION_ID, realmId, clusterId);
 
     assertTrue(bout.toString().contains("Game Server Cluster updated: " + clusterName));

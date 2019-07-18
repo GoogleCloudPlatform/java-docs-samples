@@ -24,10 +24,12 @@ import com.google.cloud.gaming.v1alpha.ScalingPolicy;
 import java.io.IOException;
 
 public class GetScalingPolicy {
-  public static void getScalingPolicy(String projectId, String policyId)
-      throws IOException {
+  public static void getScalingPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ScalingPoliciesServiceClient client = ScalingPoliciesServiceClient.create()) {
       String policyName = String.format(
           "projects/%s/locations/global/scalingPolicies/%s", projectId, policyId);
@@ -35,6 +37,8 @@ public class GetScalingPolicy {
       ScalingPolicy scalingPolicy = client.getScalingPolicy(policyName);
 
       System.out.println("Scaling Policy found: " + scalingPolicy.getName());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

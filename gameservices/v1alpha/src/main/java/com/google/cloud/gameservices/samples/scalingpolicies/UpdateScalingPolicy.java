@@ -18,10 +18,10 @@ package com.google.cloud.gameservices.samples.scalingpolicies;
 
 // [START cloud_game_servers_scaling_policy_update]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.ScalingPoliciesServiceClient;
 import com.google.cloud.gaming.v1alpha.ScalingPolicy;
+import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Int32Value;
 
@@ -31,29 +31,32 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class UpdateScalingPolicy {
-  public static void updateScalingPolicy(String projectId, String policyId)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void updateScalingPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ScalingPoliciesServiceClient client = ScalingPoliciesServiceClient.create()) {
       String policyName = String.format(
           "projects/%s/locations/global/scalingPolicies/%s", projectId, policyId);
 
       ScalingPolicy policy = ScalingPolicy
           .newBuilder()
+          .setName(policyName)
           .setPriority(Int32Value.newBuilder().setValue(10).build())
           .build();
 
-      RetryingFuture<OperationSnapshot> poll = client.updateScalingPolicyAsync(
-          policy, FieldMask.newBuilder().addPaths("priority").build())
-          .getPollingFuture();
+      FieldMask fieldMask = FieldMask.newBuilder().addPaths("priority").build();
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        ScalingPolicy updatedPolicy = client.getScalingPolicy(policyName);
-        System.out.println("Scaling Policy updated: " + updatedPolicy.getName());
-      } else {
-        throw new RuntimeException("Scaling Policy update request unsuccessful.");
-      }
+      OperationFuture<ScalingPolicy, Empty> call = client.updateScalingPolicyAsync(
+          policy, fieldMask);
+
+      ScalingPolicy updated = call.get(1, TimeUnit.MINUTES);
+      System.out.println("Scaling Policy updated: " + updated.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Scaling Policy update request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

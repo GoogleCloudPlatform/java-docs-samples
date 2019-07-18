@@ -18,11 +18,12 @@ package com.google.cloud.gameservices.samples.deployments;
 
 // [START cloud_game_servers_deployment_start_rollout]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.ClusterPercentageSelector;
+import com.google.cloud.gaming.v1alpha.GameServerDeployment;
 import com.google.cloud.gaming.v1alpha.GameServerDeploymentsServiceClient;
 import com.google.cloud.gaming.v1alpha.SetRolloutTargetRequest;
+import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -30,27 +31,30 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class SetRolloutTarget {
-  public static void setRolloutTarget(String deploymentName)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void setRolloutTarget(String deploymentName) {
     // String deploymentName =
     //     "projects/{project_id}/locations/{location}/gameServerDeployments/{deployment_id}";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerDeploymentsServiceClient client = GameServerDeploymentsServiceClient.create()) {
-      RetryingFuture<OperationSnapshot> poll = client.setRolloutTargetAsync(
-          SetRolloutTargetRequest
-              .newBuilder()
-              .setName(deploymentName)
-              .addClusterPercentageSelector(ClusterPercentageSelector
-                  .newBuilder()
-                  .setPercent(50)
-                  .build())
-              .build()).getPollingFuture();
+      ClusterPercentageSelector percentageSelector = ClusterPercentageSelector
+          .newBuilder()
+          .setPercent(50)
+          .build();
+      SetRolloutTargetRequest request = SetRolloutTargetRequest
+          .newBuilder()
+          .setName(deploymentName)
+          .addClusterPercentageSelector(percentageSelector)
+          .build();
 
-      OperationSnapshot response = poll.get(1, TimeUnit.MINUTES);
-      if (response.isDone()) {
-        System.out.println("Rollout target set: " + response.getResponse());
-      } else {
-        throw new RuntimeException("Set Rollout Target request unsuccessful.");
-      }
+      OperationFuture<GameServerDeployment, Empty> call = client.setRolloutTargetAsync(request);
+
+      GameServerDeployment result = call.get(1, TimeUnit.MINUTES);
+      System.out.println("Rollout target set: " + result.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Set Rollout Target request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

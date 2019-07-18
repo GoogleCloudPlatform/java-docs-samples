@@ -35,7 +35,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,8 +59,7 @@ public class ScalingPolicyTests {
   }
 
   @BeforeClass
-  public static void init()
-      throws InterruptedException, TimeoutException, IOException, ExecutionException {
+  public static void init() {
     GameServicesTestUtil.deleteExistingScalingPolicies(parentName);
     GameServicesTestUtil.deleteExistingDeployments(parentName);
     CreateDeployment.createGameServerDeployment(PROJECT_ID, deploymentId);
@@ -81,8 +79,7 @@ public class ScalingPolicyTests {
   }
 
   @Test
-  public void createDeleteScalingPolicyTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void createDeleteScalingPolicyTest() {
     String newPolicyId = "policy-2";
     String newPolicyName = String.format("%s/scalingPolicies/%s", parentName, newPolicyId);
     CreateScalingPolicy.createScalingPolicy(PROJECT_ID, newPolicyId, deploymentId);
@@ -93,23 +90,21 @@ public class ScalingPolicyTests {
   }
 
   @Test
-  public void getScalingPolicyTest() throws IOException {
+  public void getScalingPolicyTest() {
     GetScalingPolicy.getScalingPolicy(PROJECT_ID, policyId);
 
     assertTrue(bout.toString().contains("Scaling Policy found: " + policyName));
   }
 
   @Test
-  public void listScalingPoliciesTest() throws IOException {
+  public void listScalingPoliciesTest() {
     ListScalingPolicies.listScalingPolicies(PROJECT_ID);
 
     assertTrue(bout.toString().contains("Scaling Policy found: " + policyName));
   }
 
   @Test
-  @Ignore("b/135051878")
-  public void updateScalingPoliciesTest()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void updateScalingPoliciesTest() {
     UpdateScalingPolicy.updateScalingPolicy(PROJECT_ID, policyId);
 
     assertTrue(bout.toString().contains("Scaling Policy updated: " + policyName));

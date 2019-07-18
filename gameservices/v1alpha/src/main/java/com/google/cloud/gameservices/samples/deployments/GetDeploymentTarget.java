@@ -24,13 +24,18 @@ import com.google.cloud.gaming.v1alpha.GameServerDeploymentsServiceClient;
 import java.io.IOException;
 
 public class GetDeploymentTarget {
-  public static void getDeploymentTarget(String deploymentName) throws IOException {
+  public static void getDeploymentTarget(String deploymentName) {
     // String deploymentName =
     //     "projects/{project_id}/locations/{location}/gameServerDeployments/{deployment_id}";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerDeploymentsServiceClient client = GameServerDeploymentsServiceClient.create()) {
       DeploymentTarget target = client.getDeploymentTarget(deploymentName);
 
       System.out.printf("Found target with %d clusters.", target.getClustersCount());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

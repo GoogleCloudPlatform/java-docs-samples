@@ -18,9 +18,9 @@ package com.google.cloud.gameservices.samples.scalingpolicies;
 
 // [START cloud_game_servers_scaling_policy_delete]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.ScalingPoliciesServiceClient;
+import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -28,23 +28,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DeleteScalingPolicy {
-  public static void deleteScalingPolicy(String projectId, String policyId)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void deleteScalingPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ScalingPoliciesServiceClient client = ScalingPoliciesServiceClient.create()) {
       String parent = String.format("projects/%s/locations/global", projectId);
       String policyName = String.format("%s/scalingPolicies/%s", parent, policyId);
 
-      RetryingFuture<OperationSnapshot> poll = client
-          .deleteScalingPolicyAsync(policyName)
-          .getPollingFuture();
+      OperationFuture<Empty, Empty> call = client.deleteScalingPolicyAsync(policyName);
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        System.out.println("Scaling Policy deleted: " + policyName);
-      } else {
-        throw new RuntimeException("Scaling Policy delete request unsuccessful.");
-      }
+      call.get(1, TimeUnit.MINUTES);
+      System.out.println("Scaling Policy deleted: " + policyName);
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Scaling Policy delete request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

@@ -24,10 +24,12 @@ import com.google.cloud.gaming.v1alpha.GameServerDeploymentsServiceClient;
 import java.io.IOException;
 
 public class GetDeployment {
-  public static void getGameServerDeployment(String projectId, String deploymentId)
-      throws IOException {
+  public static void getGameServerDeployment(String projectId, String deploymentId) {
     // String projectId = "your-project-id";
     // String deploymentId = "your-game-server-deployment-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerDeploymentsServiceClient client = GameServerDeploymentsServiceClient.create()) {
       String deploymentName = String.format(
           "projects/%s/locations/global/gameServerDeployments/%s",
@@ -37,6 +39,8 @@ public class GetDeployment {
       GameServerDeployment deployment = client.getGameServerDeployment(deploymentName);
 
       System.out.println("Game Server Deployment found: " + deployment.getName());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

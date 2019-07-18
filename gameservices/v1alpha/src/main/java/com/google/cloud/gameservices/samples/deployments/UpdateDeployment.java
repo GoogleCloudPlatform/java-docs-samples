@@ -18,11 +18,10 @@ package com.google.cloud.gameservices.samples.deployments;
 
 // [START cloud_game_servers_deployment_update]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.GameServerDeployment;
 import com.google.cloud.gaming.v1alpha.GameServerDeploymentsServiceClient;
-import com.google.cloud.gaming.v1alpha.GameServerTemplate;
+import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
@@ -31,10 +30,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class UpdateDeployment {
-  public static void updateGameServerDeployment(String projectId, String deploymentId)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void updateGameServerDeployment(String projectId, String deploymentId) {
     // String projectId = "your-project-id";
     // String deploymentId = "your-game-server-deployment-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerDeploymentsServiceClient client = GameServerDeploymentsServiceClient.create()) {
       String deploymentName = String.format(
           "projects/%s/locations/global/gameServerDeployments/%s",
@@ -43,25 +44,23 @@ public class UpdateDeployment {
 
       GameServerDeployment deployment = GameServerDeployment
           .newBuilder()
-          .setNewGameServerTemplate(GameServerTemplate
-              .newBuilder()
-              .setDescription("Updated deployment template.")
-              .build())
+          .setName(deploymentName)
+          .putLabels("key", "value")
           .build();
 
-      RetryingFuture<OperationSnapshot> poll = client.updateGameServerDeploymentAsync(
-          deployment, FieldMask
-              .newBuilder()
-              .addPaths("new_game_server_template.description")
-              .build())
-          .getPollingFuture();
+      FieldMask fieldMask = FieldMask
+          .newBuilder()
+          .addPaths("labels")
+          .build();
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        GameServerDeployment updatedPolicy = client.getGameServerDeployment(deploymentName);
-        System.out.println("Game Server Deployment updated: " + updatedPolicy.getName());
-      } else {
-        throw new RuntimeException("Game Server Deployment update request unsuccessful.");
-      }
+      OperationFuture<GameServerDeployment, Empty> call = client.updateGameServerDeploymentAsync(
+          deployment, fieldMask);
+
+      GameServerDeployment updated = call.get(1, TimeUnit.MINUTES);
+      System.out.println("Game Server Deployment updated: " + updated.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Game Server Deployment update request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

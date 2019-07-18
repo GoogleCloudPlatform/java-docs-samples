@@ -18,10 +18,10 @@ package com.google.cloud.gameservices.samples.allocationpolicies;
 
 // [START cloud_game_servers_allocation_policy_update]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.AllocationPoliciesServiceClient;
 import com.google.cloud.gaming.v1alpha.AllocationPolicy;
+import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
@@ -30,27 +30,32 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class UpdateAllocationPolicy {
-  public static void updateAllocationPolicy(String projectId, String policyId)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void updateAllocationPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AllocationPoliciesServiceClient client = AllocationPoliciesServiceClient.create()) {
       String policyName = String.format(
           "projects/%s/locations/global/allocationPolicies/%s", projectId, policyId);
 
-      AllocationPolicy policy = client.getAllocationPolicy(policyName);
+      AllocationPolicy policy = client
+          .getAllocationPolicy(policyName)
+          .toBuilder()
+          .setWeight(5)
+          .build();
 
-      RetryingFuture<OperationSnapshot> poll = client.updateAllocationPolicyAsync(
-          policy.toBuilder().setWeight(5).build(),
-          FieldMask.newBuilder().addPaths("weight").build())
-          .getPollingFuture();
+      FieldMask fieldMask = FieldMask.newBuilder().addPaths("weight").build();
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        AllocationPolicy updatedPolicy = client.getAllocationPolicy(policyName);
-        System.out.println("Allocation Policy updated: " + updatedPolicy.getName());
-      } else {
-        throw new RuntimeException("Allocation Policy update request unsuccessful.");
-      }
+      OperationFuture<AllocationPolicy, Empty> call = client.updateAllocationPolicyAsync(
+          policy, fieldMask);
+
+      AllocationPolicy updated = call.get(1, TimeUnit.MINUTES);
+      System.out.println("Allocation Policy updated: " + updated.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Allocation Policy update request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

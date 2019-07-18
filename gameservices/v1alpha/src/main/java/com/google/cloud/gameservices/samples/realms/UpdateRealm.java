@@ -18,10 +18,10 @@ package com.google.cloud.gameservices.samples.realms;
 
 // [START cloud_game_servers_realm_update]
 
-import com.google.api.gax.longrunning.OperationSnapshot;
-import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.gaming.v1alpha.Realm;
 import com.google.cloud.gaming.v1alpha.RealmsServiceClient;
+import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
@@ -30,30 +30,32 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class UpdateRealm {
-  public static void updateRealm(String projectId, String regionId, String realmId)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void updateRealm(String projectId, String regionId, String realmId) {
     // String projectId = "your-project-id";
     // String regionId = "us-central1-f";
     // String realmId = "your-realm-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (RealmsServiceClient client = RealmsServiceClient.create()) {
-      String realmName = String.format(
-          "projects/%s/locations/%s/realms/%s", projectId, regionId, realmId);
+      String parent = String.format("projects/%s/locations/%s", projectId, regionId);
+      String realmName = String.format("%s/realms/%s", parent, realmId);
 
       Realm realm = Realm
           .newBuilder()
+          .setName(realmName)
           .setTimeZone("America/New_York")
           .build();
 
-      RetryingFuture<OperationSnapshot> poll = client.updateRealmAsync(
-          realm, FieldMask.newBuilder().addPaths("time_zone").build())
-          .getPollingFuture();
+      FieldMask fieldMask = FieldMask.newBuilder().addPaths("time_zone").build();
 
-      if (poll.get(1, TimeUnit.MINUTES).isDone()) {
-        Realm updatedPolicy = client.getRealm(realmName);
-        System.out.println("Realm updated: " + updatedPolicy.getName());
-      } else {
-        throw new RuntimeException("Realm update request unsuccessful.");
-      }
+      OperationFuture<Realm, Empty> call = client.updateRealmAsync(realm, fieldMask);
+
+      Realm updated = call.get(1, TimeUnit.MINUTES);
+      System.out.println("Realm updated: " + updated.getName());
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.err.println("Realm update request unsuccessful.");
+      e.printStackTrace(System.err);
     }
   }
 }

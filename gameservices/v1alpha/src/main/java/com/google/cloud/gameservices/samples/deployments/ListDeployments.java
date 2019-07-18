@@ -21,20 +21,38 @@ package com.google.cloud.gameservices.samples.deployments;
 import com.google.cloud.gaming.v1alpha.GameServerDeployment;
 import com.google.cloud.gaming.v1alpha.GameServerDeploymentsServiceClient;
 import com.google.cloud.gaming.v1alpha.GameServerDeploymentsServiceClient.ListGameServerDeploymentsPagedResponse;
+import com.google.cloud.gaming.v1alpha.ListGameServerDeploymentsRequest;
+import com.google.common.base.Strings;
 
 import java.io.IOException;
 
 public class ListDeployments {
-  public static void listGameServerDeployments(String projectId) throws IOException {
+  public static void listGameServerDeployments(String projectId) {
     // String projectId = "your-project-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerDeploymentsServiceClient client = GameServerDeploymentsServiceClient.create()) {
       String parent = String.format("projects/%s/locations/global", projectId);
 
       ListGameServerDeploymentsPagedResponse response = client.listGameServerDeployments(parent);
-
       for (GameServerDeployment deployment : response.iterateAll()) {
         System.out.println("Game Server Deployment found: " + deployment.getName());
       }
+
+      while (!Strings.isNullOrEmpty(response.getNextPageToken())) {
+        ListGameServerDeploymentsRequest request = ListGameServerDeploymentsRequest
+            .newBuilder()
+            .setParent(parent)
+            .setPageToken(response.getNextPageToken())
+            .build();
+        response = client.listGameServerDeployments(request);
+        for (GameServerDeployment deployment : response.iterateAll()) {
+          System.out.println("Game Server Deployment found: " + deployment.getName());
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

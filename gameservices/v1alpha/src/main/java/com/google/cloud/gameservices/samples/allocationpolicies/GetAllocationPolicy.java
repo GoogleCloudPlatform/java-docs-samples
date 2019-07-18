@@ -24,9 +24,12 @@ import com.google.cloud.gaming.v1alpha.AllocationPolicy;
 import java.io.IOException;
 
 public class GetAllocationPolicy {
-  public static void getAllocationPolicy(String projectId, String policyId) throws IOException {
+  public static void getAllocationPolicy(String projectId, String policyId) {
     // String projectId = "your-project-id";
     // String policyId = "your-policy-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AllocationPoliciesServiceClient client = AllocationPoliciesServiceClient.create()) {
       String policyName = String.format(
           "projects/%s/locations/global/allocationPolicies/%s", projectId, policyId);
@@ -34,6 +37,8 @@ public class GetAllocationPolicy {
       AllocationPolicy allocationPolicy = client.getAllocationPolicy(policyName);
 
       System.out.println("Allocation Policy found: " + allocationPolicy.getName());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

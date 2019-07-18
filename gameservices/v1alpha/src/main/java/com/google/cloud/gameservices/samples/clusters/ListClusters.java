@@ -21,24 +21,41 @@ package com.google.cloud.gameservices.samples.clusters;
 import com.google.cloud.gaming.v1alpha.GameServerCluster;
 import com.google.cloud.gaming.v1alpha.GameServerClustersServiceClient;
 import com.google.cloud.gaming.v1alpha.GameServerClustersServiceClient.ListGameServerClustersPagedResponse;
+import com.google.cloud.gaming.v1alpha.ListGameServerClustersRequest;
+import com.google.common.base.Strings;
 
 import java.io.IOException;
 
 public class ListClusters {
 
-  public static void listGameServerClusters(String projectId, String regionId, String realmId)
-      throws IOException {
+  public static void listGameServerClusters(String projectId, String regionId, String realmId) {
     // String projectId = "your-project-id";
     // String regionId = "us-central1-f";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerClustersServiceClient client = GameServerClustersServiceClient.create()) {
       String parent = String.format(
           "projects/%s/locations/%s/realms/%s", projectId, regionId, realmId);
 
       ListGameServerClustersPagedResponse response = client.listGameServerClusters(parent);
-
       for (GameServerCluster cluster : response.iterateAll()) {
         System.out.println("Game Server Cluster found: " + cluster.getName());
       }
+
+      while (!Strings.isNullOrEmpty(response.getNextPageToken())) {
+        ListGameServerClustersRequest request = ListGameServerClustersRequest
+            .newBuilder()
+            .setParent(parent)
+            .setPageToken(response.getNextPageToken())
+            .build();
+        response = client.listGameServerClusters(request);
+        for (GameServerCluster cluster : response.iterateAll()) {
+          System.out.println("Game Server Cluster found: " + cluster.getName());
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

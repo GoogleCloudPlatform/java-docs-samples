@@ -18,25 +18,42 @@ package com.google.cloud.gameservices.samples.realms;
 
 // [START cloud_game_servers_realm_list]
 
+import com.google.cloud.gaming.v1alpha.ListRealmsRequest;
 import com.google.cloud.gaming.v1alpha.Realm;
 import com.google.cloud.gaming.v1alpha.RealmsServiceClient;
 import com.google.cloud.gaming.v1alpha.RealmsServiceClient.ListRealmsPagedResponse;
+import com.google.common.base.Strings;
 
 import java.io.IOException;
 
 public class ListRealms {
-  public static void listRealms(String projectId, String regionId)
-      throws IOException {
+  public static void listRealms(String projectId, String regionId) {
     // String projectId = "your-project-id";
     // String regionId = "us-central1-f";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (RealmsServiceClient client = RealmsServiceClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, regionId);
 
       ListRealmsPagedResponse response = client.listRealms(parent);
-
       for (Realm realm : response.iterateAll()) {
         System.out.println("Realm found: " + realm.getName());
       }
+
+      while (!Strings.isNullOrEmpty(response.getNextPageToken())) {
+        ListRealmsRequest request = ListRealmsRequest
+            .newBuilder()
+            .setParent(parent)
+            .setPageToken(response.getNextPageToken())
+            .build();
+        response = client.listRealms(request);
+        for (Realm realm : response.iterateAll()) {
+          System.out.println("Realm found: " + realm.getName());
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }

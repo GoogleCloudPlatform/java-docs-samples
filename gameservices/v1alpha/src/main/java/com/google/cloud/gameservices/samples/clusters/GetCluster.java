@@ -26,11 +26,14 @@ import java.io.IOException;
 public class GetCluster {
 
   public static void getGameServerCluster(
-      String projectId, String regionId, String realmId, String clusterId) throws IOException {
+      String projectId, String regionId, String realmId, String clusterId) {
     // String projectId = "your-project-id";
     // String regionId = "us-central1-f";
     // String realmId = "your-realm-id";
     // String clusterId = "your-game-server-cluster-id";
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (GameServerClustersServiceClient client = GameServerClustersServiceClient.create()) {
       String parent = String.format(
           "projects/%s/locations/%s/realms/%s", projectId, regionId, realmId);
@@ -39,6 +42,8 @@ public class GetCluster {
       GameServerCluster cluster = client.getGameServerCluster(clusterName);
 
       System.out.println("Game Server Cluster found: " + cluster.getName());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
     }
   }
 }
