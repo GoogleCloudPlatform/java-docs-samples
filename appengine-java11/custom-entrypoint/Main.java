@@ -23,8 +23,10 @@ import java.net.InetSocketAddress;
 public class Main {
 
   public static void main(String[] args) throws IOException {
-    // Create an instance of HttpServer bound to port 8080.
-    HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+    // Create an instance of HttpServer bound to port defined by the 
+    // PORT environment variable when present, otherwise on 8080.
+    int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+    HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
     // Set root URI path.
     server.createContext("/", (var t) -> {
