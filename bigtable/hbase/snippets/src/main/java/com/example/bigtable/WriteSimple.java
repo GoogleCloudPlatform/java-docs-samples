@@ -36,14 +36,13 @@ public class WriteSimple {
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(tableId)));
       long timestamp = System.currentTimeMillis();
+      byte[] one = new byte[] {0, 0, 0, 0, 0, 0, 0, 1};
 
       String rowKey = "phone#4c410523#20190501";
-
       Put put = new Put(Bytes.toBytes(rowKey));
-      put.addColumn(
-          COLUMN_FAMILY_NAME, Bytes.toBytes("connected_cell"), timestamp, Bytes.toBytes(1));
-      put.addColumn(
-          COLUMN_FAMILY_NAME, Bytes.toBytes("connected_wifi"), timestamp, Bytes.toBytes(1));
+
+      put.addColumn(COLUMN_FAMILY_NAME, Bytes.toBytes("connected_cell"), timestamp, one);
+      put.addColumn(COLUMN_FAMILY_NAME, Bytes.toBytes("connected_wifi"), timestamp, one);
       put.addColumn(
           COLUMN_FAMILY_NAME,
           Bytes.toBytes("os_build"),

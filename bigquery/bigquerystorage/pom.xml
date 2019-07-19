@@ -39,7 +39,7 @@
     <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-bigquerystorage</artifactId>
-    <version>0.97.0-beta</version>
+    <version>0.100.0-beta</version>
     </dependency>
 
     <dependency>
