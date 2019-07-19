@@ -21,8 +21,10 @@ import spark.Spark;
 public class Main {
 
   public static void main(String[] args) {
-    // Starts the webapp on localhost:8080.
-    Spark.port(8080);
+    // Starts the webapp on localhost and the port defined by the PORT
+    // environment variable when present, otherwise on 8080.
+    int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+    Spark.port(port);
     Spark.get("/", (req, res) -> "Hello World!");
   }
 }
