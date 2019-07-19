@@ -51,8 +51,9 @@ public class PubsubControllerTests {
 
   @Test
   public void addInvalidMimetype() throws Exception {
-    String mockBody =
-        "{\"message\":{\"data\":\"dGVzdA==\",\"attributes\":{},\"messageId\":\"91010751788941\",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}";
+    String mockBody = "{\"message\":{\"data\":\"dGVzdA==\","
+                      + "\"attributes\":{},\"messageId\":\"91010751788941\""
+                      + ",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}";
 
     mockMvc
         .perform(post("/").contentType(MediaType.TEXT_HTML).content(mockBody))
@@ -70,9 +71,9 @@ public class PubsubControllerTests {
 
   @Test
   public void addFullBody() throws Exception {
-    String mockBody =
-        "{\"message\":{\"data\":\"dGVzdA==\",\"attributes\":{},\"messageId\":\"91010751788941\",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}";
-
+    String mockBody = "{\"message\":{\"data\":\"dGVzdA==\","
+                      + "\"attributes\":{},\"messageId\":\"91010751788941\""
+                      + ",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}";
     mockMvc
         .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mockBody))
         .andExpect(status().isOk());

@@ -15,6 +15,7 @@
  */
 
 // [START run_pubsub_server_setup]
+
 package com.example.appengine.cloudrunpubsub;
 
 import org.springframework.boot.SpringApplication;
