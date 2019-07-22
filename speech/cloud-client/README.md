@@ -165,7 +165,11 @@ mvn exec:java -DRecognize -Dexec.args="word-level-conf gs://cloud-samples-tests/
 ```
 
 ## Infinite Streaming
-Continuously stream audio to the speech API over multiple requests 
+Continuously stream audio to the speech API over multiple requests (by default en-US).
 ```
 mvn exec:java -DInfiniteStreamRecognize
+```
+If stream audio is in different language, you could also pass language code as a command line argument (for example, en-GB for english (Great Britian), en-US for english U.S., and more available in [this link](https://cloud.google.com/speech-to-text/docs/languages)).
+```
+mvn exec:java -Dexec.args="-lang_code=en-US" -DInfiniteStreamRecognize
 ```
