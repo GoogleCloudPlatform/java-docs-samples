@@ -19,21 +19,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.m.examples.bigtable</groupId>
-  <artifactId>bigtable</artifactId>
+  <groupId>com.example.bigtable</groupId>
+  <artifactId>docs-samples</artifactId>
   <version>1.0-SNAPSHOT</version>
-
-  <!--
-    The parent pom defines common style checks and testing strategies for our samples.
-    Removing or replacing it should not affect the execution of the samples in anyway.
-  -->
-  <parent>
-    <groupId>com.google.cloud.samples</groupId>
-    <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
-  </parent>
-
-  <name>bigtable</name>
+  <name>docs-samples</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
