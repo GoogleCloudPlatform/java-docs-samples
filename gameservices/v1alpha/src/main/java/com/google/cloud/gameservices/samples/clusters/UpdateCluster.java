@@ -55,7 +55,6 @@ public class UpdateCluster {
       OperationFuture<GameServerCluster, Empty> call = client.updateGameServerClusterAsync(
           cluster, fieldMask);
 
-
       GameServerCluster updated = call.get(1, TimeUnit.MINUTES);
       System.out.println("Game Server Cluster updated: " + updated.getName());
     } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
