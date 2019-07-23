@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>1.24.0</version>
+      <version>1.28.0</version>
       <scope>provided</scope>
     </dependency>
 
