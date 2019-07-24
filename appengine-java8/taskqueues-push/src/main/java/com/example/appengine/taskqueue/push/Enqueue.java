@@ -16,9 +16,11 @@
 package com.example.appengine.taskqueue.push;
 
 // [START import]
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.cloud.tasks.v2.AppEngineHttpRequest;
+import com.google.cloud.tasks.v2.CloudTasksClient;
+import com.google.cloud.tasks.v2.HttpMethod;
+import com.google.cloud.tasks.v2.QueueName;
+import com.google.cloud.tasks.v2.Task;
 // [END import]
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -33,8 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(
     name = "TaskEnque",
     description = "taskqueue: Enqueue a job with a key",
-    urlPatterns = "/taskqueues/enqueue"
-)
+    urlPatterns = "/taskqueues/enqueue")
 public class Enqueue extends HttpServlet {
 
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -43,9 +44,28 @@ public class Enqueue extends HttpServlet {
 
     // Add the task to the default queue.
     // [START addQueue]
-    Queue queue = QueueFactory.getDefaultQueue();
-    queue.add(TaskOptions.Builder.withUrl("/worker").param("key", key));
-    // [END addQueue]
+    try (CloudTasksClient client = CloudTasksClient.create()) {
+      String projectId = "starter-akitsch";
+      String locationId = "us-central1";
+      // String param = "key-test";
+
+      // Construct the fully qualified queue name.
+      String queueName = QueueName.of(projectId, locationId, "default").toString();
+
+      // Construct the task body.
+      Task task =
+          Task.newBuilder()
+              .setAppEngineHttpRequest(
+                  AppEngineHttpRequest.newBuilder()
+                      .setRelativeUri("/taskqueues/worker?key=" + key)
+                      .setHttpMethod(HttpMethod.POST)
+                      .build())
+              .build();
+
+      Task taskResponse = client.createTask(queueName, task);
+      System.out.println(taskResponse);
+      // [END addQueue]
+    }
 
     response.sendRedirect("/");
   }
