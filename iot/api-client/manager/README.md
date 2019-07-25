@@ -61,7 +61,7 @@ run the sample as:
 
 Create a PubSub topic, `hello-java`, for the project, `blue-jet-123`:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -command=create-iot-topic \
@@ -69,7 +69,7 @@ Create a PubSub topic, `hello-java`, for the project, `blue-jet-123`:
 
 Create an ES device:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -81,7 +81,7 @@ Create an ES device:
 
 Create an RSA device:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -92,7 +92,7 @@ Create an RSA device:
 
 Create a device without authorization:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -102,7 +102,7 @@ Create a device without authorization:
 
 Create a device registry:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -111,7 +111,7 @@ Create a device registry:
 
 Delete a device registry:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -120,7 +120,7 @@ Delete a device registry:
 
 Get a device registry:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -129,7 +129,7 @@ Get a device registry:
 
 List devices:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -138,7 +138,7 @@ List devices:
 
 List device registries:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -147,7 +147,7 @@ List device registries:
 
 Patch a device with ES:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -157,7 +157,7 @@ Patch a device with ES:
 
 Patch a device with RSA:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -pubsub_topic=hello-java \
@@ -168,7 +168,7 @@ Patch a device with RSA:
 
 Create a gateway:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -registry_name=your-registry \
@@ -178,7 +178,7 @@ Create a gateway:
 
 Bind a device to a gateway:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -registry_name=your-registry \
@@ -188,7 +188,7 @@ Bind a device to a gateway:
 
 Unbind a device to a gateway:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -registry_name=your-registry \
@@ -198,7 +198,7 @@ Unbind a device to a gateway:
 
 List gateways in a registry.
 
-    mvn exec:java \
+    mvn exec:exec \
           -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
           -Dexec.args="-project_id=blue-jet-123 \
                        -registry_name=your-registry \
@@ -206,7 +206,7 @@ List gateways in a registry.
 
 List devices bound to a gateway.
 
-    mvn exec:java \
+    mvn exec:exec \
               -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
               -Dexec.args="-project_id=blue-jet-123 \
                            -registry_name=your-registry \
@@ -234,7 +234,7 @@ Run the following command to install the dependencies using Maven:
 The following command summarizes the sample usage:
 
 ```
-    mvn exec:java \
+    mvn exec:exec \
         -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
         -Dexec.args="-project_id=<your-iot-project> \
                      -registry_id=<your-registry-id> \
@@ -250,7 +250,7 @@ credentials using the [`generate_keys.sh`](../generate_keys.sh) script
 provided in the parent folder, you can run the sample as:
 
 ```
-    mvn exec:java \
+    mvn exec:exec \
         -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
@@ -263,7 +263,7 @@ provided in the parent folder, you can run the sample as:
 To publish state messages, run the sample as follows:
 
 ```
-    mvn exec:java \
+    mvn exec:exec \
         -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
@@ -311,7 +311,7 @@ Run the following command to install the dependencies using Maven:
 
 The following command summarizes the sample usage:
 
-    mvn exec:java \
+    mvn exec:exec \
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
         -Dexec.args="-project_id=my-iot-project \
                      -registry_id=my-registry \
@@ -327,7 +327,7 @@ provided in the parent folder, you can run the sample as:
 
 Run mqtt example:
 
-    mvn exec:java \
+    mvn exec:exec \
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
@@ -338,7 +338,7 @@ Run mqtt example:
 
 Listen for configuration messages:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -cloud_region=us-central1 \
@@ -353,7 +353,7 @@ Listen for configuration messages:
 
 Send data on behalf of device:
 
-    mvn exec:java \
+    mvn exec:exec \
       -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
       -Dexec.args="-project_id=blue-jet-123 \
                    -cloud_region=us-central1 \

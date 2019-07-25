@@ -57,7 +57,7 @@ import org.joda.time.DateTime;
  *
  * <pre>
  *   $ mvn compile
- *   $ mvn exec:java \
+ *   $ mvn exec:exec \
  *      -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
  *      -Dexec.args="-project_id=blue-jet-123 \
  *                   -registry_id=my-registry \

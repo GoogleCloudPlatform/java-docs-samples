@@ -83,7 +83,7 @@ import org.apache.commons.cli.HelpFormatter;
  * <pre>
  * <code>
  * $ mvn clean compile assembly:single
- * $ mvn exec:java \
+ * $ mvn exec:exec \
  *    -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
  *    -Dexec.args="-project_id=blue-jet-123 \
  *                 -cloud_region=us-central1 \
