@@ -57,12 +57,14 @@ import org.joda.time.DateTime;
  *
  * <pre>
  *   $ mvn compile
- *   $ mvn exec:java -Dexec.mainClass="com.google.cloud.iot.examples.MqttExample" \
- *       -Dexec.args="-project_id=my-project-id \
- *       -registry_id=my-registry-id \
- *       -device_id=my-device-id \
- *       -private_key_file=/path/to/private_pkcs8 \
- *       -algorithm=RS256"
+ *   $ mvn exec:java \
+ *      -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
+ *      -Dexec.args="-project_id=blue-jet-123 \
+ *                   -registry_id=my-registry \
+ *                   -cloud_region=asia-east1 \
+ *                   -device_id=my-device \
+ *                   -private_key_file=../rsa_private_pkcs8 \
+ *                   -algorithm=RS256"
  * </pre>
  */
 public class MqttExample {

@@ -84,11 +84,19 @@ import org.apache.commons.cli.HelpFormatter;
  * <code>
  * $ mvn clean compile assembly:single
  * $ mvn exec:java \
- *       -Dexec.mainClass="com.google.cloud.iot.examples.DeviceRegistryExample" \
- *       -Dexec.args="-project_id=my-project-id \
- *                    -pubsub_topic=projects/my-project-id/topics/my-topic-id \
- *                    -ec_public_key_file=/path/to/ec_public.pem \
- *                    -rsa_certificate_file=/path/to/rsa_cert.pem"
+ *    -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
+ *    -Dexec.args="-project_id=blue-jet-123 \
+ *                 -cloud_region=us-central1 \
+ *                 -registry_id=my-registry  \
+ *                 -gateway_id=test-gateway \
+ *                 -ec_public_key_file=../ec_public.pem \
+ *                 -algorithm='ES256' or 'RS256' \
+ *                 -device_id=java-device-0 \
+ *                 -message_type='event' or 'state' \
+ *                 -telemetry_data='your telemetry msg' \
+ *                 -mqtt_bridge_hostname=mqtt.googleapis.com \
+ *                 -mqtt_bridge_port=443 or 8883 \
+ *                 -command=send-data-from-bound-device"
  * </code>
  * </pre>
  */
@@ -226,7 +234,7 @@ public class DeviceRegistryExample {
         String gatewayId = g.getId();
         System.out.println("Id: " + gatewayId);
 
-        ListDevicesResponse res = 
+        ListDevicesResponse res =
             service
                 .projects()
                 .locations()
