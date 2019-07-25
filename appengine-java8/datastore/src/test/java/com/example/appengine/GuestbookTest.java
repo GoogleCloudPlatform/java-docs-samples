@@ -17,6 +17,7 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.example.time.testing.FakeClock;
 import com.google.appengine.api.datastore.Key;
@@ -87,7 +88,7 @@ public class GuestbookTest {
   public void appendGreeting_normalData_setsContentProperty() {
     Greeting got = guestbookUnderTest.appendGreeting("Hello, Datastore!");
 
-    assertThat(got.getContent()).named("content property").isEqualTo("Hello, Datastore!");
+    assertWithMessage("content property").that(got.getContent()).isEqualTo("Hello, Datastore!");
   }
 
   @Test
