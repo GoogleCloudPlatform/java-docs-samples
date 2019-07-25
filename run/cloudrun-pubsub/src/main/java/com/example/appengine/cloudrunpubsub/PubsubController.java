@@ -16,6 +16,7 @@
 
 package com.example.appengine.cloudrunpubsub;
 
+// [START run_pubsub_handler]
 import java.util.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-// [START run_pubsub_handler]
 // PubsubController consumes a Pub/Sub message.
 @RestController
 public class PubsubController {
