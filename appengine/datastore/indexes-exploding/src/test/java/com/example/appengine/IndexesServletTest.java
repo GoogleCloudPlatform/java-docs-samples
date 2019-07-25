@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -77,8 +77,8 @@ public class IndexesServletTest {
   public void doGet_emptyDatastore_writesNoWidgets() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
-    assertThat(responseWriter.toString())
-        .named("IndexesServlet response")
+    assertWithMessage("IndexesServlet response")
+        .that(responseWriter.toString())
         .isEqualTo("Got 0 widgets.\n");
   }
 
@@ -97,8 +97,8 @@ public class IndexesServletTest {
 
     servletUnderTest.doGet(mockRequest, mockResponse);
 
-    assertThat(responseWriter.toString())
-        .named("IndexesServlet response")
+    assertWithMessage("IndexesServlet response")
+        .that(responseWriter.toString())
         .isEqualTo("Got 1 widgets.\n");
   }
 }

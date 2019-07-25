@@ -16,7 +16,7 @@
 
 package com.google.cloud.vision.samples.text;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.LowLevelHttpRequest;
@@ -72,8 +72,8 @@ public class TextAppTest {
     List<ImageText> image =
         appUnderTest.detectText(ImmutableList.<Path>of(Paths.get("data/wakeupcat.jpg")));
 
-    assertThat(image.get(0).path().toString())
-        .named("wakeupcat.jpg path")
+    assertWithMessage("wakeupcat.jpg path")
+        .that(image.get(0).path().toString())
         .isEqualTo("data/wakeupcat.jpg");
   }
 }

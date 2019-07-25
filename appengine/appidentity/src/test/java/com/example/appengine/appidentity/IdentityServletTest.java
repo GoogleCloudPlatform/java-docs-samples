@@ -16,7 +16,7 @@
 
 package com.example.appengine.appidentity;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -69,8 +69,8 @@ public class IdentityServletTest {
     // We don't have any guarantee over what the local App Engine environment returns for
     // "com.google.appengine.runtime.default_version_hostname".  Only assert that the response
     // contains part of the string we have control over.
-    assertThat(responseWriter.toString())
-        .named("IdentityServlet response")
+    assertWithMessage("IdentityServlet response")
+        .that(responseWriter.toString())
         .contains("default_version_hostname:");
   }
 }

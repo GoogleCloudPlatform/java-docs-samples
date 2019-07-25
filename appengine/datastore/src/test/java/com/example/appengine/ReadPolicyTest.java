@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
@@ -90,7 +90,7 @@ public class ReadPolicyTest {
     // should be no results.
     Query q = new Query("Person").setAncestor(parent.getKey());
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").isEmpty();
+    assertWithMessage("query results").that(results).isEmpty();
   }
 
   @Test
@@ -107,6 +107,6 @@ public class ReadPolicyTest {
 
     Query q = new Query("Person").setAncestor(parent.getKey());
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").hasSize(2);
+    assertWithMessage("query results").that(results).hasSize(2);
   }
 }

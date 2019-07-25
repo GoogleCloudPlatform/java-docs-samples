@@ -16,7 +16,7 @@
 
 package com.example.appengine.users;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -66,7 +66,7 @@ public class UsersServletTest {
     //  If the user is logged in, use this request
     when(mockRequestLoggedIn.getRequestURI()).thenReturn(FAKE_URL);
     //  Most of the classes that implement Principal have been
-    //  deprecated.  JMXPrincipal seems like a safe choice. 
+    //  deprecated.  JMXPrincipal seems like a safe choice.
     when(mockRequestLoggedIn.getUserPrincipal()).thenReturn(new JMXPrincipal(FAKE_NAME));
 
     // Set up a fake HTTP response.
@@ -85,13 +85,13 @@ public class UsersServletTest {
   public void doGet_userNotLoggedIn_writesResponse() throws Exception {
     servletUnderTest.doGet(mockRequestNotLoggedIn, mockResponse);
 
-    // If a user isn't logged in, we expect a prompt 
+    // If a user isn't logged in, we expect a prompt
     //  to login to be returned.
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("<p>Please <a href=");
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("sign in</a>.</p>");
   }
 
@@ -99,13 +99,13 @@ public class UsersServletTest {
   public void doGet_userLoggedIn_writesResponse() throws Exception {
     servletUnderTest.doGet(mockRequestLoggedIn, mockResponse);
 
-    // If a user is logged in, we expect a prompt 
+    // If a user is logged in, we expect a prompt
     // to logout to be returned.
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("<p>Hello, " + FAKE_NAME + "!");
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("sign out");
   }
 }
