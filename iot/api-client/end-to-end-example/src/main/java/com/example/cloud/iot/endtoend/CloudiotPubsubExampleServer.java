@@ -60,7 +60,7 @@ import org.json.JSONObject;
  * <p>You can then run the example with <prev> <code>
  * $ mvn clean compile assembly:single
  *
- * $ mvn exec:exec \
+ * $ mvn exec:java \
  *       -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleServer" \
  *       -Dexec.args="-project_id=<your-iot-project> \
  *                 -pubsub_subscription=<your-pubsub-subscription"

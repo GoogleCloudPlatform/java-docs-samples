@@ -56,7 +56,7 @@ import org.json.JSONObject;
  * <p><prev> <code>
  * $ mvn clean compile assembly:single
  *
- * $ mvn exec:exec \
+ * $ mvn exec:java \
  *       -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleMqttDevice" \
  *       -Dexec.args="-project_id=<your-iot-project> \
  *                 -registry_id=<your-registry-id> \
