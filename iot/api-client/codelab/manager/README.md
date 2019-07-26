@@ -60,7 +60,7 @@ Run the following command to install the dependencies using Maven:
 
 The following command summarizes the sample usage:
 
-    mvn exec:exec \
+    mvn exec:java \
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttCommandsDemo" \
         -Dexec.args="-project_id=my-iot-project \
                      -registry_id=my-registry \
@@ -71,7 +71,7 @@ The following command summarizes the sample usage:
 
 Run mqtt example:
 
-    mvn exec:exec \
+    mvn exec:java \
         -Dexec.mainClass="com.example.cloud.iot.examples.MqttCommandsDemo" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \

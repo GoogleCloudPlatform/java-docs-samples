@@ -92,7 +92,7 @@ Before you begin, you will need to create the Google Cloud PubSub message queue,
 
 To run this sample:
 
-    mvn exec:exec \
+    mvn exec:java \
         -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleServer" \
         -Dexec.args="-project_id=<your-iot-project> \
                     -pubsub_subscription=<your-pubsub-subscription>"
@@ -104,7 +104,7 @@ To run this sample:
 
 To run this sample:
 
-    mvn exec:exec \
+    mvn exec:java \
       -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleMqttDevice" \
       -Dexec.args="-project_id=<your-iot-project> \
                    -registry_id=<your-registry-id> \
@@ -117,7 +117,7 @@ For example, if your project ID is `blue-jet-123`, your device registry id is
 credentials using the [`generate_keys.sh`](../generate_keys.sh) script
 provided in the parent folder, you can run the sample as:
 
-    mvn exec:exec \
+    mvn exec:java \
         -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleMqttDevice" \
         -Dexec.args="-project_id=blue-jet-123 \
                      -registry_id=my-registry \
