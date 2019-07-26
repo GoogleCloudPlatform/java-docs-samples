@@ -187,7 +187,16 @@
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.example.cloud.iot.examples.HttpExample</argument>
-                <commandlineArgs>command line arguments</commandlineArgs>
+                <argument>-project_id=${project_id}</argument>
+                <argument>-registry_id=${registry_id}</argument>
+                <argument>-device_id=${device_id}</argument>
+                <argument>-algorithm=${algorithm}</argument>
+                <argument>-private_key_file=${private_key_file}</argument>
+                <argument>${cr}</argument>
+                <argument>${hba}</argument>
+                <argument>${apiv}</argument>
+                <argument>${exp}</argument>
+                <argument>${mt}</argument>
               </arguments>
             </configuration>
           </plugin>

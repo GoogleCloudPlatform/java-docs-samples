@@ -51,11 +51,18 @@ The following description summarizes the sample usage:
 
 https://cloud.google.com/iot-core
 
+We recommend using the Maven **exec** plugin for invoking the sample.
+
 For example, if your project ID is `blue-jet-123`, your service account
 credentials are stored in your home folder in creds.json and you have generated
 your credentials using the shell script provided in the parent folder, you can
 run the sample as:
 
+    mvn exec:exec -Dmanager \
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-test-device \
+                  -Dalgorithm=RS256 \
 
 ## Usage Examples
 
@@ -221,12 +228,16 @@ The following command summarizes the sample usage:
 
 ```
     mvn exec:exec -Dhttp \
-        -Dexec.args="-project_id=<your-iot-project> \
-                     -registry_id=<your-registry-id> \
-                     -device_id=<device-id> \
-                     -private_key_file=<path-to-keyfile> \
-                     -message_type=<event|state> \
-                     -algorithm=<RS256|ES256>"
+                  -Dproject_id=YOUR-PROJECT-ID \
+                  -Dregistry_id=YOUR-REGISTRY-ID \
+                  -Ddevice_id=YOUR-DEVICE-ID \
+                  -Dalgorithm=RS256|ES256 \
+                  -Dprivate_key_file="../path/to/your_private_pkcs8" \
+                  -Dcr=-cloud_region=us-central1 | asia-east1 | europe-west1 \
+                  -Dhba=http_bridge_address=https://cloudiotdevice.googleapis.com \
+                  -Dapiv=-api_version=v1 \
+                  -Dexp=-token_exp_minutes=60 \
+                  -Dmt=-message_type=state | event
 ```
 
 For example, if your project ID is `blue-jet-123`, the Cloud region associated
@@ -236,25 +247,25 @@ provided in the parent folder, you can run the sample as:
 
 ```
     mvn exec:exec -Dhttp \
-        -Dexec.args="-project_id=blue-jet-123 \
-                     -registry_id=my-registry \
-                     -cloud_region=europe-west1 \
-                     -device_id=my-java-device \
-                     -private_key_file=../rsa_private_pkcs8 \
-                     -algorithm=RS256"
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-java-device \
+                  -Dalgorithm=RS256 \
+                  -Dprivate_key_file=../rsa_private_pkcs8 \
+                  -Dcr=-cloud_region=asia-east1
 ```
 
 To publish state messages, run the sample as follows:
 
 ```
     mvn exec:exec -Dhttp \
-        -Dexec.args="-project_id=blue-jet-123 \
-                     -registry_id=my-registry \
-                     -cloud_region=us-central1 \
-                     -device_id=my-java-device \
-                     -private_key_file=../rsa_private_pkcs8 \
-                     -message_type=state \
-                     -algorithm=RS256"
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-java-device \
+                  -Dalgorithm=RS256 \
+                  -Dprivate_key_file=../rsa_private_pkcs8 \
+                  -Dcr=-cloud_region=us-central1 \
+                  -Dmt=message_type=state
 ```
 
 
@@ -292,16 +303,16 @@ Run the following command to install the dependencies using Maven:
 
 ## Running the sample
 
-The following command summarizes the sample usage:
+The following example shows you how to invoke the sample using the `mvn exec`:
 
     mvn exec:exec -Dmqtt \
                   -Dproject_id=YOUR-PROJECT-ID \
                   -Dregistry_id=YOUR-REGISTRY-ID \
                   -Ddevice_id=YOUR-DEVICE-ID \
                   -Dalgorithm=RS256|ES256 \
-                  -Dprivate_key_file="../path/to/your_private_pkcs8"
-                  -Dcmd=-command=listen-for-config-messages"
-                  -Dgid=-gateway_id=YOUR-GATEWAY-ID"
+                  -Dprivate_key_file=../path/to/your_private_pkcs8
+                  -Dcmd=-command=listen-for-config-messages
+                  -Dgid=-gateway_id=YOUR-GATEWAY-ID
                   -Dcr=-cloud_region=us-central1 | asia-east1 | europe-west1
                   -Dexp=-token_exp_minutes=60
                   -Dmhn=mqtt_bridge_hostname=mqtt.googleapis.com
