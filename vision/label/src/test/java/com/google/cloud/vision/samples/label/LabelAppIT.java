@@ -17,6 +17,7 @@
 package com.google.cloud.vision.samples.label;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
@@ -53,7 +54,7 @@ public class LabelAppIT {
     }
     ImmutableSet<String> descriptions = builder.build();
 
-    assertThat(descriptions).named("cat.jpg labels").contains("cat");
+    assertWithMessage("cat.jpg labels").that(descriptions).contains("cat");
   }
 
   @Test public void labelImage_badImage_throwsException() throws Exception {

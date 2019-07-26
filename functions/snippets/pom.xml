@@ -43,20 +43,20 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.78.0</version>
+      <version>1.83.0</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-2</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.28.2</version>
+      <version>3.0.0</version>
       <scope>test</scope>
     </dependency>
 

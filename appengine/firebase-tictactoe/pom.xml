@@ -44,12 +44,12 @@
        <dependency>
            <groupId>com.google.appengine</groupId>
            <artifactId>appengine-api-1.0-sdk</artifactId>
-           <version>1.9.75</version>
+           <version>1.9.76</version>
        </dependency>
        <dependency>
            <groupId>com.google.api-client</groupId>
            <artifactId>google-api-client-appengine</artifactId>
-           <version>1.30.1</version>
+           <version>1.30.2</version>
        </dependency>
        <dependency>
            <groupId>com.google.code.gson</groupId>
@@ -65,18 +65,18 @@
        <dependency>
            <groupId>org.mockito</groupId>
            <artifactId>mockito-core</artifactId>
-           <version>2.28.2</version>
+           <version>3.0.0</version>
        </dependency>
        <dependency>
          <groupId>com.google.appengine</groupId>
          <artifactId>appengine-api-stubs</artifactId>
-         <version>1.9.75</version>
+         <version>1.9.76</version>
          <scope>test</scope>
          </dependency>
        <dependency>
            <groupId>com.google.appengine</groupId>
            <artifactId>appengine-testing</artifactId>
-           <version>1.9.75</version>
+           <version>1.9.76</version>
        </dependency>
    </dependencies>
     <build>

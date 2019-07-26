@@ -16,7 +16,7 @@
 
 package com.example.appengine.requests;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import java.io.PrintWriter;
@@ -59,8 +59,8 @@ public class RequestsServletTest {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     // We expect a greeting to be returned.
-    assertThat(responseWriter.toString())
-        .named("RequestsServlet response")
+    assertWithMessage("RequestsServlet response")
+        .that(responseWriter.toString())
         .contains("Hello, world");
   }
 }
