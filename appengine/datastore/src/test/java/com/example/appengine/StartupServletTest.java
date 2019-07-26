@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -81,7 +81,7 @@ public class StartupServletTest {
   @Test
   public void doGet_emptyDatastore_writesOkay() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
-    assertThat(responseWriter.toString()).named("StartupServlet response").isEqualTo("ok\n");
+    assertWithMessage("StartupServlet response").that(responseWriter.toString()).isEqualTo("ok\n");
   }
 
   @Test
@@ -91,7 +91,7 @@ public class StartupServletTest {
     Filter nameFilter = new FilterPredicate("name", FilterOperator.EQUAL, "George Washington");
     Query q = new Query("Person").setFilter(nameFilter);
     Entity result = datastore.prepare(q).asSingleEntity();
-    assertThat(result.getProperty("name")).named("name").isEqualTo("George Washington");
+    assertWithMessage("name").that(result.getProperty("name")).isEqualTo("George Washington");
   }
 
   @Test
@@ -99,6 +99,6 @@ public class StartupServletTest {
     datastore.put(
         new Entity(StartupServlet.IS_POPULATED_ENTITY, StartupServlet.IS_POPULATED_KEY_NAME));
     servletUnderTest.doGet(mockRequest, mockResponse);
-    assertThat(responseWriter.toString()).named("StartupServlet response").isEqualTo("ok\n");
+    assertWithMessage("StartupServlet response").that(responseWriter.toString()).isEqualTo("ok\n");
   }
 }

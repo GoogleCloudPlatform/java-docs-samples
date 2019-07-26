@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.example.time.testing.FakeClock;
@@ -71,8 +71,8 @@ public class ProjectionServletTest {
   public void doGet_emptyDatastore_writesNoGreetings() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
-    assertThat(responseWriter.toString())
-        .named("ProjectionServlet response")
+    assertWithMessage("ProjectionServlet response")
+        .that(responseWriter.toString())
         .doesNotContain("Message");
   }
 
@@ -90,8 +90,8 @@ public class ProjectionServletTest {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String output = responseWriter.toString();
 
-    assertThat(output).named("ProjectionServlet response").contains("Message Hello.");
-    assertThat(output).named("ProjectionServlet response").contains("Message Güten Tag!");
-    assertThat(output).named("ProjectionServlet response").contains("Message Hola.");
+    assertWithMessage("ProjectionServlet response").that(output).contains("Message Hello.");
+    assertWithMessage("ProjectionServlet response").that(output).contains("Message Güten Tag!");
+    assertWithMessage("ProjectionServlet response").that(output).contains("Message Hola.");
   }
 }

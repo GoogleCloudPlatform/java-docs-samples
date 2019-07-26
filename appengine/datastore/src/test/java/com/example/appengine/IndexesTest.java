@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -88,6 +88,6 @@ public class IndexesTest {
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
     // [END unindexed_properties_1]
 
-    assertThat(results).named("query results").containsExactly(tom);
+    assertWithMessage("query results").that(results).containsExactly(tom);
   }
 }

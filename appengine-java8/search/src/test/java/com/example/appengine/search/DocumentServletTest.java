@@ -16,7 +16,7 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.search.Document;
@@ -35,10 +35,8 @@ public class DocumentServletTest {
 
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
-  @Mock
-  private HttpServletRequest mockRequest;
-  @Mock
-  private HttpServletResponse mockResponse;
+  @Mock private HttpServletRequest mockRequest;
+  @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DocumentServlet servletUnderTest;
 
@@ -63,13 +61,17 @@ public class DocumentServletTest {
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String content = responseWriter.toString();
-    assertThat(content)
-        .named("DocumentServlet response: coverLetter")
+    assertWithMessage("DocumentServlet response: coverLetter")
+        .that(content)
         .contains("coverLetter: CoverLetter");
-    assertThat(content).named("DocumentServlet response: resume").contains("resume: <html></html>");
-    assertThat(content).named("DocumentServlet response: fullName").contains("fullName: Foo Bar");
-    assertThat(content)
-        .named("DocumentServlet response: submissionDate")
+    assertWithMessage("DocumentServlet response: resume")
+        .that(content)
+        .contains("resume: <html></html>");
+    assertWithMessage("DocumentServlet response: fullName")
+        .that(content)
+        .contains("fullName: Foo Bar");
+    assertWithMessage("DocumentServlet response: submissionDate")
+        .that(content)
         .contains("submissionDate: ");
   }
 
@@ -81,19 +83,19 @@ public class DocumentServletTest {
     helper.setEnvAuthDomain(authDomain);
     helper.setEnvIsLoggedIn(true);
     Document doc = servletUnderTest.createDocument();
-    assertThat(doc.getOnlyField("content").getText())
-        .named("content")
+    assertWithMessage("content")
+        .that(doc.getOnlyField("content").getText())
         .contains("the rain in spain");
-    assertThat(doc.getOnlyField("email").getText()).named("email").isEqualTo(email);
+    assertWithMessage("email").that(doc.getOnlyField("email").getText()).isEqualTo(email);
   }
 
   @Test
   public void createDocument_withoutSignedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
     Document doc = servletUnderTest.createDocument();
-    assertThat(doc.getOnlyField("content").getText())
-        .named("content")
+    assertWithMessage("content")
+        .that(doc.getOnlyField("content").getText())
         .contains("the rain in spain");
-    assertThat(doc.getOnlyField("email").getText()).named("email").isEmpty();
+    assertWithMessage("email").that(doc.getOnlyField("email").getText()).isEmpty();
   }
 }
