@@ -514,39 +514,36 @@ public class MqttExample {
       System.exit(1);
     }
 
-    switch (options.command) {
-      case "listen-for-config-messages":
-        System.out.println(
-            String.format("Listening for configuration messages for %s:", options.deviceId));
-        listenForConfigMessages(
-            options.mqttBridgeHostname,
-            options.mqttBridgePort,
-            options.projectId,
-            options.cloudRegion,
-            options.registryId,
-            options.gatewayId,
-            options.privateKeyFile,
-            options.algorithm,
-            options.deviceId);
-        break;
-      case "send-data-from-bound-device":
-        System.out.println("Sending data on behalf of device:");
-        sendDataFromBoundDevice(
-            options.mqttBridgeHostname,
-            options.mqttBridgePort,
-            options.projectId,
-            options.cloudRegion,
-            options.registryId,
-            options.gatewayId,
-            options.privateKeyFile,
-            options.algorithm,
-            options.deviceId,
-            options.messageType,
-            options.telemetryData);
-        break;
-      default:
-        System.out.println("Starting mqtt demo:");
-        mqttDeviceDemo(options);
+    if (options.command == "listen-for-config-messages") {
+      System.out.println(
+          String.format("Listening for configuration messages for %s:", options.deviceId));
+      listenForConfigMessages(
+          options.mqttBridgeHostname,
+          options.mqttBridgePort,
+          options.projectId,
+          options.cloudRegion,
+          options.registryId,
+          options.gatewayId,
+          options.privateKeyFile,
+          options.algorithm,
+          options.deviceId);
+    } else if (options.command == "send-data-from-bound-device") {
+      System.out.println("Sending data on behalf of device:");
+      sendDataFromBoundDevice(
+          options.mqttBridgeHostname,
+          options.mqttBridgePort,
+          options.projectId,
+          options.cloudRegion,
+          options.registryId,
+          options.gatewayId,
+          options.privateKeyFile,
+          options.algorithm,
+          options.deviceId,
+          options.messageType,
+          options.telemetryData);
+    } else {
+      System.out.println("Starting mqtt demo:");
+      mqttDeviceDemo(options);
     }
   }
 }
