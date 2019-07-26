@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -124,7 +124,7 @@ public class ListPeopleServletTest {
 
     String response = responseWriter.toString();
     for (int i = 0; i < ListPeopleServlet.PAGE_SIZE; i++) {
-      assertThat(response).named("ListPeopleServlet response").contains(TEST_NAMES.get(i));
+      assertWithMessage("ListPeopleServlet response").that(response).contains(TEST_NAMES.get(i));
     }
   }
 
@@ -145,8 +145,8 @@ public class ListPeopleServletTest {
     String response = responseWriter.toString();
     int i = 0;
     while (i + ListPeopleServlet.PAGE_SIZE < TEST_NAMES.size() && i < ListPeopleServlet.PAGE_SIZE) {
-      assertThat(response)
-          .named("ListPeopleServlet response")
+      assertWithMessage("ListPeopleServlet response")
+          .that(response)
           .contains(TEST_NAMES.get(i + ListPeopleServlet.PAGE_SIZE));
       i++;
     }

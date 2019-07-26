@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquerydatatransfer</artifactId>
-      <version>0.97.0-beta</version>
+      <version>0.101.0-beta</version>
     </dependency>
     <!-- [END bigquerydatatransfer_java_dependencies] -->
 
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.45</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

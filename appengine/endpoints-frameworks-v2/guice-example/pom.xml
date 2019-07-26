@@ -44,7 +44,7 @@
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <appengine.maven.plugin.version>2.0.0</appengine.maven.plugin.version>
+        <appengine.maven.plugin.version>2.1.0</appengine.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.75</version>
+            <version>1.9.76</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -36,7 +36,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.0.0</appengine.maven.plugin>
+    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
     <jetty>9.4.4.v20170414</jetty>
   </properties>
 
@@ -64,25 +64,25 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.79.0</version>
+      <version>1.83.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.79.0</version>
+      <version>1.83.0</version>
     </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.75</version>
+      <version>1.9.76</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.75</version>
+      <version>1.9.76</version>
       <scope>test</scope>
     </dependency>
 
