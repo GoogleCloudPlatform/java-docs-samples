@@ -17,6 +17,7 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -94,7 +95,7 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(p2, p3);
+    assertWithMessage("query results").that(results).containsExactly(p2, p3);
   }
 
   @Test
@@ -120,8 +121,8 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results)
-        .named("query results")
+    assertWithMessage("query results")
+        .that(results)
         .containsExactly(
             aaa, // Ancestor path "b/bb/aaa" is greater than "b/bb".
             bbb, // Ancestor path "b/bb/bbb" is greater than "b/bb".
@@ -153,8 +154,8 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results)
-        .named("query results")
+    assertWithMessage("query results")
+        .that(results)
         .containsExactly(
             aaa, // Ancestor path "b/bb/aaa" is greater than "b/bb".
             bbb, // Ancestor path "b/bb/bbb" is greater than "b/bb".
@@ -179,7 +180,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(a, aa, ab);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(a, aa, ab);
   }
 
   @Test
@@ -214,7 +217,9 @@ public class QueriesTest {
         datastore.prepare(photoQuery).asList(FetchOptions.Builder.withDefaults());
     // [END ancestor_query_example]
 
-    assertThat(results).named("query results").containsExactly(weddingPhoto, babyPhoto, dancePhoto);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(weddingPhoto, babyPhoto, dancePhoto);
   }
 
   @Test
@@ -244,7 +249,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(bc, bbb);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(bc, bbb);
   }
 
   @Test
@@ -279,7 +286,9 @@ public class QueriesTest {
         datastore.prepare(mediaQuery).asList(FetchOptions.Builder.withDefaults());
     // [END kindless_ancestor_query_example]
 
-    assertThat(results).named("query result keys").containsExactly(weddingPhoto, weddingVideo);
+    assertWithMessage("query result keys")
+        .that(results)
+        .containsExactly(weddingPhoto, weddingVideo);
   }
 
   @Test
@@ -296,7 +305,9 @@ public class QueriesTest {
 
     // Assert
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(a, c);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(a, c);
   }
 
   @Test
@@ -325,10 +336,10 @@ public class QueriesTest {
     // Assert
     List<Entity> lastNameResults =
         datastore.prepare(q1.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(lastNameResults).named("last name query results").containsExactly(a, b, c).inOrder();
+    assertWithMessage("last name query results").that(lastNameResults).containsExactly(a, b, c).inOrder();
     List<Entity> heightResults =
         datastore.prepare(q2.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(heightResults).named("height query results").containsExactly(c, b, a).inOrder();
+    assertWithMessage("height query results").that(heightResults).containsExactly(c, b, a).inOrder();
   }
 
   @Test
@@ -359,7 +370,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(a, b2, b1, c).inOrder();
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(a, b2, b1, c).inOrder();
   }
 
   @Test
@@ -442,7 +455,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(b, c);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(b, c);
   }
 
   @Test
@@ -475,7 +490,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(a, c);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(a, c);
   }
 
   @Test
@@ -508,7 +525,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(b);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(b);
   }
 
   @Test
@@ -583,7 +602,9 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(b);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(b);
   }
 
   @Test
@@ -618,7 +639,10 @@ public class QueriesTest {
     // Assert
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(c, d, b).inOrder();
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(c, d, b)
+        .inOrder();
   }
 
   @Test
@@ -684,7 +708,9 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").isEmpty();
+    assertWithMessage("query results")
+        .that(results)
+        .isEmpty();
   }
 
   @Test
@@ -716,7 +742,9 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(a, e);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(a, e);
   }
 
   @Test
@@ -743,7 +771,9 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(a, b, c, d);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(a, b, c, d);
   }
 
   @Test
@@ -773,7 +803,9 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions#properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
         datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").containsExactly(b);
+    assertWithMessage("query results")
+        .that(results)
+        .containsExactly(b);
   }
 
   private Entity retrievePersonWithLastName(String targetLastName) {
@@ -798,7 +830,7 @@ public class QueriesTest {
 
     Entity result = retrievePersonWithLastName("Johnson");
 
-    assertThat(result).named("result").isEqualTo(a); // Note: Entity.equals() only checks the Key.
+    assertWithMessage("result").that(result).isEqualTo(a); // Note: Entity.equals() only checks the Key.
   }
 
   @Test
@@ -850,6 +882,6 @@ public class QueriesTest {
 
     List<Entity> results = getTallestPeople();
 
-    assertThat(results).named("results").containsExactly(g, e, c, a, b).inOrder();
+    assertWithMessage("results").that(results).containsExactly(g, e, c, a, b).inOrder();
   }
 }

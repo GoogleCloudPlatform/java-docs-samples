@@ -16,7 +16,7 @@
 
 package com.google.example.datastore;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -67,13 +67,13 @@ public class DatastoreExportServletTest {
 
   @Test
   public void badOutputUrlReturnsError() throws Exception {
-    
+
     when(mockRequest.getParameter("output_url_prefix")).thenReturn("gs:bucket/");
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     // We expect output_url_prefix error message.
-    assertThat(responseWriter.toString())
-        .named("CloudDatastoreExport response")
+    assertWithMessage("CloudDatastoreExport response")
+        .that(responseWriter.toString())
         .contains("Must provide a valid output_url_prefix");
   }
 

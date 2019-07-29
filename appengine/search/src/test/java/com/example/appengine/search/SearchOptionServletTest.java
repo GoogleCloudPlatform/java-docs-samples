@@ -16,7 +16,7 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -58,8 +58,8 @@ public class SearchOptionServletTest {
   @Test
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
-    assertThat(responseWriter.toString())
-        .named("SearchOptionServlet response")
+    assertWithMessage("SearchOptionServlet response")
+        .that(responseWriter.toString())
         .contains("documentId=theOnlyCoffeeRoaster");
   }
 }

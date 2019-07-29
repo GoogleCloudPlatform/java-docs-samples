@@ -16,7 +16,7 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -62,9 +62,9 @@ public class SchemaServletTest {
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String content = responseWriter.toString();
-    assertThat(content).named("SchemaServlet response").contains("schemaIndex:maker:TEXT");
-    assertThat(content).named("SchemaServlet response").contains("schemaIndex:price:NUMBER");
-    assertThat(content).named("SchemaServlet response").contains("schemaIndex:color:TEXT");
-    assertThat(content).named("SchemaServlet response").contains("schemaIndex:model:TEXT");
+    assertWithMessage("SchemaServlet response").that(content).contains("schemaIndex:maker:TEXT");
+    assertWithMessage("SchemaServlet response").that(content).contains("schemaIndex:price:NUMBER");
+    assertWithMessage("SchemaServlet response").that(content).contains("schemaIndex:color:TEXT");
+    assertWithMessage("SchemaServlet response").that(content).contains("schemaIndex:model:TEXT");
   }
 }

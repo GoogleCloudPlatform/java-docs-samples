@@ -16,7 +16,7 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -58,8 +58,8 @@ public class IndexServletTest {
   @Test
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
-    assertThat(responseWriter.toString())
-        .named("IndexServlet response")
+    assertWithMessage("IndexServlet response")
+        .that(responseWriter.toString())
         .contains("myField: myValue");
   }
 }

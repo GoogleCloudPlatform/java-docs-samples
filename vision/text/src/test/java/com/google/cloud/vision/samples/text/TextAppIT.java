@@ -16,7 +16,7 @@
 
 package com.google.cloud.vision.samples.text;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.common.collect.ImmutableList;
 import java.nio.file.Path;
@@ -48,11 +48,11 @@ public class TextAppIT {
     Word word = appUnderTest.extractDescriptions(image.get(0));
 
     // Assert
-    assertThat(word.path().toString())
-        .named("wakeupcat.jpg path")
+    assertWithMessage("wakeupcat.jpg path")
+        .that(word.path().toString())
         .isEqualTo("data/wakeupcat.jpg");
-    assertThat(word.word().toLowerCase()).named("wakeupcat.jpg word").contains("wake");
-    assertThat(word.word().toLowerCase()).named("wakeupcat.jpg word").contains("up");
-    assertThat(word.word().toLowerCase()).named("wakeupcat.jpg word").contains("human");
+    assertWithMessage("wakeupcat.jpg word").that(word.word().toLowerCase()).contains("wake");
+    assertWithMessage("wakeupcat.jpg word").that(word.word().toLowerCase()).contains("up");
+    assertWithMessage("wakeupcat.jpg word").that(word.word().toLowerCase()).contains("human");
   }
 }
