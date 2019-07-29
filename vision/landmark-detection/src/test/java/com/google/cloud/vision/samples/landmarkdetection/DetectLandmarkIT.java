@@ -16,7 +16,7 @@
 
 package com.google.cloud.vision.samples.landmarkdetection;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
@@ -49,9 +49,9 @@ public class DetectLandmarkIT {
   @Test public void identifyLandmark_withLandmark_returnsKnownLandmark() throws Exception {
     List<EntityAnnotation> landmarks = appUnderTest.identifyLandmark(LANDMARK_URI, MAX_RESULTS);
 
-    assertThat(landmarks).named("water.jpg landmarks").isNotEmpty();
-    assertThat(landmarks.get(0).getDescription())
-        .named("water.jpg landmark #0 description")
+    assertWithMessage("water.jpg landmarks").that(landmarks).isNotEmpty();
+    assertWithMessage("water.jpg landmark #0 description")
+        .that(landmarks.get(0).getDescription())
         .isEqualTo("Taitung, Famous Places \"up the water flow\" marker");
   }
 
@@ -60,7 +60,7 @@ public class DetectLandmarkIT {
       appUnderTest.identifyLandmark(LANDMARK_URI + "/nonexistent.jpg", MAX_RESULTS);
       fail("Expected IOException");
     } catch (IOException expected) {
-      assertThat(expected.getMessage()).named("IOException message").contains("file");
+      assertWithMessage("IOException message").that(expected.getMessage()).contains("file");
     }
   }
 

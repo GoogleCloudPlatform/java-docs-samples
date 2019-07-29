@@ -17,6 +17,7 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -80,8 +81,8 @@ public class ProjectionTest {
         datastore.prepare(q).asList(FetchOptions.Builder.withLimit(5));
     assertThat(entities).hasSize(1);
     Entity entity = entities.get(0);
-    assertThat((String) entity.getProperty("A")).named("entity.A").isEqualTo("some duplicate");
-    assertThat((long) entity.getProperty("B")).named("entity.B").isEqualTo(0L);
+    assertWithMessage("entity.A").that((String) entity.getProperty("A")).isEqualTo("some duplicate");
+    assertWithMessage("entity.B").that((long) entity.getProperty("B")).isEqualTo(0L);
   }
 
   private void putTestData(String a, long b) {

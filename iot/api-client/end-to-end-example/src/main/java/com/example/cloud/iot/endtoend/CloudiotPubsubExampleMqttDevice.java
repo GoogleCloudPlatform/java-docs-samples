@@ -58,11 +58,11 @@ import org.json.JSONObject;
  *
  * $ mvn exec:java \
  *       -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleMqttDevice" \
- *       -Dexec.args="-project_id=<your-iot-project> \
- *                 -registry_id=<your-registry-id> \
- *                 -device_id=<device-id> \
- *                 -private_key_file=<path-to-keyfile> \
- *                 -algorithm=<RS256|ES256>"
+ *       -Dexec.args="-project_id=your-iot-project \
+ *                 -registry_id=your-registry-id \
+ *                 -device_id=device-id \
+ *                 -private_key_file=path-to-keyfile \
+ *                 -algorithm=RS256|ES256"
  * </code> </prev>
  *
  * <p>With a single server, you can run multiple instances of the device with different device ids,

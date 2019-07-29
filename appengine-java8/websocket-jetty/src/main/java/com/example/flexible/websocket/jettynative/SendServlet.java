@@ -26,6 +26,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.api.Session;
@@ -52,10 +54,12 @@ public class SendServlet extends HttpServlet {
   // GAE_SERVICE environment variable is set to the GCP service name.
   private static final String GAE_SERVICE_ENV_VAR = "GAE_SERVICE";
 
+  private final HttpClient httpClient;
   private final WebSocketClient webSocketClient;
   private final ClientSocket clientSocket;
 
   public SendServlet() {
+    this.httpClient = createHttpClient();
     this.webSocketClient = createWebSocketClient();
     this.clientSocket = new ClientSocket();
   }
@@ -73,22 +77,31 @@ public class SendServlet extends HttpServlet {
     }
   }
 
-  private WebSocketClient createWebSocketClient() {
-    WebSocketClient webSocketClient;
+  private HttpClient createHttpClient() {
+    HttpClient httpClient;
     if (System.getenv(GAE_INSTANCE_VAR) != null) {
       // If on HTTPS, create client with SSL Context
-      SslContextFactory sslContextFactory = new SimpleContainerScope(
-              WebSocketPolicy.newClientPolicy())
-              .getSslContextFactory();
-      webSocketClient = new WebSocketClient(sslContextFactory);
+      SslContextFactory sslContextFactory = new SslContextFactory();
+      httpClient = new HttpClient(sslContextFactory);
     } else {
       // local testing on HTTP
-      webSocketClient = new WebSocketClient();
+      httpClient = new HttpClient();
     }
-    return webSocketClient;
+    return httpClient;
+  }
+
+  private WebSocketClient createWebSocketClient() {
+    return new WebSocketClient(this.httpClient);
   }
 
   private void sendMessageOverWebSocket(String message) throws Exception {
+    if (!httpClient.isRunning()) {
+      try {
+        httpClient.start();
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    }
     if (!webSocketClient.isRunning()) {
       try {
         webSocketClient.start();
