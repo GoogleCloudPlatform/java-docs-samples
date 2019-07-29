@@ -99,8 +99,15 @@ gcloud beta run deploy $SAMPLE \
 
 ## Next Steps
 * See [building containers][run_build] and [deploying container images][run_deploy]
-for more information.
+  for more information.
+
 * [Dockerize a Spring Boot app][jib-tutorial] without a Dockerfile using [Jib][jib].
+
+* To improve [Tomcat startup time][startup], add
+  `-Djava.security.egd=file:/dev/./urandom` to the Dockerfile's `CMD`
+  instructions. This is acceptable for many applications. However, if your
+  application does it's own key generation, such as for SSL, and you require
+  greater security, you may prefer to not set `java.security.egd`.
 
 
 [run_docs]: https://cloud.google.com/run/docs/
@@ -113,3 +120,4 @@ for more information.
 [push-pull]: https://cloud.google.com/container-registry/docs/pushing-and-pulling
 [jib]: https://github.com/GoogleContainerTools/jib
 [jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
+[startup]: https://cwiki.apache.org/confluence/display/TOMCAT/HowTo+FasterStartUp
