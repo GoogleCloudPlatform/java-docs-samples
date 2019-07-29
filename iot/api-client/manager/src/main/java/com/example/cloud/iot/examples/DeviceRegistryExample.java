@@ -1219,16 +1219,17 @@ public class DeviceRegistryExample {
     DeviceRegistryExampleOptions options = DeviceRegistryExampleOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
+      System.out.println("Issue parsing the options");
       return;
     }
 
-    if (options.command == "clear-registry") {
+    if (options.command.equals("clear-registry")) {
       System.out.println("Clear registry");
       clearRegistry(options.cloudRegion, options.projectId, options.registryName);
-    } else if (options.command == "create-iot-topic") {
+    } else if (options.command.equals("create-iot-topic")) {
       System.out.println("Create IoT Topic:");
       createIotTopic(options.projectId, options.pubsubTopic);
-    } else if (options.command == "create-es") {
+    } else if (options.command.equals("create-es")) {
         System.out.println("Create ES Device:");
         createDeviceWithEs256(
             options.deviceId,
@@ -1236,7 +1237,7 @@ public class DeviceRegistryExample {
             options.projectId,
             options.cloudRegion,
             options.registryName);
-    } else if (options.command == "create-rsa") {
+    } else if (options.command.equals("create-rsa")) {
       System.out.println("Create RSA Device:");
       createDeviceWithRs256(
           options.deviceId,
@@ -1244,32 +1245,31 @@ public class DeviceRegistryExample {
           options.projectId,
           options.cloudRegion,
           options.registryName);
-    } else if (options.command == "create-unauth") {
+    } else if (options.command.equals("create-unauth")) {
       System.out.println("Create Unauth Device");
       createDeviceWithNoAuth(
           options.deviceId, options.projectId, options.cloudRegion, options.registryName);
-    } else if (options.command == "create-registry") {
+    } else if (options.command.equals("create-registry")) {
       System.out.println("Create registry");
       createRegistry(
           options.cloudRegion, options.projectId, options.registryName, options.pubsubTopic);
-    } else if (options.command == "delete-device") {
+    } else if (options.command.equals("delete-device")) {
       System.out.println("Delete device");
       deleteDevice(
           options.deviceId, options.projectId, options.cloudRegion, options.registryName);
-
-    } else if (options.command == "delete-registry") {
+    } else if (options.command.equals("delete-registry")) {
       System.out.println("Delete registry");
       deleteRegistry(options.cloudRegion, options.projectId, options.registryName);
-    }else if (options.command == "get-device") {
+    }else if (options.command.equals("get-device")) {
       System.out.println("Get device");
       System.out.println(
           getDevice(
                   options.deviceId, options.projectId, options.cloudRegion, options.registryName)
               .toPrettyString());
-    } else if (options.command == "get-iam-permissions") {
+    } else if (options.command.equals("get-iam-permissions")) {
       System.out.println("Get iam permissions");
       getIamPermissions(options.projectId, options.cloudRegion, options.registryName);
-    } else if (options.command == "get-device-state") {
+    } else if (options.command.equals("get-device-state")) {
       System.out.println("Get device state");
       List<DeviceState> states =
           getDeviceStates(
@@ -1277,11 +1277,11 @@ public class DeviceRegistryExample {
       for (DeviceState state : states) {
         System.out.println(state.toPrettyString());
       }
-    } else if (options.command == "get-registry") {
+    } else if (options.command.equals("get-registry")) {
       System.out.println("Get registry");
       System.out.println(
           getRegistry(options.projectId, options.cloudRegion, options.registryName));
-    } else if (options.command == "list-devices") {
+    } else if (options.command.equals("list-devices")) {
       System.out.println("List devices");
       listDevices(options.projectId, options.cloudRegion, options.registryName);
     } else if (options.command == "list-registries"){
@@ -1331,11 +1331,11 @@ public class DeviceRegistryExample {
     } else if (options.command == "list-gateways") {
       System.out.println("Listing gateways: ");
       listGateways(options.projectId, options.cloudRegion, options.registryName);
-    } else if (options.command == "list-devices-for-gateway") {
+    } else if (options.command.equals("list-devices-for-gateway")) {
       System.out.println("Listing devices for a gateway: ");
       listDevicesForGateway(
           options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
-    } else if (options.command == "send-command") {
+    } else if (options.command.equals("send-command")) {
       System.out.println("Sending command to device:");
       sendCommand(
           options.deviceId,

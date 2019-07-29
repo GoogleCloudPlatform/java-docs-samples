@@ -16,6 +16,7 @@
 
 package com.example.cloud.iot.examples;
 
+import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -126,11 +127,11 @@ public class DeviceRegistryExampleOptions {
             .build());
     options.addOption(
             Option.builder()
-                    .type(String.class)
-                    .longOpt("gateway_id")
-                    .hasArg()
-                    .desc("Name for your Device.")
-                    .build());
+            .type(String.class)
+            .longOpt("gateway_id")
+            .hasArg()
+            .desc("Name for your Device.")
+            .build());
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -171,10 +172,10 @@ public class DeviceRegistryExampleOptions {
     CommandLine commandLine;
     try {
       commandLine = parser.parse(options, args);
+
       DeviceRegistryExampleOptions res = new DeviceRegistryExampleOptions();
 
       res.command = commandLine.getOptionValue("command");
-
       if (res.command.equals("help") || res.command.equals("")) {
         throw new ParseException("Invalid command, showing help.");
       }

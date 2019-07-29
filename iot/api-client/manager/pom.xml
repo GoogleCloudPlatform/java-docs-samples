@@ -127,6 +127,25 @@
     </dependency>
   </dependencies>
 
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.example.cloudiot.Manage</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <profiles>
     <profile>
       <id>manager</id>
@@ -154,7 +173,20 @@
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.example.cloud.iot.examples.DeviceRegistryExample</argument>
-                <commandlineArgs>command line arguments</commandlineArgs>
+                <argument>-project_id=${project_id}</argument>
+                <argument>-command=${cmd}</argument>
+                <argument>${pst}</argument>
+                <argument>${ecf}</argument>
+                <argument>${rsaf}</argument>
+                <argument>${cr}</argument>
+                <argument>${rname}</argument>
+                <argument>${did}</argument>
+                <argument>${gid}</argument>
+                <argument>${data}</argument>
+                <argument>${conf}</argument>
+                <argument>${v}</argument>
+                <argument>${m}</argument>
+                <argument>${r}</argument>
               </arguments>
             </configuration>
           </plugin>
@@ -234,9 +266,9 @@
                 <argument>-device_id=${device_id}</argument>
                 <argument>-algorithm=${algorithm}</argument>
                 <argument>-private_key_file=${private_key_file}</argument>
+                <argument>${cr}</argument>
                 <argument>${cmd}</argument>
                 <argument>${gid}</argument>
-                <argument>${cr}</argument>
                 <argument>${exp}</argument>
                 <argument>${mhn}</argument>
                 <argument>${mp}</argument>
