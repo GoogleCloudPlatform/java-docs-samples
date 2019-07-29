@@ -36,7 +36,7 @@ For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samp
 2. [Build the sample container](https://cloud.google.com/run/docs/building/containers#building_locally_and_pushing_using_docker):
 
     ```
-    export SAMPLE=<SAMPLE_DIRECTORY>
+    export SAMPLE=<SAMPLE_NAME>
     cd $SAMPLE
     docker build --tag $SAMPLE .
     ```
@@ -71,20 +71,37 @@ For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samp
 
 ## Deploying
 
+1. Set your GCP Project ID as an environment variable:
 ```
 export GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
+```
 
-# Submit a build using Google Cloud Build
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
+2. Choose to push your image to Google Container Registry or submit a build to
+Cloud Build:
+  *  Push the docker build to Google Container Registry:
+  ```
+  docker tag $SAMPLE gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
+  docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
+  ```
+  Learn more about [pushing and pulling images][push-pull].
 
-# Deploy to Cloud Run
+  * Submit a build using Google Cloud Build:
+  ```
+  gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
+  ```
+
+3. Deploy to Cloud Run:
+```
 gcloud beta run deploy $SAMPLE \
   --set-env-vars GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}  \
   --image gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
 ```
 
-See [Building containers][run_build] and [Deploying container images][run_deploy]
+## Next Steps
+* See [building containers][run_build] and [deploying container images][run_deploy]
 for more information.
+* [Dockerize a Spring Boot app][jib-tutorial] without a Dockerfile using [Jib][jib].
+
 
 [run_docs]: https://cloud.google.com/run/docs/
 [run_build]: https://cloud.google.com/run/docs/building/containers
@@ -93,3 +110,6 @@ for more information.
 [pubsub]: pubsub/
 [run_button_helloworld]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/knative/docs&cloudshell_working_dir=docs/serving/samples/hello-world/helloworld-java
 [run_button_pubsub]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&cloudshell_working_dir=run/cloudrun-pubsub
+[push-pull]: https://cloud.google.com/container-registry/docs/pushing-and-pulling
+[jib]: https://github.com/GoogleContainerTools/jib
+[jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
