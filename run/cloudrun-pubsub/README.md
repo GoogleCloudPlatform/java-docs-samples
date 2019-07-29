@@ -18,7 +18,7 @@ docker build --tag pubsub-tutorial:java .
 ## Run
 
 ```
-docker run --rm -p 9090:8080 pubsub-tutorial:java
+PORT=8080 && docker run --rm -p 8080:${PORT} -e PORT=${PORT} pubsub-tutorial:java
 ```
 
 ## Test

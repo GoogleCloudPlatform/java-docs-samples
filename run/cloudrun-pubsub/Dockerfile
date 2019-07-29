@@ -26,6 +26,6 @@ FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.3_7-slim
 COPY --from=builder /app/target/cloudrun-pubsub-*.jar /cloudrun-pubsub.jar
 
 # Run the web service on container startup.
-CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/cloudrun-pubsub.jar"]
+CMD ["java","-Dserver.port=${PORT}","-jar","/cloudrun-pubsub.jar"]
 
 # [END run_pubsub_dockerfile]
