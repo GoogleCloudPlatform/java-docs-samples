@@ -139,7 +139,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -163,7 +163,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -181,7 +181,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -200,7 +200,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -219,7 +219,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -239,7 +239,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -259,7 +259,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -279,7 +279,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -294,7 +294,7 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -309,7 +309,7 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -325,7 +325,7 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -362,7 +362,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -397,7 +397,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -433,7 +433,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -469,7 +469,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -523,7 +523,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -561,7 +561,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -595,7 +595,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -647,7 +647,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -692,7 +692,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -746,7 +746,7 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topic.getNameAsTopicName());
+      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 }

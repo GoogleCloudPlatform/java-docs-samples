@@ -29,8 +29,8 @@ import org.apache.commons.cli.ParseException;
 public class DeviceRegistryExampleOptions {
   static final Options options = new Options();
   String projectId;
-  String ecPublicKeyFile = "ec_public.pem";
-  String rsaCertificateFile = "rsa_cert.pem";
+  String ecPublicKeyFile = null;
+  String rsaCertificateFile = null;
   String cloudRegion = "us-central1";
   String command = "help";
   String commandData = "Specify with --data";
@@ -71,7 +71,12 @@ public class DeviceRegistryExampleOptions {
                     + "\n\tpatch-device-rsa"
                     + "\n\tset-config"
                     + "\n\tset-iam-permissions"
-                    + "\n\tsend-command")
+                    + "\n\tsend-command"
+                    + "\n\tcreate-gateway"
+                    + "\n\tbind-device-to-gateway"
+                    + "\n\tunbind-device-from-gateway"
+                    + "\n\tlist-gateways"
+                    + "\n\tlist-devices-for-gateway")
             .required()
             .build());
 

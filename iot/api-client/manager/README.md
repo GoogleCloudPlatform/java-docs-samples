@@ -58,28 +58,29 @@ credentials are stored in your home folder in creds.json and you have generated
 your credentials using the shell script provided in the parent folder, you can
 run the sample as:
 
+
     mvn exec:exec -Dmanager \
-                  -cloud_region=us-central1 \
-                  -Dproj=-project_id=blue-jet-123 \
-                  -Drname=-registry_name=my-registry \
-                  -Dcmd=-command=list-devices
+                  -Dcr=--cloud_region=us-central1 \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=my-registry \
+                  -Dcmd=list-devices
 
 The full set of parameters passable to the exec wrapper are as follows:
 
     mvn exec:exec -Dmanager \
-                  -Dpst=--pubsub_topic=<your-topic>
-                  -Decf=--ec_public_key_file=<your-ec-file>
-                  -Drsaf=--rsa_certificate_file=<your-rsa-certificate-file>
-                  -Dcr=--cloud_region=<your region, e.g. us-central1>
-                  -Dproj=--project_id=<your-cloud-project-id>
-                  -Drname=--registry_name=<your-registry-name>
-                  -Ddid=--device_id=<your-device-id>
-                  -Dgid=--gateway_id=<your-gateway-id>
-                  -Ddata=--data=<your-command-data>
-                  -Dconf=--configuration=<your-configuration-data>
-                  -Dv=--version=<your-configuration-version>
-                  -Dm=--member=<your-member-data>
-                  -Dr=--role=<your-role-data>
+                  -Dpst=--pubsub_topic=<your-topic> \
+                  -Decf=--ec_public_key_file=<your-ec-file> \
+                  -Drsaf=--rsa_certificate_file=<your-rsa-certificate-file> \
+                  -Dcr=--cloud_region=<your region, e.g. us-central1> \
+                  -Dproj=--project_id=<your-cloud-project-id> \
+                  -Drname=--registry_name=<your-registry-name> \
+                  -Ddid=--device_id=<your-device-id> \
+                  -Dgid=--gateway_id=<your-gateway-id> \
+                  -Ddata=--data=<your-command-data> \
+                  -Dconf=--configuration=<your-configuration-data> \
+                  -Dv=--version=<your-configuration-version> \
+                  -Dm=--member=<your-member-data> \
+                  -Dr=--role=<your-role-data> \
                   -Dcmd=--command=<your-command-to-run>
 
 ## Usage Examples
@@ -88,8 +89,8 @@ Create a PubSub topic, `hello-java`, for the project, `blue-jet-123`:
 
     mvn exec:exec -Dmanager \
                   -Dproj=--project_id=blue-jet-123 \
-                  -Dcmd=--command=create-iot-topic \
-                  -Dpst=--pubsub_topic=hello-java"
+                  -Dcmd=create-iot-topic \
+                  -Dpst=--pubsub_topic=hello-java
 
 Create an ES device:
 
@@ -100,7 +101,7 @@ Create an ES device:
                   -Drname=--registry_name=hello-java \
                   -Decf=--ec_public_key_file ../ec_public.pem \
                   -Ddid=--device_id=java-device-0 \
-                  -Dcmd=--command=create-es"
+                  -Dcmd=create-es
 
 Create an RSA device:
 
@@ -108,9 +109,9 @@ Create an RSA device:
                   -Dproj=-project_id=blue-jet-123 \
                   -Dpst=-pubsub_topic=hello-java \
                   -Drname=-registry_name=hello-java \
-                  -Drsaf=-rsa_certificate_file ../rsa_cert.pem \
+                  -Drsaf=-rsa_certificate_file=../rsa_cert.pem \
                   -Ddid=-device_id=java-device-1 \
-                  -Dcmd=-command=create-rsa
+                  -Dcmd=create-rsa
 
 Create a device without authorization:
 
@@ -119,7 +120,7 @@ Create a device without authorization:
                   -Dpst=--pubsub_topic=hello-java \
                   -Drname=--registry_name=hello-java \
                   -Ddid=--device_id=java-device-3 \
-                  -Dcmd=--command=create-unauth
+                  -Dcmd=create-unauth
 
 Create a device registry:
 
@@ -127,7 +128,7 @@ Create a device registry:
                   -Dproj=--project_id=blue-jet-123 \
                   -Dpst=--pubsub_topic=hello-java \
                   -Drname=--registry_name=hello-java \
-                  -Dcmd=--command=create-registry
+                  -Dcmd=create-registry
 
 Delete a device registry:
 
@@ -135,23 +136,22 @@ Delete a device registry:
                   -Dproj=--project_id=blue-jet-123 \
                   -Dpst=--pubsub_topic=hello-java \
                   -Drname=--registry_name=hello-java \
-                  -Dcmd=--command=delete-registr"
+                  -Dcmd=delete-registry
 
 Get a device registry:
 
     mvn exec:exec -Dmanager \
-                  -Dproj=--project_id=blue-jet-123 \
-                  -Dpst=--pubsub_topic=hello-java \
-                  -Drname=--registry_name=hello-java \
-                  -Dcmd=--command=get-registry
+                  -Dproj=--project_id=blue-jet-343 \
+                  -Dcmd=get-registry \
+                  -Drname=--registry_name="hello-java"
 
 List devices:
 
     mvn exec:exec -Dmanager \
                   -Dproj=--project_id=blue-jet-123 \
                   -Dpst=--pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -command=list-devices
+                  -Drname=--registry_name=hello-java \
+                  -Dcmd=list-devices
 
 List device registries:
 
@@ -159,7 +159,7 @@ List device registries:
                   -Dproj=--project_id=blue-jet-123 \
                   -Dpst=--pubsub_topic=hello-java \
                   -Drname=--registry_name=hello-java \
-                  -Dcmd=--command=list-registries
+                  -Dcmd=list-registries
 
 Patch a device with ES:
 
@@ -167,9 +167,9 @@ Patch a device with ES:
                   -Dproj=--project_id=blue-jet-123 \
                   -Dpst=--pubsub_topic=hello-java \
                   -Drname=--registry_name=hello-java \
-                  -Decf=--ec_public_key_file ../ec_public.pem \
+                  -Decf=--ec_public_key_file=../ec_public.pem \
                   -Ddid=--device_id=java-device-1 \
-                  -Dcmd=--command=patch-device-es
+                  -Dcmd=patch-device-es
 
 Patch a device with RSA:
 
@@ -177,18 +177,28 @@ Patch a device with RSA:
                   -Dproj=--project_id=blue-jet-123 \
                   -Dpst=--pubsub_topic=hello-java \
                   -Drname=--registry_name=hello-java \
-                  -Drsaf=--rsa_certificate_file ../rsa_cert.pem \
+                  -Drsaf=--rsa_certificate_file=../rsa_cert.pem \
                   -Ddid=--device_id=java-device-0 \
-                  -Dcmd=--command=patch-device-rsa
+                  -Dcmd=patch-device-rsa
 
-Create a gateway:
+Create a gateway with RSA credentials:
 
     mvn exec:exec -Dmanager \
                   -Dproj=--project_id=blue-jet-123 \
                   -Drname=--registry_name=your-registry \
                   -Drsaf=--rsa_certificate_file=../rsa_cert.pem \
                   -Dgid=--gateway_id=java-gateway-0 \
-                  -Dcmd=--command=create-gateway
+                  -Dcmd=create-gateway
+
+Create a gateway with EC credentials:
+
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=your-registry-name \
+                  -Decf=--ec_public_key_file=resources/ec_public.pem \
+                  -Dgid=--gateway_id=java-gateway-1 \
+                  -Dcmd=create-gateway
+
 
 Bind a device to a gateway:
 
@@ -197,7 +207,7 @@ Bind a device to a gateway:
                   -Drname=--registry_name=your-registry \
                   -Dgid=--gateway_id=java-gateway-0 \
                   -Ddid=--device_id=java-device-0 \
-                  -Dcmd=--command=bind-device-to-gateway
+                  -Dcmd=bind-device-to-gateway
 
 Unbind a device to a gateway:
 
@@ -206,14 +216,14 @@ Unbind a device to a gateway:
                   -Drname=-registry_name=your-registry \
                   -Dgid=-gateway_id=java-gateway-0 \
                   -Ddid=-device_id=java-device-0 \
-                  -Dcmd=-command=unbind-device-from-gateway
+                  -Dcmd=unbind-device-from-gateway
 
 List gateways in a registry.
 
     mvn exec:exec -Dmanager \
                   -Dproj=--project_id=blue-jet-123 \
                   -Drname=--registry_name=your-registry \
-                  -Dcmd=--command=list-gateways
+                  -Dcmd=list-gateways
 
 List devices bound to a gateway.
 
@@ -221,7 +231,7 @@ List devices bound to a gateway.
                   -Dproj=--project_id=blue-jet-123 \
                   -Drname=--registry_name=your-registry \
                   -Dgid=--gateway_id=your-gateway-id  \
-                  -Dcmd=--command=list-devices-for-gateway
+                  -Dcmd=list-devices-for-gateway
 
 
 # Cloud IoT Core Java HTTP example

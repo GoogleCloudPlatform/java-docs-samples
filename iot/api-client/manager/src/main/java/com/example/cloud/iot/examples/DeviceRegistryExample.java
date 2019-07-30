@@ -1284,10 +1284,10 @@ public class DeviceRegistryExample {
     } else if (options.command.equals("list-devices")) {
       System.out.println("List devices");
       listDevices(options.projectId, options.cloudRegion, options.registryName);
-    } else if (options.command == "list-registries"){
+    } else if (options.command.equals("list-registries")) {
       System.out.println("List registries");
       listRegistries(options.projectId, options.cloudRegion);
-    } else if (options.command == "patch-device-es") {
+    } else if (options.command.equals("patch-device-es")) {
       System.out.println("Patch device with ES");
       patchEs256ForAuth(
           options.deviceId,
@@ -1295,7 +1295,7 @@ public class DeviceRegistryExample {
           options.projectId,
           options.cloudRegion,
           options.registryName);
-    } else if (options.command == "patch-device-rsa") {
+    } else if (options.command.equals("patch-device-rsa")) {
       System.out.println("Patch device with RSA");
       patchRsa256ForAuth(
           options.deviceId,
@@ -1303,7 +1303,7 @@ public class DeviceRegistryExample {
           options.projectId,
           options.cloudRegion,
           options.registryName);
-    } else if (options.command == "set-config") {
+    } else if (options.command.equals("set-config")) {
       if (options.deviceId == null) {
         System.out.println("Specify device_id for the device you are updating.");
       } else {
@@ -1316,7 +1316,7 @@ public class DeviceRegistryExample {
             options.configuration,
             options.version);
       }
-    } else if (options.command == "set-iam-permissions") {
+    } else if (options.command.equals("set-iam-permissions")) {
       if (options.member == null || options.role == null) {
         System.out.println("Specify member and role for the policy you are updating.");
       } else {
@@ -1328,7 +1328,29 @@ public class DeviceRegistryExample {
             options.member,
             options.role);
       }
-    } else if (options.command == "list-gateways") {
+    } else if (options.command.equals("bind-device-to-gateway")) {
+      System.out.println("Bind device to gateway:");
+      bindDeviceToGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.deviceId,
+          options.gatewayId);
+    } else if (options.command.equals("unbind-device-from-gateway")) {
+      System.out.println("Unbind device from gateway:");
+      unbindDeviceFromGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.deviceId,
+          options.gatewayId);
+    } else if (options.command.equals("create-gateway")) {
+      System.out.println("Bind device to gateway:");
+      String algorithm = "ES256";
+      String certificateFilePath = options.ecPublicKeyFile;
+      if (options.rsaCertificateFile != null) {
+        algorithm = "RS256";
+        certificateFilePath = options.rsaCertificateFile;
+      }
+
+      createGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.gatewayId,
+          certificateFilePath, algorithm);
+    } else if (options.command.equals("list-gateways")) {
       System.out.println("Listing gateways: ");
       listGateways(options.projectId, options.cloudRegion, options.registryName);
     } else if (options.command.equals("list-devices-for-gateway")) {
