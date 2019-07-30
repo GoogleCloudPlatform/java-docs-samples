@@ -41,8 +41,10 @@ public class VisionController {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	// [START spring_vision_autowire]
 	@Autowired
 	private CloudVisionTemplate cloudVisionTemplate;
+	// [END spring_vision_autowire]
 
 	/**
 	 * This method downloads an image from a URL and sends its contents to the Vision API for label detection.
@@ -50,7 +52,6 @@ public class VisionController {
 	 * @param imageUrl the URL of the image
 	 * @param map the model map to use
 	 * @return a string with the list of labels and percentage of certainty
-	 * @throws CloudVisionTemplate if the Vision API call produces an error
 	 */
 	@GetMapping("/extractLabels")
 	public ModelAndView extractLabels(String imageUrl, ModelMap map) {
