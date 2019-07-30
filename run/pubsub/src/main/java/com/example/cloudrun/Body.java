@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine.cloudrunpubsub;
+package com.example.cloudrun;
 
 // Body.Message is the payload of a Pub/Sub event. Please refer to the docs for
 // additional information regarding Pub/Sub events.
