@@ -83,20 +83,11 @@ import org.apache.commons.cli.HelpFormatter;
  * <pre>
  * <code>
  * $ mvn clean compile assembly:single
- * $ mvn exec:exec \
- *    -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
- *    -Dexec.args="-project_id=blue-jet-123 \
- *                 -cloud_region=us-central1 \
- *                 -registry_id=my-registry  \
- *                 -gateway_id=test-gateway \
- *                 -ec_public_key_file=../ec_public.pem \
- *                 -algorithm='ES256' or 'RS256' \
- *                 -device_id=java-device-0 \
- *                 -message_type='event' or 'state' \
- *                 -telemetry_data='your telemetry msg' \
- *                 -mqtt_bridge_hostname=mqtt.googleapis.com \
- *                 -mqtt_bridge_port=443 or 8883 \
- *                 -command=send-data-from-bound-device"
+ * mvn exec:exec -Dmanager \
+ *               -Dcr=--cloud_region=us-central1 \
+ *               -Dproj=--project_id=blue-jet-123 \
+ *               -Drname=--registry_name=my-registry \
+ *               -Dcmd=list-devices
  * </code>
  * </pre>
  */
