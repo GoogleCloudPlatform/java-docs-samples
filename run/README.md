@@ -78,6 +78,8 @@ For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samp
     * Use the --environment (-e) flag to set the `GOOGLE_APPLICATION_CREDENTIALS`
       variable inside the container
 
+Learn more about [testing your container image locally.][testing]
+
 ## Deploying
 
 1. Set your GCP Project ID as an environment variable:
@@ -130,3 +132,4 @@ gcloud beta run deploy $SAMPLE \
 [jib]: https://github.com/GoogleContainerTools/jib
 [jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
 [startup]: https://cwiki.apache.org/confluence/display/TOMCAT/HowTo+FasterStartUp
+[testing]: https://cloud.google.com/run/docs/testing/local#running_locally_using_docker_with_access_to_services
