@@ -57,17 +57,26 @@ For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samp
         -v $PWD:/app $SAMPLE
     ```
 
-    Injecting your service account key:
+    Injecting your service account key for access to GCP services:
 
     ```
-    export SA_KEY_PATH=/path/to/service/account/my-key-name-123.json
+    # Set the name of the service account key within the container
+    export SA_KEY_NAME=my-key-name-123
 
     PORT=8080 && docker run --rm \
-        -p 8080:${PORT} -e PORT=${PORT} \
-        -e GOOGLE_APPLICATION_CREDENTIALS=$SA_KEY_PATH \
-        -v $GOOGLE_APPLICATION_CREDENTIALS:$SA_KEY_PATH:ro \
+        -p 8080:${PORT} \
+        -e PORT=${PORT} \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/${SA_KEY_NAME}.json \
+        -v $GOOGLE_APPLICATION_CREDENTIALS:/tmp/keys/${SA_KEY_NAME}.json:ro \
         -v $PWD:/app $SAMPLE
     ```
+
+    * Use the --volume (-v) flag to inject the credential file into the container
+      (assumes you have already set your `GOOGLE_APPLICATION_CREDENTIALS`
+      environment variable on your machine)
+
+    * Use the --environment (-e) flag to set the `GOOGLE_APPLICATION_CREDENTIALS`
+      variable inside the container
 
 ## Deploying
 

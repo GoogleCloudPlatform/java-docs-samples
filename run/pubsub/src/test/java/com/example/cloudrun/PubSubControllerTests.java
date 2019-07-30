@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine.cloudrunpubsub;
+package com.example.cloudrun;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PubsubControllerTests {
+public class PubSubControllerTests {
 
   @Autowired private MockMvc mockMvc;
 

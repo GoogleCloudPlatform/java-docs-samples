@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.appengine.cloudrunpubsub;
+package com.example.cloudrun;
 
 // [START run_pubsub_server]
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CloudrunPubsubApplication {
+public class PubSubApplication {
   public static void main(String[] args) {
-    SpringApplication.run(CloudrunPubsubApplication.class, args);
+    SpringApplication.run(PubSubApplication.class, args);
   }
 }
 // [END run_pubsub_server]

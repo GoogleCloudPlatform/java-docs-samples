@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine.cloudrunpubsub;
+package com.example.cloudrun;
 
 // [START run_pubsub_handler]
 import java.util.Base64;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 // PubsubController consumes a Pub/Sub message.
 @RestController
-public class PubsubController {
+public class PubSubController {
   @RequestMapping(value = "/", method = RequestMethod.POST)
   public ResponseEntity receiveMessage(@RequestBody Body body) {
     // Get PubSub message from request body.
