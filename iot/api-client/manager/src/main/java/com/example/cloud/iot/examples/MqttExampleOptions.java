@@ -22,7 +22,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /** Command line options for the MQTT example. */
 public class MqttExampleOptions {

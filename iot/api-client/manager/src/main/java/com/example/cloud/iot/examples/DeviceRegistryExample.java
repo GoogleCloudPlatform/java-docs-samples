@@ -48,8 +48,8 @@ import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
 import com.google.iam.v1.Binding;
+import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
-import com.google.pubsub.v1.TopicName;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,12 +83,11 @@ import org.apache.commons.cli.HelpFormatter;
  * <pre>
  * <code>
  * $ mvn clean compile assembly:single
- * $ mvn exec:java \
- *       -Dexec.mainClass="com.google.cloud.iot.examples.DeviceRegistryExample" \
- *       -Dexec.args="-project_id=my-project-id \
- *                    -pubsub_topic=projects/my-project-id/topics/my-topic-id \
- *                    -ec_public_key_file=/path/to/ec_public.pem \
- *                    -rsa_certificate_file=/path/to/rsa_cert.pem"
+ * mvn exec:exec -Dmanager \
+ *               -Dcr=--cloud_region=us-central1 \
+ *               -Dproj=--project_id=blue-jet-123 \
+ *               -Drname=--registry_name=my-registry \
+ *               -Dcmd=list-devices
  * </code>
  * </pre>
  */
@@ -100,7 +99,7 @@ public class DeviceRegistryExample {
   /** Creates a topic and grants the IoT service account access. */
   public static Topic createIotTopic(String projectId, String topicId) throws Exception {
     // Create a new topic
-    final TopicName topicName = TopicName.create(projectId, topicId);
+    final ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       final Topic topic = topicAdminClient.createTopic(topicName);
@@ -226,7 +225,7 @@ public class DeviceRegistryExample {
         String gatewayId = g.getId();
         System.out.println("Id: " + gatewayId);
 
-        ListDevicesResponse res = 
+        ListDevicesResponse res =
             service
                 .projects()
                 .locations()
@@ -1211,158 +1210,155 @@ public class DeviceRegistryExample {
     DeviceRegistryExampleOptions options = DeviceRegistryExampleOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
+      System.out.println("Issue parsing the options");
       return;
     }
 
-    switch (options.command) {
-      case "clear-registry":
-        System.out.println("Clear registry");
-        clearRegistry(options.cloudRegion, options.projectId, options.registryName);
-        break;
-      case "create-iot-topic":
-        System.out.println("Create IoT Topic:");
-        createIotTopic(options.projectId, options.pubsubTopic);
-        break;
-      case "create-es":
-        System.out.println("Create ES Device:");
-        createDeviceWithEs256(
-            options.deviceId,
-            options.ecPublicKeyFile,
-            options.projectId,
-            options.cloudRegion,
-            options.registryName);
-        break;
-      case "create-rsa":
-        System.out.println("Create RSA Device:");
-        createDeviceWithRs256(
-            options.deviceId,
-            options.rsaCertificateFile,
-            options.projectId,
-            options.cloudRegion,
-            options.registryName);
-        break;
-      case "create-unauth":
-        System.out.println("Create Unauth Device");
-        createDeviceWithNoAuth(
-            options.deviceId, options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "create-registry":
-        System.out.println("Create registry");
-        createRegistry(
-            options.cloudRegion, options.projectId, options.registryName, options.pubsubTopic);
-        break;
-      case "delete-device":
-        System.out.println("Delete device");
-        deleteDevice(
-            options.deviceId, options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "delete-registry":
-        System.out.println("Delete registry");
-        deleteRegistry(options.cloudRegion, options.projectId, options.registryName);
-        break;
-      case "get-device":
-        System.out.println("Get device");
-        System.out.println(
-            getDevice(
-                    options.deviceId, options.projectId, options.cloudRegion, options.registryName)
-                .toPrettyString());
-        break;
-      case "get-iam-permissions":
-        System.out.println("Get iam permissions");
-        getIamPermissions(options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "get-device-state":
-        System.out.println("Get device state");
-        List<DeviceState> states =
-            getDeviceStates(
-                options.deviceId, options.projectId, options.cloudRegion, options.registryName);
-        for (DeviceState state : states) {
-          System.out.println(state.toPrettyString());
-        }
-        break;
-      case "get-registry":
-        System.out.println("Get registry");
-        System.out.println(
-            getRegistry(options.projectId, options.cloudRegion, options.registryName));
-        break;
-      case "list-devices":
-        System.out.println("List devices");
-        listDevices(options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "list-registries":
-        System.out.println("List registries");
-        listRegistries(options.projectId, options.cloudRegion);
-        break;
-      case "patch-device-es":
-        System.out.println("Patch device with ES");
-        patchEs256ForAuth(
-            options.deviceId,
-            options.ecPublicKeyFile,
-            options.projectId,
-            options.cloudRegion,
-            options.registryName);
-        break;
-      case "patch-device-rsa":
-        System.out.println("Patch device with RSA");
-        patchRsa256ForAuth(
-            options.deviceId,
-            options.rsaCertificateFile,
-            options.projectId,
-            options.cloudRegion,
-            options.registryName);
-        break;
-      case "set-config":
-        if (options.deviceId == null) {
-          System.out.println("Specify device_id for the device you are updating.");
-        } else {
-          System.out.println("Setting device configuration");
-          setDeviceConfiguration(
-              options.deviceId,
-              options.projectId,
-              options.cloudRegion,
-              options.registryName,
-              options.configuration,
-              options.version);
-        }
-        break;
-      case "set-iam-permissions":
-        if (options.member == null || options.role == null) {
-          System.out.println("Specify member and role for the policy you are updating.");
-        } else {
-          System.out.println("Setting iam permissions");
-          setIamPermissions(
-              options.projectId,
-              options.cloudRegion,
-              options.registryName,
-              options.member,
-              options.role);
-        }
-        break;
-      case "list-gateways":
-        System.out.println("Listing gateways: ");
-        listGateways(options.projectId, options.cloudRegion, options.registryName);
-        break;
-      case "list-devices-for-gateway":
-        System.out.println("Listing devices for a gateway: ");
-        listDevicesForGateway(
-            options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
-        break;
-      case "send-command":
-        System.out.println("Sending command to device:");
-        sendCommand(
+    if (options.command.equals("clear-registry")) {
+      System.out.println("Clear registry");
+      clearRegistry(options.cloudRegion, options.projectId, options.registryName);
+    } else if (options.command.equals("create-iot-topic")) {
+      System.out.println("Create IoT Topic:");
+      createIotTopic(options.projectId, options.pubsubTopic);
+    } else if (options.command.equals("create-es")) {
+      System.out.println("Create ES Device:");
+      createDeviceWithEs256(
+          options.deviceId, options.ecPublicKeyFile, options.projectId, options.cloudRegion,
+          options.registryName);
+    } else if (options.command.equals("create-rsa")) {
+      System.out.println("Create RSA Device:");
+      createDeviceWithRs256(
+          options.deviceId,
+          options.rsaCertificateFile,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName);
+    } else if (options.command.equals("create-unauth")) {
+      System.out.println("Create Unauth Device");
+      createDeviceWithNoAuth(
+          options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+    } else if (options.command.equals("create-registry")) {
+      System.out.println("Create registry");
+      createRegistry(
+          options.cloudRegion, options.projectId, options.registryName, options.pubsubTopic);
+    } else if (options.command.equals("delete-device")) {
+      System.out.println("Delete device");
+      deleteDevice(
+          options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+    } else if (options.command.equals("delete-registry")) {
+      System.out.println("Delete registry");
+      deleteRegistry(options.cloudRegion, options.projectId, options.registryName);
+    } else if (options.command.equals("get-device")) {
+      System.out.println("Get device");
+      System.out.println(
+          getDevice(
+              options.deviceId, options.projectId, options.cloudRegion, options.registryName)
+              .toPrettyString());
+    } else if (options.command.equals("get-iam-permissions")) {
+      System.out.println("Get iam permissions");
+      getIamPermissions(options.projectId, options.cloudRegion, options.registryName);
+    } else if (options.command.equals("get-device-state")) {
+      System.out.println("Get device state");
+      List<DeviceState> states =
+          getDeviceStates(
+              options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+      for (DeviceState state : states) {
+        System.out.println(state.toPrettyString());
+      }
+    } else if (options.command.equals("get-registry")) {
+      System.out.println("Get registry");
+      System.out.println(
+          getRegistry(options.projectId, options.cloudRegion, options.registryName));
+    } else if (options.command.equals("list-devices")) {
+      System.out.println("List devices");
+      listDevices(options.projectId, options.cloudRegion, options.registryName);
+    } else if (options.command.equals("list-registries")) {
+      System.out.println("List registries");
+      listRegistries(options.projectId, options.cloudRegion);
+    } else if (options.command.equals("patch-device-es")) {
+      System.out.println("Patch device with ES");
+      patchEs256ForAuth(
+          options.deviceId,
+          options.ecPublicKeyFile,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName);
+    } else if (options.command.equals("patch-device-rsa")) {
+      System.out.println("Patch device with RSA");
+      patchRsa256ForAuth(
+          options.deviceId,
+          options.rsaCertificateFile,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName);
+    } else if (options.command.equals("set-config")) {
+      if (options.deviceId == null) {
+        System.out.println("Specify device_id for the device you are updating.");
+      } else {
+        System.out.println("Setting device configuration");
+        setDeviceConfiguration(
             options.deviceId,
             options.projectId,
             options.cloudRegion,
             options.registryName,
-            options.commandData);
-        break;
-      default:
-        String header = "Cloud IoT Core Commandline Example (Device / Registry management): \n\n";
-        String footer = "\nhttps://cloud.google.com/iot-core";
+            options.configuration,
+            options.version);
+      }
+    } else if (options.command.equals("set-iam-permissions")) {
+      if (options.member == null || options.role == null) {
+        System.out.println("Specify member and role for the policy you are updating.");
+      } else {
+        System.out.println("Setting iam permissions");
+        setIamPermissions(
+            options.projectId,
+            options.cloudRegion,
+            options.registryName,
+            options.member,
+            options.role);
+      }
+    } else if (options.command.equals("bind-device-to-gateway")) {
+      System.out.println("Bind device to gateway:");
+      bindDeviceToGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.deviceId,
+          options.gatewayId);
+    } else if (options.command.equals("unbind-device-from-gateway")) {
+      System.out.println("Unbind device from gateway:");
+      unbindDeviceFromGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.deviceId,
+          options.gatewayId);
+    } else if (options.command.equals("create-gateway")) {
+      System.out.println("Bind device to gateway:");
+      String algorithm = "ES256";
+      String certificateFilePath = options.ecPublicKeyFile;
+      if (options.rsaCertificateFile != null) {
+        algorithm = "RS256";
+        certificateFilePath = options.rsaCertificateFile;
+      }
 
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("DeviceRegistryExample", header, options.options, footer, true);
-        break;
+      createGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.gatewayId,
+          certificateFilePath, algorithm);
+    } else if (options.command.equals("list-gateways")) {
+      System.out.println("Listing gateways: ");
+      listGateways(options.projectId, options.cloudRegion, options.registryName);
+    } else if (options.command.equals("list-devices-for-gateway")) {
+      System.out.println("Listing devices for a gateway: ");
+      listDevicesForGateway(
+          options.projectId, options.cloudRegion, options.registryName, options.gatewayId);
+    } else if (options.command.equals("send-command")) {
+      System.out.println("Sending command to device:");
+      sendCommand(
+          options.deviceId,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName,
+          options.commandData);
+    } else {
+      String header = "Cloud IoT Core Commandline Example (Device / Registry management): \n\n";
+      String footer = "\nhttps://cloud.google.com/iot-core";
+
+      HelpFormatter formatter = new HelpFormatter();
+      formatter.printHelp("DeviceRegistryExample", header, options.options, footer, true);
     }
   }
 }
