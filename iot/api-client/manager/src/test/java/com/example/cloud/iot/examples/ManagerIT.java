@@ -25,8 +25,8 @@ import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.Topic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

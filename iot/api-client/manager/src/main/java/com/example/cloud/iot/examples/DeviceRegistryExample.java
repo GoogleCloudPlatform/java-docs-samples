@@ -48,8 +48,8 @@ import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
 import com.google.iam.v1.Binding;
-import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.Topic;
 
 import java.io.File;
 import java.io.IOException;
@@ -1230,13 +1230,10 @@ public class DeviceRegistryExample {
       System.out.println("Create IoT Topic:");
       createIotTopic(options.projectId, options.pubsubTopic);
     } else if (options.command.equals("create-es")) {
-        System.out.println("Create ES Device:");
-        createDeviceWithEs256(
-            options.deviceId,
-            options.ecPublicKeyFile,
-            options.projectId,
-            options.cloudRegion,
-            options.registryName);
+      System.out.println("Create ES Device:");
+      createDeviceWithEs256(
+          options.deviceId, options.ecPublicKeyFile, options.projectId, options.cloudRegion,
+          options.registryName);
     } else if (options.command.equals("create-rsa")) {
       System.out.println("Create RSA Device:");
       createDeviceWithRs256(
@@ -1260,11 +1257,11 @@ public class DeviceRegistryExample {
     } else if (options.command.equals("delete-registry")) {
       System.out.println("Delete registry");
       deleteRegistry(options.cloudRegion, options.projectId, options.registryName);
-    }else if (options.command.equals("get-device")) {
+    } else if (options.command.equals("get-device")) {
       System.out.println("Get device");
       System.out.println(
           getDevice(
-                  options.deviceId, options.projectId, options.cloudRegion, options.registryName)
+              options.deviceId, options.projectId, options.cloudRegion, options.registryName)
               .toPrettyString());
     } else if (options.command.equals("get-iam-permissions")) {
       System.out.println("Get iam permissions");
