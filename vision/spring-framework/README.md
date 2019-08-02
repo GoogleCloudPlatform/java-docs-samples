@@ -8,12 +8,12 @@ and convenience libraries to allow you to more quickly start using Cloud Vision 
 
 ## Overview
 
-This sample application starts a [Spring Boot](https://spring.io/projects/spring-boot) application
-containing a simple interface that allows you submit image URLs and get the image's text or
+This sample starts a [Spring Boot](https://spring.io/projects/spring-boot) application
+containing a simple web interface that allows you submit image URLs and get the image's text or
 classification labels through the Google Cloud Vision APIs.
 
 This application is built and run with [Maven](https://maven.apache.org/), a tool for building and
-managing Java projects.
+managing dependencies in Java projects.
 
 ## Build and Run
 
@@ -27,8 +27,9 @@ managing Java projects.
     Open up a terminal and run the command `gcloud auth application-default login`.
     This will provide the account authentication necessary to run the application.
 
-4.  In this directory, run this Maven command to start the Spring Boot application.
-    After running the command, the application can be visited at http://localhost:8080/.
+4.  In this directory, run the following Maven command to start the Spring Boot application.
     ```
     mvn clean spring-boot:run
     ```
+
+5. After running the command, the application can be visited at http://localhost:8080/.
