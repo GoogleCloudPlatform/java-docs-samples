@@ -38,47 +38,48 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class VisionController {
 
-	@Autowired
-	private ResourceLoader resourceLoader;
+  @Autowired
+  private ResourceLoader resourceLoader;
 
-	// [START spring_vision_autowire]
-	@Autowired
-	private CloudVisionTemplate cloudVisionTemplate;
-	// [END spring_vision_autowire]
+  // [START spring_vision_autowire]
+  @Autowired
+  private CloudVisionTemplate cloudVisionTemplate;
+  // [END spring_vision_autowire]
 
-	/**
-	 * This method downloads an image from a URL and sends its contents to the Vision API for label detection.
-	 *
-	 * @param imageUrl the URL of the image
-	 * @param map the model map to use
-	 * @return a string with the list of labels and percentage of certainty
-	 */
-	@GetMapping("/extractLabels")
-	public ModelAndView extractLabels(String imageUrl, ModelMap map) {
-		//[START spring_vision_image_labelling]
-		AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
-				this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
+  /**
+   * This method downloads an image from a URL and sends its contents
+   * to the Vision API for label detection.
+   *
+   * @param imageUrl the URL of the image
+   * @param map the model map to use
+   * @return a string with the list of labels and percentage of certainty
+   */
+  @GetMapping("/extractLabels")
+  public ModelAndView extractLabels(String imageUrl, ModelMap map) {
+    //[START spring_vision_image_labelling]
+    AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
+        this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
 
-		Map<String, Float> imageLabels =
-				response.getLabelAnnotationsList()
-						.stream()
-						.collect(Collectors.toMap(
-								EntityAnnotation::getDescription, EntityAnnotation::getScore));
-		//[END spring_vision_image_labelling]
+    Map<String, Float> imageLabels =
+        response.getLabelAnnotationsList()
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    EntityAnnotation::getDescription, EntityAnnotation::getScore));
+    //[END spring_vision_image_labelling]
 
-		map.addAttribute("annotations", imageLabels);
-		map.addAttribute("imageUrl", imageUrl);
+    map.addAttribute("annotations", imageLabels);
+    map.addAttribute("imageUrl", imageUrl);
 
-		return new ModelAndView("result", map);
-	}
+    return new ModelAndView("result", map);
+  }
 
-	@GetMapping("/extractText")
-	public String extractText(String imageUrl) {
-		//[START spring_vision_text_extraction]
-		String textFromImage = this.cloudVisionTemplate.extractTextFromImage(
-				this.resourceLoader.getResource(imageUrl));
-		return "Text from image: " + textFromImage;
-		//[END spring_vision_text_extraction]
-	}
-
+  @GetMapping("/extractText")
+  public String extractText(String imageUrl) {
+    //[START spring_vision_text_extraction]
+    String textFromImage = this.cloudVisionTemplate.extractTextFromImage(
+        this.resourceLoader.getResource(imageUrl));
+    return "Text from image: " + textFromImage;
+    //[END spring_vision_text_extraction]
+  }
 }
