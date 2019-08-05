@@ -28,18 +28,29 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class SubscriberExample {
+  static class MessageAndConsumer {
+    PubsubMessage message;
+    AckReplyConsumer consumer;
+
+    MessageAndConsumer(PubsubMessage message, AckReplyConsumer consumer) {
+      this.message = message;
+      this.consumer = consumer;
+    }
+  }
 
   // use the default project id
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
-  private static final BlockingQueue<PubsubMessage> messages = new LinkedBlockingDeque<>();
+  private static final BlockingQueue<MessageAndConsumer> messages = new LinkedBlockingDeque<>();
+
 
   static class MessageReceiverExample implements MessageReceiver {
 
     @Override
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
-      messages.offer(message);
-      consumer.ack();
+      if (!messages.offer(new MessageAndConsumer(message, consumer))) {
+        consumer.nack();
+      }
     }
   }
 
@@ -57,9 +68,10 @@ public class SubscriberExample {
       subscriber.startAsync().awaitRunning();
       // Continue to listen to messages
       while (true) {
-        PubsubMessage message = messages.take();
-        System.out.println("Message Id: " + message.getMessageId());
-        System.out.println("Data: " + message.getData().toStringUtf8());
+        MessageAndConsumer messageAndConsumer = messages.take();
+        System.out.println("Message Id: " + messageAndConsumer.message.getMessageId());
+        System.out.println("Data: " + messageAndConsumer.message.getData().toStringUtf8());
+        messageAndConsumer.consumer.ack();
       }
     } finally {
       if (subscriber != null) {
