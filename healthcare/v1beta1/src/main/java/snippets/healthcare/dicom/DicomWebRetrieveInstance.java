@@ -16,7 +16,7 @@
 
 package snippets.healthcare.dicom;
 
-// [START healthcare_dicomweb_retrieve_study]
+// [START healthcare_dicomweb_retrieve_instance]
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
@@ -26,7 +26,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
-import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies.Series.Instances;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,39 +37,43 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-public class DicomWebRetrieveStudy {
+public class DicomWebRetrieveInstance {
   private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
+  private static final String DICOMWEB_PATH = "studies/%s/series/%s/instances/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomWebRetrieveStudy(String dicomStoreName, String studyId)
+  public static void dicomWebRetrieveInstance(String dicomStoreName, String dicomWebPath)
       throws IOException {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
-    // String studyId = "your-study-id";
+    // String dicomWebPath = String.format(DICOMWEB_PATH, "your-study-id", "your-series-id",
+    // "your-instance-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
-    Studies.RetrieveStudy request =
+    Instances.RetrieveInstance request =
         client
             .projects()
             .locations()
             .datasets()
             .dicomStores()
             .studies()
-            .retrieveStudy(dicomStoreName, "studies/" + studyId);
+            .series()
+            .instances()
+            .retrieveInstance(dicomStoreName, dicomWebPath);
 
     // Execute the request and process the results.
     HttpResponse response = request.executeUnparsed();
 
-    String outputPath = "study.dcm";
+    String outputPath = "instance.dcm";
     OutputStream outputStream = new FileOutputStream(new File(outputPath));
     try {
       response.download(outputStream);
-      System.out.println("DICOM study written to file " + outputPath);
+      System.out.println("DICOM instance written to file " + outputPath);
     } finally {
       outputStream.close();
     }
@@ -77,7 +81,7 @@ public class DicomWebRetrieveStudy {
     if (!response.isSuccessStatusCode()) {
       System.err.print(
           String.format(
-              "Exception retrieving DICOM study: %s\n", response.getStatusMessage()));
+              "Exception retrieving DICOM instance: %s\n", response.getStatusMessage()));
       throw new RuntimeException();
     }
     
@@ -90,11 +94,17 @@ public class DicomWebRetrieveStudy {
         GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("X-GFE-SSL", "yes");
+    // Avoid parsing multipart boundaries by setting 'application/dicom' HTTP header.
+    // Add 'transfer-syntax=*' to avoid transcoding by returning the file in the format it
+    // was originally stored in.
+    headers.setAccept("application/dicom; transfer-syntax=*");
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
+          request.setHeaders(headers);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };
@@ -105,5 +115,5 @@ public class DicomWebRetrieveStudy {
         .build();
   }
 }
-// [END healthcare_dicomweb_retrieve_study]
+// [END healthcare_dicomweb_retrieve_instance]
 
