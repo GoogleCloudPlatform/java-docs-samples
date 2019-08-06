@@ -86,7 +86,7 @@ public class SubscriberExample {
         MessageAndConsumer messageAndConsumer = queue.take();
         System.out.println("Message Id: " + messageAndConsumer.message.getMessageId());
         System.out.println("Data: " + messageAndConsumer.message.getData().toStringUtf8());
-        // Ack only once all work with the message is complete.
+        // Ack only after all work for the message is complete.
         messageAndConsumer.consumer.ack();
       }
     } finally {
