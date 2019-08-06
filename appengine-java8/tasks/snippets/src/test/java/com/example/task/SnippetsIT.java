@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine;
+package com.example.task;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -30,8 +30,10 @@ import org.junit.runners.MethodSorters;
 /** Tests for creating Tasks with HTTP targets. */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SnippetsIT {
-  private static final String PROJECT_ID =  "java-docs-samples-testing";
-  private static final String LOCATION_ID = "us-east1";
+  private static final String PROJECT_ID = "starter-akitsch";
+  // "java-docs-samples-testing";
+  private static final String LOCATION_ID = "us-central1";
+  // "us-east1";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private static final String QUEUE_NAME_1 = UUID.randomUUID().toString();
@@ -54,7 +56,7 @@ public class SnippetsIT {
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, QUEUE_NAME_2);
     System.out.println(QUEUE_NAME_1);
-    Snippets.createQueues(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1, QUEUE_NAME_2);
+    CreateQueue.createQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1, QUEUE_NAME_2);
     String got = bout.toString();
     assertThat(got).contains(name);
   }
@@ -63,7 +65,7 @@ public class SnippetsIT {
   public void test2UpdateQueue() throws Exception {
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
-    Snippets.updateQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
+    UpdateQueue.updateQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
     String got = bout.toString();
     assertThat(got).contains(name);
   }
@@ -73,7 +75,7 @@ public class SnippetsIT {
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
     System.out.println(QUEUE_NAME_1);
-    Snippets.createTask(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
+    CreateTask.createTask(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
     String got = bout.toString();
     assertThat(got).contains(name);
   }
@@ -82,7 +84,7 @@ public class SnippetsIT {
   public void test4CreateTaskWithName() throws Exception {
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
-    Snippets.createTaskWithName(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1, "foo");
+    CreateTaskWithName.createTaskWithName(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1, "foo");
     String got = bout.toString();
     assertThat(got).contains(name);
   }
@@ -91,14 +93,14 @@ public class SnippetsIT {
   public void test5DeleteTask() throws Exception {
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
-    Snippets.deleteTask(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1, "foo");
+    DeleteTask.deleteTask(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1, "foo");
     String got = bout.toString();
     assertThat(got).contains("Task Deleted.");
   }
 
   @Test
   public void test6PurgeQueue() throws Exception {
-    Snippets.purgeQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
+    PurgeQueue.purgeQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
     String got = bout.toString();
     assertThat(got).contains("Queue Purged.");
   }
@@ -107,15 +109,15 @@ public class SnippetsIT {
   public void test7PauseQueue() throws Exception {
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
-    Snippets.pauseQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
+    PauseQueue.pauseQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
     String got = bout.toString();
     assertThat(got).contains("Queue Paused.");
   }
 
   @Test
   public void test8DeleteQueue() throws Exception {
-    Snippets.deleteQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
-    Snippets.deleteQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_2);
+    DeleteQueue.deleteQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_1);
+    DeleteQueue.deleteQueue(PROJECT_ID, LOCATION_ID, QUEUE_NAME_2);
     String got = bout.toString();
     assertThat(got).contains("Queue Deleted.");
   }
@@ -128,12 +130,12 @@ public class SnippetsIT {
 
     String name =
         String.format("projects/%s/locations/%s/queues/%s", PROJECT_ID, LOCATION_ID, queue1);
-    Snippets.retryTasks(PROJECT_ID, LOCATION_ID, queue1, queue2, queue3);
+    RetryTask.retryTask(PROJECT_ID, LOCATION_ID, queue1, queue2, queue3);
     String got = bout.toString();
     assertThat(got).contains(name);
 
-    Snippets.deleteQueue(PROJECT_ID, LOCATION_ID, queue1);
-    Snippets.deleteQueue(PROJECT_ID, LOCATION_ID, queue2);
-    Snippets.deleteQueue(PROJECT_ID, LOCATION_ID, queue3);
+    DeleteQueue.deleteQueue(PROJECT_ID, LOCATION_ID, queue1);
+    DeleteQueue.deleteQueue(PROJECT_ID, LOCATION_ID, queue2);
+    DeleteQueue.deleteQueue(PROJECT_ID, LOCATION_ID, queue3);
   }
 }
