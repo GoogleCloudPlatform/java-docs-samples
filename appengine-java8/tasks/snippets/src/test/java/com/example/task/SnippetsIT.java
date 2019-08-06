@@ -30,10 +30,8 @@ import org.junit.runners.MethodSorters;
 /** Tests for creating Tasks with HTTP targets. */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SnippetsIT {
-  private static final String PROJECT_ID = "starter-akitsch";
-  // "java-docs-samples-testing";
-  private static final String LOCATION_ID = "us-central1";
-  // "us-east1";
+  private static final String PROJECT_ID = "java-docs-samples-testing";
+  private static final String LOCATION_ID = "us-east1";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private static final String QUEUE_NAME_1 = UUID.randomUUID().toString();
