@@ -19,7 +19,7 @@ package com.example.vision;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature.Type;
-import com.google.cloud.vision.v1.ImageAnnotatorClient;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,12 @@ public class VisionController {
             .stream()
             .collect(
                 Collectors.toMap(
-                    EntityAnnotation::getDescription, EntityAnnotation::getScore));
+                    EntityAnnotation::getDescription,
+                    EntityAnnotation::getScore,
+                    (u, v) -> {
+                      throw new IllegalStateException(String.format("Duplicate key %s", u));
+                    },
+                    LinkedHashMap::new));
     //[END spring_vision_image_labelling]
 
     map.addAttribute("annotations", imageLabels);
