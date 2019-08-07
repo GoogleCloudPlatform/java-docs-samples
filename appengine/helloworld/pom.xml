@@ -54,15 +54,15 @@ Copyright 2015 Google Inc.
         <version>3.3</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>1.9.59</version>
+        <version>1.9.76</version>
       </plugin>
     </plugins>
   </build>
