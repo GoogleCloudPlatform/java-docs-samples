@@ -24,21 +24,18 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class SubscriberExample {
-
   // use the default project id
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
-
-  private static final BlockingQueue<PubsubMessage> messages = new LinkedBlockingDeque<>();
 
   static class MessageReceiverExample implements MessageReceiver {
 
     @Override
     public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
-      messages.offer(message);
+      System.out.println(
+          "Message Id: " + message.getMessageId() + " Data: " + message.getData().toStringUtf8());
+      // Ack only after all work for the message is complete.
       consumer.ack();
     }
   }
@@ -55,16 +52,10 @@ public class SubscriberExample {
       subscriber =
           Subscriber.newBuilder(subscriptionName, new MessageReceiverExample()).build();
       subscriber.startAsync().awaitRunning();
-      // Continue to listen to messages
-      while (true) {
-        PubsubMessage message = messages.take();
-        System.out.println("Message Id: " + message.getMessageId());
-        System.out.println("Data: " + message.getData().toStringUtf8());
-      }
-    } finally {
-      if (subscriber != null) {
-        subscriber.stopAsync();
-      }
+      // Allow the subscriber to run indefinitely unless an unrecoverable error occurs.
+      subscriber.awaitTerminated();
+    } catch (IllegalStateException e) {
+      System.out.println("Subscriber unexpectedly stopped: " + e);
     }
   }
 }
