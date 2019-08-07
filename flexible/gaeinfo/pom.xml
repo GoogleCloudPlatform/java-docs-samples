@@ -30,7 +30,7 @@ Copyright 2017 Google Inc.
     <version>1.0.11</version>
   </parent>
 
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+  <properties>  <!-- App Engine Standard currently requires Java 8 -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
