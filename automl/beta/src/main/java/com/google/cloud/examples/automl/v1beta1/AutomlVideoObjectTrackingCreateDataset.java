@@ -78,7 +78,6 @@ public class AutomlVideoObjectTrackingCreateDataset {
               .build();
       Dataset response = autoMlClient.createDataset(request);
       System.out.println("Created Dataset.");
-      Dataset dataset = response;
       // Print out the full name of the created dataset.
       //
       // This will have the format:
@@ -87,15 +86,15 @@ public class AutomlVideoObjectTrackingCreateDataset {
       // The Dataset ID is the generated identifer in this path, e.g. VOT1234567890123456789
       // You will need this ID to perform operations on the dataset as well as to create a model.
       //
-      System.out.printf("Name: %s\n", dataset.getName());
+      System.out.printf("Name: %s\n", response.getName());
       // Print out the Display Name (the text you provided during creation)
-      System.out.printf("Display Name: %s\n", dataset.getDisplayName());
+      System.out.printf("Display Name: %s\n", response.getDisplayName());
       // Print out the user-provided description (may be blank)
-      System.out.printf("Description: %s\n", dataset.getDescription());
+      System.out.printf("Description: %s\n", response.getDescription());
       // The number of examples in the dataset, if any.
       // Added by importing data via importData
       //
-      System.out.printf("Example count: %s\n", dataset.getExampleCount());
+      System.out.printf("Example count: %s\n", response.getExampleCount());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
