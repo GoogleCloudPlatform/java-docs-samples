@@ -50,7 +50,6 @@ Copyright 2015 Google Inc.
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
-      </plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
@@ -67,6 +66,7 @@ Copyright 2015 Google Inc.
             </path>
           </annotationProcessorPaths>
         </configuration>
+      </plugin>
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
