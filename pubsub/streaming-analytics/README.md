@@ -1,4 +1,4 @@
-# Cloud Pub/Sub with Cloud DataFlow
+# Stream Cloud Pub/Sub with Cloud DataFlow
 
 Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
 
@@ -10,7 +10,7 @@ Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
 
 1. [Enable billing].
 
-1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_component,storage_api,bigquery,pubsub,datastore.googleapis.com,cloudresourcemanager.googleapis.com): Dataflow, Compute Engine, Stackdriver Logging, Cloud Storage, Cloud Storage JSON, BigQuery, Pub/Sub, Datastore, and Cloud Resource Manager.
+1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_component,storage_api,pubsub,cloudresourcemanager.googleapis.com,cloudscheduler.googleapis.com): Dataflow, Compute Engine, Stackdriver Logging, Cloud Storage, Cloud Storage JSON, Pub/Sub, Cloud Scheduler, and Cloud Resource Manager.
 
 1. Setup the Cloud SDK to your GCP project.
 
@@ -38,11 +38,28 @@ Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
    export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/credentials.json
    ```
 
-1. Create a Cloud Storage bucket.
+1. Create a Cloud Storage bucket. Grant the Default Compute Engine Service Account Object Admin Access to your bucket.
 
    ```bash
    gsutil mb gs://your-gcs-bucket
+   
+   BUCKET=gs://your-gcs-bucket
+   PROJECT=${gcloud config get-value project}
+   PROJECT_NUMBER=$(gcloud projects describe ${PROJECT} --format="value(projectNumber)")
+   
+   gsutil iam ch \
+     serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com:objectAdmin \
+     ${BUCKET}
    ```
+   
+ 1. Start a Cloud Scheduler job that publishes one message to a Cloud Pub/Sub topic every minute.
+ 
+    ```bash
+    gcloud pubsub topics create cron-topic
+    
+    gcloud scheduler jobs create pubsub my-job --schedule="* * * * *" \
+      --topic=cron-topic --message-body="Hello 2020"
+    ```
 
 ## Setup
 
@@ -62,7 +79,7 @@ The following instructions will help you prepare your development environment.
 1. Navigate to the sample code directory.
 
    ```bash
-   cd java-docs-samples/pubsub/templates
+   cd java-docs-samples/pubsub/streaming-analytics
    ```
 
 ## Streaming Analytics
@@ -70,67 +87,44 @@ The following instructions will help you prepare your development environment.
 ### Google Cloud Pub/Sub to Google Cloud Storage
 
 * [PubSubToGCS.java](src/main/java/com/examples/pubsub/streaming/PubSubToGCS.java)
-* [PubSubToGCS_metadata](PubSubToGCS_metadata)
 
-First, select the project and template location.
-
-```bash
-PROJECT=$(gcloud config get-value project)
-BUCKET=your-gcs-bucket
-TEMPLATE_LOCATION=gs://$BUCKET/dataflow/templates/WordCount
-```
-
-Then, to create the template in the desired Cloud Storage location.
+To run the example and write output files in the desired Cloud Storage location.
 
 ```bash
-# Create the template.
 mvn compile exec:java \
-  -Dexec.mainClass=WordCount \
+  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGCS \
+  -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
-    --isCaseSensitive=false \
-    --project=$PROJECT \
-    --templateLocation=$TEMPLATE_LOCATION \
+    --numShards=1 \
+    --inputTopic=projects/${PROJECT}/topics/cron-topic \
+    --output=gs://${BUCKET}/output- \
+    --outputFilenameSuffix=.txt \
     --runner=DataflowRunner"
-
-# Upload the metadata file.
-gsutil cp WordCount_metadata "$TEMPLATE_LOCATION"_metadata
 ```
 
-> For more information, see [Creating templates].
-
-Finally, you can run the template via `gcloud` or through the [GCP Console create Dataflow job page].
-
-```bash
-JOB_NAME=wordcount-$(date +'%Y%m%d-%H%M%S')
-INPUT=gs://apache-beam-samples/shakespeare/kinglear.txt
-
-gcloud dataflow jobs run $JOB_NAME \
-  --gcs-location $TEMPLATE_LOCATION \
-  --parameters inputFile=$INPUT,outputBucket=$BUCKET
-```
-
-> For more information, see [Executing templates].
-
-You can check your submitted jobs in the [GCP Console Dataflow page].
+After the job has been submitted, you can check its status in the [GCP Console Dataflow page].
 
 ## Cleanup
 
-To avoid incurring charges to your GCP account for the resources used:
+1. Delete the Cloud Schedule job. 
+    ```bash
+    gcloud scheduler jobs delete my-job
+    ```
 
-```bash
-# Delete only the files created by this sample.
-gsutil -m rm -rf \
-  "gs://$BUCKET/dataflow/templates/WordCount*" \
-  "gs://$BUCKET/dataflow/wordcount/"
+1. Cancel the DataFlow job in [GCP Console Dataflow page]. Stop the pipeline without draining it. 
 
-# [optional] Remove the entire dataflow Cloud Storage directory.
-gsutil -m rm -rf gs://$BUCKET/dataflow
+1. To avoid incurring charges to your GCP account for the resources used:
 
-# [optional] Remove the Cloud Storage bucket.
-gsutil rb gs://$BUCKET
-```
+    ```bash
+    # Delete only the files created by this sample.
+    gsutil -m rm -rf "gs://$BUCKET/output*"
+    
+    # [optional] Remove the Cloud Storage bucket.
+    gsutil rb gs://$BUCKET
+    ```
 
 [Apache Beam]: https://beam.apache.org/
+[Google Cloud Pub/Sub]: https://cloud.google.com/pubsub/docs/
 [Google Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
 
 [Cloud SDK]: https://cloud.google.com/sdk/docs/
@@ -146,7 +140,5 @@ gsutil rb gs://$BUCKET
 [Apache Maven]: http://maven.apache.org/download.cgi
 [Maven installation guide]: http://maven.apache.org/install.html
 
-[Creating templates]: https://cloud.google.com/dataflow/docs/guides/templates/creating-templates
 [GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
-[Executing templates]: https://cloud.google.com/dataflow/docs/guides/templates/executing-templates
 [GCP Console Dataflow page]: https://console.cloud.google.com/dataflow

@@ -17,9 +17,6 @@ package com.examples.pubsub.streaming;
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
-import org.apache.beam.sdk.io.FileBasedSink;
-import org.apache.beam.sdk.io.TextIO;
-import org.apache.beam.sdk.io.fs.ResourceId;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
@@ -27,9 +24,6 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation.Required;
-import org.apache.beam.sdk.options.ValueProvider;
-import org.apache.beam.sdk.options.ValueProvider.NestedValueProvider;
-import org.apache.beam.sdk.transforms.*;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.joda.time.Duration;
@@ -39,39 +33,25 @@ import java.io.IOException;
 
 public class PubSubToGCS {
   // [START pubsub_to_gcs_options]
+  /*
+  * Define your own configuration options. Add your own arguments to be processed
+  * by the command-line parser, and specify default values for them.
+  */
   public interface PubSubToGCSOptions extends PipelineOptions, StreamingOptions {
     @Description("The Cloud Pub/Sub topic to read from.")
     @Required
-    ValueProvider<String> getInputTopic();
-    void setInputTopic(ValueProvider<String> value);
-
-    @Description("The directory to output files to.")
-    @Required
-    ValueProvider<String> getOutputDirectory();
-    void setOutputDirectory(ValueProvider<String> value);
-
-    @Description("The filename prefix of the files to write to.")
-    @Default.String("output")
-    @Required
-    ValueProvider<String> getOutputFilenamePrefix();
-    void setOutputFilenamePrefix(ValueProvider<String> value);
-
-    @Description("The suffix of the files to write.")
-    @Default.String("")
-    ValueProvider<String> getOutputFilenameSuffix();
-    void setOutputFilenameSuffix(ValueProvider<String> value);
-
-    @Description("The shard template of the output file. Specified as repeating sequences "
-      + "of the letters 'S' or 'N' (example: SSS-NNN). These are replaced with the "
-      + "shard number, or number of shards respectively")
-    @Default.String("W-P-SS-of-NN")
-    ValueProvider<String> getOutputShardTemplate();
-    void setOutputShardTemplate(ValueProvider<String> value);
+    String getInputTopic();
+    void setInputTopic(String value);
 
     @Description("The maximum number of output shards produced when writing.")
     @Default.Integer(1)
     Integer getNumShards();
     void setNumShards(Integer value);
+
+    @Description("Path of the output file including its filename prefix.")
+    @Required
+    String getOutput();
+    void setOutput(String value);
   }
   // [END pubsub_to_gcs_options]
 
@@ -87,32 +67,13 @@ public class PubSubToGCS {
 
     Pipeline pipeline = Pipeline.create(options);
 
-    /*
-     * Steps:
-     *   1) Read string messages from PubSub
-     *   2) Window the messages into minute intervals
-     *   3) Output the windowed files to GCS
-     */
     pipeline
+      /* 1) Read string messages from Pub/Sub. */
       .apply("Read PubSub Events", PubsubIO.readStrings().fromTopic(options.getInputTopic()))
-      .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
-      // Apply windowed file writes. Use a NestedValueProvider because the filename
-      // policy requires a resourceId generated from the input value at runtime.
-      .apply(
-        "Write File(s)",
-        TextIO.write()
-          .withWindowedWrites()
-          .withNumShards(options.getNumShards())
-          .to(
-            new WindowedFilenamePolicy(
-              options.getOutputDirectory(),
-              options.getOutputFilenamePrefix(),
-              options.getOutputShardTemplate(),
-              options.getOutputFilenameSuffix()))
-          .withTempDirectory(NestedValueProvider.of(
-            options.getOutputDirectory(),
-            (SerializableFunction<String, ResourceId>) input ->
-              FileBasedSink.convertToFileResourceIfPossible(input))));
+      /* 2) Window the messages into fixed minute intervals. */
+      .apply(Window.into(FixedWindows.of(Duration.standardMinutes(5))))
+      /* 3) Output the windowed files to GCS. */
+      .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), options.getNumShards()));
 
     // Execute the pipeline and return the result.
     PipelineResult result = pipeline.run();
