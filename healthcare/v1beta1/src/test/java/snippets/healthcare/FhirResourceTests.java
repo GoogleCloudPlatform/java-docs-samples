@@ -166,7 +166,9 @@ public class FhirResourceTests extends TestBase {
     assertThat(output, containsString("FHIR resource patched:"));
   }
 
+  // TODO(b/139283693): Add conditions to conditional FHIR methods.
   @Test
+  @Ignore
   public void test_FhirResourceConditionalPatch() throws Exception {
     FhirResourceConditionalPatch.fhirResourceConditionalPatch(
         fhirStoreName,
@@ -178,7 +180,9 @@ public class FhirResourceTests extends TestBase {
     assertThat(output, containsString("FHIR resource conditionally patched:"));
   }
 
+  // TODO(b/139283693): Add conditions to conditional FHIR methods.
   @Test
+  @Ignore
   public void test_FhirResourceConditionalUpdate() throws Exception {
     FhirResourceConditionalUpdate.fhirResourceConditionalUpdate(
         fhirStoreName,
