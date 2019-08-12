@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.dicom.DicomStoreCreate;
 import snippets.healthcare.dicom.DicomWebDeleteStudy;
 import snippets.healthcare.dicom.DicomWebRetrieveInstance;
@@ -45,11 +46,12 @@ import snippets.healthcare.dicom.DicomWebSearchForInstances;
 import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
-public class DicomWebTests extends TestBase {
+public class DicomWebTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
   private static String dicomStoreName;
+  private static String datasetName;
 
   // The studyUid is not assigned by the server and is part of the metadata of dcmFile.
   private static String studyId = "2.25.330012077234033941963257891139480825153";
@@ -83,7 +85,7 @@ public class DicomWebTests extends TestBase {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    String datasetName = String.format(
+    datasetName = String.format(
         "projects/%s/locations/%s/datasets/%s",
         PROJECT_ID,
         REGION_ID,
@@ -98,7 +100,7 @@ public class DicomWebTests extends TestBase {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    deleteDatasets();
+    DatasetDelete.datasetDelete(datasetName);
   }
 
   @Before

@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.hl7v2.Hl7v2StoreCreate;
 import snippets.healthcare.hl7v2.messages.HL7v2MessageCreate;
 import snippets.healthcare.hl7v2.messages.HL7v2MessageDelete;
@@ -45,7 +46,7 @@ import snippets.healthcare.hl7v2.messages.HL7v2MessageList;
 import snippets.healthcare.hl7v2.messages.HL7v2MessagePatch;
 
 @RunWith(JUnit4.class)
-public class Hl7v2MessageTests extends TestBase {
+public class Hl7v2MessageTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -80,7 +81,7 @@ public class Hl7v2MessageTests extends TestBase {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    deleteDatasets();
+    DatasetDelete.datasetDelete(datasetName);
   }
 
   @Before
