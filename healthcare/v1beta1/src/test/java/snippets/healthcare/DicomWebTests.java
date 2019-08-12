@@ -16,11 +16,13 @@
 
 package snippets.healthcare;
 
+import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
@@ -36,12 +38,14 @@ import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.dicom.DicomStoreCreate;
 import snippets.healthcare.dicom.DicomWebDeleteStudy;
+import snippets.healthcare.dicom.DicomWebRetrieveInstance;
+import snippets.healthcare.dicom.DicomWebRetrieveRendered;
 import snippets.healthcare.dicom.DicomWebRetrieveStudy;
 import snippets.healthcare.dicom.DicomWebSearchForInstances;
 import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
-public class DicomStoreStudyTests extends TestBase {
+public class DicomWebTests extends TestBase {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -49,6 +53,17 @@ public class DicomStoreStudyTests extends TestBase {
 
   // The studyUid is not assigned by the server and is part of the metadata of dcmFile.
   private static String studyId = "2.25.330012077234033941963257891139480825153";
+  private static String seriesId = "2.25.143186483950719304925806365081717734297";
+  private static String instanceId = "2.25.195151962645072062560826889007364152748";
+  private static String dicomWebInstancePath = String.format(
+      "studies/%s/series/%s/instances/%s", studyId, seriesId, instanceId);
+  private static String dicomWebRenderedPath = dicomWebInstancePath + "/rendered";
+
+  private static String instanceOutput = "instance.dcm";
+  private static String renderedOutput = "image.png";
+  private static String studyOutput = "study.dcm";
+
+  private File outputFile;
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -125,9 +140,33 @@ public class DicomStoreStudyTests extends TestBase {
   public void test_DicomWebRetrieveStudy() throws Exception {
     DicomWebRetrieveStudy.dicomWebRetrieveStudy(dicomStoreName, studyId);
 
+    outputFile = new File(studyOutput);
+    assertThat(outputFile.isFile()).isTrue();
     String output = bout.toString();
-    assertThat(output, containsString("DICOM study retrieved:"));
-    assertThat(output, containsString(studyId));
+    assertThat(output, containsString("DICOM study written to file"));
+    outputFile.delete();
+  }
+
+  @Test
+  public void test_DicomWebRetrieveInstance() throws Exception {
+    DicomWebRetrieveInstance.dicomWebRetrieveInstance(dicomStoreName, dicomWebInstancePath);
+
+    outputFile = new File(instanceOutput);
+    assertThat(outputFile.isFile()).isTrue();
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM instance written to file"));
+    outputFile.delete();
+  }
+
+  @Test
+  public void test_DicomWebRetrieveRendered() throws Exception {
+    DicomWebRetrieveRendered.dicomWebRetrieveRendered(dicomStoreName, dicomWebRenderedPath);
+
+    outputFile = new File(renderedOutput);
+    assertThat(outputFile.isFile()).isTrue();
+    String output = bout.toString();
+    assertThat(output, containsString("DICOM rendered PNG image written to file"));
+    outputFile.delete();
   }
 
   @Test
@@ -138,3 +177,4 @@ public class DicomStoreStudyTests extends TestBase {
     assertThat(output, containsString("DICOM study deleted."));
   }
 }
+
