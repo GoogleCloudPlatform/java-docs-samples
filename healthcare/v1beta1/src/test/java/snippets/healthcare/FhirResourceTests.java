@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.fhir.FhirStoreCreate;
 import snippets.healthcare.fhir.resources.FhirResourceConditionalPatch;
 import snippets.healthcare.fhir.resources.FhirResourceConditionalUpdate;
@@ -53,11 +54,12 @@ import snippets.healthcare.fhir.resources.FhirResourceSearch;
 import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
 
 @RunWith(JUnit4.class)
-public class FhirResourceTests extends TestBase {
+public class FhirResourceTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
   private static String fhirStoreName;
+  private static String datasetName;
 
   private String fhirResourceId;
   private String fhirResourceName;
@@ -82,7 +84,7 @@ public class FhirResourceTests extends TestBase {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    String datasetName = String.format(
+    datasetName = String.format(
         "projects/%s/locations/%s/datasets/%s",
         PROJECT_ID,
         REGION_ID,
@@ -96,7 +98,7 @@ public class FhirResourceTests extends TestBase {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    deleteDatasets();
+    DatasetDelete.datasetDelete(datasetName);
   }
 
   @Before

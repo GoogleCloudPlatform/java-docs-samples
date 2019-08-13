@@ -20,6 +20,8 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -85,6 +87,13 @@ public class DatasetTests {
 
   @Test
   public void test_DatasetCreate() throws IOException {
+    String newDatasetName =
+        String.format("projects/%s/locations/%s/datasets/new-dataset", PROJECT_ID, REGION_ID);
+    try {
+      DatasetDelete.datasetDelete(newDatasetName);
+    } catch (GoogleJsonResponseException gjre) {
+      // Expected if new-dataset does not exist.
+    }
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, "new-dataset");
 
     String output = bout.toString();

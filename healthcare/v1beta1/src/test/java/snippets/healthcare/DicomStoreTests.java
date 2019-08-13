@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.dicom.DicomStoreCreate;
 import snippets.healthcare.dicom.DicomStoreDelete;
 import snippets.healthcare.dicom.DicomStoreExport;
@@ -44,7 +45,7 @@ import snippets.healthcare.dicom.DicomStorePatch;
 import snippets.healthcare.dicom.DicomStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
-public class DicomStoreTests extends TestBase {
+public class DicomStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -81,7 +82,7 @@ public class DicomStoreTests extends TestBase {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    deleteDatasets();
+    DatasetDelete.datasetDelete(datasetName);
   }
 
   @Before
