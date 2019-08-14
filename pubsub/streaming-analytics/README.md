@@ -58,7 +58,7 @@ Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
     gcloud pubsub topics create cron-topic
     
     gcloud scheduler jobs create pubsub my-job --schedule="* * * * *" \
-      --topic=cron-topic --message-body="Hello 2020"
+      --topic=cron-topic --message-body="Hello Pub/Sub!"
     ```
 
 ## Setup
@@ -95,10 +95,9 @@ mvn compile exec:java \
   -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGCS \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
-    --numShards=1 \
+    --windowSize=2 \
     --inputTopic=projects/${PROJECT}/topics/cron-topic \
     --output=gs://${BUCKET}/output- \
-    --outputFilenameSuffix=.txt \
     --runner=DataflowRunner"
 ```
 
@@ -111,7 +110,14 @@ After the job has been submitted, you can check its status in the [GCP Console D
     gcloud scheduler jobs delete my-job
     ```
 
+1. `Ctrl + C` to stop the program in your terminal.
+
 1. Cancel the DataFlow job in [GCP Console Dataflow page]. Stop the pipeline without draining it. 
+
+1. Delete the topic. 
+   ```bash
+   gcloud pubsub topics delete cron-topic
+   ```
 
 1. To avoid incurring charges to your GCP account for the resources used:
 

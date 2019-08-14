@@ -43,10 +43,10 @@ public class PubSubToGCS {
     String getInputTopic();
     void setInputTopic(String value);
 
-    @Description("The maximum number of output shards produced when writing.")
+    @Description("Output file's window size in number of minutes.")
     @Default.Integer(1)
-    Integer getNumShards();
-    void setNumShards(Integer value);
+    Integer getWindowSize();
+    void setWindowSize(Integer value);
 
     @Description("Path of the output file including its filename prefix.")
     @Required
@@ -71,17 +71,13 @@ public class PubSubToGCS {
       /* 1) Read string messages from Pub/Sub. */
       .apply("Read PubSub Events", PubsubIO.readStrings().fromTopic(options.getInputTopic()))
       /* 2) Window the messages into fixed minute intervals. */
-      .apply(Window.into(FixedWindows.of(Duration.standardMinutes(5))))
-      /* 3) Output the windowed files to GCS. */
-      .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), options.getNumShards()));
+      .apply(Window.into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
+      /* 3) Output the windowed files to GCS with a default value of 1 for numShards. */
+      .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), 1));
 
     // Execute the pipeline and return the result.
     PipelineResult result = pipeline.run();
-    try {
-      result.waitUntilFinish();
-    } catch (Exception exc) {
-      result.cancel();
-    }
+    result.waitUntilFinish();
   }
   // [END pubsub_to_gcs_main]
 }
