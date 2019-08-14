@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /** Snippets to demonstrate Firestore add, update and delete operations. */
 class ManageDataSnippets {
@@ -426,4 +427,20 @@ class ManageDataSnippets {
     }
     // [END fs_write_batch]
   }
+
+  public void updateDocumentIncrement() throws ExecutionException, InterruptedException {
+    final City city = new City();
+    city.setPopulation(100L);
+    db.collection("cities").document("DC").set(city).get();
+
+    // [START fs_update_document_increment]
+    DocumentReference washingtonRef = db.collection("cities").document("DC");
+
+    // Atomically increment the population of the city by 50.
+    final ApiFuture<WriteResult> updateFuture = washingtonRef
+        .update("population", FieldValue.increment(50));
+    // [END fs_update_document_increment]
+    updateFuture.get();
+  }
+
 }
