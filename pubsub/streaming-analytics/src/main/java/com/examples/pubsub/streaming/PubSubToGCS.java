@@ -13,10 +13,8 @@
 // limitations under the License.
 
 package com.examples.pubsub.streaming;
-
+// [START pubsub_to_gcs]
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
-import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
@@ -24,6 +22,7 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation.Required;
+import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.joda.time.Duration;
@@ -32,7 +31,6 @@ import java.io.IOException;
 
 
 public class PubSubToGCS {
-  // [START pubsub_to_gcs_options]
   /*
   * Define your own configuration options. Add your own arguments to be processed
   * by the command-line parser, and specify default values for them.
@@ -53,10 +51,10 @@ public class PubSubToGCS {
     String getOutput();
     void setOutput(String value);
   }
-  // [END pubsub_to_gcs_options]
 
-  // [START pubsub_to_gcs_main]
   public static void main(String[] args) throws IOException {
+    // The maximum number of shards when writing output.
+    int numShards = 1;
 
     PubSubToGCSOptions options = PipelineOptionsFactory
       .fromArgs(args)
@@ -68,16 +66,15 @@ public class PubSubToGCS {
     Pipeline pipeline = Pipeline.create(options);
 
     pipeline
-      /* 1) Read string messages from Pub/Sub. */
-      .apply("Read PubSub Events", PubsubIO.readStrings().fromTopic(options.getInputTopic()))
-      /* 2) Window the messages into fixed minute intervals. */
+      // 1) Read string messages from a Pub/Sub topic.
+      .apply("Read PubSub Messages", PubsubIO.readStrings().fromTopic(options.getInputTopic()))
+      // 2) Group the messages into fixed-sized minute intervals.
       .apply(Window.into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
-      /* 3) Output the windowed files to GCS with a default value of 1 for numShards. */
-      .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), 1));
+      // 3) Write one file to GCS for every window of messages.
+      .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
-    // Execute the pipeline and return the result.
-    PipelineResult result = pipeline.run();
-    result.waitUntilFinish();
+    // Execute the pipeline and wait until it finishes running.
+    pipeline.run().waitUntilFinish();
   }
-  // [END pubsub_to_gcs_main]
 }
+// [END pubsub_to_gcs]

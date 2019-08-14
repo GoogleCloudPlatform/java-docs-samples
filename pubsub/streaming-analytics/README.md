@@ -1,4 +1,4 @@
-# Stream Cloud Pub/Sub with Cloud DataFlow
+# Stream Cloud Pub/Sub with Cloud Dataflow
 
 Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
 
@@ -10,7 +10,7 @@ Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
 
 1. [Enable billing].
 
-1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_component,storage_api,pubsub,cloudresourcemanager.googleapis.com,cloudscheduler.googleapis.com): Dataflow, Compute Engine, Stackdriver Logging, Cloud Storage, Cloud Storage JSON, Pub/Sub, Cloud Scheduler, and Cloud Resource Manager.
+1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_component,storage_api,pubsub,cloudresourcemanager.googleapis.com,cloudscheduler.googleapis.com,appengine.googleapis.com): Dataflow, Compute Engine, Stackdriver Logging, Cloud Storage, Cloud Storage JSON, Pub/Sub, Cloud Scheduler, Cloud Resource Manager, and App Engine.
 
 1. Setup the Cloud SDK to your GCP project.
 
@@ -38,27 +38,27 @@ Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
    export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/credentials.json
    ```
 
-1. Create a Cloud Storage bucket. Grant the Default Compute Engine Service Account Object Admin Access to your bucket.
+1. Create a Cloud Storage bucket.
 
    ```bash
-   gsutil mb gs://your-gcs-bucket
+   BUCKET_NAME=your-gcs-bucket
+   PROJECT_NAME=$(gcloud config get-value project)
    
-   BUCKET=gs://your-gcs-bucket
-   PROJECT=${gcloud config get-value project}
-   PROJECT_NUMBER=$(gcloud projects describe ${PROJECT} --format="value(projectNumber)")
-   
-   gsutil iam ch \
-     serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com:objectAdmin \
-     ${BUCKET}
+   gsutil mb gs://$BUCKET_NAME
    ```
    
- 1. Start a Cloud Scheduler job that publishes one message to a Cloud Pub/Sub topic every minute.
+ 1. Start a [Google Cloud Scheduler] job that publishes one message to a [Google Cloud Pub/Sub] topic every minute. This will create an [Google App Engine] app if one has  not been created. 
  
     ```bash
+    # Create a Pub/Sub topic.
     gcloud pubsub topics create cron-topic
     
-    gcloud scheduler jobs create pubsub my-job --schedule="* * * * *" \
-      --topic=cron-topic --message-body="Hello Pub/Sub!"
+    # Create a Cloud Scheduler job
+    gcloud scheduler jobs create pubsub publisher-job --schedule="* * * * *" \
+      --topic=cron-topic --message-body="Hello!"
+    
+    # Run the job. 
+    gcloud scheduler jobs run publisher-job
     ```
 
 ## Setup
@@ -88,50 +88,59 @@ The following instructions will help you prepare your development environment.
 
 * [PubSubToGCS.java](src/main/java/com/examples/pubsub/streaming/PubSubToGCS.java)
 
-To run the example and write output files in the desired Cloud Storage location.
+To run the example in Cloud Dataflow and write output files in the desired Cloud Storage location.
 
 ```bash
 mvn compile exec:java \
   -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGCS \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
+    --project=$PROJECT_NAME \
     --windowSize=2 \
-    --inputTopic=projects/${PROJECT}/topics/cron-topic \
-    --output=gs://${BUCKET}/output- \
+    --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
+    --output=gs://$BUCKET_NAME/samples/output \
     --runner=DataflowRunner"
 ```
 
-After the job has been submitted, you can check its status in the [GCP Console Dataflow page].
+After the job has been submitted, you can check its status in the [GCP Console Dataflow page]. 
+
+You can also check the windowed files that are written to your GCS bucket using the command line below or in the [GCP Cloud Storage page]. Note that you may need to wait a few minutes for the files to appear.
+
+```bash
+gsutil ls gs://$BUCKET_NAME/samples/
+```
 
 ## Cleanup
 
 1. Delete the Cloud Schedule job. 
     ```bash
-    gcloud scheduler jobs delete my-job
+    gcloud scheduler jobs delete publisher-job
     ```
 
-1. `Ctrl + C` to stop the program in your terminal.
+1. `Ctrl+C` to stop the program in your terminal.
 
-1. Cancel the DataFlow job in [GCP Console Dataflow page]. Stop the pipeline without draining it. 
+1. Stop the Dataflow job in [GCP Console Dataflow page]. Cancel the job instead of draining it. This may take some minutes.
 
-1. Delete the topic. 
+1. Delete the topic. [Google Cloud Dataflow] will automatically delete the subscription associated with the streaming pipeline when the job is canceled.
    ```bash
    gcloud pubsub topics delete cron-topic
    ```
 
-1. To avoid incurring charges to your GCP account for the resources used:
+1. Lastly, to avoid incurring charges to your GCP account for the resources created in this tutorial:
 
     ```bash
     # Delete only the files created by this sample.
-    gsutil -m rm -rf "gs://$BUCKET/output*"
+    gsutil -m rm -rf "gs://$BUCKET_NAME/samples/output*"
     
     # [optional] Remove the Cloud Storage bucket.
-    gsutil rb gs://$BUCKET
+    gsutil rb gs://$BUCKET_NAME
     ```
 
 [Apache Beam]: https://beam.apache.org/
 [Google Cloud Pub/Sub]: https://cloud.google.com/pubsub/docs/
 [Google Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
+[Google Cloud Scheduler]: https://cloud.google.com/scheduler/docs/
+[Google App Engine]: https://cloud.google.com/appengine/docs/
 
 [Cloud SDK]: https://cloud.google.com/sdk/docs/
 [Create a new project]: https://console.cloud.google.com/projectcreate
@@ -148,3 +157,4 @@ After the job has been submitted, you can check its status in the [GCP Console D
 
 [GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
 [GCP Console Dataflow page]: https://console.cloud.google.com/dataflow
+[GCP Cloud Storage page]: https://console.cloud.google.com/storage
