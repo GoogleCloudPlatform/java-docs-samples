@@ -16,7 +16,7 @@
 
 package snippets.healthcare.fhir;
 
-// [START healthcare_export_fhir_resources]
+// [START healthcare_export_fhir_resources_gcs]
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
@@ -101,4 +101,4 @@ public class FhirStoreExport {
         .build();
   }
 }
-// [END healthcare_export_fhir_resources]
+// [END healthcare_export_fhir_resources_gcs]
