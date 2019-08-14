@@ -47,7 +47,7 @@ Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
    gsutil mb gs://$BUCKET_NAME
    ```
    
- 1. Start a [Google Cloud Scheduler] job that publishes one message to a [Google Cloud Pub/Sub] topic every minute. This will create an [Google App Engine] app if one has  not been created. 
+ 1. Start a [Google Cloud Scheduler] job that publishes one message to a [Google Cloud Pub/Sub] topic every minute. This will create an [App Engine] app if one has never been created on the project. 
  
     ```bash
     # Create a Pub/Sub topic.
@@ -142,7 +142,7 @@ gsutil ls gs://$BUCKET_NAME/samples/
 [Google Cloud Pub/Sub]: https://cloud.google.com/pubsub/docs/
 [Google Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
 [Google Cloud Scheduler]: https://cloud.google.com/scheduler/docs/
-[Google App Engine]: https://cloud.google.com/appengine/docs/
+[App Engine]: https://cloud.google.com/appengine/docs/
 
 [Cloud SDK]: https://cloud.google.com/sdk/docs/
 [Create a new project]: https://console.cloud.google.com/projectcreate
