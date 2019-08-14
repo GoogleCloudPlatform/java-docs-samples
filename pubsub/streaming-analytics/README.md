@@ -102,6 +102,8 @@ mvn compile exec:java \
     --runner=DataflowRunner"
 ```
 
+> NOTE: You can also run locally with the DirectRunner if you don't specify the `--runner` option. 
+
 After the job has been submitted, you can check its status in the [GCP Console Dataflow page]. 
 
 You can also check the windowed files that are written to your GCS bucket using the command line below or in the [GCP Cloud Storage page]. Note that you may need to wait a few minutes for the files to appear.
