@@ -37,7 +37,7 @@
   </parent>
 
   <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+  <properties>  <!-- App Engine Standard currently requires Java 8 -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>

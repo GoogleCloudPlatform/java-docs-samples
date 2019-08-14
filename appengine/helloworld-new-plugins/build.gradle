@@ -58,5 +58,5 @@ appengine {  // App Engine tasks configuration
 group = 'com.example.appengine'   // Generated output GroupId
 version = '1.0-SNAPSHOT'          // Version in generated output
 
-sourceCompatibility = 1.7  // App Engine Standard uses Java 7
-targetCompatibility = 1.7  // App Engine Standard uses Java 7
+sourceCompatibility = 1.8  // App Engine Standard uses Java 8
+targetCompatibility = 1.8  // App Engine Standard uses Java 8
