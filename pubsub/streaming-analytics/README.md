@@ -123,7 +123,7 @@ gsutil ls gs://$BUCKET_NAME/samples/
     gcloud scheduler jobs delete publisher-job
     ```
 
-1. `Ctrl+C` to stop the program in your terminal.
+1. `Ctrl+C` to stop the program in your terminal. Note that this does not actually stop the job if you use `DataflowRunner`. Skip 3 if you use the `DirectRunner`.
 
 1. Stop the Dataflow job in [GCP Console Dataflow page]. Cancel the job instead of draining it. This may take some minutes.
 
