@@ -62,8 +62,8 @@ import org.json.JSONObject;
  *
  * $ mvn exec:java \
  *       -Dexec.mainClass="com.example.cloud.iot.endtoend.CloudiotPubsubExampleServer" \
- *       -Dexec.args="-project_id=<your-iot-project> \
- *                 -pubsub_subscription=<your-pubsub-subscription"
+ *       -Dexec.args="-project_id=your-iot-project \
+ *       -pubsub_subscription=your-pubsub-subscription"
  *
  * </code> </prev>
  */

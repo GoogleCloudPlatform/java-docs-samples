@@ -16,7 +16,7 @@
 
 package com.example.appengine.appidentity;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -63,8 +63,8 @@ public class SignForAppServletTest {
   @Test public void doGet_defaultEnvironment_successfullyVerifiesSignature() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
-    assertThat(responseWriter.toString())
-        .named("SignForAppServlet response")
+    assertWithMessage("SignForAppServlet response")
+        .that(responseWriter.toString())
         .contains("isValid=true for message: abcdefg");
   }
 }

@@ -33,7 +33,7 @@ Copyright 2017 Google Inc.
 
 
 <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+  <properties>  <!-- App Engine Standard currently requires Java 8 -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
@@ -43,7 +43,7 @@ Copyright 2017 Google Inc.
       <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.75</version>
+      <version>1.9.76</version>
     </dependency>
 
     <dependency>

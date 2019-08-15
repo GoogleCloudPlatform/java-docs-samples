@@ -19,11 +19,14 @@ package com.example.containeranalysis;
 import static java.lang.Thread.sleep;
 import static junit.framework.TestCase.assertEquals;
 
+import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
 import io.grafeas.v1.DiscoveryNote;
 import io.grafeas.v1.DiscoveryOccurrence;
 import io.grafeas.v1.DiscoveryOccurrence.AnalysisStatus;
@@ -39,7 +42,6 @@ import io.grafeas.v1.VulnerabilityNote;
 import io.grafeas.v1.VulnerabilityOccurrence;
 import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
 
-import io.grpc.StatusRuntimeException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -202,10 +204,18 @@ public class SamplesTest {
   public void testPubSub() throws Exception {
     int newCount;
     int tries;
+    // create new topic and subscription if needed
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      String topicId = "container-analysis-occurrences-v1";
+      ProjectTopicName topicName = ProjectTopicName.of(PROJECT_ID, topicId);
+      topicAdminClient.createTopic(topicName);
+    } catch (AlreadyExistsException e) {
+      System.out.println("Topic already exists");
+    }
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(PROJECT_ID, subId);
     try {
       Subscriptions.createOccurrenceSubscription(subId, PROJECT_ID);
-    } catch (StatusRuntimeException e) {
+    } catch (AlreadyExistsException e) {
       System.out.println("subscription " + subId + " already exists");
     }
     Subscriber subscriber = null;

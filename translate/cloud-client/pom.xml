@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
-      <version>1.79.0</version>
+      <version>1.83.0</version>
     </dependency>
     <!-- [END translate_java_dependencies] -->
 
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.45</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

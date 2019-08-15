@@ -89,7 +89,7 @@ public class WritesTest {
   }
 
   @Test
-  public void testWriteSimple() {
+  public void test1_WriteSimple() {
     WriteSimple.writeSimple(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
@@ -97,7 +97,7 @@ public class WritesTest {
   }
 
   @Test
-  public void testWriteBatch() {
+  public void test2_WriteBatch() {
     WriteBatch.writeBatch(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
@@ -105,7 +105,7 @@ public class WritesTest {
   }
 
   @Test
-  public void testWriteConditionally() {
+  public void test3_WriteConditionally() {
     WriteConditionally.writeConditionally(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
@@ -113,7 +113,7 @@ public class WritesTest {
   }
 
   @Test
-  public void testWriteIncrement() {
+  public void test4_WriteIncrement() {
     WriteIncrement.writeIncrement(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();

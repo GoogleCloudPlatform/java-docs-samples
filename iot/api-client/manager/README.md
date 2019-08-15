@@ -51,167 +51,187 @@ The following description summarizes the sample usage:
 
 https://cloud.google.com/iot-core
 
+We recommend using the Maven **exec** plugin for invoking the sample.
+
 For example, if your project ID is `blue-jet-123`, your service account
 credentials are stored in your home folder in creds.json and you have generated
 your credentials using the shell script provided in the parent folder, you can
 run the sample as:
 
 
+    mvn exec:exec -Dmanager \
+                  -Dcr=--cloud_region=us-central1 \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=my-registry \
+                  -Dcmd=list-devices
+
+The full set of parameters passable to the exec wrapper are as follows:
+
+    mvn exec:exec -Dmanager \
+                  -Dpst=--pubsub_topic=<your-topic> \
+                  -Decf=--ec_public_key_file=<your-ec-file> \
+                  -Drsaf=--rsa_certificate_file=<your-rsa-certificate-file> \
+                  -Dcr=--cloud_region=<your region, e.g. us-central1> \
+                  -Dproj=--project_id=<your-cloud-project-id> \
+                  -Drname=--registry_name=<your-registry-name> \
+                  -Ddid=--device_id=<your-device-id> \
+                  -Dgid=--gateway_id=<your-gateway-id> \
+                  -Ddata=--data=<your-command-data> \
+                  -Dconf=--configuration=<your-configuration-data> \
+                  -Dv=--version=<your-configuration-version> \
+                  -Dm=--member=<your-member-data> \
+                  -Dr=--role=<your-role-data> \
+                  -Dcmd=--command=<your-command-to-run>
+
 ## Usage Examples
 
 Create a PubSub topic, `hello-java`, for the project, `blue-jet-123`:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -command=create-iot-topic \
-                   -pubsub_topic=hello-java"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dcmd=create-iot-topic \
+                  -Dpst=--pubsub_topic=hello-java
 
 Create an ES device:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -cloud_region=us-central1 \
-                   -registry_name=hello-java \
-                   -ec_public_key_file ../ec_public.pem \
-                   -device_id=java-device-0 \
-                   -command=create-es"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Dcr=--cloud_region=us-central1 \
+                  -Drname=--registry_name=hello-java \
+                  -Decf=--ec_public_key_file ../ec_public.pem \
+                  -Ddid=--device_id=java-device-0 \
+                  -Dcmd=create-es
 
 Create an RSA device:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -rsa_certificate_file ../rsa_cert.pem \
-                   -device_id=java-device-1 \
-                   -command=create-rsa"
+    mvn exec:exec -Dmanager \
+                  -Dproj=-project_id=blue-jet-123 \
+                  -Dpst=-pubsub_topic=hello-java \
+                  -Drname=-registry_name=hello-java \
+                  -Drsaf=-rsa_certificate_file=../rsa_cert.pem \
+                  -Ddid=-device_id=java-device-1 \
+                  -Dcmd=create-rsa
 
 Create a device without authorization:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -device_id=java-device-3 \
-                   -command=create-unauth"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Ddid=--device_id=java-device-3 \
+                  -Dcmd=create-unauth
 
 Create a device registry:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -command=create-registry"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Dcmd=create-registry
 
 Delete a device registry:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -command=delete-registry"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Dcmd=delete-registry
 
 Get a device registry:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -command=get-registry"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-343 \
+                  -Dcmd=get-registry \
+                  -Drname=--registry_name="hello-java"
 
 List devices:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -command=list-devices"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Dcmd=list-devices
 
 List device registries:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -command=list-registries"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Dcmd=list-registries
 
 Patch a device with ES:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -ec_public_key_file ../ec_public.pem \
-                   -device_id=java-device-1 -command=patch-device-es"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Decf=--ec_public_key_file=../ec_public.pem \
+                  -Ddid=--device_id=java-device-1 \
+                  -Dcmd=patch-device-es
 
 Patch a device with RSA:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -pubsub_topic=hello-java \
-                   -registry_name=hello-java \
-                   -rsa_certificate_file ../rsa_cert.pem \
-                   -device_id=java-device-0 \
-                   -command=patch-device-rsa"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Dpst=--pubsub_topic=hello-java \
+                  -Drname=--registry_name=hello-java \
+                  -Drsaf=--rsa_certificate_file=../rsa_cert.pem \
+                  -Ddid=--device_id=java-device-0 \
+                  -Dcmd=patch-device-rsa
 
-Create a gateway:
+Create a gateway with RSA credentials:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -registry_name=your-registry \
-                   -public_key_file ../rsa_cert.pem \
-                   -gateway_id=java-gateway-0 \
-                   -command=create-gateway"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=your-registry \
+                  -Drsaf=--rsa_certificate_file=../rsa_cert.pem \
+                  -Dgid=--gateway_id=java-gateway-0 \
+                  -Dcmd=create-gateway
+
+Create a gateway with EC credentials:
+
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=your-registry-name \
+                  -Decf=--ec_public_key_file=resources/ec_public.pem \
+                  -Dgid=--gateway_id=java-gateway-1 \
+                  -Dcmd=create-gateway
+
 
 Bind a device to a gateway:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -registry_name=your-registry \
-                   -gateway_id=java-gateway-0 \
-                   -device_id=java-device-0 \
-                   -command=bind-device-to-gateway"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=your-registry \
+                  -Dgid=--gateway_id=java-gateway-0 \
+                  -Ddid=--device_id=java-device-0 \
+                  -Dcmd=bind-device-to-gateway
 
 Unbind a device to a gateway:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -registry_name=your-registry \
-                   -gateway_id=java-gateway-0 \
-                   -device_id=java-device-0 \
-                   -command=unbind-device-from-gateway"
+    mvn exec:exec -Dmanager \
+                  -Dproj=-project_id=blue-jet-123 \
+                  -Drname=-registry_name=your-registry \
+                  -Dgid=-gateway_id=java-gateway-0 \
+                  -Ddid=-device_id=java-device-0 \
+                  -Dcmd=unbind-device-from-gateway
 
 List gateways in a registry.
 
-    mvn exec:java \
-          -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-          -Dexec.args="-project_id=blue-jet-123 \
-                       -registry_name=your-registry \
-                       -command=list-gateways"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=your-registry \
+                  -Dcmd=list-gateways
 
 List devices bound to a gateway.
 
-    mvn exec:java \
-              -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-              -Dexec.args="-project_id=blue-jet-123 \
-                           -registry_name=your-registry \
-                           -gateway_id=your-gateway-id  \
-                           -command=list-devices-for-gateway"
+    mvn exec:exec -Dmanager \
+                  -Dproj=--project_id=blue-jet-123 \
+                  -Drname=--registry_name=your-registry \
+                  -Dgid=--gateway_id=your-gateway-id  \
+                  -Dcmd=list-devices-for-gateway
 
 
 # Cloud IoT Core Java HTTP example
@@ -234,14 +254,17 @@ Run the following command to install the dependencies using Maven:
 The following command summarizes the sample usage:
 
 ```
-    mvn exec:java \
-        -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
-        -Dexec.args="-project_id=<your-iot-project> \
-                     -registry_id=<your-registry-id> \
-                     -device_id=<device-id> \
-                     -private_key_file=<path-to-keyfile> \
-                     -message_type=<event|state> \
-                     -algorithm=<RS256|ES256>"
+    mvn exec:exec -Dhttp \
+                  -Dproject_id=YOUR-PROJECT-ID \
+                  -Dregistry_id=YOUR-REGISTRY-ID \
+                  -Ddevice_id=YOUR-DEVICE-ID \
+                  -Dalgorithm=RS256|ES256 \
+                  -Dprivate_key_file="../path/to/your_private_pkcs8" \
+                  -Dcr=-cloud_region=us-central1 | asia-east1 | europe-west1 \
+                  -Dhba=http_bridge_address=https://cloudiotdevice.googleapis.com \
+                  -Dapiv=-api_version=v1 \
+                  -Dexp=-token_exp_minutes=60 \
+                  -Dmt=-message_type=state | event
 ```
 
 For example, if your project ID is `blue-jet-123`, the Cloud region associated
@@ -250,28 +273,26 @@ credentials using the [`generate_keys.sh`](../generate_keys.sh) script
 provided in the parent folder, you can run the sample as:
 
 ```
-    mvn exec:java \
-        -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
-        -Dexec.args="-project_id=blue-jet-123 \
-                     -registry_id=my-registry \
-                     -cloud_region=europe-west1 \
-                     -device_id=my-java-device \
-                     -private_key_file=../rsa_private_pkcs8 \
-                     -algorithm=RS256"
+    mvn exec:exec -Dhttp \
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-java-device \
+                  -Dalgorithm=RS256 \
+                  -Dprivate_key_file=../rsa_private_pkcs8 \
+                  -Dcr=-cloud_region=asia-east1
 ```
 
 To publish state messages, run the sample as follows:
 
 ```
-    mvn exec:java \
-        -Dexec.mainClass="com.example.cloud.iot.examples.HttpExample" \
-        -Dexec.args="-project_id=blue-jet-123 \
-                     -registry_id=my-registry \
-                     -cloud_region=us-central1 \
-                     -device_id=my-java-device \
-                     -private_key_file=../rsa_private_pkcs8 \
-                     -message_type=state \
-                     -algorithm=RS256"
+    mvn exec:exec -Dhttp \
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-java-device \
+                  -Dalgorithm=RS256 \
+                  -Dprivate_key_file=../rsa_private_pkcs8 \
+                  -Dcr=-cloud_region=us-central1 \
+                  -Dmt=message_type=state
 ```
 
 
@@ -309,16 +330,23 @@ Run the following command to install the dependencies using Maven:
 
 ## Running the sample
 
-The following command summarizes the sample usage:
+The following example shows you how to invoke the sample using the `mvn exec`:
 
-    mvn exec:java \
-        -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
-        -Dexec.args="-project_id=my-iot-project \
-                     -registry_id=my-registry \
-                     -cloud_region=us-central1 \
-                     -device_id=my-device \
-                     -private_key_file=rsa_private_pkcs8 \
-                     -algorithm=RS256"
+    mvn exec:exec -Dmqtt \
+                  -Dproject_id=YOUR-PROJECT-ID \
+                  -Dregistry_id=YOUR-REGISTRY-ID \
+                  -Ddevice_id=YOUR-DEVICE-ID \
+                  -Dalgorithm=RS256|ES256 \
+                  -Dprivate_key_file=../path/to/your_private_pkcs8
+                  -Dcmd=-command=listen-for-config-messages
+                  -Dgid=-gateway_id=YOUR-GATEWAY-ID
+                  -Dcr=-cloud_region=us-central1 | asia-east1 | europe-west1
+                  -Dexp=-token_exp_minutes=60
+                  -Dmhn=mqtt_bridge_hostname=mqtt.googleapis.com
+                  -Dmp=-mqtt_bridge_port=443 | 8883
+                  -Dmt=-message_type=state | event
+                  -Dtd=-telemetry_data=YOUR-CUSTOM-DATA
+                  -Dwt=-wait_time=3600
 
 For example, if your project ID is `blue-jet-123`, your device registry is
 located in the `asia-east1` region, and you have generated your
@@ -327,46 +355,40 @@ provided in the parent folder, you can run the sample as:
 
 Run mqtt example:
 
-    mvn exec:java \
-        -Dexec.mainClass="com.example.cloud.iot.examples.MqttExample" \
-        -Dexec.args="-project_id=blue-jet-123 \
-                     -registry_id=my-registry \
-                     -cloud_region=asia-east1 \
-                     -device_id=my-device \
-                     -private_key_file=../rsa_private_pkcs8 \
-                     -algorithm=RS256"
+    mvn exec:exec -Dmqtt \
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-test-device \
+                  -Dalgorithm=RS256 \
+                  -Dprivate_key_file="../path/to/your_private_pkcs8"
 
 Listen for configuration messages:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -cloud_region=us-central1 \
-                   -registry_id=my-registry  \
-                   -gateway_id=test-gateway \
-                   -ec_public_key_file=../ec_public.pem \
-                   -algorithm='ES256' or 'RS256'
-                   -device_id=java-device-0 \
-                   -mqtt_bridge_hostname=mqtt.googleapis.com \
-                   -mqtt_bridge_port=443 or 8883 \
-                   -command=listen-for-config-messages"
+    mvn exec:exec -Dmqtt \
+                  -Dproject_id=blue-jet-123 \
+                  -Dregistry_id=my-registry \
+                  -Ddevice_id=my-test-device \
+                  -Dalgorithm=RS256 \
+                  -Dprivate_key_file="../path/to/your_private_pkcs8"
+                  -Dgid=-gateway_id=YOUR-GATEWAY-ID \
+                  -Dmhn-mqtt_bridge_hostname=mqtt.googleapis.com \
+                  -Dmp=-mqtt_bridge_port=443 \
+                  -Dcmd=-command=listen-for-config-messages
 
 Send data on behalf of device:
 
-    mvn exec:java \
-      -Dexec.mainClass="com.example.cloud.iot.examples.DeviceRegistryExample" \
-      -Dexec.args="-project_id=blue-jet-123 \
-                   -cloud_region=us-central1 \
-                   -registry_id=my-registry  \
-                   -gateway_id=test-gateway \
-                   -ec_public_key_file=../ec_public.pem \
-                   -algorithm='ES256' or 'RS256' \
-                   -device_id=java-device-0 \
-                   -message_type='event' or 'state' \
-                   -telemetry_data='your telemetry msg' \
-                   -mqtt_bridge_hostname=mqtt.googleapis.com \
-                   -mqtt_bridge_port=443 or 8883 \
-                   -command=send-data-from-bound-device"
+    mvn exec:exec -Dmqtt \
+                  -Dcr=-cloud_region=us-central1 \
+                  -Ddevice_id=java-device-0 \
+                  -Dregistry_id=my-registry  \
+                  -Dgid=-gateway_id=test-gateway \
+                  -Dprivate_key_file=../your_private_pkcs8 \
+                  -Dalgorithm=RS256 \
+                  -Dtd=-telemetry_data="your telemetry msg" \
+                  -Dmhn=-mqtt_bridge_hostname=mqtt.googleapis.com \
+                  -Dmt=-message_type='event' \
+                  -Dmp=mqtt_bridge_port=443 \
+                  -Dcmd=-command=send-data-from-bound-device
 
 
 ## Reading the messages written by the sample client

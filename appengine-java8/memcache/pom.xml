@@ -48,7 +48,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.75</version>
+      <version>1.9.76</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.xmemcached</groupId>

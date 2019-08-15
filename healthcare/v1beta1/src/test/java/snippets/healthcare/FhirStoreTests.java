@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.fhir.FhirStoreCreate;
 import snippets.healthcare.fhir.FhirStoreDelete;
 import snippets.healthcare.fhir.FhirStoreExecuteBundle;
@@ -45,7 +46,7 @@ import snippets.healthcare.fhir.FhirStorePatch;
 import snippets.healthcare.fhir.FhirStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
-public class FhirStoreTests extends TestBase {
+public class FhirStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
@@ -85,7 +86,7 @@ public class FhirStoreTests extends TestBase {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    deleteDatasets();
+    DatasetDelete.datasetDelete(datasetName);
   }
 
   @Before

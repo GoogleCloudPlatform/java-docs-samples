@@ -14,6 +14,16 @@ using the [Google Cloud Client Library for Java][google-cloud-java].
 
 ## Setup
 
+Before you begin, complete the following steps as listed on the [Speech-to-Text Docs pages for Getting Started](https://cloud.google.com/speech-to-text/docs/quickstart-client-libraries#before-you-begin)
+ * Create or select a project.
+ * Enable the Google Speech-to-Text API for that project.
+ * Create a service account.
+ * Download a private key as JSON.
+ * Set `GOOGLE_APPLICATION_CREDENTIALS`
+  ```
+  export GOOGLE_APPLICATION_CREDENTIALS=path_to_your_downloaded_json_file
+  ```
+
 Install [Maven](http://maven.apache.org/).
 
 Build your project with:
@@ -155,7 +165,11 @@ mvn exec:java -DRecognize -Dexec.args="word-level-conf gs://cloud-samples-tests/
 ```
 
 ## Infinite Streaming
-Continuously stream audio to the speech API over multiple requests 
+Continuously stream audio to the speech API over multiple requests (by default en-US).
 ```
 mvn exec:java -DInfiniteStreamRecognize
+```
+If stream audio is in different language, you could also pass language code as a command line argument (for example, en-GB for english (Great Britian), en-US for english U.S., and more available in [this link](https://cloud.google.com/speech-to-text/docs/languages)).
+```
+mvn exec:java -Dexec.args="-lang_code=en-US" -DInfiniteStreamRecognize
 ```

@@ -16,7 +16,7 @@
 
 package com.example.appengine.users;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -87,11 +87,11 @@ public class UsersServletTest {
 
     // If a user isn't logged in, we expect a prompt
     //  to login to be returned.
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("<p>Please <a href=");
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("sign in</a>.</p>");
   }
 
@@ -101,9 +101,9 @@ public class UsersServletTest {
 
     // If a user is logged in, we expect a prompt
     // to logout to be returned.
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("<p>Hello, " + FAKE_NAME + "!");
-    assertThat(responseWriter.toString()).named("UsersServlet response").contains("sign out");
+    assertWithMessage("UsersServlet response").that(responseWriter.toString()).contains("sign out");
   }
 }

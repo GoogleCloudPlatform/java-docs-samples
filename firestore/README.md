@@ -35,7 +35,7 @@ Build your project:
  demonstrates adding and querying documents in a collection in Firestore.
 You can run the quickstart with:
 
-    mvn exec:java -Dexec.mainClass=com.example.firestore.Quickstart -Dexec.args="your-firestore-project-id"
+    mvn exec:exec -Dfirestore.project.id="your-firestore-project-id"
 
 Note: the default project-id will be used if no argument is provided.
 
