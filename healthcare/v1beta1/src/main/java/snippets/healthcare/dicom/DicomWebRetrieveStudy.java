@@ -28,10 +28,12 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -62,15 +64,23 @@ public class DicomWebRetrieveStudy {
 
     // Execute the request and process the results.
     HttpResponse response = request.executeUnparsed();
-    String content = new BufferedReader(
-        new InputStreamReader(response.getContent())).lines().collect(Collectors.joining("\n"));
+
+    String outputPath = "study.dcm";
+    OutputStream outputStream = new FileOutputStream(new File(outputPath));
+    try {
+      response.download(outputStream);
+      System.out.println("DICOM study written to file " + outputPath);
+    } finally {
+      outputStream.close();
+    }
+
     if (!response.isSuccessStatusCode()) {
-      System.err.print(String.format(
-          "Exception storing DICOM instance: %s\n", response.getStatusMessage()));
-      System.out.println(content);
+      System.err.print(
+          String.format(
+              "Exception retrieving DICOM study: %s\n", response.getStatusMessage()));
       throw new RuntimeException();
     }
-    System.out.println("DICOM study retrieved: \n" + content);
+    
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -96,3 +106,4 @@ public class DicomWebRetrieveStudy {
   }
 }
 // [END healthcare_dicomweb_retrieve_study]
+
