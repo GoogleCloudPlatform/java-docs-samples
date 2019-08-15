@@ -1,6 +1,6 @@
 # Stream Cloud Pub/Sub with Cloud Dataflow
 
-Samples showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
+Sample(s) showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
 
 ## Before you begin
 
@@ -88,7 +88,13 @@ The following instructions will help you prepare your development environment.
 
 * [PubSubToGCS.java](src/main/java/com/examples/pubsub/streaming/PubSubToGCS.java)
 
-To run the example in Cloud Dataflow and write output files in the desired Cloud Storage location.
+The following example will run a streaming pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
+
++ `--project`: sets the Google Cloud project ID to run the pipeline on
++ `--inputTopic`: sets the input Pub/Sub topic to read messages from
++ `--output`: sets the output GCS path prefix to write files to
++ `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
++ `--windowSize [optional]`: specifies the window size in minutes, defaults to 1
 
 ```bash
 mvn compile exec:java \
@@ -96,17 +102,15 @@ mvn compile exec:java \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
     --project=$PROJECT_NAME \
-    --windowSize=2 \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
     --output=gs://$BUCKET_NAME/samples/output \
-    --runner=DataflowRunner"
+    --runner=DataflowRunner \
+    --windowSize=2"
 ```
-
-> NOTE: You can also run locally with the DirectRunner if you don't specify the `--runner` option. 
 
 After the job has been submitted, you can check its status in the [GCP Console Dataflow page]. 
 
-You can also check the windowed files that are written to your GCS bucket using the command line below or in the [GCP Cloud Storage page]. Note that you may need to wait a few minutes for the files to appear.
+You can also check the output to your GCS bucket using the command line below or in the [GCP Console Storage page]. You may need to wait a few minutes for the files to appear.
 
 ```bash
 gsutil ls gs://$BUCKET_NAME/samples/
@@ -114,7 +118,7 @@ gsutil ls gs://$BUCKET_NAME/samples/
 
 ## Cleanup
 
-1. Delete the Cloud Schedule job. 
+1. Delete the [Google Cloud Scheduler] job. 
     ```bash
     gcloud scheduler jobs delete publisher-job
     ```
@@ -159,4 +163,4 @@ gsutil ls gs://$BUCKET_NAME/samples/
 
 [GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
 [GCP Console Dataflow page]: https://console.cloud.google.com/dataflow
-[GCP Cloud Storage page]: https://console.cloud.google.com/storage
+[GCP Console Storage page]: https://console.cloud.google.com/storage
