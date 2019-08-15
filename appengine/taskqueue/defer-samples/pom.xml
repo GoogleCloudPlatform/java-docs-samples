@@ -31,7 +31,7 @@
     </parent>
 
     <prerequisites>
-        <maven>3.0</maven>
+        <maven>3.1.0</maven>
     </prerequisites>
 
     <properties>
@@ -120,7 +120,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.9.59</version>
+                <version>1.9.76</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->

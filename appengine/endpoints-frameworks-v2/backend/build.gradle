@@ -72,8 +72,8 @@ appengine {  // App Engine tasks configuration
   }
 }
 
-sourceCompatibility = 1.7  // App Engine Standard uses Java 7
-targetCompatibility = 1.7  // App Engine Standard uses Java 7
+sourceCompatibility = 1.8  // App Engine Standard uses Java 8
+targetCompatibility = 1.8  // App Engine Standard uses Java 8
 
 // this replaces the ${endpoints.project.id} in appengine-web.xml and web.xml
 task replaceProjectId(type: Copy) {

@@ -543,5 +543,6 @@ public class MqttExample {
       System.out.println("Starting mqtt demo:");
       mqttDeviceDemo(options);
     }
+    // [END iot_mqtt_configuremqtt]
   }
 }
