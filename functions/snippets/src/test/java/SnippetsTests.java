@@ -149,4 +149,14 @@ public class SnippetsTests {
 
     assertThat(responseOut.toString(), containsString("Logs retrieved successfully."));
   }
+
+  @Test
+  public void helloBackgroundTest() throws IOException {
+    when(request.getContentType()).thenReturn("application/json");
+    BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
+    when(request.getReader()).thenReturn(bodyReader);
+
+    new HelloBackground().helloBackground(request, response);
+    assertThat(responseOut.toString(), containsString("Hello John!"));    
+  }
 }
