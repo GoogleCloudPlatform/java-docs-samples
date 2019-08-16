@@ -159,4 +159,10 @@ public class SnippetsTests {
     new HelloBackground().helloBackground(request, response);
     assertThat(responseOut.toString(), containsString("Hello John!"));    
   }
+
+  @Test
+  public void envTest() throws IOException {
+    new Env().env(request, response);
+    assertThat(responseOut.toString(), containsString(""));
+  }
 }
