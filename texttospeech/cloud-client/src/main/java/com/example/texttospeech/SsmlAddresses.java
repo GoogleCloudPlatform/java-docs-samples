@@ -43,7 +43,23 @@ import java.nio.file.Paths;
 public class SsmlAddresses {
 
   // [START tts_ssml_address_audio]
-  public static void ssmlToAudio(String ssmlText, String outfile)
+  /**
+   * Generates synthetic audio from a String of SSML text.
+   *
+   * Given a string of SSML text and an output file name, this function
+   * calls the Text-to-Speech API. The API returns a synthetic audio
+   * version of the text, formatted according to the SSML commands. This
+   * function saves the synthetic audio to the designated output file.
+   *
+   * ARGS
+   * ssmlText: String of tagged SSML text
+   * outfile: String name of file under which to save audio output
+   *
+   * RETURNS
+   * nothing
+   *
+   */
+  public static void ssmlToAudio(String ssmlText, String outFile)
       throws Exception {
     // Instantiates a client
     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
@@ -52,14 +68,14 @@ public class SsmlAddresses {
            .setSsml(ssmlText)
            .build();
 
-      // Build the voice request, select the language code ("en-US") and the ssml voice gender
-      // ("neutral")
+      // Build the voice request, select the language code ("en-US") and
+      // the ssml voice gender ("male")
       VoiceSelectionParams voice = VoiceSelectionParams.newBuilder()
           .setLanguageCode("en-US")
           .setSsmlGender(SsmlVoiceGender.MALE)
           .build();
 
-      // Select the type of audio file you want returned
+      // Select the audio file type
       AudioConfig audioConfig = AudioConfig.newBuilder()
           .setAudioEncoding(AudioEncoding.MP3)
           .build();
@@ -72,40 +88,61 @@ public class SsmlAddresses {
       // Get the audio contents from the response
       ByteString audioContents = response.getAudioContent();
 
-      // Write the response to the output file.
-      try (OutputStream out = new FileOutputStream(outfile)) {
+      // Write the response to the output file
+      try (OutputStream out = new FileOutputStream(outFile)) {
         out.write(audioContents.toByteArray());
-        System.out.println("Audio content written to file " + outfile);
+        System.out.println("Audio content written to file " + outFile);
       }
     }
-    // [END tts_ssml_address_audio]
-
   }
+  // [END tts_ssml_address_audio]
 
   // [START tts_ssml_address_ssml]
-  public static String textToSsml(String infile)
+  /**
+   * Generates SSML text from plaintext.
+   *
+   * Given an input filename, this function converts the contents of the input text file
+   * into a String of tagged SSML text. This function formats the SSML String so that,
+   * when synthesized, the synthetic audio will pause for two seconds between each line
+   * of the text file. This function also handles special text characters which might
+   * interfere with SSML commands.
+   *
+   * ARGS
+   * inputfile: String name of plaintext file
+   *
+   * RETURNS
+   * a String of SSML text based on plaintext input.
+   *
+   */
+  public static String textToSsml(String inputFile)
       throws Exception {
 
-    String rawLines = new String(Files.readAllBytes(Paths.get(infile)));
+    // Read lines of input file
+    String rawLines = new String(Files.readAllBytes(Paths.get(inputFile)));
 
+    // Replace special characters with HTML Ampersand Character Codes
+    // These codes prevent the API from confusing text with SSML tags
+    // For example, '<' --> '&lt;' and '&' --> '&amp;'
     String escapedLines = HtmlEscapers.htmlEscaper().escape(rawLines);
 
+    // Convert plaintext to SSML
+    // Tag SSML so that there is a 2 second pause between each address
     String expandedNewline = escapedLines.replaceAll("\\n","\n<break time='2s'/>");
     String ssml = "<speak>" + expandedNewline + "</speak>";
 
+    // Return the concatenated String of SSML
     return ssml;
   }
   // [START tts_ssml_address_ssml]
 
-  /**
-   * Demonstrates using the Text-to-Speech API.
-   */
+  // [START tts_ssml_address_test]
   public static void main(String... args) throws Exception {
     // test example address file
-    String infile = "resources/addresses.txt";
-    String outfile = "resources/addresses.mp3";
+    String inputFile = "resources/example.txt";
+    String outFile = "resources/example.mp3";
 
-    String ssml = textToSsml(infile);
-    ssmlToAudio(ssml, outfile);
+    String ssml = textToSsml(inputFile);
+    ssmlToAudio(ssml, outFile);
   }
+  // [END tts_ssml_address_test]
 }

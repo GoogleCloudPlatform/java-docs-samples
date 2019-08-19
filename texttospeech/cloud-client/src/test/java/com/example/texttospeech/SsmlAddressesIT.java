@@ -65,7 +65,8 @@ public class SsmlAddressesIT {
   @Test
   public void testSsmlToAudio() throws Exception {
     // Act
-    SsmlAddresses.ssmlToAudio(SSML_FILE, OUTPUT);
+    String ssml = new String(Files.readAllBytes(Paths.get(SSML_FILE)));
+    SsmlAddresses.ssmlToAudio(ssml, OUTPUT);
 
     // Assert
     outputFile = new File(OUTPUT);
