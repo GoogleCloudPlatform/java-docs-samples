@@ -16,13 +16,17 @@
 
 package com.example.vision;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.Product;
 import com.google.cloud.vision.v1.Product.KeyValue;
 import com.google.cloud.vision.v1.ProductSearchClient;
+import com.google.cloud.vision.v1.PurgeProductsRequest;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -213,6 +217,36 @@ public class ProductManagement {
   }
   // [END vision_product_search_delete_product]
 
+  // [START vision_product_search_purge_orphan_products]
+  /**
+   * Delete the product and all its reference images.
+   *
+   * @param projectId - Id of the project.
+   * @param computeRegion - A compute region name.
+   * @param force - Perform the purge only when force is set to True.
+   * @throws Exception - on I/O and API errors.
+   */
+  public static void purgeOrphanProducts(String projectId, String computeRegion, boolean force)
+          throws Exception {
+    try (ProductSearchClient client = ProductSearchClient.create()) {
+
+      String parent = LocationName.format(projectId, computeRegion);
+
+      // The purge operation is async.
+      PurgeProductsRequest req = PurgeProductsRequest
+              .newBuilder()
+              .setDeleteOrphanProducts(true)
+              .setParent(parent)
+              .build();
+
+      OperationFuture response = client.purgeProductsAsync(req);
+
+      response.get(60, TimeUnit.SECONDS);
+      System.out.println("Orphan products deleted.");
+    }
+  }
+  // [END vision_product_search_purge_orphan_products]
+
   public static void main(String[] args) throws Exception {
     ProductManagement productManagement = new ProductManagement();
     productManagement.argsHelper(args, System.out);
@@ -241,6 +275,9 @@ public class ProductManagement {
     Subparser deleteProductParser = subparsers.addParser("delete_product");
     deleteProductParser.addArgument("productId");
 
+    Subparser purgeOrphanProductsParser = subparsers.addParser("purge_orphan_products");
+    purgeOrphanProductsParser.addArgument("force");
+
     String projectId = System.getenv("PROJECT_ID");
     String computeRegion = System.getenv("REGION_NAME");
 
@@ -268,7 +305,9 @@ public class ProductManagement {
       if (ns.get("command").equals("delete_product")) {
         deleteProduct(projectId, computeRegion, ns.getString("productId"));
       }
-
+      if (ns.get("command").equals("purge_orphan_products")) {
+        purgeOrphanProducts(projectId, computeRegion, Boolean.parseBoolean(ns.getString("force")));
+      }
     } catch (ArgumentParserException e) {
       parser.handleError(e);
     }
