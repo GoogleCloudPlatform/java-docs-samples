@@ -61,8 +61,11 @@ public class OnlinePredictionSample {
     File requestBodyFile = new File("input.txt");
     HttpContent content = new FileContent(contentType, requestBodyFile);
     System.out.println(content.getLength());
-
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    
+    List<String> scopes = new ArrayList<>();
+    scopes.add("https://www.googleapis.com/auth/cloud-platform");
+    
+    GoogleCredential credential = GoogleCredential.getApplicationDefault().createScoped(scopes);
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
     HttpRequest request = requestFactory.buildRequest(method.getHttpMethod(), url, content);
 
