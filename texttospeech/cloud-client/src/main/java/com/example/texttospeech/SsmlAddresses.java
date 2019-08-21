@@ -51,12 +51,9 @@ public class SsmlAddresses {
    * version of the text, formatted according to the SSML commands. This
    * function saves the synthetic audio to the designated output file.
    *
-   * ARGS
-   * ssmlText: String of tagged SSML text
-   * outfile: String name of file under which to save audio output
-   *
-   * RETURNS
-   * nothing
+   * @param ssmlText: String of tagged SSML text
+   * @param outfile: String name of file under which to save audio output
+   * @throws Exception on errors while closing the client
    *
    */
   public static void ssmlToAudio(String ssmlText, String outFile)
@@ -107,11 +104,9 @@ public class SsmlAddresses {
    * of the text file. This function also handles special text characters which might
    * interfere with SSML commands.
    *
-   * ARGS
-   * inputfile: String name of plaintext file
-   *
-   * RETURNS
-   * a String of SSML text based on plaintext input.
+   * @param inputfile: String name of plaintext file
+   * @throws IOException on files that don't exist
+   * @return a String of SSML text based on plaintext input.
    *
    */
   public static String textToSsml(String inputFile)
