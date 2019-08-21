@@ -30,6 +30,8 @@ import com.google.api.services.discovery.model.JsonSchema;
 import com.google.api.services.discovery.model.RestDescription;
 import com.google.api.services.discovery.model.RestMethod;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Sample code for sending an online prediction request to Cloud Machine Learning Engine.
