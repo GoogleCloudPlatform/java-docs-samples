@@ -65,7 +65,7 @@ public class DicomWebRetrieveStudy {
     // Execute the request and process the results.
     HttpResponse response = request.executeUnparsed();
 
-    // When specifying the output file, use an extension like ".multipart."
+    // When specifying the output file, use an extension like ".multipart".
     // Then, parse the downloaded multipart file to get each individual
     // DICOM file.
     String outputPath = "study.multipart";
