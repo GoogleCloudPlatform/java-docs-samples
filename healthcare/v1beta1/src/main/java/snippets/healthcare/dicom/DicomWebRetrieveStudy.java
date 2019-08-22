@@ -93,11 +93,14 @@ public class DicomWebRetrieveStudy {
         GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("X-GFE-SSL", "yes");
+    headers.setAccept("multipart/related; type=application/dicom; transfer-syntax=*);
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
+          request.setHeaders(headers);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };
