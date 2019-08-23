@@ -100,7 +100,8 @@ public class DicomWebRetrieveStudy {
     // the returned object will be decompressed. This can negatively impact performance and lead
     // to errors for transfer syntaxes that the Cloud Healthcare API doesn't support.
     // To avoid these issues, and if the returned object's transfer syntax doesn't matter to
-    // your application, use the multipart/related; type="application/dicom"; transfer-syntax=* Accept Header.
+    // your application, use the
+    // multipart/related; type="application/dicom"; transfer-syntax=* Accept Header.
     headers.setAccept("multipart/related; type=application/dicom; transfer-syntax=*");
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
