@@ -19,7 +19,6 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,12 +31,10 @@ public class Scopes {
   
   private static int heavyComputation() {
     int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    return Arrays.stream(numbers).reduce((t, x) -> t * x);
+    return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 
   // [START functions_tips_scopes]
-  private static final Logger LOGGER = Logger.getLogger(Scopes.class.getName());
-
   // Global (instance-wide) scope
   // This computation runs at instance cold-start
   private static final int InstanceVar = heavyComputation();
