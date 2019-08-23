@@ -63,7 +63,7 @@ public class DicomWebTests {
 
   private static String instanceOutput = "instance.dcm";
   private static String renderedOutput = "image.png";
-  private static String studyOutput = "study.dcm";
+  private static String studyOutput = "study.multipart";
 
   private File outputFile;
 
