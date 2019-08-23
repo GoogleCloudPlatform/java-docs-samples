@@ -163,12 +163,6 @@ public class SnippetsTests {
   @Test
   public void scopesDemoTest() throws IOException, InterruptedException {
     new Tips().ScopesDemo(request, response);
-    assertThat(responseOut.toString(), containsString("Per instance: 45, per function: 45"));
-  }
-
-  @Test
-  public void tipsRetryTest() throws IOException, InterruptedException {
-    new Tips().TipsRetry(request, response);
-    assertThat(responseOut.toString(), containsString("Received code '200' from url 'http://example.com"));
+    assertThat(responseOut.toString(), containsString("Per instance: 362880, per function: 45"));
   }
 }

@@ -16,50 +16,19 @@
 
 // [START functions_tips_scopes]
 // [START run_tips_global_scope]
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Tips {
-
-  // Create a client with some reasonable defaults. This client can be reused for multiple requests.
-  private static HttpClient client =
-      HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-
-  // [END functions_tips_scopes]
-  // [END run_tips_global_scope]
-  private static int lightComputation() {
-      List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-      return numbers.stream().reduce((t, x) -> t + x).get();
-  }
-
-  private static int heavyComputation() {
-      List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-      return numbers.stream().reduce((t, x) -> t + x).get();
-  }
-
-  // [START functions_tips_scopes]
-  // [START run_tips_global_scope]
   // Global (instance-wide) scope
   // This computation runs at instance cold-start
   public static final int INSTANCE_VAR = heavyComputation();
 
-  /**
-   * HTTP function that declares a variable.
-   *
-   * @param {Object} req request context.
-   * @param {Object} res response context.
-   */
   public void ScopesDemo(HttpServletRequest request, HttpServletResponse response)
       throws IOException, InterruptedException {
     // Per-function scope
@@ -68,22 +37,21 @@ public class Tips {
     PrintWriter writer = response.getWriter();
     writer.write(String.format("Per instance: %d, per function: %d", INSTANCE_VAR, functionVar));
   }
-  // [END run_tips_global_scope]
   // [END functions_tips_scopes]
+  // [END run_tips_global_scope]
 
-  public void TipsRetry(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, InterruptedException {
-    // Create a GET TipsRetry to "http://example.com"
-    String url = "http://example.com";
-    HttpRequest getRequest = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
-
-    // Send the TipsRetry using the client
-    HttpResponse<String> getResponse = client.send(getRequest, BodyHandlers.ofString());
-
-    // Write the results to the output:
-    PrintWriter writer = response.getWriter();
-    writer.write(String.format("Received code '%s' from url '%s'.", getResponse.statusCode(), url));
+  private static int lightComputation() {
+    List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    return numbers.stream().reduce((t, x) -> t + x).get();
   }
+
+  private static int heavyComputation() {
+    List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    return numbers.stream().reduce((t, x) -> t * x).get();
+  }
+
+  // [START functions_tips_scopes]
+  // [START run_tips_global_scope]
 }
 
 // [END functions_tips_scopes]
