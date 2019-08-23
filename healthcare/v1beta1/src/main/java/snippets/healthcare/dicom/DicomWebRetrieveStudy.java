@@ -94,7 +94,6 @@ public class DicomWebRetrieveStudy {
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     HttpHeaders headers = new HttpHeaders();
-    headers.set("X-GFE-SSL", "yes");
     // The response's default transfer syntax is Little Endian Explicit.
     // As a result, if the file was uploaded using a compressed transfer syntax,
     // the returned object will be decompressed. This can negatively impact performance and lead
