@@ -37,13 +37,7 @@ public class BigQueryKmsKey {
   }
 
   public static void main(String[] args) {
-    String outputBigQueryTable = options.getOutputBigQueryTable();
-    String kmsKey = options.getKmsKey();
-    
     // [START dataflow_cmek]
-    // String outputBigQueryTable = "<project>:<dataset>.<table>";
-    // String kmsKey = "projects/<project>/locations/<kms-location>/keyRings/<kms-keyring>/cryptoKeys/<kms-key>";
-
     // Query from the NASA wildfires public dataset:
     // https://console.cloud.google.com/bigquery?p=bigquery-public-data&d=nasa_wildfire&t=past_week&page=table
     String query =
@@ -64,6 +58,12 @@ public class BigQueryKmsKey {
     BigQueryKmsKeyOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation().as(BigQueryKmsKeyOptions.class);
 
+    // String outputBigQueryTable = "<project>:<dataset>.<table>";
+    String outputBigQueryTable = options.getOutputBigQueryTable();
+
+    // String kmsKey = "projects/<project>/locations/<kms-location>/keyRings/<kms-keyring>/cryptoKeys/<kms-key>";
+    String kmsKey = options.getKmsKey();
+    
     // Create and run an Apache Beam pipeline.
     Pipeline pipeline = Pipeline.create(options);
     pipeline
