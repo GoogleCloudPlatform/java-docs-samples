@@ -162,7 +162,8 @@ public class SnippetsTests {
 
   @Test
   public void envTest() throws IOException {
-    new Env().env(request, response);
-    assertThat(responseOut.toString(), containsString(""));
+    new EnvVars().envVar(request, response);
+    when(System.getenv("FOO")).thenReturn("BAR");
+    assertThat(responseOut.toString(), containsString("BAR"));
   }
 }

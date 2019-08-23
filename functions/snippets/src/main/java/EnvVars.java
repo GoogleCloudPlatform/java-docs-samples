@@ -20,8 +20,14 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class Env {
-  public void env(HttpServletRequest request, HttpServletResponse response)
+public class EnvVars {
+  /**
+   * Returns the environment variable "foo" set during function deployment.
+   * @param request The Servlet HTTP request.
+   * @param response The Servlet HTTP response.
+   * @throws IOException If there is an I/O writer exception.
+   */
+  public void envVar(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     PrintWriter writer = response.getWriter();
     String foo = System.getenv("FOO");
