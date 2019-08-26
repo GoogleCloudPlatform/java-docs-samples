@@ -64,5 +64,10 @@
       <artifactId>google-cloud-pubsub</artifactId>
       <version>1.88.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-resourcemanager</artifactId>
+      <version>0.106.0-alpha</version>
+    </dependency>
   </dependencies>
 </project>

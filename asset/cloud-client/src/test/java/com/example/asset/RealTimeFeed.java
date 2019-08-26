@@ -20,6 +20,9 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.resourcemanager.ProjectInfo;
+import com.google.cloud.resourcemanager.ResourceManager;
+import com.google.cloud.resourcemanager.ResourceManagerOptions;
 import com.google.pubsub.v1.ProjectTopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -34,14 +37,21 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class RealTimeFeed {
-  private static String topicId = UUID.randomUUID().toString();
-  private String feedId = "java_feed";
+  private static String topicId = "topicId";
+  private static String feedId = UUID.randomUUID().toString();
   private static String projectId = ServiceOptions.getDefaultProjectId();
-  private String feedName = "projects/846710131186/feeds/java_feed";
+  private String projectNumber = getProjectNumber(projectId);
+  private String feedName = String.format("projects/%s/feeds/%s", projectNumber, feedId);
   private String[] assetNames = {UUID.randomUUID().toString()};
   private static ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
   private static ByteArrayOutputStream bout;
   private static PrintStream out;
+
+  private String getProjectNumber(String projectId) {
+    ResourceManager resourceManager = ResourceManagerOptions.getDefaultInstance().getService();
+    ProjectInfo project = resourceManager.get(projectId);
+    return Long.toString(project.getProjectNumber());
+  }
 
   private static final void deleteTopic(ProjectTopicName topicName) {
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
