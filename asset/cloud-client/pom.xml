@@ -59,5 +59,10 @@
       <version>1.83.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
+      <version>1.88.0</version>
+    </dependency>
   </dependencies>
 </project>

@@ -17,9 +17,6 @@
 package com.example.asset;
 
 // [START asset_quickstart_get_feed]
-// Imports the Google Cloud client library
-
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1p2beta1.AssetServiceClient;
 import com.google.cloud.asset.v1p2beta1.Feed;
 import java.util.Arrays;
@@ -27,13 +24,16 @@ import java.util.Arrays;
 public class GetFeedExample {
 
   // Get a feed with full feed name
-  // @param args full feed name to get.
-  public static void main(String... args) throws Exception {
-    // Full Feed name, e.g.: "projects/[PROJECT_NUMBER]/feed/[FEED_ID]"
-    String feedName = args[0];
+  // @param feedName full feed name to get.
+  public static void getFeed(String feedName) throws Exception {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed feed = client.getFeed(feedName);
       System.out.println(feed);
+    } catch (Exception e) {
+      System.out.println("Error during GetFeed: \n" + e.toString());
     }
   }
 }

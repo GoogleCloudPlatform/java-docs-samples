@@ -17,9 +17,6 @@
 package com.example.asset;
 
 // [START asset_quickstart_delete_feed]
-// Imports the Google Cloud client library
-
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1p2beta1.AssetServiceClient;
 import com.google.cloud.asset.v1p2beta1.Feed;
 import java.util.Arrays;
@@ -28,11 +25,14 @@ public class DeleteFeedExample {
 
   // Delete a feed with full feed name
   // @param args feed name to be deleted.
-  public static void main(String... args) throws Exception {
-    // Full Feed name, e.g.: "projects/[PROJECT_NUMBER]/feed/[FEED_ID]"
-    String feedName = args[0];
+  public static void deleteFeed(String feedName) throws Exception {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       client.deleteFeed(feedName);
+    } catch (Exception e) {
+      System.out.println("Error during DeleteFeed: \n" + e.toString());
     }
   }
 }

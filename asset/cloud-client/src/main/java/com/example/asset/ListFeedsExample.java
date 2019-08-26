@@ -17,23 +17,23 @@
 package com.example.asset;
 
 // [START asset_quickstart_list_feeds]
-// Imports the Google Cloud client library
-
-import com.google.cloud.ServiceOptions;
+import com.google.cloud.asset.v1.ProjectName;
 import com.google.cloud.asset.v1p2beta1.AssetServiceClient;
 import com.google.cloud.asset.v1p2beta1.ListFeedsResponse;
 import java.util.Arrays;
 
 public class ListFeedsExample {
-
-  // Use the default project Id.
-  private static final String projectId = ServiceOptions.getDefaultProjectId();
-
-  // Export assets for a project.
-  public static void main(String... args) throws Exception {
+  // List feeds in a project.
+  // @param projectId Id of the project.
+  public static void listFeeds(String projectId) throws Exception {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
-      ListFeedsResponse response = client.listFeeds(String.format("projects/%s", projectId));
+      ListFeedsResponse response = client.listFeeds(ProjectName.of(projectId).toString());
       System.out.println(response);
+    } catch (Exception e) {
+      System.out.println("Error during ListFeeds: \n" + e.toString());
     }
   }
 }

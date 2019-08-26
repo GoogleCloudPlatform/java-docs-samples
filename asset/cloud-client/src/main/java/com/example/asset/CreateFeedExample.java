@@ -17,46 +17,42 @@
 package com.example.asset;
 
 // [START asset_quickstart_create_feed]
-// Imports the Google Cloud client library
-
-import com.google.cloud.ServiceOptions;
+import com.google.cloud.asset.v1.ProjectName;
 import com.google.cloud.asset.v1p2beta1.AssetServiceClient;
 import com.google.cloud.asset.v1p2beta1.CreateFeedRequest;
+import com.google.cloud.asset.v1p2beta1.Feed;
 import com.google.cloud.asset.v1p2beta1.FeedOutputConfig;
 import com.google.cloud.asset.v1p2beta1.PubsubDestination;
-import com.google.cloud.asset.v1p2beta1.Feed;
-import com.google.cloud.asset.v1p2beta1.Feed;
 import java.util.Arrays;
 
 public class CreateFeedExample {
-
-  // Use the default project Id.
-  private static final String projectId = ServiceOptions.getDefaultProjectId();
-
   /*
-   * Get a feed with full feed name
+   * Create a feed
    * @param assetNames used in Feed
    * @params feed identifier
    * @params topic name
    * @param args supplies command-line arguments as an array of String objects.
    */
-  public static void main(String... args) throws Exception {
-    // Asset names, e.g.: "//storage.googleapis.com/[BUCKET_NAME]"
-    String[] assetNames = args[0].split(",");
-    String feedId = args[1];
-    // topic name, e.g.: "projects/[PROJECT_ID]/topics/[TOPIC_NAME]"    
-    String topic = args[2];
+  public static void createFeed(
+      String[] assetNames, String feedId, String topic, String projectId) throws Exception {
     Feed feed = Feed.newBuilder()
-      .addAllAssetNames(Arrays.asList(assetNames))
-      .setFeedOutputConfig(FeedOutputConfig.newBuilder().setPubsubDestination(PubsubDestination.newBuilder().setTopic(topic).build()).build()).build();
+        .addAllAssetNames(Arrays.asList(assetNames))
+        .setFeedOutputConfig(
+          FeedOutputConfig.newBuilder().setPubsubDestination(
+              PubsubDestination.newBuilder().setTopic(topic).build()).build()).build();
     CreateFeedRequest request = CreateFeedRequest.newBuilder()
-      .setParent(String.format("projects/%s", projectId))
-      .setFeedId(feedId)
-      .setFeed(feed)
-      .build();
+        .setParent(String.format(ProjectName.of(projectId).toString()))
+        .setFeedId(feedId)
+        .setFeed(feed)
+        .build();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed response = client.createFeed(request);
       System.out.println(response);
+    } catch (Exception e) {
+      System.out.println("Error during CreateFeed: \n" + e.toString());
     }
   }
 }
