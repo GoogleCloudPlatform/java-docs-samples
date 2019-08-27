@@ -27,7 +27,7 @@ libraries.
 
 4.  Enable application default credentials by running the command `gcloud auth application-default login`.
 
-5. Set the parameters for your Spanner database in the database connection string in `resources/hibernate.cfg.xml`:
+5. Set the parameters for your Spanner database in the database connection string in `src/main/resources/hibernate.cfg.xml`:
 `jdbc:cloudspanner:/projects/{YOUR_PROJECT_ID}/instances/{YOUR_INSTANCE_ID}/databases/{YOUR_DATABASE_ID}`
 
 ## Run the Example
@@ -35,8 +35,7 @@ libraries.
 Run the following commands on the command line in the project directory:
 
 ```
-mvn clean compile
-mvn exec:java
+mvn clean compile exec:java
 ```
 
 These commands will compile the Java files and run the `main` method in

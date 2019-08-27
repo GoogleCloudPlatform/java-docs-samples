@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+// [START spanner_hibernate_inheritance]
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import org.hibernate.annotations.Type;
 
-// [START spanner_hibernate_inheritance]
 /**
  * An example {@link Entity} which demonstrates usage of {@link Inheritance}.
  */
