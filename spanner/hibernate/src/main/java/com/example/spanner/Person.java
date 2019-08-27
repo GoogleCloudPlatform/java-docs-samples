@@ -32,8 +32,6 @@ import org.hibernate.annotations.Type;
 
 /**
  * An example person entity.
- *
- * @author Chengyuan Zhao
  */
 @Entity(name = "Person")
 // [START spanner_hibernate_table_name]
