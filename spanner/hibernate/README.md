@@ -27,8 +27,18 @@ libraries.
 
 4.  Enable application default credentials by running the command `gcloud auth application-default login`.
 
-5. Set the parameters for your Spanner database in the database connection string in `src/main/resources/hibernate.cfg.xml`:
-`jdbc:cloudspanner:/projects/{YOUR_PROJECT_ID}/instances/{YOUR_INSTANCE_ID}/databases/{YOUR_DATABASE_ID}`
+5.  Set the parameters for your Spanner database in the database connection string in
+    `src/main/resources/hibernate.cfg.xml`. The database connection string has the following format:
+    
+    ```
+    jdbc:cloudspanner:/projects/{YOUR_PROJECT_ID}/instances/{YOUR_INSTANCE_ID}/databases/{YOUR_DATABASE_ID}
+    ```
+    
+    Replace the placeholders in the string with the information for your Spanner database:
+    
+    * `YOUR_PROJECT_ID` - The Project ID of your Google Cloud Platform project
+    * `YOUR_INSTANCE_ID` - The name of your Spanner instance that you created
+    * `YOUR_DATABASE_ID` - The name of your database within the Spanner instance that you created
 
 ## Run the Example
 
