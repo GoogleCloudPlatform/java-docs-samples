@@ -27,12 +27,10 @@ import java.util.Arrays;
 
 public class UpdateFeedExample {
 
-  /*
-   * Update a feed
-   * @params feedName full feed name to update
-   * @params topic topic name to update
-   */
+  // Update a feed
   public static void updateFeed(String feedName, String topic) throws Exception {
+    // String feedName = "MY_FEED_NAME"
+    // String topic = "projects/[PROJECT_ID]/topics/[TOPIC_NAME]"
     Feed feed = Feed.newBuilder()
         .setName(feedName)
         .setFeedOutputConfig(
@@ -48,7 +46,7 @@ public class UpdateFeedExample {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed response = client.updateFeed(request);
-      System.out.println(response);
+      System.out.println("Feed updated successfully:" + response.getName());
     } catch (Exception e) {
       System.out.println("Error during UpdateFeed: \n" + e.toString());
     }

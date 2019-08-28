@@ -37,13 +37,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class RealTimeFeed {
-  private static String topicId = "topicId";
-  private static String feedId = UUID.randomUUID().toString();
-  private static String projectId = ServiceOptions.getDefaultProjectId();
-  private String projectNumber = getProjectNumber(projectId);
-  private String feedName = String.format("projects/%s/feeds/%s", projectNumber, feedId);
-  private String[] assetNames = {UUID.randomUUID().toString()};
-  private static ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+  private static final String topicId = "topicId";
+  private static final String feedId = UUID.randomUUID().toString();
+  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private final String projectNumber = getProjectNumber(projectId);
+  private final String feedName = String.format("projects/%s/feeds/%s", projectNumber, feedId);
+  private final String[] assetNames = {UUID.randomUUID().toString()};
+  private static final ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
   private static ByteArrayOutputStream bout;
   private static PrintStream out;
 
@@ -53,42 +53,28 @@ public class RealTimeFeed {
     return Long.toString(project.getProjectNumber());
   }
 
-  private static final void deleteTopic(ProjectTopicName topicName) {
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topicName);
-    } catch (Exception e) {
-      System.out.print("Error during deleteTopic: \n" + e.toString());
-    }
-  }
-
-  private static final void createTopic(ProjectTopicName topicName) {
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.createTopic(topicName);
-    } catch (Exception e) {
-      System.out.print("Error during createTopic: \n" + e.toString());
-    }
-  }
-
   @BeforeClass
   public static void setUp() {
-    createTopic(topicName);
+    //TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    //topicAdminClient.deleteTopic(topicName);
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
   }
 
   @AfterClass
   public static void tearDown() {
     String consoleOutput = bout.toString();
     System.setOut(null);
-    deleteTopic(topicName);
+    bout.reset();
+    //TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    //topicAdminClient.createTopic(topicName);
   }
 
   @Test
   public void testCreateFeedExample() throws Exception {
     CreateFeedExample.createFeed(assetNames, feedId, topicName.toString(), projectId);
     String got = bout.toString();
-    assertThat(got).contains(feedName);
+    assertThat(got).contains("Feed created successfully:" + feedName);
   }
 
   @Test
@@ -109,11 +95,13 @@ public class RealTimeFeed {
   public void testUpdateFeedExample() throws Exception {
     UpdateFeedExample.updateFeed(feedName, topicName.toString());
     String got = bout.toString();
-    assertThat(got).contains(feedName);
+    assertThat(got).contains("Feed updated successfully:" + feedName);
   }
 
   @Test
   public void testDeleteFeedExample() throws Exception {
     DeleteFeedExample.deleteFeed(feedName);
+    String got = bout.toString();
+    assertThat(got).contains("Feed deleted");
   }
 }

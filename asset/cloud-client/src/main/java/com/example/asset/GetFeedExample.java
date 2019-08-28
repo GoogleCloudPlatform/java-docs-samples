@@ -24,8 +24,9 @@ import java.util.Arrays;
 public class GetFeedExample {
 
   // Get a feed with full feed name
-  // @param feedName full feed name to get.
   public static void getFeed(String feedName) throws Exception {
+    // String feedName = "MY_FEED_NAME"
+    
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.

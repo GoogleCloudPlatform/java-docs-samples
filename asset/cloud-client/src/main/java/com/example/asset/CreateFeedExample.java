@@ -26,15 +26,13 @@ import com.google.cloud.asset.v1p2beta1.PubsubDestination;
 import java.util.Arrays;
 
 public class CreateFeedExample {
-  /*
-   * Create a feed
-   * @param assetNames used in Feed
-   * @params feed identifier
-   * @params topic name
-   * @param args supplies command-line arguments as an array of String objects.
-   */
+  // Create a feed
   public static void createFeed(
       String[] assetNames, String feedId, String topic, String projectId) throws Exception {
+    // String[] assetNames = {"MY_ASSET_NAME"}
+    // String FeedId = "MY_FEED_ID"
+    // String topic = "projects/[PROJECT_ID]/topics/[TOPIC_NAME]"
+    // String projectID = "MY_PROJECT_ID"
     Feed feed = Feed.newBuilder()
         .addAllAssetNames(Arrays.asList(assetNames))
         .setFeedOutputConfig(
@@ -50,7 +48,7 @@ public class CreateFeedExample {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed response = client.createFeed(request);
-      System.out.println(response);
+      System.out.println("Feed created successfully:" + response.getName());
     } catch (Exception e) {
       System.out.println("Error during CreateFeed: \n" + e.toString());
     }
