@@ -36,7 +36,7 @@ import java.util.Arrays;
 
 class StreamingAutoMlClassification {
 
-  // Perform streaming video label detection
+  // Perform streaming video classification with an AutoML Model
   static void streamingAutoMlClassification(String filePath, String projectId, String modelId) {
     // String filePath = "path_to_your_video_file";
     // String projectId = "YOUR_GCP_PROJECT_ID";
