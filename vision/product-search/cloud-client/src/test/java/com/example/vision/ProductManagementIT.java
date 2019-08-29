@@ -124,6 +124,8 @@ public class ProductManagementIT {
   @Test
   public void testPurgeOrphanProducts() throws Exception {
     // Act
+    ProductManagement.createProduct(
+            PROJECT_ID, COMPUTE_REGION, PRODUCT_ID, PRODUCT_DISPLAY_NAME, PRODUCT_CATEGORY);
     ProductManagement.listProducts(PROJECT_ID, COMPUTE_REGION);
 
     // Assert

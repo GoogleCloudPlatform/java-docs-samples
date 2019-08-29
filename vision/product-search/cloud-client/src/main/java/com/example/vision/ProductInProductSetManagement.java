@@ -159,7 +159,7 @@ public class ProductInProductSetManagement {
           throws Exception {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
-      LocationName parent = LocationName.of(projectId, location);
+      String parent = LocationName.format(projectId, location);
       ProductSetPurgeConfig productSetPurgeConfig = ProductSetPurgeConfig
               .newBuilder()
               .setProductSetId(productSetId)
@@ -167,8 +167,8 @@ public class ProductInProductSetManagement {
 
       PurgeProductsRequest req = PurgeProductsRequest
               .newBuilder()
+              .setParent(parent)
               .setProductSetPurgeConfig(productSetPurgeConfig)
-              .setParent(parent.toString())
               // The operation is irreversible and removes multiple products.
               // The user is required to pass in force=True to actually perform the
               // purge.
@@ -176,9 +176,11 @@ public class ProductInProductSetManagement {
               .setForce(force)
               .build();
 
-      OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(req);
+      //TODO: once its supported in all regions, will change it to 60 sec.
+      // testing method with region asia-east1 seems bit slower than normal.
 
-      response.get(60, TimeUnit.SECONDS);
+      OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(req);
+      response.getPollingFuture().get(90, TimeUnit.MINUTES);
 
       System.out.println("Products removed from product set.");
     }
