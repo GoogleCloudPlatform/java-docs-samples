@@ -48,7 +48,7 @@ public class CreateFeedExample {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed response = client.createFeed(request);
-      System.out.println("Feed created successfully:" + response.getName());
+      System.out.println("Feed created successfully: " + response.getName());
     } catch (Exception e) {
       System.out.println("Error during CreateFeed: \n" + e.toString());
     }

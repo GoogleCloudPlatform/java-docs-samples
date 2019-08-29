@@ -27,13 +27,13 @@ public class ListFeedsExample {
   public static void listFeeds(String projectId) throws Exception {
     // String projectId = "MY_PROJECT_ID"
     // String topic = "projects/[PROJECT_ID]/topics/[TOPIC_NAME]"
-    
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ListFeedsResponse response = client.listFeeds(ProjectName.of(projectId).toString());
-      System.out.println(response);
+      System.out.println("Listed feeds under: " + projectId);
     } catch (Exception e) {
       System.out.println("Error during ListFeeds: \n" + e.toString());
     }

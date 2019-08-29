@@ -46,7 +46,7 @@ public class UpdateFeedExample {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed response = client.updateFeed(request);
-      System.out.println("Feed updated successfully:" + response.getName());
+      System.out.println("Feed updated successfully: " + response.getName());
     } catch (Exception e) {
       System.out.println("Error during UpdateFeed: \n" + e.toString());
     }

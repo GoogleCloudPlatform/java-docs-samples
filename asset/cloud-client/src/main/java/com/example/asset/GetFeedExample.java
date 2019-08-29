@@ -26,13 +26,13 @@ public class GetFeedExample {
   // Get a feed with full feed name
   public static void getFeed(String feedName) throws Exception {
     // String feedName = "MY_FEED_NAME"
-    
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       Feed feed = client.getFeed(feedName);
-      System.out.println(feed);
+      System.out.println("Get a feed: " + feedName);
     } catch (Exception e) {
       System.out.println("Error during GetFeed: \n" + e.toString());
     }
