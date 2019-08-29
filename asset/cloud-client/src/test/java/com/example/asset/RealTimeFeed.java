@@ -45,7 +45,7 @@ public class RealTimeFeed {
   private static final String topicId = "topicId";
   private static final String feedId = UUID.randomUUID().toString();
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String projectNumber = getProjectNumber(projectId);
+  private final String projectNumber = getProjectNumber(projectId);
   private final String feedName = String.format("projects/%s/feeds/%s", projectNumber, feedId);
   private final String[] assetNames = {UUID.randomUUID().toString()};
   private static final ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
