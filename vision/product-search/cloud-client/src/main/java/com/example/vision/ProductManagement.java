@@ -241,9 +241,6 @@ public class ProductManagement {
               .build();
 
       OperationFuture response = client.purgeProductsAsync(req);
-
-      //TODO: once its supported in all regions, will change it to 60 sec.
-      // testing method with region asia-east1 seems bit slower than normal.
       response.getPollingFuture().get(90, TimeUnit.SECONDS);
 
       System.out.println("Orphan products deleted.");

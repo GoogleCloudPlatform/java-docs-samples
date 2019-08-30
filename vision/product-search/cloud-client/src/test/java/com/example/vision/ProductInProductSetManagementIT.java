@@ -21,6 +21,8 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +37,7 @@ public class ProductInProductSetManagementIT {
   private static final String COMPUTE_REGION = "us-west1";
   private static final String PRODUCT_SET_DISPLAY_NAME =
       "fake_pdt_set_display_name_for_testing";
-  private static final String PRODUCT_SET_ID = "fake_pdt_set_id_for_testing";
+  private static final String PRODUCT_SET_ID = "fake_pdt_set_id_for_testing" + UUID.randomUUID();
   private static final String PRODUCT_DISPLAY_NAME = "fake_pdt_display_name_for_testing";
   private static final String PRODUCT_CATEGORY = "apparel";
   private static final String PRODUCT_ID = "fake_pdt_id_for_testing";

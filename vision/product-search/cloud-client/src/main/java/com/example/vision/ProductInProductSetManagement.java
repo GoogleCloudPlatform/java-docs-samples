@@ -176,11 +176,8 @@ public class ProductInProductSetManagement {
               .setForce(force)
               .build();
 
-      //TODO: once its supported in all regions, will change it to 60 sec.
-      // testing method with region asia-east1 seems bit slower than normal.
-
       OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(req);
-      response.getPollingFuture().get(90, TimeUnit.MINUTES);
+      response.getPollingFuture().get(90, TimeUnit.SECONDS);
 
       System.out.println("Products removed from product set.");
     }
