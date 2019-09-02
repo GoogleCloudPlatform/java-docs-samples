@@ -34,6 +34,7 @@ public class HelloServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     PrintWriter out = resp.getWriter();
+    // getting current traceId and logger is used for logging
     logger.info(TraceLoggingEnhancer.getCurrentTraceId());
     out.println("Hello, world - App Engine Flexible");
   }

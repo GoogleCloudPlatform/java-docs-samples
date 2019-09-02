@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2019 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,12 @@ public class HelloServletFilter implements Filter {
 
   private final Logger logger = LoggerFactory.getLogger(HelloServletFilter.class);
 
+  /**
+   * JoranConfigurator is used to parse the logback.xml configuration file to use logback Appender
+   * for logging.
+   *
+   * @param filterConfig configuration for servlet filter
+   */
   @Override
   public void init(FilterConfig filterConfig) {
     try {
@@ -45,6 +51,7 @@ public class HelloServletFilter implements Filter {
       JoranConfigurator jc = new JoranConfigurator();
       jc.setContext(context);
       context.reset();
+      // set application-name will be used while logging.
       context.putProperty("application-name", "hello world");
       jc.doConfigure(servletContext.getRealPath("/WEB-INF/logback.xml"));
     } catch (Exception e) {
@@ -56,6 +63,7 @@ public class HelloServletFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) request;
+    // setting current traceId
     TraceLoggingEnhancer.setCurrentTraceId(req.getRemoteHost() + " for " + req.getRequestURL());
     /*logger.info(TraceLoggingEnhancer.getCurrentTraceId());*/
     chain.doFilter(request, response);
