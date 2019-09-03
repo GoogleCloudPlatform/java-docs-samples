@@ -16,6 +16,7 @@
 
 package vision.snippets;
 
+// [START vision_product_search_purge_orphan_products]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.ProductSearchClient;
@@ -23,7 +24,7 @@ import com.google.cloud.vision.v1.PurgeProductsRequest;
 
 import java.util.concurrent.TimeUnit;
 
-// [START vision_product_search_purge_orphan_products]
+
 public class PurgeProducts {
 
   /**
@@ -36,19 +37,24 @@ public class PurgeProducts {
    */
   public static void purgeOrphanProducts(String projectId, String computeRegion, boolean force)
           throws Exception {
+
+    // String projectId = "YOUR_PROJECT_ID";
+    // String computeRegion = "us-central1";
+    // boolean force = true;
+
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       String parent = LocationName.format(projectId, computeRegion);
 
       // The purge operation is async.
-      PurgeProductsRequest req = PurgeProductsRequest
+      PurgeProductsRequest request = PurgeProductsRequest
               .newBuilder()
               .setDeleteOrphanProducts(true)
               .setForce(force)
               .setParent(parent)
               .build();
 
-      OperationFuture response = client.purgeProductsAsync(req);
+      OperationFuture response = client.purgeProductsAsync(request);
       response.getPollingFuture().get(90, TimeUnit.SECONDS);
 
       System.out.println("Orphan products deleted.");

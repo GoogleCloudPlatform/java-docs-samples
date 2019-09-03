@@ -17,7 +17,11 @@
 package vision.snippets;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.vision.v1.*;
+import com.google.cloud.vision.v1.BatchOperationMetadata;
+import com.google.cloud.vision.v1.LocationName;
+import com.google.cloud.vision.v1.ProductSearchClient;
+import com.google.cloud.vision.v1.ProductSetPurgeConfig;
+import com.google.cloud.vision.v1.PurgeProductsRequest;
 import com.google.protobuf.Empty;
 
 import java.util.concurrent.TimeUnit;
@@ -27,6 +31,11 @@ public class PurgeProductsInProductSet {
 
   /**
    * Delete all products in a product set.
+   *
+   * The operation is irreversible and removes multiple products.
+   * The user is required to pass in force=True to actually perform the
+   * purge.
+   * If force is not set to True, the service raises an exception.
    *
    * @param projectId - Id of the project.
    * @param location - Region name.
@@ -45,18 +54,14 @@ public class PurgeProductsInProductSet {
               .setProductSetId(productSetId)
               .build();
 
-      PurgeProductsRequest req = PurgeProductsRequest
+      PurgeProductsRequest request = PurgeProductsRequest
               .newBuilder()
               .setParent(parent)
               .setProductSetPurgeConfig(productSetPurgeConfig)
-              // The operation is irreversible and removes multiple products.
-              // The user is required to pass in force=True to actually perform the
-              // purge.
-              // If force is not set to True, the service raises an exception.
               .setForce(force)
               .build();
 
-      OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(req);
+      OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(request);
       response.getPollingFuture().get(90, TimeUnit.SECONDS);
 
       System.out.println("Products removed from product set.");
