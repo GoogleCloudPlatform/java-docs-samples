@@ -120,26 +120,4 @@ public class ProductManagementIT {
     assertThat(got).contains(KEY);
     assertThat(got).contains(VALUE);
   }
-
-  @Test
-  public void testPurgeOrphanProducts() throws Exception {
-    // Act
-    ProductManagement.createProduct(
-            PROJECT_ID, COMPUTE_REGION, PRODUCT_ID, PRODUCT_DISPLAY_NAME, PRODUCT_CATEGORY);
-    ProductManagement.listProducts(PROJECT_ID, COMPUTE_REGION);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains(PRODUCT_ID);
-
-    bout.reset();
-
-    // Act
-    ProductManagement.purgeOrphanProducts(PROJECT_ID, COMPUTE_REGION, true);
-
-    // Assert
-    got = bout.toString();
-    ProductManagement.listProducts(PROJECT_ID, COMPUTE_REGION);
-    assertThat(got).doesNotContain(PRODUCT_ID);
-  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,12 @@
 
 package com.example.vision;
 
-import com.google.api.gax.longrunning.OperationFuture;
-
-import com.google.cloud.vision.v1.BatchOperationMetadata;
-import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.Product;
 import com.google.cloud.vision.v1.ProductName;
 import com.google.cloud.vision.v1.ProductSearchClient;
-import com.google.cloud.vision.v1.ProductSetPurgeConfig;
-import com.google.cloud.vision.v1.PurgeProductsRequest;
-
-import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -144,47 +135,6 @@ public class ProductInProductSetManagement {
   }
   // [END vision_product_search_remove_product_from_product_set]
 
-  // [START vision_product_search_purge_products_in_product_set]
-  /**
-   * Delete all products in a product set.
-   *
-   * @param projectId - Id of the project.
-   * @param location - Region name.
-   * @param productSetId - Id of the product set.
-   * @param force - Perform the purge only when force is set to True.
-   * @throws Exception - any error.
-   */
-  public static void purgeProductsInProductSet(
-          String projectId, String location, String productSetId, boolean force)
-          throws Exception {
-    try (ProductSearchClient client = ProductSearchClient.create()) {
-
-      String parent = LocationName.format(projectId, location);
-      ProductSetPurgeConfig productSetPurgeConfig = ProductSetPurgeConfig
-              .newBuilder()
-              .setProductSetId(productSetId)
-              .build();
-
-      PurgeProductsRequest req = PurgeProductsRequest
-              .newBuilder()
-              .setParent(parent)
-              .setProductSetPurgeConfig(productSetPurgeConfig)
-              // The operation is irreversible and removes multiple products.
-              // The user is required to pass in force=True to actually perform the
-              // purge.
-              // If force is not set to True, the service raises an exception.
-              .setForce(force)
-              .build();
-
-      OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(req);
-      response.getPollingFuture().get(90, TimeUnit.SECONDS);
-
-      System.out.println("Products removed from product set.");
-    }
-
-  }
-  // [END vision_product_search_purge_products_in_product_set]
-
   public static void main(String[] args) throws Exception {
     ProductInProductSetManagement productInProductSetManagement =
         new ProductInProductSetManagement();
@@ -230,11 +180,6 @@ public class ProductInProductSetManagement {
                 projectId, computeRegion, ns.getString("productId"), ns.getString("productSetId"));
       }
       System.out.println(ns.getAttrs());
-      if (ns.get("command").equals("purge_products_in_product_set")) {
-        purgeProductsInProductSet(
-                projectId, computeRegion, ns.getString("productSetId"),
-                Boolean.parseBoolean(ns.getString("force")));
-      }
 
     } catch (ArgumentParserException e) {
       parser.handleError(e);

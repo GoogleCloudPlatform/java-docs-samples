@@ -108,28 +108,4 @@ public class ProductInProductSetManagementIT {
     got = bout.toString();
     assertThat(got).doesNotContain(PRODUCT_ID);
   }
-
-  @Test
-  public void testPurgeProductsInProductSet() throws Exception {
-    // Act
-    ProductInProductSetManagement.addProductToProductSet(
-            PROJECT_ID, COMPUTE_REGION, PRODUCT_ID, PRODUCT_SET_ID);
-    ProductManagement.listProducts(
-            PROJECT_ID, COMPUTE_REGION);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains(PRODUCT_ID);
-
-    bout.reset();
-    ProductInProductSetManagement.purgeProductsInProductSet(
-            PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID, true);
-
-    ProductManagement.listProducts(
-            PROJECT_ID, COMPUTE_REGION);
-
-    // Assert
-    got = bout.toString();
-    assertThat(got).doesNotContain(PRODUCT_ID);
-  }
 }
