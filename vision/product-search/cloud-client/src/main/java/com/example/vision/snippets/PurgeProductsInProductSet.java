@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package vision.snippets;
+package com.example.vision.snippets;
 
+// [START vision_product_search_purge_products_in_product_set]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.vision.v1.BatchOperationMetadata;
 import com.google.cloud.vision.v1.LocationName;
@@ -26,26 +27,18 @@ import com.google.protobuf.Empty;
 
 import java.util.concurrent.TimeUnit;
 
-// [START vision_product_search_purge_products_in_product_set]
 public class PurgeProductsInProductSet {
 
-  /**
-   * Delete all products in a product set.
-   *
-   * The operation is irreversible and removes multiple products.
-   * The user is required to pass in force=True to actually perform the
-   * purge.
-   * If force is not set to True, the service raises an exception.
-   *
-   * @param projectId - Id of the project.
-   * @param location - Region name.
-   * @param productSetId - Id of the product set.
-   * @param force - Perform the purge only when force is set to True.
-   * @throws Exception - any error.
-   */
+  // Delete all products in a product set.
   public static void purgeProductsInProductSet(
           String projectId, String location, String productSetId, boolean force)
           throws Exception {
+
+    // String projectId = "YOUR_PROJECT_ID";
+    // String location = "us-central1";
+    // String productSetId = "YOUR_PRODUCT_SET_ID";
+    // boolean force = true;
+
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       String parent = LocationName.format(projectId, location);
@@ -58,6 +51,10 @@ public class PurgeProductsInProductSet {
               .newBuilder()
               .setParent(parent)
               .setProductSetPurgeConfig(productSetPurgeConfig)
+              // The operation is irreversible and removes multiple products.
+              // The user is required to pass in force=True to actually perform the
+              // purge.
+              // If force is not set to True, the service raises an exception.
               .setForce(force)
               .build();
 
@@ -66,7 +63,6 @@ public class PurgeProductsInProductSet {
 
       System.out.println("Products removed from product set.");
     }
-
   }
 }
 // [END vision_product_search_purge_products_in_product_set]

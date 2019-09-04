@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import com.example.vision.snippets.PurgeProducts;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

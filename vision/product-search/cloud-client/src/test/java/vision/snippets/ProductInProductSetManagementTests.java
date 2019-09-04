@@ -26,11 +26,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 
+import com.example.vision.snippets.PurgeProductsInProductSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-
 
 public class ProductInProductSetManagementTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vision.snippets;
+package com.example.vision.snippets;
 
 // [START vision_product_search_purge_orphan_products]
 import com.google.api.gax.longrunning.OperationFuture;
@@ -27,14 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PurgeProducts {
 
-  /**
-   * Delete the product and all its reference images.
-   *
-   * @param projectId - Id of the project.
-   * @param computeRegion - A compute region name.
-   * @param force - Perform the purge only when force is set to True.
-   * @throws Exception - on I/O and API errors.
-   */
+  // Delete the product and all its reference images.
   public static void purgeOrphanProducts(String projectId, String computeRegion, boolean force)
           throws Exception {
 
@@ -43,13 +36,16 @@ public class PurgeProducts {
     // boolean force = true;
 
     try (ProductSearchClient client = ProductSearchClient.create()) {
-
       String parent = LocationName.format(projectId, computeRegion);
 
       // The purge operation is async.
       PurgeProductsRequest request = PurgeProductsRequest
               .newBuilder()
               .setDeleteOrphanProducts(true)
+              // The operation is irreversible and removes multiple products.
+              // The user is required to pass in force=True to actually perform the
+              // purge.
+              // If force is not set to True, the service raises an exception.
               .setForce(force)
               .setParent(parent)
               .build();
