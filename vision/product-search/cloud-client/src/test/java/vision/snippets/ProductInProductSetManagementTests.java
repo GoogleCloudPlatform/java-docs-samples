@@ -21,12 +21,12 @@ import static com.google.common.truth.Truth.assertThat;
 import com.example.vision.ProductInProductSetManagement;
 import com.example.vision.ProductManagement;
 import com.example.vision.ProductSetManagement;
+import com.example.vision.snippets.PurgeProductsInProductSet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 
-import com.example.vision.snippets.PurgeProductsInProductSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
