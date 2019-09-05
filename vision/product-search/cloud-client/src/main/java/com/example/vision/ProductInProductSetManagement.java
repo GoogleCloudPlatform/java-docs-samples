@@ -157,11 +157,6 @@ public class ProductInProductSetManagement {
     removeProductFromProductSetParser.addArgument("productId");
     removeProductFromProductSetParser.addArgument("productSetId");
 
-    Subparser purgeProductsInProductSetParser =
-            subparsers.addParser("purge_products_in_product_set");
-    purgeProductsInProductSetParser.addArgument("productSetId");
-    purgeProductsInProductSetParser.addArgument("force");
-
     String projectId = System.getenv("PROJECT_ID");
     String computeRegion = System.getenv("REGION_NAME");
 
@@ -179,7 +174,6 @@ public class ProductInProductSetManagement {
         removeProductFromProductSet(
                 projectId, computeRegion, ns.getString("productId"), ns.getString("productSetId"));
       }
-      System.out.println(ns.getAttrs());
 
     } catch (ArgumentParserException e) {
       parser.handleError(e);

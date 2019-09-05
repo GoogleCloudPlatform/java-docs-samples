@@ -241,9 +241,6 @@ public class ProductManagement {
     Subparser deleteProductParser = subparsers.addParser("delete_product");
     deleteProductParser.addArgument("productId");
 
-    Subparser purgeOrphanProductsParser = subparsers.addParser("purge_orphan_products");
-    purgeOrphanProductsParser.addArgument("force");
-
     String projectId = System.getenv("PROJECT_ID");
     String computeRegion = System.getenv("REGION_NAME");
 
