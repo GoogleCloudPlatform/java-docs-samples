@@ -24,7 +24,7 @@ Additionally, for this sample you need the following:
 1. Create a Cloud Storage bucket.
 
    ```sh
-   BUCKET=your-gcs-bucket
+   export BUCKET=your-gcs-bucket
    gsutil mb gs://$BUCKET
    ```
 
@@ -33,8 +33,8 @@ Additionally, for this sample you need the following:
    This example uses a `global` key for simplicity.
 
    ```sh
-   KMS_KEYRING=samples-keyring
-   KMS_KEY=samples-key
+   export KMS_KEYRING=samples-keyring
+   export KMS_KEY=samples-key
 
    # Create a key ring.
    gcloud kms keyrings create $KMS_KEYRING --location global
@@ -53,8 +53,8 @@ Additionally, for this sample you need the following:
 1. Grant Encrypter/Decrypter permissions to the *Dataflow*, *Compute Engine*, and *BigQuery* accounts.
 
    ```sh
-   PROJECT=$(gcloud config get-value project)
-   PROJECT_NUMBER=$(gcloud projects list --filter $PROJECT --format "value(PROJECT_NUMBER)")
+   export PROJECT=$(gcloud config get-value project)
+   export PROJECT_NUMBER=$(gcloud projects list --filter $PROJECT --format "value(PROJECT_NUMBER)")
 
    # Grant Encrypter/Decrypter permissions to the Dataflow service account.
    gcloud projects add-iam-policy-binding $PROJECT \
@@ -98,17 +98,17 @@ Make sure you have the following variables set up:
 
 ```sh
 # Set the project ID, GCS bucket and KMS key.
-PROJECT=$(gcloud config get-value project)
-BUCKET=your-gcs-bucket
+export PROJECT=$(gcloud config get-value project)
+export BUCKET=your-gcs-bucket
 
 # Set the KMS key ID.
-KMS_KEYRING=samples-keyring
-KMS_KEY=samples-key
-KMS_KEY_ID=$(gcloud kms keys list --location global --keyring $KMS_KEYRING --filter $KMS_KEY --format "value(NAME)")
+export KMS_KEYRING=samples-keyring
+export KMS_KEY=samples-key
+export KMS_KEY_ID=$(gcloud kms keys list --location global --keyring $KMS_KEYRING --filter $KMS_KEY --format "value(NAME)")
 
 # Output BigQuery dataset and table name.
-DATASET=samples
-TABLE=dataflow_kms
+export DATASET=samples
+export TABLE=dataflow_kms
 ```
 
 Create the BigQuery dataset where the output table resides.
@@ -126,12 +126,12 @@ mvn compile exec:java \
   -Dexec.args="\
     --outputBigQueryTable=$PROJECT:$DATASET.$TABLE \
     --kmsKey=$KMS_KEY_ID \
-    --runner=DataflowRunner \
     --project=$PROJECT \
-    --tempLocation=gs://$BUCKET/samples/dataflow/kms/tmp"
+    --tempLocation=gs://$BUCKET/samples/dataflow/kms/tmp \
+    --runner=DataflowRunner"
 ```
 
-> *Note:* To run locally you can omit the `--runner` command line argument for it to default to the `DirectRunner`.
+> *Note:* To run locally you can omit the `--runner` command line argument and it defaults to the `DirectRunner`.
 
 You can check your submitted Cloud Dataflow jobs in the [GCP Console Dataflow page](https://console.cloud.google.com/dataflow) or by using `gcloud`.
 

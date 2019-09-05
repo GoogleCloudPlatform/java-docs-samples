@@ -2,9 +2,9 @@
 
 [![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor)
 
-Samples showing how to create and run an [Apache Beam] on [Google Cloud Dataflow].
-[Apache Beam]: https://beam.apache.org/
-[Google Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
+Samples showing how to create and run an
+[Apache Beam](https://beam.apache.org/) on
+[Google Cloud Dataflow](https://cloud.google.com/dataflow/docs/).
 
 ## Before you begin
 
@@ -17,7 +17,7 @@ Additionally, for this sample you need the following:
 1. Create a Cloud Storage bucket.
 
    ```sh
-   BUCKET=your-gcs-bucket
+   export BUCKET=your-gcs-bucket
    gsutil mb gs://$BUCKET
    ```
 
@@ -46,9 +46,9 @@ The following sample creates a WordCount Dataflow template showcasing different 
 Make sure you have the following variables set up:
 
 ```bash
-PROJECT=$(gcloud config get-value project)
-BUCKET=your-gcs-bucket
-TEMPLATE_LOCATION=gs://$BUCKET/samples/dataflow/templates/WordCount
+export PROJECT=$(gcloud config get-value project)
+export BUCKET=your-gcs-bucket
+export TEMPLATE_LOCATION=gs://$BUCKET/samples/dataflow/templates/WordCount
 ```
 
 Then, to create the template in the desired Cloud Storage location.
@@ -74,8 +74,8 @@ Finally, you can run the template via `gcloud` or through the
 [GCP Console create Dataflow job page](https://console.cloud.google.com/dataflow/createjob).
 
 ```bash
-JOB_NAME=wordcount-$(date +'%Y%m%d-%H%M%S')
-INPUT=gs://apache-beam-samples/shakespeare/kinglear.txt
+export JOB_NAME=wordcount-$(date +'%Y%m%d-%H%M%S')
+export INPUT=gs://apache-beam-samples/shakespeare/kinglear.txt
 
 gcloud dataflow jobs run $JOB_NAME \
   --gcs-location $TEMPLATE_LOCATION \

@@ -21,7 +21,7 @@ The following instructions help you prepare your Google Cloud project.
    or via the `gcloud` command line tool.
 
    ```sh
-   PROJECT=your-google-cloud-project-id
+   export PROJECT=your-google-cloud-project-id
    gcloud projects create $PROJECT
    ```
 
@@ -50,9 +50,9 @@ The following instructions help you prepare your Google Cloud project.
    Alternatively, you can use `gcloud` through the command line.
 
    ```sh
-   PROJECT=$(gcloud config get-value project)
-   SA_NAME=samples
-   IAM_ACCOUNT=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+   export PROJECT=$(gcloud config get-value project)
+   export SA_NAME=samples
+   export IAM_ACCOUNT=$SA_NAME@$PROJECT.iam.gserviceaccount.com
 
    # Create the service account.
    gcloud iam service-accounts create $SA_NAME --display-name $SA_NAME
@@ -87,10 +87,8 @@ The following instructions help you prepare your Google Cloud project.
 
 The following instructions help you prepare your development environment.
 
-1. Download and install
-   [OpenJDK](https://openjdk.java.net/install/index.html)
-   (alternatively, you can use the propietary
-   [Oracle JDK](https://www.oracle.com/technetwork/java/javase/downloads/index.html)).
+1. Download and install the
+   [Java Development Kit](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=openj9).
    Verify that the
    [JAVA_HOME](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html)
    environment variable is set and points to your JDK installation.
