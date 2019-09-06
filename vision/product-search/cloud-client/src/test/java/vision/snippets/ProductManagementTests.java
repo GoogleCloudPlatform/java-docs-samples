@@ -68,7 +68,7 @@ public class ProductManagementTests {
     bout.reset();
 
     // Act
-    PurgeProducts.purgeOrphanProducts(PROJECT_ID, COMPUTE_REGION, true);
+    PurgeProducts.purgeOrphanProducts(PROJECT_ID, COMPUTE_REGION);
 
     // Assert
     got = bout.toString();

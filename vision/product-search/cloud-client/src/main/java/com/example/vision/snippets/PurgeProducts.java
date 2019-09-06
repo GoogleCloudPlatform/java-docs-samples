@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class PurgeProducts {
 
   // Delete the product and all its reference images.
-  public static void purgeOrphanProducts(String projectId, String computeRegion, boolean force)
+  public static void purgeOrphanProducts(String projectId, String computeRegion)
           throws Exception {
 
     // String projectId = "YOUR_PROJECT_ID";
@@ -46,7 +46,7 @@ public class PurgeProducts {
               // The user is required to pass in force=True to actually perform the
               // purge.
               // If force is not set to True, the service raises an exception.
-              .setForce(force)
+              .setForce(true)
               .setParent(parent)
               .build();
 

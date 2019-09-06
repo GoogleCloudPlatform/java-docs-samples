@@ -31,7 +31,7 @@ public class PurgeProductsInProductSet {
 
   // Delete all products in a product set.
   public static void purgeProductsInProductSet(
-          String projectId, String location, String productSetId, boolean force)
+          String projectId, String location, String productSetId)
           throws Exception {
 
     // String projectId = "YOUR_PROJECT_ID";
@@ -55,7 +55,7 @@ public class PurgeProductsInProductSet {
               // The user is required to pass in force=True to actually perform the
               // purge.
               // If force is not set to True, the service raises an exception.
-              .setForce(force)
+              .setForce(true)
               .build();
 
       OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(request);

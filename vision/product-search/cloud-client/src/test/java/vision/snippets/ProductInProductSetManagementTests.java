@@ -76,7 +76,7 @@ public class ProductInProductSetManagementTests {
 
     bout.reset();
     PurgeProductsInProductSet.purgeProductsInProductSet(
-            PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID, true);
+            PROJECT_ID, COMPUTE_REGION, PRODUCT_SET_ID);
 
     ProductManagement.listProducts(
             PROJECT_ID, COMPUTE_REGION);
