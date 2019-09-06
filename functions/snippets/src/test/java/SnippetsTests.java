@@ -71,7 +71,7 @@ public class SnippetsTests {
 
   @Test
   public void helloWorldTest() throws IOException {
-    new HelloWorld().helloGET(request, response);
+    new HelloWorld().helloGet(request, response);
 
     assertThat(responseOut.toString(), containsString("Hello World!"));
   }

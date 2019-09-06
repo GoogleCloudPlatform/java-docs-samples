@@ -24,7 +24,7 @@ public class HelloWorld {
   /**
    * HTTP Cloud Function.
    */
-  public void helloGET(HttpServletRequest request, HttpServletResponse response)
+  public void helloGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     PrintWriter writer = response.getWriter();
     writer.write("Hello World!");
