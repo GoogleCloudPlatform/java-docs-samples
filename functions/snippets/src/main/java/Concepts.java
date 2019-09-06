@@ -18,16 +18,17 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Concepts {
   
-  private int count = 0;
+  private final AtomicInteger count = new AtomicInteger(0);
 
   public void executionCount(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    count++;
+    count.getAndIncrement();
 
     // Note: the total function invocation count across
     // all instances may not be equal to this value!
