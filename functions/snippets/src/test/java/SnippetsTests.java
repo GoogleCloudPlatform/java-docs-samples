@@ -159,4 +159,11 @@ public class SnippetsTests {
     new HelloBackground().helloBackground(request, response);
     assertThat(responseOut.toString(), containsString("Hello John!"));    
   }
+
+  @Test
+  public void filesTest() throws IOException {
+    // Send a request with JSON data
+    new Files().listFiles(request, response);
+    assertThat(responseOut.toString(), containsString("Files: "));
+  }
 }
