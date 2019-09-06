@@ -70,6 +70,13 @@ public class SnippetsTests {
   }
 
   @Test
+  public void helloWorldTest() throws IOException {
+    new HelloWorld().helloGET(request, response);
+
+    assertThat(responseOut.toString(), containsString("Hello World!"));
+  }
+
+  @Test
   public void logHelloWorldTest() throws IOException {
     new LogHelloWorld().logHelloWorld(request, response);
 
