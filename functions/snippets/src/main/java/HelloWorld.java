@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class HelloWorld {
-  /**
-   * HTTP Cloud Function.
   // Simple function to return "Hello World"
   public void helloGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
