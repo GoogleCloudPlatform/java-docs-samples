@@ -159,4 +159,10 @@ public class SnippetsTests {
     new HelloBackground().helloBackground(request, response);
     assertThat(responseOut.toString(), containsString("Hello John!"));    
   }
+
+  @Test
+  public void helloExecutionCount() throws IOException {
+    new Concepts().executionCount(request, response);
+    assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
+  }
 }
