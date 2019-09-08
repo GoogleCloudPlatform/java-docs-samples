@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example</groupId>
-  <artifactId>dataflow-templates</artifactId>
+  <artifactId>dataflow-bigquery-kms-key</artifactId>
   <version>1.0</version>
 
   <properties>
