@@ -20,10 +20,16 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.nio.file.Files;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class Files {
+public class FileSystem {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
@@ -31,16 +37,16 @@ public class Files {
   // Background Cloud Function.
   public void listFiles(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    File curDir = new File(".");
-    File[] filesList = curDir.listFiles();
-    String fileList = "";
-    for(File f : filesList){
-        if (f.isFile()) {
-            fileList += f.getName() + "\n";
-        }
-    }
-    PrintWriter writer = response.getWriter();
-    writer.write(String.format("Files: %s", fileList));
+
+    String currentDirectory = System.getProperty("user.dir");
+    Path path = Paths.get(currentDirectory, "snippets/src/main/java/");
+    try (Stream<Path> walk = Files.walk(path)) {
+      List<String> fileList = walk.filter(Files::isRegularFile)
+        .map(x -> x.toString()).collect(Collectors.toList());
+      String files = String.join(", ", fileList);
+      PrintWriter writer = response.getWriter();
+      writer.write(String.format("Files: %s", files));
+    };
   }
 }
 
