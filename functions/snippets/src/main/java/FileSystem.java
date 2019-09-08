@@ -15,11 +15,8 @@
  */
 
 // [START functions_concepts_filesystem]
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -31,10 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class FileSystem {
 
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
-
-  // Background Cloud Function.
+  // Lists the files in the current directory.
   public void listFiles(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
@@ -42,7 +36,7 @@ public class FileSystem {
     Path path = Paths.get(currentDirectory, "snippets/src/main/java/");
     try (Stream<Path> walk = Files.walk(path)) {
       List<String> fileList = walk.filter(Files::isRegularFile)
-        .map(x -> x.toString()).collect(Collectors.toList());
+        .map(file -> file.toString()).collect(Collectors.toList());
       String files = String.join(", ", fileList);
       PrintWriter writer = response.getWriter();
       writer.write(String.format("Files: %s", files));

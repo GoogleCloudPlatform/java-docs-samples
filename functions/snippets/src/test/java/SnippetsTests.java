@@ -15,9 +15,7 @@
  */
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -164,9 +162,9 @@ public class SnippetsTests {
 
   @Test
   public void filesTest() throws IOException {
-    // Send a request with JSON data
     new FileSystem().listFiles(request, response);
     assertThat(responseOut.toString(), containsString("Files:"));
+    // Example file in the current directory
     assertThat(responseOut.toString(), containsString("/src/main/java/SendHttpRequest.java"));
   }
 }
