@@ -30,11 +30,10 @@ public class EnvVars {
   public void envVar(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     PrintWriter writer = response.getWriter();
-    String foo = "df";
-    // String foo = System.getenv("FOO");
-    // if (foo == null) {
-    //   foo = "Specified environment variable is not set.";
-    // }
+    String foo = System.getenv("FOO");
+    if (foo == null) {
+      foo = "Specified environment variable is not set.";
+    }
     writer.write(foo);
   }
 }

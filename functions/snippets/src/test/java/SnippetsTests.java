@@ -32,7 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -44,6 +46,10 @@ public class SnippetsTests {
 
   private ByteArrayOutputStream stdOut;
   private StringWriter responseOut;
+
+  @Rule
+  public final EnvironmentVariables environmentVariables
+    = new EnvironmentVariables();
 
   @Before
   public void beforeTest() throws Exception {
@@ -162,8 +168,8 @@ public class SnippetsTests {
 
   @Test
   public void envTest() throws IOException {
+    environmentVariables.set("FOO", "BAR");
     new EnvVars().envVar(request, response);
-    when(System.getenv("FOO")).thenReturn("BAR");
-    // assertThat(responseOut.toString(), containsString("BAR"));
+    assertThat(responseOut.toString(), containsString("BAR"));
   }
 }
