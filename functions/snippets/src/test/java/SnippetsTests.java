@@ -70,6 +70,13 @@ public class SnippetsTests {
   }
 
   @Test
+  public void helloWorldTest() throws IOException {
+    new HelloWorld().helloGet(request, response);
+
+    assertThat(responseOut.toString(), containsString("Hello World!"));
+  }
+
+  @Test
   public void logHelloWorldTest() throws IOException {
     new LogHelloWorld().logHelloWorld(request, response);
 
@@ -166,5 +173,11 @@ public class SnippetsTests {
     assertThat(responseOut.toString(), containsString("Files:"));
     // Example file in the current directory
     assertThat(responseOut.toString(), containsString("/src/main/java/SendHttpRequest.java"));
+  }
+  
+  @Test
+  public void helloExecutionCount() throws IOException {
+    new Concepts().executionCount(request, response);
+    assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
   }
 }
