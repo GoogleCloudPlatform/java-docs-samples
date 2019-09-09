@@ -21,12 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class EnvVars {
-  /**
-   * Returns the environment variable "foo" set during function deployment.
-   * @param request The Servlet HTTP request.
-   * @param response The Servlet HTTP response.
-   * @throws IOException If there is an I/O writer exception.
-   */
+  // Returns the environment variable "foo" set during function deployment.
   public void envVar(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     PrintWriter writer = response.getWriter();
