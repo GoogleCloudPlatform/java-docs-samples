@@ -174,6 +174,12 @@ public class SnippetsTests {
   }
 
   @Test
+  public void filesTest() throws IOException {
+    new FileSystem().listFiles(request, response);
+    assertThat(responseOut.toString(), containsString("Files:"));
+  }
+
+  @Test
   public void envTest() throws IOException {
     environmentVariables.set("FOO", "BAR");
     new EnvVars().envVar(request, response);
