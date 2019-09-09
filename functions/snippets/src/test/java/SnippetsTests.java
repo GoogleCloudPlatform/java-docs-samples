@@ -171,8 +171,6 @@ public class SnippetsTests {
   public void filesTest() throws IOException {
     new FileSystem().listFiles(request, response);
     assertThat(responseOut.toString(), containsString("Files:"));
-    // Example file in the current directory
-    assertThat(responseOut.toString(), containsString("/src/main/java/SendHttpRequest.java"));
   }
   
   @Test

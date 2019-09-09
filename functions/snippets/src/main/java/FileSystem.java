@@ -17,12 +17,7 @@
 // [START functions_concepts_filesystem]
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.nio.file.Files;
+import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,18 +26,13 @@ public class FileSystem {
   // Lists the files in the current directory.
   public void listFiles(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-
-    String currentDirectory = System.getProperty("user.dir");
-    Path path = Paths.get(currentDirectory, "snippets/src/main/java/");
-    try (Stream<Path> walk = Files.walk(path)) {
-      List<String> fileList = walk.filter(Files::isRegularFile)
-        .map(file -> file.toString()).collect(Collectors.toList());
-      String files = String.join(", ", fileList);
-      PrintWriter writer = response.getWriter();
-      writer.write(String.format("Files: %s", files));
-    } catch (IOException e) {
-      e.printStackTrace();
-    };
+    File curDir = new File(".");
+    File[] files = curDir.listFiles();
+    PrintWriter writer = response.getWriter();
+    writer.write("Files: \n");
+    for (File f : files) {
+      writer.write(String.format("\t%s\n", f.getName()));
+    }
   }
 }
 
