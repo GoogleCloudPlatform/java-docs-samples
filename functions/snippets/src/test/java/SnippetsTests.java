@@ -76,6 +76,13 @@ public class SnippetsTests {
   }
 
   @Test
+  public void helloWorldTest() throws IOException {
+    new HelloWorld().helloGet(request, response);
+
+    assertThat(responseOut.toString(), containsString("Hello World!"));
+  }
+
+  @Test
   public void logHelloWorldTest() throws IOException {
     new LogHelloWorld().logHelloWorld(request, response);
 
@@ -171,5 +178,11 @@ public class SnippetsTests {
     environmentVariables.set("FOO", "BAR");
     new EnvVars().envVar(request, response);
     assertThat(responseOut.toString(), containsString("BAR"));
+  }
+  
+  @Test
+  public void helloExecutionCount() throws IOException {
+    new Concepts().executionCount(request, response);
+    assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
   }
 }
