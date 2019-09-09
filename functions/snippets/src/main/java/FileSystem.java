@@ -40,6 +40,8 @@ public class FileSystem {
       String files = String.join(", ", fileList);
       PrintWriter writer = response.getWriter();
       writer.write(String.format("Files: %s", files));
+    } catch (IOException e) {
+      e.printStackTrace();
     };
   }
 }
