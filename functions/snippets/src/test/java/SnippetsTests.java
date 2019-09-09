@@ -49,7 +49,7 @@ public class SnippetsTests {
 
   @Rule
   public final EnvironmentVariables environmentVariables
-    = new EnvironmentVariables();
+      = new EnvironmentVariables();
 
   @Before
   public void beforeTest() throws Exception {
