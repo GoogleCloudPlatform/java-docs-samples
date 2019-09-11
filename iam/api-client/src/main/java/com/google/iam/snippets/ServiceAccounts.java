@@ -1,4 +1,4 @@
-/* Copyright 2018 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,56 @@
 
 package com.google.iam.snippets;
 
+// [START iam_create_service_account]
+// [START iam_list_service_accounts]
+// [START iam_rename_service_accounts]
+// [START iam_delete_service_account]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
-import com.google.api.services.iam.v1.model.ListServiceAccountsResponse;
 import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.util.Collections;
+// [END iam_create_service_account]
+// [END iam_list_service_accounts]
+// [END iam_rename_service_accounts]
+// [END iam_delete_service_account]
+
+// [START iam_create_service_account]
+import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
+// [END iam_create_service_account]
+
+// [START iam_list_service_accounts]
+import com.google.api.services.iam.v1.model.ListServiceAccountsResponse;
 import java.util.List;
+// [END iam_list_service_accounts]
+
+// [START iam_create_service_account]
+// [START iam_list_service_accounts]
+// [START iam_rename_service_accounts]
+// [START iam_delete_service_account]
 
 public class ServiceAccounts {
 
   private final Iam service;
 
   public ServiceAccounts() throws Exception {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault()
-            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
+    GoogleCredential credential = GoogleCredential.getApplicationDefault()
+        .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
-    service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                credential)
-            .setApplicationName("service-accounts")
-            .build();
+    service = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(),
+        credential).setApplicationName("service-accounts").build();
   }
 
+// [END iam_create_service_account]
+// [END iam_list_service_accounts]
+// [END iam_rename_service_accounts]
+// [END iam_delete_service_account]
+
   // [START iam_create_service_account]
-  public ServiceAccount createServiceAccount(String projectId, String name, String displayName)
-      throws IOException {
+  public ServiceAccount createServiceAccount(String projectId, String name, String displayName) throws IOException {
 
     ServiceAccount serviceAccount = new ServiceAccount();
     serviceAccount.setDisplayName(displayName);
@@ -55,8 +72,7 @@ public class ServiceAccounts {
     request.setAccountId(name);
     request.setServiceAccount(serviceAccount);
 
-    serviceAccount =
-        service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
+    serviceAccount = service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
 
     System.out.println("Created service account: " + serviceAccount.getEmail());
     return serviceAccount;
@@ -66,8 +82,7 @@ public class ServiceAccounts {
   // [START iam_list_service_accounts]
   public List<ServiceAccount> listServiceAccounts(String projectId) throws IOException {
 
-    ListServiceAccountsResponse response =
-        service.projects().serviceAccounts().list("projects/" + projectId).execute();
+    ListServiceAccountsResponse response = service.projects().serviceAccounts().list("projects/" + projectId).execute();
     List<ServiceAccount> serviceAccounts = response.getAccounts();
 
     for (ServiceAccount account : serviceAccounts) {
@@ -81,19 +96,17 @@ public class ServiceAccounts {
   // [END iam_list_service_accounts]
 
   // [START iam_rename_service_account]
-  public ServiceAccount renameServiceAccount(String email, String newDisplayName)
-      throws IOException {
+  public ServiceAccount renameServiceAccount(String email, String newDisplayName) throws IOException {
 
     // First, get a service account using List() or Get()
-    ServiceAccount serviceAccount =
-        service.projects().serviceAccounts().get("projects/-/serviceAccounts/" + email).execute();
+    ServiceAccount serviceAccount = service.projects().serviceAccounts().get("projects/-/serviceAccounts/" + email)
+        .execute();
 
     // Then you can update the display name
     serviceAccount.setDisplayName(newDisplayName);
     service.projects().serviceAccounts().update(serviceAccount.getName(), serviceAccount).execute();
 
-    System.out.println(
-        "Updated display name for " + serviceAccount.getName() + " to: " + newDisplayName);
+    System.out.println("Updated display name for " + serviceAccount.getName() + " to: " + newDisplayName);
     return serviceAccount;
   }
   // [END iam_rename_service_account]
@@ -106,4 +119,13 @@ public class ServiceAccounts {
     System.out.println("Deleted service account: " + email);
   }
   // [END iam_delete_service_account]
+
+// [START iam_create_service_account]
+// [START iam_list_service_accounts]
+// [START iam_rename_service_accounts]
+// [START iam_delete_service_account]
 }
+// [END iam_create_service_account]
+// [END iam_list_service_accounts]
+// [END iam_rename_service_accounts]
+// [END iam_delete_service_account]
