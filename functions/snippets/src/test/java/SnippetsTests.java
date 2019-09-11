@@ -180,6 +180,15 @@ public class SnippetsTests {
   }
 
   @Test
+  public void logEntry() throws IOException {
+    PubSubMessage message = new PubSubMessage();
+    message.data = "data";
+    message.messageId = "id";
+    new LogEntry().helloPubSub(message);
+    assertThat(responseOut.toString(), containsString(""));
+  }
+
+  @Test
   public void envTest() throws IOException {
     environmentVariables.set("FOO", "BAR");
     new EnvVars().envVar(request, response);
