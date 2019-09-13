@@ -110,7 +110,7 @@ public class WordCount {
         // [START nested_value_provider]
         .apply("Write results", TextIO.write().to(NestedValueProvider.of(
             options.getOutputBucket(),
-            (String bucket) -> String.format("gs://%s/dataflow/wordcount/outputs", bucket)
+            (String bucket) -> String.format("gs://%s/samples/dataflow/wordcount/outputs", bucket)
         )));
         // [END nested_value_provider]
     pipeline.run();
