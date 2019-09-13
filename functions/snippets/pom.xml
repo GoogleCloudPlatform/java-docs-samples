@@ -60,6 +60,13 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Required for mocking env vars -->
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <version>1.19.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <!-- Required for Java 8 (Alpha) functions in the inline editor -->
