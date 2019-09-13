@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.solutions.flexenv.common;
+package com.google.cloud.translate;
 
 // [START translate_hybrid_imports]
 import com.google.cloud.texttospeech.v1.AudioConfig;

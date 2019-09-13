@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.solutions.flexenv.common;
+package com.google.cloud.translate;
 
 import static com.google.common.truth.Truth.assertThat;
 
