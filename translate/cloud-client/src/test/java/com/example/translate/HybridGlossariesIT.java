@@ -136,7 +136,7 @@ public class HybridGlossariesIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("glossary");
+    assertThat(got).contains("reated");
   }
 
   @Test

@@ -166,8 +166,7 @@ public class HybridGlossaries {
       System.out.format("Created: %s\n", response.getName());
 
     } catch (Exception e) {
-      System.out.format("The glossary %s already exists. No new glossary was created.",
-          glossaryName);
+      System.out.print("No new glossary was created.\n" + e);
     }
   }
   // [END translate_hybrid_create_glossary]
@@ -216,6 +215,7 @@ public class HybridGlossaries {
       return response.getGlossaryTranslationsList().get(0).getTranslatedText();
 
     } catch (Exception e) {
+      System.out.print(e);
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
@@ -283,7 +283,11 @@ public class HybridGlossaries {
       try (FileOutputStream out = new FileOutputStream(outFile)) {
         out.write(audioContents.toByteArray());
         System.out.println("Audio content written to file " + outFile);
+      } catch (Exception e) {
+      	throw new RuntimeException("Couldn't write audio file.", e);
       }
+    } catch (Exception e) {
+      throw new RuntimeException("Couldn't create client.", e);
     }
   }
   // [END translate_hybrid_tts]
