@@ -130,7 +130,17 @@ public class HybridGlossariesIT {
   }
 
   @Test
-  public void testCreateGlossaryAndTranslateText() throws Exception {
+  public void testCreateGlossary() throws Exception {
+    // Act
+    HybridGlossaries.createGlossary(SRC_LANG, TGT_LANG, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("glossary");
+  }
+
+  @Test
+  public void testTranslateText() throws Exception {
     // Act
     HybridGlossaries.createGlossary(SRC_LANG, TGT_LANG, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
 
@@ -139,8 +149,6 @@ public class HybridGlossariesIT {
         HybridGlossaries.translateText(inputText, SRC_LANG, TGT_LANG, PROJECT_ID, GLOSS_NAME);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("glossary");
     assertThat(translation).contains("goat cheese");
   }
 
