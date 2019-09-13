@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate;
+package com.example.translate;
 
 // [START translate_hybrid_imports]
 import com.google.cloud.texttospeech.v1.AudioConfig;
@@ -25,60 +25,33 @@ import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
 import com.google.cloud.texttospeech.v1.TextToSpeechClient;
 import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
 
-import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.Translate.TranslateOption;
-import com.google.cloud.translate.TranslateOptions;
-import com.google.cloud.translate.Translation;
-import com.google.cloud.translate.v3beta1.BatchTranslateResponse;
-import com.google.cloud.translate.v3beta1.BatchTranslateTextRequest;
 import com.google.cloud.translate.v3beta1.CreateGlossaryRequest;
-import com.google.cloud.translate.v3beta1.DeleteGlossaryResponse;
-import com.google.cloud.translate.v3beta1.DetectLanguageRequest;
-import com.google.cloud.translate.v3beta1.DetectLanguageResponse;
-import com.google.cloud.translate.v3beta1.GcsDestination;
 import com.google.cloud.translate.v3beta1.GcsSource;
-import com.google.cloud.translate.v3beta1.GetSupportedLanguagesRequest;
 import com.google.cloud.translate.v3beta1.Glossary;
 import com.google.cloud.translate.v3beta1.Glossary.LanguageCodesSet;
 import com.google.cloud.translate.v3beta1.GlossaryInputConfig;
 import com.google.cloud.translate.v3beta1.GlossaryName;
-import com.google.cloud.translate.v3beta1.InputConfig;
 import com.google.cloud.translate.v3beta1.LocationName;
-import com.google.cloud.translate.v3beta1.OutputConfig;
-import com.google.cloud.translate.v3beta1.SupportedLanguage;
-import com.google.cloud.translate.v3beta1.SupportedLanguages;
 import com.google.cloud.translate.v3beta1.TranslateTextGlossaryConfig;
 import com.google.cloud.translate.v3beta1.TranslateTextRequest;
 import com.google.cloud.translate.v3beta1.TranslateTextResponse;
 import com.google.cloud.translate.v3beta1.TranslationServiceClient;
-import com.google.cloud.translate.v3beta1.TranslationServiceClient.ListGlossariesPagedResponse;
 
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
-import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import com.google.cloud.vision.v1.TextAnnotation;
 
 import com.google.common.html.HtmlEscapers;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.util.JsonFormat;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 // [END translate_hybrid_imports]
 
 
@@ -94,7 +67,7 @@ public class HybridGlossaries {
   * @throws Exception on nonexistent infile
   *
   **/
-  public static String picToText(String infile) throws Exception {
+  static String picToText(String infile) throws Exception {
     List<AnnotateImageRequest> requests = new ArrayList<>();
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(infile));
 
@@ -130,7 +103,7 @@ public class HybridGlossaries {
    * @param glossaryUri the uri of the glossary you uploaded to Cloud Storage
    * 
    **/
-  public static void createGlossary(String srcLang,
+   static void createGlossary(String srcLang,
       String tgtLang, String projectId,
       String glossaryName, String glossaryUri) {
     try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
@@ -166,7 +139,7 @@ public class HybridGlossaries {
       System.out.format("Created: %s\n", response.getName());
 
     } catch (Exception e) {
-      System.out.print("No new glossary was created.\n" + e);
+      System.out.format("No new glossary was created.\n%s\n", e.getMessage());
     }
   }
   // [END translate_hybrid_create_glossary]
@@ -185,7 +158,7 @@ public class HybridGlossaries {
    * RETURNS
    * String of translated text
    **/
-  public static String translateText(String text, String sourceLanguageCode,
+   static String translateText(String text, String sourceLanguageCode,
       String targetLanguageCode, String projectId, String glossaryName) {
     // Instantiates a client
     try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
@@ -215,7 +188,6 @@ public class HybridGlossaries {
       return response.getGlossaryTranslationsList().get(0).getTranslatedText();
 
     } catch (Exception e) {
-      System.out.print(e);
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
@@ -237,11 +209,9 @@ public class HybridGlossaries {
    *
    * @param text plaintext input
    * @param outFile String name of file under which to save audio output
-   * @throws Exception on errors while closing the client
    *
    */
-  public static void textToAudio(String text, String outFile)
-      throws Exception {
+  public static void textToAudio(String text, String outFile) {
     // Replace special characters with HTML Ampersand Character Codes
     // These codes prevent the API from confusing text with SSML tags
     // For example, '<' --> '&lt;' and '&' --> '&amp;'
@@ -294,8 +264,6 @@ public class HybridGlossaries {
 
   // [START translate_hybrid_integration]
   public static void main(String... args) throws Exception {
-
-    String inFile = "resources/example.png";
     String outFile = "resources/example.mp3";
     String sourceLanguageCode = "fr";
     String targetLanguageCode = "en";

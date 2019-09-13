@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,82 +14,30 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate;
+package com.example.translate;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.texttospeech.v1.AudioConfig;
-import com.google.cloud.texttospeech.v1.AudioEncoding;
-import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
-import com.google.cloud.texttospeech.v1.SynthesisInput;
-import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
-import com.google.cloud.texttospeech.v1.TextToSpeechClient;
-import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
-
-import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.Translate.TranslateOption;
-import com.google.cloud.translate.TranslateOptions;
-import com.google.cloud.translate.Translation;
-import com.google.cloud.translate.v3beta1.BatchTranslateResponse;
-import com.google.cloud.translate.v3beta1.BatchTranslateTextRequest;
-import com.google.cloud.translate.v3beta1.CreateGlossaryRequest;
-import com.google.cloud.translate.v3beta1.DeleteGlossaryResponse;
-import com.google.cloud.translate.v3beta1.DetectLanguageRequest;
-import com.google.cloud.translate.v3beta1.DetectLanguageResponse;
-import com.google.cloud.translate.v3beta1.GcsDestination;
-import com.google.cloud.translate.v3beta1.GcsSource;
-import com.google.cloud.translate.v3beta1.GetSupportedLanguagesRequest;
+import com.google.cloud.translate.v3beta1.DeleteGlossaryRequest;
 import com.google.cloud.translate.v3beta1.Glossary;
-import com.google.cloud.translate.v3beta1.Glossary.LanguageCodesSet;
-import com.google.cloud.translate.v3beta1.GlossaryInputConfig;
-import com.google.cloud.translate.v3beta1.GlossaryName;
-import com.google.cloud.translate.v3beta1.InputConfig;
+import com.google.cloud.translate.v3beta1.ListGlossariesRequest;
+import com.google.cloud.translate.v3beta1.ListGlossariesResponse;
 import com.google.cloud.translate.v3beta1.LocationName;
-import com.google.cloud.translate.v3beta1.OutputConfig;
-import com.google.cloud.translate.v3beta1.SupportedLanguage;
-import com.google.cloud.translate.v3beta1.SupportedLanguages;
-import com.google.cloud.translate.v3beta1.TranslateTextGlossaryConfig;
-import com.google.cloud.translate.v3beta1.TranslateTextRequest;
-import com.google.cloud.translate.v3beta1.TranslateTextResponse;
 import com.google.cloud.translate.v3beta1.TranslationServiceClient;
 import com.google.cloud.translate.v3beta1.TranslationServiceClient.ListGlossariesPagedResponse;
 
-import com.google.cloud.vision.v1.AnnotateImageRequest;
-import com.google.cloud.vision.v1.AnnotateImageResponse;
-import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
-import com.google.cloud.vision.v1.EntityAnnotation;
-import com.google.cloud.vision.v1.Feature;
-import com.google.cloud.vision.v1.Feature.Type;
-import com.google.cloud.vision.v1.Image;
-import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import com.google.cloud.vision.v1.TextAnnotation;
-
-import com.google.common.html.HtmlEscapers;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.util.JsonFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-
 
 /**
  * Tests for SsmlAddresses sample.
@@ -120,6 +68,35 @@ public class HybridGlossariesIT {
     System.setOut(out);
   }
 
+  @After
+  public void tearDown() {
+    try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
+      LocationName locationName =
+              LocationName.newBuilder().setProject(PROJECT_ID).setLocation("us-central1").build();
+
+      ListGlossariesRequest listGlossariesRequest = ListGlossariesRequest.newBuilder()
+              .setParent(locationName.toString())
+              .build();
+
+      ListGlossariesPagedResponse listGlossariesPagedResponse =
+              translationServiceClient.listGlossaries(listGlossariesRequest);
+
+      ListGlossariesResponse listGlossariesResponse =
+              listGlossariesPagedResponse.getPage().getResponse();
+
+      for (Glossary glossary : listGlossariesResponse.getGlossariesList()) {
+        DeleteGlossaryRequest request =
+                DeleteGlossaryRequest.newBuilder().setName(glossary.getName()).build();
+
+        translationServiceClient.deleteGlossaryAsync(request).get(300, TimeUnit.SECONDS);
+      }
+    } catch (Exception e) {
+      System.out.format("Failed to delete the glossary.\n%s\n", e.getMessage());
+    }
+
+    System.setOut(null);
+  }
+
   @Test
   public void testPicToText() throws Exception {
     // Act
@@ -136,7 +113,7 @@ public class HybridGlossariesIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("reated");
+    assertThat(got).contains("bistro-glossary");
   }
 
   @Test
