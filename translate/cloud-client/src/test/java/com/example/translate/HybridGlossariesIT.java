@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -55,7 +56,7 @@ public class HybridGlossariesIT {
   private static List<String> LANGUAGES;
   private static String SRC_LANG = "fr";
   private static String TGT_LANG = "en";
-  private static String GLOSS_NAME = "bistro-glossary";
+  private static String GLOSS_NAME = String.format("bistro-glossary-%s", UUID.randomUUID());
   private static String GLOSS_URI =
       "gs://cloud-samples-data/translation/bistro_glossary.csv";
 
