@@ -284,7 +284,7 @@ public class HybridGlossaries {
         out.write(audioContents.toByteArray());
         System.out.println("Audio content written to file " + outFile);
       } catch (Exception e) {
-      	throw new RuntimeException("Couldn't write audio file.", e);
+        throw new RuntimeException("Couldn't write audio file.", e);
       }
     } catch (Exception e) {
       throw new RuntimeException("Couldn't create client.", e);
