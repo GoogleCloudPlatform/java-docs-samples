@@ -42,6 +42,16 @@
       <artifactId>google-cloud-translate</artifactId>
       <version>1.83.0</version>
     </dependency>
+        <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-vision</artifactId>
+      <version>1.83.0</version>
+    </dependency>
+        <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-texttospeech</artifactId>
+      <version>0.101.0-beta</version>
+    </dependency>
     <!-- [END translate_java_dependencies] -->
 
     <!-- Test dependencies -->
