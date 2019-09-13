@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -50,6 +52,7 @@ public class HybridGlossariesIT {
   private static String OUTPUT_FILE = "output.mp3";
   private static String INPUT_FILE = "resources/test.jpeg";
   private static String TEXT_FILE = "resources/test.txt";
+  private static List<String> LANGUAGES;
   private static String SRC_LANG = "fr";
   private static String TGT_LANG = "en";
   private static String GLOSS_NAME = "bistro-glossary";
@@ -62,6 +65,9 @@ public class HybridGlossariesIT {
 
   @Before
   public void setUp() {
+    LANGUAGES = new ArrayList<>();
+    LANGUAGES.add(SRC_LANG);
+    LANGUAGES.add(TGT_LANG);
     // collect project ID from environment
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
@@ -74,9 +80,8 @@ public class HybridGlossariesIT {
       LocationName locationName =
               LocationName.newBuilder().setProject(PROJECT_ID).setLocation("us-central1").build();
 
-      ListGlossariesRequest listGlossariesRequest = ListGlossariesRequest.newBuilder()
-              .setParent(locationName.toString())
-              .build();
+      ListGlossariesRequest listGlossariesRequest =
+              ListGlossariesRequest.newBuilder().setParent(locationName.toString()).build();
 
       ListGlossariesPagedResponse listGlossariesPagedResponse =
               translationServiceClient.listGlossaries(listGlossariesRequest);
@@ -98,7 +103,7 @@ public class HybridGlossariesIT {
   }
 
   @Test
-  public void testPicToText() throws Exception {
+  public void testPicToText() {
     // Act
     String ocr = HybridGlossaries.picToText(INPUT_FILE);
 
@@ -107,9 +112,9 @@ public class HybridGlossariesIT {
   }
 
   @Test
-  public void testCreateGlossary() throws Exception {
+  public void testCreateGlossary() {
     // Act
-    HybridGlossaries.createGlossary(SRC_LANG, TGT_LANG, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
+    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
 
     // Assert
     String got = bout.toString();
@@ -117,9 +122,9 @@ public class HybridGlossariesIT {
   }
 
   @Test
-  public void testTranslateText() throws Exception {
+  public void testTranslateText() {
     // Act
-    HybridGlossaries.createGlossary(SRC_LANG, TGT_LANG, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
+    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
 
     String inputText = "chevre";
     String translation =
