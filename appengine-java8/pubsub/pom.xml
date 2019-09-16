@@ -35,7 +35,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <appengine.maven.plugin>2.0.0</appengine.maven.plugin>
+    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
     <jetty>9.4.4.v20170414</jetty>
   </properties>
 
@@ -57,12 +57,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.77.0</version>
+      <version>1.83.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.77.0</version>
+      <version>1.83.0</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

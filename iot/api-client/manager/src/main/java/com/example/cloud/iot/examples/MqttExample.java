@@ -57,12 +57,12 @@ import org.joda.time.DateTime;
  *
  * <pre>
  *   $ mvn compile
- *   $ mvn exec:java -Dexec.mainClass="com.google.cloud.iot.examples.MqttExample" \
- *       -Dexec.args="-project_id=my-project-id \
- *       -registry_id=my-registry-id \
- *       -device_id=my-device-id \
- *       -private_key_file=/path/to/private_pkcs8 \
- *       -algorithm=RS256"
+ *   $ mvn exec:exec -Dmqtt \
+ *                   -Dproject_id=blue-jet-123 \
+ *                   -Dregistry_id=my-registry \
+ *                   -Ddevice_id=my-test-device \
+ *                   -Dalgorithm=RS256 \
+ *                   -Dprivate_key_file="../path/to/your_private_pkcs8"
  * </pre>
  */
 public class MqttExample {
@@ -512,39 +512,37 @@ public class MqttExample {
       System.exit(1);
     }
 
-    switch (options.command) {
-      case "listen-for-config-messages":
-        System.out.println(
-            String.format("Listening for configuration messages for %s:", options.deviceId));
-        listenForConfigMessages(
-            options.mqttBridgeHostname,
-            options.mqttBridgePort,
-            options.projectId,
-            options.cloudRegion,
-            options.registryId,
-            options.gatewayId,
-            options.privateKeyFile,
-            options.algorithm,
-            options.deviceId);
-        break;
-      case "send-data-from-bound-device":
-        System.out.println("Sending data on behalf of device:");
-        sendDataFromBoundDevice(
-            options.mqttBridgeHostname,
-            options.mqttBridgePort,
-            options.projectId,
-            options.cloudRegion,
-            options.registryId,
-            options.gatewayId,
-            options.privateKeyFile,
-            options.algorithm,
-            options.deviceId,
-            options.messageType,
-            options.telemetryData);
-        break;
-      default:
-        System.out.println("Starting mqtt demo:");
-        mqttDeviceDemo(options);
+    if (options.command == "listen-for-config-messages") {
+      System.out.println(
+          String.format("Listening for configuration messages for %s:", options.deviceId));
+      listenForConfigMessages(
+          options.mqttBridgeHostname,
+          options.mqttBridgePort,
+          options.projectId,
+          options.cloudRegion,
+          options.registryId,
+          options.gatewayId,
+          options.privateKeyFile,
+          options.algorithm,
+          options.deviceId);
+    } else if (options.command == "send-data-from-bound-device") {
+      System.out.println("Sending data on behalf of device:");
+      sendDataFromBoundDevice(
+          options.mqttBridgeHostname,
+          options.mqttBridgePort,
+          options.projectId,
+          options.cloudRegion,
+          options.registryId,
+          options.gatewayId,
+          options.privateKeyFile,
+          options.algorithm,
+          options.deviceId,
+          options.messageType,
+          options.telemetryData);
+    } else {
+      System.out.println("Starting mqtt demo:");
+      mqttDeviceDemo(options);
     }
+    // [END iot_mqtt_configuremqtt]
   }
 }

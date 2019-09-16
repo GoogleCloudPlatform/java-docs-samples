@@ -17,6 +17,7 @@
 package com.google.cloud.vision.samples.facedetect;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.api.services.vision.v1.model.FaceAnnotation;
@@ -46,7 +47,7 @@ public class FaceDetectAppIT {
     List<FaceAnnotation> faces =
         appUnderTest.detectFaces(Paths.get("data/face.jpg"), MAX_RESULTS);
 
-    assertThat(faces).named("face.jpg faces").isNotEmpty();
+    assertWithMessage("face.jpg faces").that(faces).isNotEmpty();
     assertThat(faces.get(0).getFdBoundingPoly().getVertices())
         .isNotEmpty();
   }

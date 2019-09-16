@@ -36,7 +36,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>2.0.0</appengine.maven.plugin>
+    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
     <app.stage.artifact>${project.build.directory}/spark-1.0-jar-with-dependencies.jar</app.stage.artifact>
   </properties>
 
@@ -64,7 +64,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>1.77.0</version>
+      <version>1.83.0</version>
     </dependency>
   </dependencies>
   <build>

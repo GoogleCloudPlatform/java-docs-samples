@@ -38,19 +38,19 @@ After you have authorized, you can analyze videos.
 
 Detect Labels
 ```
-mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"
+mvn exec:java -DDetect -Dexec.args="labels gs://cloud-samples-data/video/cat.mp4"
 
 mvn exec:java -DDetect -Dexec.args="labels-file ./resources/cat.mp4"
 ```
 
 Detect Explicit content annotations
 ```
-mvn exec:java -DDetect -Dexec.args="explicit-content gs://demomaker/gbikes_dinosaur.mp4"
+mvn exec:java -DDetect -Dexec.args="explicit-content gs://cloud-samples-data/video/gbikes_dinosaur.mp4"
 ```
 
 Detect Shots
 ```
-mvn exec:java -DDetect -Dexec.args="shots gs://demomaker/gbikes_dinosaur.mp4"
+mvn exec:java -DDetect -Dexec.args="shots gs://cloud-samples-data/video/gbikes_dinosaur.mp4"
 ```
 
 Transcribe Speech
@@ -60,7 +60,7 @@ mvn exec:java -DDetect -Dexec.args="speech-transcription gs://python-docs-sample
 
 From Windows, you may need to supply your classpath differently, for example:
 ```
-mvn exec:java -DDetect -Dexec.args="labels gs://demomaker/cat.mp4"
+mvn exec:java -DDetect -Dexec.args="labels gs://cloud-samples-data/video/cat.mp4"
 ```
 or
 ```

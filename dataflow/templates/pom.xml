@@ -24,17 +24,17 @@
   <version>1.0</version>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.13.0</beam.version>
+    <beam.version>2.15.0</beam.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
-    <slf4j.version>1.7.26</slf4j.version>
+    <slf4j.version>1.7.28</slf4j.version>
   </properties>
 
   <repositories>
@@ -125,33 +125,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-core</artifactId>
-      <version>${beam.version}</version>
-    </dependency>
-
-    <!--
-      By default, the starter project has a dependency on the Beam DirectRunner
-      to enable development and testing of pipelines. To run on another of the
-      Beam runners, add its module to this pom.xml according to the
-      runner-specific setup instructions on the Beam website:
-        http://beam.apache.org/documentation/#runners
-    -->
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-direct-java</artifactId>
-      <version>${beam.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-      <version>${beam.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
     <!-- slf4j API frontend binding with JUL backend -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -163,5 +136,40 @@
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
+
+    <!-- Apache Beam
+      To run on another of the Beam runners, add its module to this pom.xml
+      according to the runner-specific setup instructions on the Beam website:
+        http://beam.apache.org/documentation/#runners
+    -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-core</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+
+    <!-- Direct Runner -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-direct-java</artifactId>
+      <version>${beam.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Dataflow Runner -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <version>${beam.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Google Cloud I/O - BigQuery, Bigtable, Datastore, Pub/Sub, Spanner -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+
   </dependencies>
 </project>

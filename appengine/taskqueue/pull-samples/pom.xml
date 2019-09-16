@@ -22,6 +22,9 @@ Copyright 2016 Google Inc.
     <groupId>com.example.taskqueue</groupId>
     <artifactId>taskqueue</artifactId>
 
+    <prerequisites>
+      <maven>3.1.0</maven>
+    </prerequisites>
     <!--
       The parent pom defines common style checks and testing strategies for our samples.
       Removing or replacing it should not effect the execution of the samples in anyway.
@@ -42,7 +45,7 @@ Copyright 2016 Google Inc.
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.75</version>
+            <version>1.9.76</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -60,13 +63,13 @@ Copyright 2016 Google Inc.
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.75</version>
+            <version>1.9.76</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.75</version>
+            <version>1.9.76</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -75,6 +78,26 @@ Copyright 2016 Google Inc.
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <version>3.0.0-M2</version>
+              <executions>
+                <execution>
+                  <id>enforce-maven</id>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                    <rules>
+                      <requireMavenVersion>
+                        <version>3.0</version>
+                      </requireMavenVersion>
+                    </rules>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
@@ -89,17 +112,9 @@ Copyright 2016 Google Inc.
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.9.59</version>
+                <version>1.9.76</version>
             </plugin>
             <plugin>
               <groupId>com.google.appengine</groupId>

@@ -17,6 +17,7 @@
 // [START all]
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
@@ -41,8 +42,8 @@ public class StorageSampleTest {
   @Test
   public void testGetBucket() throws Exception {
     Bucket bucket = StorageSample.getBucket(BUCKET);
-    assertThat(bucket.getName()).named("bucket name").isEqualTo(BUCKET);
-    assertThat(bucket.getLocation()).named("bucket location").startsWith("US");
+    assertWithMessage("bucket name").that(bucket.getName()).isEqualTo(BUCKET);
+    assertWithMessage("bucket location").that(bucket.getLocation()).startsWith("US");
   }
 
   @Test
@@ -60,14 +61,14 @@ public class StorageSampleTest {
       // Verify that the object was created
       List<StorageObject> listing = StorageSample.listBucket(BUCKET);
       List<String> names = listing.stream().map(so -> so.getName()).collect(Collectors.toList());
-      assertThat(names).named("objects found after upload").contains(TEST_OBJECT);
+      assertWithMessage("objects found after upload").that(names).contains(TEST_OBJECT);
     } finally {
       StorageSample.deleteObject(TEST_OBJECT, BUCKET);
 
       // Verify that the object no longer exists
       List<StorageObject> listing = StorageSample.listBucket(BUCKET);
       List<String> names = listing.stream().map(so -> so.getName()).collect(Collectors.toList());
-      assertThat(names).named("objects found after delete").doesNotContain(TEST_OBJECT);
+      assertWithMessage("objects found after delete").that(names).doesNotContain(TEST_OBJECT);
     }
   }
 }
