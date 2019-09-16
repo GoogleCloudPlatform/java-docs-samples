@@ -49,15 +49,15 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class HybridGlossariesIT {
 
-  private static String PROJECT_ID = System.getenv("PROJECT_ID");
+  private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String OUTPUT_FILE = "output.mp3";
   private static String INPUT_FILE = "resources/test.jpeg";
   private static String TEXT_FILE = "resources/test.txt";
   private static List<String> LANGUAGES;
   private static String SRC_LANG = "fr";
   private static String TGT_LANG = "en";
-  private static String GLOSS_NAME = String.format("bistro-glossary-%s", UUID.randomUUID());
-  private static String GLOSS_URI =
+  private static String GLOSSARY_NAME;
+  private static String GLOSSARY_URI =
       "gs://cloud-samples-data/translation/bistro_glossary.csv";
 
   private ByteArrayOutputStream bout;
@@ -66,6 +66,7 @@ public class HybridGlossariesIT {
 
   @Before
   public void setUp() {
+    GLOSSARY_NAME = String.format("bistro-glossary-%s", UUID.randomUUID());
     LANGUAGES = new ArrayList<>();
     LANGUAGES.add(SRC_LANG);
     LANGUAGES.add(TGT_LANG);
@@ -115,7 +116,7 @@ public class HybridGlossariesIT {
   @Test
   public void testCreateGlossary() {
     // Act
-    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
+    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSSARY_NAME, GLOSSARY_URI);
 
     // Assert
     String got = bout.toString();
@@ -125,11 +126,11 @@ public class HybridGlossariesIT {
   @Test
   public void testTranslateText() {
     // Act
-    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSS_NAME, GLOSS_URI);
+    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSSARY_NAME, GLOSSARY_URI);
 
     String inputText = "chevre";
     String translation =
-        HybridGlossaries.translateText(inputText, SRC_LANG, TGT_LANG, PROJECT_ID, GLOSS_NAME);
+        HybridGlossaries.translateText(inputText, SRC_LANG, TGT_LANG, PROJECT_ID, GLOSSARY_NAME);
 
     // Assert
     assertThat(translation).contains("goat cheese");
