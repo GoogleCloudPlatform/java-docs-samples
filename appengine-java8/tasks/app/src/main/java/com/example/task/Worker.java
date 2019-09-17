@@ -15,6 +15,7 @@
 
 package com.example.task;
 
+// [START cloud_tasks_worker]
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
     name = "TaskWorker",
-    description = "TaskQueues: worker",
+    description = "Task handler",
     urlPatterns = "/taskqueues/worker"
 )
 public class Worker extends HttpServlet {
@@ -42,3 +43,4 @@ public class Worker extends HttpServlet {
     log.info("Worker is processing " + key);
   }
 }
+// [END cloud_tasks_worker]

@@ -15,6 +15,7 @@
 
 package com.example.task;
 
+// [START cloud_tasks_enqueue]
 import com.google.cloud.tasks.v2.AppEngineHttpRequest;
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.HttpMethod;
@@ -30,8 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 // The Enqueue servlet should be mapped to the "/enqueue" URL.
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
-    name = "TaskEnque",
-    description = "taskqueue: Enqueue a job with a key",
+    name = "TaskEnqueue",
+    description = "Enqueue a task with a key",
     urlPatterns = "/taskqueues/enqueue")
 public class Enqueue extends HttpServlet {
 
@@ -65,3 +66,4 @@ public class Enqueue extends HttpServlet {
     response.sendRedirect("/");
   }
 }
+// [END cloud_tasks_enqueue]
