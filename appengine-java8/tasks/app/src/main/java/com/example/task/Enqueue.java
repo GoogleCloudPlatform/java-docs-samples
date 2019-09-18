@@ -38,6 +38,7 @@ public class Enqueue extends HttpServlet {
   static final String projectId = "my-project-id";
   static final String locationId = "us-central1";
 
+  // Function creates Cloud Tasks from form submissions.
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String key = request.getParameter("key");
