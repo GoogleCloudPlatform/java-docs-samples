@@ -33,6 +33,8 @@ public class Worker extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(Worker.class.getName());
 
+  // Worker function to process POST requests from Cloud Tasks targeted at the 
+  // '/taskqueues/worker' endpoint.
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String key = request.getParameter("key");
