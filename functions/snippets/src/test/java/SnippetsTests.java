@@ -32,7 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -44,6 +46,10 @@ public class SnippetsTests {
 
   private ByteArrayOutputStream stdOut;
   private StringWriter responseOut;
+
+  @Rule
+  public final EnvironmentVariables environmentVariables
+      = new EnvironmentVariables();
 
   @Before
   public void beforeTest() throws Exception {
@@ -67,6 +73,13 @@ public class SnippetsTests {
     responseOut = null;
     stdOut = null;
     System.setOut(null);
+  }
+
+  @Test
+  public void helloWorldTest() throws IOException {
+    new HelloWorld().helloGet(request, response);
+
+    assertThat(responseOut.toString(), containsString("Hello World!"));
   }
 
   @Test
@@ -165,5 +178,24 @@ public class SnippetsTests {
 
     new HelloBackground().helloBackground(request, response);
     assertThat(responseOut.toString(), containsString("Hello John!"));    
+  }
+
+  @Test
+  public void filesTest() throws IOException {
+    new FileSystem().listFiles(request, response);
+    assertThat(responseOut.toString(), containsString("Files:"));
+  }
+
+  @Test
+  public void envTest() throws IOException {
+    environmentVariables.set("FOO", "BAR");
+    new EnvVars().envVar(request, response);
+    assertThat(responseOut.toString(), containsString("BAR"));
+  }
+  
+  @Test
+  public void helloExecutionCount() throws IOException {
+    new Concepts().executionCount(request, response);
+    assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
   }
 }
