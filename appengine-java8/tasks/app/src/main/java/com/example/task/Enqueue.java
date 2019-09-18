@@ -28,23 +28,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// The Enqueue servlet should be mapped to the "/enqueue" URL.
-// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
     name = "TaskEnqueue",
-    description = "Enqueue a task with a key",
+    description = "Enqueue a task targeted at endpoint '/taskqueues/worker'",
     urlPatterns = "/taskqueues/enqueue")
 public class Enqueue extends HttpServlet {
+
+  // TODO(developer): Replace these variables before running the sample.
+  static final String projectId = "my-project-id";
+  static final String locationId = "us-central1";
 
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String key = request.getParameter("key");
 
     try (CloudTasksClient client = CloudTasksClient.create()) {
-      // TODO(developer): Replace these variables before running the sample.
-      String projectId = "my-project-id";
-      String locationId = "us-central1";
-
       // Construct the fully qualified queue name.
       String queueName = QueueName.of(projectId, locationId, "default").toString();
 

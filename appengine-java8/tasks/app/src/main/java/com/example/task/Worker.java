@@ -24,11 +24,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// The Worker servlet should be mapped to the "/worker" URL.
-// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
     name = "TaskWorker",
-    description = "Task handler",
+    description = "Endpoint to process Cloud Task requests",
     urlPatterns = "/taskqueues/worker"
 )
 public class Worker extends HttpServlet {
@@ -38,8 +36,6 @@ public class Worker extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String key = request.getParameter("key");
-
-    // Do something with key.
     log.info("Worker is processing " + key);
   }
 }
