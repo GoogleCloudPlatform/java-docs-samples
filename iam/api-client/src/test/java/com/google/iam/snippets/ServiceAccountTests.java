@@ -18,38 +18,33 @@ package com.google.iam.snippets;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.services.iam.v1.model.ServiceAccount;
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Random;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
+import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ServiceAccountTests {
 
   private ByteArrayOutputStream bout;
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-
-  private static final String NAME = "java-test-" + new Random().nextInt(1000);
-
-  private static final String EMAIL =  NAME + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
-
-  private String got;
-
-  private static void requireEnvVar(String varName){
-      assertNotNull(
+  
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
         System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName)
-    );
+        String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
@@ -71,39 +66,79 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void testServiceAccounts() throws Exception {
-    
-    //Testing ServiceAccountCreate
-    ServiceAccount account = ServiceAccountCreate.createServiceAccount(PROJECT_ID, NAME, "Java Demo");
-    assertTrue(account.getDisplayName().equals("Java Demo"));
+  public void stage1_testServiceAccountCreate() {
+    try {
+      CreateServiceAccount.createServiceAccount(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.contains("Created service account: service-account-name"));
+    } catch (Exception e) {
+      System.out.println("Unable to create service account: /n" + e.toString());
+    }
+  }
 
-    //Testing ServiceAccountList
-    ServiceAccountsList.listServiceAccounts(PROJECT_ID);
-    got = bout.toString();
-    assertTrue(got.contains("Display Name: Java Demo"));
+  @Test
+  public void stage1_testServiceAccountsList() {
+    try {
+      ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.matches("(Name:.*\nDisplay Name:.*\nEmail.*\n\n)*"));
+    } catch (Exception e) {
+      System.out.println("Unable to list service accounts: /n" + e.toString());
+    }
+  }
 
-    //Testing ServiceAccountRename
-    account = ServiceAccountRename.renameServiceAccount(EMAIL, "Java Demo (Updated!)");
-    assertTrue(account.getDisplayName().equals("Java Demo (Updated!)"));
+  @Test
+  public void stage2_testServiceAccountRename() {
+    try {
+      RenameServiceAccount.renameServiceAccount(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.contains("Updated display name"));
+    } catch (Exception e) {
+      System.out.println("Unable to rename service account: /n" + e.toString());
+    }
+  }
 
-    //Testing ServiceAccountKeyCreate
-    ServiceAccountKey key = ServiceAccountKeyCreate.createKey(EMAIL);
-    got = bout.toString();
-    assertTrue(got.contains("Created key:"));
+  @Test
+  public void stage2_testServiceAccountKeyCreate() {
+    try {
+      CreateServiceAccountKey.createKey(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.contains("Created key:"));
+    } catch (Exception e) {
+      System.out.println("Unable to create service account key: /n" + e.toString());
+    }
+  }
 
-    //Testing ServiceAccountKeyList
-    ServiceAccountKeysList.listKeys(EMAIL);
-    got = bout.toString();
-    assertTrue(got.contains("Key:"));
+  @Test
+  public void stage2_testServiceAccountKeysList() {
+    try {
+      ListServiceAccountKeys.listKeys(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.contains("Key:"));
+    } catch (Exception e) {
+      System.out.println("Unable to list service account keys: /n" + e.toString());
+    }
+  }
 
-    //Testing ServiceAccountKeyList
-    ServiceAccountKeyDelete.deleteKey(key.getName());
-    got = bout.toString();
-    assertTrue(got.contains("Deleted key:"));
+  @Test
+  public void stage3_testServiceAccountKeyDelete() {
+    try {
+      DeleteServiceAccountKey.deleteKey(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.contains("Deleted key:"));
+    } catch (Exception e) {
+      System.out.println("Unable to delete service account key: /n" + e.toString());
+    }
+  }
 
-    //Testing ServiceAccountDelete
-    ServiceAccountDelete.deleteServiceAccount(EMAIL);
-    got = bout.toString();
-    assertTrue(got.contains("Deleted service account:"));
+  @Test
+  public void stage3_testServiceAccountDelete() {
+    try {
+      DeleteServiceAccount.deleteServiceAccount(PROJECT_ID);
+      String got = bout.toString();
+      assertTrue(got.contains("Deleted service account:"));
+    } catch (Exception e) {
+      System.out.println("Unable to delete service account: /n" + e.toString());
+    }
   }
 }
