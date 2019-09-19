@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(
     name = "TaskEnqueue",
-    description = "Enqueue a task targeted at endpoint '/taskqueues/worker'",
-    urlPatterns = "/taskqueues/enqueue")
+    description = "Enqueue a task targeted at endpoint '/cloudtasks/worker'",
+    urlPatterns = "/cloudtasks/enqueue")
 public class Enqueue extends HttpServlet {
 
   // TODO(developer): Replace these variables before running the sample.
@@ -52,7 +52,7 @@ public class Enqueue extends HttpServlet {
           Task.newBuilder()
               .setAppEngineHttpRequest(
                   AppEngineHttpRequest.newBuilder()
-                      .setRelativeUri("/taskqueues/worker?key=" + key)
+                      .setRelativeUri("/cloudtasks/worker?key=" + key)
                       .setHttpMethod(HttpMethod.POST)
                       .build())
               .build();
