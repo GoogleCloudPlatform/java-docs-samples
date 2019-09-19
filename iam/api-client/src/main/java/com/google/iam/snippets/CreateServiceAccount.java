@@ -56,7 +56,7 @@ public class CreateServiceAccount {
 
       System.out.println("Created service account: " + serviceAccount.getEmail());
     } catch (IOException e) {
-      System.out.println("Unable to create service: \n" + e.toString());
+      System.out.println("Unable to create service account: \n" + e.toString());
     }
   }
 
