@@ -34,7 +34,6 @@ import org.junit.runners.MethodSorters;
 public class ServiceAccountTests {
 
   private ByteArrayOutputStream bout;
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
