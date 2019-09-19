@@ -23,54 +23,58 @@ import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ListServiceAccountsResponse;
 import com.google.api.services.iam.v1.model.ServiceAccount;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
 public class ListServiceAccounts {
 
-  private static Iam service = null;
-
   // Lists all service accounts for the current project.
-  public static List<ServiceAccount> listServiceAccounts(String projectId) throws Exception {
+  public static void listServiceAccounts(String projectId) {
     // String projectId = "my-project-id"
-
+    Iam service = null;
+    
     try {
-      initService();
-    } catch (Exception e) {
-      System.out.println("Failed to build service: \n" + e.toString());
+      service = initService();
+    } catch (GeneralSecurityException e) {
+      System.out.println("Unable to initialize service: \n" + e.toString());
+      return;
+    } catch (IOException e) {
+      System.out.println("Unable to initialize service: \n" + e.toString());
+      return;
     }
-    ListServiceAccountsResponse response =
-        service.projects().serviceAccounts().list("projects/" + projectId).execute();
-    List<ServiceAccount> serviceAccounts = response.getAccounts();
+    try {
+      ListServiceAccountsResponse response =
+          service.projects().serviceAccounts().list("projects/" + projectId).execute();
+      List<ServiceAccount> serviceAccounts = response.getAccounts();
 
-    for (ServiceAccount account : serviceAccounts) {
-      System.out.println("Name: " + account.getName());
-      System.out.println("Display Name: " + account.getDisplayName());
-      System.out.println("Email: " + account.getEmail());
-      System.out.println();
+      for (ServiceAccount account : serviceAccounts) {
+        System.out.println("Name: " + account.getName());
+        System.out.println("Display Name: " + account.getDisplayName());
+        System.out.println("Email: " + account.getEmail());
+        System.out.println();
+      }
+    } catch (IOException e) {
+      System.out.println("Unable to list service accounts: \n" + e.toString());
     }
-    return serviceAccounts;
   }
 
-  private static void initService() {
-    try {
-      // Use the Application Default Credentials strategy for authentication. For more info, please
-      // see:
-      // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-      GoogleCredential credential =
-          GoogleCredential.getApplicationDefault()
-              .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-      // Initialize the IAM service, which can be used to send requests to the IAM API.
-      service =
-          new Iam.Builder(
-                  GoogleNetHttpTransport.newTrustedTransport(),
-                  JacksonFactory.getDefaultInstance(),
-                  credential)
-              .setApplicationName("service-accounts")
-              .build();
-    } catch (Exception e) {
-      System.out.println("Unable to initalize IAM service: \n" + e.toString());
-    }
+  private static Iam initService() throws GeneralSecurityException, IOException {
+    // Use the Application Default Credentials strategy for authentication. For more info, see:
+    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
+            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
+    // Initialize the IAM service, which can be used to send requests to the IAM API.
+    Iam service =
+        new Iam.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance(),
+                credential)
+            .setApplicationName("service-accounts")
+            .build();
+    return service;
   }
 }
 // [END iam_list_service_accounts]

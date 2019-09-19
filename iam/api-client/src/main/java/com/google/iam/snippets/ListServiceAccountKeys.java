@@ -22,61 +22,65 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
 public class ListServiceAccountKeys {
 
-  private static Iam service = null;
-
   // Lists all keys for a service account.
-  public static List<ServiceAccountKey> listKeys(String projectId) throws Exception {
+  public static void listKeys(String projectId) {
     // String projectId = "my-project-id";
+    Iam service = null;
+    
+    try {
+      service = initService();
+    } catch (GeneralSecurityException e) {
+      System.out.println("Unable to initialize service: \n" + e.toString());
+      return;
+    } catch (IOException e) {
+      System.out.println("Unable to initialize service: \n" + e.toString());
+      return;
+    }
 
     try {
-      initService();
-    } catch (Exception e) {
-      System.out.println("Failed to build service: \n" + e.toString());
-    }
-    List<ServiceAccountKey> keys =
-        service
-            .projects()
-            .serviceAccounts()
-            .keys()
-            .list(
-                "projects/-/serviceAccounts/"
-                    + "service-account-name@"
-                    + projectId
-                    + ".iam.gserviceaccount.com")
-            .execute()
-            .getKeys();
+      List<ServiceAccountKey> keys =
+          service
+              .projects()
+              .serviceAccounts()
+              .keys()
+              .list(
+                  "projects/-/serviceAccounts/"
+                      + "your-service-account-name@"
+                      + projectId
+                      + ".iam.gserviceaccount.com")
+              .execute()
+              .getKeys();
 
-    for (ServiceAccountKey key : keys) {
-      System.out.println("Key: " + key.getName());
+      for (ServiceAccountKey key : keys) {
+        System.out.println("Key: " + key.getName());
+      }
+    } catch (IOException e) {
+      System.out.println("Unable to list service account keys: \n" + e.toString());
     }
-
-    return keys;
   }
 
-  private static void initService() {
-    try {
-      // Use the Application Default Credentials strategy for authentication. For more info, please
-      // see:
-      // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-      GoogleCredential credential =
-          GoogleCredential.getApplicationDefault()
-              .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-      // Initialize the IAM service, which can be used to send requests to the IAM API.
-      service =
-          new Iam.Builder(
-                  GoogleNetHttpTransport.newTrustedTransport(),
-                  JacksonFactory.getDefaultInstance(),
-                  credential)
-              .setApplicationName("service-accounts")
-              .build();
-    } catch (Exception e) {
-      System.out.println("Unable to initalize IAM service: \n" + e.toString());
-    }
+  private static Iam initService() throws GeneralSecurityException, IOException {
+    // Use the Application Default Credentials strategy for authentication. For more info, see:
+    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
+            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
+    // Initialize the IAM service, which can be used to send requests to the IAM API.
+    Iam service =
+        new Iam.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance(),
+                credential)
+            .setApplicationName("service-account-keys")
+            .build();
+    return service;
   }
 }
 // [END iam_list_keys]

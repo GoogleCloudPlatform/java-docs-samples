@@ -22,68 +22,74 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ServiceAccount;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 public class RenameServiceAccount {
 
-  private static Iam service = null;
-
   // Changes a service account's display name.
-  public static void renameServiceAccount(String projectId) throws Exception {
+  public static void renameServiceAccount(String projectId) {
     // String projectId = "my-project-id";
+    Iam service = null;
+    
+    try {
+      service = initService();
+    } catch (GeneralSecurityException e) {
+      System.out.println("Unable to initialize service: \n" + e.toString());
+      return;
+    } catch (IOException e) {
+      System.out.println("Unable to initialize service: \n" + e.toString());
+      return;
+    }
 
     try {
-      initService();
-    } catch (Exception e) {
-      System.out.println("Failed to build service: \n" + e.toString());
+      // First, get a service account using List() or Get()
+      ServiceAccount serviceAccount =
+          service
+              .projects()
+              .serviceAccounts()
+              .get(
+                  "projects/-/serviceAccounts/"
+                      + "your-service-account-name@"
+                      + projectId
+                      + ".iam.gserviceaccount.com")
+              .execute();
+
+      // Then you can update the display name
+      serviceAccount.setDisplayName("your-new-display-name");
+      serviceAccount =
+          service
+              .projects()
+              .serviceAccounts()
+              .update(serviceAccount.getName(), serviceAccount)
+              .execute();
+
+      System.out.println(
+          "Updated display name for "
+              + serviceAccount.getName()
+              + " to: "
+              + serviceAccount.getDisplayName());
+    } catch (IOException e) {
+      System.out.println("Unable to rename service account: \n" + e.toString());
     }
-    // First, get a service account using List() or Get()
-    ServiceAccount serviceAccount =
-        service
-            .projects()
-            .serviceAccounts()
-            .get(
-                "projects/-/serviceAccounts/"
-                    + "service-account-name@"
-                    + projectId
-                    + ".iam.gserviceaccount.com")
-            .execute();
-
-    // Then you can update the display name
-    serviceAccount.setDisplayName("NEW_DISPLAY_NAME");
-    serviceAccount =
-        service
-            .projects()
-            .serviceAccounts()
-            .update(serviceAccount.getName(), serviceAccount)
-            .execute();
-
-    System.out.println(
-        "Updated display name for "
-            + serviceAccount.getName()
-            + " to: "
-            + serviceAccount.getDisplayName());
   }
 
-  private static void initService() {
-    try {
-      // Use the Application Default Credentials strategy for authentication. For more info, please
-      // see:
-      // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-      GoogleCredential credential =
-          GoogleCredential.getApplicationDefault()
-              .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-      // Initialize the IAM service, which can be used to send requests to the IAM API.
-      service =
-          new Iam.Builder(
-                  GoogleNetHttpTransport.newTrustedTransport(),
-                  JacksonFactory.getDefaultInstance(),
-                  credential)
-              .setApplicationName("service-accounts")
-              .build();
-    } catch (Exception e) {
-      System.out.println("Unable to initalize IAM service: \n" + e.toString());
-    }
+  private static Iam initService() throws GeneralSecurityException, IOException {
+    // Use the Application Default Credentials strategy for authentication. For more info, see:
+    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
+            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
+    // Initialize the IAM service, which can be used to send requests to the IAM API.
+    Iam service =
+        new Iam.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JacksonFactory.getDefaultInstance(),
+                credential)
+            .setApplicationName("service-accounts")
+            .build();
+    return service;
   }
 }
 // [END iam_rename_service_account]
