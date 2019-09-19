@@ -102,12 +102,10 @@ public class ServiceAccountTests {
     assertTrue(got.contains("Deleted key:"));
   }
 
-  /*
   @Test
   public void stage4_testServiceAccountDelete() {
     DeleteServiceAccount.deleteServiceAccount(PROJECT_ID);
     String got = bout.toString();
     assertTrue(got.contains("Deleted service account:"));
   }
-  */
 }
