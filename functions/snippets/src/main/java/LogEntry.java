@@ -25,18 +25,23 @@ public class LogEntry {
   private static Logger LOGGER = Logger.getLogger(LogEntry.class.getName());
 
   public void helloPubSub(PubSubMessage message) throws IOException {
-    String data = new String(Base64.getDecoder().decode(message.data.getBytes("UTF-8")));
+    String data = message.data == null ? "" :
+      new String(Base64.getDecoder().decode(message.data.getBytes("UTF-8")));
     if (data.isEmpty()) {
       data = "World";
     }
     LOGGER.info(String.format("Hello, %s", data));
   }
+
+  /**
+   * A Pub/Sub message.
+   */
+  public static class PubSubMessage {
+    String data;
+    Map<String, String> attributes;
+    String messageId;
+    String publishTime;
+  }
 }
 
-class PubSubMessage {
-  String data;
-  Map<String, String> attributes;
-  String messageId;
-  String publishTime;
-}
 // [END functions_log_stackdriver]

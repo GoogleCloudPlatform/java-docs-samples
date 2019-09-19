@@ -181,11 +181,11 @@ public class SnippetsTests {
 
   @Test
   public void logEntry() throws IOException {
-    PubSubMessage message = new PubSubMessage();
+    LogEntry.PubSubMessage message = new LogEntry.PubSubMessage();
     message.data = "data";
     message.messageId = "id";
     new LogEntry().helloPubSub(message);
-    assertThat(responseOut.toString(), containsString(""));
+    assertThat(responseOut.toString(), containsString("Hello, data"));
   }
 
   @Test
