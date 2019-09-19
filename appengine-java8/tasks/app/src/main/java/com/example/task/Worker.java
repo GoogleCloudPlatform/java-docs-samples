@@ -27,14 +27,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(
     name = "TaskWorker",
     description = "Endpoint to process Cloud Task requests",
-    urlPatterns = "/taskqueues/worker"
+    urlPatterns = "/cloudtasks/worker"
 )
 public class Worker extends HttpServlet {
 
   private static final Logger log = Logger.getLogger(Worker.class.getName());
 
-  // Worker function to process POST requests from Cloud Tasks targeted at the 
-  // '/taskqueues/worker' endpoint.
+  // Worker function to process POST requests from Cloud Tasks targeted at the
+  // '/cloudtasks/worker' endpoint.
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String key = request.getParameter("key");
