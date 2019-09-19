@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Scopes {
-  // [END functions_tips_scopes]
   private static int lightComputation() {
     int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     return Arrays.stream(numbers).sum();
@@ -34,7 +33,6 @@ public class Scopes {
     return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 
-  // [START functions_tips_scopes]
   // Global (instance-wide) scope
   // This computation runs at instance cold-start
   // Warning: Class variables used in Servlet classes must be thread-safe, or else might introduce race conditions in your code. 
