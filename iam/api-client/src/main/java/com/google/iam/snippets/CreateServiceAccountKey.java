@@ -32,14 +32,11 @@ public class CreateServiceAccountKey {
   // Creates a key for a service account.
   public static void createKey(String projectId) {
     // String projectId = "my-project-id";
-    Iam service = null;
     
+    Iam service = null;
     try {
       service = initService();
-    } catch (GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    } catch (IOException e) {
+    } catch (IOException | GeneralSecurityException e) {
       System.out.println("Unable to initialize service: \n" + e.toString());
       return;
     }
