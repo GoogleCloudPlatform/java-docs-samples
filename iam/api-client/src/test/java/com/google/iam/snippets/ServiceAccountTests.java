@@ -103,14 +103,14 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage4_testDisableServiceAccount(){
+  public void stage4_testDisableServiceAccount() {
     DisableServiceAccount.disableServiceAccount(PROJECT_ID);
     String got = bout.toString();
     assertTrue(got.contains("Disabled service account:"));
   }
 
   @Test
-  public void stage5_testEnableServiceAccount(){
+  public void stage5_testEnableServiceAccount() {
     EnableServiceAccount.enableServiceAccount(PROJECT_ID);
     String got = bout.toString();
     assertTrue(got.contains("Enabled service account:"));
