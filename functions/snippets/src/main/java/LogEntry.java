@@ -16,7 +16,6 @@
 
 // [START functions_log_stackdriver]
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -25,18 +24,16 @@ public class LogEntry {
   private static Logger LOGGER = Logger.getLogger(LogEntry.class.getName());
 
   public void helloPubSub(PubSubMessage message) throws IOException {
-    String data = message.data == null ? "" :
-      new String(Base64.getDecoder().decode(message.data.getBytes("UTF-8")));
-    if (data.isEmpty()) {
-      data = "World";
+    if (message.data.isEmpty()) {
+      message.data = "World";
     }
-    LOGGER.info(String.format("Hello, %s", data));
+    LOGGER.info(String.format("Hello, %s", message.data));
   }
 
-  /**
-   * A Pub/Sub message.
-   */
-  public static class PubSubMessage {
+  // A Pub/Sub message.
+  // Make sure to include the PubSubMessage class verbatim
+  // The GCF environment will marshal the request data into it.
+  public class PubSubMessage {
     String data;
     Map<String, String> attributes;
     String messageId;
