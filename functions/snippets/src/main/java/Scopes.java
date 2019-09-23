@@ -23,16 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Scopes {
-  private static int lightComputation() {
-    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    return Arrays.stream(numbers).sum();
-  }
-  
-  private static int heavyComputation() {
-    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
-  }
-
   // Global (instance-wide) scope
   // This computation runs at instance cold-start
   // Warning: Class variables used in Servlet classes must be thread-safe, or else might introduce race conditions in your code. 
@@ -46,6 +36,16 @@ public class Scopes {
 
     PrintWriter writer = response.getWriter();
     writer.write(String.format("Instance: %s; function: %s", InstanceVar, functionVar));
+  }
+  
+  private static int lightComputation() {
+    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    return Arrays.stream(numbers).sum();
+  }
+  
+  private static int heavyComputation() {
+    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 }
 
