@@ -35,7 +35,7 @@ public class RetryTask {
       // String locationId = "us-central1";
       // String fooqueue = "fooqueue";
       // String barqueue = "barqueue";
-      // String bazqueue = "bazqueue"
+      // String bazqueue = "bazqueue";
 
       LocationName parent = LocationName.of(projectId, locationId);
 
