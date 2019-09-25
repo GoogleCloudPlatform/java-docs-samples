@@ -29,7 +29,7 @@ public class Tips {
   // This computation runs at instance cold-start
   public static final int INSTANCE_VAR = heavyComputation();
 
-  public void ScopesDemo(HttpServletRequest request, HttpServletResponse response)
+  public void scopesDemo(HttpServletRequest request, HttpServletResponse response)
       throws IOException, InterruptedException {
     // Per-function scope
     // This computation runs every time this function is called
