@@ -24,8 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Scopes {
   // Global (instance-wide) scope
-  // This computation runs at instance cold-start
-  // Warning: Class variables used in Servlet classes must be thread-safe, or else might introduce race conditions in your code. 
+  // This computation runs at instance cold-start.
+  // Warning: Class variables used in Servlet classes must be thread-safe,
+  // or else might introduce race conditions in your code. 
   private static final int InstanceVar = heavyComputation();
 
   public void scopeDemo(HttpServletRequest request, HttpServletResponse response)
