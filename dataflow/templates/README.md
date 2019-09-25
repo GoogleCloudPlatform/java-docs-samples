@@ -1,67 +1,35 @@
 # Cloud Dataflow Templates
 
-Samples showing how to create and run an [Apache Beam] on [Google Cloud Dataflow].
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor)
+
+Samples showing how to create and run an
+[Apache Beam](https://beam.apache.org/) on
+[Google Cloud Dataflow](https://cloud.google.com/dataflow/docs/).
 
 ## Before you begin
 
-1. Install the [Cloud SDK].
-
-1. [Create a new project].
-
-1. [Enable billing].
-
-1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_component,storage_api,bigquery,pubsub,datastore.googleapis.com,cloudresourcemanager.googleapis.com): Dataflow, Compute Engine, Stackdriver Logging, Cloud Storage, Cloud Storage JSON, BigQuery, Pub/Sub, Datastore, and Cloud Resource Manager.
-
-1. Setup the Cloud SDK to your GCP project.
-
-   ```bash
-   gcloud init
-   ```
-
-1. [Create a service account key] as a JSON file.
-   For more information, see [Creating and managing service accounts].
-
-   * From the **Service account** list, select **New service account**.
-   * In the **Service account name** field, enter a name.
-   * From the **Role** list, select **Project > Owner**.
-
-     > **Note**: The **Role** field authorizes your service account to access resources.
-     > You can view and change this field later by using the [GCP Console IAM page].
-     > If you are developing a production app, specify more granular permissions than **Project > Owner**.
-     > For more information, see [Granting roles to service accounts].
-
-   * Click **Create**. A JSON file that contains your key downloads to your computer.
-
-1. Set your `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account key file.
-
-   ```bash
-   export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/credentials.json
-   ```
+Follow the
+[Getting started with Google Cloud Dataflow](../README.md)
+page, and make sure you have a Google Cloud project with billing enabled
+and a *service account JSON key* set up in your `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
+Additionally, for this sample you need the following:
 
 1. Create a Cloud Storage bucket.
 
-   ```bash
-   gsutil mb gs://your-gcs-bucket
+   ```sh
+   export BUCKET=your-gcs-bucket
+   gsutil mb gs://$BUCKET
    ```
-
-## Setup
-
-The following instructions will help you prepare your development environment.
-
-1. Download and install the [Java Development Kit (JDK)].
-   Verify that the [JAVA_HOME] environment variable is set and points to your JDK installation.
-
-1. Download and install [Apache Maven] by following the [Maven installation guide] for your specific operating system.
 
 1. Clone the `java-docs-samples` repository.
 
-    ```bash
-    git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-    ```
+   ```sh
+   git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
+   ```
 
 1. Navigate to the sample code directory.
 
-   ```bash
+   ```sh
    cd java-docs-samples/dataflow/templates
    ```
 
@@ -71,13 +39,16 @@ The following instructions will help you prepare your development environment.
 
 * [WordCount.java](src/main/java/com/example/dataflow/templates/WordCount.java)
 * [WordCount_metadata](WordCount_metadata)
+* [pom.xml](pom.xml)
 
-First, select the project and template location.
+The following sample creates a WordCount Dataflow template showcasing different uses of `ValueProvider`s.
+
+Make sure you have the following variables set up:
 
 ```bash
-PROJECT=$(gcloud config get-value project)
-BUCKET=your-gcs-bucket
-TEMPLATE_LOCATION=gs://$BUCKET/dataflow/templates/WordCount
+export PROJECT=$(gcloud config get-value project)
+export BUCKET=your-gcs-bucket
+export TEMPLATE_LOCATION=gs://$BUCKET/samples/dataflow/templates/WordCount
 ```
 
 Then, to create the template in the desired Cloud Storage location.
@@ -96,57 +67,36 @@ mvn compile exec:java \
 gsutil cp WordCount_metadata "$TEMPLATE_LOCATION"_metadata
 ```
 
-> For more information, see [Creating templates].
+> For more information, see
+> [Creating templates](https://cloud.google.com/dataflow/docs/guides/templates/creating-templates).
 
-Finally, you can run the template via `gcloud` or through the [GCP Console create Dataflow job page].
+Finally, you can run the template via `gcloud` or through the
+[GCP Console create Dataflow job page](https://console.cloud.google.com/dataflow/createjob).
 
 ```bash
-JOB_NAME=wordcount-$(date +'%Y%m%d-%H%M%S')
-INPUT=gs://apache-beam-samples/shakespeare/kinglear.txt
+export JOB_NAME=wordcount-$(date +'%Y%m%d-%H%M%S')
+export INPUT=gs://apache-beam-samples/shakespeare/kinglear.txt
 
 gcloud dataflow jobs run $JOB_NAME \
   --gcs-location $TEMPLATE_LOCATION \
   --parameters inputFile=$INPUT,outputBucket=$BUCKET
 ```
 
-> For more information, see [Executing templates].
+> For more information, see
+> [Executing templates](https://cloud.google.com/dataflow/docs/guides/templates/executing-templates).
 
-You can check your submitted jobs in the [GCP Console Dataflow page].
+You can check your submitted jobs in the
+[GCP Console Dataflow page](https://console.cloud.google.com/dataflow).
 
 ## Cleanup
 
 To avoid incurring charges to your GCP account for the resources used:
 
 ```bash
-# Delete only the files created by this sample.
-gsutil -m rm -rf \
-  "gs://$BUCKET/dataflow/templates/WordCount*" \
-  "gs://$BUCKET/dataflow/wordcount/"
-
-# [optional] Remove the entire dataflow Cloud Storage directory.
-gsutil -m rm -rf gs://$BUCKET/dataflow
+# Remove only the files created by this sample.
+gsutil -m rm -rf "$TEMPLATE_LOCATION*"
+gsutil -m rm -rf "gs://$BUCKET/samples/dataflow/wordcount/"
 
 # [optional] Remove the Cloud Storage bucket.
 gsutil rb gs://$BUCKET
 ```
-
-[Apache Beam]: https://beam.apache.org/
-[Google Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
-
-[Cloud SDK]: https://cloud.google.com/sdk/docs/
-[Create a new project]: https://console.cloud.google.com/projectcreate
-[Enable billing]: https://cloud.google.com/billing/docs/how-to/modify-project
-[Create a service account key]: https://console.cloud.google.com/apis/credentials/serviceaccountkey
-[Creating and managing service accounts]: https://cloud.google.com/iam/docs/creating-managing-service-accounts
-[GCP Console IAM page]: https://console.cloud.google.com/iam-admin/iam
-[Granting roles to service accounts]: https://cloud.google.com/iam/docs/granting-roles-to-service-accounts
-
-[Java Development Kit (JDK)]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
-[JAVA_HOME]: https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html
-[Apache Maven]: http://maven.apache.org/download.cgi
-[Maven installation guide]: http://maven.apache.org/install.html
-
-[Creating templates]: https://cloud.google.com/dataflow/docs/guides/templates/creating-templates
-[GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
-[Executing templates]: https://cloud.google.com/dataflow/docs/guides/templates/executing-templates
-[GCP Console Dataflow page]: https://console.cloud.google.com/dataflow
