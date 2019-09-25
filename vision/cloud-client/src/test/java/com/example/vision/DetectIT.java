@@ -46,7 +46,7 @@ public class DetectIT {
   private static final String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT_" + UUID.randomUUID().toString();
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -312,8 +312,8 @@ public class DetectIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("vertices {");
-    assertThat(got).contains("x: 599");
-    assertThat(got).contains("y: 475");
+    assertThat(got).contains("x: 2");  // Assert in the 200 range
+    assertThat(got).contains("y: 4");  // Assert in the 400 range
   }
 
   @Test
@@ -325,8 +325,8 @@ public class DetectIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("vertices {");
-    assertThat(got).contains("x: 599");
-    assertThat(got).contains("y: 475");
+    assertThat(got).contains("x: 2");  // Assert in the 200 range
+    assertThat(got).contains("y: 4");  // Assert in the 400 range
   }
 
   @Test
