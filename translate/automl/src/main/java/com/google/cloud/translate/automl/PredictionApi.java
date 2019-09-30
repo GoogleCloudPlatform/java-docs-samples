@@ -67,26 +67,28 @@ public class PredictionApi {
       String projectId, String computeRegion, String modelId, String filePath) throws IOException {
 
     // Instantiate client for prediction service.
-    PredictionServiceClient predictionClient = PredictionServiceClient.create();
+    PredictResponse response;
+    try (PredictionServiceClient predictionClient = PredictionServiceClient.create()) {
 
-    // Get the full path of the model.
-    ModelName name = ModelName.of(projectId, computeRegion, modelId);
+      // Get the full path of the model.
+      ModelName name = ModelName.of(projectId, computeRegion, modelId);
 
-    // Read the file content for translation.
-    String content = new String(Files.readAllBytes(Paths.get(filePath)));
+      // Read the file content for translation.
+      String content = new String(Files.readAllBytes(Paths.get(filePath)));
 
-    TextSnippet textSnippet = TextSnippet.newBuilder().setContent(content).build();
+      TextSnippet textSnippet = TextSnippet.newBuilder().setContent(content).build();
 
-    // Set the payload by giving the content of the file.
-    ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
+      // Set the payload by giving the content of the file.
+      ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
 
-    // Additional parameters that can be provided for prediction
-    Map<String, String> params = new HashMap<>();
+      // Additional parameters that can be provided for prediction
+      Map<String, String> params = new HashMap<>();
 
-    PredictResponse response = predictionClient.predict(name, payload, params);
-    TextSnippet translatedContent = response.getPayload(0).getTranslation().getTranslatedContent();
+      response = predictionClient.predict(name, payload, params);
+      TextSnippet translatedContent = response.getPayload(0).getTranslation().getTranslatedContent();
 
-    System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
+      System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
+    }
   }
   // [END automl_translate_predict]
 

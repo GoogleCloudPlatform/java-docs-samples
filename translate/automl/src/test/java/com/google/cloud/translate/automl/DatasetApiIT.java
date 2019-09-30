@@ -40,7 +40,7 @@ public class DatasetApiIT {
   private PrintStream out;
   private DatasetApi app;
   private String datasetId;
-  private String getdatasetId = "3946265060617537378";
+  private String getdatasetId = "TRL3946265060617537378";
 
   @Before
   public void setUp() {
@@ -68,7 +68,7 @@ public class DatasetApiIT {
     assertThat(got).contains("Dataset id:");
 
     // Act
-    DatasetApi.importData(PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/en-ja.csv");
+    DatasetApi.importData(PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/en-ja-short.csv");
 
     // Assert
     got = bout.toString();
