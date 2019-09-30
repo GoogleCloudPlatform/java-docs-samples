@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
@@ -312,8 +313,8 @@ public class DetectIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("vertices {");
-    assertThat(got).contains("x: 2");  // Assert in the 200 range
-    assertThat(got).contains("y: 4");  // Assert in the 400 range
+    assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("x: 4\\d{2}"));
   }
 
   @Test
@@ -325,8 +326,8 @@ public class DetectIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("vertices {");
-    assertThat(got).contains("x: 2");  // Assert in the 200 range
-    assertThat(got).contains("y: 4");  // Assert in the 400 range
+    assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("x: 4\\d{2}"));
   }
 
   @Test
