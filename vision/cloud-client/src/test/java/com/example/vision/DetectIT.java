@@ -314,7 +314,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("vertices {");
     assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
-    assertThat(got).containsMatch(Pattern.compile("x: 4\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("y: 4\\d{2}"));
   }
 
   @Test
@@ -327,7 +327,7 @@ public class DetectIT {
     String got = bout.toString();
     assertThat(got).contains("vertices {");
     assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
-    assertThat(got).containsMatch(Pattern.compile("x: 4\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("y: 4\\d{2}"));
   }
 
   @Test
