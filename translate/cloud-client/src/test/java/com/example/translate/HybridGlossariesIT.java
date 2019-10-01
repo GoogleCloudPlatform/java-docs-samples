@@ -38,6 +38,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,8 +55,7 @@ public class HybridGlossariesIT {
   private static String OUTPUT_FILE = "output.mp3";
   private static String INPUT_FILE = "resources/test.jpeg";
   private static String TEXT_FILE = "resources/test.txt";
-  private static String GLOSSARY_DISPLAY_NAME =
-          String.format("bistro-glossary-%s", UUID.randomUUID());
+  private static String GLOSSARY_DISPLAY_NAME;
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -63,14 +63,15 @@ public class HybridGlossariesIT {
 
   @Before
   public void setUp() {
-    // collect project ID from environment
+    GLOSSARY_DISPLAY_NAME = String.format("bistro-glossary-%s", UUID.randomUUID());
+    
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @AfterClass
+  public static void tearDown() throws Exception {
     try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
       LocationName locationName =
               LocationName.newBuilder().setProject(PROJECT_ID).setLocation("us-central1").build();
