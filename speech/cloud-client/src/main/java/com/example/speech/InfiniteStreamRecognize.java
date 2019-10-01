@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.speech;
 
-// [START speech_transcribe_infinite_streaming]
+// [START speech_transcribe_infinite_streaming_imports]
 
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
@@ -43,13 +43,13 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.TargetDataLine;
 
+// [END speech_transcribe_infinite_streaming_imports]
+
 public class InfiniteStreamRecognize {
 
-  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+// [START speech_transcribe_infinite_streaming_globals]
 
-  public static final String RED = "\033[0;31m";
-  public static final String GREEN = "\033[0;32m";
-  public static final String YELLOW = "\033[0;33m";
+  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
 
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
@@ -68,6 +68,19 @@ public class InfiniteStreamRecognize {
   private static StreamController referenceToStreamController;
   private static ByteString tempByteString;
 
+// [END speech_transcribe_infinite_streaming_globals]
+
+  public static String convertMillisToDate(double milliSeconds) {
+    long millis = (long) milliSeconds;
+    DecimalFormat format = new DecimalFormat();
+    format.setMinimumIntegerDigits(2);
+    return String.format("%s:%s /",
+            format.format(TimeUnit.MILLISECONDS.toMinutes(millis)),
+            format.format(TimeUnit.MILLISECONDS.toSeconds(millis)
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
+    );
+  }
+// [START speech_transcribe_infinite_streaming_main]
   public static void main(String... args) {
     InfiniteStreamRecognizeOptions options = InfiniteStreamRecognizeOptions.fromFlags(args);
     if (options == null) {
@@ -82,17 +95,7 @@ public class InfiniteStreamRecognize {
       System.out.println("Exception caught: " + e);
     }
   }
-
-  public static String convertMillisToDate(double milliSeconds) {
-    long millis = (long) milliSeconds;
-    DecimalFormat format = new DecimalFormat();
-    format.setMinimumIntegerDigits(2);
-    return String.format("%s:%s /",
-            format.format(TimeUnit.MILLISECONDS.toMinutes(millis)),
-            format.format(TimeUnit.MILLISECONDS.toSeconds(millis)
-                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
-    );
-  }
+// [END speech_transcribe_infinite_streaming_main]
 
   /** Performs infinite streaming speech recognition */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
@@ -102,7 +105,6 @@ public class InfiniteStreamRecognize {
 
       @Override
       public void run() {
-        System.out.println(YELLOW);
         System.out.println("Start speaking...Press Ctrl-C to stop");
         targetDataLine.start();
         byte[] data = new byte[BYTES_PER_BUFFER];
@@ -134,7 +136,8 @@ public class InfiniteStreamRecognize {
             public void onStart(StreamController controller) {
               referenceToStreamController = controller;
             }
-
+           
+        //  [START speech_transcribe_infinite_streaming_output]
             public void onResponse(StreamingRecognizeResponse response) {
               responses.add(response);
               StreamingRecognitionResult result = response.getResultsList().get(0);
@@ -146,8 +149,6 @@ public class InfiniteStreamRecognize {
 
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               if (result.getIsFinal()) {
-                System.out.print(GREEN);
-                System.out.print("\033[2K\r");
                 System.out.printf("%s: %s [confidence: %.2f]\n",
                         convertMillisToDate(correctedTime),
                         alternative.getTranscript(),
@@ -156,15 +157,13 @@ public class InfiniteStreamRecognize {
                 isFinalEndTime = resultEndTimeInMS;
                 lastTranscriptWasFinal = true;
               } else {
-                System.out.print(RED);
-                System.out.print("\033[2K\r");
                 System.out.printf("%s: %s", convertMillisToDate(correctedTime),
                         alternative.getTranscript()
                 );
                 lastTranscriptWasFinal = false;
               }
             }
-
+        //  [END speech_transcribe_infinite_streaming_output]
             public void onComplete() {
             }
 
@@ -213,6 +212,8 @@ public class InfiniteStreamRecognize {
         micThread.start();
 
         long startTime = System.currentTimeMillis();
+        
+        // [START speech_transcribe_infinite_streaming_generator]
 
         while (true) {
 
@@ -247,7 +248,6 @@ public class InfiniteStreamRecognize {
                       .setStreamingConfig(streamingRecognitionConfig)
                       .build();
 
-            System.out.println(YELLOW);
             System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
 
             startTime = System.currentTimeMillis();
@@ -296,7 +296,7 @@ public class InfiniteStreamRecognize {
             audioInput.add(tempByteString);
 
           }
-
+          // [END speech_transcribe_infinite_streaming_generator]
           clientStream.send(request);
         }
       } catch (Exception e) {
@@ -306,4 +306,3 @@ public class InfiniteStreamRecognize {
   }
 
 }
-// [END speech_transcribe_infinite_streaming]
