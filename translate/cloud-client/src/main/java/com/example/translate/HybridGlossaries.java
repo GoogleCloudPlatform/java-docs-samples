@@ -204,7 +204,7 @@ public class HybridGlossaries {
       // Set the ssml text input to synthesize
       SynthesisInput input = SynthesisInput.newBuilder().setSsml(ssmlText).build();
 
-      // Build the voice request, select the language code ("en-US") andthe ssml voice gender
+      // Build the voice request, select the language code ("en-US") and the ssml voice gender
       // ("male")
       VoiceSelectionParams voice =
           VoiceSelectionParams.newBuilder()
