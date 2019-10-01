@@ -28,6 +28,7 @@ import com.google.cloud.translate.v3beta1.TranslationServiceClient.ListGlossarie
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -53,12 +54,8 @@ public class HybridGlossariesIT {
   private static String OUTPUT_FILE = "output.mp3";
   private static String INPUT_FILE = "resources/test.jpeg";
   private static String TEXT_FILE = "resources/test.txt";
-  private static List<String> LANGUAGES;
-  private static String SRC_LANG = "fr";
-  private static String TGT_LANG = "en";
-  private static String GLOSSARY_NAME;
-  private static String GLOSSARY_URI =
-      "gs://cloud-samples-data/translation/bistro_glossary.csv";
+  private static String GLOSSARY_DISPLAY_NAME =
+          String.format("bistro-glossary-%s", UUID.randomUUID());
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -66,10 +63,6 @@ public class HybridGlossariesIT {
 
   @Before
   public void setUp() {
-    GLOSSARY_NAME = String.format("bistro-glossary-%s", UUID.randomUUID());
-    LANGUAGES = new ArrayList<>();
-    LANGUAGES.add(SRC_LANG);
-    LANGUAGES.add(TGT_LANG);
     // collect project ID from environment
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
@@ -77,7 +70,7 @@ public class HybridGlossariesIT {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws Exception {
     try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
       LocationName locationName =
               LocationName.newBuilder().setProject(PROJECT_ID).setLocation("us-central1").build();
@@ -97,8 +90,6 @@ public class HybridGlossariesIT {
 
         translationServiceClient.deleteGlossaryAsync(request).get(300, TimeUnit.SECONDS);
       }
-    } catch (Exception e) {
-      System.out.format("Failed to delete the glossary.\n%s\n", e.getMessage());
     }
 
     System.setOut(null);
@@ -116,7 +107,7 @@ public class HybridGlossariesIT {
   @Test
   public void testCreateGlossary() {
     // Act
-    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSSARY_NAME, GLOSSARY_URI);
+    HybridGlossaries.createGlossary(PROJECT_ID, GLOSSARY_DISPLAY_NAME);
 
     // Assert
     String got = bout.toString();
@@ -126,11 +117,11 @@ public class HybridGlossariesIT {
   @Test
   public void testTranslateText() {
     // Act
-    HybridGlossaries.createGlossary(LANGUAGES, PROJECT_ID, GLOSSARY_NAME, GLOSSARY_URI);
+    HybridGlossaries.createGlossary(PROJECT_ID, GLOSSARY_DISPLAY_NAME);
 
     String inputText = "chevre";
     String translation =
-        HybridGlossaries.translateText(inputText, SRC_LANG, TGT_LANG, PROJECT_ID, GLOSSARY_NAME);
+        HybridGlossaries.translateText(PROJECT_ID, inputText, GLOSSARY_DISPLAY_NAME);
 
     // Assert
     assertThat(translation).contains("goat cheese");

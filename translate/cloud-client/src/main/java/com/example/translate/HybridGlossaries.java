@@ -51,45 +51,32 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 // [END translate_hybrid_imports]
-
 
 public class HybridGlossaries {
 
-  // [START translate_hybrid_project_id]
-  private static final String projectId = System.getenv("PROJECT_ID");
-  // [END translate_hybrid_project_id]
-
   // [START translate_hybrid_vision]
-  /**
-   * @param filePath input image file
-   **/
   static String picToText(String filePath) {
-    List<AnnotateImageRequest> requests = new ArrayList<>();
+    // String filePath = "resources/example.png";
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       ByteString imageBytes = ByteString.readFrom(new FileInputStream(filePath));
-
       Image image = Image.newBuilder().setContent(imageBytes).build();
-
       Feature feature = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();
-
       AnnotateImageRequest request =
-              AnnotateImageRequest.newBuilder()
-                      .addFeatures(feature)
-                      .setImage(image)
-                      .build();
+          AnnotateImageRequest.newBuilder().addFeatures(feature).setImage(image).build();
 
-      requests.add(request);
-
-      BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-      List<AnnotateImageResponse> responses = response.getResponsesList();
-
+      BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
       StringBuilder result = new StringBuilder();
-
-      for (AnnotateImageResponse res : responses) {
+      for (AnnotateImageResponse res : response.getResponsesList()) {
         result.append(String.format("%s\n", res.getFullTextAnnotation().getText()));
       }
 
@@ -101,114 +88,84 @@ public class HybridGlossaries {
   // [END translate_hybrid_vision]
 
   // [START translate_hybrid_create_glossary]
-  /** Creates a GCP glossary resource
-   * Assumes you've already manually uploaded a glossary to Cloud Storage
-   *
-   * ARGS
-   * @param languages list of languages in the glossary
-   * @param projectId GCP project id
-   * @param glossaryDisplayName name you want to give this glossary resource
-   * @param glossaryUri the uri of the glossary you uploaded to Cloud Storage
-   * 
-   **/
-  static void createGlossary(List<String> languages, String projectId,
-                             String glossaryDisplayName, String glossaryUri) {
+  // Creates a GCP glossary resource (Assumes you've already manually uploaded a glossary to Cloud
+  // Storage).
+  static void createGlossary(String projectId, String glossaryDisplayName) {
+    // String projectId = "YOUR_PROJECT_ID";
+    // String glossaryDisplayName = "bistro-glossary";
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
-
-      LocationName locationName =
-              LocationName.newBuilder().setProject(projectId).setLocation("us-central1").build();
-
-
       LanguageCodesSet languageCodesSet =
-              LanguageCodesSet.newBuilder().addAllLanguageCodes(languages).build();
-
-      GcsSource gcsSource = GcsSource.newBuilder().setInputUri(glossaryUri).build();
-
+          LanguageCodesSet.newBuilder().addAllLanguageCodes(Arrays.asList("fr", "en")).build();
+      GcsSource gcsSource =
+          GcsSource.newBuilder()
+              .setInputUri("gs://cloud-samples-data/translation/bistro_glossary.csv")
+              .build();
       GlossaryInputConfig glossaryInputConfig =
-              GlossaryInputConfig.newBuilder().setGcsSource(gcsSource).build();
+          GlossaryInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
       GlossaryName glossaryName =
-              GlossaryName.newBuilder()
-                      .setProject(projectId)
-                      .setLocation("us-central1")
-                      .setGlossary(glossaryDisplayName)
-                      .build();
-
+          GlossaryName.newBuilder()
+              .setProject(projectId)
+              .setLocation("us-central1")
+              .setGlossary(glossaryDisplayName)
+              .build();
       Glossary glossary =
-              Glossary.newBuilder()
-                      .setLanguageCodesSet(languageCodesSet)
-                      .setInputConfig(glossaryInputConfig)
-                      .setName(glossaryName.toString())
-                      .build();
-
+          Glossary.newBuilder()
+              .setLanguageCodesSet(languageCodesSet)
+              .setInputConfig(glossaryInputConfig)
+              .setName(glossaryName.toString())
+              .build();
       CreateGlossaryRequest request =
-              CreateGlossaryRequest.newBuilder()
-                      .setParent(locationName.toString())
-                      .setGlossary(glossary)
-                      .build();
-
+          CreateGlossaryRequest.newBuilder()
+              .setParent(LocationName.of(projectId, "us-central1").toString())
+              .setGlossary(glossary)
+              .build();
       // Call the API
-      Glossary response = translationServiceClient.createGlossaryAsync(request)
-              .get(300, TimeUnit.SECONDS);
-
+      Glossary response =
+          translationServiceClient.createGlossaryAsync(request).get(300, TimeUnit.SECONDS);
       System.out.format("Created: %s\n", response.getName());
-    } catch (Exception e) {
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
       System.out.format("No new glossary was created.\n%s\n", e.getMessage());
     }
   }
   // [END translate_hybrid_create_glossary]
 
   // [START translate_hybrid_translate]
-  /**
-   * Translates text to a given language using a glossary
-   *
-   * ARGS
-   * text: String of text to translate
-   * sourceLanguageCode: language of input text
-   * targetLanguageCode: language of output text
-   * projectId: GCP project id
-   * glossaryName: name you gave your project's glossary
-   *     resource when you created it
-   * RETURNS
-   * String of translated text
-   **/
-  static String translateText(String text, String sourceLanguageCode, String targetLanguageCode,
-                              String projectId, String glossaryName) {
-    // Instantiates a client
+  // Translates text to a given language using a glossary
+  static String translateText(String projectId, String text, String glossaryDisplayName) {
+    // String projectId = "YOUR_PROJECT_ID";
+    // String text = "String of text to translate";
+    // String glossaryDisplayName = "bistro_glossary";
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient translationServiceClient = TranslationServiceClient.create()) {
-
-      LocationName locationName =
-              LocationName.newBuilder()
-                      .setProject(projectId)
-                      .setLocation("us-central1")
-                      .build();
-
       GlossaryName glossaryId =
-              GlossaryName.newBuilder()
-                      .setProject(projectId)
-                      .setLocation("us-central1")
-                      .setGlossary(glossaryName)
-                      .build();
-
+          GlossaryName.newBuilder()
+              .setProject(projectId)
+              .setLocation("us-central1")
+              .setGlossary(glossaryDisplayName)
+              .build();
       TranslateTextGlossaryConfig translateTextGlossaryConfig =
-              TranslateTextGlossaryConfig.newBuilder()
-                      .setGlossary(glossaryId.toString())
-                      .build();
-
+          TranslateTextGlossaryConfig.newBuilder().setGlossary(glossaryId.toString()).build();
       TranslateTextRequest translateTextRequest =
-              TranslateTextRequest.newBuilder()
-                      .setParent(locationName.toString())
-                      .setMimeType("text/plain")
-                      .setSourceLanguageCode(sourceLanguageCode)
-                      .setTargetLanguageCode(targetLanguageCode)
-                      .addContents(text)
-                      .setGlossaryConfig(translateTextGlossaryConfig)
-                      .build();
-
+          TranslateTextRequest.newBuilder()
+              .setParent(LocationName.of(projectId, "us-central1").toString())
+              .setMimeType("text/plain")
+              .setSourceLanguageCode("fr")
+              .setTargetLanguageCode("en")
+              .addContents(text)
+              .setGlossaryConfig(translateTextGlossaryConfig)
+              .build();
       // Call the API
       TranslateTextResponse response = translationServiceClient.translateText(translateTextRequest);
       return response.getGlossaryTranslationsList().get(0).getTranslatedText();
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
@@ -218,54 +175,51 @@ public class HybridGlossaries {
   /**
    * Generates synthetic audio from plaintext.
    *
-   * Given a string of plaintext, this function converts the contents of the input text file
-   * into a String of tagged SSML text. This function formats the SSML String so that,
-   * when synthesized, the synthetic audio will pause for two seconds between each line
-   * of the text file. This function also handles special text characters which might
-   * interfere with SSML commands.
-   * Given a string of SSML text and an output file name, this function
-   * calls the Text-to-Speech API. The API returns a synthetic audio
-   * version of the text, formatted according to the SSML commands. This
-   * function saves the synthetic audio to the designated output file.   
-   *
-   * @param text plaintext input
-   * @param outFile String name of file under which to save audio output
-   *
+   * <p>Given a string of plaintext, this function converts the contents of the input text file into
+   * a String of tagged SSML text. This function formats the SSML String so that, when synthesized,
+   * the synthetic audio will pause for two seconds between each line of the text file. This
+   * function also handles special text characters which might interfere with SSML commands. Given a
+   * string of SSML text and an output file name, this function calls the Text-to-Speech API. The
+   * API returns a synthetic audio version of the text, formatted according to the SSML commands.
+   * This function saves the synthetic audio to the designated output file.
    */
   static void textToAudio(String text, String outFile) {
-    // Replace special characters with HTML Ampersand Character Codes
-    // These codes prevent the API from confusing text with SSML tags
-    // For example, '<' --> '&lt;' and '&' --> '&amp;'
+    // String text = "Text to convert to audio";
+    // String outFile = "path_to_save_output_to.mp3";
+
+    // Replace special characters with HTML Ampersand Character Codes. These codes prevent the API
+    // from confusing text with SSML tags
+    // For example, '<' is replaced with '&lt;' and '&' is replaced with '&amp;'
     String escapedLines = HtmlEscapers.htmlEscaper().escape(text);
 
-    // Convert plaintext to SSML
-    // Tag SSML so that there is a 2 second pause between each address
-    String expandedNewline = escapedLines.replaceAll("\\n","\n<break time='2s'/>");
+    // Convert plaintext to SSML and add a  2 second pause between each address
+    // SSML Reference: https://cloud.google.com/text-to-speech/docs/ssml
+    String expandedNewline = escapedLines.replaceAll("\\n", "\n<break time='2s'/>");
     String ssmlText = "<speak>" + expandedNewline + "</speak>";
 
-    // Instantiates a client
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
       // Set the ssml text input to synthesize
       SynthesisInput input = SynthesisInput.newBuilder().setSsml(ssmlText).build();
 
-      // Build the voice request, select the language code ("en-US") and
-      // the ssml voice gender ("male")
+      // Build the voice request, select the language code ("en-US") andthe ssml voice gender
+      // ("male")
       VoiceSelectionParams voice =
-              VoiceSelectionParams.newBuilder()
-                      .setLanguageCode("en-US")
-                      .setSsmlGender(SsmlVoiceGender.MALE)
-                      .build();
+          VoiceSelectionParams.newBuilder()
+              .setLanguageCode("en-US")
+              .setSsmlGender(SsmlVoiceGender.MALE)
+              .build();
 
       // Select the audio file type
       AudioConfig audioConfig =
-              AudioConfig.newBuilder()
-                      .setAudioEncoding(AudioEncoding.MP3)
-                      .build();
+          AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
 
       // Perform the text-to-speech request on the text input with the selected voice parameters and
       // audio file type
       SynthesizeSpeechResponse response =
-              textToSpeechClient.synthesizeSpeech(input, voice, audioConfig);
+          textToSpeechClient.synthesizeSpeech(input, voice, audioConfig);
 
       // Get the audio contents from the response
       ByteString audioContents = response.getAudioContent();
@@ -274,7 +228,7 @@ public class HybridGlossaries {
       FileOutputStream out = new FileOutputStream(outFile);
       out.write(audioContents.toByteArray());
       System.out.println("Audio content written to file " + outFile);
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new RuntimeException("Error converting the text to audio.", e);
     }
   }
@@ -282,20 +236,15 @@ public class HybridGlossaries {
 
   // [START translate_hybrid_integration]
   public static void main(String... args) {
-    String sourceLanguageCode = "fr";
-    String targetLanguageCode = "en";
-    List<String> languages = new ArrayList<>();
-    languages.add(sourceLanguageCode);
-    languages.add(targetLanguageCode);
-    String glossaryName = "bistro-glossary";
-    String glossaryUri = "gs://cloud-samples-data/translation/bistro_glossary.csv";
+    // [START translate_hybrid_project_id]
+    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+    // [END translate_hybrid_project_id]
+    String glossaryDisplayName = "bistro-glossary";
 
-    createGlossary(languages, projectId, glossaryName, glossaryUri);
+    createGlossary(projectId, glossaryDisplayName);
     String text = picToText("resources/example.png");
-    String translatedText = translateText(text, sourceLanguageCode,
-        targetLanguageCode, projectId, glossaryName);
+    String translatedText = translateText(projectId, text, glossaryDisplayName);
     textToAudio(translatedText, "resources/example.mp3");
   }
   // [END translate_hybrid_integration]
 }
-
