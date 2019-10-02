@@ -157,6 +157,13 @@ public class SnippetsTests {
   }
 
   @Test
+  public void scopesTest() throws IOException {
+    new Scopes().scopeDemo(request, response);
+
+    assertThat(responseOut.toString(), containsString("Instance:"));
+  }
+
+  @Test
   public void retrieveLogsTest() throws IOException {
     new RetrieveLogs().retrieveLogs(request, response);
 
