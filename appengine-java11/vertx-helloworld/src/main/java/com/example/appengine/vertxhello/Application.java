@@ -37,10 +37,13 @@ public class Application extends AbstractVerticle {
     Router router = Router.router(vertx);
     router.route().handler(this::handleDefault);
 
+    // Get the PORT environment variable for the server object to listen on
+    int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+
     vertx
         .createHttpServer()
         .requestHandler(router)
-        .listen(8080, ar -> startFuture.handle(ar.mapEmpty()));
+        .listen(port, ar -> startFuture.handle(ar.mapEmpty()));
   }
 
   private void handleDefault(RoutingContext routingContext) {
