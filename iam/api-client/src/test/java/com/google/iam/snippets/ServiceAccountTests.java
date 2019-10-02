@@ -37,8 +37,7 @@ public class ServiceAccountTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(
-        System.getenv(varName),
+    assertNotNull(System.getenv(varName),
         String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
@@ -103,14 +102,14 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage4_testDisableServiceAccount(){
+  public void stage4_testDisableServiceAccount() {
     DisableServiceAccount.disableServiceAccount(PROJECT_ID);
     String got = bout.toString();
     assertTrue(got.contains("Disabled service account:"));
   }
 
   @Test
-  public void stage5_testEnableServiceAccount(){
+  public void stage5_testEnableServiceAccount() {
     EnableServiceAccount.enableServiceAccount(PROJECT_ID);
     String got = bout.toString();
     assertTrue(got.contains("Enabled service account:"));
