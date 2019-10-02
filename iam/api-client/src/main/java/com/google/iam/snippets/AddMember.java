@@ -15,11 +15,11 @@
 
 package com.google.iam.snippets;
 
+// [START iam_modify_policy_add_member]
 import com.google.api.services.cloudresourcemanager.model.Binding;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.util.List;
 
-// [START iam_modify_policy_add_member]
 public class AddMember {
 
   // Adds a member to a preexisting role.

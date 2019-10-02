@@ -15,11 +15,11 @@
 
 package com.google.iam.snippets;
 
+// [START iam_modify_policy_remove_member]
 import com.google.api.services.cloudresourcemanager.model.Binding;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.util.List;
 
-// [START iam_modify_policy_remove_member]
 public class RemoveMember {
 
   // Removes member from a role; removes binding if binding contains 0 members.
