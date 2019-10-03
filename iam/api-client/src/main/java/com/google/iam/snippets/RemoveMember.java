@@ -33,12 +33,12 @@ public class RemoveMember {
 
     for (Binding b : bindings) {
       if (b.getRole() == role) {
-        if(b.getMembers().contains(member)){
-            b.getMembers().remove(member);
-            System.out.println("Member " + member + " removed from " + role);
+        if (b.getMembers().contains(member)) {
+          b.getMembers().remove(member);
+          System.out.println("Member " + member + " removed from " + role);
         }
-        if (b.getMembers().size() == 0){
-            policy.getBindings().remove(b);
+        if (b.getMembers().size() == 0) {
+          policy.getBindings().remove(b);
         }
         return;
       }

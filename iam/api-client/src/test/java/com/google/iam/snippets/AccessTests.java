@@ -56,12 +56,12 @@ public class AccessTests {
     System.setOut(new PrintStream(bout));
 
     policyMock = new Policy();
-    List<Binding> bindings = new ArrayList<Binding>();
     List<String> members = new ArrayList<String>();
     members.add("user:member-to-remove@example.com");
     Binding binding = new Binding();
     binding.setRole("roles/existing-role");
     binding.setMembers(members);
+    List<Binding> bindings = new ArrayList<Binding>();
     bindings.add(binding);
     policyMock.setBindings(bindings);
   }

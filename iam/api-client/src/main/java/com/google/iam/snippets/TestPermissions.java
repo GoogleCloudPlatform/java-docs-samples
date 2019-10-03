@@ -31,8 +31,8 @@ import java.util.List;
 
 public class TestPermissions {
 
-// Tests if the caller has the listed permissions.
-public static void testPermissions(String projectId) {
+  // Tests if the caller has the listed permissions.
+  public static void testPermissions(String projectId) {
     // projectId = "my-project-id"
 
     CloudResourceManager service = null;
@@ -43,17 +43,18 @@ public static void testPermissions(String projectId) {
       return;
     }
 
-    List<String> permissionsList = Arrays.asList("resourcemanager.projects.get", "resourcemanager.projects.delete");
+    List<String> permissionsList =
+        Arrays.asList("resourcemanager.projects.get", "resourcemanager.projects.delete");
 
     TestIamPermissionsRequest requestBody =
-        new TestIamPermissionsRequest()
-            .setPermissions(permissionsList);
+        new TestIamPermissionsRequest().setPermissions(permissionsList);
     try {
       TestIamPermissionsResponse testIamPermissionsResponse =
           service.projects().testIamPermissions(projectId, requestBody).execute();
 
-      System.out.println("Of the permissions listed in the request, the caller has the following: " +
-            testIamPermissionsResponse.getPermissions().toString());
+      System.out.println(
+          "Of the permissions listed in the request, the caller has the following: "
+              + testIamPermissionsResponse.getPermissions().toString());
     } catch (IOException e) {
       System.out.println("Unable to test permissions: \n" + e.toString());
     }
@@ -78,4 +79,3 @@ public static void testPermissions(String projectId) {
   }
 }
 // [END iam-test-permissions]
-
