@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Use the official maven/Java 8 image to create a build artifact.
+# Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
 FROM maven:3.6.2-jdk-11-slim as builder
 
@@ -25,11 +25,14 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Use the Official OpenJDK image for a lean production stage of our multi-stage build.
-# https://hub.docker.com/_/openjdk
+# https://hub.docker.com/r/adoptopenjdk/openjdk11/
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM adoptopenjdk/openjdk11:alpine
+
+# [START run_system_package_alpine]
 RUN apk --no-cache add graphviz ttf-ubuntu-font-family
-COPY dot.dot .
+# [END run_system_package_alpine]
+
 # Copy the jar to the production image from the builder stage.
 COPY --from=builder /app/target/system-package-*shaded.jar /system-package.jar
 
