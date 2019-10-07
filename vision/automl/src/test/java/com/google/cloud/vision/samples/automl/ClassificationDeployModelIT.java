@@ -18,29 +18,16 @@ package com.google.cloud.vision.samples.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.automl.v1beta1.AutoMlClient;
-import com.google.cloud.automl.v1beta1.ModelName;
-import com.google.cloud.automl.v1beta1.OperationMetadata;
-import com.google.protobuf.Empty;
-
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-/** Tests for vision "Deploy Model Node Count" sample. */
-@RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DeployModelNodeCountIT {
+public class ClassificationDeployModelIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "IOD1854128448151224320";
+  private static final String MODEL_ID = "ICN3125115511348658176";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -52,22 +39,33 @@ public class DeployModelNodeCountIT {
   }
 
   @After
-  public void tearDown() throws IOException, InterruptedException, ExecutionException {
+  public void tearDown() {
     System.setOut(null);
-
-    try (AutoMlClient client = AutoMlClient.create()) {
-      OperationFuture<Empty, OperationMetadata> future = client.undeployModelAsync(
-              ModelName.of(PROJECT_ID, "us-central1", MODEL_ID).toString());
-
-      future.get();
-    }
   }
 
   @Test
-  public void testModelApi() {
-    DeployModelNodeCount.deployModelNodeCount(PROJECT_ID, MODEL_ID);
+  public void testDeployModelApi() {
+    ClassificationDeployModel.classificationDeployModel(PROJECT_ID, MODEL_ID);
+
+    String got = bout.toString();
+    assertThat(got).contains("Model deployment finished");
+
+    ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
+
+    got = bout.toString();
+    assertThat(got).contains("Model undeploy finished");
+  }
+
+  @Test
+  public void testDeployModelNodeCountApi() {
+    ClassificationDeployModelNodeCount.classificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
 
     String got = bout.toString();
     assertThat(got).contains("Model deployment on 2 nodes finished");
+
+    ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
+
+    got = bout.toString();
+    assertThat(got).contains("Model undeploy finished");
   }
 }
