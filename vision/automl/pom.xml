@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-automl</artifactId>
-      <version>0.55.0-beta</version>
+      <version>0.112.0-beta</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
