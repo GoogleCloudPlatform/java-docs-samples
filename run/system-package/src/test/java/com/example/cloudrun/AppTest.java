@@ -62,7 +62,6 @@ public class AppTest {
   public void shouldSucceed() throws IOException {
     String query = "digraph%20G%20{%20A%20->%20{B,%20C,%20D}%20->%20{F}%20}";
     TestResponse response = executeRequest("GET", BASE_URL + DOT + query);
-    System.out.println(response);
     assertEquals(200, response.status);
   }
 
