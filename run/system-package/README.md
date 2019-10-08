@@ -8,6 +8,5 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 
 ## Dependencies
 
-* **Javalin**: Web server framework.
+* **Spark**: Web server framework.
 * **Junit**: [development] Test running framework.
-<!-- * **supertest**: [development] HTTP assertion test client. -->

@@ -34,7 +34,7 @@ RUN apk --no-cache add graphviz ttf-ubuntu-font-family
 # [END run_system_package_alpine]
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/system-package-*shaded.jar /system-package.jar
+COPY --from=builder /app/target/system-package-*-shaded.jar /system-package.jar
 
 # Run the web service on container startup.
 CMD ["java","-jar","/system-package.jar"]

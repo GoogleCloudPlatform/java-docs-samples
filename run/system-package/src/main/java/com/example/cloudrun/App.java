@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package com.example.cloudrun;
 
-import io.javalin.Javalin;
+import static spark.Spark.get;
+import static spark.Spark.port;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -27,37 +29,38 @@ import java.util.List;
 public class App {
   public static void main(String[] args) {
     int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
-    Javalin app = Javalin.create().start(port);
-
+    port(port);
     // [START run_system_package_handler]
-    app.get(
+    get(
         "/diagram.png",
-        ctx -> {
+        (req, res) -> {
+          InputStream image = null;
           try {
-            String dot = ctx.queryParam("dot");
-            InputStream image = createDiagram(dot);
-            ctx.header("Content-Type", "image/png");
-            ctx.header("Content-Length", Integer.toString(image.available()));
-            ctx.header("Cache-Control", "public, max-age=86400");
-            ctx.result(image);
+            String dot = req.queryParams("dot");
+            image = createDiagram(dot);
+            res.header("Content-Type", "image/png");
+            res.header("Content-Length", Integer.toString(image.available()));
+            res.header("Cache-Control", "public, max-age=86400");
           } catch (Exception e) {
-            System.out.println(e);
             if (e.getMessage().contains("syntax")) {
-              ctx.status(400).result(String.format("Bad Request: %s", e.getMessage()));
+              res.status(400);
+              return String.format("Bad Request: %s", e.getMessage());
             } else {
-              ctx.status(500).result("Internal Server Error");
+              res.status(500);
+              return "Internal Server Error";
             }
           }
+          return image;
         });
     // [END run_system_package_handler]
   }
+
   // [START run_system_package_exec]
   // Generate a diagram based on a graphviz DOT diagram description.
   public static InputStream createDiagram(String dot) {
-    if (dot == null) {
+    if (dot == null || dot.isEmpty()) {
       throw new NullPointerException("syntax: no graphviz definition provided");
     }
-
     // Adds a watermark to the dot graphic.
     List<String> args = new ArrayList<String>();
     args.add("/usr/bin/dot");
@@ -73,16 +76,13 @@ public class App {
     try {
       ProcessBuilder pb = new ProcessBuilder(args);
       Process process = pb.start();
-
       OutputStream stdin = process.getOutputStream();
       stdout = process.getInputStream();
-
+      // The Graphviz dot program reads from stdin.
       Writer writer = new OutputStreamWriter(stdin, "UTF-8");
       writer.write(dot);
       writer.close();
-
       process.waitFor();
-
     } catch (Exception e) {
       System.out.println(e);
     }
