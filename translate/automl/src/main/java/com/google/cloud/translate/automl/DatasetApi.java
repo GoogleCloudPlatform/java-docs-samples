@@ -30,6 +30,7 @@ import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -55,11 +56,9 @@ public class DatasetApi {
    * @param datasetName the name of the dataset to be created.
    * @param source the Source language
    * @param target the Target language
-   * @throws IOException on Input/Output errors.
    */
   public static void createDataset(
-      String projectId, String computeRegion, String datasetName, String source, String target)
-      throws IOException {
+      String projectId, String computeRegion, String datasetName, String source, String target) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -102,6 +101,8 @@ public class DatasetApi {
       System.out.println("Dataset create time:");
       System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
   // [END automl_translate_create_dataset]
@@ -113,10 +114,8 @@ public class DatasetApi {
    * @param projectId the Google Cloud Project ID.
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param filter the Filter expression.
-   * @throws Exception on AutoML Client errors
    */
-  public static void listDatasets(String projectId, String computeRegion, String filter)
-      throws IOException {
+  public static void listDatasets(String projectId, String computeRegion, String filter) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -152,6 +151,8 @@ public class DatasetApi {
         System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
         System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
       }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
   // [END automl_translate_list_datasets]
@@ -163,10 +164,8 @@ public class DatasetApi {
    * @param projectId the Google Cloud Project ID.
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param datasetId the Id of the dataset.
-   * @throws Exception on AutoML Client errors
    */
-  public static void getDataset(String projectId, String computeRegion, String datasetId)
-      throws Exception {
+  public static void getDataset(String projectId, String computeRegion, String datasetId) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -195,6 +194,8 @@ public class DatasetApi {
       System.out.println("Dataset create time:");
       System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
   // [END automl_translate_get_dataset]
@@ -207,10 +208,9 @@ public class DatasetApi {
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param datasetId the Id of the dataset.
    * @param path the remote Path of the training data csv file.
-   * @throws Exception on AutoML Client errors
    */
   public static void importData(
-      String projectId, String computeRegion, String datasetId, String path) throws Exception {
+      String projectId, String computeRegion, String datasetId, String path) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -229,8 +229,10 @@ public class DatasetApi {
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
       System.out.println("Processing import...");
 
-      Empty response = client.importDataAsync(datasetFullId, inputConfig).get(30, TimeUnit.MINUTES);
+      Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
       System.out.println(String.format("Dataset imported. %s", response));
+    } catch (IOException | InterruptedException | ExecutionException e) {
+      e.printStackTrace();
     }
   }
   // [END automl_translate_import_data]
@@ -242,10 +244,8 @@ public class DatasetApi {
    * @param projectId the Google Cloud Project ID.
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param datasetId the Id of the dataset.
-   * @throws Exception on AutoML Client errors
    */
-  public static void deleteDataset(String projectId, String computeRegion, String datasetId)
-      throws Exception {
+  public static void deleteDataset(String projectId, String computeRegion, String datasetId) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -256,6 +256,8 @@ public class DatasetApi {
       Empty response = client.deleteDatasetAsync(datasetFullId).get();
 
       System.out.println(String.format("Dataset deleted. %s", response));
+    } catch (IOException | InterruptedException | ExecutionException e) {
+      e.printStackTrace();
     }
   }
   // [END automl_translate_delete_dataset]
@@ -290,7 +292,7 @@ public class DatasetApi {
     String projectId = System.getenv("PROJECT_ID");
     String computeRegion = System.getenv("REGION_NAME");
 
-    Namespace ns = null;
+    Namespace ns;
     try {
       ns = parser.parseArgs(args);
       if (ns.get("command").equals("create_dataset")) {

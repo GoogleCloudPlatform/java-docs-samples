@@ -53,7 +53,6 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 public class PredictionApi {
 
   // [START automl_translate_predict]
-
   /**
    * Demonstrates using the AutoML client to predict an image.
    *

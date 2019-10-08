@@ -55,7 +55,7 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testCreateImportDeleteDataset() throws Exception {
+  public void testCreateImportDeleteDataset() {
     // Act
     DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME, "en", "ja");
 
@@ -83,7 +83,7 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testListDataset() throws Exception {
+  public void testListDataset() {
     // Act
     DatasetApi.listDatasets(PROJECT_ID, COMPUTE_REGION, "translation_dataset_metadata:*");
 
@@ -93,7 +93,7 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testGetDataset() throws Exception {
+  public void testGetDataset() {
 
     // Act
     DatasetApi.getDataset(PROJECT_ID, COMPUTE_REGION, getdatasetId);
