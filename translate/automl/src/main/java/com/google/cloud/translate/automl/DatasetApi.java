@@ -21,7 +21,6 @@ import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.cloud.automl.v1beta1.GcsSource;
-import com.google.cloud.automl.v1beta1.GcsSource.Builder;
 import com.google.cloud.automl.v1beta1.InputConfig;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
@@ -31,7 +30,6 @@ import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -67,17 +65,17 @@ public class DatasetApi {
 
       // Specify the source and target language.
       TranslationDatasetMetadata translationDatasetMetadata =
-              TranslationDatasetMetadata.newBuilder()
-                      .setSourceLanguageCode(source)
-                      .setTargetLanguageCode(target)
-                      .build();
+          TranslationDatasetMetadata.newBuilder()
+              .setSourceLanguageCode(source)
+              .setTargetLanguageCode(target)
+              .build();
 
       // Set dataset name and dataset metadata.
       Dataset myDataset =
-              Dataset.newBuilder()
-                      .setDisplayName(datasetName)
-                      .setTranslationDatasetMetadata(translationDatasetMetadata)
-                      .build();
+          Dataset.newBuilder()
+              .setDisplayName(datasetName)
+              .setTranslationDatasetMetadata(translationDatasetMetadata)
+              .build();
 
       // Create a dataset with the dataset metadata in the region.
       Dataset dataset = client.createDataset(projectLocation, myDataset);
@@ -85,19 +83,19 @@ public class DatasetApi {
       // Display the dataset information.
       System.out.println(String.format("Dataset name: %s", dataset.getName()));
       System.out.println(
-              String.format(
-                      "Dataset id: %s",
-                      dataset.getName().split("/")[dataset.getName().split("/").length - 1]));
+          String.format(
+              "Dataset id: %s",
+              dataset.getName().split("/")[dataset.getName().split("/").length - 1]));
       System.out.println(String.format("Dataset display name: %s", dataset.getDisplayName()));
       System.out.println("Translation dataset Metadata:");
       System.out.println(
-              String.format(
-                      "\tSource language code: %s",
-                      dataset.getTranslationDatasetMetadata().getSourceLanguageCode()));
+          String.format(
+              "\tSource language code: %s",
+              dataset.getTranslationDatasetMetadata().getSourceLanguageCode()));
       System.out.println(
-              String.format(
-                      "\tTarget language code: %s",
-                      dataset.getTranslationDatasetMetadata().getTargetLanguageCode()));
+          String.format(
+              "\tTarget language code: %s",
+              dataset.getTranslationDatasetMetadata().getTargetLanguageCode()));
       System.out.println("Dataset create time:");
       System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
@@ -123,10 +121,10 @@ public class DatasetApi {
       LocationName projectLocation = LocationName.of(projectId, computeRegion);
 
       ListDatasetsRequest request =
-              ListDatasetsRequest.newBuilder()
-                      .setParent(projectLocation.toString())
-                      .setFilter(filter)
-                      .build();
+          ListDatasetsRequest.newBuilder()
+              .setParent(projectLocation.toString())
+              .setFilter(filter)
+              .build();
 
       // List all the datasets available in the region by applying filter.
       System.out.println("List of datasets:");
@@ -134,19 +132,19 @@ public class DatasetApi {
         // Display the dataset information
         System.out.println(String.format("\nDataset name: %s", dataset.getName()));
         System.out.println(
-                String.format(
-                        "Dataset id: %s",
-                        dataset.getName().split("/")[dataset.getName().split("/").length - 1]));
+            String.format(
+                "Dataset id: %s",
+                dataset.getName().split("/")[dataset.getName().split("/").length - 1]));
         System.out.println(String.format("Dataset display name: %s", dataset.getDisplayName()));
         System.out.println("Translation dataset metadata:");
         System.out.println(
-                String.format(
-                        "\tSource language code: %s",
-                        dataset.getTranslationDatasetMetadata().getSourceLanguageCode()));
+            String.format(
+                "\tSource language code: %s",
+                dataset.getTranslationDatasetMetadata().getSourceLanguageCode()));
         System.out.println(
-                String.format(
-                        "\tTarget language code: %s",
-                        dataset.getTranslationDatasetMetadata().getTargetLanguageCode()));
+            String.format(
+                "\tTarget language code: %s",
+                dataset.getTranslationDatasetMetadata().getTargetLanguageCode()));
         System.out.println("Dataset create time:");
         System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
         System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
@@ -178,19 +176,19 @@ public class DatasetApi {
       // Display the dataset information
       System.out.println(String.format("Dataset name: %s", dataset.getName()));
       System.out.println(
-              String.format(
-                      "Dataset id: %s",
-                      dataset.getName().split("/")[dataset.getName().split("/").length - 1]));
+          String.format(
+              "Dataset id: %s",
+              dataset.getName().split("/")[dataset.getName().split("/").length - 1]));
       System.out.println(String.format("Dataset display name: %s", dataset.getDisplayName()));
       System.out.println("Translation dataset metadata:");
       System.out.println(
-              String.format(
-                      "\tSource language code: %s",
-                      dataset.getTranslationDatasetMetadata().getSourceLanguageCode()));
+          String.format(
+              "\tSource language code: %s",
+              dataset.getTranslationDatasetMetadata().getSourceLanguageCode()));
       System.out.println(
-              String.format(
-                      "\tTarget language code: %s",
-                      dataset.getTranslationDatasetMetadata().getTargetLanguageCode()));
+          String.format(
+              "\tTarget language code: %s",
+              dataset.getTranslationDatasetMetadata().getTargetLanguageCode()));
       System.out.println("Dataset create time:");
       System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
@@ -217,7 +215,7 @@ public class DatasetApi {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, computeRegion, datasetId);
 
-      Builder gcsSource = GcsSource.newBuilder();
+      GcsSource.Builder gcsSource = GcsSource.newBuilder();
 
       // Get multiple Google Cloud Storage URIs to import data from
       String[] inputUris = path.split(",");

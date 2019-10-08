@@ -69,22 +69,23 @@ public class ModelApi {
 
       // Set model metadata.
       TranslationModelMetadata translationModelMetadata =
-              TranslationModelMetadata.newBuilder().setBaseModel("").build();
+          TranslationModelMetadata.newBuilder().setBaseModel("").build();
 
       // Set model name, dataset and metadata.
       Model myModel =
-              Model.newBuilder()
-                      .setDisplayName(modelName)
-                      .setDatasetId(dataSetId)
-                      .setTranslationModelMetadata(translationModelMetadata)
-                      .build();
+          Model.newBuilder()
+              .setDisplayName(modelName)
+              .setDatasetId(dataSetId)
+              .setTranslationModelMetadata(translationModelMetadata)
+              .build();
 
       // Create a model with the model metadata in the region.
       OperationFuture<Model, OperationMetadata> response =
-              client.createModelAsync(projectLocation, myModel);
+          client.createModelAsync(projectLocation, myModel);
 
       System.out.println(
-              String.format("Training operation name: %s", response.getInitialFuture().get().getName()));
+          String.format(
+              "Training operation name: %s", response.getInitialFuture().get().getName()));
       System.out.println("Training started...");
     }
   }
@@ -109,10 +110,10 @@ public class ModelApi {
 
       // Create list models request.
       ListModelsRequest listModlesRequest =
-              ListModelsRequest.newBuilder()
-                      .setParent(projectLocation.toString())
-                      .setFilter(filter)
-                      .build();
+          ListModelsRequest.newBuilder()
+              .setParent(projectLocation.toString())
+              .setFilter(filter)
+              .build();
 
       // List all the models available in the region by applying filter.
       System.out.println("List of models:");
@@ -120,8 +121,8 @@ public class ModelApi {
         // Display the model information.
         System.out.println(String.format("Model name: %s", model.getName()));
         System.out.println(
-                String.format(
-                        "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
+            String.format(
+                "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
         System.out.println(String.format("Model display name: %s", model.getDisplayName()));
         System.out.println("Model create time:");
         System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
@@ -155,8 +156,8 @@ public class ModelApi {
       // Display the model information.
       System.out.println(String.format("Model name: %s", model.getName()));
       System.out.println(
-              String.format(
-                      "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
+          String.format(
+              "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
       System.out.println(String.format("Model display name: %s", model.getDisplayName()));
       System.out.println("Model create time:");
       System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
@@ -186,15 +187,15 @@ public class ModelApi {
 
       // Create list model evaluations request
       ListModelEvaluationsRequest modelEvaluationsrequest =
-              ListModelEvaluationsRequest.newBuilder()
-                      .setParent(modelFullId.toString())
-                      .setFilter(filter)
-                      .build();
+          ListModelEvaluationsRequest.newBuilder()
+              .setParent(modelFullId.toString())
+              .setFilter(filter)
+              .build();
 
       // List all the model evaluations in the model by applying filter.
       System.out.println("List of model evaluations:");
       for (ModelEvaluation element :
-              client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
+          client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
         System.out.println(element);
       }
     }
@@ -219,7 +220,7 @@ public class ModelApi {
 
       // Get the full path of the model evaluation.
       ModelEvaluationName modelEvaluationFullId =
-              ModelEvaluationName.of(projectId, computeRegion, modelId, modelEvaluationId);
+          ModelEvaluationName.of(projectId, computeRegion, modelId, modelEvaluationId);
 
       // Get complete detail of the model evaluation.
       ModelEvaluation response = client.getModelEvaluation(modelEvaluationFullId);

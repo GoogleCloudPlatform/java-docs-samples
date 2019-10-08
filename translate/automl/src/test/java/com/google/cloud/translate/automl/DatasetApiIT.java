@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +36,6 @@ public class DatasetApiIT {
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String BUCKET = PROJECT_ID + "-vcm";
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String DATASET_NAME = "test_translate_dataset";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private DatasetApi app;
@@ -56,8 +56,14 @@ public class DatasetApiIT {
 
   @Test
   public void testCreateImportDeleteDataset() {
+    // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
+    // To prevent name collisions when running tests in multiple java versions at once.
+    // AutoML doesn't allow "-", but accepts "_"
+    String datasetName =
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+
     // Act
-    DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, DATASET_NAME, "en", "ja");
+    DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, datasetName, "en", "ja");
 
     // Assert
     String got = bout.toString();
@@ -68,7 +74,8 @@ public class DatasetApiIT {
     assertThat(got).contains("Dataset id:");
 
     // Act
-    DatasetApi.importData(PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/en-ja-short.csv");
+    DatasetApi.importData(
+        PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/en-ja-short.csv");
 
     // Assert
     got = bout.toString();

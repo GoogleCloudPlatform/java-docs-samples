@@ -84,7 +84,8 @@ public class PredictionApi {
       Map<String, String> params = new HashMap<>();
 
       response = predictionClient.predict(name, payload, params);
-      TextSnippet translatedContent = response.getPayload(0).getTranslation().getTranslatedContent();
+      TextSnippet translatedContent =
+          response.getPayload(0).getTranslation().getTranslatedContent();
 
       System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
     }
@@ -117,7 +118,6 @@ public class PredictionApi {
       ns = parser.parseArgs(args);
       if (ns.get("command").equals("predict")) {
         predict(projectId, computeRegion, ns.getString("modelId"), ns.getString("filePath"));
-
       }
     } catch (ArgumentParserException e) {
       parser.handleError(e);
