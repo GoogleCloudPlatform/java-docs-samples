@@ -1,4 +1,4 @@
-/* Copyright 2018 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,29 @@ package com.google.iam.snippets;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.services.cloudresourcemanager.model.Binding;
+import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ServiceAccountTests {
+public class AccessTests {
 
   private ByteArrayOutputStream bout;
+  private Policy policyMock;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(System.getenv(varName),
+    assertNotNull(
+        System.getenv(varName),
         String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
@@ -51,6 +54,16 @@ public class ServiceAccountTests {
   public void beforeTest() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+
+    policyMock = new Policy();
+    List<String> members = new ArrayList<String>();
+    members.add("user:member-to-remove@example.com");
+    Binding binding = new Binding();
+    binding.setRole("roles/existing-role");
+    binding.setMembers(members);
+    List<Binding> bindings = new ArrayList<Binding>();
+    bindings.add(binding);
+    policyMock.setBindings(bindings);
   }
 
   @After
@@ -60,65 +73,48 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage1_testServiceAccountCreate() {
-    CreateServiceAccount.createServiceAccount(PROJECT_ID);
+  public void testGetPolicy() {
+    GetPolicy.getPolicy(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Created service account: your-service-account-name"));
+    assertTrue(got.contains("Policy retrieved: "));
   }
 
   @Test
-  public void stage1_testServiceAccountsList() {
-    ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+  public void testSetPolicy() {
+    Policy policy = GetPolicy.getPolicy(PROJECT_ID);
+    SetPolicy.setPolicy(policy, PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.matches("(Name:.*\nDisplay Name:.*\nEmail.*\n\n)*"));
+    assertTrue(got.contains("Policy set: "));
   }
 
   @Test
-  public void stage2_testServiceAccountRename() {
-    RenameServiceAccount.renameServiceAccount(PROJECT_ID);
+  public void testAddBinding() {
+    AddBinding.addBinding(policyMock);
     String got = bout.toString();
-    assertTrue(got.contains("Updated display name"));
+    assertTrue(got.contains("Added binding: "));
   }
 
   @Test
-  public void stage2_testServiceAccountKeyCreate() {
-    CreateServiceAccountKey.createKey(PROJECT_ID);
+  public void testAddMember() {
+    AddMember.addMember(policyMock);
     String got = bout.toString();
-    assertTrue(got.contains("Created key:"));
+    assertTrue(
+        got.contains("Member user:member-to-add@example.com added to role roles/existing-role"));
   }
 
   @Test
-  public void stage2_testServiceAccountKeysList() {
-    ListServiceAccountKeys.listKeys(PROJECT_ID);
+  public void testRemoveMember() {
+    RemoveMember.removeMember(policyMock);
     String got = bout.toString();
-    assertTrue(got.contains("Key:"));
+    assertTrue(
+        got.contains("Member user:member-to-remove@example.com removed from roles/existing-role"));
   }
 
   @Test
-  public void stage3_testServiceAccountKeyDelete() {
-    DeleteServiceAccountKey.deleteKey(PROJECT_ID);
+  public void testTestPermissions() {
+    TestPermissions.testPermissions(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Deleted key:"));
-  }
-
-  @Test
-  public void stage4_testDisableServiceAccount() {
-    DisableServiceAccount.disableServiceAccount(PROJECT_ID);
-    String got = bout.toString();
-    assertTrue(got.contains("Disabled service account:"));
-  }
-
-  @Test
-  public void stage5_testEnableServiceAccount() {
-    EnableServiceAccount.enableServiceAccount(PROJECT_ID);
-    String got = bout.toString();
-    assertTrue(got.contains("Enabled service account:"));
-  }
-
-  @Test
-  public void stage6_testServiceAccountDelete() {
-    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID);
-    String got = bout.toString();
-    assertTrue(got.contains("Deleted service account:"));
+    assertTrue(
+        got.contains("Of the permissions listed in the request, the caller has the following: "));
   }
 }
