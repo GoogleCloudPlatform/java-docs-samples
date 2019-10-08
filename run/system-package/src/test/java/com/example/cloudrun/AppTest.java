@@ -1,24 +1,16 @@
 package com.example.cloudrun;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.stop;
 
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
-import java.util.HashMap;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.stop;
 import spark.utils.IOUtils;
 
 public class AppTest {
