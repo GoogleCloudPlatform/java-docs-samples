@@ -64,7 +64,7 @@ public class ObjectDetectionDeployModelNodeCountIT {
   }
 
   @Test
-  public void testModelApi() {
+  public void testObjectDetectionDeployModelNodeCountApi() {
     ObjectDetectionDeployModelNodeCount.objectDetectionDeployModelNodeCount(PROJECT_ID, MODEL_ID);
 
     String got = bout.toString();

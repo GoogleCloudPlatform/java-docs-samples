@@ -44,7 +44,7 @@ public class ClassificationDeployModelIT {
   }
 
   @Test
-  public void testDeployModelApi() {
+  public void testClassificationDeployModelApi() {
     ClassificationDeployModel.classificationDeployModel(PROJECT_ID, MODEL_ID);
 
     String got = bout.toString();
@@ -57,7 +57,7 @@ public class ClassificationDeployModelIT {
   }
 
   @Test
-  public void testDeployModelNodeCountApi() {
+  public void testClassificationDeployModelNodeCountApi() {
     ClassificationDeployModelNodeCount.classificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
 
     String got = bout.toString();
