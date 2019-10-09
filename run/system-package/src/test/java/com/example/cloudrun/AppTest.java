@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package com.example.cloudrun;
+package com.example.cloudrun;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
