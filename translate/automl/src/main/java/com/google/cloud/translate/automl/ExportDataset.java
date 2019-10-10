@@ -32,7 +32,7 @@ class ExportDataset {
   static void exportDataset(String projectId, String datasetId, String gcsUri) {
     // String projectId = "YOUR_PROJECT_ID";
     // String datasetId = "YOUR_DATASET_ID";
-    // String gcsUri = "gs://";
+    // String gcsUri = "gs://BUCKET_ID/path_to_export/";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
