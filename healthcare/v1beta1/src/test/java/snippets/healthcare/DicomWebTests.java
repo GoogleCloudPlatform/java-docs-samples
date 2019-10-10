@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.UUID;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,6 +42,7 @@ import snippets.healthcare.dicom.DicomWebRetrieveInstance;
 import snippets.healthcare.dicom.DicomWebRetrieveRendered;
 import snippets.healthcare.dicom.DicomWebRetrieveStudy;
 import snippets.healthcare.dicom.DicomWebSearchForInstances;
+import snippets.healthcare.dicom.DicomWebSearchStudies;
 import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
@@ -57,8 +57,8 @@ public class DicomWebTests {
   private static String studyId = "2.25.330012077234033941963257891139480825153";
   private static String seriesId = "2.25.143186483950719304925806365081717734297";
   private static String instanceId = "2.25.195151962645072062560826889007364152748";
-  private static String dicomWebInstancePath = String.format(
-      "studies/%s/series/%s/instances/%s", studyId, seriesId, instanceId);
+  private static String dicomWebInstancePath =
+      String.format("studies/%s/series/%s/instances/%s", studyId, seriesId, instanceId);
   private static String dicomWebRenderedPath = dicomWebInstancePath + "/rendered";
 
   private static String instanceOutput = "instance.dcm";
@@ -85,11 +85,8 @@ public class DicomWebTests {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    datasetName = String.format(
-        "projects/%s/locations/%s/datasets/%s",
-        PROJECT_ID,
-        REGION_ID,
-        datasetId);
+    datasetName =
+        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     String dicomStoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
@@ -109,8 +106,7 @@ public class DicomWebTests {
     System.setOut(new PrintStream(bout));
 
     // Store before each test so it is always available.
-    DicomWebStoreInstance.dicomWebStoreInstance(
-        dicomStoreName, "src/test/resources/jpeg_text.dcm");
+    DicomWebStoreInstance.dicomWebStoreInstance(dicomStoreName, "src/test/resources/jpeg_text.dcm");
 
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
@@ -124,8 +120,7 @@ public class DicomWebTests {
 
   @Test
   public void test_DicomWebStoreInstance() throws Exception {
-    DicomWebStoreInstance.dicomWebStoreInstance(
-        dicomStoreName, "src/test/resources/jpeg_text.dcm");
+    DicomWebStoreInstance.dicomWebStoreInstance(dicomStoreName, "src/test/resources/jpeg_text.dcm");
 
     String output = bout.toString();
     assertThat(output, containsString("DICOM instance stored:"));
@@ -136,6 +131,13 @@ public class DicomWebTests {
     DicomWebSearchForInstances.dicomWebSearchForInstances(dicomStoreName);
     String output = bout.toString();
     assertThat(output, containsString("Dicom store instances found:"));
+  }
+
+  @Test
+  public void test_DicomWebSearchStudies() throws Exception {
+    DicomWebSearchStudies.dicomWebSearchStudies(dicomStoreName);
+    String output = bout.toString();
+    assertThat(output, containsString("Studies found:"));
   }
 
   @Test
@@ -179,4 +181,3 @@ public class DicomWebTests {
     assertThat(output, containsString("DICOM study deleted."));
   }
 }
-
