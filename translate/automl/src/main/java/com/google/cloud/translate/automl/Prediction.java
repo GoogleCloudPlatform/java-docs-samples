@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 
 class Prediction {
 
-  // Deploy a model for predictio
+  // Predict
   static void predict(String projectId, String modelId, String filePath) {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
