@@ -65,7 +65,10 @@ public class DicomWebRetrieveStudy {
     // Execute the request and process the results.
     HttpResponse response = request.executeUnparsed();
 
-    String outputPath = "study.dcm";
+    // When specifying the output file, use an extension like ".multipart".
+    // Then, parse the downloaded multipart file to get each individual
+    // DICOM file.
+    String outputPath = "study.multipart";
     OutputStream outputStream = new FileOutputStream(new File(outputPath));
     try {
       response.download(outputStream);
@@ -90,11 +93,20 @@ public class DicomWebRetrieveStudy {
         GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
+    HttpHeaders headers = new HttpHeaders();
+    // The response's default transfer syntax is Little Endian Explicit.
+    // As a result, if the file was uploaded using a compressed transfer syntax,
+    // the returned object will be decompressed. This can negatively impact performance and lead
+    // to errors for transfer syntaxes that the Cloud Healthcare API doesn't support.
+    // To avoid these issues, and if the returned object's transfer syntax doesn't matter to
+    // your application, use the
+    // multipart/related; type="application/dicom"; transfer-syntax=* Accept Header.
+    headers.setAccept("multipart/related; type=application/dicom; transfer-syntax=*");
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
+          request.setHeaders(headers);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };

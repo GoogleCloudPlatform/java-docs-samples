@@ -82,7 +82,7 @@
         <!-- Copy dependencies of exploded fatjar to appengine-staging directory -->
         <configuration>
           <libDir>${project.build.directory}/appengine-staging/lib</libDir>
-          <finalName>${project.build.directory}/appengine-staging/${build.finalName}</finalName>
+          <finalName>${project.build.directory}/appengine-staging/${project.build.finalName}</finalName>
         </configuration>
       </plugin>
       <!-- Set Surefire version to work with Junit5 -->
