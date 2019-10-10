@@ -43,32 +43,33 @@ class CreateDataset {
 
       // Specify the source and target language.
       TranslationDatasetMetadata translationDatasetMetadata =
-              TranslationDatasetMetadata.newBuilder()
-                      .setSourceLanguageCode("en")
-                      .setTargetLanguageCode("ja")
-                      .build();
+          TranslationDatasetMetadata.newBuilder()
+              .setSourceLanguageCode("en")
+              .setTargetLanguageCode("ja")
+              .build();
       Dataset dataset =
-              Dataset.newBuilder()
-                      .setDisplayName(displayName)
-                      .setTranslationDatasetMetadata(translationDatasetMetadata)
-                      .build();
-      OperationFuture<Dataset, OperationMetadata> future = client.createDataset(projectLocation, dataset);
+          Dataset.newBuilder()
+              .setDisplayName(displayName)
+              .setTranslationDatasetMetadata(translationDatasetMetadata)
+              .build();
+      OperationFuture<Dataset, OperationMetadata> future =
+          client.createDatasetAsync(projectLocation, dataset);
 
       Dataset createdDataset = future.get();
 
       // Display the dataset information.
       System.out.format("Dataset name: %s\n", createdDataset.getName());
       System.out.format(
-              "Dataset id: %s\n",
-              createdDataset.getName().split("/")[createdDataset.getName().split("/").length - 1]);
+          "Dataset id: %s\n",
+          createdDataset.getName().split("/")[createdDataset.getName().split("/").length - 1]);
       System.out.format("Dataset display name: %s\n", createdDataset.getDisplayName());
       System.out.println("Translation dataset Metadata:");
       System.out.format(
-              "\tSource language code: %s\n",
-              createdDataset.getTranslationDatasetMetadata().getSourceLanguageCode());
+          "\tSource language code: %s\n",
+          createdDataset.getTranslationDatasetMetadata().getSourceLanguageCode());
       System.out.format(
-              "\tTarget language code: %s\n",
-              createdDataset.getTranslationDatasetMetadata().getTargetLanguageCode());
+          "\tTarget language code: %s\n",
+          createdDataset.getTranslationDatasetMetadata().getTargetLanguageCode());
       System.out.println("Dataset create time:");
       System.out.format("\tseconds: %s\n", createdDataset.getCreateTime().getSeconds());
       System.out.format("\tnanos: %s\n", createdDataset.getCreateTime().getNanos());

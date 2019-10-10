@@ -39,9 +39,7 @@ class ListOperationStatus {
 
       // Create list operations request.
       ListOperationsRequest listrequest =
-              ListOperationsRequest.newBuilder()
-                      .setName(projectLocation.toString())
-                      .build();
+          ListOperationsRequest.newBuilder().setName(projectLocation.toString()).build();
 
       // List all the operations names available in the region by applying filter.
       for (Operation operation :

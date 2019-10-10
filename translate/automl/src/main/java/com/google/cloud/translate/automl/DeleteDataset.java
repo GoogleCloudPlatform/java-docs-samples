@@ -39,7 +39,7 @@ class DeleteDataset {
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
       Empty response = client.deleteDatasetAsync(datasetFullId).get();
       System.out.format("Dataset deleted. %s\n", response);
-    } catch (IOException| InterruptedException | ExecutionException e) {
+    } catch (IOException | InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
   }

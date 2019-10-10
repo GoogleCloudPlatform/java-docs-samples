@@ -26,7 +26,8 @@ class GetOperationStatus {
 
   // Get the status of an operation
   static void getOperationStatus(String operationFullId) {
-    // String operationFullId = "projects/[projectId]/locations/us-central1/operations/[operationId]";
+    // String operationFullId =
+    // "projects/[projectId]/locations/us-central1/operations/[operationId]";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -41,13 +42,13 @@ class GetOperationStatus {
       System.out.println("\tMetadata:");
       System.out.format("\t\tType Url: %s\n", operation.getMetadata().getTypeUrl());
       System.out.format(
-              "\t\tValue: %s\n", operation.getMetadata().getValue().toStringUtf8().replace("\n", ""));
+          "\t\tValue: %s\n", operation.getMetadata().getValue().toStringUtf8().replace("\n", ""));
       System.out.format("\tDone: %s\n", operation.getDone());
       if (operation.hasResponse()) {
         System.out.println("\tResponse:");
         System.out.format("\t\tType Url: %s\n", operation.getResponse().getTypeUrl());
         System.out.format(
-                "\t\tValue: %s\n", operation.getResponse().getValue().toStringUtf8().replace("\n", ""));
+            "\t\tValue: %s\n", operation.getResponse().getValue().toStringUtf8().replace("\n", ""));
       }
       if (operation.hasError()) {
         System.out.println("\tResponse:");

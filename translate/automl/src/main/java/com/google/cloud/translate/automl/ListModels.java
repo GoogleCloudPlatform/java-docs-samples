@@ -39,10 +39,10 @@ class ListModels {
 
       // Create list models request.
       ListModelsRequest listModlesRequest =
-              ListModelsRequest.newBuilder()
-                      .setParent(projectLocation.toString())
-                      .setFilter("")
-                      .build();
+          ListModelsRequest.newBuilder()
+              .setParent(projectLocation.toString())
+              .setFilter("")
+              .build();
 
       // List all the models available in the region by applying filter.
       System.out.println("List of models:");
@@ -50,8 +50,7 @@ class ListModels {
         // Display the model information.
         System.out.format("Model name: %s\n", model.getName());
         System.out.format(
-                "Model id: %s\n",
-                model.getName().split("/")[model.getName().split("/").length - 1]);
+            "Model id: %s\n", model.getName().split("/")[model.getName().split("/").length - 1]);
         System.out.format("Model display name: %s\n", model.getDisplayName());
         System.out.println("Model create time:");
         System.out.format("\tseconds: %s\n", model.getCreateTime().getSeconds());

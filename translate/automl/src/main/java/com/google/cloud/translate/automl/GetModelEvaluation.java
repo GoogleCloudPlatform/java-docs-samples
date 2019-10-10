@@ -37,7 +37,7 @@ class GetModelEvaluation {
     try (AutoMlClient client = AutoMlClient.create()) {
       // Get the full path of the model evaluation.
       ModelEvaluationName modelEvaluationFullId =
-              ModelEvaluationName.of(projectId, "us-central1", modelId, modelEvaluationId);
+          ModelEvaluationName.of(projectId, "us-central1", modelId, modelEvaluationId);
 
       // Get complete detail of the model evaluation.
       ModelEvaluation modelEvaluation = client.getModelEvaluation(modelEvaluationFullId);
@@ -47,8 +47,10 @@ class GetModelEvaluation {
       System.out.println("Create Time:");
       System.out.format("\tseconds: %s\n", modelEvaluation.getCreateTime().getSeconds());
       System.out.format("\tnanos: %s", modelEvaluation.getCreateTime().getNanos() / 1e9);
-      System.out.format("Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
-      System.out.format("Model Evaluation Metrics: %s\n", modelEvaluation.getTranslationEvaluationMetrics());
+      System.out.format(
+          "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
+      System.out.format(
+          "Model Evaluation Metrics: %s\n", modelEvaluation.getTranslationEvaluationMetrics());
     } catch (IOException e) {
       e.printStackTrace();
     }

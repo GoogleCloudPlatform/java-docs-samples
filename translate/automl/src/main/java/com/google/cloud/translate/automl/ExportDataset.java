@@ -40,14 +40,17 @@ class ExportDataset {
     try (AutoMlClient client = AutoMlClient.create()) {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
-      GcsDestination gcsDestination = GcsDestination.newBuilder().setOutputUriPrefix(gcsUri).build();
+      GcsDestination gcsDestination =
+          GcsDestination.newBuilder().setOutputUriPrefix(gcsUri).build();
 
       // Export the dataset to the output URI.
-      OutputConfig outputConfig = OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+      OutputConfig outputConfig =
+          OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+
       System.out.println("Processing export...");
       Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
       System.out.format("Dataset exported. %s\n", response);
-    } catch (IOException| InterruptedException | ExecutionException e) {
+    } catch (IOException | InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
   }

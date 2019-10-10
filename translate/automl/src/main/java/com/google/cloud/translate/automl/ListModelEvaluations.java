@@ -38,14 +38,12 @@ class ListModelEvaluations {
       // Get the full path of the model.
       ModelName modelFullId = ModelName.of(projectId, "us-central1", modelId);
       ListModelEvaluationsRequest modelEvaluationsrequest =
-              ListModelEvaluationsRequest.newBuilder()
-                      .setParent(modelFullId.toString())
-                      .build();
+          ListModelEvaluationsRequest.newBuilder().setParent(modelFullId.toString()).build();
 
       // List all the model evaluations in the model by applying filter.
       System.out.println("List of model evaluations:");
       for (ModelEvaluation modelEvaluation :
-              client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
+          client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
 
         System.out.format("Model Evaluation Name: %s\n", modelEvaluation.getName());
         System.out.format("Model Annotation Spec Id: %s", modelEvaluation.getAnnotationSpecId());

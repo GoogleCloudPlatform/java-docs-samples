@@ -22,6 +22,7 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.cloud.automl.v1.Model;
 import com.google.cloud.automl.v1.OperationMetadata;
+import com.google.cloud.automl.v1.TranslationModelMetadata;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -40,14 +41,19 @@ class CreateModel {
     try (AutoMlClient client = AutoMlClient.create()) {
       // A resource that represents Google Cloud Platform location.
       LocationName projectLocation = LocationName.of(projectId, "us-central1");
+      // Leave model unset to use the default base model provided by Google
+      TranslationModelMetadata translationModelMetadata =
+          TranslationModelMetadata.newBuilder().build();
       Model model =
-              Model.newBuilder()
-                      .setDisplayName(displayName)
-                      .setDatasetId(datasetId)
-                      .build();
+          Model.newBuilder()
+              .setDisplayName(displayName)
+              .setDatasetId(datasetId)
+              .setTranslationModelMetadata(translationModelMetadata)
+              .build();
 
       // Create a model with the model metadata in the region.
-      OperationFuture<Model, OperationMetadata> future = client.createModelAsync(projectLocation, model);
+      OperationFuture<Model, OperationMetadata> future =
+          client.createModelAsync(projectLocation, model);
       System.out.format("Training operation name: %s\n", future.getInitialFuture().get().getName());
       System.out.println("Training started...");
     } catch (IOException | InterruptedException | ExecutionException e) {

@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 public class DatasetIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID + "-vcm";
+  private static final String BUCKET = "gs://" + PROJECT_ID + "-vcm";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private String datasetId;
@@ -62,7 +62,7 @@ public class DatasetIT {
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
     String datasetName =
-            String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
 
     // Act
     CreateDataset.createDataset(PROJECT_ID, datasetName);
@@ -70,13 +70,13 @@ public class DatasetIT {
     // Assert
     String got = bout.toString();
     datasetId =
-            bout.toString()
-                    .split("\n")[0]
-                    .split("/")[(bout.toString().split("\n")[0]).split("/").length - 1];
+        bout.toString()
+            .split("\n")[0]
+            .split("/")[(bout.toString().split("\n")[0]).split("/").length - 1];
     assertThat(got).contains("Dataset id:");
 
     // Act
-    ImportDataset.importDataset(PROJECT_ID, datasetId, "gs://" + BUCKET + "/en-ja-short.csv");
+    ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/en-ja-short.csv");
 
     // Assert
     got = bout.toString();
@@ -113,14 +113,31 @@ public class DatasetIT {
 
   @Test
   public void testExportDataset() {
-    ExportDataset.exportDataset(PROJECT_ID, getdatasetId, BUCKET + "/output");
+    ExportDataset.exportDataset(PROJECT_ID, getdatasetId, BUCKET + "/TEST_EXPORT_OUTPUT/");
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
 
-    Page<Blob> blobs = storage.list(BUCKET + "/output", Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix(BUCKET + "/output/"));
+    String got = bout.toString();
+
+    assertThat(got).contains("Dataset exported.");
+
+    Page<Blob> blobs =
+        storage.list(
+                PROJECT_ID + "-vcm",
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
+
     for (Blob blob : blobs.iterateAll()) {
-//      blob.delete();
+      Page<Blob> fileBlobs =
+              storage.list(
+                      PROJECT_ID + "-vcm",
+                      Storage.BlobListOption.currentDirectory(),
+                      Storage.BlobListOption.prefix(blob.getName()));
+      for (Blob fileBlob : fileBlobs.iterateAll()) {
+        if (!fileBlob.isDirectory()) {
+          fileBlob.delete();
+        }
+      }
     }
   }
 }

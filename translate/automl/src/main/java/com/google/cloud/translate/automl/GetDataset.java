@@ -41,16 +41,16 @@ class GetDataset {
       // Display the dataset information
       System.out.format("Dataset name: %s\n", dataset.getName());
       System.out.format(
-              "Dataset id: %s\n",
-              dataset.getName().split("/")[dataset.getName().split("/").length - 1]);
+          "Dataset id: %s\n",
+          dataset.getName().split("/")[dataset.getName().split("/").length - 1]);
       System.out.format("Dataset display name: %s\n", dataset.getDisplayName());
       System.out.println("Translation dataset metadata:");
       System.out.format(
-              "\tSource language code: %s\n",
-              dataset.getTranslationDatasetMetadata().getSourceLanguageCode());
+          "\tSource language code: %s\n",
+          dataset.getTranslationDatasetMetadata().getSourceLanguageCode());
       System.out.format(
-              "\tTarget language code: %s\n",
-              dataset.getTranslationDatasetMetadata().getTargetLanguageCode());
+          "\tTarget language code: %s\n",
+          dataset.getTranslationDatasetMetadata().getTargetLanguageCode());
       System.out.println("Dataset create time:");
       System.out.format("\tseconds: %s\n", dataset.getCreateTime().getSeconds());
       System.out.format("\tnanos: %s\n", dataset.getCreateTime().getNanos());

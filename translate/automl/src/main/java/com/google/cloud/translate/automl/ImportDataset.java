@@ -43,10 +43,8 @@ class ImportDataset {
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
 
       // Get multiple Google Cloud Storage URIs to import data from
-      GcsSource gcsSource = GcsSource.newBuilder()
-              .addAllInputUris(
-                      Arrays.asList(path.split(",")))
-              .build();
+      GcsSource gcsSource =
+          GcsSource.newBuilder().addAllInputUris(Arrays.asList(path.split(","))).build();
 
       // Import data from the input URI
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();

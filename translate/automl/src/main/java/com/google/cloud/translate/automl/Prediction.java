@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 
 class Prediction {
 
-  // Deploy a model for prediction
+  // Deploy a model for predictio
   static void predict(String projectId, String modelId, String filePath) {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
@@ -47,13 +47,12 @@ class Prediction {
 
       TextSnippet textSnippet = TextSnippet.newBuilder().setContent(content).build();
       ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
-      PredictRequest predictRequest = PredictRequest.newBuilder()
-              .setName(name.toString())
-              .setPayload(payload)
-              .build();
+      PredictRequest predictRequest =
+          PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
 
       PredictResponse response = client.predict(predictRequest);
-      TextSnippet translatedContent = response.getPayload(0).getTranslation().getTranslatedContent();
+      TextSnippet translatedContent =
+          response.getPayload(0).getTranslation().getTranslatedContent();
       System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
     } catch (IOException e) {
       e.printStackTrace();

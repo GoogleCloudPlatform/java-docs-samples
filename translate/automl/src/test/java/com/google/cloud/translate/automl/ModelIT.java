@@ -21,8 +21,8 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 
+import com.google.cloud.automl.v1.AutoMlClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,19 +32,11 @@ import org.junit.runners.JUnit4;
 /** Tests for Automl translation models. */
 @RunWith(JUnit4.class)
 public class ModelIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID, DEPLOY_MODEL_ID and
-  // UNDEPLOY_MODEL_ID before running the test cases.
-  //e PrintStream out;private static final String PROJECT_ID = "java-docs-samples-testing";
-  ////  private static final String DATASET_ID = "IOD7155850371984785408";
-  ////  private static final String MODEL_NAME = "test_vision_model";
-  ////  private static final String DEPLOY_MODEL_ID = "IOD1728502647608049664";
-  ////  private static final String UNDEPLOY_MODEL_ID = "IOD3348109663601164288";
-  ////  private ByteArrayOutputStream bout;
-  ////  private PrintStream out;
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String DATASET_ID = "TRL3946265060617537378";
+  private static final String MODEL_NAME = "translation_test_create_model";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private ModelApi app;
   private String modelId;
   private String modelEvaluationId;
 
@@ -62,55 +54,36 @@ public class ModelIT {
 
   @Test
   public void testModelApi() {
-    // Act
+    // LIST MODELS
     ListModels.listModels(PROJECT_ID);
-
-    // Assert
     String got = bout.toString();
     modelId = got.split("\n")[1].split("/")[got.split("\n")[1].split("/").length - 1];
     assertThat(got).contains("Model id:");
 
-    // Act
+    // GET MODEL
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
     GetModel.getModel(PROJECT_ID, modelId);
-
-    // Assert
     got = bout.toString();
-    assertThat(got).contains("Model name:");
+    assertThat(got).contains("Model id: " + modelId);
 
-    // Act
+    // LIST MODEL EVALUATIONS
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
     ListModelEvaluations.listModelEvaluations(PROJECT_ID, modelId);
-
-    // Assert
     got = bout.toString();
-    modelEvaluationId = got.split("List of model evaluations:")[1].split("\"")[1].split("/")[7];
-    assertThat(got).contains("name:");
+    modelEvaluationId = got.split(modelId + "/modelEvaluations/")[1].split("\n")[0];
+    assertThat(got).contains("Model Evaluation Name:");
 
     // Act
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
     GetModelEvaluation.getModelEvaluation(PROJECT_ID, modelId, modelEvaluationId);
-
-    // Assert
     got = bout.toString();
-    assertThat(got).contains("name:");
-  }
-
-  @Test
-  public void testDeployModel() {
-    // Act
-    DeployModel.deployModel(PROJECT_ID, DEPLOY_MODEL_ID);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Name:");
-  }
-
-  @Test
-  public void testUndeployModel() {
-    // Act
-    UndeployModel.undeployModel(PROJECT_ID, UNDEPLOY_MODEL_ID);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Name:");
+    assertThat(got).contains("Model Evaluation Name:");
   }
 
   @Test
@@ -130,5 +103,19 @@ public class ModelIT {
     // Assert
     got = bout.toString();
     assertThat(got).contains("Operation details:");
+  }
+
+  @Test
+  public void testCreateModel() throws IOException {
+    CreateModel.createModel(PROJECT_ID, DATASET_ID, MODEL_NAME);
+
+    String got = bout.toString();
+    assertThat(got).contains("Training started");
+
+    String operationId = got.split("Training operation name: ")[1].split("\n")[0];
+
+    try (AutoMlClient client = AutoMlClient.create()) {
+      client.getOperationsClient().cancelOperation(operationId);
+    }
   }
 }
