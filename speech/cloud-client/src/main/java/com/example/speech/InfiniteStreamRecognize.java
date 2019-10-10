@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,6 @@ public class InfiniteStreamRecognize {
       System.out.println("Exception caught: " + e);
     }
   }
-// [END speech_transcribe_infinite_streaming_main]
 
   /** Performs infinite streaming speech recognition */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
@@ -121,6 +120,7 @@ public class InfiniteStreamRecognize {
         }
       }
     }
+    
 
     // Creating microphone input buffer thread
     MicBuffer micrunnable = new MicBuffer();
@@ -136,7 +136,8 @@ public class InfiniteStreamRecognize {
             public void onStart(StreamController controller) {
               referenceToStreamController = controller;
             }
-           
+// [END speech_transcribe_infinite_streaming_main]       
+
         //  [START speech_transcribe_infinite_streaming_output]
             public void onResponse(StreamingRecognizeResponse response) {
               responses.add(response);
