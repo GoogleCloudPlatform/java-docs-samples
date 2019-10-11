@@ -22,7 +22,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build a release artifact.
-RUN mvn package -DskipTests
+RUN mvn compile assembly:single
 
 # Use the Official OpenJDK image for a lean production stage of our multi-stage build.
 # https://hub.docker.com/r/adoptopenjdk/openjdk11/
@@ -34,7 +34,7 @@ RUN apk --no-cache add graphviz ttf-ubuntu-font-family
 # [END run_system_package_alpine]
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/system-package-*-shaded.jar /system-package.jar
+COPY --from=builder /app/target/system-package-*.jar /system-package.jar
 
 # Run the web service on container startup.
 CMD ["java","-jar","/system-package.jar"]
