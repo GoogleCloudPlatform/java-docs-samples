@@ -37,14 +37,26 @@ import com.google.cloud.vision.v1.SafeSearchAnnotation;
 
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
-import magick.MagickImage;
-import magick.ImageInfo;
-import magick.MagickException;
+// import magick.MagickImage;
+// import magick.ImageInfo;
+// import magick.MagickException;
+import org.apache.commons.io.IOUtils;
 import java.nio.file.Path;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class ImageMagick {
@@ -91,35 +103,61 @@ public class ImageMagick {
     }
   }
 
-  public static void blur(BlobInfo blobInfo) throws MagickException {
-    System.setProperty("jmagick.systemclassloader","no");
+  public static void blur(BlobInfo blobInfo) throws IOException {
     String bucketName = blobInfo.getBucket();
     String fileName = blobInfo.getName();
-    String contentType = blobInfo.getContentType();
     //Download image
     Blob blob = storage.get(BlobId.of(bucketName, fileName));
     String tmpFile = "/tmp/test.jpg";
-    Path out = Paths.get(tmpFile);
-    // Path out = FileSystems.getDefault().getPath("tmp", "test.jpg");
-    byte[] image = null;
+    String tmpBlurFile = "/tmp/test-blur.jpg";
+    Path download = Paths.get(tmpFile);
+    Path upload = Paths.get(tmpBlurFile);
+    blob.downloadTo(download);
+
+    // Use - as output to use stdout.
+    List<String> args = new ArrayList<String>();
+    args.add("convert");
+    args.add(tmpFile);
+    args.add("-blur");
+    args.add("0x8");
+    args.add(tmpBlurFile);
+
+    // StringBuilder output = new StringBuilder();
+    // InputStream stdout = null;
     try {
-      blob.downloadTo(out);
-      // image = out.toByteArray();
+      System.out.println("start");
+      ProcessBuilder pb = new ProcessBuilder(args);
+      Process process = pb.start();
+      // OutputStream stdin = process.getOutputStream();
+      // stdout = process.getInputStream();
+      // // The Graphviz dot program reads from stdin.
+      // Writer writer = new OutputStreamWriter(stdin, "UTF-8");
+      // String content = new String(Files.readAllBytes(Paths.get(tmpFile)));
+      // // BufferedReader reader = new BufferedReader(new FileReader(tmpFile));
+      // // String line;
+      // // while ((line = reader.readLine()) != null) {
+      //   writer.write(content);
+      // // }
+      // // reader.close();
+      // writer.close();
+      process.waitFor();
+      System.out.println("end");
     } catch (Exception e) {
-      System.out.println("exception");
+      System.out.println("oops");
+      System.out.println(e);
     }
-
-    // Use Jmagick to blur image.
-    ImageInfo imageInfo = new ImageInfo(tmpFile);
-    MagickImage img = new MagickImage(imageInfo);
-    img.blurImage(0, 8); //Change to blur image channel
-    System.out.println(String.format("Image %s was blurred.", fileName));
-
-    //Upload image to blurred bucket.
+    // System.out.println(stdout.available());
+    // Upload image to blurred bucket.
     BlobId blurredBlobId = BlobId.of(BLURRED_BUCKET_NAME, fileName);
-    BlobInfo blurredBlobInfo = BlobInfo.newBuilder(blurredBlobId).setContentType(contentType).build(); //SET TYPE!
-    Blob blurredBlob = storage.create(blurredBlobInfo, img.imageToBlob(imageInfo));
-    System.out.println(String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
+    BlobInfo blurredBlobInfo = BlobInfo.newBuilder(blurredBlobId).setContentType("image/jpg").build(); //SET TYPE!
+    try {
+      byte[] fileContent = Files.readAllBytes(upload);
+      Blob blurredBlob = storage.create(blurredBlobInfo, fileContent);
+      System.out.println(String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
+    } catch (Exception e) {
+      System.out.println("oops");
+      System.out.println(e);
+    }
 
     //remove image
   }
