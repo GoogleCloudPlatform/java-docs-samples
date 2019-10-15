@@ -17,17 +17,16 @@
 package com.example.speech;
 
 // [START speech_transcribe_infinite_streaming_imports]
-
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
-import com.google.cloud.speech.v1p1beta1.SpeechClient;
-import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognitionConfig;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognitionResult;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
+import com.google.cloud.speech.v1.RecognitionConfig;
+import com.google.cloud.speech.v1.SpeechClient;
+import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1.StreamingRecognitionResult;
+import com.google.cloud.speech.v1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 
@@ -42,13 +41,11 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.TargetDataLine;
-
 // [END speech_transcribe_infinite_streaming_imports]
 
 public class InfiniteStreamRecognize {
 
 // [START speech_transcribe_infinite_streaming_globals]
-
   private static final int STREAMING_LIMIT = 290000; // ~5 minutes
 
   // Creating shared object
@@ -67,7 +64,6 @@ public class InfiniteStreamRecognize {
   private static boolean lastTranscriptWasFinal = false;
   private static StreamController referenceToStreamController;
   private static ByteString tempByteString;
-
 // [END speech_transcribe_infinite_streaming_globals]
 
   public static String convertMillisToDate(double milliSeconds) {
@@ -215,7 +211,6 @@ public class InfiniteStreamRecognize {
         long startTime = System.currentTimeMillis();
         
         // [START speech_transcribe_infinite_streaming_generator]
-
         while (true) {
 
           long estimatedTime = System.currentTimeMillis() - startTime;
