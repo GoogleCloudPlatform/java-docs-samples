@@ -161,6 +161,20 @@ public class SnippetsTests {
   }
 
   @Test
+  public void scopesTest() throws IOException {
+    new Scopes().scopeDemo(request, response);
+
+    assertThat(responseOut.toString(), containsString("Instance:"));
+  }
+
+  @Test
+  public void lazyTest() throws IOException {
+    new Lazy().lazyGlobal(request, response);
+
+    assertThat(responseOut.toString(), containsString("Lazy global:"));
+  }
+
+  @Test
   public void retrieveLogsTest() throws IOException {
     new RetrieveLogs().retrieveLogs(request, response);
 
@@ -174,7 +188,7 @@ public class SnippetsTests {
     when(request.getReader()).thenReturn(bodyReader);
 
     new HelloBackground().helloBackground(request, response);
-    assertThat(responseOut.toString(), containsString("Hello John!"));    
+    assertThat(responseOut.toString(), containsString("Hello John!"));
   }
 
   @Test
@@ -196,7 +210,7 @@ public class SnippetsTests {
     new EnvVars().envVar(request, response);
     assertThat(responseOut.toString(), containsString("BAR"));
   }
-  
+
   @Test
   public void helloExecutionCount() throws IOException {
     new Concepts().executionCount(request, response);
