@@ -58,7 +58,7 @@ limitations under the License.
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<!-- // [START run_imageproc_dep_management] -->
+			<!-- // [END run_imageproc_dep_management] -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -98,9 +98,9 @@ limitations under the License.
 			<artifactId>spring-cloud-gcp-starter-storage</artifactId>
 		</dependency>
 		<dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>2.5</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
 		</dependency>
 		<!-- // [END run_imageproc_dep] -->
 	</dependencies>
