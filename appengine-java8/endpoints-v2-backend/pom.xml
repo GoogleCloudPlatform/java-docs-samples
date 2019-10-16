@@ -42,7 +42,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <endpoints.framework.version>2.2.1</endpoints.framework.version>
-    <endpoints.management.version>1.0.4</endpoints.management.version>
+    <endpoints.management.version>1.0.12</endpoints.management.version>
 
     <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
   </properties>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>com.google.endpoints</groupId>
       <artifactId>endpoints-management-control-appengine-all</artifactId>
-      <version>1.0.11</version>
+      <version>1.0.12</version>
     </dependency>
     <!-- [END api_management] -->
     <dependency>
