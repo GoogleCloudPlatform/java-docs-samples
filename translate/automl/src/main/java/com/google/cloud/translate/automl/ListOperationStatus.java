@@ -61,10 +61,5 @@ class ListOperationStatus {
       e.printStackTrace();
     }
   }
-
-
-  public static void main(String[] args) {
-    listOperationStatus("java-docs-samples-testing");
-  }
 }
 // [END automl_translate_list_operation_status]
