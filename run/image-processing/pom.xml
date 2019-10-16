@@ -50,6 +50,7 @@ limitations under the License.
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!-- // [START run_imageproc_dep_management] -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-gcp-dependencies</artifactId>
@@ -57,6 +58,7 @@ limitations under the License.
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!-- // [START run_imageproc_dep_management] -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -75,7 +77,7 @@ limitations under the License.
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<!-- // [START run_imageproc_dep] -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -100,6 +102,7 @@ limitations under the License.
 	    <artifactId>commons-io</artifactId>
 	    <version>2.5</version>
 		</dependency>
+		<!-- // [END run_imageproc_dep] -->
 	</dependencies>
 
 	<build>
