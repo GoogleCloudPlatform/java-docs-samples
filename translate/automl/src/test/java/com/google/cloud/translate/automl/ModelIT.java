@@ -57,7 +57,7 @@ public class ModelIT {
     // LIST MODELS
     ListModels.listModels(PROJECT_ID);
     String got = bout.toString();
-    modelId = got.split("\n")[1].split("/")[got.split("\n")[1].split("/").length - 1];
+    modelId = got.split("Model id: ")[1].split("\n")[0];
     assertThat(got).contains("Model id:");
 
     // GET MODEL

@@ -59,9 +59,12 @@ class CreateDataset {
 
       // Display the dataset information.
       System.out.format("Dataset name: %s\n", createdDataset.getName());
-      System.out.format(
-          "Dataset id: %s\n",
-          createdDataset.getName().split("/")[createdDataset.getName().split("/").length - 1]);
+      // To get the dataset id, you have to parse it out of the `name` field. As dataset Ids are
+      // required for other methods.
+      // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
+      String[] names = createdDataset.getName().split("/");
+      String datasetId = names[names.length - 1];
+      System.out.format("Dataset id: %s\n", datasetId);
       System.out.format("Dataset display name: %s\n", createdDataset.getDisplayName());
       System.out.println("Translation dataset Metadata:");
       System.out.format(

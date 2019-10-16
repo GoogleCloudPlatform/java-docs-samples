@@ -40,9 +40,12 @@ class GetDataset {
 
       // Display the dataset information
       System.out.format("Dataset name: %s\n", dataset.getName());
-      System.out.format(
-          "Dataset id: %s\n",
-          dataset.getName().split("/")[dataset.getName().split("/").length - 1]);
+      // To get the dataset id, you have to parse it out of the `name` field. As dataset Ids are
+      // required for other methods.
+      // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
+      String[] names = dataset.getName().split("/");
+      String retrievedDatasetId = names[names.length - 1];
+      System.out.format("Dataset id: %s\n", retrievedDatasetId);
       System.out.format("Dataset display name: %s\n", dataset.getDisplayName());
       System.out.println("Translation dataset metadata:");
       System.out.format(

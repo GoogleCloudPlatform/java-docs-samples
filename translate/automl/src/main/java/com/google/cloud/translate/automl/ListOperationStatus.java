@@ -46,17 +46,10 @@ class ListOperationStatus {
           client.getOperationsClient().listOperations(listrequest).iterateAll()) {
         System.out.println("Operation details:");
         System.out.format("\tName: %s\n", operation.getName());
-        System.out.println("\tMetadata:");
-        System.out.format("\t\tType Url: %s\n", operation.getMetadata().getTypeUrl());
-        System.out.format(
-            "\t\tValue: %s\n", operation.getMetadata().getValue().toStringUtf8().replace("\n", ""));
+        System.out.format("\tMetadata Type Url: %s\n", operation.getMetadata().getTypeUrl());
         System.out.format("\tDone: %s\n", operation.getDone());
         if (operation.hasResponse()) {
-          System.out.println("\tResponse:");
-          System.out.format("\t\tType Url: %s\n", operation.getResponse().getTypeUrl());
-          System.out.format(
-              "\t\tValue: %s\n\n",
-              operation.getResponse().getValue().toStringUtf8().replace("\n", ""));
+          System.out.format("\tResponse Type Url: %s\n", operation.getResponse().getTypeUrl());
         }
         if (operation.hasError()) {
           System.out.println("\tResponse:");
@@ -67,6 +60,11 @@ class ListOperationStatus {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+
+  public static void main(String[] args) {
+    listOperationStatus("java-docs-samples-testing");
   }
 }
 // [END automl_translate_list_operation_status]

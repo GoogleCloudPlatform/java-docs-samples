@@ -69,10 +69,7 @@ public class DatasetIT {
 
     // Assert
     String got = bout.toString();
-    datasetId =
-        bout.toString()
-            .split("\n")[0]
-            .split("/")[(bout.toString().split("\n")[0]).split("/").length - 1];
+    datasetId = got.split("Dataset id: ")[1].split("\n")[0];
     assertThat(got).contains("Dataset id:");
 
     // Act

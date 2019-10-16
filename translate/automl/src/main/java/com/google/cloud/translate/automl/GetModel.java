@@ -40,8 +40,12 @@ class GetModel {
 
       // Display the model information.
       System.out.format("Model name: %s\n", model.getName());
-      System.out.format(
-          "Model id: %s\n", model.getName().split("/")[model.getName().split("/").length - 1]);
+      // To get the model id, you have to parse it out of the `name` field. As models Ids are
+      // required for other methods.
+      // Name Format: `projects/{project_id}/locations/{location_id}/models/{model_id}`
+      String[] names = model.getName().split("/");
+      String retrievedModelId = names[names.length - 1];
+      System.out.format("Model id: %s\n", retrievedModelId);
       System.out.format("Model display name: %s\n", model.getDisplayName());
       System.out.println("Model create time:");
       System.out.format("\tseconds: %s\n", model.getCreateTime().getSeconds());
