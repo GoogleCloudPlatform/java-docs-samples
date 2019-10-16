@@ -57,7 +57,6 @@ limitations under the License.
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
@@ -97,9 +96,9 @@ limitations under the License.
 			<artifactId>spring-cloud-gcp-starter-storage</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.5</version>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.5</version>
 		</dependency>
 	</dependencies>
 
@@ -117,11 +116,6 @@ limitations under the License.
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>1.6.1</version>
-      </plugin>
 		</plugins>
 	</build>
 </project>
