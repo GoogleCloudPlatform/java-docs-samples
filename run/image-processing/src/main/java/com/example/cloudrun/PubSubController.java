@@ -17,18 +17,15 @@
 package com.example.cloudrun;
 
 // [START run_imageproc_controller]
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.util.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.gson.Gson;
-import org.json.JSONObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonObject;
 
 // PubsubController consumes a Pub/Sub message.
 @RestController
@@ -55,8 +52,8 @@ public class PubSubController {
       return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
     }
 
-    //Validate the message is a Cloud Storage event.
-    if (data.get("name").getAsString() == null || data.get("bucket").getAsString() == null) {
+    // Validate the message is a Cloud Storage event.
+    if (data.get("name") == null || data.get("bucket") == null) {
       String msg = "Error: Invalid Cloud Storage notification: expected name and bucket properties";
       System.out.println(msg);
       return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
