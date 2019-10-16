@@ -57,7 +57,7 @@ public class PubSubControllerTests {
   }
 
   @Test
-  public void errorsWithNoJSONBody() throws Exception {
+  public void errorsWithNoJsonBody() throws Exception {
     String mock = mockBody("not-JSON");
     mockMvc
         .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mock))
@@ -100,7 +100,8 @@ public class PubSubControllerTests {
     String encodedBody = Base64.getEncoder().encodeToString(body.getBytes());
     String mock =
         String.format(
-            "{\"message\":{\"data\":\"%s\",\"attributes\":{},\"messageId\":\"91010751788941\",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}",
+            "{\"message\":{\"data\":\"%s\",\"attributes\":{},\"messageId\":"+
+            "\"91010751788941\",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}",
             encodedBody);
     return mock;
   }
