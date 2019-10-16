@@ -26,7 +26,6 @@
 
   <!-- [START spanner_hibernate_dependencies] -->
   <dependencies>
-
     <!-- The Hibernate dialect for Spanner dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
