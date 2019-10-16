@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// [START run_imageproc_handler_setup]
 package com.example.cloudrun;
 
 import com.google.cloud.storage.Blob;
@@ -41,7 +41,9 @@ import java.util.List;
 public class ImageMagick {
   private static final String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
   private static Storage storage = StorageOptions.getDefaultInstance().getService();
-
+  // [END run_imageproc_handler_setup]
+  // [START run_imageproc_handler_analyze]
+  // Blurs uploaded images that are flagged as Adult or Violence.
   public static void blurOffensiveImages(JsonObject data) {
     String fileName = data.get("name").getAsString();
     String bucketName = data.get("bucket").getAsString();
@@ -81,7 +83,10 @@ public class ImageMagick {
       System.out.println(String.format("Error with Vision API: %s", e.getMessage()));
     }
   }
-
+  // [END run_imageproc_handler_analyze]
+  // [START run_imageproc_handler_blur]
+  // Blurs the file described by blobInfo using ImageMagick,
+  // and uploads it to the blurred bucket.
   public static void blur(BlobInfo blobInfo) throws IOException {
     String bucketName = blobInfo.getBucket();
     String fileName = blobInfo.getName();
@@ -91,7 +96,7 @@ public class ImageMagick {
     Path upload = Paths.get("/tmp/", "blurred-" + fileName);
     blob.downloadTo(download);
 
-    // Use - as output to use stdout.
+    // Construct the command.
     List<String> args = new ArrayList<String>();
     args.add("convert");
     args.add(download.toString());
@@ -124,3 +129,4 @@ public class ImageMagick {
     Files.delete(upload);
   }
 }
+// [END run_imageproc_handler_blur]
