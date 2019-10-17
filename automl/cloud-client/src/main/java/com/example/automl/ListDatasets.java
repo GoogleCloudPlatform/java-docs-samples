@@ -16,7 +16,7 @@
 
 package com.example.automl;
 
-// [START automl_list_datasets]
+// [START automl_translate_list_datasets]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.Dataset;
 import com.google.cloud.automl.v1.ListDatasetsRequest;
@@ -70,4 +70,4 @@ class ListDatasets {
     }
   }
 }
-// [END automl_list_datasets]
+// [END automl_translate_list_datasets]
