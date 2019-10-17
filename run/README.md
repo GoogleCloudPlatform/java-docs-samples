@@ -127,9 +127,9 @@ gcloud beta run deploy $SAMPLE \
 [run_deploy]: https://cloud.google.com/run/docs/deploying
 [helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-java
 [pubsub]: pubsub/
-[run_button_helloworld]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/knative/docs&cloudshell_working_dir=docs/serving/samples/hello-world/helloworld-java
-[run_button_pubsub]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&cloudshell_working_dir=run/pubsub
-[run_button_image]: https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&cloudshell_working_dir=run/image-processing
+[run_button_helloworld]: https://deploy.cloud.run/?git_repo=https://github.com/knative/docs&dir=docs/serving/samples/hello-world/helloworld-java
+[run_button_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/pubsub
+[run_button_image]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/image-processing
 [push-pull]: https://cloud.google.com/container-registry/docs/pushing-and-pulling
 [jib]: https://github.com/GoogleContainerTools/jib
 [jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
