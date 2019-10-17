@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_list_operation_status]
+// [START automl_list_operation_status]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.longrunning.ListOperationsRequest;
@@ -62,4 +62,4 @@ class ListOperationStatus {
     }
   }
 }
-// [END automl_translate_list_operation_status]
+// [END automl_list_operation_status]

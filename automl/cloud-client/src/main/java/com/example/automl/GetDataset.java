@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_get_dataset]
+// [START automl_get_dataset]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.Dataset;
 import com.google.cloud.automl.v1.DatasetName;
@@ -62,4 +62,4 @@ class GetDataset {
     }
   }
 }
-// [END automl_translate_get_dataset]
+// [END automl_get_dataset]

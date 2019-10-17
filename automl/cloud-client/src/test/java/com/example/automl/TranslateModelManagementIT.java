@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests for Automl translation models. */
 @RunWith(JUnit4.class)
-public class ModelIT {
+public class TranslateModelManagementIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DATASET_ID = "TRL3946265060617537378";
   private static final String MODEL_NAME = "translation_test_create_model";
@@ -108,7 +108,7 @@ public class ModelIT {
 
   @Test
   public void testCreateModel() throws IOException {
-    CreateModel.createModel(PROJECT_ID, DATASET_ID, MODEL_NAME);
+    TranslateCreateModel.createModel(PROJECT_ID, DATASET_ID, MODEL_NAME);
 
     String got = bout.toString();
     assertThat(got).contains("Training started");

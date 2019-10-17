@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -36,7 +36,7 @@ import org.junit.runners.JUnit4;
 /** Tests for Automl translation datasets. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DatasetIT {
+public class TranslateDatasetManagementIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BUCKET = "gs://" + PROJECT_ID + "-vcm";
@@ -63,15 +63,15 @@ public class DatasetIT {
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
     String datasetName =
-        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+            String.format(
+                    "test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
 
     // Act
-    CreateDataset.createDataset(PROJECT_ID, datasetName);
+    TranslateCreateDataset.createDataset(PROJECT_ID, datasetName);
 
     // Assert
     String got = bout.toString();
     datasetId = got.split("Dataset id: ")[1].split("\n")[0];
-    assertThat(got).contains("Dataset id:");
 
     // Act
     ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/en-ja-short.csv");
@@ -120,10 +120,10 @@ public class DatasetIT {
     assertThat(got).contains("Dataset exported.");
 
     Page<Blob> blobs =
-        storage.list(
-                PROJECT_ID + "-vcm",
-            Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
+            storage.list(
+                    PROJECT_ID + "-vcm",
+                    Storage.BlobListOption.currentDirectory(),
+                    Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
 
     for (Blob blob : blobs.iterateAll()) {
       Page<Blob> fileBlobs =

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 // [START automl_translate_create_model]
 import com.google.api.gax.longrunning.OperationFuture;
@@ -27,7 +27,7 @@ import com.google.cloud.automl.v1.TranslationModelMetadata;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-class CreateModel {
+class TranslateCreateModel {
 
   // Create a model
   static void createModel(String projectId, String datasetId, String displayName) {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_get_model_evaluation]
+// [START automl_get_model_evaluation]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ModelEvaluation;
 import com.google.cloud.automl.v1.ModelEvaluationName;
@@ -56,4 +56,4 @@ class GetModelEvaluation {
     }
   }
 }
-// [END automl_translate_get_model_evaluation]
+// [END automl_get_model_evaluation]

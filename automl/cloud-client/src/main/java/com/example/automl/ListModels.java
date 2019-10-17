@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_list_model]
+// [START automl_list_models]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ListModelsRequest;
 import com.google.cloud.automl.v1.LocationName;
@@ -66,4 +66,4 @@ class ListModels {
     }
   }
 }
-// [END automl_translate_list_model]
+// [END automl_list_models]

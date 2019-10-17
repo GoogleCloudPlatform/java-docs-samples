@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 // [START automl_translate_predict]
 import com.google.cloud.automl.v1.ExamplePayload;
@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class Prediction {
+class TranslatePredict {
 
   // Predict
   static void predict(String projectId, String modelId, String filePath) {
