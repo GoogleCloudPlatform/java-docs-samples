@@ -39,7 +39,9 @@ mvn clean package
 ```
 
 ## Sample Types
-There are two types of samples: [Base and API Specific], the base samples make up a set of samples that have code that
+There are two types of samples: Base and API Specific
+
+The base samples make up a set of samples that have code that
 is identical or nearly identical for each AutoML Type. Meaning that for "Base" samples you can use them with any AutoML
 Type. However, for API Specific samples, there will be a unique sample for each AutoML type. See the below list for more info.
 
