@@ -19,46 +19,50 @@ package com.example.cloudrun;
 // [START run_broken_service]
 import static spark.Spark.get;
 import static spark.Spark.port;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App {
 
-	private static Logger logger = Logger.getLogger(App.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(App.class);
 
   public static void main(String[] args) {
     int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
     port(port);
 
-    get("/", (req, res) -> {
-			logger.info("Hello: received request.");
-			// [START run_broken_service_problem]
-			String name = System.getenv("NAME");
-			if (name == null) {
-				// Standard error logs do not appear in Stackdriver Error Reporting.
-				System.err.println("Environment validation failed.");
-				Exception e = new NullPointerException();
-				logger.log(Level.SEVERE, "Missing required server parameter");
-				res.status(500);
-				return "Internal Server Error";
-			}
-			// [END run_broken_service_problem]
-			res.status(200);
-			return String.format("Hello %s!", name);
-		});
+    get(
+        "/",
+        (req, res) -> {
+          logger.info("Hello: received request.");
+          // [START run_broken_service_problem]
+          String name = System.getenv("NAME");
+          if (name == null) {
+            // Standard error logs do not appear in Stackdriver Error Reporting.
+            System.err.println("Environment validation failed.");
+            String msg = "Missing required server parameter";
+            logger.error(msg, new Exception(msg));
+            res.status(500);
+            return "Internal Server Error";
+          }
+          // [END run_broken_service_problem]
+          res.status(200);
+          return String.format("Hello %s!", name);
+        });
 
-		get("/improved", (req, res) -> {
-			logger.info("Hello: received request.");
-			// [START run_broken_service_upgrade]
-			String name = System.getenv().getOrDefault("NAME", "World");
-			if (System.getenv("NAME") == null) {
-				logger.warning(String.format("NAME not set, default to %s", name));
-			}
-			// [END run_broken_service_upgrade]
-			res.status(200);
-			return String.format("Hello %s!", name);
-		});
+    get(
+        "/improved",
+        (req, res) -> {
+          logger.info("Hello: received request.");
+          // [START run_broken_service_upgrade]
+          String name = System.getenv().getOrDefault("NAME", "World");
+          if (System.getenv("NAME") == null) {
+            logger.warn(String.format("NAME not set, default to %s", name));
+          }
+          // [END run_broken_service_upgrade]
+          res.status(200);
+          return String.format("Hello %s!", name);
+        });
   }
 }
 // [END run_broken_service]

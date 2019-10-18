@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START run_broken_dockerfile]
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
 FROM maven:3.6.2-jdk-11-slim as builder
@@ -38,3 +39,4 @@ COPY --from=builder /app/target/hello-broken-*dependencies.jar /hello-broken.jar
 
 # Run the web service on container startup.
 CMD ["java","-jar","/hello-broken.jar"]
+# [END run_broken_dockerfile]
