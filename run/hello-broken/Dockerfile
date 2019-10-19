@@ -30,10 +30,6 @@ RUN mvn compile assembly:single
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM adoptopenjdk/openjdk11:alpine
 
-# [START run_system_package_alpine]
-RUN apk --no-cache add graphviz ttf-ubuntu-font-family
-# [END run_system_package_alpine]
-
 # Copy the jar to the production image from the builder stage.
 COPY --from=builder /app/target/hello-broken-*dependencies.jar /hello-broken.jar
 
