@@ -46,7 +46,7 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # Build the service
 set -x
-gcloud builds submit --tag="${CONTAINER_IMAGE}"
+gcloud builds submit --tag="${CONTAINER_IMAGE}" --quiet
 
 gcloud beta run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \

@@ -140,9 +140,8 @@ for file in **/pom.xml; do
 
     # Build and deploy Cloud Run samples
     if [[ "$file" == "run/"* ]]; then
-      sample=$(dirname "$file")
-      export SAMPLE_NAME=$sample
-      chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
+      export SAMPLE_NAME=${file#"run/"}
+      # chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
       "$SCRIPT_DIR"/build_cloud_run.sh
       EXIT=$?
 
