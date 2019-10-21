@@ -16,21 +16,26 @@
 
 package com.example.flexible.helloworld;
 
+import com.google.cloud.logging.TraceLoggingEnhancer;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @WebServlet(name = "helloworld", value = "")
 @SuppressWarnings("serial")
 public class HelloServlet extends HttpServlet {
+  private final Logger logger = LoggerFactory.getLogger(HelloServlet.class);
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     PrintWriter out = resp.getWriter();
+    // getting current traceId and logger is used for logging
+    logger.info(TraceLoggingEnhancer.getCurrentTraceId());
     out.println("Hello, world - App Engine Flexible");
   }
 }
