@@ -102,8 +102,8 @@ for file in **/pom.xml; do
     echo "------------------------------------------------------------"
 
     if [[ "$file" =~ "run" ]]; then
-      sample=$(firname "$file")
-      export SERVICE_NAME=$sample
+      sample=$(dirname "$file")
+      export SAMPLE_NAME=$sample
       build_cloud_run.sh;
       continue
     fi
