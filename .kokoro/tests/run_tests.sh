@@ -19,6 +19,8 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+mydir="${0%/*}"
+
 # `--debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -104,7 +106,7 @@ for file in **/pom.xml; do
     if [[ "$file" =~ "run" ]]; then
       sample=$(dirname "$file")
       export SAMPLE_NAME=$sample
-      tests/build_cloud_run.sh;
+      "$mydir"/build_cloud_run.sh;
       continue
     fi
 
