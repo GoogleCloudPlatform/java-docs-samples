@@ -19,6 +19,8 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # `--debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -70,7 +72,7 @@ fi
 # Package local jetty dependency for Java11 samples
 if [[ "$JAVA_VERSION" == "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
-  mvn install
+  mvn install --quiet
   cd ../../
 fi
 
@@ -100,6 +102,14 @@ for file in **/pom.xml; do
     echo "------------------------------------------------------------"
     echo "- testing $file"
     echo "------------------------------------------------------------"
+
+    if [[ "$file" =~ "run" ]]; then
+      sample=$(dirname "$file")
+      export SAMPLE_NAME=$sample
+      chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
+      "$SCRIPT_DIR"/build_cloud_run.sh
+      continue
+    fi
 
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
