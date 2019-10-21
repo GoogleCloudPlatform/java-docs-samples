@@ -15,6 +15,19 @@
 # limitations under the License.
 
 set -eo pipefail
+
+# Register post-test cleanup.
+# Only needed if deploy completed.
+function cleanup {
+  set -x
+  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
+  gcloud beta run services delete ${SERVICE_NAME} \
+    --platform=managed \
+    --region="${REGION:-us-central1}" \
+    --quiet
+}
+trap cleanup EXIT
+
 requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
 }
@@ -28,6 +41,8 @@ export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
+
+
 
 # Build the service
 set -x
@@ -49,17 +64,6 @@ echo
 echo '---'
 echo
 
-# Register post-test cleanup.
-# Only needed if deploy completed.
-function cleanup {
-  set -x
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
-  gcloud beta run services delete ${SERVICE_NAME} \
-    --platform=managed \
-    --region="${REGION:-us-central1}" \
-    --quiet
-}
-trap cleanup EXIT
 
 # Do not use exec to preserve trap behavior.
 "$@"
