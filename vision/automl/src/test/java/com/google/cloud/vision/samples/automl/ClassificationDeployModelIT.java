@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.google.cloud.vision.samples.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -24,17 +24,10 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-/** Tests for translation "PredictionAPI" sample. */
-@RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class PredictionApiIT {
-  private static final String COMPUTE_REGION = "us-central1";
-  private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String modelId = "TRL2188848820815848149";
-  private static final String filePath = "./resources/input.txt";
+public class ClassificationDeployModelIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String MODEL_ID = "ICN3125115511348658176";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -51,22 +44,28 @@ public class PredictionApiIT {
   }
 
   @Test
-  public void testPredict() throws Exception {
-    // Act
-    PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, modelId, filePath);
+  public void testClassificationDeployModelApi() {
+    ClassificationDeployModel.classificationDeployModel(PROJECT_ID, MODEL_ID);
 
-    // Assert
     String got = bout.toString();
-    assertThat(got).contains("Translated Content");
+    assertThat(got).contains("Model deployment finished");
+
+    ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
+
+    got = bout.toString();
+    assertThat(got).contains("Model undeploy finished");
   }
 
   @Test
-  public void testPrediction() {
-    // Act
-    Prediction.predict(PROJECT_ID, modelId, filePath);
+  public void testClassificationDeployModelNodeCountApi() {
+    ClassificationDeployModelNodeCount.classificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
 
-    // Assert
     String got = bout.toString();
-    assertThat(got).contains("Translated Content");
+    assertThat(got).contains("Model deployment on 2 nodes finished");
+
+    ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
+
+    got = bout.toString();
+    assertThat(got).contains("Model undeploy finished");
   }
 }
