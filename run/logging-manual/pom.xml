@@ -36,6 +36,7 @@ limitations under the License.
       <artifactId>spark-core</artifactId>
       <version>2.8.0</version>
     </dependency>
+    <!-- [START run_manual_logging_dep] -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -51,6 +52,7 @@ limitations under the License.
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
     </dependency>
+    <!-- [END run_manual_logging_dep] -->
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
@@ -60,12 +62,6 @@ limitations under the License.
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.stefanbirkner</groupId>
-      <artifactId>system-rules</artifactId>
-      <version>1.16.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

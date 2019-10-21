@@ -21,22 +21,21 @@ import static org.junit.Assert.assertTrue;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.stop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import spark.utils.IOUtils;
 
 public class AppTest {
 
-  private static final String brokenUrl = "/";
-  private static final String fixedUrl = "/improved";
-
-  @Rule public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
 
   @BeforeClass
   public static void beforeClass() {
@@ -50,37 +49,22 @@ public class AppTest {
     stop();
   }
 
-  @Test
-  public void brokenShouldFailOnAnyRequest() {
-    try {
-      TestResponse response = executeRequest("GET", brokenUrl);
-      assertEquals(true, response);
-    } catch (IOException e) {
-      assertTrue(e.getMessage().startsWith("Server returned HTTP response code: 500"));
-    }
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
   }
 
   @Test
-  public void fixShouldSucceedWithDefault() throws IOException {
-    TestResponse response = executeRequest("GET", fixedUrl);
+  public void shouldSucceed() throws IOException {
+    TestResponse response = executeRequest("GET", "/");
     assertEquals(200, response.status);
-    assertEquals("Hello World!", response.body);
-  }
-
-  @Test
-  public void brokenShouldSucceedWithName() throws IOException {
-    environmentVariables.set("NAME", "test");
-    TestResponse response = executeRequest("GET", brokenUrl);
-    assertEquals(200, response.status);
-    assertEquals("Hello test!", response.body);
-  }
-
-  @Test
-  public void fixShouldSucceedWithName() throws IOException {
-    environmentVariables.set("NAME", "test");
-    TestResponse response = executeRequest("GET", fixedUrl);
-    assertEquals(200, response.status);
-    assertEquals("Hello test!", response.body);
+    assertEquals("Hello Logger!", response.body);
+    String output = bout.toString();
+    assertTrue(output.toString().contains("This is the default display field."));
+    assertTrue(output.toString().contains("NOTICE"));
+    assertTrue(output.toString().contains("arbitrary-property"));
   }
 
   private static TestResponse executeRequest(String method, String path) throws IOException {
