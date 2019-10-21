@@ -19,29 +19,21 @@ package snippets.healthcare.dicom;
 // [START healthcare_dicomweb_search_studies]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
+import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collections;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClients;
 
 public class DicomWebSearchStudies {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void dicomWebSearchStudies(String dicomStoreName)
-      throws IOException, URISyntaxException {
+  public static void dicomWebSearchStudies(String dicomStoreName) throws IOException {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
@@ -49,38 +41,21 @@ public class DicomWebSearchStudies {
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
-    HttpClient httpClient = HttpClients.createDefault();
-    String uri =
-        String.format("%sv1beta1/%s/dicomWeb/studies", client.getRootUrl(), dicomStoreName);
-    URIBuilder uriBuilder =
-        new URIBuilder(uri)
-            .setParameter("access_token", getAccessToken())
+    DicomStores.SearchForStudies request =
+        client
+            .projects()
+            .locations()
+            .datasets()
+            .dicomStores()
+            .searchForStudies(dicomStoreName, "studies")
             // Refine your search by appending DICOM tags to the
             // request in the form of query parameters. This sample
             // searches for studies containing a patient's name.
-            .setParameter("PatientName", "Sally Zhang");
-
-    HttpUriRequest request =
-        RequestBuilder.get()
-            .setUri(uriBuilder.build())
-            .addHeader("Content-Type", "application/json")
-            .addHeader("Accept-Charset", "utf-8")
-            .build();
+            .set("PatientName", "Sally Zhang");
 
     // Execute the request and process the results.
-    // Execute the request and process the results.
-    HttpResponse response = httpClient.execute(request);
-    HttpEntity responseEntity = response.getEntity();
-    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      System.err.print(
-          String.format(
-              "Exception searching for studies using tags: %s\n",
-              response.getStatusLine().toString()));
-      responseEntity.writeTo(System.err);
-      throw new RuntimeException();
-    }
+    HttpResponse response = request.executeUnparsed();
     System.out.println("Studies found: \n" + response.toString());
-    responseEntity.writeTo(System.out);
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -102,14 +77,6 @@ public class DicomWebSearchStudies {
     return new CloudHealthcare.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
         .setApplicationName("your-application-name")
         .build();
-  }
-
-  private static String getAccessToken() throws IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
-            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    credential.refreshToken();
-    return credential.getAccessToken();
   }
 }
 // [END healthcare_dicomweb_search_studies]
