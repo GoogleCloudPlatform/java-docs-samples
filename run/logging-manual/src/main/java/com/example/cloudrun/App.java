@@ -41,10 +41,10 @@ public class App {
         "/",
         (req, res) -> {
           // [START run_manual_logging]
-          String traceHeader = req.headers("x-cloud-trace-context");
           // Build structured log messages as an object.
           Object globalLogFields = null;
           // Add log correlation to nest all log messages beneath request log in Log Viewer.
+          String traceHeader = req.headers("x-cloud-trace-context");
           if (traceHeader != null && project != null) {
             String trace = traceHeader.split("/")[0];
             globalLogFields =
