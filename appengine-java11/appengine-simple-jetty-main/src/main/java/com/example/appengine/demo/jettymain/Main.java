@@ -34,9 +34,6 @@ public class Main {
 
     // Create a basic Jetty server object that will listen on port defined by
     // the PORT environment variable when present, otherwise on 8080.
-    // Note: If you set this to port 0, a randomly available port will be
-    // assigned. You can find the assigned port in the logs or programmatically
-    // obtain it.
     int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
     Server server = new Server(port);
 
