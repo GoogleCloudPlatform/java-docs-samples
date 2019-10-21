@@ -35,7 +35,16 @@ gcloud builds submit --tag="${CONTAINER_IMAGE}"
 set +x
 
 echo '---'
-deploy_to_run.sh
+set -x
+gcloud beta run deploy "${SERVICE_NAME}" \
+  --image="${CONTAINER_IMAGE}" \
+  --region="${REGION:-us-central1}" \
+  --platform=managed \
+  --quiet
+
+echo 'Cloud Run Links:'
+echo "- Logs: https://console.cloud.google.com/logs/viewer?project=${GOOGLE_CLOUD_PROJECT}&resource=cloud_run_revision%2Fservice_name%2F${SERVICE_NAME}"
+echo "- Console: https://console.cloud.google.com/run/detail/${REGION:-us-central1}/${SERVICE_NAME}/metrics?project=${GOOGLE_CLOUD_PROJECT}"
 
 echo
 echo '---'
@@ -55,6 +64,6 @@ trap cleanup EXIT
 
 # TODO: Perform authentication inside the test.
 export ID_TOKEN=$(gcloud auth print-identity-token)
-export BASE_URL=$(run_url.sh)
+export BASE_URL=$(tests/run_url.sh)
 # Do not use exec to preserve trap behavior.
 "$@"
