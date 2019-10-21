@@ -65,7 +65,6 @@ public class App {
   }
 
   // Load the project ID from GCP metadata server.
-  // You can also use https://www.npmjs.com/package/gcp-metadata.
   public static String getProjectId() {
     OkHttpClient ok =
         new OkHttpClient.Builder()
