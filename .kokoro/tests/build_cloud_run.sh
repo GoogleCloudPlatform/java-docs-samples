@@ -42,11 +42,10 @@ SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
-
-
 # Build the service
 set -x
-gcloud builds submit --tag="${CONTAINER_IMAGE}" --quiet
+# TODO: quiet doesn't work for "gcloud build submit"
+gcloud builds submit --quiet --tag="${CONTAINER_IMAGE}" > /dev/null 2>&1 &
 
 gcloud beta run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
