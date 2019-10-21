@@ -44,6 +44,7 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging.
+    gcloud components install beta --quiet
     gcloud components update --quiet
     echo "********** GCLOUD INFO ***********"
     gcloud -v
@@ -103,14 +104,6 @@ for file in **/pom.xml; do
     echo "- testing $file"
     echo "------------------------------------------------------------"
 
-    if [[ "$file" =~ "run" ]]; then
-      sample=$(dirname "$file")
-      export SAMPLE_NAME=$sample
-      chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
-      "$SCRIPT_DIR"/build_cloud_run.sh
-      continue
-    fi
-
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
     if [[ "$POM_JAVA" = "" ]]; then
@@ -143,6 +136,22 @@ for file in **/pom.xml; do
       echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"
     else
       echo -e "\n Testing completed.\n"
+    fi
+
+    # Build and deploy Cloud Run samples
+    if [[ "$file" == "run/*" ]]; then
+      sample=$(dirname "$file")
+      export SAMPLE_NAME=$sample
+      chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
+      "$SCRIPT_DIR"/build_cloud_run.sh
+      EXIT=$?
+
+      if [[ $EXIT -ne 0 ]]; then
+        RTN=1
+        echo -e "\n Cloud Run build/deploy failed: gcloud returned a non-zero exit code. \n"
+      else
+        echo -e "\n Cloud Run build/deploy completed.\n"
+      fi
     fi
 
 done
