@@ -101,6 +101,13 @@ for file in **/pom.xml; do
     echo "- testing $file"
     echo "------------------------------------------------------------"
 
+    if [[ "$file" =~ "run" ]]; then
+      sample=$(firname "$file")
+      export SERVICE_NAME=$sample
+      build_cloud_run.sh;
+      continue
+    fi
+
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
     if [[ "$POM_JAVA" = "" ]]; then
