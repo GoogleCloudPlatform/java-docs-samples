@@ -72,7 +72,7 @@ fi
 
 # Package local jetty dependency for Java11 samples
 if [[ "$JAVA_VERSION" == "11" ]]; then
-  cd appengine-java11/appengine-simple-jetty-main/
+  cd appengine/java11/appengine-simple-jetty-main/
   mvn install --quiet
   cd ../../
 fi
