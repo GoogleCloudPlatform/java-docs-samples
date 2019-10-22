@@ -65,17 +65,6 @@ class TranslateCreateDataset {
       String[] names = createdDataset.getName().split("/");
       String datasetId = names[names.length - 1];
       System.out.format("Dataset id: %s\n", datasetId);
-      System.out.format("Dataset display name: %s\n", createdDataset.getDisplayName());
-      System.out.println("Translation dataset Metadata:");
-      System.out.format(
-          "\tSource language code: %s\n",
-          createdDataset.getTranslationDatasetMetadata().getSourceLanguageCode());
-      System.out.format(
-          "\tTarget language code: %s\n",
-          createdDataset.getTranslationDatasetMetadata().getTargetLanguageCode());
-      System.out.println("Dataset create time:");
-      System.out.format("\tseconds: %s\n", createdDataset.getCreateTime().getSeconds());
-      System.out.format("\tnanos: %s\n", createdDataset.getCreateTime().getNanos());
     } catch (IOException | InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
