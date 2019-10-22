@@ -61,7 +61,7 @@ application settings:
 ```
 runtime: java11
 instance_class: F1
-entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main helloworld.war'
+entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main helloworld.war'
 ```
 
 ## Running locally
