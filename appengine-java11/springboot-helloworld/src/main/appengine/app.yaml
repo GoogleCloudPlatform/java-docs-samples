@@ -14,7 +14,7 @@
 
 # [START gae_java11_helloworld_yaml]
 runtime: java11
-instance_class: F2
+instance_class: F1
 
 # Explicitly set the memory limit and maximum heap size for the Spring Boot app
 env_variables:
