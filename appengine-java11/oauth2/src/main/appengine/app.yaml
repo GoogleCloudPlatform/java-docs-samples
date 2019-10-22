@@ -14,7 +14,7 @@
 
 runtime: java11
 instance_class: F2
-entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main oauth2.war'
+entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main oauth2.war'
 
 # [START gae_java11_oauth2_yaml]
 env_variables:
