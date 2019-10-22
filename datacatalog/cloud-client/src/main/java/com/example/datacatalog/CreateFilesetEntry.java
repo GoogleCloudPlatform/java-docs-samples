@@ -109,7 +109,7 @@ public class CreateFilesetEntry {
                               .setType("STRING")
                               .setDescription("This columns consists of ....").build())
                       .addColumns(ColumnSchema.newBuilder()
-                              .setColumn("first_column")
+                              .setColumn("second_column")
                               .setType("STRING")
                               .setDescription("This columns consists of ....").build())
                       .build())
