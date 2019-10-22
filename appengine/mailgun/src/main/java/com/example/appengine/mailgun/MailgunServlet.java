@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.example.appengine.mailgun;
 
@@ -58,13 +59,13 @@ public class MailgunServlet extends HttpServlet {
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
-    WebResource webResource = client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME
-        + "/messages");
     MultivaluedMapImpl formData = new MultivaluedMapImpl();
     formData.add("from", "Mailgun User <mailgun@" + MAILGUN_DOMAIN_NAME + ">");
     formData.add("to", recipient);
     formData.add("subject", "Simple Mailgun Example");
     formData.add("text", "Plaintext content");
+    WebResource webResource = client.resource(
+        "https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     return webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class,
         formData);
   }
@@ -74,8 +75,6 @@ public class MailgunServlet extends HttpServlet {
   private ClientResponse sendComplexMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
-    WebResource webResource = client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME
-        + "/messages");
     FormDataMultiPart formData = new FormDataMultiPart();
     formData.field("from", "Mailgun User <mailgun@" + MAILGUN_DOMAIN_NAME + ">");
     formData.field("to", recipient);
@@ -84,6 +83,8 @@ public class MailgunServlet extends HttpServlet {
     ClassLoader classLoader = getClass().getClassLoader();
     File txtFile = new File(classLoader.getResource("example-attachment.txt").getFile());
     formData.bodyPart(new FileDataBodyPart("attachment", txtFile, MediaType.TEXT_PLAIN_TYPE));
+    WebResource webResource = client.resource(
+        "https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     return webResource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
         .post(ClientResponse.class, formData);
   }

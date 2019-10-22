@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
@@ -28,13 +28,12 @@ import com.google.appengine.api.datastore.ReadPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
 
 /**
  * Unit tests for {@link ReadPolicy}.
@@ -91,7 +90,7 @@ public class ReadPolicyTest {
     // should be no results.
     Query q = new Query("Person").setAncestor(parent.getKey());
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").isEmpty();
+    assertWithMessage("query results").that(results).isEmpty();
   }
 
   @Test
@@ -108,6 +107,6 @@ public class ReadPolicyTest {
 
     Query q = new Query("Person").setAncestor(parent.getKey());
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    assertThat(results).named("query results").hasSize(2);
+    assertWithMessage("query results").that(results).hasSize(2);
   }
 }

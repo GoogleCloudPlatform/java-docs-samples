@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javax.servlet.ServletContext;
 
 /**
  * The datastore-persisted Game object. This holds the entire game state - from a representation of
  * the board, to the players are and whose turn it is, and who the winner is and how they won.
- *
  * It also contains some convenience functions for communicating updates to the board to the
  * clients, via Firebase.
  */
@@ -109,26 +109,26 @@ public class Game {
     return userId + id;
   }
 
-  public void deleteChannel(String userId)
+  public void deleteChannel(ServletContext servletContext, String userId)
       throws IOException {
     if (userId != null) {
       String channelKey = getChannelKey(userId);
-      FirebaseChannel.getInstance().sendFirebaseMessage(channelKey, null);
+      FirebaseChannel.getInstance(servletContext).sendFirebaseMessage(channelKey, null);
     }
   }
 
-  private void sendUpdateToUser(String userId)
+  private void sendUpdateToUser(ServletContext servletContext, String userId)
       throws IOException {
     if (userId != null) {
       String channelKey = getChannelKey(userId);
-      FirebaseChannel.getInstance().sendFirebaseMessage(channelKey, this);
+      FirebaseChannel.getInstance(servletContext).sendFirebaseMessage(channelKey, this);
     }
   }
 
-  public void sendUpdateToClients()
+  public void sendUpdateToClients(ServletContext servletContext)
       throws IOException {
-    sendUpdateToUser(userX);
-    sendUpdateToUser(userO);
+    sendUpdateToUser(servletContext, userX);
+    sendUpdateToUser(servletContext, userO);
   }
   // [END send_updates]
 
@@ -152,7 +152,7 @@ public class Game {
     }
   }
 
-  public boolean makeMove(int position, String userId) {
+  public boolean makeMove(ServletContext servletContext, int position, String userId) {
     String currentMovePlayer;
     char value;
     if (getMoveX()) {
@@ -170,7 +170,7 @@ public class Game {
       checkWin();
       setMoveX(!getMoveX());
       try {
-        sendUpdateToClients();
+        sendUpdateToClients(servletContext);
       } catch (IOException e) {
         LOGGER.log(Level.SEVERE, "Error sending Game update to Firebase", e);
         throw new RuntimeException(e);

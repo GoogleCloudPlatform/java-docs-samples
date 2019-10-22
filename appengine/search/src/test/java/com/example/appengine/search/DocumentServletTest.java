@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,20 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.search.Document;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class DocumentServletTest {
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
@@ -61,17 +60,17 @@ public class DocumentServletTest {
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String content = responseWriter.toString();
-    assertThat(content)
-        .named("DocumentServlet response: coverLetter")
+    assertWithMessage("DocumentServlet response: coverLetter")
+        .that(content)
         .contains("coverLetter: CoverLetter");
-    assertThat(content)
-        .named("DocumentServlet response: resume")
+    assertWithMessage("DocumentServlet response: resume")
+        .that(content)
         .contains("resume: <html></html>");
-    assertThat(content)
-        .named("DocumentServlet response: fullName")
+    assertWithMessage("DocumentServlet response: fullName")
+        .that(content)
         .contains("fullName: Foo Bar");
-    assertThat(content)
-        .named("DocumentServlet response: submissionDate")
+    assertWithMessage("DocumentServlet response: submissionDate")
+        .that(content)
         .contains("submissionDate: ");
   }
 
@@ -83,11 +82,11 @@ public class DocumentServletTest {
     helper.setEnvAuthDomain(authDomain);
     helper.setEnvIsLoggedIn(true);
     Document doc = servletUnderTest.createDocument();
-    assertThat(doc.getOnlyField("content").getText())
-        .named("content")
+    assertWithMessage("content")
+        .that(doc.getOnlyField("content").getText())
         .contains("the rain in spain");
-    assertThat(doc.getOnlyField("email").getText())
-        .named("email")
+    assertWithMessage("email")
+        .that(doc.getOnlyField("email").getText())
         .isEqualTo(email);
   }
 
@@ -95,11 +94,11 @@ public class DocumentServletTest {
   public void createDocument_withoutSignedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
     Document doc = servletUnderTest.createDocument();
-    assertThat(doc.getOnlyField("content").getText())
-        .named("content")
+    assertWithMessage("content")
+        .that(doc.getOnlyField("content").getText())
         .contains("the rain in spain");
-    assertThat(doc.getOnlyField("email").getText())
-        .named("email")
+    assertWithMessage("email")
+        .that(doc.getOnlyField("email").getText())
         .isEmpty();
   }
 }

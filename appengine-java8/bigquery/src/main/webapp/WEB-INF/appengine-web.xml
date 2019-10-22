@@ -1,0 +1,5 @@
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+  <threadsafe>true</threadsafe>
+  <runtime>java8</runtime>
+  <application>dzlier-work</application>
+</appengine-web-app>

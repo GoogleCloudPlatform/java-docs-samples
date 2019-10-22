@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,16 @@
 
 package com.google.cloud.vision.samples.facedetect;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.services.vision.v1.model.BoundingPoly;
 import com.google.api.services.vision.v1.model.FaceAnnotation;
 import com.google.api.services.vision.v1.model.Vertex;
 import com.google.common.collect.ImmutableList;
-
+import java.awt.image.BufferedImage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.awt.image.BufferedImage;
 
 /**
  * Unit tests for {@link FaceDetectApp}.
@@ -57,26 +55,26 @@ public class FaceDetectAppTest {
     FaceDetectApp.annotateWithFaces(img, faces);
 
     // Assert
-    assertThat(img.getRGB(10, 5) & 0x00ff00)
-        .named("img face #1 vertex (10, 5) green channel")
+    assertWithMessage("img face #1 vertex (10, 5) green channel")
+        .that(img.getRGB(10, 5) & 0x00ff00)
         .isEqualTo(0x00ff00);
-    assertThat(img.getRGB(20, 5) & 0x00ff00)
-        .named("img face #1 vertex (20, 5) green channel")
+    assertWithMessage("img face #1 vertex (20, 5) green channel")
+        .that(img.getRGB(20, 5) & 0x00ff00)
         .isEqualTo(0x00ff00);
-    assertThat(img.getRGB(20, 25) & 0x00ff00)
-        .named("img face #1 vertex (20, 25) green channel")
+    assertWithMessage("img face #1 vertex (20, 25) green channel")
+        .that(img.getRGB(20, 25) & 0x00ff00)
         .isEqualTo(0x00ff00);
-    assertThat(img.getRGB(10, 25) & 0x00ff00)
-        .named("img face #1 vertex (10, 25) green channel")
+    assertWithMessage("img face #1 vertex (10, 25) green channel")
+        .that(img.getRGB(10, 25) & 0x00ff00)
         .isEqualTo(0x00ff00);
-    assertThat(img.getRGB(60, 50) & 0x00ff00)
-        .named("img face #2 vertex (60, 50) green channel")
+    assertWithMessage("img face #2 vertex (60, 50) green channel")
+        .that(img.getRGB(60, 50) & 0x00ff00)
         .isEqualTo(0x00ff00);
-    assertThat(img.getRGB(70, 60) & 0x00ff00)
-        .named("img face #2 vertex (70, 60) green channel")
+    assertWithMessage("img face #2 vertex (70, 60) green channel")
+        .that(img.getRGB(70, 60) & 0x00ff00)
         .isEqualTo(0x00ff00);
-    assertThat(img.getRGB(50, 60) & 0x00ff00)
-        .named("img face #2 vertex (50, 60) green channel")
+    assertWithMessage("img face #2 vertex (50, 60) green channel")
+        .that(img.getRGB(50, 60) & 0x00ff00)
         .isEqualTo(0x00ff00);
   }
 }

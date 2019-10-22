@@ -1,5 +1,5 @@
 <!--
-  Copyright 2017 Google Inc. All Rights Reserved.
+  Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@
   <artifactId>vision-google-cloud-samples</artifactId>
   <packaging>jar</packaging>
 
-  <!-- Parent defines config for testing & linting. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -34,43 +36,91 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START vision_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-      <version>0.8.1-alpha</version>
+      <version>1.83.0</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>1.83.0</version>
+    </dependency>
+    <!-- [END vision_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
+  <profiles>
+    <profile>
+      <id>Detect</id>
+      <activation>
+        <property>
+          <name>Detect</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
               <mainClass>com.example.vision.Detect</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>QuickstartSample</id>
+      <activation>
+        <property>
+          <name>QuickstartSample</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.example.vision.QuickstartSample</mainClass>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

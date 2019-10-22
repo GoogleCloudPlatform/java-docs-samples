@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.example.time.testing.FakeClock;
-
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,12 +33,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link ProjectionServlet}.
@@ -72,8 +69,8 @@ public class ProjectionServletTest {
   public void doGet_emptyDatastore_writesNoGreetings() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
-    assertThat(responseWriter.toString())
-        .named("ProjectionServlet response")
+    assertWithMessage("ProjectionServlet response")
+        .that(responseWriter.toString())
         .doesNotContain("Message");
   }
 
@@ -91,14 +88,14 @@ public class ProjectionServletTest {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String output = responseWriter.toString();
 
-    assertThat(output)
-        .named("ProjectionServlet response")
+    assertWithMessage("ProjectionServlet response")
+        .that(output)
         .contains("Message Hello.");
-    assertThat(output)
-        .named("ProjectionServlet response")
+    assertWithMessage("ProjectionServlet response")
+        .that(output)
         .contains("Message Güten Tag!");
-    assertThat(output)
-        .named("ProjectionServlet response")
+    assertWithMessage("ProjectionServlet response")
+        .that(output)
         .contains("Message Hola.");
   }
 }

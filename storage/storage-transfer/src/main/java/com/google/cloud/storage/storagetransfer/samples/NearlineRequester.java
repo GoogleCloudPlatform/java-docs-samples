@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 // [START all]
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
@@ -25,7 +27,6 @@ import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import com.google.api.services.storagetransfer.v1.model.TransferOptions;
 import com.google.api.services.storagetransfer.v1.model.TransferSpec;
-
 import java.io.IOException;
 import java.io.PrintStream;
 

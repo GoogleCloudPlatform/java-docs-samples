@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2015 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+  <servlet>
+    <servlet-name>mail</servlet-name>
+    <servlet-class>com.example.appengine.mail.MailServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mail</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <!-- [START filter_handler] -->
+  <filter>
+    <filter-name>HandleDiscussionEmail</filter-name>
+    <filter-class>com.example.appengine.mail.HandleDiscussionEmail</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HandleDiscussionEmail</filter-name>
+    <url-pattern>/_ah/mail/*</url-pattern>
+  </filter-mapping>
+  <!-- [END filter_handler] -->
+
+  <!-- Uncomment the following lines to use the basic MailHandlerServet
+  instead of the filter. -->
+  <!-- [START incoming_mail_servlet]
+  <servlet>
+    <servlet-name>mailhandler</servlet-name>
+    <servlet-class>com.example.appengine.mail.MailHandlerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mailhandler</servlet-name>
+    <url-pattern>/_ah/mail/*</url-pattern>
+  </servlet-mapping>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>mail</web-resource-name>
+      <url-pattern>/_ah/mail/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  [END incoming_mail_servlet] -->
+
+  <!-- [START bounced_mail_servlet] -->
+  <servlet>
+    <servlet-name>bouncehandler</servlet-name>
+    <servlet-class>com.example.appengine.mail.BounceHandlerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>bouncehandler</servlet-name>
+    <url-pattern>/_ah/bounce</url-pattern>
+  </servlet-mapping>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>bounce</web-resource-name>
+      <url-pattern>/_ah/bounce</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <!-- [END bounced_mail_servlet] -->
+</web-app>

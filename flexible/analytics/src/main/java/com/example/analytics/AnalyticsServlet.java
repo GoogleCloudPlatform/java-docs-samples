@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,34 @@
 
 package com.example.analytics;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 
-// [START example]
+// [START gae_flex_analytics_track_event]
 @SuppressWarnings("serial")
 @WebServlet(name = "analytics", value = "")
 public class AnalyticsServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     String trackingId = System.getenv("GA_TRACKING_ID");
     HttpClient client = HttpClientBuilder.create().build();
     URIBuilder builder = new URIBuilder();
-    builder.setScheme("http").setHost("www.google-analytics.com").setPath("/collect")
+    builder
+        .setScheme("http")
+        .setHost("www.google-analytics.com")
+        .setPath("/collect")
         .addParameter("v", "1") // API Version.
         .addParameter("tid", trackingId) // Tracking ID / Property ID.
         // Anonymous Client Identifier. Ideally, this should be a UUID that
@@ -62,4 +63,4 @@ public class AnalyticsServlet extends HttpServlet {
     resp.getWriter().println("Event tracked.");
   }
 }
-// [END example]
+// [END gae_flex_analytics_track_event]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package com.google.appengine.demos.asyncrest;
 
-import org.eclipse.jetty.util.ajax.JSON;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,10 +25,10 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.util.ajax.JSON;
 
 /**
  * Servlet which makes REST calls serially.
@@ -41,8 +39,10 @@ import javax.servlet.http.HttpServletResponse;
  * <dd>The Google app key to use</dd>
  * </dl>
  */
+
 public class SerialRestServlet extends AbstractRestServlet {
 
+  //CHECKSTYLE OFF: VariableDeclarationUsageDistance
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -50,7 +50,9 @@ public class SerialRestServlet extends AbstractRestServlet {
       response.sendError(500, APPKEY + " not set");
       return;
     }
+
     long start = System.nanoTime();
+
 
     String loc = sanitize(request.getParameter(LOC_PARAM));
     String lat = sanitize(request.getParameter(LATITUDE_PARAM));
@@ -118,6 +120,7 @@ public class SerialRestServlet extends AbstractRestServlet {
     out.println("</body></html>");
     out.close();
   }
+  //CHECKSTYLE ON: VariableDeclarationUsageDistance
 
   /**
    * Handle HTTP POST request.

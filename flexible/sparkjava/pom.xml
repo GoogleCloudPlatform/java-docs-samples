@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2016 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,18 +22,21 @@
   <artifactId>spark</artifactId>
   <version>1.0</version>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
+    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
     <app.stage.artifact>${project.build.directory}/spark-1.0-jar-with-dependencies.jar</app.stage.artifact>
   </properties>
 
@@ -26,32 +44,31 @@
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.5</version>
+      <version>2.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.21</version>
+      <version>1.8.0-alpha2</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.7</version>
+      <version>2.8.5</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>0.8.1-beta</version>
+      <version>1.83.0</version>
     </dependency>
   </dependencies>
   <build>
     <plugins>
-<!-- // [START assembly] -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -73,9 +90,7 @@
           </archive>
         </configuration>
       </plugin>
-<!-- // [END assembly] -->
 
-<!-- // [START exec] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -88,7 +103,6 @@
           </arguments>
         </configuration>
       </plugin>
-<!-- // [END exec] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>

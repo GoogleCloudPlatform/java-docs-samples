@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class DeleteServletTest {
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
@@ -59,8 +58,8 @@ public class DeleteServletTest {
   @Test
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
-    assertThat(responseWriter.toString())
-        .named("DeleteServlet response")
+    assertWithMessage("DeleteServlet response")
+        .that(responseWriter.toString())
         .contains("Deleted documents.");
   }
 }

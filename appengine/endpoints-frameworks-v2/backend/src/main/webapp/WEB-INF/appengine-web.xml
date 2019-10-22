@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  limitations under the License.
 -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>${endpoints.project.id}</application>
-    <version>1</version>
     <threadsafe>true</threadsafe>
 
     <basic-scaling>
@@ -27,7 +25,9 @@
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
 
-   <env-variables>
-        <env-var name="ENDPOINTS_SERVICE_NAME" value="echo-api.endpoints.${endpoints.project.id}.cloud.goog" />
+    <!-- [START env_variables] -->
+    <env-variables>
+        <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />
     </env-variables>
+    <!-- [END env_variables] -->
 </appengine-web-app>

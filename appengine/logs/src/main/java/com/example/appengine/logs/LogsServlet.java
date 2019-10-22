@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc. All Rights Reserved.
+/* Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,22 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START logs_API_example]
+
 package com.example.appengine.logs;
 
 import com.google.appengine.api.log.AppLogLine;
 import com.google.appengine.api.log.LogQuery;
 import com.google.appengine.api.log.LogServiceFactory;
 import com.google.appengine.api.log.RequestLogs;
-
-import org.joda.time.DateTime;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.joda.time.DateTime;
 
 
 // Get request logs along with their app log lines and display them 5 at
@@ -93,5 +90,3 @@ public class LogsServlet extends HttpServlet {
     writer.println(String.format("<br><a href=\"/?offset=%s\">Next</a>", lastOffset));
   }
 }
-// [END logs_API_example]
-

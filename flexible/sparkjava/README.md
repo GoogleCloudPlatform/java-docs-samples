@@ -1,5 +1,8 @@
 # SparkJava on App Engine Flexible Environment
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/sparkjava/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This app demonstrates how to use [Datastore with the Google Cloud client
 library](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-datastore)
 from within an [App Engine flexible
@@ -24,7 +27,7 @@ Setup
 
 2. Set up the local development environment by [installing the Google Cloud
    SDK](https://cloud.google.com/sdk/) and running the following commands in
-   command line: `gcloud auth login` and `gcloud config set project [YOUR
+   command line: `gcloud auth application-default login` and `gcloud config set project [YOUR
    PROJECT ID]`.
 
 3. Ensure that you have Maven installed and configured to use Java 8. See

@@ -1,16 +1,19 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.guestbook;
 
 import static com.example.guestbook.Persistence.getDatastore;
@@ -40,8 +43,7 @@ public class Guestbook {
 
   public Guestbook(String book) {
     this.book = book == null ? "default" : book;
-    key =
-        keyFactory.newKey(
+    key = keyFactory.newKey(
             this.book); // There is a 1:1 mapping between Guestbook names and Guestbook objects
   }
 
@@ -52,11 +54,11 @@ public class Guestbook {
   public List<Greeting> getGreetings() {
     // This query requires the index defined in index.yaml to work because of the orderBy on date.
     EntityQuery query =
-        Query.newEntityQueryBuilder()
-            .setKind("Greeting")
-            .setFilter(hasAncestor(key))
-            .setOrderBy(desc("date"))
-            .setLimit(5)
+        Query.entityQueryBuilder()
+            .kind("Greeting")
+            .filter(hasAncestor(key))
+            .orderBy(desc("date"))
+            .limit(5)
             .build();
 
     QueryResults<Entity> results = getDatastore().run(query);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,7 @@
 package com.example.appengine.appidentity;
 
 import com.google.apphosting.api.ApiProxy;
-
 import java.io.IOException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class IdentityServlet extends HttpServlet {
 
-  // [START versioned_hostnames]
+  // [START gae_java_app_identity_versioned_hostnames]
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
@@ -36,5 +34,5 @@ public class IdentityServlet extends HttpServlet {
     resp.getWriter()
         .println(env.getAttributes().get("com.google.appengine.runtime.default_version_hostname"));
   }
-  // [END versioned_hostnames]
+  // [END gae_java_app_identity_versioned_hostnames]
 }

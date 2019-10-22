@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,6 @@ package com.example.appengine.appidentity;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.io.CharStreams;
-
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,10 +26,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 @SuppressWarnings("serial")
 class UrlShortener {
-  // [START asserting_identity_to_Google_APIs]
+  // [START gae_java_app_identity_google_apis]
   /**
    * Returns a shortened URL by calling the Google URL Shortener API.
    *
@@ -76,5 +74,5 @@ class UrlShortener {
       }
     }
   }
-  // [END asserting_identity_to_Google_APIs]
+  // [END gae_java_app_identity_google_apis]
 }

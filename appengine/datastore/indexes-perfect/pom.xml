@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,18 +20,26 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-datastore-indexes-perfect</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
+
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.76</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -44,7 +52,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -56,25 +64,25 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.76</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.76</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.76</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -83,11 +91,10 @@
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <!-- Parent POM defines ${appengine.sdk.version} (updates frequently). -->
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
+        <version>1.9.59</version>
       </plugin>
     </plugins>
   </build>

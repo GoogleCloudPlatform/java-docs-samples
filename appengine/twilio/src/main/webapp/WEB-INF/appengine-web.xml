@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc. All Rights Reserved.
+  Copyright 2015 Google Inc.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -11,7 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- [START config] -->
+<!-- [START gae_twilio_config] -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <application>YOUR-PROJECT-ID</application>
   <version>YOUR-VERSION-ID</version>
@@ -22,4 +22,4 @@
     <env-var name="TWILIO_NUMBER" value="YOUR-TWILIO-NUMBER" />
   </env-variables>
 </appengine-web-app>
-<!-- [END config] -->
+<!-- [END gae_twilio_config] -->

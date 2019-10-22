@@ -1,9 +1,11 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +15,6 @@
  */
 
 package com.example.appengine;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class UrlFetchServlet extends HttpServlet {
@@ -35,7 +36,7 @@ public class UrlFetchServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
 
-// [START example]
+    // [START example]
     URL url = new URL("http://api.icndb.com/jokes/random");
     BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
     StringBuffer json = new StringBuffer();
@@ -45,7 +46,7 @@ public class UrlFetchServlet extends HttpServlet {
       json.append(line);
     }
     reader.close();
-// [END example]
+    // [END example]
     JSONObject jo = new JSONObject(json.toString());
 
     req.setAttribute("joke", jo.getJSONObject("value").getString("joke"));

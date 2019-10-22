@@ -4,4 +4,3 @@ env: flex
 handlers:
 - url: /.*
   script: this field is required, but ignored
-  secure: always

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,18 @@
 package com.google.cloud.vision.samples.label;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.common.collect.ImmutableSet;
-
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link LabelApp}.
@@ -51,11 +50,11 @@ public class LabelAppIT {
 
     ImmutableSet.Builder<String> builder = ImmutableSet.builder();
     for (EntityAnnotation label : labels) {
-      builder.add(label.getDescription());
+      builder.add(label.getDescription().toLowerCase());
     }
     ImmutableSet<String> descriptions = builder.build();
 
-    assertThat(descriptions).named("cat.jpg labels").contains("cat");
+    assertWithMessage("cat.jpg labels").that(descriptions).contains("cat");
   }
 
   @Test public void labelImage_badImage_throwsException() throws Exception {

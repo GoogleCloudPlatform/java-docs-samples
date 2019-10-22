@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,26 @@ package com.example.appengine.search;
 
 // @formatter:off
 // [START search_document_import]
+
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
+import com.google.appengine.api.search.Index;
+import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.Results;
 import com.google.appengine.api.search.ScoredDocument;
 import com.google.appengine.api.search.SearchException;
-import com.google.appengine.api.search.StatusCode;
-// [END search_document_import]
-
-// CHECKSTYLE:OFF
-import com.google.appengine.api.search.Index;
-import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.SearchServiceFactory;
-// @formatter:on
-// CHECKSTYLE:ON
-
+import com.google.appengine.api.search.StatusCode;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+// [END search_document_import]
+// CHECKSTYLE:OFF
+// @formatter:on
+// CHECKSTYLE:ON
 
 
 

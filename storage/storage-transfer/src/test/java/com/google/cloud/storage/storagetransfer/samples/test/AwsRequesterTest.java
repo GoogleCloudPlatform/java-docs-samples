@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,31 +19,31 @@ package com.google.cloud.storage.storagetransfer.samples.test;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.storage.storagetransfer.samples.AwsRequester;
-
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 @RunWith(JUnit4.class)
 public class AwsRequesterTest {
+
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   /**
    * Tests whether AwsRequester executes a request to create a TransferJob.
    */
   @Test
   public void testRun() throws Exception {
-    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-    PrintStream outStream = new PrintStream(outBytes);
-    System.setProperty("projectId", "cloud-samples-tests");
+    System.setProperty("projectId", PROJECT_ID);
     System.setProperty("jobDescription", "Sample transfer job from S3 to GCS.");
     System.setProperty("awsSourceBucket", "cloud-samples-tests");
-    System.setProperty("gcsSinkBucket", "cloud-samples-tests-storagetransfer");
+    System.setProperty("gcsSinkBucket", PROJECT_ID + "-storagetransfer");
     System.setProperty("startDate", "2000-01-01");
     System.setProperty("startTime", "00:00:00");
 
+    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+    PrintStream outStream = new PrintStream(outBytes);
     AwsRequester.run(outStream);
     String out = outBytes.toString();
 

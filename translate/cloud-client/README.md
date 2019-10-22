@@ -1,5 +1,8 @@
 # Getting Started with Google Translate API and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=translate/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Translate API][translate] provides a simple programmatic interface for translating an
 arbitrary string into any supported language.
 These sample Java applications demonstrate how to access the Google Translate API using

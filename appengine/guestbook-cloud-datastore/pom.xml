@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2016 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,17 +22,23 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
+  </parent>
+
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-guestbook-cloud-datastore</artifactId>
   <properties>
     <guava.version>19.0</guava.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
-  <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
-  </parent>
 
   <!-- [START set_versions] -->
   <prerequisites>
@@ -30,7 +51,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -72,19 +93,19 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

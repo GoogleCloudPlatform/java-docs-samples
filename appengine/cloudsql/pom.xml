@@ -1,5 +1,5 @@
 <!--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,14 +20,17 @@
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-cloudsql</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
-<!-- [START properties] -->
+  <!-- [START gae_java_mysql_properties] -->
   <properties>
 <!-- INSTANCE_CONNECTION_NAME from Cloud Console > SQL > Instance Details > Properties
      or gcloud sql instances describe <instance>
@@ -41,11 +44,11 @@
 
 <!-- [START_EXCLUDE] -->
     <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
 <!-- [END_EXCLUDE] -->
   </properties>
-<!-- [END properties] -->
+<!-- [END gae_java_mysql_properties] -->
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -58,33 +61,34 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.sdk.version}</version>
+      <version>1.9.76</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.22.0</version>
+      <version>1.30.2</version>
     </dependency>
 
 
-    <!-- [START dependencies] -->
+    <!-- [START gae_java_mysql_dependencies] -->
     <dependency> <!-- ONLY USED LOCALY -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.40</version>  <!-- v5.x.x is Java 7, v6.x.x is Java 8 -->
+      <version>5.1.40</version>  <!-- v5.x.x is for production, v6.x.x EAP X DevAPI -->
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.14</version>
     </dependency>
-    <!-- [END dependencies] -->
+    <!-- [END gae_java_mysql_dependencies] -->
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
+      <!-- [START gae_java_mysql_plugins] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -101,18 +105,16 @@
         </configuration>
       </plugin>
 
-<!--
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.maven.plugin}</version>
+        <version>1.3.1</version>
+        <configuration>
+          <deploy.promote>true</deploy.promote>
+          <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
+        </configuration>
       </plugin>
- -->
-      <plugin>
-        <groupId>com.google.appengine</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.sdk.version}</version>
-      </plugin>
+      <!-- [END gae_java_mysql_plugins] -->
     </plugins>
   </build>
 </project>

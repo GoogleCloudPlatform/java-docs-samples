@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import com.sendgrid.SendGridException;
 
 // [START example]
 public class SendEmailServlet {
-  final static String SENDGRID_API_KEY = "YOUR-SENDGRID-API-KEY";
-  final static String SENDGRID_SENDER = "YOUR-SENDGRID-FROM-EMAIL";
-  final static String TO_EMAIL = "DESTINATION-EMAIL";
+  static final String SENDGRID_API_KEY = "YOUR-SENDGRID-API-KEY";
+  static final String SENDGRID_SENDER = "YOUR-SENDGRID-FROM-EMAIL";
+  static final String TO_EMAIL = "DESTINATION-EMAIL";
 
   public static void main(String[] args) throws SendGridException {
 
@@ -36,7 +36,7 @@ public class SendEmailServlet {
 
     SendGrid.Response response = sendgrid.send(email);
     if (response.getCode() != 200) {
-      System.out.print(String.format("An error occured: %s", response.getMessage()));
+      System.out.print(String.format("An error occurred: %s", response.getMessage()));
       return;
     }
     System.out.print("Email sent.");

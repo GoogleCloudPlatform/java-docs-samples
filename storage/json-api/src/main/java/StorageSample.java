@@ -1,17 +1,20 @@
-//[START all]
 /*
- * Copyright (c) 2014 Google Inc.
+ * Copyright 2014 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+//[START all]
 
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.storage.Storage;
@@ -19,7 +22,6 @@ import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import com.google.api.services.storage.model.Objects;
 import com.google.api.services.storage.model.StorageObject;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -54,8 +56,8 @@ public class StorageSample {
     Storage.Objects.List listRequest = client.objects().list(bucketName);
 
     List<StorageObject> results = new ArrayList<StorageObject>();
-    Objects objects;
 
+    Objects objects;
     // Iterate through each page of results, and add them to our results list.
     do {
       objects = listRequest.execute();
@@ -164,7 +166,6 @@ public class StorageSample {
       for (StorageObject object : bucketContents) {
         System.out.println(object.getName() + " (" + object.getSize() + " bytes)");
       }
-
 
       // Create a temp file to upload
       Path tempPath = Files.createTempFile("StorageSample", "txt");

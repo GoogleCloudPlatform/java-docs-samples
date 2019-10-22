@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,18 +19,22 @@
   <artifactId>storage-xml-cmdline-sample</artifactId>
   <version>1</version>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
-    <project.http.version>1.22.0</project.http.version>
+    <project.http.version>1.30.2</project.http.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <codehaus-exec-maven-plugin>1.5.0</codehaus-exec-maven-plugin>
-    <maven-compiler-plugin-version>3.6.0</maven-compiler-plugin-version>
+    <codehaus-exec-maven-plugin>1.6.0</codehaus-exec-maven-plugin>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <build>
@@ -38,7 +42,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>${codehaus-exec-maven-plugin}</version>
+        <version>1.6.0</version>
         <executions>
           <execution>
             <goals>
@@ -53,7 +57,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin-version}</version>
+        <version>3.7.0</version>
         <configuration>
           <source>7</source>
           <target>7</target>
@@ -66,7 +70,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storage</artifactId>
-      <version>v1-rev92-1.22.0</version>
+      <version>v1-rev20190624-1.30.1</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -88,13 +92,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

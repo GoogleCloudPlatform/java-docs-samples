@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@
 // [START all]
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
-
-import org.junit.Test;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.Test;
 
 public class StorageSampleTest {
-  private static final String BUCKET = "cloud-samples-test";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String BUCKET = PROJECT_ID;
   private static final String TEST_OBJECT = "storage-sample-test-upload.txt";
 
   @Test
@@ -42,8 +42,8 @@ public class StorageSampleTest {
   @Test
   public void testGetBucket() throws Exception {
     Bucket bucket = StorageSample.getBucket(BUCKET);
-    assertThat(bucket.getName()).named("bucket name").isEqualTo(BUCKET);
-    assertThat(bucket.getLocation()).named("bucket location").isEqualTo("US-CENTRAL1");
+    assertWithMessage("bucket name").that(bucket.getName()).isEqualTo(BUCKET);
+    assertWithMessage("bucket location").that(bucket.getLocation()).startsWith("US");
   }
 
   @Test
@@ -61,14 +61,14 @@ public class StorageSampleTest {
       // Verify that the object was created
       List<StorageObject> listing = StorageSample.listBucket(BUCKET);
       List<String> names = listing.stream().map(so -> so.getName()).collect(Collectors.toList());
-      assertThat(names).named("objects found after upload").contains(TEST_OBJECT);
+      assertWithMessage("objects found after upload").that(names).contains(TEST_OBJECT);
     } finally {
       StorageSample.deleteObject(TEST_OBJECT, BUCKET);
 
       // Verify that the object no longer exists
       List<StorageObject> listing = StorageSample.listBucket(BUCKET);
       List<String> names = listing.stream().map(so -> so.getName()).collect(Collectors.toList());
-      assertThat(names).named("objects found after delete").doesNotContain(TEST_OBJECT);
+      assertWithMessage("objects found after delete").that(names).doesNotContain(TEST_OBJECT);
     }
   }
 }

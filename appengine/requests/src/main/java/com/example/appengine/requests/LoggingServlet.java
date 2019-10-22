@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc. All Rights Reserved.
+/* Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.appengine.requests;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START simple_logging_example]
+// [START gae_java_logging_example]
 public class LoggingServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(LoggingServlet.class.getName());
 
@@ -36,6 +36,5 @@ public class LoggingServlet extends HttpServlet {
     resp.getWriter().println("Check logs for results");
     // [END_EXCLUDE]
   }
-} 
-// [END simple_logging_example]
-
+}
+// [END gae_java_logging_example]

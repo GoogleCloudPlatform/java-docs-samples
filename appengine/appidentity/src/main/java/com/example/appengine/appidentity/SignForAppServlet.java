@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.example.appengine.appidentity;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.appidentity.PublicCertificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +33,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Collection;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +45,7 @@ public class SignForAppServlet extends HttpServlet {
     appIdentity = AppIdentityServiceFactory.getAppIdentityService();
   }
 
-  // [START asserting_identity_to_other_services]
+  // [START gae_java_app_identity_other_services]
   // Note that the algorithm used by AppIdentity.signForApp() and
   // getPublicCertificatesForApp() is "SHA256withRSA"
 
@@ -98,7 +96,7 @@ public class SignForAppServlet extends HttpServlet {
         Arrays.toString(blobSignature),
         Arrays.toString(publicCert));
   }
-  // [END asserting_identity_to_other_services]
+  // [END gae_java_app_identity_other_services]
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.model.RewriteResponse;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -75,16 +74,17 @@ class CustomerSuppliedEncryptionKeysSamples {
       String base64CseKey,
       String base64CseKeyHash)
       throws Exception {
-    Storage.Objects.Get getObject = storage.objects().get(bucketName, objectName);
 
-    // If you're using AppEngine, turn off setDirectDownloadEnabled:
-    //      getObject.getMediaHttpDownloader().setDirectDownloadEnabled(false);
-
-    // Now set the CSEK headers
+    // Set the CSEK headers
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
     httpHeaders.set("x-goog-encryption-key", base64CseKey);
     httpHeaders.set("x-goog-encryption-key-sha256", base64CseKeyHash);
+
+    Storage.Objects.Get getObject = storage.objects().get(bucketName, objectName);
+
+    // If you're using AppEngine, turn off setDirectDownloadEnabled:
+    //      getObject.getMediaHttpDownloader().setDirectDownloadEnabled(false);
 
     getObject.setRequestHeaders(httpHeaders);
 
@@ -166,10 +166,8 @@ class CustomerSuppliedEncryptionKeysSamples {
       String newBase64Key,
       String newBase64KeyHash)
       throws Exception {
-    Storage.Objects.Rewrite rewriteObject =
-        storage.objects().rewrite(bucketName, objectName, bucketName, objectName, null);
 
-    // Now set the CSEK headers
+    // Set the CSEK headers
     final HttpHeaders httpHeaders = new HttpHeaders();
 
     // Specify the exiting object's current CSEK.
@@ -181,6 +179,9 @@ class CustomerSuppliedEncryptionKeysSamples {
     httpHeaders.set("x-goog-encryption-algorithm", "AES256");
     httpHeaders.set("x-goog-encryption-key", newBase64Key);
     httpHeaders.set("x-goog-encryption-key-sha256", newBase64KeyHash);
+
+    Storage.Objects.Rewrite rewriteObject =
+        storage.objects().rewrite(bucketName, objectName, bucketName, objectName, null);
 
     rewriteObject.setRequestHeaders(httpHeaders);
 

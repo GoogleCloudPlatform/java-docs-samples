@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,20 +20,18 @@
   <groupId>com.example.compute</groupId>
   <artifactId>compute-error-reporting</artifactId>
 
-  <!-- TODO: Use common parent after fixing checkstyle errors.
-       https://github.com/GoogleCloudPlatform/java-docs-samples/issues/298
-  <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
-  </parent>
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
   -->
-
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
+  </parent>
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven-assembly-plugin-version>3.0.0</maven-assembly-plugin-version>
   </properties>
 
   <dependencies>
@@ -41,7 +39,7 @@
     <dependency>
       <groupId>org.fluentd</groupId>
       <artifactId>fluent-logger</artifactId>
-      <version>0.3.2</version>
+      <version>0.3.4</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
@@ -49,7 +47,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven-assembly-plugin-version}</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>package</phase>

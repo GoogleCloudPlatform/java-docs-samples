@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,9 @@ package com.example.appengine;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
-import org.joda.time.Instant;
-
 import java.util.Date;
-
 import javax.annotation.Nullable;
+import org.joda.time.Instant;
 
 @AutoValue
 public abstract class Greeting {

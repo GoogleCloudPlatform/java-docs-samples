@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 @WebServlet(name = "fortune", value = "")
 public class FortuneServlet extends HttpServlet {
@@ -63,4 +62,3 @@ public class FortuneServlet extends HttpServlet {
     return fortune;
   }
 }
-// [END example]

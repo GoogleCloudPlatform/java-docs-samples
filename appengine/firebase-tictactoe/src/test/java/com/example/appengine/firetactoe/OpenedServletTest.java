@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,11 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,13 +49,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link OpenedServlet}.
@@ -96,11 +96,11 @@ public class OpenedServletTest {
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
-    servletUnderTest = new OpenedServlet();
+    servletUnderTest = spy(new OpenedServlet());
 
     helper.setEnvIsLoggedIn(true);
     // Make sure there are no firebase requests if we don't expect it
-    FirebaseChannel.getInstance().httpTransport = null;
+    FirebaseChannel.getInstance(null).httpTransport = null;
   }
 
   @After
@@ -134,8 +134,8 @@ public class OpenedServletTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
-
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
+    Mockito.doReturn(null).when(servletUnderTest).getServletContext();
     servletUnderTest.doPost(mockRequest, mockResponse);
 
     verify(mockHttpTransport, times(2)).buildRequest(

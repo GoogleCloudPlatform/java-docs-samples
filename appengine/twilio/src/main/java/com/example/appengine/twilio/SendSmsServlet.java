@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,19 +21,17 @@ import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Account;
 import com.twilio.sdk.resource.instance.Message;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
-// [START example]
+// [START gae_twilio_send_sms]
 @SuppressWarnings("serial")
 public class SendSmsServlet extends HttpServlet {
 
@@ -64,4 +62,4 @@ public class SendSmsServlet extends HttpServlet {
     }
   }
 }
-// [END example]
+// [END gae_twilio_send_sms]

@@ -1,5 +1,5 @@
-/**
- * Copyright 2014-2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 //[START all]
+
 package com.example.appengine;
 
 import com.googlecode.objectify.Key;
@@ -22,7 +23,6 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
-
 import java.util.Date;
 
 /**
@@ -58,7 +58,7 @@ public class Greeting {
    **/
   public Greeting(String book, String content) {
     this();
-    if ( book != null ) {
+    if (book != null) {
       theBook = Key.create(Guestbook.class, book);  // Creating the Ancestor key
     } else {
       theBook = Key.create(Guestbook.class, "default");

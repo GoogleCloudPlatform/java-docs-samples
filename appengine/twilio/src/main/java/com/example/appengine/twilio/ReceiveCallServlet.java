@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,13 @@ package com.example.appengine.twilio;
 import com.twilio.sdk.verbs.Say;
 import com.twilio.sdk.verbs.TwiMLException;
 import com.twilio.sdk.verbs.TwiMLResponse;
-
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_twilio_receive_call]
 @SuppressWarnings("serial")
 public class ReceiveCallServlet extends HttpServlet {
 
@@ -46,4 +44,4 @@ public class ReceiveCallServlet extends HttpServlet {
     resp.getWriter().print(twiml.toXML());
   }
 }
-// [END example]
+// [END gae_twilio_receive_call]

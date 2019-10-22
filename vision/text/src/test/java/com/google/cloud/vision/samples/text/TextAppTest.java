@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.google.cloud.vision.samples.text;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.LowLevelHttpRequest;
@@ -29,16 +29,14 @@ import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.api.services.vision.v1.Vision;
 import com.google.common.collect.ImmutableList;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Unit tests for {@link TextApp}.
@@ -74,8 +72,8 @@ public class TextAppTest {
     List<ImageText> image =
         appUnderTest.detectText(ImmutableList.<Path>of(Paths.get("data/wakeupcat.jpg")));
 
-    assertThat(image.get(0).path().toString())
-        .named("wakeupcat.jpg path")
+    assertWithMessage("wakeupcat.jpg path")
+        .that(image.get(0).path().toString())
         .isEqualTo("data/wakeupcat.jpg");
   }
 }

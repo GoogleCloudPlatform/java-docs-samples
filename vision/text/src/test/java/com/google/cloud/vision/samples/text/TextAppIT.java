@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,16 @@
 
 package com.google.cloud.vision.samples.text;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.common.collect.ImmutableList;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Integration (system) tests for {@link TextApp}.
@@ -50,11 +48,11 @@ public class TextAppIT {
     Word word = appUnderTest.extractDescriptions(image.get(0));
 
     // Assert
-    assertThat(word.path().toString())
-        .named("wakeupcat.jpg path")
+    assertWithMessage("wakeupcat.jpg path")
+        .that(word.path().toString())
         .isEqualTo("data/wakeupcat.jpg");
-    assertThat(word.word().toLowerCase()).named("wakeupcat.jpg word").contains("wake");
-    assertThat(word.word().toLowerCase()).named("wakeupcat.jpg word").contains("up");
-    assertThat(word.word().toLowerCase()).named("wakeupcat.jpg word").contains("human");
+    assertWithMessage("wakeupcat.jpg word").that(word.word().toLowerCase()).contains("wake");
+    assertWithMessage("wakeupcat.jpg word").that(word.word().toLowerCase()).contains("up");
+    assertWithMessage("wakeupcat.jpg word").that(word.word().toLowerCase()).contains("human");
   }
 }

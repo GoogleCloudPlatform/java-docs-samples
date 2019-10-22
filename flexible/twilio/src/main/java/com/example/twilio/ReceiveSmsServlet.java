@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,14 @@ package com.example.twilio;
 import com.twilio.sdk.verbs.Message;
 import com.twilio.sdk.verbs.TwiMLException;
 import com.twilio.sdk.verbs.TwiMLResponse;
-
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_twilio_receive_sms]
 @SuppressWarnings("serial")
 @WebServlet(name = "receivesms", value = "/sms/receive")
 public class ReceiveSmsServlet extends HttpServlet {
@@ -52,4 +50,4 @@ public class ReceiveSmsServlet extends HttpServlet {
     response.getWriter().print(twiml.toXML());
   }
 }
-// [END example]
+// [END gae_flex_twilio_receive_sms]

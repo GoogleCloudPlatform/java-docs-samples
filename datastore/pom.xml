@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,47 +19,44 @@
   <artifactId>datastore-snippets</artifactId>
   <version>1.0</version>
 
-  <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>..</relativePath>
-  </parent>
-
   <packaging>jar</packaging>
   <name>Google Cloud Datastore Snippets</name>
   <description>
     Example snippets for Datastore concepts and getting started documentation.
   </description>
+
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datastore</artifactId>
-      <version>0.8.1-beta</version>
+      <version>1.83.0</version>
     </dependency>
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
     <plugins>
-<!-- // [START maven]-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
-<!-- // [END maven]-->
-<!-- // [START exec] -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -68,7 +65,6 @@
           <mainClass>com.google.datastore.snippets.TaskList</mainClass>
         </configuration>
       </plugin>
-<!-- // [END exec] -->
     </plugins>
   </build>
 </project>

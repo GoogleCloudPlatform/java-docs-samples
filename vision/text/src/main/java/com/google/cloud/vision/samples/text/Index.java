@@ -17,21 +17,18 @@
 package com.google.cloud.vision.samples.text;
 
 import com.google.common.collect.ImmutableSet;
-
-import opennlp.tools.stemmer.Stemmer;
-import opennlp.tools.tokenize.Tokenizer;
-import opennlp.tools.tokenize.TokenizerModel;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.stream.Stream;
+import opennlp.tools.stemmer.Stemmer;
+import opennlp.tools.tokenize.Tokenizer;
+import opennlp.tools.tokenize.TokenizerModel;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * An inverted index using Redis.

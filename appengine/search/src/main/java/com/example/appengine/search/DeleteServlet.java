@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
+
 package com.example.appengine.search;
 
 // @formatter:off
 // [START delete_import]
+
 import com.google.appengine.api.search.Document;
+import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.GetRequest;
 import com.google.appengine.api.search.GetResponse;
-// [END delete_import]
-
-// CHECKSTYLE:OFF
-import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.SearchServiceFactory;
-// @formatter:on
-// CHECKSTYLE:ON
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -40,6 +36,11 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+// [END delete_import]
+// CHECKSTYLE:OFF
+// @formatter:on
+// CHECKSTYLE:ON
 
 /**
  * Code snippet for deleting documents from an Index.

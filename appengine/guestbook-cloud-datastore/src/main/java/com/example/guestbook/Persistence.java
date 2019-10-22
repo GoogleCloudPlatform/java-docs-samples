@@ -1,16 +1,19 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.guestbook;
 
 import com.google.cloud.datastore.Datastore;
@@ -25,8 +28,8 @@ public class Persistence {
 
   public static Datastore getDatastore() {
     if (datastore.get() == null) {
-      datastore.set(DatastoreOptions.newBuilder().setProjectId("your-project-id-here")
-          .build().getService());
+      datastore.set(DatastoreOptions.builder().projectId("your-project-id-here")
+          .build().service());
     }
 
     return datastore.get();
@@ -37,7 +40,7 @@ public class Persistence {
   }
 
   public static KeyFactory getKeyFactory(Class<?> c) {
-    return getDatastore().newKeyFactory().setKind(c.getSimpleName());
+    return getDatastore().newKeyFactory().kind(c.getSimpleName());
   }
 }
 //[END all]

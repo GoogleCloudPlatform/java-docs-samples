@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.google.cloud.vision.samples.facedetect;
 
-// [BEGIN import_libraries]
+// [START vision_face_detection_tutorial_imports]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -32,7 +32,6 @@ import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.api.services.vision.v1.model.Vertex;
 import com.google.common.collect.ImmutableList;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -44,9 +43,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-// [END import_libraries]
+// [END vision_face_detection_tutorial_imports]
 
 /**
  * A sample application that uses the Vision API to detect faces in an image.
@@ -61,7 +59,7 @@ public class FaceDetectApp {
 
   private static final int MAX_RESULTS = 4;
 
-  // [START main]
+  // [START vision_face_detection_tutorial_run_application]
   /**
    * Annotates an image using the Vision API.
    */
@@ -86,9 +84,9 @@ public class FaceDetectApp {
     System.out.printf("Writing to file %s\n", outputPath);
     app.writeWithFaces(inputPath, outputPath, faces);
   }
-  // [END main]
+  // [END vision_face_detection_tutorial_run_application]
 
-  // [START get_vision_service]
+  // [START vision_face_detection_tutorial_client]
   /**
    * Connects to the Vision API using Application Default Credentials.
    */
@@ -100,7 +98,7 @@ public class FaceDetectApp {
             .setApplicationName(APPLICATION_NAME)
             .build();
   }
-  // [END get_vision_service]
+  // [END vision_face_detection_tutorial_client]
 
   private final Vision vision;
 
@@ -111,7 +109,7 @@ public class FaceDetectApp {
     this.vision = vision;
   }
 
-  // [START detect_face]
+  // [START vision_face_detection_tutorial_send_request]
   /**
    * Gets up to {@code maxResults} faces for an image stored at {@code path}.
    */
@@ -142,9 +140,9 @@ public class FaceDetectApp {
     }
     return response.getFaceAnnotations();
   }
-  // [END detect_face]
+  // [END vision_face_detection_tutorial_send_request]
 
-  // [START highlight_faces]
+  // [START vision_face_detection_tutorial_process_response]
   /**
    * Reads image {@code inputPath} and writes {@code outputPath} with {@code faces} outlined.
    */
@@ -177,5 +175,5 @@ public class FaceDetectApp {
     gfx.setColor(new Color(0x00ff00));
     gfx.draw(poly);
   }
-  // [END highlight_faces]
+  // [END vision_face_detection_tutorial_process_response]
 }

@@ -1,17 +1,17 @@
 /*
- * Copyright (c) 2016 Google Inc.
+ * Copyright 2016 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not  use this file except in compliance with the License. You may obtain a
- * copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.example.echo;
@@ -54,10 +54,10 @@ public class Echo {
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
    * many times in the returned message.
    *
-   * Note that name is specified and will override the default name of "{class name}.{method
+   * <p>Note that name is specified and will override the default name of "{class name}.{method
    * name}". For example, the default is "echo.echo".
    *
-   * Note that httpMethod is not specified. This will default to a reasonable HTTP method
+   * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
   // [START echo_method]
@@ -71,10 +71,10 @@ public class Echo {
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
    * many times in the returned message.
    *
-   * Note that name is specified and will override the default name of "{class name}.{method
+   * <p>Note that name is specified and will override the default name of "{class name}.{method
    * name}". For example, the default is "echo.echo".
    *
-   * Note that httpMethod is not specified. This will default to a reasonable HTTP method
+   * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
   // [START echo_path]
@@ -88,10 +88,10 @@ public class Echo {
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
    * many times in the returned message.
    *
-   * Note that name is specified and will override the default name of "{class name}.{method
+   * <p>Note that name is specified and will override the default name of "{class name}.{method
    * name}". For example, the default is "echo.echo".
    *
-   * Note that httpMethod is not specified. This will default to a reasonable HTTP method
+   * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
   // [START echo_api_key]
@@ -119,10 +119,10 @@ public class Echo {
    * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
    * 401.
    *
-   * Note that name is not specified. This will default to "{class name}.{method name}". For
+   * <p>Note that name is not specified. This will default to "{class name}.{method name}". For
    * example, the default is "echo.getUserEmail".
    *
-   * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
+   * <p>Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
   // [START google_id_token_auth]
@@ -147,10 +147,10 @@ public class Echo {
    * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
    * 401.
    *
-   * Note that name is not specified. This will default to "{class name}.{method name}". For
+   * <p>Note that name is not specified. This will default to "{class name}.{method name}". For
    * example, the default is "echo.getUserEmail".
    *
-   * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
+   * <p>Note that httpMethod is not required here. Without httpMethod, this will default to GET due
    * to the API method name. httpMethod is added here for example purposes.
    */
   // [START firebase_auth]

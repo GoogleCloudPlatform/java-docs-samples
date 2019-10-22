@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.example.time.testing.FakeClock;
-
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import java.util.List;
 import org.joda.time.Instant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
 
 /**
  * Unit tests for {@link GuestbookStrong}.
@@ -71,8 +70,8 @@ public class GuestbookStrongTest {
   public void appendGreeting_normalData_setsContentProperty() {
     Greeting got = guestbookUnderTest.appendGreeting("Hello, Datastore!");
 
-    assertThat(got.getContent())
-        .named("content property")
+    assertWithMessage("content property")
+        .that(got.getContent())
         .isEqualTo("Hello, Datastore!");
   }
 
@@ -80,8 +79,8 @@ public class GuestbookStrongTest {
   public void appendGreeting_normalData_setsDateProperty() {
     Greeting got = guestbookUnderTest.appendGreeting("Hello, Datastore!");
 
-    assertThat(got.getDate())
-        .named("date property")
+    assertWithMessage("date property")
+        .that(got.getDate())
         .isEqualTo(FAKE_NOW);
   }
 
@@ -100,4 +99,3 @@ public class GuestbookStrongTest {
     assertThat(got).hasSize(3);
   }
 }
-

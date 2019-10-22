@@ -1,0 +1,5 @@
+.gradle/
+api/build/
+client/build/
+out.pb
+server/build/

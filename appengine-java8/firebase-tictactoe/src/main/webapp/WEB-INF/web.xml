@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2015 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <welcome-file-list>
+        <welcome-file>index</welcome-file>
+    </welcome-file-list>
+    <security-constraint>
+      <web-resource-collection>
+        <web-resource-name>entire-app</web-resource-name>
+        <url-pattern>/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+        <role-name>*</role-name>
+      </auth-constraint>
+    </security-constraint>
+    <servlet>
+        <servlet-name>TicTacToeServlet</servlet-name>
+        <servlet-class>com.example.appengine.firetactoe.TicTacToeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TicTacToeServlet</servlet-name>
+        <url-pattern>/index</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>OpenedServlet</servlet-name>
+        <servlet-class>com.example.appengine.firetactoe.OpenedServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OpenedServlet</servlet-name>
+        <url-pattern>/opened</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>MoveServlet</servlet-name>
+        <servlet-class>com.example.appengine.firetactoe.MoveServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MoveServlet</servlet-name>
+        <url-pattern>/move</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DeleteServlet</servlet-name>
+        <servlet-class>com.example.appengine.firetactoe.DeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteServlet</servlet-name>
+        <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <listener>
+        <listener-class>com.example.appengine.firetactoe.ObjectifyHelper</listener-class>
+    </listener>
+</web-app>

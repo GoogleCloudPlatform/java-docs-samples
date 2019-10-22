@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,16 +33,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 @WebServlet(name = "disk", value = "")
 public class DiskServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String instanceId =
-        System.getenv().containsKey("GAE_INSTANCE")
-            ? System.getenv("GAE_INSTANCE") : "1";
     // store only the first two octets of a users ip address
     String userIp = req.getRemoteAddr();
     InetAddress address = InetAddress.getByName(userIp);
@@ -64,9 +60,11 @@ public class DiskServlet extends HttpServlet {
     for (String s : strings) {
       sb.append(s + "\n");
     }
+
+    String instanceId =
+        System.getenv().containsKey("GAE_INSTANCE") ? System.getenv("GAE_INSTANCE") : "1";
     PrintWriter out = resp.getWriter();
     resp.setContentType("text/plain");
     out.print("Instance: " + instanceId + "\nSeen:\n" + sb.toString());
   }
 }
-// [END example]

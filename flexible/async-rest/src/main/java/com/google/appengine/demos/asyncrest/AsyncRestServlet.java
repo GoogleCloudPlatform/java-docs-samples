@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,18 @@
 
 package com.google.appengine.demos.asyncrest;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.AsyncContext;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
@@ -24,20 +36,6 @@ import org.eclipse.jetty.util.BufferUtil;
 import org.eclipse.jetty.util.Utf8StringBuilder;
 import org.eclipse.jetty.util.ajax.JSON;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Servlet which makes REST calls asynchronously.
@@ -134,8 +132,6 @@ public class AsyncRestServlet extends AbstractRestServlet {
 
     // We have results!
     // Generate the response
-    String thumbs = generateResults(results);
-
     response.setContentType("text/html");
     PrintWriter out = response.getWriter();
     out.println("<html><head>");
@@ -176,6 +172,8 @@ public class AsyncRestServlet extends AbstractRestServlet {
 
     out.println("<br/>");
     out.print("First 5 results of " + results.size() + ":<br/>");
+
+    String thumbs = generateResults(results);
     if ("".equals(thumbs)) {
       out.print("<i>No results. Ensure " + APPKEY + " property is set correctly.</i>");
     } else {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,12 +21,14 @@
   <groupId>com.google.cloud.vision.samples</groupId>
   <artifactId>vision-face-detection</artifactId>
 
-  <!-- Parent defines shared plugins for linting and unit testing. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -35,16 +37,16 @@
   </properties>
 
   <dependencies>
-    <!-- [START dependencies] -->
+    <!-- [START face_detection_dependencies] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev30-1.22.0</version>
+      <version>v1-rev20190704-1.30.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.22.0</version>
+      <version>1.30.2</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -52,24 +54,24 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- [END dependencies] -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>25.1-android</version>
     </dependency>
+    <!-- [END face_detection_dependencies] -->
 
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

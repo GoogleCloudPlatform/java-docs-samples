@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,20 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.example.time.testing.FakeClock;
-
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.dev.HighRepJobPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
 
 /**
  * Unit tests for {@link Guestbook}.
@@ -86,8 +85,8 @@ public class GuestbookTest {
   public void appendGreeting_normalData_setsContentProperty() {
     Greeting got = guestbookUnderTest.appendGreeting("Hello, Datastore!");
 
-    assertThat(got.getContent())
-        .named("content property")
+    assertWithMessage("content property")
+        .that(got.getContent())
         .isEqualTo("Hello, Datastore!");
   }
 

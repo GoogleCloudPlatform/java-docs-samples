@@ -1,4 +1,9 @@
 # Java Mailgun email sample for Google App Engine Managed VMs
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/mailgun/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
+
 This sample demonstrates how to use [Mailgun](https://www.mailgun.com) on [Google App Engine Managed VMs](https://cloud.google.com/appengine).
 For more information about Mailgun, see their [documentation](https://documentation.mailgun.com/).
 

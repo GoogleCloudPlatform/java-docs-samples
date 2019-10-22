@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,16 @@ package com.google.appengine.samples;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-// [START imports]
-
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
-// [END imports]
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+// [START imports]
+// [END imports]
 
 // [START NameAndHelper]
 public class LocalMemcacheTest {

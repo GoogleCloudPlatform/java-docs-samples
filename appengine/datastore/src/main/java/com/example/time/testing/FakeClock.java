@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,10 @@
 package com.example.time.testing;
 
 import com.example.time.Clock;
-
+import java.util.concurrent.atomic.AtomicLong;
 import org.joda.time.Instant;
 import org.joda.time.ReadableDuration;
 import org.joda.time.ReadableInstant;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A Clock that returns a fixed Instant value as the current clock time.  The

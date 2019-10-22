@@ -34,12 +34,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import opennlp.tools.stemmer.snowball.SnowballStemmer;
-import opennlp.tools.tokenize.TokenizerME;
-
-import redis.clients.jedis.JedisPool;
-
 import java.io.Console;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,6 +42,9 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.stream.Collectors;
+import opennlp.tools.stemmer.snowball.SnowballStemmer;
+import opennlp.tools.tokenize.TokenizerME;
+import redis.clients.jedis.JedisPool;
 
 
 /**

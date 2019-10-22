@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,31 +17,30 @@
 package com.example.appengine.search;
 
 import com.google.appengine.api.search.Document;
-import com.google.appengine.api.search.Index;
-
-// CHECKSTYLE:OFF
-// @formatter:off
-// [START search_option_import]
 import com.google.appengine.api.search.Field;
+import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
-import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.Query;
 import com.google.appengine.api.search.QueryOptions;
 import com.google.appengine.api.search.Results;
+import com.google.appengine.api.search.ScoredDocument;
 import com.google.appengine.api.search.SearchException;
+import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.SortExpression;
 import com.google.appengine.api.search.SortOptions;
-import com.google.appengine.api.search.ScoredDocument;
-// [END search_option_import]
-// @formatter:on
-// CHECKSTYLE:ON
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+// CHECKSTYLE:OFF
+// @formatter:off
+// [START search_option_import]
+// [END search_option_import]
+// @formatter:on
+// CHECKSTYLE:ON
 
 
 /**

@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,16 +15,19 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>come.example.logging</groupId>
-  <artifactId>logging-google-cloud-samples</artifactId>
+  <groupId>com.example.logging</groupId>
+  <artifactId>logging-google-cloud-samples-api</artifactId>
   <packaging>jar</packaging>
 
-  <!-- Parent defines config for testing & linting. -->
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
+    <relativePath></relativePath>
   </parent>
 
   <properties>
@@ -37,21 +40,44 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>0.8.1-beta</version>
+      <version>1.79.0</version>
     </dependency>
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.31</version>
+      <version>0.45</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin> <!-- Integration / System Tests -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <configuration>
+          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+          <forkCount>3</forkCount>
+          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

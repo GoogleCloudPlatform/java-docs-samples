@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc. All Rights Reserved.
+/* Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  */
 
 // [START users_API_example]
+
 package com.example.appengine.users;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.io.IOException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UsersServlet extends HttpServlet {
+
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws IOException {
+      throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
     String thisUrl = req.getRequestURI();
@@ -42,8 +42,8 @@ public class UsersServlet extends HttpServlet {
           + "\">sign out</a>.</p>");
     } else {
       resp.getWriter().println("<p>Please <a href=\""
-            + userService.createLoginURL(thisUrl)
-            + "\">sign in</a>.</p>");
+          + userService.createLoginURL(thisUrl)
+          + "\">sign in</a>.</p>");
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.googlecode.objectify.ObjectifyService;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -84,14 +85,15 @@ public class TicTacToeServlet extends HttpServlet {
     }
 
     // 2. Create this Game in the firebase db
-    game.sendUpdateToClients();
+    game.sendUpdateToClients(getServletContext());
 
     // 3. Inject a secure token into the client, so it can get game updates
 
     // [START pass_token]
     // The 'Game' object exposes a method which creates a unique string based on the game's key
     // and the user's id.
-    String token = FirebaseChannel.getInstance().createFirebaseToken(game, userId);
+    String token = FirebaseChannel.getInstance(getServletContext())
+        .createFirebaseToken(game, userId);
     request.setAttribute("token", token);
 
     // 4. More general template values

@@ -1,18 +1,21 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * <p>http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 //[START all]
+
 package com.example.guestbook;
 
 import static com.example.guestbook.Persistence.getDatastore;
@@ -54,7 +57,7 @@ public class Greeting {
   }
 
   public Greeting(Entity entity) {
-    key = entity.hasKey() ? entity.getKey() : null;
+    key = entity.hasKey() ? entity.key() : null;
     authorEmail = entity.contains("authorEmail") ? entity.getString("authorEmail") : null;
     authorId = entity.contains("authorId") ? entity.getString("authorId") : null;
     date = entity.contains("date") ? entity.getDateTime("date").toDate() : null;
@@ -66,7 +69,7 @@ public class Greeting {
       key = getDatastore().allocateId(makeIncompleteKey()); // Give this greeting a unique ID
     }
 
-    Builder<Key> builder = FullEntity.newBuilder(key);
+    Builder<Key> builder = FullEntity.builder(key);
 
     if (authorEmail != null) {
       builder.set("authorEmail", authorEmail);
@@ -84,7 +87,7 @@ public class Greeting {
 
   private IncompleteKey makeIncompleteKey() {
     // The book is our ancestor key.
-    return Key.newBuilder(book.getKey(), "Greeting").build();
+    return Key.builder(book.getKey(), "Greeting").build();
   }
 
   @Override

@@ -1,5 +1,11 @@
 # How to become a contributor and submit your own code
 
+* [Contributor License Agreements](#Contributor-License-Agreements)
+* [Contributing a Patch or New Sample](#Contributing-a-Patch)
+* [Build Tools](#build-tools)
+* [Integration Testing](#testing)
+* [Style](#Style)
+
 ## Contributor License Agreements
 
 We'd love to accept your sample apps and patches! Before we can take them, we
@@ -19,17 +25,85 @@ Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
 accept your pull requests.
 
-## Contributing a Patch
+## Contributing a Patch or New Sample
 
-1. Submit an issue describing your proposed change to the repo in question.
-1. The repo owner will respond to your issue promptly.
-1. If your proposed change is accepted, and you haven't already done so, sign a
-   Contributor License Agreement (see details above).
-1. Fork the desired repo, develop and test your code changes.
-1. Ensure that your code adheres to the existing style in the sample to which
-   you are contributing.
+1. Sign a [Contributor License Agreement](#Contributor-License-Agreements).
+1. Set up your [Java Developer Environment](https://cloud.google.com/java/docs/setup).
+1. Fork the repo.
+1. Develop and test your code.
+1. Ensure that your code adheres to the [SAMPLE_FORMAT.md](SAMPLE_FORMAT.md)
+guidelines.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. Submit a pull request.
+1. A maintainer will review the pull request and make comments.
+
+## Build Tools
+
+ All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
+
+## Integration Testing
+
+All samples must have Integration Tests that run with Maven and Gradle
+
+* Test Library: [JUnit4](https://junit.org/junit4/)
+* Test Runner: [Maven Failsafe plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/) and [Maven Surefire plugin](https://maven.apache.org/surefire/maven-surefire-plugin/).
+
+### Running Tests Locally
+
+Run tests locally with commands:
+* Maven: `mvn verify`
+* Gradle: `gradle build test`
+
+
+### Gradle Specifcs
+Your `build.gradle` should have the following section:
+
+```groovy
+
+test {
+  useJUnit()
+  testLogging.showStandardStreams = true
+  beforeTest { descriptor ->
+     logger.lifecycle("test: " + descriptor + "  Running")
+  }
+
+  onOutput { descriptor, event ->
+     logger.lifecycle("test: " + descriptor + ": " + event.message )
+  }
+  afterTest { descriptor, result ->
+    logger.lifecycle("test: " + descriptor + ": " + result )
+  }
+}
+```
+
+### Other Testing Set Up
+
+Most samples require a GCP project and billing account. Keep the following in
+mind when setting up tests.
+
+* **Environment variables**  
+  Minimize additional environment variables that need to be set to run the tests.
+  If you do require additional environment variables, they should be added to
+  `run_tests.sh`.
+
+  Existing environment variables include:
+  * `GOOGLE_APPLICATION_CREDENTIALS`
+  * `GOOGLE_CLOUD_PROJECT`
+  * `PROJECT_ID`
+
+
+* **API library**  
+  Add a note in the pull request, if an API needs to be enable in the testing
+  project.
+
+* **Cloud resources**  
+  Most Java samples create the Cloud resources that they need to run. If this
+  is resource intensive or not possible, add a note in the pull request for the
+  resource to be added to the testing project.
+
+* **Keys and Secrets**
+  Add a note in the pull request, in order for a Java maintainer to assist you
+  in adding keys and secrets to the testing project.
 
 ## Style
 
@@ -45,9 +119,29 @@ tool or IntelliJ plugin.
 
 [google-java-format]: https://github.com/google/google-java-format
 
+### Adding the Checkstyle Plugin to New Samples
+
+The samples in this repository use a common parent POM to define plugins used
+for linting and testing. Add the following to your sample POM to ensure that it
+uses the common Checkstyle configuration. For more information, see the
+[java-repo-tools](https://github.com/GoogleCloudPlatform/java-repo-tools)
+repository.
+
+```xml
+<!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+<parent>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>doc-samples</artifactId>
+  <version>1.0.11</version>
+</parent>
+```
+
 ### Running the Linter
 
-To run the checkstyle plugin on an existing sample, run
+To run the checkstyle & ErrorProne plugins on an existing sample, run
 
 ```shell
 mvn clean verify -DskipTests
@@ -56,20 +150,14 @@ mvn clean verify -DskipTests
 The `-DskipTests` is optional. It is useful if you want to verify that your code
 builds and adheres to the style guide without waiting for tests to complete.
 
-### Adding the Checkstyle Plugin to New Samples
 
-The samples in this repository use a common parent POM to define plugins used
-for linting and testing. Add the following to your sample POM to ensure that it
-uses the common Checkstyle configuration.
+### Parsing Command-Line Arguments in Samples
 
-```xml
-<parent>
-  <groupId>com.google.cloud</groupId>
-  <artifactId>doc-samples</artifactId>
-  <version>1.0.0</version>
-  <!-- Change relativePath to point to the root directory. -->
-  <relativePath>../..</relativePath>
-</parent>
-```
+Simple command-line samples with only positional arguments should use the
+`args` argument to `main(String... args)` directly. A command-line sample
+which has optional parameters should use the [Apache Commons
+CLI](https://commons.apache.org/proper/commons-cli/index.html) library.
 
-This is just used for testing. The sample should build without a parent defined.
+Dataflow samples are an exception to this rule, since Dataflow has [its own
+method for setting custom
+options](https://cloud.google.com/dataflow/pipelines/specifying-exec-params).

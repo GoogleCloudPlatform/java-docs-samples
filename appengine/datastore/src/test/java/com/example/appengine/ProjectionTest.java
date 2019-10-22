@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -26,13 +27,12 @@ import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.List;
 
 /**
  * Unit tests to demonstrate App Engine Datastore projection queries.
@@ -81,8 +81,8 @@ public class ProjectionTest {
         datastore.prepare(q).asList(FetchOptions.Builder.withLimit(5));
     assertThat(entities).hasSize(1);
     Entity entity = entities.get(0);
-    assertThat((String) entity.getProperty("A")).named("entity.A").isEqualTo("some duplicate");
-    assertThat((long) entity.getProperty("B")).named("entity.B").isEqualTo(0L);
+    assertWithMessage("entity.A").that((String) entity.getProperty("A")).isEqualTo("some duplicate");
+    assertWithMessage("entity.B").that((long) entity.getProperty("B")).isEqualTo(0L);
   }
 
   private void putTestData(String a, long b) {

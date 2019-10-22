@@ -1,5 +1,5 @@
 <!--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,138 +14,127 @@
  limitations under the License.
 -->
 <project>
-    <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
 
-    <groupId>com.example.echo</groupId>
-    <artifactId>echo</artifactId>
+  <groupId>com.example.echo</groupId>
+  <artifactId>echo</artifactId>
 
-    <parent>
-        <artifactId>doc-samples</artifactId>
-        <groupId>com.google.cloud</groupId>
-        <version>1.0.0</version>
-        <relativePath>../../..</relativePath>
-    </parent>
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
+  </parent>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
 
-        <endpoints.framework.version>2.0.0</endpoints.framework.version>
-        <endpoints.management.version>1.0.1</endpoints.management.version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <appengine.maven.plugin.version>1.0.0</appengine.maven.plugin.version>
-    </properties>
+    <endpoints.framework.version>2.2.1</endpoints.framework.version>
 
-    <dependencies>
-        <!-- Compile/runtime dependencies -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-framework</artifactId>
-            <version>${endpoints.framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-management-control-appengine</artifactId>
-            <version>${endpoints.management.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.endpoints</groupId>
-            <artifactId>endpoints-framework-auth</artifactId>
-            <version>${endpoints.management.version}</version>
-        </dependency>
-    </dependencies>
+    <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <appengine.maven.plugin.version>2.1.0</appengine.maven.plugin.version>
+  </properties>
 
-    <profiles>
-        <profile>
-            <id>GetSwaggerDoc</id>
-            <activation>
-                <property>
-                    <name>GetSwaggerDoc</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.4.0</version>
-                        <configuration>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <mainClass>com.google.api.server.spi.tools.EndpointsTool</mainClass>
-                            <arguments>
-                                <argument>get-swagger-doc</argument>
-                                <argument>--hostname=echo-api.endpoints.${endpoints.project.id}.cloud.goog</argument>
-                                <argument>--war=target/echo-1.0-SNAPSHOT</argument>
-                                <argument>com.example.echo.Echo</argument>
-                            </arguments>
-                        </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.google.endpoints</groupId>
-                                <artifactId>endpoints-framework-tools</artifactId>
-                                <version>${endpoints.framework.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.google.appengine</groupId>
-                                <artifactId>appengine-api-1.0-sdk</artifactId>
-                                <version>1.9.30</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+  <dependencies>
+    <!-- Compile/runtime dependencies -->
+    <dependency>
+      <groupId>com.google.endpoints</groupId>
+      <artifactId>endpoints-framework</artifactId>
+      <version>${endpoints.framework.version}</version>
+    </dependency>
+    <!-- [START api_management] -->
+    <dependency>
+      <groupId>com.google.endpoints</groupId>
+      <artifactId>endpoints-management-control-appengine</artifactId>
+      <version>1.0.11</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.endpoints</groupId>
+      <artifactId>endpoints-framework-auth</artifactId>
+      <version>1.0.11</version>
+    </dependency>
+    <!-- [END api_management] -->
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>1.9.76</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+  </dependencies>
 
-    <build>
-        <!-- for hot reload of the web application-->
-        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>display-dependency-updates</goal>
-                            <goal>display-plugin-updates</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>WEB-INF</targetPath>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.maven.plugin.version}</version>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <!-- for hot reload of the web application-->
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+    </outputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>${appengine.maven.plugin.version}</version>
+        <configuration>
+          <!-- deploy configuration -->
+        </configuration>
+      </plugin>
+      <!-- [START endpoints_plugin] -->
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>endpoints-framework-maven-plugin</artifactId>
+        <version>1.0.2</version>
+        <configuration>
+          <!-- plugin configuration -->
+          <hostname>${endpoints.project.id}.appspot.com</hostname>
+        </configuration>
+      </plugin>
+      <!-- [END endpoints_plugin] -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <filtering>true</filtering>
+              <targetPath>WEB-INF</targetPath>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>display-dependency-updates</goal>
+              <goal>display-plugin-updates</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

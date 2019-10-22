@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class SearchServletTest {
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
@@ -60,11 +59,11 @@ public class SearchServletTest {
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String content = responseWriter.toString();
-    assertThat(content)
-        .named("SearchServlet response")
+    assertWithMessage("SearchServlet response")
+        .that(content)
         .contains("maker: Yamaha");
-    assertThat(content)
-        .named("SearchServlet response")
+    assertWithMessage("SearchServlet response")
+        .that(content)
         .contains("price: 4000.0");
   }
 }

@@ -1,4 +1,8 @@
 # Cloud Storage sample for Google Managed VMs
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=flexible/cloudstorage/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample demonstrates how to use [Cloud Storage](https://cloud.google.com/storage/) on Google Managed VMs.
 
 ## Setup

@@ -1,10 +1,7 @@
 # Cloud Monitoring Sample
 
 Simple command-line program to demonstrate connecting to the Google
-Monitoring API to retrieve API data.
-
-This also includes an example of how to create a cusom metric and
-write a TimeSeries value to it.
+Monitoring API to retrieve and modify Alerts data.
 
 ## Prerequisites to run locally:
 
@@ -21,8 +18,7 @@ Create local credentials by running the following command and following the oaut
 To run:
 
     * `mvn clean install`
-    * `./list_resources_example.sh <YOUR-PROJECT-ID>`
-    * `./run_custom_metrics.sh <YOUR-PROJECT-ID>`
+    * `./manage_alerts_sample.sh <YOUR-PROJECT-ID> <command> <args>
 
 ## Running on GCE, GAE, or other environments
 
@@ -50,13 +46,3 @@ Account by doing the following:
 
 
     export GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/<project-id>-0123456789abcdef.json
-
-## Run Tests
-
-The tests emulate what the scripts accomplish, so there isn't a reason why they
-need to be run if the examples work.  However, if you'd like to run them, change
-`TEST_PROJECT_ID` in [`ListResourcesTest`](src/test/java/ListResourcesTest.java)
-to the appropriate project ID that matches the Service Account pointed to by
-`GOOGLE_APPLICATION_CREDENTIALS`, then run:
-
-    mvn test -DskipTests=false

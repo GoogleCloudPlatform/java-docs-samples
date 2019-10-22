@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.google.cloud.vision.samples.label;
 
-// [START import_libraries]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -31,7 +30,6 @@ import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.common.collect.ImmutableList;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -39,7 +37,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
-// [END import_libraries]
 
 /**
  * A sample application that uses the Vision API to label an image.
@@ -54,7 +51,6 @@ public class LabelApp {
 
   private static final int MAX_LABELS = 3;
 
-  // [START run_application]
   /**
    * Annotates an image using the Vision API.
    */
@@ -86,9 +82,7 @@ public class LabelApp {
       out.println("\tNo labels found.");
     }
   }
-  // [END run_application]
 
-  // [START authenticate]
   /**
    * Connects to the Vision API using Application Default Credentials.
    */
@@ -100,7 +94,6 @@ public class LabelApp {
             .setApplicationName(APPLICATION_NAME)
             .build();
   }
-  // [END authenticate]
 
   private final Vision vision;
 
@@ -115,7 +108,6 @@ public class LabelApp {
    * Gets up to {@code maxResults} labels for an image stored at {@code path}.
    */
   public List<EntityAnnotation> labelImage(Path path, int maxResults) throws IOException {
-    // [START construct_request]
     byte[] data = Files.readAllBytes(path);
 
     AnnotateImageRequest request =
@@ -130,9 +122,7 @@ public class LabelApp {
             .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
     // Due to a bug: requests to Vision API containing large images fail when GZipped.
     annotate.setDisableGZipContent(true);
-    // [END construct_request]
 
-    // [START parse_response]
     BatchAnnotateImagesResponse batchResponse = annotate.execute();
     assert batchResponse.getResponses().size() == 1;
     AnnotateImageResponse response = batchResponse.getResponses().get(0);
@@ -143,6 +133,5 @@ public class LabelApp {
               : "Unknown error getting image annotations");
     }
     return response.getLabelAnnotations();
-    // [END parse_response]
   }
 }

@@ -1,9 +1,11 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +25,8 @@ import com.google.appengine.api.search.SearchService;
 import com.google.appengine.api.search.SearchServiceConfig;
 import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,15 +43,15 @@ public class MultitenancyServlet extends HttpServlet {
     out.println("Code Snippets -- not yet fully runnable as an app");
 
     // [START temp_namespace]
-// Set the namepace temporarily to "abc"
+    // Set the namepace temporarily to "abc"
     String oldNamespace = NamespaceManager.get();
     NamespaceManager.set("abc");
     try {
-//      ... perform operation using current namespace ...
+    //    ... perform operation using current namespace ...
     } finally {
       NamespaceManager.set(oldNamespace);
     }
-// [END temp_namespace]
+    // [END temp_namespace]
 
     // [START per_user_namespace]
     if (com.google.appengine.api.NamespaceManager.get() == null) {
@@ -59,7 +59,7 @@ public class MultitenancyServlet extends HttpServlet {
       namespace = UserServiceFactory.getUserService().getCurrentUser().getUserId();
       NamespaceManager.set(namespace);
     }
-// [END per_user_namespace]
+    // [END per_user_namespace]
     String value = "something here";
 
     // [START ns_memcache]
@@ -75,7 +75,7 @@ public class MultitenancyServlet extends HttpServlet {
     } finally {
       NamespaceManager.set(oldNamespace);
     }
-// [END ns_memcache]
+    // [END ns_memcache]
 
     // [START specific_memcache]
     // Create a MemcacheService that uses the namespace "abc".
@@ -104,11 +104,9 @@ public class MultitenancyServlet extends HttpServlet {
     indexSpec = IndexSpec.newBuilder().setName("myindex").build();
     // Create an Index with the namespace "anotherSpace"
     index = searchService.getIndex(indexSpec);
-  // [END searchns_2]
+    // [END searchns_2]
 
   }
-
-
 
 }
 // [END example]

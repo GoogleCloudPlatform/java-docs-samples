@@ -1,4 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2016 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -8,11 +22,14 @@
   <groupId>com.example.endpoints</groupId>
   <artifactId>endpoints</artifactId>
 
+  <!--
+  The parent pom defines common style checks and testing strategies for our samples.
+  Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -20,10 +37,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <maven.war.plugin>2.6</maven.war.plugin>
-
-    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
-    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
-
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
 
@@ -39,7 +52,7 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.6.2</version>
+      <version>2.8.5</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -48,30 +61,17 @@
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
-      <plugin>  <!-- TEMPORARY -->
-        <groupId>com.google.appengine</groupId>
-        <artifactId>gcloud-maven-plugin</artifactId>
-        <version>2.0.9.121.v20160815</version>
-      </plugin>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.maven.plugin}</version>
+        <version>2.0.0</version>
         <configuration>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${maven.war.plugin}</version>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.maven.plugin}</version>
+        <version>9.4.18.v20190429</version>
       </plugin>
     </plugins>
   </build>

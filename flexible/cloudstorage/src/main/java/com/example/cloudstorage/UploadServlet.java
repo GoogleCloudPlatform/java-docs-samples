@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-// [START example]
+// [START gae_flex_storage_app]
 @SuppressWarnings("serial")
 @WebServlet(name = "upload", value = "/upload")
 @MultipartConfig()
@@ -67,4 +67,4 @@ public class UploadServlet extends HttpServlet {
     resp.getWriter().print(blob.getMediaLink());
   }
 }
-// [END example]
+// [END gae_flex_storage_app]

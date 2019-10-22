@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
-// [START example]
 @SuppressWarnings("serial")
 @WebServlet(name = "mailgun", value = "/send/email")
 public class MailgunServlet extends HttpServlet {
@@ -56,7 +55,8 @@ public class MailgunServlet extends HttpServlet {
     }
   }
 
-  // [START simple]
+  //CHECKSTYLE OFF: VariableDeclarationUsageDistance
+  // [START gae_flex_mailgun_simple_message]
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
@@ -70,9 +70,9 @@ public class MailgunServlet extends HttpServlet {
     return webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class,
         formData);
   }
-  // [END simple]
+  // [END gae_flex_mailgun_simple_message]
 
-  // [START complex]
+  // [START gae_flex_mailgun_complex_message]
   private ClientResponse sendComplexMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
@@ -89,6 +89,6 @@ public class MailgunServlet extends HttpServlet {
     return webResource.type(MediaType.MULTIPART_FORM_DATA_TYPE)
         .post(ClientResponse.class, formData);
   }
-  // [END complex]
+  // [END gae_flex_mailgun_complex_message]
+  //CHECKSTYLE ON: VariableDeclarationUsageDistance
 }
-// [END example]

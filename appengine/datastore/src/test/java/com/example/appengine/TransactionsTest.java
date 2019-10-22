@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -35,15 +35,14 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Unit tests to demonstrate App Engine Datastore transactions.
@@ -145,6 +144,7 @@ public class TransactionsTest {
   public void creatingAnEntityInASpecificEntityGroup() throws Exception {
     String boardName = "my-message-board";
 
+    //CHECKSTYLE.OFF: VariableDeclarationUsageDistance - Increased clarity in sample
     // [START creating_an_entity_in_a_specific_entity_group]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -164,6 +164,7 @@ public class TransactionsTest {
 
     txn.commit();
     // [END creating_an_entity_in_a_specific_entity_group]
+    //CHECKSTYLE.ON: VariableDeclarationUsageDistance
   }
 
   @Test
@@ -222,7 +223,7 @@ public class TransactionsTest {
     // [END uses_for_transactions_1]
 
     b = datastore.get(KeyFactory.createKey("MessageBoard", boardName));
-    assertThat((long) b.getProperty("count")).named("board.count").isEqualTo(42L);
+    assertWithMessage("board.count").that((long) b.getProperty("count")).isEqualTo(42L);
   }
 
   private Entity fetchOrCreate(String boardName) {
@@ -252,13 +253,13 @@ public class TransactionsTest {
 
     Entity board = fetchOrCreate("my-message-board");
 
-    assertThat((long) board.getProperty("count")).named("board.count").isEqualTo(7L);
+    assertWithMessage("board.count").that((long) board.getProperty("count")).isEqualTo(7L);
   }
 
   @Test
   public void usesForTransactions_fetchOrCreate_createsNew() throws Exception {
     Entity board = fetchOrCreate("my-message-board");
-    assertThat((long) board.getProperty("count")).named("board.count").isEqualTo(0L);
+    assertWithMessage("board.count").that((long) board.getProperty("count")).named.isEqualTo(0L);
   }
 
   @Test
@@ -288,7 +289,7 @@ public class TransactionsTest {
     txn.commit();
     // [END uses_for_transactions_3]
 
-    assertThat(count).named("board.count").isEqualTo(13L);
+    assertWithMessage("board.count").that(count).isEqualTo(13L);
   }
 
   @Test

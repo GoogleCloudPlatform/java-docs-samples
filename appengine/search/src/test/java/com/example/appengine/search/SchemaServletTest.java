@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,19 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class SchemaServletTest {
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
@@ -60,17 +59,17 @@ public class SchemaServletTest {
   public void doGet_successfulyInvoked() throws Exception {
     servletUnderTest.doGet(mockRequest, mockResponse);
     String content = responseWriter.toString();
-    assertThat(content)
-        .named("SchemaServlet response")
+    assertWithMessage("SchemaServlet response")
+        .that(content)
         .contains("schemaIndex:maker:TEXT");
-    assertThat(content)
-        .named("SchemaServlet response")
+    assertWithMessage("SchemaServlet response")
+        .that(content)
         .contains("schemaIndex:price:NUMBER");
-    assertThat(content)
-        .named("SchemaServlet response")
+    assertWithMessage("SchemaServlet response")
+        .that(content)
         .contains("schemaIndex:color:TEXT");
-    assertThat(content)
-        .named("SchemaServlet response")
+    assertWithMessage("SchemaServlet response")
+        .that(content)
         .contains("schemaIndex:model:TEXT");
   }
 }

@@ -1,5 +1,5 @@
 <!--
-Copyright 2015 Google Inc. All Rights Reserved.
+Copyright 2015 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,17 +22,20 @@ Copyright 2015 Google Inc. All Rights Reserved.
   <artifactId>appengine-helloworld-newplugins</artifactId>
 
 <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 <!-- [END compiler] -->
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not effect the execution of the samples in anyway.
+  -->
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>doc-samples</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <dependencies>
@@ -53,20 +56,16 @@ Copyright 2015 Google Inc. All Rights Reserved.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>0.1.2</version>
+        <version>1.3.0</version>
         <configuration>
           <!-- dev appserver configuration (standard environment only) -->
           <!--
-          <devserver.host>127.0.0.1</devserver.port>
+          <devserver.host>127.0.0.1</devserver.host>
           <devserver.port>8080</devserver.port>
           -->
           <!-- staging configuration (standard/flex-compat environment only) -->
           <!--
           <stage.enableJarSplitting>true</stage.enableJarSplitting>
-          -->
-          <!-- staging configuration (flexible environment only) -->
-          <!--
-          <stage.artifact>target/some-customer-artifact.jar</stage.artifact>
           -->
           <!-- deploy configuration -->
           <deploy.promote>true</deploy.promote>

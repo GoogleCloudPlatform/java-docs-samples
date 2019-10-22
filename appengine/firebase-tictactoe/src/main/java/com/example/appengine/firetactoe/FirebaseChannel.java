@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.util.Preconditions;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.ServletContext;
 
 /**
  * Utility functions for communicating with the realtime communication channel using Firebase.
@@ -47,7 +48,7 @@ import java.util.Map;
  * Firebase.
  */
 public class FirebaseChannel {
-  private static final String FIREBASE_SNIPPET_PATH = "WEB-INF/view/firebase_config.jspf";
+  private static final String FIREBASE_SNIPPET_PATH = "/WEB-INF/view/firebase_config.jspf";
   static InputStream firebaseConfigStream = null;
   private static final Collection FIREBASE_SCOPES = Arrays.asList(
       "https://www.googleapis.com/auth/firebase.database",
@@ -67,9 +68,9 @@ public class FirebaseChannel {
    * FirebaseChannel is a singleton, since it's just utility functions.
    * The class derives auth information when first instantiated.
    */
-  public static FirebaseChannel getInstance() {
+  public static FirebaseChannel getInstance(ServletContext servletContext) {
     if (instance == null) {
-      instance = new FirebaseChannel();
+      instance = new FirebaseChannel(servletContext);
     }
     return instance;
   }
@@ -81,11 +82,13 @@ public class FirebaseChannel {
    * communicate with Firebase is derived from App Engine's default credentials, and given
    * Firebase's OAuth scopes.
    */
-  private FirebaseChannel() {
+  private FirebaseChannel(ServletContext servletContext) {
     try {
       // This variables exist primarily so it can be stubbed out in unit tests.
       if (null == firebaseConfigStream) {
-        firebaseConfigStream = new FileInputStream(FIREBASE_SNIPPET_PATH);
+        Preconditions.checkNotNull(servletContext,
+            "Servlet context expected to initialize Firebase channel");
+        firebaseConfigStream = servletContext.getResourceAsStream(FIREBASE_SNIPPET_PATH);
       }
 
       String firebaseSnippet = CharStreams.toString(new InputStreamReader(
@@ -176,7 +179,6 @@ public class FirebaseChannel {
 
   // The following methods are to illustrate making various calls to Firebase from App Engine
   // Standard
-
   public HttpResponse firebasePut(String path, Object object) throws IOException {
     // Make requests auth'ed using Application Default Credentials
     Credential credential = GoogleCredential.getApplicationDefault().createScoped(FIREBASE_SCOPES);

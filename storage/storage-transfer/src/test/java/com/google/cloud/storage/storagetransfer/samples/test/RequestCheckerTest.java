@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import com.google.api.services.storagetransfer.v1.Storagetransfer;
 import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations;
 import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperations.List;
 import com.google.cloud.storage.storagetransfer.samples.RequestChecker;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

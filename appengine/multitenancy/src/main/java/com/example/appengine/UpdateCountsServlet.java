@@ -1,9 +1,11 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 package com.example.appengine;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import com.google.appengine.api.NamespaceManager;
-
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +63,7 @@ public class UpdateCountsServlet extends HttpServlet {
 
     return cp.count;
   }
-// [END tq_1]
+  // [END tq_1]
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)

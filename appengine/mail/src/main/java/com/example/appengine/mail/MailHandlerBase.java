@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
+
 package com.example.appengine.mail;
 
-import javax.mail.internet.MimeMessage;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Base class for handling the filtering of incoming emails in App Engine.
@@ -41,11 +42,10 @@ public abstract class MailHandlerBase implements Filter {
   private Pattern pattern = null;
 
   protected MailHandlerBase(String pattern) {
-    if (pattern == null || pattern.trim().length() == 0)
-    {
+    if (pattern == null || pattern.trim().length() == 0) {
       throw new IllegalArgumentException("Expected non-empty regular expression");
     }
-    this.pattern = Pattern.compile("/_ah/mail/"+pattern);
+    this.pattern = Pattern.compile("/_ah/mail/" + pattern);
   }
 
   @Override public void init(FilterConfig config) throws ServletException { }
@@ -63,7 +63,8 @@ public abstract class MailHandlerBase implements Filter {
    * The Matcher for the pattern can be retrieved via
    * getMatcherFromRequest (e.g. if groups are used in the pattern).
    */
-  protected abstract boolean processMessage(HttpServletRequest req, HttpServletResponse res) throws ServletException;
+  protected abstract boolean processMessage(
+      HttpServletRequest req, HttpServletResponse res) throws ServletException;
 
   @Override
   public void doFilter(ServletRequest sreq, ServletResponse sres, FilterChain chain)
@@ -85,7 +86,9 @@ public abstract class MailHandlerBase implements Filter {
 
   private Matcher applyPattern(HttpServletRequest req) {
     Matcher m = pattern.matcher(req.getServletPath());
-    if (!m.matches()) m = null;
+    if (!m.matches()) {
+      m = null;
+    }
 
     req.setAttribute("matcher", m);
     return m;

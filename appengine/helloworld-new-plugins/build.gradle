@@ -1,4 +1,4 @@
-// Copyright 2015 Google Inc. All Rights Reserved.
+// Copyright 2015 Google Inc.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -11,7 +11,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// [START gradle]
+
 buildscript {    // Configuration for building
   repositories {
     jcenter()    // Bintray's repository - a fast Maven Central mirror & more
@@ -42,7 +42,7 @@ dependencies {
 
 }
 
-// [START model]
+// [START gae_maven_model]
 appengine {  // App Engine tasks configuration
   run {      // local (dev_appserver) configuration (standard environments only)
     port = 8080                 // default
@@ -53,11 +53,10 @@ appengine {  // App Engine tasks configuration
     promote = true              // default - & make this the current version
   }
 }
-// [END model]
+// [END gae_maven_model]
 
 group = 'com.example.appengine'   // Generated output GroupId
 version = '1.0-SNAPSHOT'          // Version in generated output
 
-sourceCompatibility = 1.7  // App Engine Standard uses Java 7
-targetCompatibility = 1.7  // App Engine Standard uses Java 7
-// [END gradle]
+sourceCompatibility = 1.8  // App Engine Standard uses Java 8
+targetCompatibility = 1.8  // App Engine Standard uses Java 8

@@ -1,8 +1,11 @@
 # Google Cloud Natural Language API Samples
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=language/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 These samples demonstrate the use of the [Google Cloud Natural Language API][NL-Docs].
 
-[NL-Docs]: https://cloud.google.com/language/docs/
+[NL-Docs]: https://cloud.google.com/natural-language/docs/
 
 ## Prerequisites
 

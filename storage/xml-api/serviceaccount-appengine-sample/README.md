@@ -15,7 +15,7 @@ for getting your App Engine Service Account Name and adding it to your project t
 Checkout Instructions
 ---------------------
 
-**Prerequisites:** install the latest version of [Java](http//java.com) and [Maven](http://maven.apache.org/download.html). You may need to set your `JAVA_HOME`.
+**Prerequisites:** install the latest version of [Java](https://java.com) and [Maven](https://maven.apache.org/download.html). You may need to set your `JAVA_HOME`.
 
 You must also be able to work with a GitHub repository (see e.g.,
 https://help.github.com/articles/set-up-git).

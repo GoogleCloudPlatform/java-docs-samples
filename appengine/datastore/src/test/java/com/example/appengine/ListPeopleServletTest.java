@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +31,10 @@ import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,12 +42,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link ListPeopleServlet}.
@@ -126,7 +124,7 @@ public class ListPeopleServletTest {
 
     String response = responseWriter.toString();
     for (int i = 0; i < ListPeopleServlet.PAGE_SIZE; i++) {
-      assertThat(response).named("ListPeopleServlet response").contains(TEST_NAMES.get(i));
+      assertWithMessage("ListPeopleServlet response").that(response).contains(TEST_NAMES.get(i));
     }
   }
 
@@ -147,8 +145,8 @@ public class ListPeopleServletTest {
     String response = responseWriter.toString();
     int i = 0;
     while (i + ListPeopleServlet.PAGE_SIZE < TEST_NAMES.size() && i < ListPeopleServlet.PAGE_SIZE) {
-      assertThat(response)
-          .named("ListPeopleServlet response")
+      assertWithMessage("ListPeopleServlet response")
+          .that(response)
           .contains(TEST_NAMES.get(i + ListPeopleServlet.PAGE_SIZE));
       i++;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 package com.example.guestbook;
 
@@ -28,9 +29,12 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,12 +42,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link com.example.guestbook.SignGuestbookServlet}.
@@ -81,8 +79,8 @@ public class SignGuestbookServletTest {
 
     //  Set up some fake HTTP requests
     when(mockRequest.getRequestURI()).thenReturn(FAKE_URL);
-    when(mockRequest.getParameter("guestbookName")).thenReturn( "default" );
-    when(mockRequest.getParameter("content")).thenReturn( testPhrase );
+    when(mockRequest.getParameter("guestbookName")).thenReturn("default");
+    when(mockRequest.getParameter("content")).thenReturn(testPhrase);
 
     stringWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));

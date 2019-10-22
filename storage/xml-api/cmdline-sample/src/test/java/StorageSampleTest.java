@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,15 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.Test;
 
 public class StorageSampleTest {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   @Test
   public void testListBucket() throws Exception {
-    String listing = StorageSample.listBucket("cloud-samples-tests");
+    String listing = StorageSample.listBucket(PROJECT_ID);
     assertThat(listing)
         .containsMatch(
             ".*<ListBucketResult.*"
-            + "<Name>cloud-samples-tests</Name>.*"
+            + "<Name>" + PROJECT_ID + "</Name>.*"
             + "</ListBucketResult>.*");
   }
 }

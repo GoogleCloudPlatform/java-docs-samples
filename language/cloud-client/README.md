@@ -1,5 +1,8 @@
 # Getting Started with Google Cloud Natural Language API and the Google Cloud Client libraries
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=language/cloud-client/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 [Google Cloud Natural Language API][language] provides natural language
 understanding technologies to developers, including sentiment analysis, entity
 recognition, and syntax analysis. This API is part of the larger collection of
@@ -17,14 +20,13 @@ Install [Maven](http://maven.apache.org/).
 
 Build your project with:
 
-	mvn clean package -DskipTests
-
-You can then run a given `ClassName` via:
-
-	mvn exec:java -Dexec.mainClass=com.example.language.ClassName \
-	    -DpropertyName=propertyValue \
-		-Dexec.args="arg1 'arg 2' arg3"
+```bash
+mvn clean compile assembly:single
+```
 
 ### Analyze a string for sentiment (using the quickstart sample)
 
-    mvn exec:java -Dexec.mainClass=com.example.language.QuickstartSample
+```
+java -cp target/language-google-cloud-samples-1.0.9-jar-with-dependencies.jar \
+    com.example.language.QuickstartSample
+```

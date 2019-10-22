@@ -18,10 +18,8 @@ package com.google.cloud.vision.samples.text;
 
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Status;
-
 import java.nio.file.Path;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**

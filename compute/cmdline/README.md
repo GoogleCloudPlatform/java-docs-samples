@@ -1,5 +1,8 @@
 # Compute Engine - Getting started with Java
 
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=compute/cmdline/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+
 This sample command line application demonstrates how to access the Google
 Compute Engine API using the Google Java API Client Library.
 
@@ -56,7 +59,7 @@ reuse an existing project by clicking on it.
     in to the newly created VM instance.
 
 1. Code checkout instructions:
-  1. Prerequisites: install [Java 7 or Java 8 JDK][2], [Git][7], and [Maven][8].
+  1. Prerequisites: install [Java 8 JDK][2], [Git][7], and [Maven][8].
 You may need to set your `JAVA_HOME` environment variable as well.
     * To install these prerequisites on a Linux (Debian or Ubuntu) based Compute Engine VM
     instance, run these commands:

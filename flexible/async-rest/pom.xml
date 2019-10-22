@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,29 +21,33 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
     <places.appkey>YOUR_PLACES_APP_KEY</places.appkey>
 
-    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
-    <jetty.version>9.3.8.v20160314</jetty.version>
+    <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
+
+    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
+    <jetty>9.4.4.v20170414</jetty>
 
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
   <build>
     <plugins>
        <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty}</version>
         <configuration>
          <systemProperties>
           <systemProperty>
@@ -58,39 +62,23 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <archiveClasses>true</archiveClasses>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-          <webResources>
-            <resource>
-              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-              <filtering>true</filtering>
-              <targetPath>WEB-INF</targetPath>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-client</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>${jetty.version}</version>
+      <version>${jetty}</version>
       <scope>test</scope>
     </dependency>
       <dependency>

@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
- Copyright 2016 Google Inc. All Rights Reserved.
+ Copyright 2016 Google Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,8 +32,7 @@
     <div id="display-area" class="waiting">
       <h2>Firebase-enabled Tic Tac Toe</h2>
       <div id="other-player">
-        Waiting for another player to join.<br>
-        Send them this link to play:<br>
+        Send the other player this link to play, and click link below to wait on the other player:<br>
         <div id="game-link"><a href="<%= request.getAttribute("game_link") %>"><%= request.getAttribute("game_link") %></a></div>
       </div>
       <div id="your-move">Your move! Click a square to place your piece.</div>

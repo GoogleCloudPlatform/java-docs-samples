@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package com.google.datastore.snippets;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.DateTime;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.KeyFactory;
@@ -26,7 +26,6 @@ import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.StructuredQuery.OrderBy;
 import com.google.cloud.datastore.Transaction;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -37,15 +36,15 @@ import java.util.List;
  */
 public class TaskList {
 
-  // [START build_service]
+  // [START datastore_build_service]
   // Create an authorized Datastore service using Application Default Credentials.
   private final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
   // Create a Key factory to construct keys associated with this project.
   private final KeyFactory keyFactory = datastore.newKeyFactory().setKind("Task");
-  // [END build_service]
+  // [END datastore_build_service]
 
-  // [START add_entity]
+  // [START datastore_add_entity]
   /**
    * Adds a task entity to the Datastore.
    *
@@ -57,15 +56,15 @@ public class TaskList {
     Key key = datastore.allocateId(keyFactory.newKey());
     Entity task = Entity.newBuilder(key)
         .set("description", StringValue.newBuilder(description).setExcludeFromIndexes(true).build())
-        .set("created", DateTime.now())
+        .set("created", Timestamp.now())
         .set("done", false)
         .build();
     datastore.put(task);
     return key;
   }
-  // [END add_entity]
+  // [END datastore_add_entity]
 
-  // [START update_entity]
+  // [START datastore_update_entity]
   /**
    * Marks a task entity as done.
    *
@@ -88,9 +87,9 @@ public class TaskList {
       }
     }
   }
-  // [END update_entity]
+  // [END datastore_update_entity]
 
-  // [START retrieve_entities]
+  // [START datastore_retrieve_entities]
   /**
    * Returns a list of all task entities in ascending order of creation time.
    *
@@ -101,9 +100,9 @@ public class TaskList {
         Query.newEntityQueryBuilder().setKind("Task").setOrderBy(OrderBy.asc("created")).build();
     return datastore.run(query);
   }
-  // [END retrieve_entities]
+  // [END datastore_retrieve_entities]
 
-  // [START delete_entity]
+  // [START datastore_delete_entity]
   /**
    * Deletes a task entity.
    *
@@ -113,9 +112,8 @@ public class TaskList {
   void deleteTask(long id) {
     datastore.delete(keyFactory.newKey(id));
   }
-  // [END delete_entity]
+  // [END datastore_delete_entity]
 
-  // [START format_results]
   /**
    * Converts a list of task entities to a list of formatted task strings.
    *
@@ -131,12 +129,11 @@ public class TaskList {
             String.format("%d : %s (done)", task.getKey().getId(), task.getString("description")));
       } else {
         strings.add(String.format("%d : %s (created %s)", task.getKey().getId(),
-            task.getString("description"), task.getDateTime("created")));
+            task.getString("description"), task.getTimestamp("created")));
       }
     }
     return strings;
   }
-  // [END format_results]
 
   /**
    * Handles a single command.
@@ -202,7 +199,7 @@ public class TaskList {
    * Exercises the methods defined in this class.
    *
    * <p>Assumes that you are authenticated using the Google Cloud SDK (using
-   * {@code gcloud auth login}).
+   * {@code gcloud auth application-default login}).
    */
   public static void main(String[] args) throws Exception {
     TaskList taskList = new TaskList();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,15 @@
 
 package com.example.appengine.users;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.management.remote.JMXPrincipal;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,26 +33,23 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.management.remote.JMXPrincipal;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Unit tests for {@link UsersServlet}.
  */
 @RunWith(JUnit4.class)
 public class UsersServletTest {
-  private static final String FAKE_URL = "fakey.fake.fak"; 
-  private static final String FAKE_NAME = "Fake"; 
+
+  private static final String FAKE_URL = "fakey.fake.fak";
+  private static final String FAKE_NAME = "Fake";
   // Set up a helper so that the ApiProxy returns a valid environment for local testing.
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
-  @Mock private HttpServletRequest mockRequestNotLoggedIn;
-  @Mock private HttpServletRequest mockRequestLoggedIn;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequestNotLoggedIn;
+  @Mock
+  private HttpServletRequest mockRequestLoggedIn;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private UsersServlet servletUnderTest;
 
@@ -65,7 +66,7 @@ public class UsersServletTest {
     //  If the user is logged in, use this request
     when(mockRequestLoggedIn.getRequestURI()).thenReturn(FAKE_URL);
     //  Most of the classes that implement Principal have been
-    //  deprecated.  JMXPrincipal seems like a safe choice. 
+    //  deprecated.  JMXPrincipal seems like a safe choice.
     when(mockRequestLoggedIn.getUserPrincipal()).thenReturn(new JMXPrincipal(FAKE_NAME));
 
     // Set up a fake HTTP response.
@@ -75,7 +76,8 @@ public class UsersServletTest {
     servletUnderTest = new UsersServlet();
   }
 
-  @After public void tearDown() {
+  @After
+  public void tearDown() {
     helper.tearDown();
   }
 
@@ -83,27 +85,27 @@ public class UsersServletTest {
   public void doGet_userNotLoggedIn_writesResponse() throws Exception {
     servletUnderTest.doGet(mockRequestNotLoggedIn, mockResponse);
 
-    // If a user isn't logged in, we expect a prompt 
+    // If a user isn't logged in, we expect a prompt
     //  to login to be returned.
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("<p>Please <a href=");
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
-        .contains("sign in</a>.</p>"); 
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
+        .contains("sign in</a>.</p>");
   }
 
   @Test
   public void doGet_userLoggedIn_writesResponse() throws Exception {
     servletUnderTest.doGet(mockRequestLoggedIn, mockResponse);
 
-    // If a user is logged in, we expect a prompt 
+    // If a user is logged in, we expect a prompt
     // to logout to be returned.
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
         .contains("<p>Hello, " + FAKE_NAME + "!");
-    assertThat(responseWriter.toString())
-        .named("UsersServlet response")
-        .contains("sign out"); 
+    assertWithMessage("UsersServlet response")
+        .that(responseWriter.toString())
+        .contains("sign out");
   }
 }

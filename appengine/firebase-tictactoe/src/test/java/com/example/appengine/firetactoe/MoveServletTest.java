@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine.firetactoe;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -37,21 +37,22 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Unit tests for {@link MoveServlet}.
@@ -97,11 +98,11 @@ public class MoveServletTest {
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
-    servletUnderTest = new MoveServlet();
+    servletUnderTest = spy(new MoveServlet());
 
     helper.setEnvIsLoggedIn(true);
     // Make sure there are no firebase requests if we don't expect it
-    FirebaseChannel.getInstance().httpTransport = null;
+    FirebaseChannel.getInstance(null).httpTransport = null;
   }
 
   @After
@@ -136,17 +137,19 @@ public class MoveServletTest {
         };
       }
     });
-    FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
+    FirebaseChannel.getInstance(null).httpTransport = mockHttpTransport;
 
+    Mockito.doReturn(null).when(servletUnderTest).getServletContext();
     servletUnderTest.doPost(mockRequest, mockResponse);
 
     game = ofy.load().type(Game.class).id(gameKey).safe();
-    assertThat(game.board).isEqualTo(" X       ");
+    assertEquals(game.board, " X       ");
 
     verify(mockHttpTransport, times(2)).buildRequest(
         eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 
+  @Ignore
   public void doPost_notMyTurn_move() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();

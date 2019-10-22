@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package com.example.managedvms.datastore;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.DateTime;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.FullEntity;
 import com.google.cloud.datastore.IncompleteKey;
@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
+// [START gae_flex_datastore_app]
 @SuppressWarnings("serial")
 @WebServlet(name = "datastore", value = "")
 public class DatastoreServlet extends HttpServlet {
@@ -64,7 +64,7 @@ public class DatastoreServlet extends HttpServlet {
 
     // Record a visit to the datastore, storing the IP and timestamp.
     FullEntity<IncompleteKey> curVisit = FullEntity.newBuilder(key)
-        .set("user_ip", userIp).set("timestamp", DateTime.now()).build();
+        .set("user_ip", userIp).set("timestamp", Timestamp.now()).build();
     datastore.add(curVisit);
 
     // Retrieve the last 10 visits from the datastore, ordered by timestamp.
@@ -77,9 +77,9 @@ public class DatastoreServlet extends HttpServlet {
     out.print("Last 10 visits:\n");
     while (results.hasNext()) {
       Entity entity = results.next();
-      out.format("Time: %s Addr: %s\n", entity.getDateTime("timestamp"),
+      out.format("Time: %s Addr: %s\n", entity.getTimestamp("timestamp"),
           entity.getString("user_ip"));
     }
   }
 }
-// [END example]
+// [END gae_flex_datastore_app]

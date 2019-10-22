@@ -1,5 +1,5 @@
 <!--
-  Copyright 2016 Google Inc. All Rights Reserved.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,32 +20,30 @@
   <groupId>com.example.flexible</groupId>
   <artifactId>flexible-analytics</artifactId>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
-    <artifactId>doc-samples</artifactId>
-    <groupId>com.google.cloud</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>1.0.0</appengine.maven.plugin>
-    <jetty.maven.plugin>9.3.8.v20160314</jetty.maven.plugin>
-
+    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
+    <jetty>9.4.4.v20170414</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
-
-  <prerequisites>                       <!-- Optional, but suggested -->
-    <maven>3.3.9</maven>                <!-- Recommended minimum maven version -->
-  </prerequisites>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.2</version>
+      <version>4.5.9</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -70,7 +68,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.maven.plugin}</version>
+        <version>${jetty}</version>
       </plugin>
     </plugins>
   </build>
