@@ -45,7 +45,7 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 # Build the service
 set -x
 # TODO: quiet doesn't work for "gcloud build submit"
-gcloud builds submit --quiet --tag="${CONTAINER_IMAGE}" > /dev/null 2>&1 &
+gcloud --quiet builds submit --tag="${CONTAINER_IMAGE}"
 
 gcloud beta run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
