@@ -26,26 +26,25 @@
 
   <!-- [START spanner_hibernate_dependencies] -->
   <dependencies>
-
     <!-- The Hibernate dialect for Spanner dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-hibernate-dialect</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
     </dependency>
 
     <!-- The Spanner JDBC driver dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>0.3.0</version>
+      <version>1.7.0</version>
     </dependency>
 
     <!-- Hibernate core dependency -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.4.2.Final</version>
+      <version>5.4.6.Final</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->
