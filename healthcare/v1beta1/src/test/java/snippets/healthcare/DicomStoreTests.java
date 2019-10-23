@@ -49,7 +49,7 @@ public class DicomStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
-  private static final String GCLOUD_BUCKET_NAME = System.getenv("GCLOUD_BUCKET_NAME");
+  private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
   private static String datasetName;
@@ -70,7 +70,6 @@ public class DicomStoreTests {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GCLOUD_PUBSUB_TOPIC");
-    requireEnvVar("GCLOUD_BUCKET_NAME");
   }
 
   @BeforeClass
@@ -166,7 +165,7 @@ public class DicomStoreTests {
   @Test
   public void test_DicomStoreImport() throws IOException {
     String gcsPath =
-        String.format("gs://%s/%s", GCLOUD_BUCKET_NAME, "/healthcare-api/000009.dcm");
+        String.format("gs://%s/%s/%s", GCLOUD_BUCKET_NAME, "healthcare-api", "000009.dcm");
     DicomStoreImport.dicomStoreImport(dicomStoreName, gcsPath);
 
     String output = bout.toString();

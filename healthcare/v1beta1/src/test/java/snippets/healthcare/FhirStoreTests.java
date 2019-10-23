@@ -50,7 +50,7 @@ public class FhirStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
-  private static final String GCLOUD_BUCKET_NAME = System.getenv("GCLOUD_BUCKET_NAME");
+  private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
   private static String datasetName;
@@ -71,7 +71,6 @@ public class FhirStoreTests {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GCLOUD_PUBSUB_TOPIC");
-    requireEnvVar("GCLOUD_BUCKET_NAME");
   }
 
   @BeforeClass
@@ -175,7 +174,9 @@ public class FhirStoreTests {
 
   @Test
   public void test_FhirStoreImport() throws Exception {
-    FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + GCLOUD_BUCKET_NAME + "/healthcare-api/Patient.json");
+    FhirStoreImport.fhirStoreImport(
+        fhirStoreName,
+        "gs://" + GCLOUD_BUCKET_NAME + "/healthcare-api/Patient.json");
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR store import complete:"));
