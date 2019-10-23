@@ -177,7 +177,7 @@ public class FhirStoreTests {
 
   @Test
   public void test_FhirStoreImport() throws Exception {
-    FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + gcsFileName);
+    FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + GCLOUD_BUCKET_NAME + "/healthcare-api/Patient.json");
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR store import complete:"));
