@@ -21,10 +21,9 @@ import static org.junit.Assert.assertThat;
 import com.google.cloud.datacatalog.EntryGroupName;
 import com.google.cloud.datacatalog.EntryName;
 import com.google.cloud.datacatalog.v1beta1.DataCatalogClient;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
+import java.util.UUID;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
@@ -32,19 +31,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Integration (system) tests for {@link CreateFilesetEntry}.
- */
+/** Integration (system) tests for {@link CreateFilesetEntry}. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class CreateFilesetEntryTests {
 
   private ByteArrayOutputStream bout;
 
-  private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
+  private static String ENTRY_GROUP_ID = "fileset_entry_group_"
+          + UUID.randomUUID().toString().substring(0, 8);
+  private static String ENTRY_ID = "fileset_entry_id_"
+          + UUID.randomUUID().toString().substring(0, 8);
   private static String LOCATION = "us-central1";
-  private static String ENTRY_GROUP_ID = "fileset_entry_group";
-  private static String ENTRY_ID = "fileset_entry_id";
+  private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
 
   @Before
   public void setUp() {
@@ -65,23 +64,26 @@ public class CreateFilesetEntryTests {
     } catch (Exception e) {
       System.out.println("Error in cleaning up test data:\n" + e.toString());
     }
-
   }
 
   @Test
   public void testCreateFilesetEntry() {
-    CreateFilesetEntry.createEntry(PROJECT_ID, "fileset_entry_group", "fileset_entry_id");
+    CreateFilesetEntry.createEntry(PROJECT_ID, ENTRY_GROUP_ID, ENTRY_ID);
 
     String output = bout.toString();
 
     String entryGroupTemplate =
             "Entry Group created with name: projects/%s/locations/us-central1/entryGroups/%s";
-    assertThat(output, CoreMatchers.containsString(
-            String.format(entryGroupTemplate, PROJECT_ID, ENTRY_GROUP_ID)));
+    assertThat(
+            output,
+            CoreMatchers.containsString(String.format(entryGroupTemplate, PROJECT_ID,
+                    ENTRY_GROUP_ID)));
 
     String entryTemplate =
             "Entry created with name: projects/%s/locations/us-central1/entryGroups/%s/entries/%s";
-    assertThat(output, CoreMatchers.containsString(
-            String.format(entryTemplate, PROJECT_ID, ENTRY_GROUP_ID, ENTRY_ID)));
+    assertThat(
+            output,
+            CoreMatchers.containsString(
+                    String.format(entryTemplate, PROJECT_ID, ENTRY_GROUP_ID, ENTRY_ID)));
   }
 }

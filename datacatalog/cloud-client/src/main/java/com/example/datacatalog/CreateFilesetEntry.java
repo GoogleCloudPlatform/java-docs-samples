@@ -16,122 +16,104 @@
 
 package com.example.datacatalog;
 
-// [START create_fileset_entry]
+// [START datacatalog_create_fileset_entry]
 
+import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.datacatalog.ColumnSchema;
 import com.google.cloud.datacatalog.CreateEntryGroupRequest;
 import com.google.cloud.datacatalog.CreateEntryRequest;
 import com.google.cloud.datacatalog.Entry;
 import com.google.cloud.datacatalog.EntryGroup;
-import com.google.cloud.datacatalog.EntryGroupName;
-import com.google.cloud.datacatalog.EntryName;
 import com.google.cloud.datacatalog.EntryType;
 import com.google.cloud.datacatalog.GcsFilesetSpec;
 import com.google.cloud.datacatalog.LocationName;
 import com.google.cloud.datacatalog.Schema;
-
 import com.google.cloud.datacatalog.v1beta1.DataCatalogClient;
+
+import java.io.IOException;
 
 public class CreateFilesetEntry {
 
   /**
-   * Create Fileset Entry
+   * Create Fileset Entry.
    *
-   * @param projectId    The project ID to which the fileset belongs, e.g. 'my-project'
-   * @param entryGroupId The Entry Group ID to which the fileset belongs,
-   *                     e.g. 'fileset_entry_group'
-   * @param entryId      The Entry ID for the fileset, e.g. 'fileset_entry_id'
+   * @param projectId  e.g. 'my-project'
+   * @param entryGroupId  e.g. 'fileset_entry_group'
+   * @param entryId e.g. 'fileset_entry_id'
    */
   public static void createEntry(String projectId, String entryGroupId, String entryId) {
-
-    // -------------------------------
     // Currently, Data Catalog stores metadata in the
     // us-central1 region.
-    // -------------------------------
     String location = "us-central1";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
-
-      // -------------------------------
-      // 1. Environment cleanup: delete pre-existing data.
-      // -------------------------------
-      // Delete any pre-existing Entry with the same name
-      // that will be used in step 3.
-      try {
-        dataCatalogClient.deleteEntry(
-                EntryName.of(projectId, location, entryGroupId, entryId).toString());
-      } catch (Exception e) {
-        System.out.println("Entry does not exist.");
-      }
-
-      // Delete any pre-existing Entry Group with the same name
-      // that will be used in step 2.
-      try {
-        dataCatalogClient.deleteEntryGroup(
-                EntryGroupName.of(projectId, location, entryGroupId).toString());
-      } catch (Exception e) {
-        System.out.println("Entry Group does not exist.");
-      }
-
-      // -------------------------------
-      // 2. Create an Entry Group.
+      // 1. Create an Entry Group.
       // -------------------------------
       // Construct the EntryGroup for the EntryGroup request.
       EntryGroup entryGroup = EntryGroup.newBuilder().build();
 
       // Construct the EntryGroup request to be sent by the client.
-      CreateEntryGroupRequest entryGroupRequest = CreateEntryGroupRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setEntryGroupId(entryGroupId)
-              .setEntryGroup(entryGroup)
-              .build();
+      CreateEntryGroupRequest entryGroupRequest =
+              CreateEntryGroupRequest.newBuilder()
+                      .setParent(LocationName.of(projectId, location).toString())
+                      .setEntryGroupId(entryGroupId)
+                      .setEntryGroup(entryGroup)
+                      .build();
 
       // Use the client to send the API request.
       EntryGroup entryGroupResponse = dataCatalogClient.createEntryGroup(entryGroupRequest);
-
       System.out.printf("\nEntry Group created with name: %s\n", entryGroupResponse.getName());
 
-      // -------------------------------
-      // 3. Create a Fileset Entry.
+      // 2. Create a Fileset Entry.
       // -------------------------------
       // Construct the Entry for the Entry request.
-      Entry entry = Entry.newBuilder()
-              .setDisplayName("My Fileset")
-              .setDescription("This fileset consists of ....")
-              .setGcsFilesetSpec(GcsFilesetSpec.newBuilder().addFilePatterns("gs://my_bucket/*")
-                      .build())
-              .setSchema(Schema.newBuilder()
-                      .addColumns(ColumnSchema.newBuilder()
-                              .setColumn("first_column")
-                              .setType("STRING")
-                              .setDescription("This columns consists of ....").build())
-                      .addColumns(ColumnSchema.newBuilder()
-                              .setColumn("second_column")
-                              .setType("STRING")
-                              .setDescription("This columns consists of ....").build())
-                      .build())
-              .setType(EntryType.FILESET)
-              .build();
+      Entry entry =
+              Entry.newBuilder()
+                      .setDisplayName("My Fileset")
+                      .setDescription("This fileset consists of ....")
+                      .setGcsFilesetSpec(
+                              GcsFilesetSpec.newBuilder().addFilePatterns("gs://my_bucket/*")
+                                      .build())
+                      .setSchema(
+                              Schema.newBuilder()
+                                      .addColumns(
+                                              ColumnSchema.newBuilder()
+                                                      .setColumn("first_column")
+                                                      .setType("STRING")
+                                                      .setDescription(
+                                                              "This columns consists of ....")
+                                                      .build())
+                                      .addColumns(
+                                              ColumnSchema.newBuilder()
+                                                      .setColumn("second_column")
+                                                      .setType("STRING")
+                                                      .setDescription(
+                                                              "This columns consists of ....")
+                                                      .build())
+                                      .build())
+                      .setType(EntryType.FILESET)
+                      .build();
 
       // Construct the Entry request to be sent by the client.
-      CreateEntryRequest entryRequest = CreateEntryRequest.newBuilder()
-              .setParent(entryGroupResponse.getName())
-              .setEntryId(entryId)
-              .setEntry(entry)
-              .build();
+      CreateEntryRequest entryRequest =
+              CreateEntryRequest.newBuilder()
+                      .setParent(entryGroupResponse.getName())
+                      .setEntryId(entryId)
+                      .setEntry(entry)
+                      .build();
 
       // Use the client to send the API request.
       Entry entryResponse = dataCatalogClient.createEntry(entryRequest);
-
       System.out.printf("\nEntry created with name: %s\n", entryResponse.getName());
-
-
-    } catch (Exception e) {
+    } catch (AlreadyExistsException | IOException e) {
+      // AlreadyExistsException's are thrown if EntryGroup or Entry already exists.
+      // IOException's are thrown when unable to create the DataCatalogClient,
+      // for example an invalid Service Account path.
       System.out.println("Error in create entry process:\n" + e.toString());
     }
   }
 }
-// [END create_fileset_entry]
+// [END datacatalog_create_fileset_entry]
