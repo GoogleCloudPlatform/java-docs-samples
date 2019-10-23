@@ -19,6 +19,8 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # `--debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -42,6 +44,7 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging.
+    gcloud components install beta --quiet
     gcloud components update --quiet
     echo "********** GCLOUD INFO ***********"
     gcloud -v
@@ -70,7 +73,7 @@ fi
 # Package local jetty dependency for Java11 samples
 if [[ "$JAVA_VERSION" == "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
-  mvn install
+  mvn install --quiet
   cd ../../
 fi
 
@@ -133,6 +136,21 @@ for file in **/pom.xml; do
       echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"
     else
       echo -e "\n Testing completed.\n"
+    fi
+
+    # Build and deploy Cloud Run samples
+    if [[ "$file" == "run/"* ]]; then
+      export SAMPLE_NAME=${file#"run/"}
+      # chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
+      "$SCRIPT_DIR"/build_cloud_run.sh
+      EXIT=$?
+
+      if [[ $EXIT -ne 0 ]]; then
+        RTN=1
+        echo -e "\n Cloud Run build/deploy failed: gcloud returned a non-zero exit code. \n"
+      else
+        echo -e "\n Cloud Run build/deploy completed.\n"
+      fi
     fi
 
 done
