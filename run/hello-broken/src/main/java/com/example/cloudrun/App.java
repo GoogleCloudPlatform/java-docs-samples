@@ -49,6 +49,7 @@ public class App {
           res.status(200);
           return String.format("Hello %s!", name);
         });
+    // [END run_broken_service]
 
     get(
         "/improved",
@@ -63,6 +64,7 @@ public class App {
           res.status(200);
           return String.format("Hello %s!", name);
         });
+  // [START run_broken_service]
   }
 }
 // [END run_broken_service]
