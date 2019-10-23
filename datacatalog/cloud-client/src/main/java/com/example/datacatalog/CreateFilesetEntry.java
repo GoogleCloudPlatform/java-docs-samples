@@ -34,13 +34,15 @@ import java.io.IOException;
 
 public class CreateFilesetEntry {
 
-  /**
-   * Create Fileset Entry.
-   *
-   * @param projectId  e.g. 'my-project'
-   * @param entryGroupId  e.g. 'fileset_entry_group'
-   * @param entryId e.g. 'fileset_entry_id'
-   */
+  public static void createEntry() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String entryGroupId = "fileset_entry_group";
+    String entryId = "fileset_entry_id";
+    createEntry(projectId, entryGroupId, entryId);
+  }
+
+  // Create Fileset Entry.
   public static void createEntry(String projectId, String entryGroupId, String entryId) {
     // Currently, Data Catalog stores metadata in the
     // us-central1 region.
