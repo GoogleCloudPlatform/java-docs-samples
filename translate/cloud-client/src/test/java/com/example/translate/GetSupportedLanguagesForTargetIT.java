@@ -19,13 +19,19 @@ package com.example.translate;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3GetSupportedLanguagesForTargetTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+/** Tests for Get Supported Languages For Target sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class GetSupportedLanguagesForTargetIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -43,9 +49,9 @@ public class TranslateV3GetSupportedLanguagesForTargetTest {
   }
 
   @Test
-  public void testGetSupportedLanguages() {
+  public void testGetSupportedLanguages() throws IOException {
     // Act
-    TranslateV3GetSupportedLanguagesForTarget.sampleGetSupportedLanguages("is", PROJECT_ID);
+    GetSupportedLanguagesForTarget.getSupportedLanguagesForTarget(PROJECT_ID, "global", "is");
 
     // Assert
     String got = bout.toString();

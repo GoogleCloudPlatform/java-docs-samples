@@ -24,14 +24,21 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3BatchTranslateTextTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+/** Tests for Batch Translate Text sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class BatchTranslateTextIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String INPUT_URI = "gs://cloud-samples-data/translation/text.txt";
 
   private ByteArrayOutputStream bout;
@@ -40,10 +47,10 @@ public class TranslateV3BatchTranslateTextTest {
   private static final void cleanUpBucket() {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Page<Blob> blobs =
-            storage.list(
-                    PROJECT_ID,
-                    Storage.BlobListOption.currentDirectory(),
-                    Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
+        storage.list(
+            PROJECT_ID,
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
 
     deleteDirectory(storage, blobs);
   }
@@ -53,10 +60,10 @@ public class TranslateV3BatchTranslateTextTest {
       System.out.println(blob.getBlobId());
       if (!blob.delete()) {
         Page<Blob> subBlobs =
-                storage.list(
-                        PROJECT_ID,
-                        Storage.BlobListOption.currentDirectory(),
-                        Storage.BlobListOption.prefix(blob.getName()));
+            storage.list(
+                PROJECT_ID,
+                Storage.BlobListOption.currentDirectory(),
+                Storage.BlobListOption.prefix(blob.getName()));
 
         deleteDirectory(storage, subBlobs);
       }
@@ -78,16 +85,16 @@ public class TranslateV3BatchTranslateTextTest {
   }
 
   @Test
-  public void testBatchTranslateText() {
+  public void testBatchTranslateText()
+      throws InterruptedException, ExecutionException, IOException {
     // Act
-    TranslateV3BatchTranslateText.sampleBatchTranslateText(
-            INPUT_URI,
-            "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/",
-            PROJECT_ID,
-            "us-central1",
-            "en",
-            "es"
-    );
+    BatchTranslateText.batchTranslateText(
+        PROJECT_ID,
+        "us-central1",
+        "en",
+        "es",
+        INPUT_URI,
+        "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/");
 
     // Assert
     String got = bout.toString();

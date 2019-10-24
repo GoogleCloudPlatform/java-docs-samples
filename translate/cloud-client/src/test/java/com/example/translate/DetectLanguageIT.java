@@ -16,31 +16,45 @@
 
 package com.example.translate;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3ListGlossaryTest {
+/** Tests for Detect Languages sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class DetectLanguageIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
-  private static final String GLOSSARY_INPUT_URI =
-          "gs://cloud-samples-data/translation/glossary_ja.csv";
-
-  private String glossaryId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
+    System.setOut(null);
   }
 
   @Test
-  public void testListGlossaries() {
+  public void testDetectLanguage() throws IOException {
+    // Act
+    DetectLanguage.detectLanguage(PROJECT_ID, "global", "Hæ sæta");
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("is");
   }
 }

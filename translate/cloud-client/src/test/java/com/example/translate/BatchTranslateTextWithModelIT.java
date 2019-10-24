@@ -19,37 +19,40 @@ package com.example.translate;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.paging.Page;
+
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3BatchTranslateTextWithGlossaryAndModelTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+/** Tests for Batch Translate Text With Model sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class BatchTranslateTextWithModelIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String INPUT_URI =
-          "gs://cloud-samples-data/translation/text_with_custom_model_and_glossary.txt";
+      "gs://cloud-samples-data/translation/custom_model_text.txt";
   private static final String MODEL_ID = "TRL2188848820815848149";
-  private static final String GLOSSARY_INPUT_URI =
-          "gs://cloud-samples-data/translation/glossary_ja.csv";
 
-  private String glossaryId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static final void cleanUpBucket() {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Page<Blob> blobs =
-            storage.list(
-                    PROJECT_ID,
-                    Storage.BlobListOption.currentDirectory(),
-                    Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
+        storage.list(
+            PROJECT_ID,
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
 
     deleteDirectory(storage, blobs);
   }
@@ -59,10 +62,10 @@ public class TranslateV3BatchTranslateTextWithGlossaryAndModelTest {
       System.out.println(blob.getBlobId());
       if (!blob.delete()) {
         Page<Blob> subBlobs =
-                storage.list(
-                        PROJECT_ID,
-                        Storage.BlobListOption.currentDirectory(),
-                        Storage.BlobListOption.prefix(blob.getName()));
+            storage.list(
+                PROJECT_ID,
+                Storage.BlobListOption.currentDirectory(),
+                Storage.BlobListOption.prefix(blob.getName()));
 
         deleteDirectory(storage, subBlobs);
       }
@@ -71,12 +74,7 @@ public class TranslateV3BatchTranslateTextWithGlossaryAndModelTest {
 
   @Before
   public void setUp() {
-    glossaryId = String.format("must_start_with_letter_%s",
-            UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
 
-    // Setup
-    TranslateV3CreateGlossary.sampleCreateGlossary(
-            PROJECT_ID, glossaryId, GLOSSARY_INPUT_URI);
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -85,26 +83,24 @@ public class TranslateV3BatchTranslateTextWithGlossaryAndModelTest {
   @After
   public void tearDown() {
     cleanUpBucket();
-    TranslateV3DeleteGlossary.sampleDeleteGlossary(PROJECT_ID, glossaryId);
     System.setOut(null);
   }
 
   @Test
-  public void testBatchTranslateTextWithGlossaryAndModel() {
+  public void testBatchTranslateTextWithModel()
+      throws InterruptedException, ExecutionException, IOException {
     // Act
-    TranslateV3BatchTranslateTextWithGlossaryAndModel.sampleBatchTranslateTextWithGlossaryAndModel(
-            INPUT_URI,
-            "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/",
-            PROJECT_ID,
-            "us-central1",
-            "ja",
-            "en",
-            MODEL_ID,
-            glossaryId
-    );
+    BatchTranslateTextWithModel.batchTranslateTextWithModel(
+        PROJECT_ID,
+        "us-central1",
+        "en",
+        "ja",
+        INPUT_URI,
+        "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/",
+        MODEL_ID);
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Total Characters: 25");
+    assertThat(got).contains("Total Characters: 15");
   }
 }

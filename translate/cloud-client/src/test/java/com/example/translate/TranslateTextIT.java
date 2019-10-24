@@ -19,19 +19,20 @@ package com.example.translate;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3CreateAndDeleteGlossaryTest {
+/** Tests for Translate Text sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class TranslateTextIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
-  private static final String GLOSSARY_INPUT_URI =
-          "gs://cloud-samples-data/translation/glossary_ja.csv";
-
-  private String glossaryId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -39,8 +40,6 @@ public class TranslateV3CreateAndDeleteGlossaryTest {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    glossaryId = String.format("must_start_with_letter_%s",
-            UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
     System.setOut(out);
   }
 
@@ -50,25 +49,21 @@ public class TranslateV3CreateAndDeleteGlossaryTest {
   }
 
   @Test
-  public void testCreateAndDeleteGlossary() {
-    //Act
-    TranslateV3CreateGlossary.sampleCreateGlossary(
-            PROJECT_ID, glossaryId, GLOSSARY_INPUT_URI);
+  public void testTranslateText() throws IOException {
+    // Act
+    TranslateText.translateText(PROJECT_ID, "global", "sr-Latn", "Hello world");
 
     // Assert
     String got = bout.toString();
 
-    assertThat(got).contains("Created");
-    assertThat(got).contains(glossaryId);
-    assertThat(got).contains(GLOSSARY_INPUT_URI);
+    int count = 0;
+    if (got.contains("Zdravo svet")) {
+      count = 1;
+    }
+    if (got.contains("Pozdrav svijetu")) {
+      count = 1;
+    }
 
-    //Clean up
-    TranslateV3DeleteGlossary.sampleDeleteGlossary(PROJECT_ID, glossaryId);
-
-    // Assert
-    got = bout.toString();
-    assertThat(got).contains("us-central1");
-    assertThat(got).contains(glossaryId);
+    assertThat(1).isEqualTo(count);
   }
-
 }

@@ -16,18 +16,22 @@
 
 package com.example.translate;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3TranslateTextTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+/** Tests for Get Supported Languages sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class GetSupportedLanguagesIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -45,13 +49,12 @@ public class TranslateV3TranslateTextTest {
   }
 
   @Test
-  public void testTranslateText() {
+  public void testGetSupportedLanguages() throws IOException {
     // Act
-    TranslateV3TranslateText.sampleTranslateText("Hello world", "sr-Latn", PROJECT_ID);
+    GetSupportedLanguages.getSupportedLanguages(PROJECT_ID, "global");
 
     // Assert
     String got = bout.toString();
-
-    assertThat(got, anyOf(containsString("Zdravo svet"), containsString("Pozdrav svijetu")));
+    assertThat(got).contains("zh-CN");
   }
 }

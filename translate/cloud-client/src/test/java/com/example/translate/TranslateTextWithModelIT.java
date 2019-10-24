@@ -16,18 +16,22 @@
 
 package com.example.translate;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3TranslateTextWithModelTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+/** Tests for Batch Translate Text With Model sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class TranslateTextWithModelIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String MODEL_ID = "TRL2188848820815848149";
 
   private ByteArrayOutputStream bout;
@@ -46,19 +50,22 @@ public class TranslateV3TranslateTextWithModelTest {
   }
 
   @Test
-  public void testTranslateTextWithModel() {
+  public void testTranslateTextWithModel() throws IOException {
     // Act
-    TranslateV3TranslateTextWithModel.sampleTranslateTextWithModel(
-            MODEL_ID,
-            "That' il do it.",
-            "ja",
-            "en",
-            PROJECT_ID,
-            "us-central1");
+    TranslateTextWithModel.translateTextWithModel(
+        PROJECT_ID, "us-central1", "en", "ja", "That' il do it. deception", MODEL_ID);
 
     // Assert
     String got = bout.toString();
 
-    assertThat(got, anyOf(containsString("それはそうだ"), containsString("それじゃあ")));
+    int count = 0;
+    if (got.contains("それはそうだ")) {
+      count = 1;
+    }
+    if (got.contains("それじゃあ")) {
+      count = 1;
+    }
+
+    assertThat(1).isEqualTo(count);
   }
 }

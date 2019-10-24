@@ -19,20 +19,28 @@ package com.example.translate;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class TranslateV3TranslateTextWithGlossaryAndModelTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
-  private static final String MODEL_ID = "TRL2188848820815848149";
+/** Tests for Create and Delete Glossary samples. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class CreateAndDeleteGlossaryIT {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String GLOSSARY_INPUT_URI =
-          "gs://cloud-samples-data/translation/glossary_ja.csv";
+      "gs://cloud-samples-data/translation/glossary_ja.csv";
+  private static final String GLOSSARY_ID =
+      String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
 
-  private String glossaryId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -40,38 +48,33 @@ public class TranslateV3TranslateTextWithGlossaryAndModelTest {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    glossaryId = String.format("must_start_with_letter_%s",
-            UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
-
-    // Setup
-    TranslateV3CreateGlossary.sampleCreateGlossary(
-            PROJECT_ID, glossaryId, GLOSSARY_INPUT_URI);
     System.setOut(out);
   }
 
   @After
   public void tearDown() {
-    // Clean up
-    TranslateV3DeleteGlossary.sampleDeleteGlossary(PROJECT_ID, glossaryId);
     System.setOut(null);
   }
 
   @Test
-  public void testTranslateTextWithGlossaryAndModel() {
+  public void testCreateAndDeleteGlossary()
+      throws InterruptedException, ExecutionException, IOException {
     // Act
-    TranslateV3TranslateTextWithGlossaryAndModel.sampleTranslateTextWithGlossaryAndModel(
-            MODEL_ID,
-            glossaryId,
-            "That' il do it. deception",
-            "ja",
-            "en",
-            PROJECT_ID,
-            "us-central1");
+    CreateGlossary.createGlossary(PROJECT_ID, "us-central1", GLOSSARY_ID, GLOSSARY_INPUT_URI);
 
     // Assert
     String got = bout.toString();
 
-    assertThat(got).contains("それはそうだ"); //custom model
-    assertThat(got).contains("欺く"); //glossary
+    assertThat(got).contains("Created");
+    assertThat(got).contains(GLOSSARY_ID);
+    assertThat(got).contains(GLOSSARY_INPUT_URI);
+
+    // Clean up
+    DeleteGlossary.deleteGlossary(PROJECT_ID, "us-central1", GLOSSARY_ID);
+
+    // Assert
+    got = bout.toString();
+    assertThat(got).contains("us-central1");
+    assertThat(got).contains(GLOSSARY_ID);
   }
 }
