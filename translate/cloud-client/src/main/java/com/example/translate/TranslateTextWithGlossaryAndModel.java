@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_translate_text_with_glossary_and_model]
+// [START translate_v3_translate_text_with_glossary_and_model]
 import com.google.cloud.translate.v3.GlossaryName;
 import com.google.cloud.translate.v3.LocationName;
 import com.google.cloud.translate.v3.TranslateTextGlossaryConfig;
@@ -83,4 +83,4 @@ public class TranslateTextWithGlossaryAndModel {
     }
   }
 }
-// [END translate_translate_text_with_glossary_and_model]
+// [END translate_v3_translate_text_with_glossary_and_model]

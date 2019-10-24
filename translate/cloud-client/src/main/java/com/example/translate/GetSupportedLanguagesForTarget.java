@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_get_supported_languages_for_target]
+// [START translate_v3_get_supported_languages_for_target]
 import com.google.cloud.translate.v3.GetSupportedLanguagesRequest;
 import com.google.cloud.translate.v3.LocationName;
 import com.google.cloud.translate.v3.SupportedLanguage;
@@ -60,4 +60,4 @@ public class GetSupportedLanguagesForTarget {
     }
   }
 }
-// [END translate_get_supported_languages_for_target]
+// [END translate_v3_get_supported_languages_for_target]

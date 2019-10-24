@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_get_glossary]
+// [START translate_v3_get_glossary]
 import com.google.cloud.translate.v3.GetGlossaryRequest;
 import com.google.cloud.translate.v3.Glossary;
 import com.google.cloud.translate.v3.GlossaryName;
@@ -54,4 +54,4 @@ public class GetGlossary {
     }
   }
 }
-// [END translate_get_glossary]
+// [END translate_v3_get_glossary]

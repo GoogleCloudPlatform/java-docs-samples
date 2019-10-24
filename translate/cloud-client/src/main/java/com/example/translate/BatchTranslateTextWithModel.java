@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_batch_translate_text_with_model]
+// [START translate_v3_batch_translate_text_with_model]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.translate.v3.BatchTranslateMetadata;
 import com.google.cloud.translate.v3.BatchTranslateResponse;
@@ -95,4 +95,4 @@ public class BatchTranslateTextWithModel {
     }
   }
 }
-// [END translate_batch_translate_text_with_model]
+// [END translate_v3_batch_translate_text_with_model]

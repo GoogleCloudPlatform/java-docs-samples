@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_create_glossary]
+// [START translate_v3_create_glossary]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.translate.v3.CreateGlossaryMetadata;
 import com.google.cloud.translate.v3.CreateGlossaryRequest;
@@ -84,4 +84,4 @@ public class CreateGlossary {
     }
   }
 }
-// [END translate_create_glossary]
+// [END translate_v3_create_glossary]

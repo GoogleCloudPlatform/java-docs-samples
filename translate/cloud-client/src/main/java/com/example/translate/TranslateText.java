@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_translate_text]
+// [START translate_v3_translate_text]
 import com.google.cloud.translate.v3.LocationName;
 import com.google.cloud.translate.v3.TranslateTextRequest;
 import com.google.cloud.translate.v3.TranslateTextResponse;
@@ -61,4 +61,4 @@ public class TranslateText {
     }
   }
 }
-// [END translate_translate_text]
+// [END translate_v3_translate_text]

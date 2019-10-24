@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_delete_glossary]
+// [START translate_v3_delete_glossary]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.translate.v3.DeleteGlossaryMetadata;
 import com.google.cloud.translate.v3.DeleteGlossaryRequest;
@@ -58,4 +58,4 @@ public class DeleteGlossary {
     }
   }
 }
-// [END translate_delete_glossary]
+// [END translate_v3_delete_glossary]

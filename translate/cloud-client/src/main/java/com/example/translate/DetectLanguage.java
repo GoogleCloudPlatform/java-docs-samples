@@ -16,7 +16,7 @@
 
 package com.example.translate;
 
-// [START translate_detect_language]
+// [START translate_v3_detect_language]
 import com.google.cloud.translate.v3.DetectLanguageRequest;
 import com.google.cloud.translate.v3.DetectLanguageResponse;
 import com.google.cloud.translate.v3.DetectedLanguage;
@@ -65,4 +65,4 @@ public class DetectLanguage {
     }
   }
 }
-// [END translate_detect_language]
+// [END translate_v3_detect_language]
