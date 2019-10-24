@@ -27,6 +27,8 @@ limitations under the License.
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
   </properties>
   <dependencies>
     <!-- [START run_broken_service_dep] -->
