@@ -31,8 +31,8 @@ RUN mvn compile assembly:single
 FROM adoptopenjdk/openjdk11:alpine
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/hello-*dependencies.jar /hello-service.jar
+COPY --from=builder /app/target/hello-*dependencies.jar /service.jar
 
 # Run the web service on container startup.
-CMD ["java","-jar","/hello-service.jar"]
+CMD ["java","-jar","/service.jar"]
 # [END run_broken_dockerfile]
