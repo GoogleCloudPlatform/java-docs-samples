@@ -67,30 +67,32 @@ public class ModelApi {
       throws IOException, InterruptedException, ExecutionException {
 
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // A resource that represents Google Cloud Platform location.
-    LocationName projectLocation = LocationName.of(projectId, computeRegion);
+      // A resource that represents Google Cloud Platform location.
+      LocationName projectLocation = LocationName.of(projectId, computeRegion);
 
-    // Set model meta data
-    TextClassificationModelMetadata textClassificationModelMetadata =
-        TextClassificationModelMetadata.newBuilder().build();
+      // Set model meta data
+      TextClassificationModelMetadata textClassificationModelMetadata =
+          TextClassificationModelMetadata.newBuilder().build();
 
-    // Set model name, dataset and metadata.
-    Model myModel =
-        Model.newBuilder()
-            .setDisplayName(modelName)
-            .setDatasetId(dataSetId)
-            .setTextClassificationModelMetadata(textClassificationModelMetadata)
-            .build();
+      // Set model name, dataset and metadata.
+      Model myModel =
+          Model.newBuilder()
+              .setDisplayName(modelName)
+              .setDatasetId(dataSetId)
+              .setTextClassificationModelMetadata(textClassificationModelMetadata)
+              .build();
 
-    // Create a model with the model metadata in the region.
-    OperationFuture<Model, OperationMetadata> response =
-        client.createModelAsync(projectLocation, myModel);
+      // Create a model with the model metadata in the region.
+      OperationFuture<Model, OperationMetadata> response =
+          client.createModelAsync(projectLocation, myModel);
 
-    System.out.println(
-        String.format("Training operation name: %s", response.getInitialFuture().get().getName()));
-    System.out.println("Training started...");
+      System.out.println(
+          String.format(
+              "Training operation name: %s", response.getInitialFuture().get().getName()));
+      System.out.println("Training started...");
+    }
   }
   // [END automl_language_create_model]
 
@@ -104,12 +106,13 @@ public class ModelApi {
    */
   public static void getOperationStatus(String operationFullId) throws IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // Get the latest state of a long-running operation.
-    Operation response = client.getOperationsClient().getOperation(operationFullId);
+      // Get the latest state of a long-running operation.
+      Operation response = client.getOperationsClient().getOperation(operationFullId);
 
-    System.out.println(String.format("Operation status: %s", response));
+      System.out.println(String.format("Operation status: %s", response));
+    }
   }
   // [END automl_language_get_operation_status]
 
@@ -125,30 +128,31 @@ public class ModelApi {
   public static void listModels(String projectId, String computeRegion, String filter)
       throws IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // A resource that represents Google Cloud Platform location.
-    LocationName projectLocation = LocationName.of(projectId, computeRegion);
+      // A resource that represents Google Cloud Platform location.
+      LocationName projectLocation = LocationName.of(projectId, computeRegion);
 
-    // Create list models request.
-    ListModelsRequest listModelsRequest =
-        ListModelsRequest.newBuilder()
-            .setParent(projectLocation.toString())
-            .setFilter(filter)
-            .build();
+      // Create list models request.
+      ListModelsRequest listModelsRequest =
+          ListModelsRequest.newBuilder()
+              .setParent(projectLocation.toString())
+              .setFilter(filter)
+              .build();
 
-    System.out.println("List of models:");
-    for (Model model : client.listModels(listModelsRequest).iterateAll()) {
-      // Display the model information.
-      System.out.println(String.format("Model name: %s", model.getName()));
-      System.out.println(
-          String.format(
-              "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
-      System.out.println(String.format("Model display name: %s", model.getDisplayName()));
-      System.out.println("Model create time:");
-      System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
-      System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
-      System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
+      System.out.println("List of models:");
+      for (Model model : client.listModels(listModelsRequest).iterateAll()) {
+        // Display the model information.
+        System.out.println(String.format("Model name: %s", model.getName()));
+        System.out.println(
+            String.format(
+                "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
+        System.out.println(String.format("Model display name: %s", model.getDisplayName()));
+        System.out.println("Model create time:");
+        System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
+        System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
+        System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
+      }
     }
   }
   // [END automl_language_list_models]
@@ -165,24 +169,25 @@ public class ModelApi {
   public static void getModel(String projectId, String computeRegion, String modelId)
       throws IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // Get the full path of the model.
-    ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
+      // Get the full path of the model.
+      ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
 
-    // Get complete detail of the model.
-    Model model = client.getModel(modelFullId);
+      // Get complete detail of the model.
+      Model model = client.getModel(modelFullId);
 
-    // Display the model information.
-    System.out.println(String.format("Model name: %s", model.getName()));
-    System.out.println(
-        String.format(
-            "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
-    System.out.println(String.format("Model display name: %s", model.getDisplayName()));
-    System.out.println("Model create time:");
-    System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
-    System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
-    System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
+      // Display the model information.
+      System.out.println(String.format("Model name: %s", model.getName()));
+      System.out.println(
+          String.format(
+              "Model id: %s", model.getName().split("/")[model.getName().split("/").length - 1]));
+      System.out.println(String.format("Model display name: %s", model.getDisplayName()));
+      System.out.println("Model create time:");
+      System.out.println(String.format("\tseconds: %s", model.getCreateTime().getSeconds()));
+      System.out.println(String.format("\tnanos: %s", model.getCreateTime().getNanos()));
+      System.out.println(String.format("Model deployment state: %s", model.getDeploymentState()));
+    }
   }
   // [END automl_language_get_model]
 
@@ -199,22 +204,23 @@ public class ModelApi {
   public static void listModelEvaluations(
       String projectId, String computeRegion, String modelId, String filter) throws IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // Get the full path of the model.
-    ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
+      // Get the full path of the model.
+      ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
 
-    // Create list model evaluations request.
-    ListModelEvaluationsRequest modelEvaluationsRequest =
-        ListModelEvaluationsRequest.newBuilder()
-            .setParent(modelFullId.toString())
-            .setFilter(filter)
-            .build();
+      // Create list model evaluations request.
+      ListModelEvaluationsRequest modelEvaluationsRequest =
+          ListModelEvaluationsRequest.newBuilder()
+              .setParent(modelFullId.toString())
+              .setFilter(filter)
+              .build();
 
-    // List all the model evaluations in the model by applying filter.
-    for (ModelEvaluation element :
-        client.listModelEvaluations(modelEvaluationsRequest).iterateAll()) {
-      System.out.println(element);
+      // List all the model evaluations in the model by applying filter.
+      for (ModelEvaluation element :
+          client.listModelEvaluations(modelEvaluationsRequest).iterateAll()) {
+        System.out.println(element);
+      }
     }
   }
   // [END automl_language_list_model_evaluations]
@@ -233,16 +239,17 @@ public class ModelApi {
       String projectId, String computeRegion, String modelId, String modelEvaluationId)
       throws IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // Get the full path of the model evaluation.
-    ModelEvaluationName modelEvaluationFullId =
-        ModelEvaluationName.of(projectId, computeRegion, modelId, modelEvaluationId);
+      // Get the full path of the model evaluation.
+      ModelEvaluationName modelEvaluationFullId =
+          ModelEvaluationName.of(projectId, computeRegion, modelId, modelEvaluationId);
 
-    // Get complete detail of the model evaluation.
-    ModelEvaluation response = client.getModelEvaluation(modelEvaluationFullId);
+      // Get complete detail of the model evaluation.
+      ModelEvaluation response = client.getModelEvaluation(modelEvaluationFullId);
 
-    System.out.println(response);
+      System.out.println(response);
+    }
   }
   // [END automl_language_get_model_evaluation]
 
@@ -259,61 +266,62 @@ public class ModelApi {
   public static void displayEvaluation(
       String projectId, String computeRegion, String modelId, String filter) throws IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // Get the full path of the model.
-    ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
+      // Get the full path of the model.
+      ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
 
-    // List all the model evaluations in the model by applying.
-    ListModelEvaluationsRequest modelEvaluationsrequest =
-        ListModelEvaluationsRequest.newBuilder()
-            .setParent(modelFullId.toString())
-            .setFilter(filter)
-            .build();
+      // List all the model evaluations in the model by applying.
+      ListModelEvaluationsRequest modelEvaluationsrequest =
+          ListModelEvaluationsRequest.newBuilder()
+              .setParent(modelFullId.toString())
+              .setFilter(filter)
+              .build();
 
-    // Iterate through the results.
-    String modelEvaluationId = "";
-    for (ModelEvaluation element :
-        client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
-      if (element.getAnnotationSpecId() != null) {
-        modelEvaluationId = element.getName().split("/")[element.getName().split("/").length - 1];
+      // Iterate through the results.
+      String modelEvaluationId = "";
+      for (ModelEvaluation element :
+          client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
+        if (element.getAnnotationSpecId() != null) {
+          modelEvaluationId = element.getName().split("/")[element.getName().split("/").length - 1];
+        }
       }
-    }
 
-    // Resource name for the model evaluation.
-    ModelEvaluationName modelEvaluationFullId =
-        ModelEvaluationName.of(projectId, computeRegion, modelId, modelEvaluationId);
+      // Resource name for the model evaluation.
+      ModelEvaluationName modelEvaluationFullId =
+          ModelEvaluationName.of(projectId, computeRegion, modelId, modelEvaluationId);
 
-    // Get a model evaluation.
-    ModelEvaluation modelEvaluation = client.getModelEvaluation(modelEvaluationFullId);
+      // Get a model evaluation.
+      ModelEvaluation modelEvaluation = client.getModelEvaluation(modelEvaluationFullId);
 
-    ClassificationEvaluationMetrics classMetrics =
-        modelEvaluation.getClassificationEvaluationMetrics();
-    List<ConfidenceMetricsEntry> confidenceMetricsEntries =
-        classMetrics.getConfidenceMetricsEntryList();
+      ClassificationEvaluationMetrics classMetrics =
+          modelEvaluation.getClassificationEvaluationMetrics();
+      List<ConfidenceMetricsEntry> confidenceMetricsEntries =
+          classMetrics.getConfidenceMetricsEntryList();
 
-    // Showing model score based on threshold of 0.5
-    for (ConfidenceMetricsEntry confidenceMetricsEntry : confidenceMetricsEntries) {
-      if (confidenceMetricsEntry.getConfidenceThreshold() == 0.5) {
-        System.out.println("Precision and recall are based on a score threshold of 0.5");
-        System.out.println(
-            String.format("Model Precision: %.2f ", confidenceMetricsEntry.getPrecision() * 100)
-                + '%');
-        System.out.println(
-            String.format("Model Recall: %.2f ", confidenceMetricsEntry.getRecall() * 100) + '%');
-        System.out.println(
-            String.format("Model F1 Score: %.2f ", confidenceMetricsEntry.getF1Score() * 100)
-                + '%');
-        System.out.println(
-            String.format(
-                    "Model Precision@1: %.2f ", confidenceMetricsEntry.getPrecisionAt1() * 100)
-                + '%');
-        System.out.println(
-            String.format("Model Recall@1: %.2f ", confidenceMetricsEntry.getRecallAt1() * 100)
-                + '%');
-        System.out.println(
-            String.format("Model F1 Score@1: %.2f ", confidenceMetricsEntry.getF1ScoreAt1() * 100)
-                + '%');
+      // Showing model score based on threshold of 0.5
+      for (ConfidenceMetricsEntry confidenceMetricsEntry : confidenceMetricsEntries) {
+        if (confidenceMetricsEntry.getConfidenceThreshold() == 0.5) {
+          System.out.println("Precision and recall are based on a score threshold of 0.5");
+          System.out.println(
+              String.format("Model Precision: %.2f ", confidenceMetricsEntry.getPrecision() * 100)
+                  + '%');
+          System.out.println(
+              String.format("Model Recall: %.2f ", confidenceMetricsEntry.getRecall() * 100) + '%');
+          System.out.println(
+              String.format("Model F1 Score: %.2f ", confidenceMetricsEntry.getF1Score() * 100)
+                  + '%');
+          System.out.println(
+              String.format(
+                      "Model Precision@1: %.2f ", confidenceMetricsEntry.getPrecisionAt1() * 100)
+                  + '%');
+          System.out.println(
+              String.format("Model Recall@1: %.2f ", confidenceMetricsEntry.getRecallAt1() * 100)
+                  + '%');
+          System.out.println(
+              String.format("Model F1 Score@1: %.2f ", confidenceMetricsEntry.getF1ScoreAt1() * 100)
+                  + '%');
+        }
       }
     }
   }
@@ -331,15 +339,16 @@ public class ModelApi {
   public static void deleteModel(String projectId, String computeRegion, String modelId)
       throws InterruptedException, ExecutionException, IOException {
     // Instantiates a client
-    AutoMlClient client = AutoMlClient.create();
+    try (AutoMlClient client = AutoMlClient.create()) {
 
-    // Get the full path of the model.
-    ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
+      // Get the full path of the model.
+      ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
 
-    // Delete a model.
-    Empty response = client.deleteModelAsync(modelFullId).get();
+      // Delete a model.
+      Empty response = client.deleteModelAsync(modelFullId).get();
 
-    System.out.println("Model deletion started...");
+      System.out.println("Model deletion started...");
+    }
   }
   // [END automl_language_delete_model]
 

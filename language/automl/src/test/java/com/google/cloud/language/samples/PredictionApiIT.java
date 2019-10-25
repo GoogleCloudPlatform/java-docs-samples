@@ -32,8 +32,8 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class PredictionApiIT {
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String PROJECT_ID = "java-docs-samples-testing";
-  private static final String modelId = "342705131419266916";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String modelId = "TCN6871084728972835631";
   private static final String filePath = "./resources/input.txt";
   private ByteArrayOutputStream bout;
   private PrintStream out;
