@@ -33,7 +33,6 @@ import org.junit.runners.JUnit4;
 
 /** Integration (system) tests for {@link CreateFilesetEntry}. */
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class CreateFilesetEntryTests {
 
   private ByteArrayOutputStream bout;
