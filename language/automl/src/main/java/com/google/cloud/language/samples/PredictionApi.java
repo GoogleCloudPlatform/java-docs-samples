@@ -60,29 +60,30 @@ public class PredictionApi {
       String projectId, String computeRegion, String modelId, String filePath) throws IOException {
 
     // Create client for prediction service.
-    PredictionServiceClient predictionClient = PredictionServiceClient.create();
+    try (PredictionServiceClient predictionClient = PredictionServiceClient.create()) {
 
-    // Get full path of model
-    ModelName name = ModelName.of(projectId, computeRegion, modelId);
+      // Get full path of model
+      ModelName name = ModelName.of(projectId, computeRegion, modelId);
 
-    // Read the file content for prediction.
-    String content = new String(Files.readAllBytes(Paths.get(filePath)));
+      // Read the file content for prediction.
+      String content = new String(Files.readAllBytes(Paths.get(filePath)));
 
-    // Set the payload by giving the content and type of the file.
-    TextSnippet textSnippet =
-        TextSnippet.newBuilder().setContent(content).setMimeType("text/plain").build();
-    ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
+      // Set the payload by giving the content and type of the file.
+      TextSnippet textSnippet =
+          TextSnippet.newBuilder().setContent(content).setMimeType("text/plain").build();
+      ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
 
-    // params is additional domain-specific parameters.
-    // currently there is no additional parameters supported.
-    Map<String, String> params = new HashMap<String, String>();
-    PredictResponse response = predictionClient.predict(name, payload, params);
+      // params is additional domain-specific parameters.
+      // currently there is no additional parameters supported.
+      Map<String, String> params = new HashMap<String, String>();
+      PredictResponse response = predictionClient.predict(name, payload, params);
 
-    System.out.println("Prediction results:");
-    for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-      System.out.println("Predicted Class name :" + annotationPayload.getDisplayName());
-      System.out.println(
-          "Predicted Class Score :" + annotationPayload.getClassification().getScore());
+      System.out.println("Prediction results:");
+      for (AnnotationPayload annotationPayload : response.getPayloadList()) {
+        System.out.println("Predicted Class name :" + annotationPayload.getDisplayName());
+        System.out.println(
+            "Predicted Class Score :" + annotationPayload.getClassification().getScore());
+      }
     }
   }
   // [END automl_language_predict]
