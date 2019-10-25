@@ -32,6 +32,7 @@ import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -205,13 +206,9 @@ public class DatasetApi {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, computeRegion, datasetId);
 
-      GcsSource.Builder gcsSource = GcsSource.newBuilder();
-
       // Get multiple training data files to be imported
-      String[] inputUris = path.split(",");
-      for (String inputUri : inputUris) {
-        gcsSource.addInputUris(inputUri);
-      }
+      GcsSource gcsSource =
+              GcsSource.newBuilder().addAllInputUris(Arrays.asList(path.split(","))).build();
 
       // Import data from the input URI
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
