@@ -39,9 +39,8 @@ public class DatasetApiIT {
   private static final String DATASET_NAME = "test_language_dataset";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private DatasetApi app;
   private String datasetId;
-  private String getdatasetId = "8477830379477056918";
+  private String getdatasetId = "TCN8477830379477056918";
 
   @Before
   public void setUp() {
