@@ -165,7 +165,7 @@ public class DicomStoreTests {
   @Test
   public void test_DicomStoreImport() throws IOException {
     String gcsPath =
-        String.format("gs://%s/%s", GCLOUD_BUCKET_NAME, "IM-0002-0001-JPEG-BASELINE.dcm");
+        String.format("gs://%s/%s/%s", GCLOUD_BUCKET_NAME, "healthcare-api", "000009.dcm");
     DicomStoreImport.dicomStoreImport(dicomStoreName, gcsPath);
 
     String output = bout.toString();
