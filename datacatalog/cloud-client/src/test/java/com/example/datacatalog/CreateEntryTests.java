@@ -62,13 +62,13 @@ public class CreateEntryTests {
   @AfterClass
   public static void tearDownClass() {
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      dataCatalogClient.deleteEntryGroup(
+          EntryGroupName.of(PROJECT_ID, LOCATION, ENTRY_GROUP_ID_NO_CHILDREN).toString());
+
       dataCatalogClient.deleteEntry(
           EntryName.of(PROJECT_ID, LOCATION, PARENT_ENTRY_GROUP_ID, ENTRY_ID).toString());
       dataCatalogClient.deleteEntryGroup(
           EntryGroupName.of(PROJECT_ID, LOCATION, PARENT_ENTRY_GROUP_ID).toString());
-
-      dataCatalogClient.deleteEntryGroup(
-          EntryGroupName.of(PROJECT_ID, LOCATION, ENTRY_GROUP_ID_NO_CHILDREN).toString());
     } catch (Exception e) {
       System.out.println("Error in cleaning up test data:\n" + e.toString());
     }
