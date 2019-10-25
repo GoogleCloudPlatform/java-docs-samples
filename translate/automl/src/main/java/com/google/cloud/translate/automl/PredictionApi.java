@@ -29,7 +29,6 @@ import com.google.cloud.automl.v1beta1.ExamplePayload;
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.PredictResponse;
 import com.google.cloud.automl.v1beta1.PredictionServiceClient;
-
 import com.google.cloud.automl.v1beta1.TextSnippet;
 import java.io.IOException;
 import java.io.PrintStream;

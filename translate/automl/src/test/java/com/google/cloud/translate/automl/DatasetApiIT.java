@@ -19,8 +19,10 @@ package com.google.cloud.translate.automl;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +57,8 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testCreateImportDeleteDataset() {
+  public void testCreateImportDeleteDataset()
+      throws IOException, ExecutionException, InterruptedException {
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
@@ -90,7 +93,7 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testListDataset() {
+  public void testListDataset() throws IOException {
     // Act
     DatasetApi.listDatasets(PROJECT_ID, COMPUTE_REGION, "translation_dataset_metadata:*");
 
@@ -100,7 +103,7 @@ public class DatasetApiIT {
   }
 
   @Test
-  public void testGetDataset() {
+  public void testGetDataset() throws IOException {
 
     // Act
     DatasetApi.getDataset(PROJECT_ID, COMPUTE_REGION, getdatasetId);

@@ -57,10 +57,10 @@ public class ModelApi {
    * @param computeRegion the Region name.
    * @param dataSetId the Id of the dataset to which model is created.
    * @param modelName the Name of the model.
-   * @throws Exception on AutoML Client errors
    */
   public static void createModel(
-      String projectId, String computeRegion, String dataSetId, String modelName) throws Exception {
+      String projectId, String computeRegion, String dataSetId, String modelName)
+      throws IOException, InterruptedException, ExecutionException {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 

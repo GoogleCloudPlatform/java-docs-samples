@@ -56,7 +56,8 @@ public class DatasetApi {
    * @param target the Target language
    */
   public static void createDataset(
-      String projectId, String computeRegion, String datasetName, String source, String target) {
+      String projectId, String computeRegion, String datasetName, String source, String target)
+      throws IOException {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -99,8 +100,6 @@ public class DatasetApi {
       System.out.println("Dataset create time:");
       System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
   // [END automl_translate_create_dataset]
@@ -113,7 +112,8 @@ public class DatasetApi {
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param filter the Filter expression.
    */
-  public static void listDatasets(String projectId, String computeRegion, String filter) {
+  public static void listDatasets(String projectId, String computeRegion, String filter)
+      throws IOException {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -149,8 +149,6 @@ public class DatasetApi {
         System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
         System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
   // [END automl_translate_list_datasets]
@@ -163,7 +161,8 @@ public class DatasetApi {
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param datasetId the Id of the dataset.
    */
-  public static void getDataset(String projectId, String computeRegion, String datasetId) {
+  public static void getDataset(String projectId, String computeRegion, String datasetId)
+      throws IOException {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -192,8 +191,6 @@ public class DatasetApi {
       System.out.println("Dataset create time:");
       System.out.println(String.format("\tseconds: %s", dataset.getCreateTime().getSeconds()));
       System.out.println(String.format("\tnanos: %s", dataset.getCreateTime().getNanos()));
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
   // [END automl_translate_get_dataset]
@@ -208,7 +205,8 @@ public class DatasetApi {
    * @param path the remote Path of the training data csv file.
    */
   public static void importData(
-      String projectId, String computeRegion, String datasetId, String path) {
+      String projectId, String computeRegion, String datasetId, String path)
+      throws IOException, InterruptedException, ExecutionException {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -229,8 +227,6 @@ public class DatasetApi {
 
       Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
       System.out.println(String.format("Dataset imported. %s", response));
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
   // [END automl_translate_import_data]
@@ -243,7 +239,8 @@ public class DatasetApi {
    * @param computeRegion the Region name. (e.g., "us-central1").
    * @param datasetId the Id of the dataset.
    */
-  public static void deleteDataset(String projectId, String computeRegion, String datasetId) {
+  public static void deleteDataset(String projectId, String computeRegion, String datasetId)
+      throws IOException, InterruptedException, ExecutionException {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -254,8 +251,6 @@ public class DatasetApi {
       Empty response = client.deleteDatasetAsync(datasetFullId).get();
 
       System.out.println(String.format("Dataset deleted. %s", response));
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
   // [END automl_translate_delete_dataset]
