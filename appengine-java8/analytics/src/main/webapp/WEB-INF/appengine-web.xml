@@ -20,4 +20,3 @@
     <env-var name="GA_TRACKING_ID" value="YOUR-GA-TRACKING-ID" />
   </env-variables>
 </appengine-web-app>
-

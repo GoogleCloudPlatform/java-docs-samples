@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 /** Tests for vision "Deploy Model Node Count" sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DeployModelNodeCountIT {
+public class ObjectDetectionDeployModelNodeCountIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String MODEL_ID = "IOD1854128448151224320";
   private ByteArrayOutputStream bout;
@@ -64,8 +64,8 @@ public class DeployModelNodeCountIT {
   }
 
   @Test
-  public void testModelApi() {
-    DeployModelNodeCount.deployModelNodeCount(PROJECT_ID, MODEL_ID);
+  public void testObjectDetectionDeployModelNodeCountApi() {
+    ObjectDetectionDeployModelNodeCount.objectDetectionDeployModelNodeCount(PROJECT_ID, MODEL_ID);
 
     String got = bout.toString();
     assertThat(got).contains("Model deployment on 2 nodes finished");

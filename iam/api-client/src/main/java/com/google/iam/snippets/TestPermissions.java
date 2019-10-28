@@ -15,7 +15,7 @@
 
 package com.google.iam.snippets;
 
-// [START iam-test-permissions]
+// [START iam_test_permissions]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -78,4 +78,4 @@ public class TestPermissions {
     return service;
   }
 }
-// [END iam-test-permissions]
+// [END iam_test_permissions]
