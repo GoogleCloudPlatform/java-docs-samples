@@ -43,4 +43,4 @@ public class QuickstartSample {
     System.out.printf("Translation: %s%n", translation.getTranslatedText());
   }
 }
-// [END translate_v3_quickstart]
+// [END translate_quickstart]
