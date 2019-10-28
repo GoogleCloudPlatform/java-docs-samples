@@ -120,24 +120,22 @@ public static void exampleSnippet(String projectId, String filePath) {
 ```
  
 ### Exception Handling
-Snippets should follow Java best practices and attempt to catch the most specific type of
-`Exception`, instead of a more general one. Additionally, the scope of any try/catch blocks should
-be limited to where an error can occur (within reason).
+Snippets should follow the
+[Google Java style guide](https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+and catch the most specific type of `Exception`, instead of a more general one. Additionally, exceptions
+of any try/catch blocks should be limited to where an error can actually (within reason) occur. Ideally, we will
+provide either code or comments suggesting how the developer can mitigate the exception in the catch block, or
+why it's safe to ignore.
 
-If the `Exception` has a programmatic solution to resolve it, include example code to handle the
-error. If their is no solution (or if the solution is too verbose to resolve inside the snippet),
-log the exception via `System.out.println` along with information to avoided or resolved for future
-calls. 
-
+If their is no solution (or if the solution is too verbose to resolve inside the snippet) then include `throws`
+and a list of exceptions in the method definition and either don't catch the exception or catch and rethrow it.
 
 Example:
 ```java
 try {
   // Do something
-} catch (IllegalArgumentException e) {
-  // IllegalArgumentException's are thrown when an invalid argument has been passed to a function.
-  // This error should be logged so that the root cause can be debugged and prevented in the future.
-  System.out.println("Error during functionName: \n" + e.toString());
+} catch (IllegalArgumentException ok) {
+  // IllegalArgumentException's are thrown when an invalid argument has been passed to a function. Ok to ignore.
 }
 ```
 
