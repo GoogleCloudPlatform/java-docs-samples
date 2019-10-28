@@ -4,17 +4,20 @@ This doc maintains an outline for 'snippet' samples specific to Java. Currently,
 samples in this format are located 
 [here](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/dlp/src/main/java/dlp/snippets).
 
+Larger sample applications should attempt to follow many of these guidelines as well, but some may
+be ignored or waived as there can be many structural differences between applications and snippets.
+
 
 ## Specific Goals
 This sample format is intended to help enforce some specific goals in our samples. Even if not 
 specifically mentioned in the format, samples should make best-effort attempts in the following:
 
-* __Easily runnable__ - samples should be as easy for a user to run as possible. Users should be 
-  able to copy and paste the code into their own environments and run with as few and transparent 
-  modifications as possible.  
+* __Copy-paste-runnable__ - Users should be able to copy and paste the code into their own
+  environments and run with as few and transparent modifications as possible. Samples should be as
+  easy for a user to run as possible.
   
-* __Teach through code__ - samples should teach users how and why specific best practices should
-  be implemented and performed when interacting with our services.
+* __Teach through code__ - samples should teach users both how and why specific best practices
+  should be implemented and performed when interacting with our services.
   
 * __Idiomatic__ - examples should make best attempts to remain idiomatic and encourage good 
   practices that are specific to a language or practice. 
@@ -44,44 +47,95 @@ Project should have a `pom.xml` that is readably formatted, declares a parent po
   </parent>
 ```
 
+### Project Configuration
+Use of environment variables over system properties is strongly preferred for configuration. 
+
+Any additional files required should be stored in `src/test/resources`.
+
+
 ### Project Setup
 The README.md should contain instructions for the user to get the samples operable. Ideally, steps
   such as project or resource setup should be links to Cloud Documentation. This is to reduce 
   duplicate instructions and README maintenance in the future. 
 
-### Sample Structure
-Each snippet should be be contained in its own file, within a class with a name descriptive of 
-  the snippet and a similarly named function. Region tags should start below the package, but should
-  include the class and any imports in full. Additional functions can be used if it improves 
-  readability of the sample.
+### Class Structure
+Each snippet should be be contained in its own file, within a class with a name descriptive of the
+snippet and a similarly named function. Region tags should start below the package, but should
+include the class and any imports in full. Additional functions can be used if it improves
+readability of the sample.
+
+
+```java
+package dlp.snippets;
+
+// [START product_example]
+
+import com.example.resource;
+
+public class exampleSnippet {
+  // Snippet functions ...
+}
+// [END product_example]
+```
+
+### Function Comment
+Include a short, descriptive comment detailing what action the snippet it attempting to perform.
+Avoid using the javadoc format, as these samples are not used to generate documentation and it can
+be redundant whe
+
+```java
+// This is an example snippet for show best practices.
+public static void exampleSnippet(String projectId, String filePath) {
+    // Snippet content ...
+}
+```
   
-### Function Parameters
-Function parameters should be limited to what is absolutely required for testing. For example, 
- project specific information (such as `projectId`) or a `filePath` for an external file are 
- allowed. A parameter for the type of a file or a specific action is not.
+### Function Structure
+Function parameters should be limited to what is absolutely required for testing. In more cases,
+this is project specific information or the path to an external file. For example, project specific
+information (such as `projectId`) or a `filePath` for an external file is acceptable, while a
+parameter for the type of a file or a specific action is not.
  
-Any declared function parameters should include a commented out example of how that parameter could
- be declared. This provides both an example of how to derive the variables and what information they 
- should represent. 
- 
-### Function Return Type
-The function in the snippet should not return any value. Instead, they should print the results of
- actions to the console to be validated later. 
+Any declared function parameters should include a no-arg, overloaded function with examples for how
+the user can initialize the function parameters and call the entrypoint for the snippet. If the
+values for these variables need to be replaced by the user, attempt to make it explicitly clear that
+they are example values only.
+
+Snippet functions should specific a return type of `void` and avoid returning any value wherever
+possible. Instead, show the user how to interact with a returned object programmatically by printing
+some example attributes to the console. 
+
+```java
+public static void exampleSnippet() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String filePath = "path/to/image.png";
+    inspectImageFile(projectId, filePath);
+}
+
+// This is an example snippet for show best practices.
+public static void exampleSnippet(String projectId, String filePath) {
+    // Snippet content ...
+}
+```
  
 ### Exception Handling
-The snippet should show how to correctly handle Exceptions that occur during the snippet. Top level 
- exceptions can be handled by logging the exception to `System.out.println`. If the exception is 
- something the user may commonly encounter, include a comment explaining how to avoid or handle 
- correctly.
+Snippets should follow the
+[Google Java style guide](https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+and catch the most specific type of `Exception`, instead of a more general one. Additionally, exceptions
+of any try/catch blocks should be limited to where an error can actually (within reason) occur. Ideally, we will
+provide either code or comments suggesting how the developer can mitigate the exception in the catch block, or
+why it's safe to ignore.
+
+If their is no solution (or if the solution is too verbose to resolve inside the snippet) then include `throws`
+and a list of exceptions in the method definition and either don't catch the exception or catch and rethrow it.
 
 Example:
 ```java
 try {
   // Do something
-} catch (IllegalArgumentException e) {
-  // IllegalArgumentException's are thrown when an invalid argument has been passed to a function.
-  // This error should be logged to that the root cause can be debugged and prevented in the future.
-  System.out.println("Error during functionName: \n" + e.toString());
+} catch (IllegalArgumentException ok) {
+  // IllegalArgumentException's are thrown when an invalid argument has been passed to a function. Ok to ignore.
 }
 ```
 
@@ -96,34 +150,37 @@ Example:
 // the "close" method on the client to safely clean up any remaining background resources.
 try (DlpServiceClient dlp = DlpServiceClient.create()) {
   // Do something
-} catch (Exception e) {
-  System.out.println("Error during functionName: \n" + e.toString());
+} catch (IOException e) {
+  System.out.println("Unable to intailize service client, as a network error occured: \n" 
+    + e.toString());
 }
 ```
 
 ### Arrange, Act, Assert
-Samples should generally follow the following outline: 
+Samples should generally follow the "Arrange, Act, Assert" outline to: 
 * _Arrange_ - Create and configure the components for the request. Avoid nesting these components,
- as often they use Builders which can hinder readibility. 
+  as complex, nested builders can be hard to read.
 * _Act_ - Send the request and receive the response.
 * _Assert_ - Verify the call was successful or that the response is correct. This is often done by
- print contents of the response to stdout. 
+  print contents of the response to `stdout`.
 
 ### Testing
 Snippets should have tests that should verify the snippet works and compiles correctly. Creating 
  mocks for these tests are optional. These tests should capture output created by the snippet to 
- verify that it works correctly. See the tests in the cannoncial for an example of how to do this
+ verify that it works correctly. See the tests in the canonical for an example of how to do this
  correctly. 
-
-### External Resources
-Use of environment variables over system properties is strongly preferred for configuration. 
-
-Any additional files required should be stored in `src/test/resources`.
 
 ## Additional Best Practices 
 
 The following are some general Java best practices that should be followed in samples to remain
 idiomatic. 
+
+
+### Style
+Wherever possible (and when not conflicting any of the above guidelines), follow the
+[Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). It's encouraged, but
+not required to use `[google-java-format](https://github.com/google/google-java-format)` to help 
+format your code. 
 
 ### Time
 Use the `java.time` package when dealing with units of time in some manner. 
