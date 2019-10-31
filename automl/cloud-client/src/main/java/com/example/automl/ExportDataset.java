@@ -28,12 +28,16 @@ import java.util.concurrent.ExecutionException;
 
 class ExportDataset {
 
+  static void exportDataset() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String datasetId = "YOUR_DATASET_ID";
+    String gcsUri = "gs://BUCKET_ID/path_to_export/";
+    exportDataset(projectId, datasetId, gcsUri);
+  }
+
   // Export a dataset
   static void exportDataset(String projectId, String datasetId, String gcsUri) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String datasetId = "YOUR_DATASET_ID";
-    // String gcsUri = "gs://BUCKET_ID/path_to_export/";
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.

@@ -25,11 +25,15 @@ import java.io.IOException;
 
 class GetModel {
 
+  static void getModel() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String modelId = "YOUR_MODEL_ID";
+    getModel(projectId, modelId);
+  }
+
   // Get a model
   static void getModel(String projectId, String modelId) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String modelId = "YOUR_MODEL_ID";
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.

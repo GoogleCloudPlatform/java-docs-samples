@@ -29,15 +29,19 @@ import java.util.concurrent.ExecutionException;
 
 class ImportDataset {
 
-  // Initialize client that will be used to send requests. This client only needs to be created
-  // once, and can be reused for multiple requests. After completing all of your requests, call
-  // the "close" method on the client to safely clean up any remaining background resources.
-  static void importDataset(String projectId, String datasetId, String path) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String datasetId = "YOUR_DATASET_ID";
-    // String path = "gs://BUCKET_ID/path_to_training_data.csv";
+  static void importDataset() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String datasetId = "YOUR_DATASET_ID";
+    String path = "gs://BUCKET_ID/path_to_training_data.csv";
+    importDataset(projectId, datasetId, path);
+  }
 
-    // Instantiates a client
+  // Import a dataset
+  static void importDataset(String projectId, String datasetId, String path) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AutoMlClient client = AutoMlClient.create()) {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);

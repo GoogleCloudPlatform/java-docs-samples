@@ -26,10 +26,14 @@ import java.io.IOException;
 
 class ListModels {
 
+  static void listModels() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    listModels(projectId);
+  }
+
   // List models
   static void listModels(String projectId) {
-    // String projectId = "YOUR_PROJECT_ID";
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
