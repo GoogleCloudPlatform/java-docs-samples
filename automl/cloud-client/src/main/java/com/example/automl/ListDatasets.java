@@ -26,14 +26,14 @@ import java.io.IOException;
 
 class ListDatasets {
 
-  static void listDatasets() {
+  static void listDatasets() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     listDatasets(projectId);
   }
 
   // List the datasets
-  static void listDatasets(String projectId) {
+  static void listDatasets(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -69,8 +69,6 @@ class ListDatasets {
         System.out.format("\tseconds: %s\n", dataset.getCreateTime().getSeconds());
         System.out.format("\tnanos: %s\n", dataset.getCreateTime().getNanos());
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

@@ -23,6 +23,7 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +55,7 @@ public class TranslateModelManagementIT {
   }
 
   @Test
-  public void testModelApi() {
+  public void testModelApi() throws IOException {
     // LIST MODELS
     ListModels.listModels(PROJECT_ID);
     String got = bout.toString();
@@ -88,7 +89,7 @@ public class TranslateModelManagementIT {
   }
 
   @Test
-  public void testOperationStatus() {
+  public void testOperationStatus() throws IOException {
     // Act
     ListOperationStatus.listOperationStatus(PROJECT_ID);
 
@@ -107,7 +108,7 @@ public class TranslateModelManagementIT {
   }
 
   @Test
-  public void testCreateModel() throws IOException {
+  public void testCreateModel() throws IOException, ExecutionException, InterruptedException {
     TranslateCreateModel.createModel(PROJECT_ID, DATASET_ID, MODEL_NAME);
 
     String got = bout.toString();

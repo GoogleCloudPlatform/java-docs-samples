@@ -26,14 +26,14 @@ import java.io.IOException;
 
 class ListModels {
 
-  static void listModels() {
+  static void listModels() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     listModels(projectId);
   }
 
   // List models
-  static void listModels(String projectId) {
+  static void listModels(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -65,8 +65,6 @@ class ListModels {
         System.out.format("\tnanos: %s\n", model.getCreateTime().getNanos());
         System.out.format("Model deployment state: %s\n", model.getDeploymentState());
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

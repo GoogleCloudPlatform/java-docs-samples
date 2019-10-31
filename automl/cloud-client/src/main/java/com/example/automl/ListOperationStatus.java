@@ -26,14 +26,14 @@ import java.io.IOException;
 
 class ListOperationStatus {
 
-  static void listOperationStatus() {
+  static void listOperationStatus() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     listOperationStatus(projectId);
   }
 
   // Get the status of an operation
-  static void listOperationStatus(String projectId) {
+  static void listOperationStatus(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -61,8 +61,6 @@ class ListOperationStatus {
           System.out.format("\t\tError message: %s\n\n", operation.getError().getMessage());
         }
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

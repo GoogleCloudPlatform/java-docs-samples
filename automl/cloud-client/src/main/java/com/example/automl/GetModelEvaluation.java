@@ -25,7 +25,7 @@ import java.io.IOException;
 
 class GetModelEvaluation {
 
-  static void getModelEvaluation() {
+  static void getModelEvaluation() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
@@ -34,7 +34,8 @@ class GetModelEvaluation {
   }
 
   // Get a model evaluation
-  static void getModelEvaluation(String projectId, String modelId, String modelEvaluationId) {
+  static void getModelEvaluation(String projectId, String modelId, String modelEvaluationId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -55,8 +56,6 @@ class GetModelEvaluation {
           "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
       System.out.format(
           "Model Evaluation Metrics: %s\n", modelEvaluation.getTranslationEvaluationMetrics());
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

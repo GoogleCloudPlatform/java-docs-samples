@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 class ImportDataset {
 
-  static void importDataset() {
+  static void importDataset() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String datasetId = "YOUR_DATASET_ID";
@@ -38,7 +38,8 @@ class ImportDataset {
   }
 
   // Import a dataset
-  static void importDataset(String projectId, String datasetId, String path) {
+  static void importDataset(String projectId, String datasetId, String path)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -56,8 +57,6 @@ class ImportDataset {
 
       Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
       System.out.format("Dataset imported. %s\n", response);
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }

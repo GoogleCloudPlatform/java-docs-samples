@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 class TranslateCreateDataset {
 
-  static void createDataset() {
+  static void createDataset() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String displayName = "YOUR_DATASET_NAME";
@@ -37,7 +37,8 @@ class TranslateCreateDataset {
   }
 
   // Create a dataset
-  static void createDataset(String projectId, String displayName) {
+  static void createDataset(String projectId, String displayName)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -69,8 +70,6 @@ class TranslateCreateDataset {
       String[] names = createdDataset.getName().split("/");
       String datasetId = names[names.length - 1];
       System.out.format("Dataset id: %s\n", datasetId);
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }

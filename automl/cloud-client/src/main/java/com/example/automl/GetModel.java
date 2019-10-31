@@ -25,7 +25,7 @@ import java.io.IOException;
 
 class GetModel {
 
-  static void getModel() {
+  static void getModel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
@@ -33,7 +33,7 @@ class GetModel {
   }
 
   // Get a model
-  static void getModel(String projectId, String modelId) {
+  static void getModel(String projectId, String modelId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -55,8 +55,6 @@ class GetModel {
       System.out.format("\tseconds: %s\n", model.getCreateTime().getSeconds());
       System.out.format("\tnanos: %s\n", model.getCreateTime().getNanos());
       System.out.format("Model deployment state: %s\n", model.getDeploymentState());
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

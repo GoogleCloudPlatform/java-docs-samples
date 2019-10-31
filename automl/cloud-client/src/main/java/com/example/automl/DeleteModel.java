@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 class DeleteModel {
 
-  static void deleteModel() {
+  static void deleteModel() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
@@ -34,7 +34,8 @@ class DeleteModel {
   }
 
   // Get a model
-  static void deleteModel(String projectId, String modelId) {
+  static void deleteModel(String projectId, String modelId)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -47,8 +48,6 @@ class DeleteModel {
 
       System.out.println("Model deletion started...");
       System.out.println(String.format("Model deleted. %s", response));
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }

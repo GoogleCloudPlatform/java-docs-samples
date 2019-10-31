@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 class DeleteDataset {
 
-  static void deleteDataset() {
+  static void deleteDataset() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String datasetId = "YOUR_DATASET_ID";
@@ -34,7 +34,8 @@ class DeleteDataset {
   }
 
   // Delete a dataset
-  static void deleteDataset(String projectId, String datasetId) {
+  static void deleteDataset(String projectId, String datasetId)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -43,8 +44,6 @@ class DeleteDataset {
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
       Empty response = client.deleteDatasetAsync(datasetFullId).get();
       System.out.format("Dataset deleted. %s\n", response);
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }

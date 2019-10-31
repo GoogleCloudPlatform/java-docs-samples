@@ -19,7 +19,9 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +33,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TranslatePredictIT {
-  private static final String COMPUTE_REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String modelId = "TRL2188848820815848149";
   private static final String filePath = "./resources/input.txt";
@@ -51,7 +52,7 @@ public class TranslatePredictIT {
   }
 
   @Test
-  public void testPredict() {
+  public void testPredict() throws IOException {
     // Act
     TranslatePredict.predict(PROJECT_ID, modelId, filePath);
 

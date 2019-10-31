@@ -24,8 +24,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +60,8 @@ public class TranslateDatasetManagementIT {
   }
 
   @Test
-  public void testCreateImportDeleteDataset() {
+  public void testCreateImportDeleteDataset()
+      throws IOException, ExecutionException, InterruptedException {
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
@@ -88,7 +91,7 @@ public class TranslateDatasetManagementIT {
   }
 
   @Test
-  public void testListDataset() {
+  public void testListDataset() throws IOException {
     // Act
     ListDatasets.listDatasets(PROJECT_ID);
 
@@ -98,7 +101,7 @@ public class TranslateDatasetManagementIT {
   }
 
   @Test
-  public void testGetDataset() {
+  public void testGetDataset() throws IOException {
     // Act
     GetDataset.getDataset(PROJECT_ID, getdatasetId);
 
@@ -109,7 +112,7 @@ public class TranslateDatasetManagementIT {
   }
 
   @Test
-  public void testExportDataset() {
+  public void testExportDataset() throws IOException, ExecutionException, InterruptedException {
     ExportDataset.exportDataset(PROJECT_ID, getdatasetId, BUCKET + "/TEST_EXPORT_OUTPUT/");
 
     Storage storage = StorageOptions.getDefaultInstance().getService();

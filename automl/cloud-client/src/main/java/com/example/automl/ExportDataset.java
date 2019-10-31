@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 class ExportDataset {
 
-  static void exportDataset() {
+  static void exportDataset() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String datasetId = "YOUR_DATASET_ID";
@@ -37,7 +37,8 @@ class ExportDataset {
   }
 
   // Export a dataset
-  static void exportDataset(String projectId, String datasetId, String gcsUri) {
+  static void exportDataset(String projectId, String datasetId, String gcsUri)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -54,8 +55,6 @@ class ExportDataset {
       System.out.println("Processing export...");
       Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
       System.out.format("Dataset exported. %s\n", response);
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }

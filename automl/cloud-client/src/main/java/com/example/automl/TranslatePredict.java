@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 
 class TranslatePredict {
 
-  static void predict() {
+  static void predict() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
@@ -39,7 +39,7 @@ class TranslatePredict {
   }
 
   // Predict
-  static void predict(String projectId, String modelId, String filePath) {
+  static void predict(String projectId, String modelId, String filePath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -58,8 +58,6 @@ class TranslatePredict {
       TextSnippet translatedContent =
           response.getPayload(0).getTranslation().getTranslatedContent();
       System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

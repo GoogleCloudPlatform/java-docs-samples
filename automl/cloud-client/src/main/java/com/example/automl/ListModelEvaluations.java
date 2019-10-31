@@ -26,7 +26,7 @@ import java.io.IOException;
 
 class ListModelEvaluations {
 
-  static void listModelEvaluations() {
+  static void listModelEvaluations() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
@@ -34,7 +34,7 @@ class ListModelEvaluations {
   }
 
   // List model evaluations
-  static void listModelEvaluations(String projectId, String modelId) {
+  static void listModelEvaluations(String projectId, String modelId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -59,8 +59,6 @@ class ListModelEvaluations {
         System.out.format(
             "Model Evaluation Metrics: %s\n\n", modelEvaluation.getTranslationEvaluationMetrics());
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }
