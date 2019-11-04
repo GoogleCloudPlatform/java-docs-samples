@@ -53,9 +53,6 @@ public class FhirStoreTests {
   private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
 
-  private static String storageFileName = "IM-0002-0001-JPEG-BASELINE.dcm";
-  private static String gcsFileName = GCLOUD_BUCKET_NAME + "/" + storageFileName;
-
   private static String datasetName;
 
   private static String fhirStoreName;
@@ -177,7 +174,9 @@ public class FhirStoreTests {
 
   @Test
   public void test_FhirStoreImport() throws Exception {
-    FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + gcsFileName);
+    FhirStoreImport.fhirStoreImport(
+        fhirStoreName,
+        "gs://" + GCLOUD_BUCKET_NAME + "/healthcare-api/Patient.json");
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR store import complete:"));

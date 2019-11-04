@@ -20,11 +20,11 @@ set -eo pipefail
 # Only needed if deploy completed.
 function cleanup {
   set -x
-  gcloud --quiet container images delete "${CONTAINER_IMAGE}" || true
+  gcloud container images delete "${CONTAINER_IMAGE}" --quiet --no-user-output-enabled || true
   gcloud beta run services delete ${SERVICE_NAME} \
     --platform=managed \
     --region="${REGION:-us-central1}" \
-    --quiet
+    --quiet --no-user-output-enabled
 }
 trap cleanup EXIT
 
@@ -44,14 +44,13 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # Build the service
 set -x
-# TODO: quiet doesn't work for "gcloud build submit"
-gcloud --quiet builds submit --tag="${CONTAINER_IMAGE}"
+gcloud builds submit --tag="${CONTAINER_IMAGE}" --quiet --no-user-output-enabled
 
 gcloud beta run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
   --platform=managed \
-  --quiet
+  --quiet --no-user-output-enabled
 
 set +x
 
