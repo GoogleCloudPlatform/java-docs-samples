@@ -13,8 +13,8 @@
 # limitations under the License.
 
 runtime: java11
-instance_class: F2
-entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main cloudsql.war'
+instance_class: F1
+entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main cloudsql.war'
 
 env_variables:
   CLOUD_SQL_CONNECTION_NAME: "my-project:region:instance"

@@ -35,9 +35,8 @@ public class ModelApiIT {
   private static final String COMPUTE_REGION = "us-central1";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private ModelApi app;
   private String modelId;
-  private String modelIdGetevaluation = "342705131419266916";
+  private String modelIdGetevaluation = "TCN342705131419266916";
   private String modelEvaluationId = "3666189665418739402";
 
   @Before
