@@ -23,11 +23,13 @@ public class LogEntry {
 
   private static Logger LOGGER = Logger.getLogger(LogEntry.class.getName());
 
-  public void helloPubSub(PubSubMessage message) throws IOException {
+  public String helloPubSub(PubSubMessage message) throws IOException {
     if (message.data.isEmpty()) {
       message.data = "World";
     }
-    LOGGER.info(String.format("Hello, %s", message.data));
+    String res = String.format("Hello, %s", message.data);
+    LOGGER.info(res);
+    return res;
   }
 
   // A Pub/Sub message.
