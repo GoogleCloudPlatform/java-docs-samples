@@ -199,7 +199,8 @@ public class SnippetsTests {
 
   @Test
   public void logEntry() throws IOException {
-    LogEntry.PubSubMessage message = gson.fromJson("{\"data\":\"data\",\"messageId\":\"id\"}", LogEntry.PubSubMessage.class);
+    LogEntry.PubSubMessage message = gson.fromJson(
+        "{\"data\":\"data\",\"messageId\":\"id\"}", LogEntry.PubSubMessage.class);
     String res = new LogEntry().helloPubSub(message);
     assertThat(res, containsString("Hello, data"));
   }
