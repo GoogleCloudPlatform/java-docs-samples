@@ -141,7 +141,7 @@ public class StorageArrowSample {
               .setParent(parent)
               .setTableReference(tableReference)
               .setReadOptions(options)
-              // This API can also deliver data serialized in Apache Arrow format.
+              // This API can also deliver data serialized in Apache Avro format.
               // This example leverages Apache Arrow.
               .setFormat(DataFormat.ARROW)
               // We use a LIQUID strategy in this example because we only
