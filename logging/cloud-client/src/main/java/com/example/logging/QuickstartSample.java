@@ -28,7 +28,8 @@ import java.util.Collections;
 /**
  * This sample demonstrates writing logs using the Stackdriver Logging API.
  * The library also offers a java.util.logging Handler `com.google.cloud.logging.LoggingHandler`
- * Logback integration is also available : https://goo.gl/DNMoRh
+ * Logback integration is also available : 
+ * https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-clients/google-cloud-contrib/google-cloud-logging-logback
  * Using the java.util.logging handler / Logback appender should be preferred to using the API
  * directly.
  */
