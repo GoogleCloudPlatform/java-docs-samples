@@ -95,7 +95,7 @@ limitations under the License.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.5</version>
+      <version>2.6</version>
     </dependency>
     <!-- // [END run_imageproc_dep] -->
   </dependencies>

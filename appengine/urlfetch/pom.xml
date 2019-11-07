@@ -45,7 +45,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20180813</version>
+      <version>20190722</version>
     </dependency>
   </dependencies>
 

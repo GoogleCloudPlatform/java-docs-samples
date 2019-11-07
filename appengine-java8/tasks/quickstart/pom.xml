@@ -52,7 +52,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>1.10.0</version>
+      <version>1.26.0</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
