@@ -127,7 +127,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>1.9.59</version>
+        <version>1.9.76</version>
       </plugin>
     </plugins>
   </build>

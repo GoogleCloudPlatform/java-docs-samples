@@ -16,6 +16,7 @@
 
 package com.example.firestore.snippets;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -213,6 +214,30 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
     List<String> secondPage = getResults(pages.get(1));
     assertEquals(Arrays.asList("DC", "SF", "LA", "TOK", "BJ"), firstPage);
     assertEquals(new ArrayList<String>(), secondPage);
+  }
+
+  @Test
+  public void testQueryFilterArrayContainsAny() throws Exception {
+    Query query = queryDataSnippets.arrayContainsAnyQueries();
+    Set<String> expected = newHashSet("SF", "LA", "DC");
+    Set<String> actual = getResultsAsSet(query);
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testQueryFilterInQueryWithoutArray() throws Exception {
+    Query query = queryDataSnippets.inQueryWithoutArray();
+    Set<String> expected = newHashSet("SF", "LA", "DC", "TOK");
+    Set<String> actual = getResultsAsSet(query);
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testQueryFilterInQueryWithArray() throws Exception {
+    Query query = queryDataSnippets.inQueryWithArray();
+    Set<String> expected = newHashSet("DC");
+    Set<String> actual = getResultsAsSet(query);
+    assertEquals(expected, actual);
   }
 
   private Set<String> getResultsAsSet(Query query) throws Exception {
