@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 // [START automl_translate_get_dataset]
+
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.Dataset;
 import com.google.cloud.automl.v1.DatasetName;
@@ -25,11 +26,15 @@ import java.io.IOException;
 
 class GetDataset {
 
-  // Get a dataset
-  static void getDataset(String projectId, String datasetId) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String datasetId = "YOUR_DATASET_ID";
+  static void getDataset() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String datasetId = "YOUR_DATASET_ID";
+    getDataset(projectId, datasetId);
+  }
 
+  // Get a dataset
+  static void getDataset(String projectId, String datasetId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -57,8 +62,6 @@ class GetDataset {
       System.out.println("Dataset create time:");
       System.out.format("\tseconds: %s\n", dataset.getCreateTime().getSeconds());
       System.out.format("\tnanos: %s\n", dataset.getCreateTime().getNanos());
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }
