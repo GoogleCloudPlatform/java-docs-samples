@@ -15,7 +15,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core</artifactId>
-      <version>1.77.0</version>
+      <version>1.91.3</version>
       <scope>compile</scope>
     </dependency>
     <!-- [END dependencies] -->

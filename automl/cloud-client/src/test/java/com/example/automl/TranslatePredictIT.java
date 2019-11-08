@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,12 +29,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for translation "PredictionAPI" sample. */
+/** Tests for translation "Predict" sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class PredictionApiIT {
-  private static final String COMPUTE_REGION = "us-central1";
-  private static final String PROJECT_ID = "java-docs-samples-testing";
+public class TranslatePredictIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String modelId = "TRL2188848820815848149";
   private static final String filePath = "./resources/input.txt";
   private ByteArrayOutputStream bout;
@@ -51,9 +52,9 @@ public class PredictionApiIT {
   }
 
   @Test
-  public void testPredict() throws Exception {
+  public void testPredict() throws IOException {
     // Act
-    PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, modelId, filePath);
+    TranslatePredict.predict(PROJECT_ID, modelId, filePath);
 
     // Assert
     String got = bout.toString();
