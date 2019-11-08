@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_get_model_evaluation]
+// [START automl_get_model_evaluation]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ModelEvaluation;
 import com.google.cloud.automl.v1.ModelEvaluationName;
@@ -25,12 +25,17 @@ import java.io.IOException;
 
 class GetModelEvaluation {
 
-  // Get a model evaluation
-  static void getModelEvaluation(String projectId, String modelId, String modelEvaluationId) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String modelId = "YOUR_MODEL_ID";
-    // String modelEvaluationId = "YOUR_MODEL_EVALUATION_ID";
+  static void getModelEvaluation() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String modelId = "YOUR_MODEL_ID";
+    String modelEvaluationId = "YOUR_MODEL_EVALUATION_ID";
+    getModelEvaluation(projectId, modelId, modelEvaluationId);
+  }
 
+  // Get a model evaluation
+  static void getModelEvaluation(String projectId, String modelId, String modelEvaluationId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -51,9 +56,7 @@ class GetModelEvaluation {
           "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
       System.out.format(
           "Model Evaluation Metrics: %s\n", modelEvaluation.getTranslationEvaluationMetrics());
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }
-// [END automl_translate_get_model_evaluation]
+// [END automl_get_model_evaluation]
