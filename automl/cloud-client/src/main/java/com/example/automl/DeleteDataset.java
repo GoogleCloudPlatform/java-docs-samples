@@ -14,38 +14,37 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_delete_model]
+// [START automl_delete_dataset]
 import com.google.cloud.automl.v1.AutoMlClient;
-import com.google.cloud.automl.v1.ModelName;
+import com.google.cloud.automl.v1.DatasetName;
 import com.google.protobuf.Empty;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-class DeleteModel {
+class DeleteDataset {
 
-  // Get a model
-  static void deleteModel(String projectId, String modelId) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String modelId = "YOUR_MODEL_ID";
+  static void deleteDataset() throws IOException, ExecutionException, InterruptedException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String datasetId = "YOUR_DATASET_ID";
+    deleteDataset(projectId, datasetId);
+  }
 
+  // Delete a dataset
+  static void deleteDataset(String projectId, String datasetId)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AutoMlClient client = AutoMlClient.create()) {
-      // Get the full path of the model.
-      ModelName modelFullId = ModelName.of(projectId, "us-central1", modelId);
-
-      // Delete a model.
-      Empty response = client.deleteModelAsync(modelFullId).get();
-
-      System.out.println("Model deletion started...");
-      System.out.println(String.format("Model deleted. %s", response));
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
+      // Get the full path of the dataset.
+      DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
+      Empty response = client.deleteDatasetAsync(datasetFullId).get();
+      System.out.format("Dataset deleted. %s\n", response);
     }
   }
 }
-// [END automl_translate_delete_model]
+// [END automl_delete_dataset]

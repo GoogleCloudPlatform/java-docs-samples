@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -23,6 +23,7 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +33,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests for Automl translation models. */
 @RunWith(JUnit4.class)
-public class ModelIT {
+public class TranslateModelManagementIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DATASET_ID = "TRL3946265060617537378";
   private static final String MODEL_NAME = "translation_test_create_model";
@@ -54,7 +55,7 @@ public class ModelIT {
   }
 
   @Test
-  public void testModelApi() {
+  public void testModelApi() throws IOException {
     // LIST MODELS
     ListModels.listModels(PROJECT_ID);
     String got = bout.toString();
@@ -88,7 +89,7 @@ public class ModelIT {
   }
 
   @Test
-  public void testOperationStatus() {
+  public void testOperationStatus() throws IOException {
     // Act
     ListOperationStatus.listOperationStatus(PROJECT_ID);
 
@@ -107,8 +108,8 @@ public class ModelIT {
   }
 
   @Test
-  public void testCreateModel() throws IOException {
-    CreateModel.createModel(PROJECT_ID, DATASET_ID, MODEL_NAME);
+  public void testCreateModel() throws IOException, ExecutionException, InterruptedException {
+    TranslateCreateModel.createModel(PROJECT_ID, DATASET_ID, MODEL_NAME);
 
     String got = bout.toString();
     assertThat(got).contains("Training started");
