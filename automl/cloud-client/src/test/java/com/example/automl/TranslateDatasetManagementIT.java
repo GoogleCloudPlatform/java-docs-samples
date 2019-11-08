@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -24,8 +24,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +38,7 @@ import org.junit.runners.JUnit4;
 /** Tests for Automl translation datasets. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DatasetIT {
+public class TranslateDatasetManagementIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BUCKET = "gs://" + PROJECT_ID + "-vcm";
@@ -58,7 +60,8 @@ public class DatasetIT {
   }
 
   @Test
-  public void testCreateImportDeleteDataset() {
+  public void testCreateImportDeleteDataset()
+      throws IOException, ExecutionException, InterruptedException {
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
@@ -66,12 +69,11 @@ public class DatasetIT {
         String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
 
     // Act
-    CreateDataset.createDataset(PROJECT_ID, datasetName);
+    TranslateCreateDataset.createDataset(PROJECT_ID, datasetName);
 
     // Assert
     String got = bout.toString();
     datasetId = got.split("Dataset id: ")[1].split("\n")[0];
-    assertThat(got).contains("Dataset id:");
 
     // Act
     ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/en-ja-short.csv");
@@ -89,7 +91,7 @@ public class DatasetIT {
   }
 
   @Test
-  public void testListDataset() {
+  public void testListDataset() throws IOException {
     // Act
     ListDatasets.listDatasets(PROJECT_ID);
 
@@ -99,7 +101,7 @@ public class DatasetIT {
   }
 
   @Test
-  public void testGetDataset() {
+  public void testGetDataset() throws IOException {
     // Act
     GetDataset.getDataset(PROJECT_ID, getdatasetId);
 
@@ -110,7 +112,7 @@ public class DatasetIT {
   }
 
   @Test
-  public void testExportDataset() {
+  public void testExportDataset() throws IOException, ExecutionException, InterruptedException {
     ExportDataset.exportDataset(PROJECT_ID, getdatasetId, BUCKET + "/TEST_EXPORT_OUTPUT/");
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -121,16 +123,16 @@ public class DatasetIT {
 
     Page<Blob> blobs =
         storage.list(
-                PROJECT_ID + "-vcm",
+            PROJECT_ID + "-vcm",
             Storage.BlobListOption.currentDirectory(),
             Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
 
     for (Blob blob : blobs.iterateAll()) {
       Page<Blob> fileBlobs =
-              storage.list(
-                      PROJECT_ID + "-vcm",
-                      Storage.BlobListOption.currentDirectory(),
-                      Storage.BlobListOption.prefix(blob.getName()));
+          storage.list(
+              PROJECT_ID + "-vcm",
+              Storage.BlobListOption.currentDirectory(),
+              Storage.BlobListOption.prefix(blob.getName()));
       for (Blob fileBlob : fileBlobs.iterateAll()) {
         if (!fileBlob.isDirectory()) {
           fileBlob.delete();
