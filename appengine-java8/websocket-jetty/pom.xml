@@ -37,7 +37,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
+    <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
     <jetty.version>9.4.4.v20170414</jetty.version>
   </properties>
 
