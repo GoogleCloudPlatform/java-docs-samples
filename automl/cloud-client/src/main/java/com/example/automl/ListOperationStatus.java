@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_list_operation_status]
+// [START automl_list_operation_status]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.longrunning.ListOperationsRequest;
@@ -26,10 +26,14 @@ import java.io.IOException;
 
 class ListOperationStatus {
 
-  // Get the status of an operation
-  static void listOperationStatus(String projectId) {
-    // String projectId = "YOUR_PROJECT_ID";
+  static void listOperationStatus() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    listOperationStatus(projectId);
+  }
 
+  // Get the status of an operation
+  static void listOperationStatus(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -57,9 +61,7 @@ class ListOperationStatus {
           System.out.format("\t\tError message: %s\n\n", operation.getError().getMessage());
         }
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }
-// [END automl_translate_list_operation_status]
+// [END automl_list_operation_status]

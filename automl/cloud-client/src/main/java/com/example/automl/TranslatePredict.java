@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
 // [START automl_translate_predict]
 import com.google.cloud.automl.v1.ExamplePayload;
@@ -28,14 +28,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class Prediction {
+class TranslatePredict {
+
+  static void predict() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String modelId = "YOUR_MODEL_ID";
+    String filePath = "path_to_local_file.txt";
+    predict(projectId, modelId, filePath);
+  }
 
   // Predict
-  static void predict(String projectId, String modelId, String filePath) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String modelId = "YOUR_MODEL_ID";
-    // String filePath = "path_to_local_file.txt";
-
+  static void predict(String projectId, String modelId, String filePath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -54,8 +58,6 @@ class Prediction {
       TextSnippet translatedContent =
           response.getPayload(0).getTranslation().getTranslatedContent();
       System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

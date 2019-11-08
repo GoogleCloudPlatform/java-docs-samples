@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core</artifactId>
-      <version>1.80.0</version>
+      <version>1.91.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.62.0</version>
+      <version>1.100.0</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
