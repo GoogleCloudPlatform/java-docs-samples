@@ -67,7 +67,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.2</version>
+      <version>1.30.5</version>
     </dependency>
 
 
@@ -80,7 +80,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory</artifactId>
-      <version>1.0.14</version>
+      <version>1.0.15</version>
     </dependency>
     <!-- [END gae_java_mysql_dependencies] -->
   </dependencies>

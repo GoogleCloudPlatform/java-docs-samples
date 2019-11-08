@@ -44,7 +44,7 @@
         <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <appengine.maven.plugin.version>2.1.0</appengine.maven.plugin.version>
+        <appengine.maven.plugin.version>2.2.0</appengine.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-management-control-appengine-all</artifactId>
-            <version>1.0.11</version>
+            <version>1.0.12</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
