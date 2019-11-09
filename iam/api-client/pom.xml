@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev550-1.25.0</version>
+      <version>v2-rev20191018-1.30.3</version>
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>

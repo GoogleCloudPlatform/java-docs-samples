@@ -32,7 +32,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v2-rev17-1.24.1</version>
+      <version>v3-rev20190912-1.30.3</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -40,13 +40,13 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.40</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>RELEASE</version>
+      <version>4.13-beta-3</version>
     </dependency>
   </dependencies>
 </project>

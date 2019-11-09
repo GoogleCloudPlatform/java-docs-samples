@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-management-control-appengine-all</artifactId>
-            <version>1.0.11</version>
+            <version>1.0.12</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
