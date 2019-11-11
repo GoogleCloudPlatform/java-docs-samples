@@ -31,12 +31,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-containeranalysis</artifactId>
-      <version>0.117.0-beta</version>
+      <version>0.98.0-beta</version>
     </dependency>
     <dependency>
       <groupId>io.grafeas</groupId>
       <artifactId>grafeas</artifactId>
-      <version>0.21.0</version>
+      <version>0.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core-grpc</artifactId>
-      <version>1.91.3</version>
+      <version>1.80.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-3</version>
+      <version>4.13-beta-2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
