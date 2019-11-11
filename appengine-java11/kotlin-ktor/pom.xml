@@ -73,7 +73,7 @@ limitations under the License.
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-core</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>io.ktor</groupId>
