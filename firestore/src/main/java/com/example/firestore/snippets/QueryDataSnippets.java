@@ -441,4 +441,37 @@ class QueryDataSnippets {
     //CHECKSTYLE ON: RightCurlyAlone
     //CHECKSTYLE ON: Indentation
   }
+
+  public Query arrayContainsAnyQueries() {
+    // [START fs_query_filter_array_contains_any]
+    CollectionReference citiesRef = db.collection("cities");
+
+    Query query = citiesRef
+        .whereArrayContainsAny("regions", Arrays.asList("west_coast", "east_coast"));
+    // [END fs_query_filter_array_contains_any]
+    return query;
+  }
+
+  public Query inQueryWithoutArray() {
+    // [START fs_query_filter_in]
+    CollectionReference citiesRef = db.collection("cities");
+
+    Query query = citiesRef.whereIn("country", Arrays.asList("USA", "Japan"));
+    // [END fs_query_filter_in]
+    return query;
+  }
+
+  public Query inQueryWithArray() {
+    // [START fs_query_filter_in_with_array]
+    CollectionReference citiesRef = db.collection("cities");
+
+    Query query = citiesRef
+        .whereIn("regions", Arrays.asList(
+            Arrays.asList("west_coast"),
+            Arrays.asList("east_coast")
+        ));
+    // [END fs_query_filter_in_with_array]
+    return query;
+  }
+
 }
