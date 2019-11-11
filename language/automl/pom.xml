@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-automl</artifactId>
-      <version>0.114.0-beta</version>
+      <version>0.114.1-beta</version>
     </dependency>
     <!-- [END automl_language_java_dependencies] -->
     <dependency>
@@ -53,14 +53,14 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

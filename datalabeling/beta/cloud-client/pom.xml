@@ -36,7 +36,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-datalabeling</artifactId>
-      <version>0.97.0-alpha</version>
+      <version>0.116.2-alpha</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.45</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
