@@ -19,11 +19,11 @@ package com.example.dataflow;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
-import com.google.cloud.spanner.Operation;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
@@ -68,30 +68,32 @@ public class SpannerWriteIT {
       // Does not exist, ignore.
     }
 
-    Operation<Database, CreateDatabaseMetadata> op = adminClient
-        .createDatabase(instanceId, databaseId, Arrays.asList("CREATE TABLE Singers "
-                + "(singerId INT64 NOT NULL, "
-                + "firstName STRING(MAX) NOT NULL, lastName STRING(MAX) NOT NULL,) "
-                + "PRIMARY KEY (singerId)",
-            "CREATE TABLE Albums (singerId INT64 NOT NULL, "
-                + "albumId INT64 NOT NULL, albumTitle STRING(MAX) NOT NULL,) "
-                + "PRIMARY KEY (singerId, albumId)"));
+    OperationFuture<Database, CreateDatabaseMetadata> op =
+        adminClient.createDatabase(
+            instanceId,
+            databaseId,
+            Arrays.asList(
+                "CREATE TABLE Singers "
+                    + "(singerId INT64 NOT NULL, "
+                    + "firstName STRING(MAX) NOT NULL, lastName STRING(MAX) NOT NULL,) "
+                    + "PRIMARY KEY (singerId)",
+                "CREATE TABLE Albums (singerId INT64 NOT NULL, "
+                    + "albumId INT64 NOT NULL, albumTitle STRING(MAX) NOT NULL,) "
+                    + "PRIMARY KEY (singerId, albumId)"));
 
-    op.waitFor();
+    op.get();
 
-    String singers = Stream
-        .of("1\tJohn\tLennon", "2\tPaul\tMccartney", "3\tGeorge\tHarrison", "4\tRingo\tStarr")
-        .collect(Collectors.joining("\n"));
+    String singers =
+        Stream.of("1\tJohn\tLennon", "2\tPaul\tMccartney", "3\tGeorge\tHarrison", "4\tRingo\tStarr")
+            .collect(Collectors.joining("\n"));
     singersPath = Files.createTempFile("singers", "txt");
     Files.write(singersPath, singers.getBytes());
 
-    String albums = Stream
-        .of("1\t1\tImagine", "2\t1\tPipes of Peace", "3\t1\tDark Horse")
-        .collect(Collectors.joining("\n"));
+    String albums =
+        Stream.of("1\t1\tImagine", "2\t1\tPipes of Peace", "3\t1\tDark Horse")
+            .collect(Collectors.joining("\n"));
     albumsPath = Files.createTempFile("albums", "txt");
     Files.write(albumsPath, albums.getBytes());
-
-
   }
 
   @After
@@ -108,17 +110,20 @@ public class SpannerWriteIT {
 
   @Test
   public void testEndToEnd() {
-    SpannerWrite.main(new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
-        "--singersFilename=" + singersPath, "--albumsFilename=" + albumsPath,
-        "--runner=DirectRunner" });
+    SpannerWrite.main(
+        new String[] {
+          "--instanceId=" + instanceId,
+          "--databaseId=" + databaseId,
+          "--singersFilename=" + singersPath,
+          "--albumsFilename=" + albumsPath,
+          "--runner=DirectRunner"
+        });
 
     DatabaseClient dbClient = getDbClient();
     try (ReadContext context = dbClient.singleUse()) {
-      ResultSet rs = context.executeQuery(
-          Statement.of("SELECT COUNT(*) FROM singers"));
+      ResultSet rs = context.executeQuery(Statement.of("SELECT COUNT(*) FROM singers"));
       assertTrue(rs.next());
       assertEquals(4, rs.getLong(0));
-
     }
     try (ReadContext context = dbClient.singleUse()) {
       ResultSet rs = context.executeQuery(Statement.of("SELECT COUNT(*) FROM albums"));
@@ -128,8 +133,7 @@ public class SpannerWriteIT {
   }
 
   private DatabaseClient getDbClient() {
-    return spanner
-        .getDatabaseClient(DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId));
+    return spanner.getDatabaseClient(
+        DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId));
   }
-
 }
