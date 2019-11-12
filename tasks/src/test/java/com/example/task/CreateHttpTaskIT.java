@@ -52,6 +52,8 @@ public class CreateHttpTaskIT {
     try (CloudTasksClient client = CloudTasksClient.create()) {
       String queuePath = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
       client.purgeQueue(queuePath);
+    } catch (Exception e) {
+      System.out.println("Error with queue purge.");
     }
   }
 
