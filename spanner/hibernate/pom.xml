@@ -37,14 +37,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>1.7.0</version>
+      <version>1.10.0</version>
     </dependency>
 
     <!-- Hibernate core dependency -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.4.6.Final</version>
+      <version>6.0.0.Alpha2</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->

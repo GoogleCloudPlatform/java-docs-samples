@@ -14,45 +14,50 @@
  * limitations under the License.
  */
 
-package com.google.cloud.translate.automl;
+package com.example.automl;
 
-// [START automl_translate_export_dataset]
+// [START automl_import_dataset]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.DatasetName;
-import com.google.cloud.automl.v1.GcsDestination;
-import com.google.cloud.automl.v1.OutputConfig;
+import com.google.cloud.automl.v1.GcsSource;
+import com.google.cloud.automl.v1.InputConfig;
 import com.google.protobuf.Empty;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-class ExportDataset {
+class ImportDataset {
 
-  // Export a dataset
-  static void exportDataset(String projectId, String datasetId, String gcsUri) {
-    // String projectId = "YOUR_PROJECT_ID";
-    // String datasetId = "YOUR_DATASET_ID";
-    // String gcsUri = "gs://BUCKET_ID/path_to_export/";
+  static void importDataset() throws IOException, ExecutionException, InterruptedException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "YOUR_PROJECT_ID";
+    String datasetId = "YOUR_DATASET_ID";
+    String path = "gs://BUCKET_ID/path_to_training_data.csv";
+    importDataset(projectId, datasetId, path);
+  }
 
+  // Import a dataset
+  static void importDataset(String projectId, String datasetId, String path)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AutoMlClient client = AutoMlClient.create()) {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
-      GcsDestination gcsDestination =
-          GcsDestination.newBuilder().setOutputUriPrefix(gcsUri).build();
 
-      // Export the dataset to the output URI.
-      OutputConfig outputConfig =
-          OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+      // Get multiple Google Cloud Storage URIs to import data from
+      GcsSource gcsSource =
+          GcsSource.newBuilder().addAllInputUris(Arrays.asList(path.split(","))).build();
 
-      System.out.println("Processing export...");
-      Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
-      System.out.format("Dataset exported. %s\n", response);
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
+      // Import data from the input URI
+      InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
+      System.out.println("Processing import...");
+
+      Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
+      System.out.format("Dataset imported. %s\n", response);
     }
   }
 }
-// [END automl_translate_export_dataset]
+// [END automl_import_dataset]

@@ -39,13 +39,13 @@
     <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-bigquerystorage</artifactId>
-    <version>0.101.0-beta</version>
+    <version>0.118.0-beta</version>
     </dependency>
 
     <dependency>
     <groupId>org.apache.avro</groupId>
     <artifactId>avro</artifactId>
-    <version>1.9.0</version>
+    <version>1.9.1</version>
     </dependency>
 
     <!-- Test dependencies -->
