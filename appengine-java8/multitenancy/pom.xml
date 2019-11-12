@@ -68,7 +68,7 @@
     <dependency>
         <groupId>com.googlecode.objectify</groupId>
         <artifactId>objectify</artifactId>
-        <version>5.1.21</version>
+        <version>5.1.24</version>
     </dependency>
     <!-- [END Objectify_Dependencies] -->
 
