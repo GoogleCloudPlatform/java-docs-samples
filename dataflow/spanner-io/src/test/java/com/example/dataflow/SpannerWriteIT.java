@@ -81,7 +81,7 @@ public class SpannerWriteIT {
                     + "albumId INT64 NOT NULL, albumTitle STRING(MAX) NOT NULL,) "
                     + "PRIMARY KEY (singerId, albumId)"));
 
-    op.wait();
+    op.get();
 
     String singers =
         Stream.of("1\tJohn\tLennon", "2\tPaul\tMccartney", "3\tGeorge\tHarrison", "4\tRingo\tStarr")

@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.junit.After;
@@ -50,7 +51,7 @@ public class SpannerReadIT {
   private SpannerOptions spannerOptions;
 
   @Before
-  public void setUp() throws InterruptedException {
+  public void setUp() throws InterruptedException, ExecutionException {
     instanceId = System.getProperty("spanner.test.instance");
     databaseId = "df-spanner-read-it";
 
@@ -76,7 +77,7 @@ public class SpannerReadIT {
                 "CREATE TABLE Albums (singerId INT64 NOT NULL, albumId INT64 NOT NULL, "
                     + "albumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (singerId, albumId)"));
 
-    op.wait();
+    op.get();
 
     List<Mutation> mutations =
         Arrays.asList(

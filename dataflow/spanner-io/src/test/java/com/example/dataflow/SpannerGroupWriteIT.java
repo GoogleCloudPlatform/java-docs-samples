@@ -82,7 +82,7 @@ public class SpannerGroupWriteIT {
                 "CREATE TABLE PendingReviews (id INT64, action STRING(MAX), "
                     + "note STRING(MAX), userId STRING(MAX),) PRIMARY KEY (id)"));
 
-    op.wait();
+    op.get();
 
     DatabaseClient dbClient = getDbClient();
 
