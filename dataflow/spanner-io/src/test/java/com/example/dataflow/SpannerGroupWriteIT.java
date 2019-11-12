@@ -19,6 +19,7 @@ package com.example.dataflow;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -72,35 +73,44 @@ public class SpannerGroupWriteIT {
       // Does not exist, ignore.
     }
 
-    Operation<Database, CreateDatabaseMetadata> op = adminClient
-        .createDatabase(instanceId, databaseId, Arrays.asList("CREATE TABLE users ("
-                + "id STRING(MAX) NOT NULL, state STRING(MAX) NOT NULL) PRIMARY KEY (id)",
-            "CREATE TABLE PendingReviews (id INT64, action STRING(MAX), "
-                + "note STRING(MAX), userId STRING(MAX),) PRIMARY KEY (id)"));
+    OperationFuture<Database, CreateDatabaseMetadata> op =
+        adminClient.createDatabase(
+            instanceId,
+            databaseId,
+            Arrays.asList(
+                "CREATE TABLE users ("
+                    + "id STRING(MAX) NOT NULL, state STRING(MAX) NOT NULL) PRIMARY KEY (id)",
+                "CREATE TABLE PendingReviews (id INT64, action STRING(MAX), "
+                    + "note STRING(MAX), userId STRING(MAX),) PRIMARY KEY (id)"));
 
-    op.waitFor();
+    op.wait();
 
     DatabaseClient dbClient = getDbClient();
 
     List<Mutation> mutations = new ArrayList<>();
     for (int i = 0; i < 20; i++) {
       mutations.add(
-          Mutation.newInsertBuilder("users").set("id").to(Integer.toString(i)).set("state")
-              .to("ACTIVE").build());
+          Mutation.newInsertBuilder("users")
+              .set("id")
+              .to(Integer.toString(i))
+              .set("state")
+              .to("ACTIVE")
+              .build());
     }
     TransactionRunner runner = dbClient.readWriteTransaction();
-    runner.run(new TransactionRunner.TransactionCallable<Void>() {
+    runner.run(
+        new TransactionRunner.TransactionCallable<Void>() {
 
-      @Nullable
-      @Override
-      public Void run(TransactionContext tx) {
-        tx.buffer(mutations);
-        return null;
-      }
-    });
+          @Nullable
+          @Override
+          public Void run(TransactionContext tx) {
+            tx.buffer(mutations);
+            return null;
+          }
+        });
 
-    String content = IntStream.range(0, 10).mapToObj(Integer::toString)
-        .collect(Collectors.joining("\n"));
+    String content =
+        IntStream.range(0, 10).mapToObj(Integer::toString).collect(Collectors.joining("\n"));
     tempPath = Files.createTempFile("suspicious-ids", "txt");
     Files.write(tempPath, content.getBytes());
   }
@@ -120,30 +130,38 @@ public class SpannerGroupWriteIT {
   @Test
   public void testEndToEnd() {
     SpannerGroupWrite.main(
-        new String[] { "--instanceId=" + instanceId, "--databaseId=" + databaseId,
-            "--suspiciousUsersFile=" + tempPath, "--runner=DirectRunner" });
+        new String[] {
+          "--instanceId=" + instanceId,
+          "--databaseId=" + databaseId,
+          "--suspiciousUsersFile=" + tempPath,
+          "--runner=DirectRunner"
+        });
 
     DatabaseClient dbClient = getDbClient();
     try (ReadContext context = dbClient.singleUse()) {
-      ResultSet rs = context.executeQuery(
-          Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state").bind("state")
-              .to("BLOCKED").build());
+      ResultSet rs =
+          context.executeQuery(
+              Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state")
+                  .bind("state")
+                  .to("BLOCKED")
+                  .build());
       assertTrue(rs.next());
       assertEquals(10, rs.getLong(0));
-
     }
     try (ReadContext context = dbClient.singleUse()) {
-      ResultSet rs = context.executeQuery(
-          Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action")
-              .bind("action").to("REVIEW ACCOUNT").build());
+      ResultSet rs =
+          context.executeQuery(
+              Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action")
+                  .bind("action")
+                  .to("REVIEW ACCOUNT")
+                  .build());
       assertTrue(rs.next());
       assertEquals(10, rs.getLong(0));
     }
   }
 
   private DatabaseClient getDbClient() {
-    return spanner
-        .getDatabaseClient(DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId));
+    return spanner.getDatabaseClient(
+        DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId));
   }
-
 }
