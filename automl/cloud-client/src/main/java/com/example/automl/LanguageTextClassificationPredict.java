@@ -45,22 +45,22 @@ class LanguageTextClassificationPredict {
     try (PredictionServiceClient client = PredictionServiceClient.create()) {
       // Get the full path of the model.
       ModelName name = ModelName.of(projectId, "us-central1", modelId);
-      TextSnippet textSnippet = TextSnippet.newBuilder()
+      TextSnippet textSnippet =
+          TextSnippet.newBuilder()
               .setContent(content)
-              .setMimeType("text/plain")  // Types: text/plain, text/html
+              .setMimeType("text/plain") // Types: text/plain, text/html
               .build();
       ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
       PredictRequest predictRequest =
-              PredictRequest.newBuilder()
-                      .setName(name.toString())
-                      .setPayload(payload)
-                      .build();
+          PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
 
       PredictResponse response = client.predict(predictRequest);
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
         System.out.format("Predicted class name: %s\n", annotationPayload.getDisplayName());
-        System.out.format("Predicted sentiment score: %.2f\n\n", annotationPayload.getClassification().getScore());
+        System.out.format(
+            "Predicted sentiment score: %.2f\n\n",
+            annotationPayload.getClassification().getScore());
       }
     }
   }

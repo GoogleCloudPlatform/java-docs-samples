@@ -46,16 +46,11 @@ class LanguageEntityExtractionPredict {
     try (PredictionServiceClient client = PredictionServiceClient.create()) {
       // Get the full path of the model.
       ModelName name = ModelName.of(projectId, "us-central1", modelId);
-      TextSnippet textSnippet = TextSnippet.newBuilder()
-              .setContent(content)
-              .setMimeType("text/plain")
-              .build();
+      TextSnippet textSnippet =
+          TextSnippet.newBuilder().setContent(content).setMimeType("text/plain").build();
       ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
       PredictRequest predictRequest =
-              PredictRequest.newBuilder()
-                      .setName(name.toString())
-                      .setPayload(payload)
-                      .build();
+          PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
 
       PredictResponse response = client.predict(predictRequest);
 

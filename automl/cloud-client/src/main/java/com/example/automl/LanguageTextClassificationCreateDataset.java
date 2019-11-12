@@ -39,7 +39,7 @@ class LanguageTextClassificationCreateDataset {
 
   // Create a dataset
   static void createDataset(String projectId, String displayName)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -54,16 +54,17 @@ class LanguageTextClassificationCreateDataset {
       ClassificationType classificationType = ClassificationType.MULTILABEL;
 
       // Specify the text classification type for the dataset.
-      TextClassificationDatasetMetadata metadata = TextClassificationDatasetMetadata.newBuilder()
+      TextClassificationDatasetMetadata metadata =
+          TextClassificationDatasetMetadata.newBuilder()
               .setClassificationType(classificationType)
               .build();
       Dataset dataset =
-              Dataset.newBuilder()
-                      .setDisplayName(displayName)
-                      .setTextClassificationDatasetMetadata(metadata)
-                      .build();
+          Dataset.newBuilder()
+              .setDisplayName(displayName)
+              .setTextClassificationDatasetMetadata(metadata)
+              .build();
       OperationFuture<Dataset, OperationMetadata> future =
-              client.createDatasetAsync(projectLocation, dataset);
+          client.createDatasetAsync(projectLocation, dataset);
 
       Dataset createdDataset = future.get();
 

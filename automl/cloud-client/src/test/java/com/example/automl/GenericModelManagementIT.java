@@ -33,6 +33,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class GenericModelManagementIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private String modelId;
+  private String modelEvaluationId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -53,7 +55,7 @@ public class GenericModelManagementIT {
     // LIST MODELS
     ListModels.listModels(PROJECT_ID);
     String got = bout.toString();
-    String modelId = got.split("Model id: ")[1].split("\n")[0];
+    modelId = got.split("Model id: ")[1].split("\n")[0];
     assertThat(got).contains("Model id:");
 
     // GET MODEL
@@ -70,7 +72,7 @@ public class GenericModelManagementIT {
     System.setOut(out);
     ListModelEvaluations.listModelEvaluations(PROJECT_ID, modelId);
     got = bout.toString();
-    String modelEvaluationId = got.split(modelId + "/modelEvaluations/")[1].split("\n")[0];
+    modelEvaluationId = got.split(modelId + "/modelEvaluations/")[1].split("\n")[0];
     assertThat(got).contains("Model Evaluation Name:");
 
     // GET MODEL EVALUATION

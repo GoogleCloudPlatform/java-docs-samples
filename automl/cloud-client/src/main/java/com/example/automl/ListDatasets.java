@@ -71,38 +71,41 @@ class ListDatasets {
         // [END automl_translate_list_datasets]
         // [END automl_vision_classification_list_datasets]
         // [END automl_vision_object_detection_list_datasets]
-        System.out.format("Text extraction dataset metadata: %s\n",
-                dataset.getTextExtractionDatasetMetadata());
+        System.out.format(
+            "Text extraction dataset metadata: %s\n", dataset.getTextExtractionDatasetMetadata());
         // [END automl_language_entity_extraction_list_datasets]
 
         // [START automl_language_sentiment_analysis_list_datasets]
-        System.out.format("Text sentiment dataset metadata: %s\n",
-                dataset.getTextSentimentDatasetMetadata());
+        System.out.format(
+            "Text sentiment dataset metadata: %s\n", dataset.getTextSentimentDatasetMetadata());
         // [END automl_language_sentiment_analysis_list_datasets]
 
         // [START automl_language_text_classification_list_datasets]
-        System.out.format("Text classification dataset metadata: %s\n",
-                dataset.getTextClassificationDatasetMetadata());
+        System.out.format(
+            "Text classification dataset metadata: %s\n",
+            dataset.getTextClassificationDatasetMetadata());
         // [END automl_language_text_classification_list_datasets]
 
         // [START automl_translate_list_datasets]
         System.out.println("Translation dataset metadata:");
         System.out.format(
-                "\tSource language code: %s\n",
-                dataset.getTranslationDatasetMetadata().getSourceLanguageCode());
+            "\tSource language code: %s\n",
+            dataset.getTranslationDatasetMetadata().getSourceLanguageCode());
         System.out.format(
-                "\tTarget language code: %s\n",
-                dataset.getTranslationDatasetMetadata().getTargetLanguageCode());
+            "\tTarget language code: %s\n",
+            dataset.getTranslationDatasetMetadata().getTargetLanguageCode());
         // [END automl_translate_list_datasets]
 
         // [START automl_vision_classification_list_datasets]
-        System.out.format("Image classification dataset metadata: %s\n",
-                dataset.getImageClassificationDatasetMetadata());
+        System.out.format(
+            "Image classification dataset metadata: %s\n",
+            dataset.getImageClassificationDatasetMetadata());
         // [END automl_vision_classification_list_datasets]
 
         // [START automl_vision_object_detection_list_datasets]
-        System.out.format("Image object detection dataset metadata: %s\n",
-                dataset.getImageObjectDetectionDatasetMetadata());
+        System.out.format(
+            "Image object detection dataset metadata: %s\n",
+            dataset.getImageObjectDetectionDatasetMetadata());
         // [START automl_language_entity_extraction_list_datasets]
         // [START automl_language_sentiment_analysis_list_datasets]
         // [START automl_language_text_classification_list_datasets]

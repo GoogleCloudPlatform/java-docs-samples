@@ -18,15 +18,15 @@ package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,8 @@ public class VisionObjectDetectionPredictIT {
 
   @Test
   public void testBatchPredict() throws IOException, ExecutionException, InterruptedException {
-    String inputUri = String.format("gs://%s/vision_object_detection_batch_predict_test.csv", BUCKET_ID);
+    String inputUri =
+        String.format("gs://%s/vision_object_detection_batch_predict_test.csv", BUCKET_ID);
     String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
     // Act
     VisionBatchPredict.batchPredict(PROJECT_ID, modelId, inputUri, outputUri);
@@ -80,17 +81,17 @@ public class VisionObjectDetectionPredictIT {
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Page<Blob> blobs =
-            storage.list(
-                    BUCKET_ID,
-                    Storage.BlobListOption.currentDirectory(),
-                    Storage.BlobListOption.prefix("TEST_BATCH_PREDICT/"));
+        storage.list(
+            BUCKET_ID,
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("TEST_BATCH_PREDICT/"));
 
     for (Blob blob : blobs.iterateAll()) {
       Page<Blob> fileBlobs =
-              storage.list(
-                      BUCKET_ID,
-                      Storage.BlobListOption.currentDirectory(),
-                      Storage.BlobListOption.prefix(blob.getName()));
+          storage.list(
+              BUCKET_ID,
+              Storage.BlobListOption.currentDirectory(),
+              Storage.BlobListOption.prefix(blob.getName()));
       for (Blob fileBlob : fileBlobs.iterateAll()) {
         if (!fileBlob.isDirectory()) {
           fileBlob.delete();

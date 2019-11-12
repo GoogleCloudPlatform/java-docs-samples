@@ -21,12 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -61,12 +61,12 @@ public class VisionObjectDetectionDatasetManagementIT {
 
   @Test
   public void testCreateImportDeleteDataset()
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
     String datasetName =
-            String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
 
     // Act
     VisionObjectDetectionCreateDataset.createDataset(PROJECT_ID, datasetName);
@@ -76,7 +76,8 @@ public class VisionObjectDetectionDatasetManagementIT {
     String datasetId = got.split("Dataset id: ")[1].split("\n")[0];
 
     // Act
-    ImportDataset.importDataset(PROJECT_ID, datasetId, "gs://cloud-ml-data/img/openimage/csv/salads_ml_use.csv");
+    ImportDataset.importDataset(
+        PROJECT_ID, datasetId, "gs://cloud-ml-data/img/openimage/csv/salads_ml_use.csv");
 
     // Assert
     got = bout.toString();
@@ -120,17 +121,17 @@ public class VisionObjectDetectionDatasetManagementIT {
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Page<Blob> blobs =
-            storage.list(
-                    BUCKET_ID,
-                    Storage.BlobListOption.currentDirectory(),
-                    Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
+        storage.list(
+            BUCKET_ID,
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
 
     for (Blob blob : blobs.iterateAll()) {
       Page<Blob> fileBlobs =
-              storage.list(
-                      BUCKET_ID,
-                      Storage.BlobListOption.currentDirectory(),
-                      Storage.BlobListOption.prefix(blob.getName()));
+          storage.list(
+              BUCKET_ID,
+              Storage.BlobListOption.currentDirectory(),
+              Storage.BlobListOption.prefix(blob.getName()));
       for (Blob fileBlob : fileBlobs.iterateAll()) {
         if (!fileBlob.isDirectory()) {
           fileBlob.delete();

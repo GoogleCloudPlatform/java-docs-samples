@@ -38,7 +38,7 @@ class LanguageSentimentAnalysisCreateDataset {
 
   // Create a dataset
   static void createDataset(String projectId, String displayName)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -46,16 +46,17 @@ class LanguageSentimentAnalysisCreateDataset {
       // A resource that represents Google Cloud Platform location.
       LocationName projectLocation = LocationName.of(projectId, "us-central1");
       // Specify the text classification type for the dataset.
-      TextSentimentDatasetMetadata metadata = TextSentimentDatasetMetadata.newBuilder()
-              .setSentimentMax(4)  // Possible max sentiment score: 1-10
+      TextSentimentDatasetMetadata metadata =
+          TextSentimentDatasetMetadata.newBuilder()
+              .setSentimentMax(4) // Possible max sentiment score: 1-10
               .build();
       Dataset dataset =
-              Dataset.newBuilder()
-                      .setDisplayName(displayName)
-                      .setTextSentimentDatasetMetadata(metadata)
-                      .build();
+          Dataset.newBuilder()
+              .setDisplayName(displayName)
+              .setTextSentimentDatasetMetadata(metadata)
+              .build();
       OperationFuture<Dataset, OperationMetadata> future =
-              client.createDatasetAsync(projectLocation, dataset);
+          client.createDatasetAsync(projectLocation, dataset);
 
       Dataset createdDataset = future.get();
 

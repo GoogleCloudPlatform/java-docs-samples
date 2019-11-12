@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class UndeployModel {
 
   // Undeploy a model from prediction
   static void undeployModel(String projectId, String modelId)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -46,7 +46,7 @@ class UndeployModel {
       // Get the full path of the model.
       ModelName modelFullId = ModelName.of(projectId, "us-central1", modelId);
       UndeployModelRequest request =
-              UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
+          UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
       OperationFuture<Empty, OperationMetadata> future = client.undeployModelAsync(request);
 
       future.get();

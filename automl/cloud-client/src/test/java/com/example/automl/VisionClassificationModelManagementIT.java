@@ -50,11 +50,11 @@ public class VisionClassificationModelManagementIT {
   }
 
   @Test
-  public void testDeployUndeployModel() throws IOException, ExecutionException, InterruptedException {
+  public void testDeployUndeployModel()
+      throws IOException, ExecutionException, InterruptedException {
     UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
     String got = bout.toString();
     assertThat(got).contains("Model undeployment finished");
-
 
     DeployModel.deployModel(PROJECT_ID, MODEL_ID);
     got = bout.toString();
@@ -62,13 +62,14 @@ public class VisionClassificationModelManagementIT {
   }
 
   @Test
-  public void testDeployUndeployModelWithNodeCount() throws IOException, ExecutionException, InterruptedException {
+  public void testDeployUndeployModelWithNodeCount()
+      throws IOException, ExecutionException, InterruptedException {
     UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
     String got = bout.toString();
     assertThat(got).contains("Model undeployment finished");
 
-
-    VisionClassificationDeployModelNodeCount.visionClassificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
+    VisionClassificationDeployModelNodeCount.visionClassificationDeployModelNodeCount(
+        PROJECT_ID, MODEL_ID);
     got = bout.toString();
     assertThat(got).contains("Model deployment finished");
   }

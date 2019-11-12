@@ -39,7 +39,7 @@ class VisionClassificationCreateDataset {
 
   // Create a dataset
   static void createDataset(String projectId, String displayName)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -53,16 +53,16 @@ class VisionClassificationCreateDataset {
       // MultiClass: At most one label is allowed per example.
       ClassificationType classificationType = ClassificationType.MULTILABEL;
       ImageClassificationDatasetMetadata metadata =
-              ImageClassificationDatasetMetadata.newBuilder()
-                      .setClassificationType(classificationType)
-                      .build();
+          ImageClassificationDatasetMetadata.newBuilder()
+              .setClassificationType(classificationType)
+              .build();
       Dataset dataset =
-              Dataset.newBuilder()
-                      .setDisplayName(displayName)
-                      .setImageClassificationDatasetMetadata(metadata)
-                      .build();
+          Dataset.newBuilder()
+              .setDisplayName(displayName)
+              .setImageClassificationDatasetMetadata(metadata)
+              .build();
       OperationFuture<Dataset, OperationMetadata> future =
-              client.createDatasetAsync(projectLocation, dataset);
+          client.createDatasetAsync(projectLocation, dataset);
 
       Dataset createdDataset = future.get();
 

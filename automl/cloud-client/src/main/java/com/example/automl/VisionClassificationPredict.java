@@ -52,17 +52,19 @@ class VisionClassificationPredict {
       Image image = Image.newBuilder().setImageBytes(content).build();
       ExamplePayload payload = ExamplePayload.newBuilder().setImage(image).build();
       PredictRequest predictRequest =
-              PredictRequest.newBuilder()
-                      .setName(name.toString())
-                      .setPayload(payload)
-                      .putParams("score_threshold", "0.8")  // [0.0-1.0] Only produce results higher than this value
-                      .build();
+          PredictRequest.newBuilder()
+              .setName(name.toString())
+              .setPayload(payload)
+              .putParams(
+                  "score_threshold", "0.8") // [0.0-1.0] Only produce results higher than this value
+              .build();
 
       PredictResponse response = client.predict(predictRequest);
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
         System.out.format("Predicted class name: %s\n", annotationPayload.getDisplayName());
-        System.out.format("Predicted class score: %.2f\n", annotationPayload.getClassification().getScore());
+        System.out.format(
+            "Predicted class score: %.2f\n", annotationPayload.getClassification().getScore());
       }
     }
   }

@@ -44,7 +44,7 @@ class VisionBatchPredict {
 
   // Predict
   static void batchPredict(String projectId, String modelId, String inputUri, String outputUri)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -53,20 +53,22 @@ class VisionBatchPredict {
       ModelName name = ModelName.of(projectId, "us-central1", modelId);
       GcsSource gcsSource = GcsSource.newBuilder().addInputUris(inputUri).build();
       BatchPredictInputConfig inputConfig =
-              BatchPredictInputConfig.newBuilder().setGcsSource(gcsSource).build();
+          BatchPredictInputConfig.newBuilder().setGcsSource(gcsSource).build();
       GcsDestination gcsDestination =
-              GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
+          GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
       BatchPredictOutputConfig outputConfig =
-              BatchPredictOutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+          BatchPredictOutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
       BatchPredictRequest request =
-              BatchPredictRequest.newBuilder()
-                      .setName(name.toString())
-                      .setInputConfig(inputConfig)
-                      .setOutputConfig(outputConfig)
-                      .putParams("score_threshold", "0.8")  // [0.0-1.0] Only produce results higher than this value
-                      .build();
+          BatchPredictRequest.newBuilder()
+              .setName(name.toString())
+              .setInputConfig(inputConfig)
+              .setOutputConfig(outputConfig)
+              .putParams(
+                  "score_threshold", "0.8") // [0.0-1.0] Only produce results higher than this value
+              .build();
 
-      OperationFuture<BatchPredictResult, OperationMetadata> future = client.batchPredictAsync(request);
+      OperationFuture<BatchPredictResult, OperationMetadata> future =
+          client.batchPredictAsync(request);
 
       System.out.println("Waiting for operation to complete...");
       BatchPredictResult response = future.get();
