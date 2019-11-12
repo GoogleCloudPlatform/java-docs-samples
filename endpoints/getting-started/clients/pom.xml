@@ -28,12 +28,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.2</version>
+      <version>1.30.5</version>
     </dependency>
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>3.8.1</version>
+      <version>3.8.3</version>
     </dependency>
   </dependencies>
   <build>

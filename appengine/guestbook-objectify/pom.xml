@@ -23,7 +23,7 @@
     <groupId>com.example.appengine</groupId>
     <artifactId>appengine-guestbook-objectify</artifactId>
     <properties>
-        <objectify.version>5.1.21</objectify.version>
+        <objectify.version>5.1.24</objectify.version>
         <guava.version>20.0</guava.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -121,7 +121,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.9.59</version>
+                <version>1.9.76</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
