@@ -56,7 +56,7 @@ small section of code to print out the `metadata` field.
 * [Delete Dataset](src/main/java/com/example/automl/DeleteDataset.java)
 ### Model Management
 * [List Models](src/main/java/com/example/automl/ListModels.java)
-* [List Model Evaluation](src/main/java/com/example/automl/ListModelEvaluations.java)
+* [List Model Evaluations](src/main/java/com/example/automl/ListModelEvaluations.java)
 * [Get Model](src/main/java/com/example/automl/)
 * [Get Model Evaluation](src/main/java/com/example/automl/GetModelEvaluation.java)
 * [Delete Model](src/main/java/com/example/automl/DeleteModel.java)
