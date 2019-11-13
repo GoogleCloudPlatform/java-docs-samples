@@ -17,6 +17,7 @@
 package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,8 +38,17 @@ public class LanguageEntityExtractionModelManagementIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+            System.getenv(varName),
+            "Environment variable '%s' is required to perform these tests.".format(varName)
+    );
+  }
+
   @Before
   public void setUp() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);

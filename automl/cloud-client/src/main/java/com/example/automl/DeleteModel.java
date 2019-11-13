@@ -33,7 +33,7 @@ class DeleteModel {
     deleteModel(projectId, modelId);
   }
 
-  // Get a model
+  // Delete a model
   static void deleteModel(String projectId, String modelId)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created

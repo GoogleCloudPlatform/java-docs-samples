@@ -42,7 +42,6 @@ class LanguageBatchPredict {
     batchPredict(projectId, modelId, inputUri, outputUri);
   }
 
-  // Predict
   static void batchPredict(String projectId, String modelId, String inputUri, String outputUri)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created

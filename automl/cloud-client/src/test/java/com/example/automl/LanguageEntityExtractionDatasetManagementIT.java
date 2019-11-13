@@ -17,6 +17,7 @@
 package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
@@ -47,8 +48,17 @@ public class LanguageEntityExtractionDatasetManagementIT {
   private PrintStream out;
   private String getdatasetId = "TEN477786180780294144";
 
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+            System.getenv(varName),
+            "Environment variable '%s' is required to perform these tests.".format(varName)
+    );
+  }
+
   @Before
   public void setUp() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);

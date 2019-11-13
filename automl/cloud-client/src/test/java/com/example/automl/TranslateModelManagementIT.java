@@ -17,6 +17,7 @@
 package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.automl.v1.AutoMlClient;
 
@@ -42,8 +43,17 @@ public class TranslateModelManagementIT {
   private String modelId;
   private String modelEvaluationId;
 
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+            System.getenv(varName),
+            "Environment variable '%s' is required to perform these tests.".format(varName)
+    );
+  }
+
   @Before
   public void setUp() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
