@@ -84,8 +84,8 @@ public class CreateEntryTests {
 
   @Test
   public void testCreateFilesetEntry() {
-    String entryGroupId = "fileset_entry_group_parent_" + getUUID8Chars();
-    String entryId = "fileset_entry_id_" + getUUID8Chars();
+    String entryGroupId = "fileset_entry_group_parent_" + getUuid8Chars();
+    String entryId = "fileset_entry_id_" + getUuid8Chars();
 
     // Must create a Entry Group before creating the entry.
     CreateEntryGroup.createEntryGroup(PROJECT_ID, entryGroupId);
@@ -108,13 +108,13 @@ public class CreateEntryTests {
 
   @Test
   public void testCreateEntryGroup() {
-    String entry_group_id = "entry_group_no_children_" + getUUID8Chars();
+    String entryGroupId = "entry_group_no_children_" + getUuid8Chars();
 
-    CreateEntryGroup.createEntryGroup(PROJECT_ID, entry_group_id);
+    CreateEntryGroup.createEntryGroup(PROJECT_ID, entryGroupId);
 
     // Store names for clean up on teardown
     String expectedEntryGroupName =
-        EntryGroupName.of(PROJECT_ID, LOCATION, entry_group_id).toString();
+        EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId).toString();
     entryGroupsPendingDeletion.add(expectedEntryGroupName);
 
     String output = bout.toString();
@@ -127,8 +127,8 @@ public class CreateEntryTests {
 
   @Test
   public void testCreateEntryQuickStart() {
-    String entryGroupId = "fileset_entry_group_parent_" + getUUID8Chars();
-    String entryId = "fileset_entry_id_" + getUUID8Chars();
+    String entryGroupId = "fileset_entry_group_parent_" + getUuid8Chars();
+    String entryId = "fileset_entry_id_" + getUuid8Chars();
 
     CreateFilesetEntryQuickStart.createEntry(PROJECT_ID, entryGroupId, entryId);
 
@@ -151,7 +151,7 @@ public class CreateEntryTests {
         output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
-  private String getUUID8Chars() {
+  private String getUuid8Chars() {
     return UUID.randomUUID().toString().substring(0, 8);
   }
 }
