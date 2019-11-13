@@ -35,9 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Integration (system) tests for {@link CreateFilesetEntry}.
- */
+/** Integration (system) tests for {@link CreateFilesetEntry}. */
 @RunWith(JUnit4.class)
 public class CreateFilesetEntryTests {
 

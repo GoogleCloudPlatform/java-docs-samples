@@ -1,3 +1,4 @@
+// [END datacatalog_create_entry_group_tag]
 /*
  * Copyright 2019 Google Inc.
  *
