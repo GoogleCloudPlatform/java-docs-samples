@@ -15,6 +15,7 @@
  */
 
 // [START functions_tips_scopes]
+// [START run_tips_global_scope]
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,7 +27,7 @@ public class Scopes {
   // Global (instance-wide) scope
   // This computation runs at instance cold-start.
   // Warning: Class variables used in Servlet classes must be thread-safe,
-  // or else might introduce race conditions in your code. 
+  // or else might introduce race conditions in your code.
   private static final int InstanceVar = heavyComputation();
 
   public void scopeDemo(HttpServletRequest request, HttpServletResponse response)
@@ -38,16 +39,16 @@ public class Scopes {
     PrintWriter writer = response.getWriter();
     writer.write(String.format("Instance: %s; function: %s", InstanceVar, functionVar));
   }
-  
+
   private static int lightComputation() {
     int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     return Arrays.stream(numbers).sum();
   }
-  
+
   private static int heavyComputation() {
     int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 }
-
+// [END run_tips_global_scope]
 // [END functions_tips_scopes]

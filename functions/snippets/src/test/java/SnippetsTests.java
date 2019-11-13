@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,6 +47,9 @@ public class SnippetsTests {
 
   private ByteArrayOutputStream stdOut;
   private StringWriter responseOut;
+
+  // Use GSON (https://github.com/google/gson) to parse JSON content.
+  private Gson gson = new Gson();
 
   @Rule
   public final EnvironmentVariables environmentVariables
@@ -164,6 +168,13 @@ public class SnippetsTests {
   }
 
   @Test
+  public void lazyTest() throws IOException {
+    new Lazy().lazyGlobal(request, response);
+
+    assertThat(responseOut.toString(), containsString("Lazy global:"));
+  }
+
+  @Test
   public void retrieveLogsTest() throws IOException {
     new RetrieveLogs().retrieveLogs(request, response);
 
@@ -177,7 +188,7 @@ public class SnippetsTests {
     when(request.getReader()).thenReturn(bodyReader);
 
     new HelloBackground().helloBackground(request, response);
-    assertThat(responseOut.toString(), containsString("Hello John!"));    
+    assertThat(responseOut.toString(), containsString("Hello John!"));
   }
 
   @Test
@@ -187,12 +198,20 @@ public class SnippetsTests {
   }
 
   @Test
+  public void logEntry() throws IOException {
+    LogEntry.PubSubMessage message = gson.fromJson(
+        "{\"data\":\"data\",\"messageId\":\"id\"}", LogEntry.PubSubMessage.class);
+    String res = new LogEntry().helloPubSub(message);
+    assertThat(res, containsString("Hello, data"));
+  }
+
+  @Test
   public void envTest() throws IOException {
     environmentVariables.set("FOO", "BAR");
     new EnvVars().envVar(request, response);
     assertThat(responseOut.toString(), containsString("BAR"));
   }
-  
+
   @Test
   public void helloExecutionCount() throws IOException {
     new Concepts().executionCount(request, response);

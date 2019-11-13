@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>1.13.0</version>
+      <version>1.30.0</version>
       <scope>provided</scope>
     </dependency>
     <!-- [END gae_java11_firestore_pom] -->
@@ -81,7 +81,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>2.2.0</version>
         <configuration>
           <version>guestbook</version>
         </configuration>

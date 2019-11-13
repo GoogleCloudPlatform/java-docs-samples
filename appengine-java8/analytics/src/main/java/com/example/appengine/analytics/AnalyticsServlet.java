@@ -16,6 +16,7 @@
 
 package com.example.appengine.analytics;
 
+// [START analytics_track]
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import java.io.IOException;
@@ -67,3 +68,4 @@ public class AnalyticsServlet extends HttpServlet {
     resp.getWriter().println("Event tracked.");
   }
 }
+// [END analytics_track]
