@@ -62,7 +62,7 @@ public class CreateFilesetEntryQuickStart {
         dataCatalogClient.deleteEntry(
             EntryName.of(projectId, location, entryGroupId, entryId).toString());
       } catch (PermissionDeniedException | NotFoundException e) {
-        // PermissionDeniedException and NotFoundException are thrown if
+        // PermissionDeniedException or NotFoundException are thrown if
         // Entry does not exist.
         System.out.println("Entry does not exist.");
       }
@@ -73,7 +73,7 @@ public class CreateFilesetEntryQuickStart {
         dataCatalogClient.deleteEntryGroup(
             EntryGroupName.of(projectId, location, entryGroupId).toString());
       } catch (PermissionDeniedException | NotFoundException e) {
-        // PermissionDeniedException and NotFoundException are thrown if
+        // PermissionDeniedException or NotFoundException are thrown if
         // Entry Group does not exist.
         System.out.println("Entry Group does not exist.");
       }
