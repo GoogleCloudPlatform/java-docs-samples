@@ -62,6 +62,8 @@ class VisionClassificationCreateModel {
       // Create a model with the model metadata in the region.
       OperationFuture<Model, OperationMetadata> future =
           client.createModelAsync(projectLocation, model);
+      // Don't wait for model creation to finish, as this can take several hours.
+      // However, you can use the `name` of the operation to check the status of your model.
       System.out.format("Training operation name: %s\n", future.getInitialFuture().get().getName());
       System.out.println("Training started...");
     }
