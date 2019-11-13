@@ -35,7 +35,7 @@ import com.google.cloud.datacatalog.Schema;
 import com.google.cloud.datacatalog.v1beta1.DataCatalogClient;
 import java.io.IOException;
 
-public class CreateFilesetEntryQuickStart {
+public class CreateFilesetEntry {
 
   public static void createEntry() {
     // TODO(developer): Replace these variables before running the sample.

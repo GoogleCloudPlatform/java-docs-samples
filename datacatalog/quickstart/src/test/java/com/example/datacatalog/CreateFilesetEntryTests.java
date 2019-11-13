@@ -36,10 +36,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Integration (system) tests for {CreateFilesetEntryQuickStart}.
+ * Integration (system) tests for {@link CreateFilesetEntry}.
  */
 @RunWith(JUnit4.class)
-public class CreateFilesetEntryQuickStartTests {
+public class CreateFilesetEntryTests {
 
   private ByteArrayOutputStream bout;
 
@@ -86,7 +86,7 @@ public class CreateFilesetEntryQuickStartTests {
     String entryGroupId = "fileset_entry_group_parent_" + getUuid8Chars();
     String entryId = "fileset_entry_id_" + getUuid8Chars();
 
-    CreateFilesetEntryQuickStart.createEntry(PROJECT_ID, entryGroupId, entryId);
+    CreateFilesetEntry.createEntry(PROJECT_ID, entryGroupId, entryId);
 
     // Store names for clean up on teardown
     String expectedEntryGroupName =
