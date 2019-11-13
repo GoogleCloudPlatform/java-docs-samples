@@ -9,7 +9,7 @@
     {
       "packagePatterns": ["^io.grpc:grpc-"],
       "groupName": "gRPC packages"
-    },
+    }
   ],
   "prConcurrentLimit": 5,
   "prCreation": "not-pending",
