@@ -17,12 +17,15 @@
 package com.example.datacatalog;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import com.google.cloud.datacatalog.EntryGroupName;
 import com.google.cloud.datacatalog.EntryName;
 import com.google.cloud.datacatalog.v1beta1.DataCatalogClient;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -32,20 +35,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link CreateFilesetEntry} and {@link CreateEntryGroup}. */
+/** Integration (system) tests for {@link CreateFilesetEntry} and {@link CreateEntryGroup}
+ * and {@link CreateFilesetEntryQuickStart}. */
 @RunWith(JUnit4.class)
 public class CreateEntryTests {
 
   private ByteArrayOutputStream bout;
 
-  private static String ENTRY_GROUP_ID_NO_CHILDREN =
-      "entry_group_no_children_" + UUID.randomUUID().toString().substring(0, 8);
-  private static String PARENT_ENTRY_GROUP_ID =
-      "fileset_entry_group_parent_" + UUID.randomUUID().toString().substring(0, 8);
-  private static String ENTRY_ID =
-      "fileset_entry_id_" + UUID.randomUUID().toString().substring(0, 8);
   private static String LOCATION = "us-central1";
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
+
+  private static List<String> entryGroupsPendingDeletion = new ArrayList<>();
+  private static List<String> entriesPendingDeletion = new ArrayList<>();
 
   @Before
   public void setUp() {
@@ -62,13 +63,18 @@ public class CreateEntryTests {
   @AfterClass
   public static void tearDownClass() {
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
-      dataCatalogClient.deleteEntryGroup(
-          EntryGroupName.of(PROJECT_ID, LOCATION, ENTRY_GROUP_ID_NO_CHILDREN).toString());
+      // Must delete Entries before deleting the Entry Group.
+      if (entriesPendingDeletion.isEmpty() || entryGroupsPendingDeletion.isEmpty()){
+        fail("Something went wrong, no entries were generated");
+      }
 
-      dataCatalogClient.deleteEntry(
-          EntryName.of(PROJECT_ID, LOCATION, PARENT_ENTRY_GROUP_ID, ENTRY_ID).toString());
-      dataCatalogClient.deleteEntryGroup(
-          EntryGroupName.of(PROJECT_ID, LOCATION, PARENT_ENTRY_GROUP_ID).toString());
+      for (String entryName: entriesPendingDeletion) {
+        dataCatalogClient.deleteEntry(entryName);
+      }
+
+      for (String entryGroupName: entryGroupsPendingDeletion) {
+        dataCatalogClient.deleteEntryGroup(entryGroupName);
+      }
     } catch (Exception e) {
       System.out.println("Error in cleaning up test data:\n" + e.toString());
     }
@@ -76,31 +82,86 @@ public class CreateEntryTests {
 
   @Test
   public void testCreateFilesetEntry() {
+    String entryGroupId = "fileset_entry_group_parent_" + getUUID8Chars();
+    String entryId = "fileset_entry_id_" + getUUID8Chars();
+
     // Must create a Entry Group before creating the entry.
-    CreateEntryGroup.createEntryGroup(PROJECT_ID, PARENT_ENTRY_GROUP_ID);
-    CreateFilesetEntry.createEntry(PROJECT_ID, PARENT_ENTRY_GROUP_ID, ENTRY_ID);
+    CreateEntryGroup.createEntryGroup(PROJECT_ID, entryGroupId);
+    CreateFilesetEntry.createEntry(PROJECT_ID, entryGroupId, entryId);
+
+    // Store names for clean up on teardown
+    String expectedEntryGroupName =
+        EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId).toString();
+    entryGroupsPendingDeletion.add(expectedEntryGroupName);
+
+    String expectedEntryName =
+        EntryName.of(PROJECT_ID, LOCATION, entryGroupId, entryId).toString();
+    entriesPendingDeletion.add(expectedEntryName);
 
     String output = bout.toString();
 
     String entryTemplate =
-        "Entry created with name: projects/%s/locations/us-central1/entryGroups/%s/entries/%s";
+        "Entry created with name: %s";
     assertThat(
         output,
         CoreMatchers.containsString(
-            String.format(entryTemplate, PROJECT_ID, PARENT_ENTRY_GROUP_ID, ENTRY_ID)));
+            String.format(entryTemplate, expectedEntryName)));
   }
 
   @Test
   public void testCreateEntryGroup() {
-    CreateEntryGroup.createEntryGroup(PROJECT_ID, ENTRY_GROUP_ID_NO_CHILDREN);
+    String entry_group_id = "entry_group_no_children_" + getUUID8Chars();
+
+    CreateEntryGroup.createEntryGroup(PROJECT_ID, entry_group_id);
+
+    // Store names for clean up on teardown
+    String expectedEntryGroupName =
+        EntryGroupName.of(PROJECT_ID, LOCATION, entry_group_id).toString();
+    entryGroupsPendingDeletion.add(expectedEntryGroupName);
 
     String output = bout.toString();
 
     String entryGroupTemplate =
-        "Entry Group created with name: projects/%s/locations/us-central1/entryGroups/%s";
+        "Entry Group created with name: %s";
     assertThat(
         output,
         CoreMatchers.containsString(
-            String.format(entryGroupTemplate, PROJECT_ID, ENTRY_GROUP_ID_NO_CHILDREN)));
+            String.format(entryGroupTemplate, expectedEntryGroupName)));
+  }
+
+  @Test
+  public void testCreateEntryQuickStart() {
+    String entryGroupId = "fileset_entry_group_parent_" + getUUID8Chars();
+    String entryId = "fileset_entry_id_" + getUUID8Chars();
+
+    CreateFilesetEntryQuickStart.createEntry(PROJECT_ID, entryGroupId, entryId);
+
+    // Store names for clean up on teardown
+    String expectedEntryGroupName =
+        EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId).toString();
+    entryGroupsPendingDeletion.add(expectedEntryGroupName);
+
+    String expectedEntryName =
+        EntryName.of(PROJECT_ID, LOCATION, entryGroupId, entryId).toString();
+    entriesPendingDeletion.add(expectedEntryName);
+
+    String output = bout.toString();
+
+    String entryTemplate =
+        "Entry created with name: %s";
+    String entryGroupTemplate =
+        "Entry Group created with name: %s";
+    assertThat(
+        output,
+        CoreMatchers.containsString(
+            String.format(entryGroupTemplate, expectedEntryGroupName)));
+    assertThat(
+        output,
+        CoreMatchers.containsString(
+            String.format(entryTemplate, expectedEntryName)));
+  }
+
+  private String getUUID8Chars() {
+    return UUID.randomUUID().toString().substring(0, 8);
   }
 }
