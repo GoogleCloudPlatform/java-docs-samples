@@ -36,10 +36,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Integration (system) tests for {@link CreateFilesetEntry} and {@link CreateEntryGroup}.
+ * Integration (system) tests for {CreateFilesetEntryQuickStart}.
  */
 @RunWith(JUnit4.class)
-public class CreateEntryTests {
+public class CreateFilesetEntryQuickStartTests {
 
   private ByteArrayOutputStream bout;
 
@@ -82,13 +82,11 @@ public class CreateEntryTests {
   }
 
   @Test
-  public void testCreateFilesetEntry() {
+  public void testCreateEntryQuickStart() {
     String entryGroupId = "fileset_entry_group_parent_" + getUuid8Chars();
     String entryId = "fileset_entry_id_" + getUuid8Chars();
 
-    // Must create a Entry Group before creating the entry.
-    CreateEntryGroup.createEntryGroup(PROJECT_ID, entryGroupId);
-    CreateFilesetEntry.createEntry(PROJECT_ID, entryGroupId, entryId);
+    CreateFilesetEntryQuickStart.createEntry(PROJECT_ID, entryGroupId, entryId);
 
     // Store names for clean up on teardown
     String expectedEntryGroupName =
@@ -101,27 +99,12 @@ public class CreateEntryTests {
     String output = bout.toString();
 
     String entryTemplate = "Entry created with name: %s";
-    assertThat(
-        output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
-  }
-
-  @Test
-  public void testCreateEntryGroup() {
-    String entryGroupId = "entry_group_no_children_" + getUuid8Chars();
-
-    CreateEntryGroup.createEntryGroup(PROJECT_ID, entryGroupId);
-
-    // Store names for clean up on teardown
-    String expectedEntryGroupName =
-        EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId).toString();
-    entryGroupsPendingDeletion.add(expectedEntryGroupName);
-
-    String output = bout.toString();
-
     String entryGroupTemplate = "Entry Group created with name: %s";
     assertThat(
         output,
         CoreMatchers.containsString(String.format(entryGroupTemplate, expectedEntryGroupName)));
+    assertThat(
+        output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
   private String getUuid8Chars() {
