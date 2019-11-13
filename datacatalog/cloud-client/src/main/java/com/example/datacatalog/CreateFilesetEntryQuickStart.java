@@ -22,19 +22,17 @@ import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.api.gax.rpc.PermissionDeniedException;
 import com.google.cloud.datacatalog.ColumnSchema;
-import com.google.cloud.datacatalog.CreateEntryRequest;
 import com.google.cloud.datacatalog.CreateEntryGroupRequest;
+import com.google.cloud.datacatalog.CreateEntryRequest;
 import com.google.cloud.datacatalog.Entry;
-import com.google.cloud.datacatalog.EntryName;
 import com.google.cloud.datacatalog.EntryGroup;
 import com.google.cloud.datacatalog.EntryGroupName;
+import com.google.cloud.datacatalog.EntryName;
 import com.google.cloud.datacatalog.EntryType;
 import com.google.cloud.datacatalog.GcsFilesetSpec;
 import com.google.cloud.datacatalog.LocationName;
 import com.google.cloud.datacatalog.Schema;
 import com.google.cloud.datacatalog.v1beta1.DataCatalogClient;
-import java.io.IOException;
-
 import java.io.IOException;
 
 public class CreateFilesetEntryQuickStart {
@@ -89,11 +87,12 @@ public class CreateFilesetEntryQuickStart {
               .build();
 
       // Construct the EntryGroup request to be sent by the client.
-      CreateEntryGroupRequest entryGroupRequest = CreateEntryGroupRequest.newBuilder()
-          .setParent(LocationName.of(projectId, location).toString())
-          .setEntryGroupId(entryGroupId)
-          .setEntryGroup(entryGroup)
-          .build();
+      CreateEntryGroupRequest entryGroupRequest =
+          CreateEntryGroupRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .setEntryGroupId(entryGroupId)
+              .setEntryGroup(entryGroup)
+              .build();
 
       // Use the client to send the API request.
       EntryGroup entryGroupResponse = dataCatalogClient.createEntryGroup(entryGroupRequest);
@@ -150,11 +149,12 @@ public class CreateFilesetEntryQuickStart {
               .build();
 
       // Construct the Entry request to be sent by the client.
-      CreateEntryRequest entryRequest = CreateEntryRequest.newBuilder()
-          .setParent(entryGroupResponse.getName())
-          .setEntryId(entryId)
-          .setEntry(entry)
-          .build();
+      CreateEntryRequest entryRequest =
+          CreateEntryRequest.newBuilder()
+              .setParent(entryGroupResponse.getName())
+              .setEntryId(entryId)
+              .setEntry(entry)
+              .build();
 
       // Use the client to send the API request.
       Entry entryResponse = dataCatalogClient.createEntry(entryRequest);

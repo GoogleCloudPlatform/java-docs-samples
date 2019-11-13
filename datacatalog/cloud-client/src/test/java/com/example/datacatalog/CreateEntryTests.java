@@ -35,8 +35,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link CreateFilesetEntry} and {@link CreateEntryGroup}
- * and {@link CreateFilesetEntryQuickStart}. */
+/**
+ * Integration (system) tests for {@link CreateFilesetEntry} and {@link CreateEntryGroup} and {@link
+ * CreateFilesetEntryQuickStart}.
+ */
 @RunWith(JUnit4.class)
 public class CreateEntryTests {
 
@@ -64,15 +66,15 @@ public class CreateEntryTests {
   public static void tearDownClass() {
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       // Must delete Entries before deleting the Entry Group.
-      if (entriesPendingDeletion.isEmpty() || entryGroupsPendingDeletion.isEmpty()){
+      if (entriesPendingDeletion.isEmpty() || entryGroupsPendingDeletion.isEmpty()) {
         fail("Something went wrong, no entries were generated");
       }
 
-      for (String entryName: entriesPendingDeletion) {
+      for (String entryName : entriesPendingDeletion) {
         dataCatalogClient.deleteEntry(entryName);
       }
 
-      for (String entryGroupName: entryGroupsPendingDeletion) {
+      for (String entryGroupName : entryGroupsPendingDeletion) {
         dataCatalogClient.deleteEntryGroup(entryGroupName);
       }
     } catch (Exception e) {
@@ -94,18 +96,14 @@ public class CreateEntryTests {
         EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId).toString();
     entryGroupsPendingDeletion.add(expectedEntryGroupName);
 
-    String expectedEntryName =
-        EntryName.of(PROJECT_ID, LOCATION, entryGroupId, entryId).toString();
+    String expectedEntryName = EntryName.of(PROJECT_ID, LOCATION, entryGroupId, entryId).toString();
     entriesPendingDeletion.add(expectedEntryName);
 
     String output = bout.toString();
 
-    String entryTemplate =
-        "Entry created with name: %s";
+    String entryTemplate = "Entry created with name: %s";
     assertThat(
-        output,
-        CoreMatchers.containsString(
-            String.format(entryTemplate, expectedEntryName)));
+        output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
   @Test
@@ -121,12 +119,10 @@ public class CreateEntryTests {
 
     String output = bout.toString();
 
-    String entryGroupTemplate =
-        "Entry Group created with name: %s";
+    String entryGroupTemplate = "Entry Group created with name: %s";
     assertThat(
         output,
-        CoreMatchers.containsString(
-            String.format(entryGroupTemplate, expectedEntryGroupName)));
+        CoreMatchers.containsString(String.format(entryGroupTemplate, expectedEntryGroupName)));
   }
 
   @Test
@@ -141,24 +137,18 @@ public class CreateEntryTests {
         EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId).toString();
     entryGroupsPendingDeletion.add(expectedEntryGroupName);
 
-    String expectedEntryName =
-        EntryName.of(PROJECT_ID, LOCATION, entryGroupId, entryId).toString();
+    String expectedEntryName = EntryName.of(PROJECT_ID, LOCATION, entryGroupId, entryId).toString();
     entriesPendingDeletion.add(expectedEntryName);
 
     String output = bout.toString();
 
-    String entryTemplate =
-        "Entry created with name: %s";
-    String entryGroupTemplate =
-        "Entry Group created with name: %s";
+    String entryTemplate = "Entry created with name: %s";
+    String entryGroupTemplate = "Entry Group created with name: %s";
     assertThat(
         output,
-        CoreMatchers.containsString(
-            String.format(entryGroupTemplate, expectedEntryGroupName)));
+        CoreMatchers.containsString(String.format(entryGroupTemplate, expectedEntryGroupName)));
     assertThat(
-        output,
-        CoreMatchers.containsString(
-            String.format(entryTemplate, expectedEntryName)));
+        output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
   private String getUUID8Chars() {
