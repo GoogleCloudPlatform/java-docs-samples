@@ -1,5 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.google.containerregistry</groupId>
@@ -31,12 +32,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-containeranalysis</artifactId>
-      <version>0.98.0-beta</version>
+      <version>0.117.0-beta</version>
     </dependency>
     <dependency>
       <groupId>io.grafeas</groupId>
       <artifactId>grafeas</artifactId>
-      <version>0.1.0</version>
+      <version>0.21.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -46,22 +47,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core-grpc</artifactId>
-      <version>1.80.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-netty-shaded</artifactId>
-      <version>1.21.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-stub</artifactId>
-      <version>1.21.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-auth</artifactId>
-      <version>1.21.0</version>
+      <version>1.91.3</version>
     </dependency>
 
     <dependency>
@@ -82,14 +68,14 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.7.Final</version>
+      <version>2.0.27.Final</version>
     </dependency>
 
     <!-- [END dependencies] -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-2</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
