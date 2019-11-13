@@ -49,21 +49,6 @@
       <artifactId>google-cloud-core-grpc</artifactId>
       <version>1.91.3</version>
     </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-netty-shaded</artifactId>
-      <version>1.25.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-stub</artifactId>
-      <version>1.25.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-auth</artifactId>
-      <version>1.25.0</version>
-    </dependency>
 
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -90,7 +75,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
