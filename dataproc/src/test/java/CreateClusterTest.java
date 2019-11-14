@@ -44,7 +44,8 @@ public class CreateClusterTest {
   private static void requireEnv(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName)
+    );
   }
 
   @BeforeClass
@@ -83,7 +84,7 @@ public class CreateClusterTest {
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
 
-      clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName).get();
+        clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName).get();
 
     } catch (Exception e) {
       System.out.println("Error during cluster deletion: \n" + e.toString());
