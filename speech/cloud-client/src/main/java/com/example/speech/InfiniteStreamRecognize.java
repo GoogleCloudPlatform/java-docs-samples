@@ -16,17 +16,18 @@
 
 package com.example.speech;
 
-// [START speech_transcribe_infinite_streaming_imports]
+// [START speech_transcribe_infinite_streaming]
+
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1.RecognitionConfig;
-import com.google.cloud.speech.v1.SpeechClient;
-import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1.StreamingRecognitionConfig;
-import com.google.cloud.speech.v1.StreamingRecognitionResult;
-import com.google.cloud.speech.v1.StreamingRecognizeRequest;
-import com.google.cloud.speech.v1.StreamingRecognizeResponse;
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.SpeechClient;
+import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognitionResult;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 
@@ -41,12 +42,14 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.TargetDataLine;
-// [END speech_transcribe_infinite_streaming_imports]
 
 public class InfiniteStreamRecognize {
 
-// [START speech_transcribe_infinite_streaming_globals]
   private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+
+  public static final String RED = "\033[0;31m";
+  public static final String GREEN = "\033[0;32m";
+  public static final String YELLOW = "\033[0;33m";
 
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
@@ -64,19 +67,7 @@ public class InfiniteStreamRecognize {
   private static boolean lastTranscriptWasFinal = false;
   private static StreamController referenceToStreamController;
   private static ByteString tempByteString;
-// [END speech_transcribe_infinite_streaming_globals]
 
-  public static String convertMillisToDate(double milliSeconds) {
-    long millis = (long) milliSeconds;
-    DecimalFormat format = new DecimalFormat();
-    format.setMinimumIntegerDigits(2);
-    return String.format("%s:%s /",
-            format.format(TimeUnit.MILLISECONDS.toMinutes(millis)),
-            format.format(TimeUnit.MILLISECONDS.toSeconds(millis)
-                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
-    );
-  }
-// [START speech_transcribe_infinite_streaming_main]
   public static void main(String... args) {
     InfiniteStreamRecognizeOptions options = InfiniteStreamRecognizeOptions.fromFlags(args);
     if (options == null) {
@@ -92,6 +83,17 @@ public class InfiniteStreamRecognize {
     }
   }
 
+  public static String convertMillisToDate(double milliSeconds) {
+    long millis = (long) milliSeconds;
+    DecimalFormat format = new DecimalFormat();
+    format.setMinimumIntegerDigits(2);
+    return String.format("%s:%s /",
+            format.format(TimeUnit.MILLISECONDS.toMinutes(millis)),
+            format.format(TimeUnit.MILLISECONDS.toSeconds(millis)
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)))
+    );
+  }
+
   /** Performs infinite streaming speech recognition */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
 
@@ -100,6 +102,7 @@ public class InfiniteStreamRecognize {
 
       @Override
       public void run() {
+        System.out.println(YELLOW);
         System.out.println("Start speaking...Press Ctrl-C to stop");
         targetDataLine.start();
         byte[] data = new byte[BYTES_PER_BUFFER];
@@ -116,7 +119,6 @@ public class InfiniteStreamRecognize {
         }
       }
     }
-    
 
     // Creating microphone input buffer thread
     MicBuffer micrunnable = new MicBuffer();
@@ -132,9 +134,7 @@ public class InfiniteStreamRecognize {
             public void onStart(StreamController controller) {
               referenceToStreamController = controller;
             }
-// [END speech_transcribe_infinite_streaming_main]       
 
-        //  [START speech_transcribe_infinite_streaming_output]
             public void onResponse(StreamingRecognizeResponse response) {
               responses.add(response);
               StreamingRecognitionResult result = response.getResultsList().get(0);
@@ -146,6 +146,8 @@ public class InfiniteStreamRecognize {
 
               SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
               if (result.getIsFinal()) {
+                System.out.print(GREEN);
+                System.out.print("\033[2K\r");
                 System.out.printf("%s: %s [confidence: %.2f]\n",
                         convertMillisToDate(correctedTime),
                         alternative.getTranscript(),
@@ -154,13 +156,15 @@ public class InfiniteStreamRecognize {
                 isFinalEndTime = resultEndTimeInMS;
                 lastTranscriptWasFinal = true;
               } else {
+                System.out.print(RED);
+                System.out.print("\033[2K\r");
                 System.out.printf("%s: %s", convertMillisToDate(correctedTime),
                         alternative.getTranscript()
                 );
                 lastTranscriptWasFinal = false;
               }
             }
-        //  [END speech_transcribe_infinite_streaming_output]
+
             public void onComplete() {
             }
 
@@ -209,8 +213,7 @@ public class InfiniteStreamRecognize {
         micThread.start();
 
         long startTime = System.currentTimeMillis();
-        
-        // [START speech_transcribe_infinite_streaming_generator]
+
         while (true) {
 
           long estimatedTime = System.currentTimeMillis() - startTime;
@@ -244,6 +247,7 @@ public class InfiniteStreamRecognize {
                       .setStreamingConfig(streamingRecognitionConfig)
                       .build();
 
+            System.out.println(YELLOW);
             System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
 
             startTime = System.currentTimeMillis();
@@ -292,7 +296,7 @@ public class InfiniteStreamRecognize {
             audioInput.add(tempByteString);
 
           }
-          // [END speech_transcribe_infinite_streaming_generator]
+
           clientStream.send(request);
         }
       } catch (Exception e) {
@@ -302,3 +306,4 @@ public class InfiniteStreamRecognize {
   }
 
 }
+// [END speech_transcribe_infinite_streaming]
