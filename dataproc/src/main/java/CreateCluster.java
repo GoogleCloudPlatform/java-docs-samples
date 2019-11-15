@@ -15,13 +15,13 @@
  */
 
 // [START create_cluster]
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dataproc.v1.Cluster;
 import com.google.cloud.dataproc.v1.ClusterConfig;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
 import com.google.cloud.dataproc.v1.InstanceGroupConfig;
-import com.google.api.gax.longrunning.OperationFuture;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
