@@ -28,11 +28,12 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Automl translation models. */
+// Tests for Automl translation models.
 @RunWith(JUnit4.class)
 public class TranslateModelManagementIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -50,10 +51,14 @@ public class TranslateModelManagementIT {
     );
   }
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
+
+  @Before
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
