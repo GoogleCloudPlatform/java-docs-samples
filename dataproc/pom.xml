@@ -15,7 +15,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>SPECIFY_LATEST_VERSION</version>
+    <version>1.0.11</version>
   </parent>
 
   <properties>
