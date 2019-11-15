@@ -18,6 +18,11 @@ package com.google.cloud.automl.tables.samples;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,15 +36,14 @@ import org.junit.runners.JUnit4;
 
 /** Tests for AutoML Tables "Dataset API" sample. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DatasetApiIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID, BIGQUERY_DATASET_ID, PATH,
-  // OUTPUT_GCS_URI and OUTPUT_BIGQUERY_URI before running the test cases
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String COMPUTE_REGION = "us-central1";
   private static final String DATASET_NAME = "test_table_dataset";
-  private static final String DATASET_ID = "TBL2246891593778855936";
+  private static final String DATASET_ID = "TBL2017172828410871808";
   private static final String BIGQUERY_DATASET_ID = "TBL5314616996204118016";
-  private static final String PATH = "gs://automl-tables/input/train.csv";
+  private static final String PATH = "gs://cloud-ml-tables-data/bank-marketing.csv";
   private static final String OUTPUT_GCS_URI = "gs://automl-tables/export-data";
   private static final String OUTPUT_BIGQUERY_URI = "bq://automl-tables-bg-output";
   private static final String UPDATE_DATASET_DISPLAY_NAME = "test_table_dataset_01";
@@ -161,22 +165,42 @@ public class DatasetApiIT {
     assertThat(got).contains("Column Id:");
   }
 
-  @Test
-  public void testExportData() throws IOException, InterruptedException, ExecutionException {
-    // Act
-    DatasetApi.exportDataToCsv(PROJECT_ID, COMPUTE_REGION, DATASET_ID, OUTPUT_GCS_URI);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Processing export...");
-
-    // Act
-    bout.reset();
-    DatasetApi.exportDataToBigQuery(
-        PROJECT_ID, COMPUTE_REGION, BIGQUERY_DATASET_ID, OUTPUT_BIGQUERY_URI);
-
-    // Assert
-    got = bout.toString();
-    assertThat(got).contains("Processing export...");
-  }
+  //  @Test
+  //  public void testExportData() throws IOException, InterruptedException, ExecutionException {
+  //    // Act
+  //    DatasetApi.exportDataToCsv(PROJECT_ID, COMPUTE_REGION, DATASET_ID, OUTPUT_GCS_URI);
+  //
+  //    // Assert
+  //    String got = bout.toString();
+  //    assertThat(got).contains("Processing export...");
+  //
+  //    Storage storage = StorageOptions.getDefaultInstance().getService();
+  //    Page<Blob> blobs =
+  //            storage.list(
+  //                    BUCKET_ID,
+  //                    Storage.BlobListOption.currentDirectory(),
+  //                    Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
+  //
+  //    for (Blob blob : blobs.iterateAll()) {
+  //      Page<Blob> fileBlobs =
+  //              storage.list(
+  //                      BUCKET_ID,
+  //                      Storage.BlobListOption.currentDirectory(),
+  //                      Storage.BlobListOption.prefix(blob.getName()));
+  //      for (Blob fileBlob : fileBlobs.iterateAll()) {
+  //        if (!fileBlob.isDirectory()) {
+  //          fileBlob.delete();
+  //        }
+  //      }
+  //    }
+  //
+  //    // Act
+  //    bout.reset();
+  //    DatasetApi.exportDataToBigQuery(
+  //        PROJECT_ID, COMPUTE_REGION, BIGQUERY_DATASET_ID, OUTPUT_BIGQUERY_URI);
+  //
+  //    // Assert
+  //    got = bout.toString();
+  //    assertThat(got).contains("Processing export...");
+  //  }
 }

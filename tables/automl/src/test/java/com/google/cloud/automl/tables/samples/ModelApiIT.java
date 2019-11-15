@@ -31,19 +31,16 @@ import org.junit.runners.JUnit4;
 
 /** Tests for AutoML Tables "Model API" sample. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ModelApiIT {
-  // TODO(developer): Change PROJECT_ID, COMPUTE_REGION, DATASET_ID, TABLE_ID, MODEL_ID, COLUMN_ID,
-  // DEPLOY_MODEL_ID, UNDEPLOY_MODEL_ID, TRAIN_BUDGET and BQ_OUTPUT_URI before running the test
-  // cases
   private static final String PROJECT_ID = "java-docs-samples-testing";
   private static final String COMPUTE_REGION = "us-central1";
-  private static final String DATASET_ID = "TBL2246891593778855936";
+  private static final String DATASET_ID = "TBL2017172828410871808";
   private static final String MODEL_NAME = "test_tables_model";
   private static final String TABLE_ID = "2071233616125362176";
   private static final String COLUMN_ID = "773141392279994368";
   private static final String TRAIN_BUDGET = "1000";
-  private static final String DEPLOY_MODEL_ID = "TBL144150372447944704";
-  private static final String UNDEPLOY_MODEL_ID = "TBL4704590352927948800";
+  private static final String MODEL_ID = "TBL5997440105332080640";
   private static final String BQ_OUTPUT_URI = "bq://automl-tables-bg-output";
   private static final String FILTER = "tablesModelMetadata:*";
   private ByteArrayOutputStream bout;
@@ -63,20 +60,21 @@ public class ModelApiIT {
 
   @Test
   public void testModelApi() throws IOException, InterruptedException, ExecutionException {
-    // Act
-    ModelApi.createModel(
-        PROJECT_ID, COMPUTE_REGION, DATASET_ID, TABLE_ID, COLUMN_ID, MODEL_NAME, TRAIN_BUDGET);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Training started...");
+    //    // Act
+    //    ModelApi.createModel(
+    //        PROJECT_ID, COMPUTE_REGION, DATASET_ID, TABLE_ID, COLUMN_ID, MODEL_NAME,
+    // TRAIN_BUDGET);
+    //
+    //    // Assert
+    //    String got = bout.toString();
+    //    assertThat(got).contains("Training started...");
 
     // Act
     bout.reset();
     ModelApi.listModels(PROJECT_ID, COMPUTE_REGION, FILTER);
 
     // Assert
-    got = bout.toString();
+    String got = bout.toString();
     String modelId = got.split("\n")[2].split("/")[got.split("\n")[2].split("/").length - 1];
     assertThat(got).contains("Model Id:");
 
@@ -121,33 +119,30 @@ public class ModelApiIT {
     got = bout.toString();
     assertThat(got).contains("Operation name:");
 
+    //    // Act
+    //    bout.reset();
+    //    ModelApi.deleteModel(PROJECT_ID, COMPUTE_REGION, modelId);
+    //
+    //    // Assert
+    //    got = bout.toString();
+    //    assertThat(got).contains("Model deletion started...");
+  }
+
+  @Test
+  public void testUndeployDeployModel() throws Exception {
     // Act
-    bout.reset();
-    ModelApi.deleteModel(PROJECT_ID, COMPUTE_REGION, modelId);
+    ModelApi.undeployModel(PROJECT_ID, COMPUTE_REGION, MODEL_ID);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("Model undeployment finished");
+
+    // Act
+    ModelApi.deployModel(PROJECT_ID, COMPUTE_REGION, MODEL_ID);
 
     // Assert
     got = bout.toString();
-    assertThat(got).contains("Model deletion started...");
-  }
-
-  @Test
-  public void testDeployModel() throws Exception {
-    // Act
-    ModelApi.deployModel(PROJECT_ID, COMPUTE_REGION, DEPLOY_MODEL_ID);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Name:");
-  }
-
-  @Test
-  public void testUndeployModel() throws Exception {
-    // Act
-    ModelApi.undeployModel(PROJECT_ID, COMPUTE_REGION, UNDEPLOY_MODEL_ID);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Name:");
+    assertThat(got).contains("Model deployment finished");
   }
 
   @Test
@@ -167,5 +162,19 @@ public class ModelApiIT {
     // Assert
     got = bout.toString();
     assertThat(got).contains("Operation details:");
+  }
+
+  @Test
+  public void testDeleteModel() {
+    // As model creation can take many hours, instead try to delete a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      ModelApi.deleteModel(PROJECT_ID, "TRL0000000000000000000");
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
   }
 }
