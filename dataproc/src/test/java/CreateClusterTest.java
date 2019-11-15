@@ -17,12 +17,16 @@
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
+import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
+import com.google.protobuf.Empty;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
@@ -74,9 +78,11 @@ public class CreateClusterTest {
   public void tearDown() throws IOException {
     try (ClusterControllerClient clusterControllerClient = ClusterControllerClient
         .create()) {
-        clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName).get();
+      OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest = clusterControllerClient
+          .deleteClusterAsync(projectId, REGION, clusterName);
+      deleteClusterAsyncRequest.get();
 
-    } catch (Exception e) {
+    } catch (IOException | InterruptedException | ExecutionException e) {
       System.out.println("Error during cluster deletion: \n" + e.toString());
     }
   }

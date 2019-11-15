@@ -60,8 +60,10 @@ public class CreateCluster {
           .setConfig(clusterConfig)
           .build();
 
-      // Create a request to create a Dataproc cluster.
-      Cluster response = clusterControllerClient.createClusterAsync(projectId, region, cluster).get();
+      // Send a request to create a Dataproc cluster.
+      OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
+          clusterControllerClient.createClusterAsync(projectId, region, cluster);
+      Cluster response = createClusterAsyncRequest.get();
 
       // Print out the response
       System.out.println(
