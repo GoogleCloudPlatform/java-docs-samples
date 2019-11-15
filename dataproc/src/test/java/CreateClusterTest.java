@@ -19,7 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
-import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
 import com.google.protobuf.Empty;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +40,7 @@ public class CreateClusterTest {
   private static final String BASE_CLUSTER_NAME = "test-cluster";
   private static final String REGION = "us-central1";
 
-  private static String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");;
+  private static String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private String clusterName;
   private ByteArrayOutputStream bout;
 
@@ -59,7 +58,7 @@ public class CreateClusterTest {
   }
 
   @Before
-  public void setUp(){
+  public void setUp() {
     clusterName = String.format("%s-%s", BASE_CLUSTER_NAME, UUID.randomUUID().toString());
 
     bout = new ByteArrayOutputStream();
@@ -75,11 +74,11 @@ public class CreateClusterTest {
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() {
     try (ClusterControllerClient clusterControllerClient = ClusterControllerClient
         .create()) {
-      OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest = clusterControllerClient
-          .deleteClusterAsync(projectId, REGION, clusterName);
+      OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
+          clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName);
       deleteClusterAsyncRequest.get();
 
     } catch (IOException | InterruptedException | ExecutionException e) {
