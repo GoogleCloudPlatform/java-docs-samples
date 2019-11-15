@@ -23,12 +23,13 @@ import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
 import com.google.cloud.dataproc.v1.InstanceGroupConfig;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.concurrent.ExecutionException;
 
 public class CreateCluster {
 
   public static void createCluster(String projectId, String region, String clusterName)
-      throws IOException {
+      throws IOException, InterruptedException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client
@@ -73,7 +74,7 @@ public class CreateCluster {
       // Likely this would occur due to issues authenticating with GCP. Make sure the environment
       // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
       System.out.println("Error creating the cluster controller client: \n" + e.toString());
-    } catch (InterruptedException | ExecutionException e) {
+    } catch (ExecutionException e) {
       // Common issues for this include needing to increase compute engine quotas or a cluster of
       // the same name already exists.
       System.out.println("Error during cluster creation request: \n" + e.toString());

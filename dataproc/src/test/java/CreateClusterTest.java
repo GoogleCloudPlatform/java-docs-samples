@@ -66,7 +66,7 @@ public class CreateClusterTest {
   }
 
   @Test
-  public void createClusterTest() throws Exception {
+  public void createClusterTest() throws IOException, InterruptedException {
     CreateCluster.createCluster(projectId, REGION, clusterName);
     String output = bout.toString();
 
@@ -74,14 +74,14 @@ public class CreateClusterTest {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException, InterruptedException {
     try (ClusterControllerClient clusterControllerClient = ClusterControllerClient
         .create()) {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName);
       deleteClusterAsyncRequest.get();
 
-    } catch (IOException | InterruptedException | ExecutionException e) {
+    } catch (ExecutionException e) {
       System.out.println("Error during cluster deletion: \n" + e.toString());
     }
   }
