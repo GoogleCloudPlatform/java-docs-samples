@@ -37,7 +37,7 @@ public class CreateClusterTest {
   private static final String BASE_CLUSTER_NAME = "test-cluster";
   private static final String REGION = "us-central1";
 
-  private static String projectId;
+  private static String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");;
   private String clusterName;
   private ByteArrayOutputStream bout;
 
@@ -52,8 +52,6 @@ public class CreateClusterTest {
   public static void checkRequirements() {
     requireEnv("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnv("GOOGLE_CLOUD_PROJECT");
-    projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-    System.out.println(String.format("projectId - %s", projectId));
   }
 
   @Before
@@ -66,29 +64,24 @@ public class CreateClusterTest {
 
   @Test
   public void createClusterTest() throws Exception {
-    CreateCluster createCluster = new CreateCluster();
-
-    createCluster.createCluster(projectId, REGION, clusterName);
+    CreateCluster.createCluster(projectId, REGION, clusterName);
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString("cluster-uuid"));
+    assertThat(output, CoreMatchers.containsString(clusterName));
   }
 
   @After
   public void tearDown() throws IOException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
-
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
-    try (ClusterControllerClient clusterControllerClient =
-        ClusterControllerClient.create(clusterControllerSettings)) {
-
+    try (ClusterControllerClient clusterControllerClient = ClusterControllerClient
+        .create()) {
         clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName).get();
 
     } catch (Exception e) {
       System.out.println("Error during cluster deletion: \n" + e.toString());
     }
   }
-
 }

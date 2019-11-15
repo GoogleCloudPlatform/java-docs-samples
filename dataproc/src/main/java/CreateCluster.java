@@ -15,48 +15,63 @@
  */
 
 // [START create_cluster]
+import com.google.api.core.ApiFuture;
 import com.google.cloud.dataproc.v1.Cluster;
 import com.google.cloud.dataproc.v1.ClusterConfig;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
+import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
 import com.google.cloud.dataproc.v1.InstanceGroupConfig;
+import com.google.api.gax.longrunning.OperationFuture;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class CreateCluster {
 
-  public void createCluster(String projectId, String region, String clusterName)
+  public static void createCluster(String projectId, String region, String clusterName)
       throws IOException {
-
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
-    // Create a cluster controller client with the configured settings
-    try (ClusterControllerClient clusterControllerClient = ClusterControllerClient.create(clusterControllerSettings)) {
-
+    // Create a cluster controller client with the configured settings. We only need to create
+    // the client once, and can be reused for multiple requests. Using a try-with-resources
+    // will close the client for us, but this can also be done manually with the .close() method.
+    try (ClusterControllerClient clusterControllerClient = ClusterControllerClient
+        .create(clusterControllerSettings)) {
       // Configure the settings for our cluster
-      InstanceGroupConfig masterConfig = InstanceGroupConfig.newBuilder().setMachineTypeUri("n1-standard-1")
-          .setNumInstances(1).build();
-
-      InstanceGroupConfig workerConfig = InstanceGroupConfig.newBuilder().setMachineTypeUri("n1-standard-1")
-          .setNumInstances(2).build();
-
-      ClusterConfig clusterConfig = ClusterConfig.newBuilder().setMasterConfig(masterConfig)
-          .setWorkerConfig(workerConfig).build();
-
+      InstanceGroupConfig masterConfig = InstanceGroupConfig.newBuilder()
+          .setMachineTypeUri("n1-standard-1")
+          .setNumInstances(1)
+          .build();
+      InstanceGroupConfig workerConfig = InstanceGroupConfig.newBuilder()
+          .setMachineTypeUri("n1-standard-1")
+          .setNumInstances(2)
+          .build();
+      ClusterConfig clusterConfig = ClusterConfig.newBuilder()
+          .setMasterConfig(masterConfig)
+          .setWorkerConfig(workerConfig)
+          .build();
       // Create the cluster object with the desired cluster config
-      Cluster cluster = Cluster.newBuilder().setClusterName(clusterName).setConfig(clusterConfig).build();
+      Cluster cluster = Cluster.newBuilder()
+          .setClusterName(clusterName)
+          .setConfig(clusterConfig)
+          .build();
 
-      // Create the cluster
+      // Create a request to create a Dataproc cluster.
       Cluster response = clusterControllerClient.createClusterAsync(projectId, region, cluster).get();
 
       // Print out the response
-      System.out.println(response);
+      System.out.println(
+          String.format("Cluster created successfully: %s", response.getClusterName())
+      );
 
-    } catch (Exception e) {
-      System.out.println("Error during cluster creation connection: \n" + e.toString());
+    } catch (IOException e) {
+      System.out.println("Error creating the cluster controller client: \n" + e.toString());
+    } catch (InterruptedException | ExecutionException e) {
+      System.out.println("Error during cluster creation request: \n" + e.toString());
     }
   }
 }
