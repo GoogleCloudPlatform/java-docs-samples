@@ -69,8 +69,12 @@ public class CreateCluster {
       );
 
     } catch (IOException e) {
+      // Likely this would occur due to issues authenticating with GCP. Make sure the environment
+      // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
       System.out.println("Error creating the cluster controller client: \n" + e.toString());
     } catch (InterruptedException | ExecutionException e) {
+      // Common issues for this include needing to increase compute engine quotas or a cluster of
+      // the same name already exists.
       System.out.println("Error during cluster creation request: \n" + e.toString());
     }
   }

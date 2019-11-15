@@ -72,10 +72,6 @@ public class CreateClusterTest {
 
   @After
   public void tearDown() throws IOException {
-    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
-    ClusterControllerSettings clusterControllerSettings =
-        ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
-
     try (ClusterControllerClient clusterControllerClient = ClusterControllerClient
         .create()) {
         clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName).get();
