@@ -11,12 +11,13 @@
   <!--
   The parent pom defines common style checks and testing strategies for our samples.
   Removing or replacing it should not affect the execution of the samples in anyway.
-  -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.11</version>
   </parent>
+-->
+
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -42,6 +43,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
