@@ -16,7 +16,12 @@
 
 package com.example.automl;
 
-// [START automl_list_model_evaluations]
+// [START automl_language_entity_extraction_list_model_evaluations]
+// [START automl_language_sentiment_analysis_list_model_evaluations]
+// [START automl_language_text_classification_list_model_evaluations]
+// [START automl_translate_list_model_evaluations]
+// [START automl_vision_classification_list_model_evaluations]
+// [START automl_vision_object_detection_list_model_evaluations]
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ListModelEvaluationsRequest;
 import com.google.cloud.automl.v1.ModelEvaluation;
@@ -56,10 +61,44 @@ class ListModelEvaluations {
         System.out.format("\tnanos: %s", modelEvaluation.getCreateTime().getNanos() / 1e9);
         System.out.format(
             "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
+        // [END automl_language_sentiment_analysis_list_model_evaluations]
+        // [END automl_language_text_classification_list_model_evaluations]
+        // [END automl_translate_list_model_evaluations]
+        // [END automl_vision_classification_list_model_evaluations]
+        // [END automl_vision_object_detection_list_model_evaluations]
+        System.out.format("Entity Extraction Model Evaluation Metrics: %s\n", modelEvaluation.getTextExtractionEvaluationMetrics());
+        // [END automl_language_entity_extraction_list_model_evaluations]
+
+        // [START automl_language_sentiment_analysis_list_model_evaluations]
+        System.out.format("Sentiment Analysis Model Evaluation Metrics: %s\n", modelEvaluation.getTextSentimentEvaluationMetrics());
+        // [END automl_language_sentiment_analysis_list_model_evaluations]
+
+        // [START automl_language_text_classification_list_model_evaluations]
+        // [START automl_vision_classification_list_model_evaluations]
+        System.out.format("Classification Model Evaluation Metrics: %s\n", modelEvaluation.getClassificationEvaluationMetrics());
+        // [END automl_language_text_classification_list_model_evaluations]
+        // [END automl_vision_classification_list_model_evaluations]
+
+        // [START automl_translate_list_model_evaluations]
         System.out.format(
-            "Model Evaluation Metrics: %s\n\n", modelEvaluation.getTranslationEvaluationMetrics());
+                "Translate Model Evaluation Metrics: %s\n", modelEvaluation.getTranslationEvaluationMetrics());
+        // [END automl_translate_list_model_evaluations]
+
+
+        // [START automl_vision_object_detection_list_model_evaluations]
+        System.out.format("Object Detection Model Evaluation Metrics: %s\n", modelEvaluation.getImageObjectDetectionEvaluationMetrics());
+        // [START automl_language_entity_extraction_list_model_evaluations]
+        // [START automl_language_sentiment_analysis_list_model_evaluations]
+        // [START automl_language_text_classification_list_model_evaluations]
+        // [START automl_translate_list_model_evaluations]
+        // [START automl_vision_classification_list_model_evaluations]
       }
     }
   }
 }
-// [END automl_list_model_evaluations]
+// [END automl_language_entity_extraction_list_model_evaluations]
+// [END automl_language_sentiment_analysis_list_model_evaluations]
+// [END automl_language_text_classification_list_model_evaluations]
+// [END automl_translate_list_model_evaluations]
+// [END automl_vision_classification_list_model_evaluations]
+// [END automl_vision_object_detection_list_model_evaluations]
