@@ -46,8 +46,8 @@ public class WritesTest {
 
   private static String requireEnv(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName),
+        System.getenv(varName));
     return System.getenv(varName);
   }
 
