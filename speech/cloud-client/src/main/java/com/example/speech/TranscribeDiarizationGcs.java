@@ -33,14 +33,16 @@ import java.util.concurrent.ExecutionException;
 
 public class TranscribeDiarizationGcs {
 
-  static void transcribeDiarizationGcs() throws IOException, ExecutionException, InterruptedException {
+  static void transcribeDiarizationGcs() throws IOException, ExecutionException,
+          InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String gcsUri = "gs://cloud-samples-data/speech/commercial_mono.wav";
     transcribeDiarizationGcs(gcsUri);
   }
 
   // Transcribe the give gcs file using speaker diarization
-  public static void transcribeDiarizationGcs(String gcsUri) throws IOException, ExecutionException, InterruptedException {
+  public static void transcribeDiarizationGcs(String gcsUri) throws IOException,
+          ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
