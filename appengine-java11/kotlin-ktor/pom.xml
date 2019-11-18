@@ -63,7 +63,7 @@ limitations under the License.
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-netty</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -73,12 +73,12 @@ limitations under the License.
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-core</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-host-common</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>io.ktor</groupId>
@@ -165,7 +165,7 @@ limitations under the License.
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>2.0.0</version>
+                <version>2.2.0</version>
                 <configuration>
                     <version>kotlin-ktor</version>
                     <!-- Ktor generator moved from Maven convention of src/main/* to simply th top level project directory -->
