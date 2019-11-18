@@ -62,7 +62,11 @@ public class PredictionApi {
       Row row = Row.newBuilder().addAllValues(values).build();
       ExamplePayload payload = ExamplePayload.newBuilder().setRow(row).build();
       PredictRequest request =
-          PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
+          PredictRequest.newBuilder()
+                  .setName(name.toString())
+                  .setPayload(payload)
+                  .putParams("feature_importance", "true")
+                  .build();
 
       PredictResponse response = client.predict(request);
 
