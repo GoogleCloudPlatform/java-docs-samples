@@ -28,6 +28,14 @@ import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 // [START bigtable_filters_limit_value_range]
 // [START bigtable_filters_limit_value_regex]
 // [START bigtable_filters_limit_timestamp_range]
+// [START bigtable_filters_limit_block_all]
+// [START bigtable_filters_limit_pass_all]
+// [START bigtable_filters_limit_sink]
+// [START bigtable_filters_modify_strip_value]
+// [START bigtable_filters_modify_apply_label]
+// [START bigtable_filters_composing_chain]
+// [START bigtable_filters_composing_interleave]
+// [START bigtable_filters_composing_condition]
 import com.google.api.gax.rpc.ServerStream;
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.Filters.Filter;
@@ -47,6 +55,14 @@ public class Filters {
   // [END bigtable_filters_limit_value_range]
   // [END bigtable_filters_limit_value_regex]
   // [END bigtable_filters_limit_timestamp_range]
+  // [END bigtable_filters_limit_block_all]
+  // [END bigtable_filters_limit_pass_all]
+  // [END bigtable_filters_limit_sink]
+  // [END bigtable_filters_modify_strip_value]
+  // [END bigtable_filters_modify_apply_label]
+  // [END bigtable_filters_composing_chain]
+  // [END bigtable_filters_composing_interleave]
+  // [END bigtable_filters_composing_condition]
 
   // [START bigtable_filters_limit_row_sample]
   public static void filterLimitRowSample(String projectId, String instanceId, String tableId) {
@@ -180,6 +196,107 @@ public class Filters {
   }
   // [END bigtable_filters_limit_timestamp_range]
 
+  // [START bigtable_filters_limit_block_all]
+  public static void filterLimitBlockAll(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter = FILTERS.block();
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_limit_block_all]
+
+  // [START bigtable_filters_limit_pass_all]
+  public static void filterLimitPassAll(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter = FILTERS.pass();
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_limit_pass_all]
+
+  // [START bigtable_filters_limit_sink]
+  public static void filterLimitSink(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter = FILTERS.sink();
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_limit_sink]
+
+  // [START bigtable_filters_modify_strip_value]
+  public static void filterModifyStripValue(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter = FILTERS.value().strip();
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_modify_strip_value]
+
+  // [START bigtable_filters_modify_apply_label]
+  public static void filterModifyApplyLabel(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter = FILTERS.label("my-label");
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_modify_apply_label]
+
+  // [START bigtable_filters_composing_chain]
+  public static void filterComposingChain(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter =
+        FILTERS
+            .chain()
+            .filter(FILTERS.limit().cellsPerColumn(1))
+            .filter(FILTERS.family().exactMatch("cell_plan"));
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_composing_chain]
+
+  // [START bigtable_filters_composing_interleave]
+  public static void filterComposingInterleave(
+      String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter =
+        FILTERS
+            .interleave()
+            .filter(FILTERS.limit().cellsPerColumn(1))
+            .filter(FILTERS.family().exactMatch("cell_plan"));
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_composing_interleave]
+
+  // [START bigtable_filters_composing_condition]
+  public static void filterComposingCondition(String projectId, String instanceId, String tableId) {
+    // String projectId = "my-project-id";
+    // String instanceId = "my-instance-id";
+    // String tableId = "mobile-time-series";
+
+    Filter filter =
+        FILTERS
+            .condition(FILTERS.value().regex("PQ2A.*$"))
+            .otherwise(FILTERS.label("my-label2"))
+            .then(FILTERS.label("my-label"));
+    readFilter(projectId, instanceId, tableId, filter);
+  }
+  // [END bigtable_filters_composing_condition]
+
   // [START bigtable_filters_limit_row_sample]
   // [START bigtable_filters_limit_row_regex]
   // [START bigtable_filters_limit_cells_per_col]
@@ -191,7 +308,14 @@ public class Filters {
   // [START bigtable_filters_limit_value_range]
   // [START bigtable_filters_limit_value_regex]
   // [START bigtable_filters_limit_timestamp_range]
-
+  // [START bigtable_filters_limit_block_all]
+  // [START bigtable_filters_limit_pass_all]
+  // [START bigtable_filters_limit_sink]
+  // [START bigtable_filters_modify_strip_value]
+  // [START bigtable_filters_modify_apply_label]
+  // [START bigtable_filters_composing_chain]
+  // [START bigtable_filters_composing_interleave]
+  // [START bigtable_filters_composing_condition]
   public static void readFilter(
       String projectId, String instanceId, String tableId, Filter filter) {
     try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
@@ -208,13 +332,20 @@ public class Filters {
 
   private static void printRow(Row row) {
     System.out.printf("Reading data for %s%n", row.getKey().toStringUtf8());
+    String colFamily = "";
     for (RowCell cell : row.getCells()) {
+      if (cell.getFamily() != colFamily) {
+        colFamily = cell.getFamily();
+        System.out.printf("Column Family %s%n", colFamily);
+      }
+      String labels =
+          cell.getLabels().size() == 0 ? "" : " [" + String.join(",", cell.getLabels()) + "]";
       System.out.printf(
-          "%s:%s %s @%s%n",
-          cell.getFamily(),
+          "\t%s: %s @%s%s%n",
           cell.getQualifier().toStringUtf8(),
           cell.getValue().toStringUtf8(),
-          cell.getTimestamp());
+          cell.getTimestamp(),
+          labels);
     }
     System.out.println();
   }
@@ -230,3 +361,11 @@ public class Filters {
 // [END bigtable_filters_limit_value_range]
 // [END bigtable_filters_limit_value_regex]
 // [END bigtable_filters_limit_timestamp_range]
+// [END bigtable_filters_limit_block_all]
+// [END bigtable_filters_limit_pass_all]
+// [END bigtable_filters_limit_sink]
+// [END bigtable_filters_modify_strip_value]
+// [END bigtable_filters_modify_apply_label]
+// [END bigtable_filters_composing_chain]
+// [END bigtable_filters_composing_interleave]
+// [END bigtable_filters_composing_condition]

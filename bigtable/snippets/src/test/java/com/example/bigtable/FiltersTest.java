@@ -192,17 +192,21 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "cell_plan:data_plan_01gb false @%1$s\n"
-                    + "cell_plan:data_plan_01gb true @%2$s\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_01gb: true @%2$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "cell_plan:data_plan_10gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s",
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s",
                 TIMESTAMP, TIMESTAMP - HOUR));
   }
 
@@ -215,32 +219,42 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "cell_plan:data_plan_01gb false @%1$s\n"
-                    + "cell_plan:data_plan_01gb true @%2$s\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_01gb: true @%2$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "cell_plan:data_plan_10gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "cell_plan:data_plan_10gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP, TIMESTAMP - HOUR));
   }
 
@@ -253,20 +267,29 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "cell_plan:data_plan_01gb false @%1$s\n"
-                    + "cell_plan:data_plan_01gb true @%2$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_01gb: true @%2$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "cell_plan:data_plan_10gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "cell_plan:data_plan_10gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n",
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n",
                 TIMESTAMP, TIMESTAMP - HOUR));
   }
 
@@ -279,22 +302,28 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -307,25 +336,30 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -338,20 +372,25 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -364,13 +403,16 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "cell_plan:data_plan_01gb false @%1$s\n"
-                    + "cell_plan:data_plan_01gb true @%2$s\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_01gb: true @%2$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "cell_plan:data_plan_05gb true @%1$s\n\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "cell_plan:data_plan_05gb true @%1$s",
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s",
                 TIMESTAMP, TIMESTAMP - HOUR));
   }
 
@@ -383,9 +425,11 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s",
                 TIMESTAMP));
   }
 
@@ -398,15 +442,20 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -419,7 +468,288 @@ public class FiltersTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "cell_plan:data_plan_01gb true @%s\n",
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: true @%s\n",
                 TIMESTAMP - HOUR));
+  }
+
+  @Test
+  public void testFilterBlockAll() {
+    Filters.filterLimitBlockAll(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output).doesNotContain("Reading data for");
+  }
+
+  @Test
+  public void testFilterPassAll() {
+    Filters.filterLimitPassAll(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_01gb: true @%2$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
+                TIMESTAMP, TIMESTAMP - HOUR));
+  }
+
+  @Test
+  public void testFilterSink() {
+    Filters.filterLimitSink(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_01gb: true @%2$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
+                TIMESTAMP, TIMESTAMP - HOUR));
+  }
+
+  @Test
+  public void testFilterStripValue() {
+    Filters.filterModifyStripValue(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb:  @%1$s\n"
+                    + "\tdata_plan_01gb:  @%2$s\n"
+                    + "\tdata_plan_05gb:  @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell:  @%1$s\n"
+                    + "\tconnected_wifi:  @%1$s\n"
+                    + "\tos_build:  @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb:  @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell:  @%1$s\n"
+                    + "\tconnected_wifi:  @%1$s\n"
+                    + "\tos_build:  @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb:  @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell:  @%1$s\n"
+                    + "\tconnected_wifi:  @%1$s\n"
+                    + "\tos_build:  @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb:  @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell:  @%1$s\n"
+                    + "\tconnected_wifi:  @%1$s\n"
+                    + "\tos_build:  @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb:  @%1$s\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell:  @%1$s\n"
+                    + "\tconnected_wifi:  @%1$s\n"
+                    + "\tos_build:  @%1$s",
+                TIMESTAMP, TIMESTAMP - HOUR));
+  }
+
+  @Test
+  public void testFilterApplyLabel() {
+    Filters.filterModifyApplyLabel(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s [my-label]\n"
+                    + "\tdata_plan_01gb: true @%2$s [my-label]\n"
+                    + "\tdata_plan_05gb: true @%1$s [my-label]\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s [my-label]\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s [my-label]\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s [my-label]\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s [my-label]\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s [my-label]\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s [my-label]\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s [my-label]\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s [my-label]\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s [my-label]\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [my-label]\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s [my-label]\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s [my-label]",
+                TIMESTAMP, TIMESTAMP - HOUR));
+  }
+
+  @Test
+  public void testFilterChain() {
+    Filters.filterComposingChain(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n",
+                TIMESTAMP));
+  }
+
+  @Test
+  public void testFilterInterleave() {
+    Filters.filterComposingInterleave(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n",
+                TIMESTAMP));
+  }
+  @Test
+  public void testFilterCondition() {
+    Filters.filterComposingCondition(projectId, instanceId, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output)
+        .contains(
+            String.format(
+                "Reading data for phone#4c410523#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_01gb: false @%1$s\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#4c410523#20190505\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_05gb: true @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190501\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n\n"
+                    + "Reading data for phone#5c10102#20190502\n"
+                    + "Column Family cell_plan\n"
+                    + "\tdata_plan_10gb: true @%1$s\n",
+                TIMESTAMP));
   }
 }
