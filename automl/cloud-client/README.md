@@ -56,9 +56,9 @@ small section of code to print out the `metadata` field.
 * [Delete Dataset](src/main/java/com/example/automl/DeleteDataset.java)
 ### Model Management
 * [List Models](src/main/java/com/example/automl/ListModels.java)
-* [List Model Evaluation](src/main/java/com/example/automl/ListModelEvaluations.java)
+* [List Model Evaluation](src/main/java/com/example/automl/ListModelEvaluations.java) - For each AutoML Type the `metrics` field inside the model is unique, therefore each AutoML Type will have a small section of code to print out the `metrics` field.
 * [Get Model](src/main/java/com/example/automl/)
-* [Get Model Evaluation](src/main/java/com/example/automl/GetModelEvaluation.java)
+* [Get Model Evaluation](src/main/java/com/example/automl/GetModelEvaluation.java) - For each AutoML Type the `metrics` field inside the model is unique, therefore each AutoML Type will have a small section of code to print out the `metrics` field.
 * [Delete Model](src/main/java/com/example/automl/DeleteModel.java)
 * [Deploy Model](src/main/java/com/example/automl/DeployModel.java) - Not supported by Translation
 * [Uneploy Model](src/main/java/com/example/automl/UndeployModel.java) - Not supported by Translation
