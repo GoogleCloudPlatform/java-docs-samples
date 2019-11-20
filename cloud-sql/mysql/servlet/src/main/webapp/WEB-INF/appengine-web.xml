@@ -18,7 +18,7 @@
   <threadsafe>true</threadsafe>
   <runtime>java8</runtime>
   <env-variables>
-    <env-var name="CLOUD_SQL_INSTANCE_NAME" value="my-project:region:instance" />
+    <env-var name="CLOUD_SQL_CONNECTION_NAME" value="my-project:region:instance" />
     <env-var name="DB_USER" value="my-db-user" />
     <env-var name="DB_PASS" value="my-db-password" />
     <env-var name="DB_NAME" value="my_db" />
