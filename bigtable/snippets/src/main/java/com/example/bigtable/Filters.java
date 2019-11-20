@@ -30,7 +30,6 @@ import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 // [START bigtable_filters_limit_timestamp_range]
 // [START bigtable_filters_limit_block_all]
 // [START bigtable_filters_limit_pass_all]
-// [START bigtable_filters_limit_sink]
 // [START bigtable_filters_modify_strip_value]
 // [START bigtable_filters_modify_apply_label]
 // [START bigtable_filters_composing_chain]
@@ -57,7 +56,6 @@ public class Filters {
   // [END bigtable_filters_limit_timestamp_range]
   // [END bigtable_filters_limit_block_all]
   // [END bigtable_filters_limit_pass_all]
-  // [END bigtable_filters_limit_sink]
   // [END bigtable_filters_modify_strip_value]
   // [END bigtable_filters_modify_apply_label]
   // [END bigtable_filters_composing_chain]
@@ -218,17 +216,6 @@ public class Filters {
   }
   // [END bigtable_filters_limit_pass_all]
 
-  // [START bigtable_filters_limit_sink]
-  public static void filterLimitSink(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
-
-    Filter filter = FILTERS.sink();
-    readFilter(projectId, instanceId, tableId, filter);
-  }
-  // [END bigtable_filters_limit_sink]
-
   // [START bigtable_filters_modify_strip_value]
   public static void filterModifyStripValue(String projectId, String instanceId, String tableId) {
     // String projectId = "my-project-id";
@@ -246,7 +233,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
-    Filter filter = FILTERS.label("my-label");
+    Filter filter = FILTERS.label("labelled");
     readFilter(projectId, instanceId, tableId, filter);
   }
   // [END bigtable_filters_modify_apply_label]
@@ -276,8 +263,8 @@ public class Filters {
     Filter filter =
         FILTERS
             .interleave()
-            .filter(FILTERS.limit().cellsPerColumn(1))
-            .filter(FILTERS.family().exactMatch("cell_plan"));
+            .filter(FILTERS.value().exactMatch("true"))
+            .filter(FILTERS.qualifier().exactMatch("os_build"));
     readFilter(projectId, instanceId, tableId, filter);
   }
   // [END bigtable_filters_composing_interleave]
@@ -290,9 +277,13 @@ public class Filters {
 
     Filter filter =
         FILTERS
-            .condition(FILTERS.value().regex("PQ2A.*$"))
-            .otherwise(FILTERS.label("my-label2"))
-            .then(FILTERS.label("my-label"));
+            .condition(
+                FILTERS
+                    .chain()
+                    .filter(FILTERS.qualifier().exactMatch("data_plan_10gb"))
+                    .filter(FILTERS.value().exactMatch("true")))
+            .then(FILTERS.label("passed-filter"))
+            .otherwise(FILTERS.label("filtered-out"));
     readFilter(projectId, instanceId, tableId, filter);
   }
   // [END bigtable_filters_composing_condition]
@@ -310,7 +301,6 @@ public class Filters {
   // [START bigtable_filters_limit_timestamp_range]
   // [START bigtable_filters_limit_block_all]
   // [START bigtable_filters_limit_pass_all]
-  // [START bigtable_filters_limit_sink]
   // [START bigtable_filters_modify_strip_value]
   // [START bigtable_filters_modify_apply_label]
   // [START bigtable_filters_composing_chain]
@@ -363,7 +353,6 @@ public class Filters {
 // [END bigtable_filters_limit_timestamp_range]
 // [END bigtable_filters_limit_block_all]
 // [END bigtable_filters_limit_pass_all]
-// [END bigtable_filters_limit_sink]
 // [END bigtable_filters_modify_strip_value]
 // [END bigtable_filters_modify_apply_label]
 // [END bigtable_filters_composing_chain]
