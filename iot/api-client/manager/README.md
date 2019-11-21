@@ -357,6 +357,7 @@ Run mqtt example:
 
     mvn exec:exec -Dmqtt \
                   -Dproject_id=blue-jet-123 \
+                  -Dcloud_region=asia-east1 \
                   -Dregistry_id=my-registry \
                   -Ddevice_id=my-test-device \
                   -Dalgorithm=RS256 \
