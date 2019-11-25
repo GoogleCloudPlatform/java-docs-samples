@@ -17,6 +17,7 @@
 package com.example.bigquery;
 
 import static org.junit.Assert.assertEquals;
+
 import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import org.junit.Test;
