@@ -38,7 +38,6 @@ class TranslatePredict {
     predict(projectId, modelId, filePath);
   }
 
-  // Predict
   static void predict(String projectId, String modelId, String filePath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -57,7 +56,7 @@ class TranslatePredict {
       PredictResponse response = client.predict(predictRequest);
       TextSnippet translatedContent =
           response.getPayload(0).getTranslation().getTranslatedContent();
-      System.out.println(String.format("Translated Content: %s", translatedContent.getContent()));
+      System.out.format("Translated Content: %s\n", translatedContent.getContent());
     }
   }
 }
