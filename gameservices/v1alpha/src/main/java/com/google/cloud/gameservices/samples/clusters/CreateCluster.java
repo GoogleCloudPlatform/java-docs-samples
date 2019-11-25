@@ -23,6 +23,7 @@ import com.google.cloud.gaming.v1alpha.CreateGameServerClusterRequest;
 import com.google.cloud.gaming.v1alpha.GameServerCluster;
 import com.google.cloud.gaming.v1alpha.GameServerClusterConnectionInfo;
 import com.google.cloud.gaming.v1alpha.GameServerClustersServiceClient;
+import com.google.cloud.gaming.v1alpha.GkeClusterReference;
 import com.google.protobuf.Empty;
 
 import java.io.IOException;
@@ -47,12 +48,17 @@ public class CreateCluster {
           "projects/%s/locations/%s/realms/%s", projectId, regionId, realmId);
       String clusterName = String.format("%s/gameServerClusters/%s", parent, clusterId);
 
+      GkeClusterReference clusterReference = GkeClusterReference
+          .newBuilder()
+          .setCluster(gkeName)
+          .build();
+
       GameServerCluster gameServerCluster = GameServerCluster
           .newBuilder()
           .setName(clusterName)
           .setConnectionInfo(GameServerClusterConnectionInfo
               .newBuilder()
-              .setGkeName(gkeName)
+              .setGkeClusterReference(clusterReference)
               .setNamespace("default"))
           .build();
 

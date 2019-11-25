@@ -26,10 +26,7 @@ import com.google.cloud.gameservices.samples.scalingpolicies.ListScalingPolicies
 import com.google.cloud.gameservices.samples.scalingpolicies.UpdateScalingPolicy;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.AfterClass;
