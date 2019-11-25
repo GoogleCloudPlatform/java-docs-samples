@@ -17,6 +17,7 @@
 package com.example.automl;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
@@ -31,11 +32,12 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Automl translation datasets. */
+// Tests for Automl translation datasets
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TranslateDatasetManagementIT {
@@ -46,6 +48,19 @@ public class TranslateDatasetManagementIT {
   private PrintStream out;
   private String datasetId;
   private String getdatasetId = "TRL3946265060617537378";
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+            System.getenv(varName),
+            "Environment variable '%s' is required to perform these tests.".format(varName)
+    );
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
 
   @Before
   public void setUp() {
