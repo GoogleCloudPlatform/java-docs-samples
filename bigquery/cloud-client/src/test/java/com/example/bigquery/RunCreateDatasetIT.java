@@ -16,11 +16,11 @@
 
 package com.example.bigquery;
 
-import static org.junit.Assert.*;
 
 import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class RunCreateDatasetIT {
 
