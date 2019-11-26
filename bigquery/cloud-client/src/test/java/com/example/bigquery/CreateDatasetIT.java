@@ -16,18 +16,35 @@
 
 package com.example.bigquery;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class RunCreateDatasetIT {
+public class CreateDatasetIT {
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
+
+  @After
+  public void tearDown() {
+    System.setOut(null);
+  }
 
   @Test
-  public void createDataset() {
+  public void testCreateDataset() {
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
-    Dataset dataset = RunCreateDataset.createDataset(generatedDatasetName);
-    assertEquals(generatedDatasetName, dataset.getDatasetId().getDataset());
+    CreateDataset.createDataset(generatedDatasetName);
+    assertThat(bout.toString()).contains(generatedDatasetName);
   }
 }

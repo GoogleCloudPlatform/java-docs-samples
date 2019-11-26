@@ -18,11 +18,13 @@ package com.example.bigquery;
 
 // [START bigquery_create_dataset]
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetInfo;
+import java.io.IOException;
 
-public class RunCreateDataset {
+public class CreateDataset {
 
   public static void runCreateDataset() {
     // TODO(developer): Replace these variables before running the sample.
@@ -30,14 +32,13 @@ public class RunCreateDataset {
     createDataset(datasetName);
   }
 
-  public static Dataset createDataset(String datasetName) {
+  public static void createDataset(String datasetName) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-
     DatasetInfo datasetInfo = DatasetInfo.newBuilder(datasetName).build();
-    return bigquery.create(datasetInfo);
+    Dataset newDataset = bigquery.create(datasetInfo);
+    System.out.println(newDataset.getDatasetId().getDataset());
   }
 }
-// [END bigquery_create_dataset]
+// [END bigquery create_dataset]
