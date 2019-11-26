@@ -16,15 +16,33 @@
 
 package com.example.bigquery;
 
-import static org.junit.Assert.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class RunDeleteDatasetIT {
+public class DeleteDatasetIT {
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
+
+  @After
+  public void tearDown() {
+    System.setOut(null);
+  }
 
   @Test
   public void deleteDataset() {
@@ -32,6 +50,7 @@ public class RunDeleteDatasetIT {
 
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
     DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), generatedDatasetName);
-    assertFalse(RunDeleteDataset.deleteDataset(datasetId.getProject(), generatedDatasetName));
+    DeleteDataset.deleteDataset(datasetId.getProject(), generatedDatasetName);
+    assertThat(bout.toString()).contains("false");
   }
 }

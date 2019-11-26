@@ -22,7 +22,7 @@ import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DatasetId;
 
-public class RunDeleteDataset {
+public class DeleteDataset {
 
   public static void runDeleteDataset() {
     // TODO(developer): Replace these variables before running the sample.\
@@ -31,14 +31,13 @@ public class RunDeleteDataset {
     deleteDataset(projectId, datasetName);
   }
 
-  public static boolean deleteDataset(String projectId, String datasetName) {
+  public static void deleteDataset(String projectId, String datasetName) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
     DatasetId datasetId = DatasetId.of(projectId, datasetName);
-    return bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
+    System.out.println(bigquery.delete(datasetId, DatasetDeleteOption.deleteContents()));
   }
 }
 // [END bigquery_delete_dataset]
