@@ -41,6 +41,7 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>1.0</version>
+      <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigtable -->
     <dependency>

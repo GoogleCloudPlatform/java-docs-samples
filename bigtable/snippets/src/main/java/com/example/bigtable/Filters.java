@@ -41,6 +41,9 @@ import com.google.cloud.bigtable.data.v2.models.Filters.Filter;
 import com.google.cloud.bigtable.data.v2.models.Query;
 import com.google.cloud.bigtable.data.v2.models.Row;
 import com.google.cloud.bigtable.data.v2.models.RowCell;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public class Filters {
   // [END bigtable_filters_limit_row_sample]
@@ -68,6 +71,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells from a row with probability .5
     Filter filter = FILTERS.key().sample(.5);
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -79,6 +83,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells from rows whose keys satisfy the given regex
     Filter filter = FILTERS.key().regex(".*#20190501$");
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -90,6 +95,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches only the most recent 2 cells within each column
     Filter filter = FILTERS.limit().cellsPerColumn(2);
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -101,6 +107,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches the first 2 cells of each row
     Filter filter = FILTERS.limit().cellsPerRow(2);
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -113,6 +120,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that skips the first 2 cells per row
     Filter filter = FILTERS.offset().cellsPerRow(2);
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -125,6 +133,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells whose column family satisfies the given regex
     Filter filter = FILTERS.family().regex("stats_.*$");
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -137,6 +146,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells whose column qualifier satisfies the given regex
     Filter filter = FILTERS.qualifier().regex("connected_.*$");
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -148,6 +158,8 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells whose column qualifiers are between data_plan_01gb and
+    // data_plan_10gb in the column family cell_plan
     Filter filter =
         FILTERS
             .qualifier()
@@ -164,6 +176,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells whose values are between the given values
     Filter filter = FILTERS.value().range().startClosed("PQ2A.190405").endClosed("PQ2A.190406");
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -175,6 +188,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells whose value satisfies the given regex
     Filter filter = FILTERS.value().regex("PQ2A.*$");
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -186,10 +200,12 @@ public class Filters {
     // String projectId = "my-project-id";
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
-    long timestamp = System.currentTimeMillis() * 1000;
-    long hour = 60L * 60 * 1000 * 1000;
 
-    Filter filter = FILTERS.timestamp().range().startClosed(0L).endOpen(timestamp - hour);
+    // Get a time representing one hour ago
+    long timestamp = Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli() * 1000;
+
+    // A filter that matches cells whose timestamp is from an hour ago or earlier
+    Filter filter = FILTERS.timestamp().range().startClosed(0L).endOpen(timestamp);
     readFilter(projectId, instanceId, tableId, filter);
   }
   // [END bigtable_filters_limit_timestamp_range]
@@ -200,6 +216,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that does not match any cells
     Filter filter = FILTERS.block();
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -211,6 +228,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches all cells
     Filter filter = FILTERS.pass();
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -222,6 +240,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that replaces the outputted cell value with the empty string
     Filter filter = FILTERS.value().strip();
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -233,6 +252,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that applies the given label to the outputted cell
     Filter filter = FILTERS.label("labelled");
     readFilter(projectId, instanceId, tableId, filter);
   }
@@ -244,6 +264,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that selects one cell per column AND within the column family cell_plan
     Filter filter =
         FILTERS
             .chain()
@@ -260,6 +281,7 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that matches cells with the value true OR with the column qualifier os_build
     Filter filter =
         FILTERS
             .interleave()
@@ -275,6 +297,8 @@ public class Filters {
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
 
+    // A filter that applies the label passed-filter IF the cell has the column qualifier
+    // data_plan_10gb AND the value true, OTHERWISE applies the label filtered-out
     Filter filter =
         FILTERS
             .condition(
@@ -306,17 +330,20 @@ public class Filters {
   // [START bigtable_filters_composing_chain]
   // [START bigtable_filters_composing_interleave]
   // [START bigtable_filters_composing_condition]
-  public static void readFilter(
+  private static void readFilter(
       String projectId, String instanceId, String tableId, Filter filter) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
       Query query = Query.create(tableId).filter(filter);
       ServerStream<Row> rows = dataClient.readRows(query);
       for (Row row : rows) {
         printRow(row);
       }
-
-    } catch (Exception e) {
-      System.out.println("Error during readFilter: \n" + e.toString());
+    } catch (IOException e) {
+      System.out.println(
+          "Unable to intailize service client, as a network error occured: \n" + e.toString());
     }
   }
 
@@ -324,7 +351,7 @@ public class Filters {
     System.out.printf("Reading data for %s%n", row.getKey().toStringUtf8());
     String colFamily = "";
     for (RowCell cell : row.getCells()) {
-      if (cell.getFamily() != colFamily) {
+      if (!cell.getFamily().equals(colFamily)) {
         colFamily = cell.getFamily();
         System.out.printf("Column Family %s%n", colFamily);
       }

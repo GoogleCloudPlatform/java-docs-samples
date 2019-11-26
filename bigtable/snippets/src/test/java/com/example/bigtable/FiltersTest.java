@@ -26,7 +26,10 @@ import com.google.cloud.bigtable.data.v2.models.BulkMutation;
 import com.google.cloud.bigtable.data.v2.models.Mutation;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.logging.Filter;
 import org.junit.AfterClass;
@@ -43,8 +46,10 @@ public class FiltersTest {
       "mobile-time-series-" + UUID.randomUUID().toString().substring(0, 20);
   private static final String COLUMN_FAMILY_NAME_STATS = "stats_summary";
   private static final String COLUMN_FAMILY_NAME_DATA = "cell_plan";
-  private static final long TIMESTAMP = System.currentTimeMillis() * 1000;
-  private static final long HOUR = 60L * 60 * 1000 * 1000;
+  private static final Instant CURRENT_TIME = Instant.now();
+  private static final long TIMESTAMP = CURRENT_TIME.toEpochMilli() * 1000;
+  private static final long TIMESTAMP_MINUS_HR =
+      CURRENT_TIME.minus(1, ChronoUnit.HOURS).toEpochMilli() * 1000;
 
   private static String projectId;
   private static String instanceId;
@@ -58,7 +63,7 @@ public class FiltersTest {
   }
 
   @BeforeClass
-  public static void beforeClass() {
+  public static void beforeClass() throws IOException {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv(INSTANCE_ENV);
 
@@ -88,7 +93,7 @@ public class FiltersTest {
                             1)
                         .setCell(COLUMN_FAMILY_NAME_STATS, "os_build", TIMESTAMP, "PQ2A.190405.003")
                         .setCell(
-                            COLUMN_FAMILY_NAME_DATA, "data_plan_01gb", TIMESTAMP - HOUR, "true")
+                            COLUMN_FAMILY_NAME_DATA, "data_plan_01gb", TIMESTAMP_MINUS_HR, "true")
                         .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_01gb", TIMESTAMP, "false")
                         .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_05gb", TIMESTAMP, "true"))
                 .add(
@@ -156,6 +161,7 @@ public class FiltersTest {
       }
     } catch (Exception e) {
       System.out.println("Error during beforeClass: \n" + e.toString());
+      throw (e);
     }
   }
 
@@ -166,12 +172,13 @@ public class FiltersTest {
   }
 
   @AfterClass
-  public static void afterClass() {
+  public static void afterClass() throws IOException {
     try (BigtableTableAdminClient adminClient =
         BigtableTableAdminClient.create(projectId, instanceId)) {
       adminClient.deleteTable(TABLE_ID);
     } catch (Exception e) {
       System.out.println("Error during afterClass: \n" + e.toString());
+      throw (e);
     }
   }
 
@@ -207,7 +214,7 @@ public class FiltersTest {
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
                     + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
                     + "\tos_build: PQ2A.190401.002 @%1$s",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -255,7 +262,7 @@ public class FiltersTest {
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
                     + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
                     + "\tos_build: PQ2A.190406.000 @%1$s",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -290,7 +297,7 @@ public class FiltersTest {
                     + "\tdata_plan_10gb: true @%1$s\n"
                     + "Column Family stats_summary\n"
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -413,7 +420,7 @@ public class FiltersTest {
                     + "Reading data for phone#4c410523#20190505\n"
                     + "Column Family cell_plan\n"
                     + "\tdata_plan_05gb: true @%1$s",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -470,7 +477,7 @@ public class FiltersTest {
                 "Reading data for phone#4c410523#20190501\n"
                     + "Column Family cell_plan\n"
                     + "\tdata_plan_01gb: true @%s\n",
-                TIMESTAMP - HOUR));
+                TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -526,7 +533,7 @@ public class FiltersTest {
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
                     + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
                     + "\tos_build: PQ2A.190406.000 @%1$s",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -574,7 +581,7 @@ public class FiltersTest {
                     + "\tconnected_cell:  @%1$s\n"
                     + "\tconnected_wifi:  @%1$s\n"
                     + "\tos_build:  @%1$s",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -622,7 +629,7 @@ public class FiltersTest {
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [labelled]\n"
                     + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s [labelled]\n"
                     + "\tos_build: PQ2A.190406.000 @%1$s [labelled]",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 
   @Test
@@ -686,8 +693,9 @@ public class FiltersTest {
                     + "\tdata_plan_10gb: true @%1$s\n"
                     + "Column Family stats_summary\n"
                     + "\tos_build: PQ2A.190406.000 @%1$s",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
+
   @Test
   public void testFilterCondition() {
     Filters.filterComposingCondition(projectId, instanceId, TABLE_ID);
@@ -733,6 +741,6 @@ public class FiltersTest {
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s [passed-filter]\n"
                     + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s [passed-filter]\n"
                     + "\tos_build: PQ2A.190406.000 @%1$s [passed-filter]",
-                TIMESTAMP, TIMESTAMP - HOUR));
+                TIMESTAMP, TIMESTAMP_MINUS_HR));
   }
 }

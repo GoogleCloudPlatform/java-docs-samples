@@ -27,6 +27,7 @@ import com.google.cloud.bigtable.data.v2.models.BulkMutation;
 import com.google.cloud.bigtable.data.v2.models.Mutation;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.AfterClass;
@@ -57,7 +58,7 @@ public class ReadsTest {
   }
 
   @BeforeClass
-  public static void beforeClass() {
+  public static void beforeClass() throws IOException {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv(INSTANCE_ENV);
 
@@ -145,6 +146,7 @@ public class ReadsTest {
       }
     } catch (Exception e) {
       System.out.println("Error during beforeClass: \n" + e.toString());
+      throw (e);
     }
   }
 
@@ -155,12 +157,13 @@ public class ReadsTest {
   }
 
   @AfterClass
-  public static void afterClass() {
+  public static void afterClass() throws IOException {
     try (BigtableTableAdminClient adminClient =
         BigtableTableAdminClient.create(projectId, instanceId)) {
       adminClient.deleteTable(TABLE_ID);
     } catch (Exception e) {
       System.out.println("Error during afterClass: \n" + e.toString());
+      throw (e);
     }
   }
 
@@ -173,9 +176,10 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s",
                 TIMESTAMP));
   }
 
@@ -188,7 +192,8 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s",
                 TIMESTAMP));
   }
 
@@ -201,13 +206,15 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s",
                 TIMESTAMP));
   }
 
@@ -220,17 +227,20 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -243,25 +253,30 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -274,25 +289,30 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:connected_cell \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "stats_summary:connected_wifi \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
+                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 
@@ -305,15 +325,20 @@ public class ReadsTest {
         .contains(
             String.format(
                 "Reading data for phone#4c410523#20190501\n"
-                    + "stats_summary:os_build PQ2A.190405.003 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190502\n"
-                    + "stats_summary:os_build PQ2A.190405.004 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
                     + "Reading data for phone#4c410523#20190505\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190501\n"
-                    + "stats_summary:os_build PQ2A.190401.002 @%1$s\n\n"
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
                     + "Reading data for phone#5c10102#20190502\n"
-                    + "stats_summary:os_build PQ2A.190406.000 @%1$s",
+                    + "Column Family stats_summary\n"
+                    + "\tos_build: PQ2A.190406.000 @%1$s",
                 TIMESTAMP));
   }
 }
