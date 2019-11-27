@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+  <servlet>
+    <servlet-name>appidentity</servlet-name>
+    <servlet-class>com.example.appengine.appidentity.IdentityServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>signforapp</servlet-name>
+    <servlet-class>com.example.appengine.appidentity.SignForAppServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>urlshortener</servlet-name>
+    <servlet-class>com.example.appengine.appidentity.UrlShortenerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>appidentity</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>signforapp</servlet-name>
+    <url-pattern>/sign</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>urlshortener</servlet-name>
+    <url-pattern>/shorten</url-pattern>
+  </servlet-mapping>
+</web-app>

@@ -1,0 +1,11 @@
+<queue-entries>
+  <queue>
+    <name>pull-queue</name>
+    <mode>pull</mode>
+    <acl>
+      <user-email>bar@foo.com</user-email>      <!-- can list, get, lease, delete, and update tasks -->
+      <writer-email>user@gmail.com</writer-email> <!--  can insert tasks, in addition to rights granted by being a user_email above -->
+      <writer-email>bar@foo.com</writer-email>  <!--  can insert tasks, in addition to rights granted by being a user_email above -->
+    </acl>
+  </queue>
+</queue-entries>
