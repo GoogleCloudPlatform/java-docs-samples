@@ -26,9 +26,9 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.QueryResponse;
 import com.google.cloud.bigquery.TableResult;
 import java.util.UUID;
+
 // [END bigquery_simple_app_deps]
 
 public class SimpleApp {
@@ -39,12 +39,12 @@ public class SimpleApp {
     // [START bigquery_simple_app_query]
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(
-          "SELECT "
-              + "CONCAT('https://stackoverflow.com/questions/', CAST(id as STRING)) as url, "
-              + "view_count "
-              + "FROM `bigquery-public-data.stackoverflow.posts_questions` "
-              + "WHERE tags like '%google-bigquery%' "
-              + "ORDER BY favorite_count DESC LIMIT 10")
+                "SELECT "
+                    + "CONCAT('https://stackoverflow.com/questions/', CAST(id as STRING)) as url, "
+                    + "view_count "
+                    + "FROM `bigquery-public-data.stackoverflow.posts_questions` "
+                    + "WHERE tags like '%google-bigquery%' "
+                    + "ORDER BY favorite_count DESC LIMIT 10")
             // Use standard SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
