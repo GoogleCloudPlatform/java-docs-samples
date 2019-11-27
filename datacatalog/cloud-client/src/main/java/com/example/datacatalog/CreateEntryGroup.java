@@ -69,3 +69,4 @@ public class CreateEntryGroup {
     }
   }
 }
+// [END datacatalog_create_entry_group_tag]
