@@ -46,7 +46,6 @@ import org.junit.runners.JUnit4;
  */
 
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AsymmetricIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "global";
@@ -132,28 +131,28 @@ public class AsymmetricIT {
   }
 
   @Test
-  public void testRSAEncryptDecrypt() throws Exception {
-    byte[] ciphertext = Asymmetric.encryptRSA(RSA_DECRYPT_PATH, MESSAGE);
+  public void testRsaEncryptDecrypt() throws Exception {
+    byte[] ciphertext = Asymmetric.encryptRsa(RSA_DECRYPT_PATH, MESSAGE);
     assertEquals("incorrect RSA ciphertext length.", 256, ciphertext.length);
 
-    byte[] plaintext = Asymmetric.decryptRSA(RSA_DECRYPT_PATH, ciphertext);
+    byte[] plaintext = Asymmetric.decryptRsa(RSA_DECRYPT_PATH, ciphertext);
     assertTrue("decryption failed.", Arrays.equals(plaintext, MESSAGE));
   }
 
   @Test
-  public void testRSASignVerify() throws Exception {
+  public void testRsaSignVerify() throws Exception {
     byte[] sig = Asymmetric.signAsymmetric(RSA_SIGN_PATH, MESSAGE);
     assertEquals("invalid signature length", 256, sig.length);
 
-    boolean success = Asymmetric.verifySignatureRSA(RSA_SIGN_PATH, MESSAGE, sig);
+    boolean success = Asymmetric.verifySignatureRsa(RSA_SIGN_PATH, MESSAGE, sig);
     assertTrue("RSA verification failed. Valid message not accepted", success);
     byte[] alt = new byte[256];
-    boolean verifiedInvalid = Asymmetric.verifySignatureRSA(RSA_SIGN_PATH, MESSAGE, alt);
+    boolean verifiedInvalid = Asymmetric.verifySignatureRsa(RSA_SIGN_PATH, MESSAGE, alt);
     assertFalse("RSA verification failed. Invalid message accepted", verifiedInvalid);
   }
 
   @Test
-  public void testECSignVerify() throws Exception {
+  public void testEcSignVerify() throws Exception {
     byte[] sig = Asymmetric.signAsymmetric(EC_SIGN_PATH, MESSAGE);
     boolean success = Asymmetric.verifySignatureEC(EC_SIGN_PATH, MESSAGE, sig);
     assertTrue("EC verification failed. Valid message not accepted", success);

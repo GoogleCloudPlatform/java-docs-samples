@@ -42,7 +42,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class Asymmetric {
 
   // [START kms_create_asymmetric_key]
@@ -117,7 +116,7 @@ public class Asymmetric {
    * Example keyName:
    *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static byte[] decryptRSA(String keyName, byte[] ciphertext) throws IOException {
+  public static byte[] decryptRsa(String keyName, byte[] ciphertext) throws IOException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       AsymmetricDecryptResponse response = client.asymmetricDecrypt(
@@ -135,7 +134,7 @@ public class Asymmetric {
    * Example keyName:
    *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static byte[] encryptRSA(String keyName, byte[] plaintext) 
+  public static byte[] encryptRsa(String keyName, byte[] plaintext) 
       throws IOException, GeneralSecurityException {
     // Create the Cloud KMS client.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
@@ -197,7 +196,7 @@ public class Asymmetric {
    * Example keyName:
    *   "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
    */
-  public static boolean verifySignatureRSA(String keyName, byte[] message, byte[] signature)
+  public static boolean verifySignatureRsa(String keyName, byte[] message, byte[] signature)
       throws IOException, GeneralSecurityException {
 
     // Create the Cloud KMS client.
