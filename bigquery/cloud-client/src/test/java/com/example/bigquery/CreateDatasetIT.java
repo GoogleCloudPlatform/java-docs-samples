@@ -45,6 +45,6 @@ public class CreateDatasetIT {
   public void testCreateDataset() {
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
     CreateDataset.createDataset(generatedDatasetName);
-    assertThat(bout.toString()).contains(generatedDatasetName);
+    assertThat(bout.toString()).contains(generatedDatasetName + " created successfully");
   }
 }
