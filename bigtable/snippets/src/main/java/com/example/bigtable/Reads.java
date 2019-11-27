@@ -46,11 +46,15 @@ public class Reads {
   // [END bigtable_reads_filter]
 
   // [START bigtable_reads_row]
-  public static void readRow(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void readRow() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readRow(projectId, instanceId, tableId);
+  }
 
+  public static void readRow(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -68,11 +72,15 @@ public class Reads {
   // [END bigtable_reads_row]
 
   // [START bigtable_reads_row_partial]
-  public static void readRowPartial(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void readRowPartial() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readRowPartial(projectId, instanceId, tableId);
+  }
 
+  public static void readRowPartial(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -95,11 +103,15 @@ public class Reads {
   // [END bigtable_reads_row_partial]
 
   // [START bigtable_reads_rows]
-  public static void readRows(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void readRows() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readRows(projectId, instanceId, tableId);
+  }
 
+  public static void readRows(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -118,10 +130,15 @@ public class Reads {
   // [END bigtable_reads_rows]
 
   // [START bigtable_reads_row_range]
+  public static void readRowRange() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readRowRange(projectId, instanceId, tableId);
+  }
+
   public static void readRowRange(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
     String start = "phone#4c410523#20190501";
     String end = "phone#4c410523#201906201";
 
@@ -142,11 +159,15 @@ public class Reads {
   // [END bigtable_reads_row_range]
 
   // [START bigtable_reads_row_ranges]
-  public static void readRowRanges(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void readRowRanges() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readRowRanges(projectId, instanceId, tableId);
+  }
 
+  public static void readRowRanges(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -167,11 +188,15 @@ public class Reads {
   // [END bigtable_reads_row_ranges]
 
   // [START bigtable_reads_prefix]
-  public static void readPrefix(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void readPrefix() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readPrefix(projectId, instanceId, tableId);
+  }
 
+  public static void readPrefix(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -189,10 +214,15 @@ public class Reads {
   // [END bigtable_reads_prefix]
 
   // [START bigtable_reads_filter]
+  public static void readFilter() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readFilter(projectId, instanceId, tableId);
+  }
+
   public static void readFilter(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
     Filters.Filter filter = FILTERS.value().regex("PQ2A.*");
 
     // Initialize client that will be used to send requests. This client only needs to be created

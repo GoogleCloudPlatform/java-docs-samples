@@ -66,11 +66,15 @@ public class Filters {
   // [END bigtable_filters_composing_condition]
 
   // [START bigtable_filters_limit_row_sample]
-  public static void filterLimitRowSample(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitRowSample() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitRowSample(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitRowSample(String projectId, String instanceId, String tableId) {
     // A filter that matches cells from a row with probability .5
     Filter filter = FILTERS.key().sample(.5);
     readFilter(projectId, instanceId, tableId, filter);
@@ -78,11 +82,15 @@ public class Filters {
   // [END bigtable_filters_limit_row_sample]
 
   // [START bigtable_filters_limit_row_regex]
-  public static void filterLimitRowRegex(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitRowRegex() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitRowRegex(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitRowRegex(String projectId, String instanceId, String tableId) {
     // A filter that matches cells from rows whose keys satisfy the given regex
     Filter filter = FILTERS.key().regex(".*#20190501$");
     readFilter(projectId, instanceId, tableId, filter);
@@ -90,11 +98,15 @@ public class Filters {
   // [END bigtable_filters_limit_row_regex]
 
   // [START bigtable_filters_limit_cells_per_col]
-  public static void filterLimitCellsPerCol(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitCellsPerCol() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitCellsPerCol(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitCellsPerCol(String projectId, String instanceId, String tableId) {
     // A filter that matches only the most recent 2 cells within each column
     Filter filter = FILTERS.limit().cellsPerColumn(2);
     readFilter(projectId, instanceId, tableId, filter);
@@ -102,11 +114,15 @@ public class Filters {
   // [END bigtable_filters_limit_cells_per_col]
 
   // [START bigtable_filters_limit_cells_per_row]
-  public static void filterLimitCellsPerRow(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitCellsPerRow() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitCellsPerRow(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitCellsPerRow(String projectId, String instanceId, String tableId) {
     // A filter that matches the first 2 cells of each row
     Filter filter = FILTERS.limit().cellsPerRow(2);
     readFilter(projectId, instanceId, tableId, filter);
@@ -114,12 +130,16 @@ public class Filters {
   // [END bigtable_filters_limit_cells_per_row]
 
   // [START bigtable_filters_limit_cells_per_row_offset]
+  public static void filterLimitCellsPerRowOffset() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitCellsPerRowOffset(projectId, instanceId, tableId);
+  }
+
   public static void filterLimitCellsPerRowOffset(
       String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
-
     // A filter that skips the first 2 cells per row
     Filter filter = FILTERS.offset().cellsPerRow(2);
     readFilter(projectId, instanceId, tableId, filter);
@@ -127,12 +147,16 @@ public class Filters {
   // [END bigtable_filters_limit_cells_per_row_offset]
 
   // [START bigtable_filters_limit_col_family_regex]
+  public static void filterLimitColFamilyRegex() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitColFamilyRegex(projectId, instanceId, tableId);
+  }
+
   public static void filterLimitColFamilyRegex(
       String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
-
     // A filter that matches cells whose column family satisfies the given regex
     Filter filter = FILTERS.family().regex("stats_.*$");
     readFilter(projectId, instanceId, tableId, filter);
@@ -140,12 +164,16 @@ public class Filters {
   // [END bigtable_filters_limit_col_family_regex]
 
   // [START bigtable_filters_limit_col_qualifier_regex]
+  public static void filterLimitColQualifierRegex() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitColQualifierRegex(projectId, instanceId, tableId);
+  }
+
   public static void filterLimitColQualifierRegex(
       String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
-
     // A filter that matches cells whose column qualifier satisfies the given regex
     Filter filter = FILTERS.qualifier().regex("connected_.*$");
     readFilter(projectId, instanceId, tableId, filter);
@@ -153,11 +181,15 @@ public class Filters {
   // [END bigtable_filters_limit_col_qualifier_regex]
 
   // [START bigtable_filters_limit_col_range]
-  public static void filterLimitColRange(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitColRange() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitColRange(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitColRange(String projectId, String instanceId, String tableId) {
     // A filter that matches cells whose column qualifiers are between data_plan_01gb and
     // data_plan_10gb in the column family cell_plan
     Filter filter =
@@ -171,11 +203,15 @@ public class Filters {
   // [END bigtable_filters_limit_col_range]
 
   // [START bigtable_filters_limit_value_range]
-  public static void filterLimitValueRange(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitValueRange() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitValueRange(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitValueRange(String projectId, String instanceId, String tableId) {
     // A filter that matches cells whose values are between the given values
     Filter filter = FILTERS.value().range().startClosed("PQ2A.190405").endClosed("PQ2A.190406");
     readFilter(projectId, instanceId, tableId, filter);
@@ -183,11 +219,15 @@ public class Filters {
   // [END bigtable_filters_limit_value_range]
 
   // [START bigtable_filters_limit_value_regex]
-  public static void filterLimitValueRegex(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitValueRegex() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitValueRegex(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitValueRegex(String projectId, String instanceId, String tableId) {
     // A filter that matches cells whose value satisfies the given regex
     Filter filter = FILTERS.value().regex("PQ2A.*$");
     readFilter(projectId, instanceId, tableId, filter);
@@ -195,12 +235,16 @@ public class Filters {
   // [END bigtable_filters_limit_value_regex]
 
   // [START bigtable_filters_limit_timestamp_range]
+  public static void filterLimitTimestampRange() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitTimestampRange(projectId, instanceId, tableId);
+  }
+
   public static void filterLimitTimestampRange(
       String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
-
     // Get a time representing one hour ago
     long timestamp = Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli() * 1000;
 
@@ -211,11 +255,15 @@ public class Filters {
   // [END bigtable_filters_limit_timestamp_range]
 
   // [START bigtable_filters_limit_block_all]
-  public static void filterLimitBlockAll(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitBlockAll() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitBlockAll(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitBlockAll(String projectId, String instanceId, String tableId) {
     // A filter that does not match any cells
     Filter filter = FILTERS.block();
     readFilter(projectId, instanceId, tableId, filter);
@@ -223,11 +271,15 @@ public class Filters {
   // [END bigtable_filters_limit_block_all]
 
   // [START bigtable_filters_limit_pass_all]
-  public static void filterLimitPassAll(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterLimitPassAll() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterLimitPassAll(projectId, instanceId, tableId);
+  }
 
+  public static void filterLimitPassAll(String projectId, String instanceId, String tableId) {
     // A filter that matches all cells
     Filter filter = FILTERS.pass();
     readFilter(projectId, instanceId, tableId, filter);
@@ -235,11 +287,15 @@ public class Filters {
   // [END bigtable_filters_limit_pass_all]
 
   // [START bigtable_filters_modify_strip_value]
-  public static void filterModifyStripValue(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterModifyStripValue() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterModifyStripValue(projectId, instanceId, tableId);
+  }
 
+  public static void filterModifyStripValue(String projectId, String instanceId, String tableId) {
     // A filter that replaces the outputted cell value with the empty string
     Filter filter = FILTERS.value().strip();
     readFilter(projectId, instanceId, tableId, filter);
@@ -247,11 +303,15 @@ public class Filters {
   // [END bigtable_filters_modify_strip_value]
 
   // [START bigtable_filters_modify_apply_label]
-  public static void filterModifyApplyLabel(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterModifyApplyLabel() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterModifyApplyLabel(projectId, instanceId, tableId);
+  }
 
+  public static void filterModifyApplyLabel(String projectId, String instanceId, String tableId) {
     // A filter that applies the given label to the outputted cell
     Filter filter = FILTERS.label("labelled");
     readFilter(projectId, instanceId, tableId, filter);
@@ -259,11 +319,15 @@ public class Filters {
   // [END bigtable_filters_modify_apply_label]
 
   // [START bigtable_filters_composing_chain]
-  public static void filterComposingChain(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterComposingChain() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterComposingChain(projectId, instanceId, tableId);
+  }
 
+  public static void filterComposingChain(String projectId, String instanceId, String tableId) {
     // A filter that selects one cell per column AND within the column family cell_plan
     Filter filter =
         FILTERS
@@ -275,12 +339,16 @@ public class Filters {
   // [END bigtable_filters_composing_chain]
 
   // [START bigtable_filters_composing_interleave]
+  public static void filterComposingInterleave() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterComposingInterleave(projectId, instanceId, tableId);
+  }
+
   public static void filterComposingInterleave(
       String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
-
     // A filter that matches cells with the value true OR with the column qualifier os_build
     Filter filter =
         FILTERS
@@ -292,11 +360,15 @@ public class Filters {
   // [END bigtable_filters_composing_interleave]
 
   // [START bigtable_filters_composing_condition]
-  public static void filterComposingCondition(String projectId, String instanceId, String tableId) {
-    // String projectId = "my-project-id";
-    // String instanceId = "my-instance-id";
-    // String tableId = "mobile-time-series";
+  public static void filterComposingCondition() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    filterComposingCondition(projectId, instanceId, tableId);
+  }
 
+  public static void filterComposingCondition(String projectId, String instanceId, String tableId) {
     // A filter that applies the label passed-filter IF the cell has the column qualifier
     // data_plan_10gb AND the value true, OTHERWISE applies the label filtered-out
     Filter filter =
