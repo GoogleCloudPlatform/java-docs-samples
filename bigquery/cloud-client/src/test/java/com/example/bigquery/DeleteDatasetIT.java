@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DatasetId;
+import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -48,9 +49,15 @@ public class DeleteDatasetIT {
   public void deleteDataset() {
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
+    //create the dataset to be deleted
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
+    DatasetInfo datasetInfo = DatasetInfo.newBuilder(generatedDatasetName).build();
+    bigquery.create(datasetInfo);
+
+    //delete the dataset that was just created
     DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), generatedDatasetName);
     DeleteDataset.deleteDataset(datasetId.getProject(), generatedDatasetName);
-    assertThat(bout.toString()).contains("false");
+
+    assertThat(bout.toString()).contains("Dataset deleted successfully");
   }
 }
