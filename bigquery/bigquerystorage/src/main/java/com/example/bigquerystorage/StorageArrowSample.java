@@ -131,8 +131,7 @@ public class StorageArrowSample {
               .addSelectedFields("name")
               .addSelectedFields("number")
               .addSelectedFields("state")
-              // Arrow doesn't support filters yet.
-              //.setRowRestriction("state = \"WA\"")
+              .setRowRestriction("state = \"WA\"")
               .build();
 
       // Begin building the session request.
