@@ -13,13 +13,13 @@ how to access the KMS API using the Google Java API Client Libraries.
 
 ### Enable the API
 
-You must [enable the Google Cloud KMS API](https://console.cloud.google.com/flows/enableapi?apiid=cloudkms.googleapis.com&redirect=https://console.cloud.google.com&_ga=2.69900176.-1259420538.1567112279) for your project in order to use these samples
+You must [enable the Google Cloud KMS API](https://console.cloud.google.com/flows/enableapi?apiid=cloudkms.googleapis.com) for your project in order to use these samples
 
 ### Set Environment Variables
 
 You must set your project ID in order to run the tests
 
-`GOOGLE_CLOUD_PROJECT=<your-project-here>`
+`GOOGLE_CLOUD_PROJECT=<your-project-id-here>`
 
 ## Quickstart
 
