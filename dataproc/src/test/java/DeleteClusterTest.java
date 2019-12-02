@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,12 +39,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class DeleteClusterTest {
 
-  private static final String BASE_CLUSTER_NAME = "test-cluster";
+  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
   private static final String REGION = "us-central1";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private String clusterName;
   private ByteArrayOutputStream bout;
+  private PrintStream standardOutOrig;
 
   private static void requireEnv(String varName) {
     assertNotNull(
@@ -59,37 +60,41 @@ public class DeleteClusterTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException {
-    clusterName = String.format("%s-%s", BASE_CLUSTER_NAME, UUID.randomUUID().toString());
-
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+    standardOutOrig = System.out;
 
-    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
+    String myEndpoint = REGION + "-dataproc.googleapis.com:443";
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
     Cluster cluster =
         Cluster.newBuilder()
-            .setClusterName(clusterName)
+            .setClusterName(CLUSTER_NAME)
             .setConfig(ClusterConfig.newBuilder().build())
             .build();
 
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
-          clusterControllerClient.createClusterAsync(projectId, REGION, cluster);
+          clusterControllerClient.createClusterAsync(PROJECT_ID, REGION, cluster);
       createClusterAsyncRequest.get();
     } catch (ExecutionException e) {
-      System.out.println("[deleteCluster] Error during test cluster creation: \n" + e.toString());
+      System.err.println("[deleteCluster] Error during test cluster creation: \n" + e.getMessage());
     }
   }
 
   @Test
-  public void DeleteClusterTest() throws IOException, InterruptedException {
-    DeleteCluster.deleteCluster(projectId, REGION, clusterName);
+  public void deleteClusterTest() throws IOException, InterruptedException {
+    DeleteCluster.deleteCluster(PROJECT_ID, REGION, CLUSTER_NAME);
     String output = bout.toString();
 
     assertThat(output, CoreMatchers.containsString("deleted successfully"));
+  }
+
+  @After
+  public void teardown() {
+    System.setOut(standardOutOrig);
   }
 }

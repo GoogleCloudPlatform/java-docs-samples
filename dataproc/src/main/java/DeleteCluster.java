@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,15 @@ public class DeleteCluster {
 
   public static void deleteCluster(String projectId, String region, String clusterName)
       throws IOException, InterruptedException {
-    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
+    String myEndpoint = region + "-dataproc.googleapis.com:443";
 
     // Configure the settings for the cluster controller client
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
-    // Create a cluster controller client with the configured settings. We only need to create
-    // the client once, and can be reused for multiple requests. Using a try-with-resources
-    // will close the client for us, but this can also be done manually with the .close() method.
+    // Create a cluster controller client with the configured settings. The client only needs to be
+    // created once and can be reused for multiple requests. Using a try-with-resources
+    // closes the client, but this can also be done manually with the .close() method.
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       // Configure the settings for our cluster
@@ -46,15 +46,15 @@ public class DeleteCluster {
       deleteClusterAsyncRequest.get();
 
       // Print out a success message
-      System.out.println(String.format("Cluster deleted successfully: %s", clusterName));
+      System.out.println("Cluster deleted successfully: " + clusterName);
 
     } catch (IOException e) {
       // Likely this would occur due to issues authenticating with GCP. Make sure the environment
       // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
-      System.out.println("Error deleting the cluster controller client: \n" + e.toString());
+      System.err.println("Error deleting the cluster controller client: \n" + e.getMessage());
     } catch (ExecutionException e) {
       // This will likely be due to a cluster of the given name not existing in the given region.
-      System.out.println("Error during cluster deletion request: \n" + e.toString());
+      System.err.println("Error during cluster deletion request: \n" + e.getMessage());
     }
   }
 }
