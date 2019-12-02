@@ -86,7 +86,7 @@ public class DeleteClusterTest {
   }
 
   @Test
-  public void deleteClusterTest() throws IOException, InterruptedException {
+  public void deleteClusterTest() throws IOException, InterruptedException, ExecutionException {
     DeleteCluster.deleteCluster(PROJECT_ID, REGION, CLUSTER_NAME);
     String output = bout.toString();
 

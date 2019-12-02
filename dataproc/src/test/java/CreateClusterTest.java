@@ -65,7 +65,7 @@ public class CreateClusterTest {
   }
 
   @Test
-  public void createClusterTest() throws IOException, InterruptedException {
+  public void createClusterTest() throws IOException, InterruptedException, ExecutionException {
     CreateCluster.createCluster(PROJECT_ID, REGION, CLUSTER_NAME);
     String output = bout.toString();
 
@@ -73,7 +73,7 @@ public class CreateClusterTest {
   }
 
   @After
-  public void tearDown() throws IOException, InterruptedException {
+  public void tearDown() throws IOException, InterruptedException, ExecutionException {
     String myEndpoint = REGION + "-dataproc.googleapis.com:443";
     System.setOut(standardOutOrig);
 
@@ -86,8 +86,6 @@ public class CreateClusterTest {
           clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
 
-    } catch (ExecutionException e) {
-      System.err.println("Error during cluster deletion: \n" + e.getMessage());
     }
   }
 }

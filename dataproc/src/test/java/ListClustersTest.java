@@ -96,7 +96,7 @@ public class ListClustersTest {
   }
 
   @After
-  public void teardown() throws IOException, InterruptedException {
+  public void teardown() throws IOException, InterruptedException, ExecutionException {
     System.setOut(standardOutOrig);
 
     ClusterControllerSettings clusterControllerSettings =
@@ -107,8 +107,6 @@ public class ListClustersTest {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
-    } catch (ExecutionException e) {
-      System.err.println("[deleteCluster] Error during test cluster creation: \n" + e.getMessage());
     }
   }
 }
