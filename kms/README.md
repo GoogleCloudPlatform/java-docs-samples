@@ -9,6 +9,18 @@ cloud services the same way you do on-premise. You can generate, use, rotate and
 destroy AES-256 encryption keys. These sample Java applications demonstrate
 how to access the KMS API using the Google Java API Client Libraries.
 
+## Prerequisites
+
+### Enable the API
+
+You must [enable the Google Cloud KMS API](https://console.cloud.google.com/flows/enableapi?apiid=cloudkms.googleapis.com&redirect=https://console.cloud.google.com&_ga=2.69900176.-1259420538.1567112279) in order to use these samples
+
+### Set Environment Variables
+
+You must set your project ID in order to run the tests
+
+`PROJECT_ID=<your-project-here>`
+
 ## Quickstart
 
 Install [Maven](http://maven.apache.org/).
