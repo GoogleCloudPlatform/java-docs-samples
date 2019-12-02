@@ -40,11 +40,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ListClustersTest {
 
-  private static final String BASE_CLUSTER_NAME = "test-cluster";
+  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
   private static final String REGION = "us-central1";
-  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private String clusterName;
   private String myEndpoint;
   private ByteArrayOutputStream bout;
   private PrintStream standardOutOrig;
@@ -63,53 +62,53 @@ public class ListClustersTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException {
-    clusterName = String.format("%s-%s", BASE_CLUSTER_NAME, UUID.randomUUID().toString());
     bout = new ByteArrayOutputStream();
     standardOutOrig = System.out;
     System.setOut(new PrintStream(bout));
-    myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
+    myEndpoint = REGION + "-dataproc.googleapis.com:443";
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
     Cluster cluster =
         Cluster.newBuilder()
-            .setClusterName(clusterName)
+            .setClusterName(CLUSTER_NAME)
             .setConfig(ClusterConfig.newBuilder().build())
             .build();
 
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
-          clusterControllerClient.createClusterAsync(projectId, REGION, cluster);
+          clusterControllerClient.createClusterAsync(PROJECT_ID, REGION, cluster);
       createClusterAsyncRequest.get();
     } catch (ExecutionException e) {
-      System.out.println("[deleteCluster] Error during test cluster creation: \n" + e.toString());
+      System.err.println("[deleteCluster] Error during test cluster creation: \n" + e.getMessage());
     }
   }
 
   @Test
-  public void ListClustersTest() throws IOException, InterruptedException {
-    ListClusters.ListClusters(projectId, REGION);
+  public void listClustersTest() throws IOException {
+    ListClusters.listClusters(PROJECT_ID, REGION);
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString(clusterName));
+    assertThat(output, CoreMatchers.containsString(CLUSTER_NAME));
     assertThat(output, CoreMatchers.containsString("RUNNING"));
   }
 
   @After
   public void teardown() throws IOException, InterruptedException {
     System.setOut(standardOutOrig);
+
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
-          clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName);
+          clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
     } catch (ExecutionException e) {
-      System.out.println("[deleteCluster] Error during test cluster creation: \n" + e.toString());
+      System.err.println("[deleteCluster] Error during test cluster creation: \n" + e.getMessage());
     }
   }
 }

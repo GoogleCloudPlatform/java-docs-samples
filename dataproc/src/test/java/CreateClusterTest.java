@@ -38,12 +38,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateClusterTest {
 
-  private static final String BASE_CLUSTER_NAME = "test-cluster";
+  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
   private static final String REGION = "us-central1";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private String clusterName;
   private ByteArrayOutputStream bout;
+  private PrintStream standardOutOrig;
 
   private static void requireEnv(String varName) {
     assertNotNull(
@@ -59,23 +59,23 @@ public class CreateClusterTest {
 
   @Before
   public void setUp() {
-    clusterName = String.format("%s-%s", BASE_CLUSTER_NAME, UUID.randomUUID().toString());
-
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+    standardOutOrig = System.out;
   }
 
   @Test
   public void createClusterTest() throws IOException, InterruptedException {
-    CreateCluster.createCluster(projectId, REGION, clusterName);
+    CreateCluster.createCluster(PROJECT_ID, REGION, CLUSTER_NAME);
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString(clusterName));
+    assertThat(output, CoreMatchers.containsString(CLUSTER_NAME));
   }
 
   @After
   public void tearDown() throws IOException, InterruptedException {
-    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
+    String myEndpoint = REGION + "-dataproc.googleapis.com:443";
+    System.setOut(standardOutOrig);
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
@@ -83,11 +83,11 @@ public class CreateClusterTest {
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
-          clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName);
+          clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
 
     } catch (ExecutionException e) {
-      System.out.println("Error during cluster deletion: \n" + e.toString());
+      System.err.println("Error during cluster deletion: \n" + e.getMessage());
     }
   }
 }

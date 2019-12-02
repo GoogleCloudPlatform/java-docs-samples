@@ -49,9 +49,9 @@ public class SubmitJobTest {
   private static final String MY_UUID = UUID.randomUUID().toString();
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
-  private static final String CLUSTER_NAME = String.format("%s-%s", "test-cluster", MY_UUID);
-  private static final String BUCKET_NAME = String.format("%s-%s", "test-bucket", MY_UUID);
+  private static final String ENDPOINT = REGION + "-dataproc.googleapis.com:443";
+  private static final String CLUSTER_NAME = "test-cluster-" + MY_UUID;
+  private static final String BUCKET_NAME = "test-bucket-" + MY_UUID;
   private static final String JOB_FILE_NAME = "sum.py";
   private static final String JOB_FILE_PATH =
       String.format("gs://%s/%s", BUCKET_NAME, JOB_FILE_NAME);
@@ -63,7 +63,6 @@ public class SubmitJobTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream standardOutOrig;
-  private Storage storage;
   private Blob blob;
 
   private static void requireEnv(String varName) {
@@ -84,7 +83,7 @@ public class SubmitJobTest {
     standardOutOrig = System.out;
     System.setOut(new PrintStream(bout));
 
-    storage = StorageOptions.getDefaultInstance().getService();
+    Storage storage = StorageOptions.getDefaultInstance().getService();
     Bucket bucket = storage.create(BucketInfo.of(BUCKET_NAME));
     blob = bucket.create(JOB_FILE_NAME, SORT_CODE.getBytes(UTF_8), "text/plain");
 
@@ -103,7 +102,7 @@ public class SubmitJobTest {
           clusterControllerClient.createClusterAsync(PROJECT_ID, REGION, cluster);
       createClusterAsyncRequest.get();
     } catch (ExecutionException e) {
-      System.out.println("[SubmitJob] Error during test cluster creation: \n" + e.toString());
+      System.err.println("[SubmitJob] Error during test cluster creation: \n" + e.getMessage());
     }
   }
 
@@ -129,7 +128,7 @@ public class SubmitJobTest {
           clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
     } catch (ExecutionException e) {
-      System.out.println("[SubmitJob] Error during test cluster deletion: \n" + e.toString());
+      System.err.println("[SubmitJob] Error during test cluster deletion: \n" + e.getMessage());
     }
   }
 }
