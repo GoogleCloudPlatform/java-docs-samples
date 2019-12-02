@@ -25,7 +25,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-kms</artifactId>
-      <version>0.80.0-beta</version>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>args4j</groupId>
@@ -53,7 +53,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
