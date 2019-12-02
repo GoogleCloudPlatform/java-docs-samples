@@ -43,8 +43,9 @@ public class UpdateClusterTest {
 
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ENDPOINT = REGION + "-dataproc.googleapis.com:443";
-  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
+  private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
+  private static final String CLUSTER_NAME =
+      String.format("test-cluster-%s", UUID.randomUUID().toString());
   private static final int NUM_WORKERS = 2;
   private static final int NEW_WORKERS = NUM_WORKERS * 2;
 
