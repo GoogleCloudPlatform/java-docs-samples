@@ -18,6 +18,8 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.dataproc.v1.Cluster;
+import com.google.cloud.dataproc.v1.ClusterConfig;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
@@ -36,14 +38,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class CreateClusterTest {
+public class ListClustersTest {
 
   private static final String BASE_CLUSTER_NAME = "test-cluster";
   private static final String REGION = "us-central1";
+  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private String clusterName;
+  private String myEndpoint;
   private ByteArrayOutputStream bout;
+  private PrintStream standardOutOrig;
 
   private static void requireEnv(String varName) {
     assertNotNull(
@@ -58,25 +62,44 @@ public class CreateClusterTest {
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException, InterruptedException {
     clusterName = String.format("%s-%s", BASE_CLUSTER_NAME, UUID.randomUUID().toString());
-
     bout = new ByteArrayOutputStream();
+    standardOutOrig = System.out;
     System.setOut(new PrintStream(bout));
+    myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
+
+    ClusterControllerSettings clusterControllerSettings =
+        ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
+
+    Cluster cluster =
+        Cluster.newBuilder()
+            .setClusterName(clusterName)
+            .setConfig(ClusterConfig.newBuilder().build())
+            .build();
+
+    try (ClusterControllerClient clusterControllerClient =
+        ClusterControllerClient.create(clusterControllerSettings)) {
+      OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
+          clusterControllerClient.createClusterAsync(projectId, REGION, cluster);
+      createClusterAsyncRequest.get();
+    } catch (ExecutionException e) {
+      System.out.println("[deleteCluster] Error during test cluster creation: \n" + e.toString());
+    }
   }
 
   @Test
-  public void createClusterTest() throws IOException, InterruptedException {
-    CreateCluster.createCluster(projectId, REGION, clusterName);
+  public void ListClustersTest() throws IOException, InterruptedException {
+    ListClusters.ListClusters(projectId, REGION);
     String output = bout.toString();
 
     assertThat(output, CoreMatchers.containsString(clusterName));
+    assertThat(output, CoreMatchers.containsString("RUNNING"));
   }
 
   @After
-  public void tearDown() throws IOException, InterruptedException {
-    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
-
+  public void teardown() throws IOException, InterruptedException {
+    System.setOut(standardOutOrig);
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
@@ -85,9 +108,8 @@ public class CreateClusterTest {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(projectId, REGION, clusterName);
       deleteClusterAsyncRequest.get();
-
     } catch (ExecutionException e) {
-      System.out.println("Error during cluster deletion: \n" + e.toString());
+      System.out.println("[deleteCluster] Error during test cluster creation: \n" + e.toString());
     }
   }
 }

@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-// [START dataproc_create_cluster]
+// [START dataproc_delete_cluster]
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.dataproc.v1.Cluster;
-import com.google.cloud.dataproc.v1.ClusterConfig;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
-import com.google.cloud.dataproc.v1.InstanceGroupConfig;
+import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class CreateCluster {
+public class DeleteCluster {
 
-  public static void createCluster(String projectId, String region, String clusterName)
+  public static void deleteCluster(String projectId, String region, String clusterName)
       throws IOException, InterruptedException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
@@ -41,43 +39,23 @@ public class CreateCluster {
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       // Configure the settings for our cluster
-      InstanceGroupConfig masterConfig =
-          InstanceGroupConfig.newBuilder()
-              .setMachineTypeUri("n1-standard-1")
-              .setNumInstances(1)
-              .build();
-      InstanceGroupConfig workerConfig =
-          InstanceGroupConfig.newBuilder()
-              .setMachineTypeUri("n1-standard-1")
-              .setNumInstances(2)
-              .build();
-      ClusterConfig clusterConfig =
-          ClusterConfig.newBuilder()
-              .setMasterConfig(masterConfig)
-              .setWorkerConfig(workerConfig)
-              .build();
-      // Create the cluster object with the desired cluster config
-      Cluster cluster =
-          Cluster.newBuilder().setClusterName(clusterName).setConfig(clusterConfig).build();
 
-      // Create the Cloud Dataproc cluster
-      OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
-          clusterControllerClient.createClusterAsync(projectId, region, cluster);
-      Cluster response = createClusterAsyncRequest.get();
+      // Delete the Cloud Dataproc cluster
+      OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
+          clusterControllerClient.deleteClusterAsync(projectId, region, clusterName);
+      deleteClusterAsyncRequest.get();
 
       // Print out a success message
-      System.out.println(
-          String.format("Cluster created successfully: %s", response.getClusterName()));
+      System.out.println(String.format("Cluster deleted successfully: %s", clusterName));
 
     } catch (IOException e) {
       // Likely this would occur due to issues authenticating with GCP. Make sure the environment
       // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
-      System.out.println("Error creating the cluster controller client: \n" + e.toString());
+      System.out.println("Error deleting the cluster controller client: \n" + e.toString());
     } catch (ExecutionException e) {
-      // Common issues for this include needing to increase compute engine quotas or a cluster of
-      // the same name already exists.
-      System.out.println("Error during cluster creation request: \n" + e.toString());
+      // This will likely be due to a cluster of the given name not existing in the given region.
+      System.out.println("Error during cluster deletion request: \n" + e.toString());
     }
   }
 }
-// [END dataproc_create_cluster]
+// [END dataproc_delete_cluster]

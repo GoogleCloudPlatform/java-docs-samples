@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START dataproc_create_cluster]
+// [START dataproc_update_cluster]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dataproc.v1.Cluster;
 import com.google.cloud.dataproc.v1.ClusterConfig;
@@ -22,12 +22,14 @@ import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
 import com.google.cloud.dataproc.v1.InstanceGroupConfig;
+import com.google.protobuf.FieldMask;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class CreateCluster {
+public class UpdateCluster {
 
-  public static void createCluster(String projectId, String region, String clusterName)
+  public static void updateCluster(
+      String projectId, String region, String clusterName, int numWorkers)
       throws IOException, InterruptedException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
@@ -49,7 +51,7 @@ public class CreateCluster {
       InstanceGroupConfig workerConfig =
           InstanceGroupConfig.newBuilder()
               .setMachineTypeUri("n1-standard-1")
-              .setNumInstances(2)
+              .setNumInstances(numWorkers)
               .build();
       ClusterConfig clusterConfig =
           ClusterConfig.newBuilder()
@@ -60,14 +62,21 @@ public class CreateCluster {
       Cluster cluster =
           Cluster.newBuilder().setClusterName(clusterName).setConfig(clusterConfig).build();
 
-      // Create the Cloud Dataproc cluster
-      OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
-          clusterControllerClient.createClusterAsync(projectId, region, cluster);
-      Cluster response = createClusterAsyncRequest.get();
+      // Create a field mask to indicate what field of the cluster to update.
+      FieldMask updateMask =
+          FieldMask.newBuilder().addPaths("config.worker_config.num_instances").build();
+
+      // Submit the request to update the cluster
+      OperationFuture<Cluster, ClusterOperationMetadata> updateClusterAsyncRequest =
+          clusterControllerClient.updateClusterAsync(
+              projectId, region, clusterName, cluster, updateMask);
+      Cluster response = updateClusterAsyncRequest.get();
 
       // Print out a success message
       System.out.println(
-          String.format("Cluster created successfully: %s", response.getClusterName()));
+          String.format(
+              "Cluster %s now has %d workers.",
+              response.getClusterName(), response.getConfig().getWorkerConfig().getNumInstances()));
 
     } catch (IOException e) {
       // Likely this would occur due to issues authenticating with GCP. Make sure the environment
@@ -80,4 +89,4 @@ public class CreateCluster {
     }
   }
 }
-// [END dataproc_create_cluster]
+// [END dataproc_update_cluster]
