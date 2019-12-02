@@ -31,7 +31,7 @@ public class ListClusters {
   }
 
   public static void listClusters(String projectId, String region) throws IOException {
-    String myEndpoint = String.format("-dataproc.googleapis.com:443");
+    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client
     ClusterControllerSettings clusterControllerSettings =

@@ -39,7 +39,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class DeleteClusterTest {
 
-  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
+  private static final String CLUSTER_NAME =
+      String.format("test-cluster-%s", UUID.randomUUID().toString());
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
