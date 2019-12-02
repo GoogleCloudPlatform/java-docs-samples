@@ -19,7 +19,7 @@ You must [enable the Google Cloud KMS API](https://console.cloud.google.com/flow
 
 You must set your project ID in order to run the tests
 
-`PROJECT_ID=<your-project-here>`
+`GOOGLE_CLOUD_PROJECT=<your-project-here>`
 
 ## Quickstart
 
