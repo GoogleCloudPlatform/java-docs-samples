@@ -63,6 +63,8 @@ small section of code to print out the `metadata` field.
 * [Deploy Model](src/main/java/com/example/automl/DeployModel.java) - Not supported by Translation
 * [Uneploy Model](src/main/java/com/example/automl/UndeployModel.java) - Not supported by Translation
 
+### Batch Prediction
+* [Batch Predict](src/main/java/com/example/automl/BatchPredict.java) - Supported by: Natural Language Entity Extraction, Vision Classification, and Vision Object Detection.
 
 ### Operation Management
 * [List Operation Statuses](src/main/java/com/example/automl/ListOperationStatus.java)
