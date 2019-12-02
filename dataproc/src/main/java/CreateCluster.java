@@ -27,8 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 public class CreateCluster {
 
-  public static void createCluster()
-      throws IOException, InterruptedException, ExecutionException {
+  public static void createCluster() throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";
@@ -76,7 +75,6 @@ public class CreateCluster {
 
       // Print out a success message
       System.out.printf("Cluster created successfully: %s", response.getClusterName());
-
     }
   }
 }

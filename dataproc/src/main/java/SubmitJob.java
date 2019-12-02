@@ -26,8 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 public class SubmitJob {
 
-  public static void submitJob()
-      throws IOException, InterruptedException, ExecutionException {
+  public static void submitJob() throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";

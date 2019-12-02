@@ -40,7 +40,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ListClustersTest {
 
-  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
+  private static final String CLUSTER_NAME =
+      String.format("test-cluster-%s", UUID.randomUUID().toString());
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
@@ -65,7 +66,7 @@ public class ListClustersTest {
     bout = new ByteArrayOutputStream();
     standardOutOrig = System.out;
     System.setOut(new PrintStream(bout));
-    myEndpoint = REGION + "-dataproc.googleapis.com:443";
+    myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();

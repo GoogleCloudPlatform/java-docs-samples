@@ -25,8 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 public class DeleteCluster {
 
-  public static void deleteCluster()
-      throws IOException, InterruptedException, ExecutionException {
+  public static void deleteCluster() throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";
@@ -36,7 +35,7 @@ public class DeleteCluster {
 
   public static void deleteCluster(String projectId, String region, String clusterName)
       throws IOException, InterruptedException, ExecutionException {
-    String myEndpoint = String.format("-dataproc.googleapis.com:443", region);
+    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client
     ClusterControllerSettings clusterControllerSettings =

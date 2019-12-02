@@ -28,13 +28,12 @@ import java.util.concurrent.ExecutionException;
 
 public class UpdateCluster {
 
-  public static void updateCluster()
-      throws IOException, InterruptedException, ExecutionException {
+  public static void updateCluster() throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";
     String clusterName = "your-cluster-name";
-    int numWorkers = 0; //your number of workers
+    int numWorkers = 0; // your number of workers
     updateCluster(projectId, region, clusterName, numWorkers);
   }
 

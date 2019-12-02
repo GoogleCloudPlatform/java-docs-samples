@@ -23,8 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ListClusters {
 
-  public static void listClusters()
-      throws IOException, InterruptedException, ExecutionException {
+  public static void listClusters() throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";
