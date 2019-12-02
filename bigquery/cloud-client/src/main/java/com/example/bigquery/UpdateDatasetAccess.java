@@ -16,34 +16,47 @@
 
 package com.example.bigquery;
 
-// [START bigquery_create_dataset]
+// [START bigquery_update_dataset_access]
+import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Role;
+import com.google.cloud.bigquery.Acl.User;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
-import com.google.cloud.bigquery.DatasetInfo;
+import java.util.ArrayList;
 
-public class CreateDataset {
+public class UpdateDatasetAccess {
 
-  public static void runCreateDataset() {
+  public static void runUpdateDatasetAccess() {
     // TODO(developer): Replace these variables before running the sample.
     String datasetName = "my-dataset-name";
-    createDataset(datasetName);
+    updateDatasetAccess(datasetName);
   }
 
-  public static void createDataset(String datasetName) {
+  public static void updateDatasetAccess(String datasetName) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
-    DatasetInfo datasetInfo = DatasetInfo.newBuilder(datasetName).build();
+    Dataset dataset = bigquery.getDataset(datasetName);
+
+    // Create a new ACL granting the READER role to "sample.bigquery.dev@gmail.com"
+    // For more information on the types of ACLs available see:
+    // https://cloud.google.com/storage/docs/access-control/lists
+    Acl newEntry = Acl.of(new User("sample.bigquery.dev@gmail.com"), Role.READER);
+
+    // Get a copy of the ACLs list from the dataset and append the new entry
+    ArrayList<Acl> acls = new ArrayList<>(dataset.getAcl());
+    acls.add(newEntry);
+
+    //Update the dataset to use the new ACLs
     try {
-      Dataset newDataset = bigquery.create(datasetInfo);
-      String newDatasetName = newDataset.getDatasetId().getDataset();
-      System.out.println(newDatasetName + " created successfully");
+      bigquery.update(dataset.toBuilder().setAcl(acls).build());
+      System.out.println("Dataset Access Control updated successfully");
     } catch (BigQueryException e) {
-      System.out.println("Dataset was not created. \n" + e.toString());
+      System.out.println("Dataset Access control was not updated \n" + e.toString());
     }
   }
 }
-// [END bigquery create_dataset]
+// [END bigquery_update_dataset_access]

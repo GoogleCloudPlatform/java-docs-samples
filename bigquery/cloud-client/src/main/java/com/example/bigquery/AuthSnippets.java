@@ -53,7 +53,7 @@ public class AuthSnippets {
     // environment variable, you can explicitly load the credentials file to construct the
     // credentials.
     GoogleCredentials credentials;
-    File credentialsPath = new File("service_account.json");  // TODO: update to your key path.
+    File credentialsPath = new File("service_account.json"); // TODO: update to your key path.
     try (FileInputStream serviceAccountStream = new FileInputStream(credentialsPath)) {
       credentials = ServiceAccountCredentials.fromStream(serviceAccountStream);
     }

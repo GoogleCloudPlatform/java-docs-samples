@@ -49,12 +49,12 @@ public class DeleteDatasetIT {
   public void deleteDataset() {
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
-    //create the dataset to be deleted
+    // create the dataset to be deleted
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
     DatasetInfo datasetInfo = DatasetInfo.newBuilder(generatedDatasetName).build();
     bigquery.create(datasetInfo);
 
-    //delete the dataset that was just created
+    // delete the dataset that was just created
     DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), generatedDatasetName);
     DeleteDataset.deleteDataset(datasetId.getProject(), generatedDatasetName);
 
