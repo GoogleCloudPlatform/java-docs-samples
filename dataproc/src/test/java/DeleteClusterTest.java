@@ -64,7 +64,7 @@ public class DeleteClusterTest {
     System.setOut(new PrintStream(bout));
     standardOutOrig = System.out;
 
-    String myEndpoint = REGION + "-dataproc.googleapis.com:443";
+    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();

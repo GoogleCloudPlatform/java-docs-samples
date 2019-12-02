@@ -64,7 +64,7 @@ public class UpdateClusterTest {
   }
 
   @Before
-  public void setUp() throws IOException, InterruptedException {
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
     bout = new ByteArrayOutputStream();
     standardOutOrig = System.out;
     System.setOut(new PrintStream(bout));
@@ -97,8 +97,6 @@ public class UpdateClusterTest {
       OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
           clusterControllerClient.createClusterAsync(PROJECT_ID, REGION, cluster);
       createClusterAsyncRequest.get();
-    } catch (ExecutionException e) {
-      System.err.println("[UpdateCluster] Error during test cluster creation: \n" + e.getMessage());
     }
   }
 

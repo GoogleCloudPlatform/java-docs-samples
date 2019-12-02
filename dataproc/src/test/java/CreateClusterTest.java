@@ -38,7 +38,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateClusterTest {
 
-  private static final String CLUSTER_NAME = "test-cluster-" + UUID.randomUUID().toString();
+  private static final String CLUSTER_NAME =
+      String.format("test-cluster-%s", UUID.randomUUID().toString());
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
@@ -74,7 +75,7 @@ public class CreateClusterTest {
 
   @After
   public void tearDown() throws IOException, InterruptedException, ExecutionException {
-    String myEndpoint = REGION + "-dataproc.googleapis.com:443";
+    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
     System.setOut(standardOutOrig);
 
     ClusterControllerSettings clusterControllerSettings =
@@ -85,7 +86,6 @@ public class CreateClusterTest {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
-
     }
   }
 }

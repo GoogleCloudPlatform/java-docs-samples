@@ -49,9 +49,9 @@ public class SubmitJobTest {
   private static final String MY_UUID = UUID.randomUUID().toString();
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ENDPOINT = REGION + "-dataproc.googleapis.com:443";
-  private static final String CLUSTER_NAME = "test-cluster-" + MY_UUID;
-  private static final String BUCKET_NAME = "test-bucket-" + MY_UUID;
+  private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
+  private static final String CLUSTER_NAME = String.format("test-cluster-%s", MY_UUID);
+  private static final String BUCKET_NAME = String.format("test-bucket-%s", MY_UUID);
   private static final String JOB_FILE_NAME = "sum.py";
   private static final String JOB_FILE_PATH =
       String.format("gs://%s/%s", BUCKET_NAME, JOB_FILE_NAME);
