@@ -103,7 +103,7 @@ public class UpdateClusterTest {
   }
 
   @Test
-  public void updateClusterTest() throws IOException, InterruptedException {
+  public void updateClusterTest() throws IOException, InterruptedException, ExecutionException {
     UpdateCluster.updateCluster(PROJECT_ID, REGION, CLUSTER_NAME, NEW_WORKERS);
     String output = bout.toString();
 
@@ -111,7 +111,7 @@ public class UpdateClusterTest {
   }
 
   @After
-  public void teardown() throws IOException, InterruptedException {
+  public void teardown() throws IOException, InterruptedException, ExecutionException {
     System.setOut(standardOutOrig);
 
     ClusterControllerSettings clusterControllerSettings =
@@ -122,8 +122,6 @@ public class UpdateClusterTest {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
-    } catch (ExecutionException e) {
-      System.err.println("[UpdateCluster] Error during test cluster update: \n" + e.getMessage());
     }
   }
 }

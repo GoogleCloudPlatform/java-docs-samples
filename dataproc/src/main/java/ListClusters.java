@@ -19,11 +19,20 @@ import com.google.cloud.dataproc.v1.Cluster;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class ListClusters {
 
+  public static void listClusters()
+      throws IOException, InterruptedException, ExecutionException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String region = "your-project-region";
+    listClusters(projectId, region);
+  }
+
   public static void listClusters(String projectId, String region) throws IOException {
-    String myEndpoint = region + "-dataproc.googleapis.com:443";
+    String myEndpoint = String.format("-dataproc.googleapis.com:443");
 
     // Configure the settings for the cluster controller client
     ClusterControllerSettings clusterControllerSettings =
@@ -36,12 +45,8 @@ public class ListClusters {
         ClusterControllerClient.create(clusterControllerSettings)) {
 
       for (Cluster element : clusterControllerClient.listClusters(projectId, region).iterateAll()) {
-        System.out.println(element.getClusterName() + ": " + element.getStatus().getState());
+        System.out.printf("%s: %s", element.getClusterName(), element.getStatus().getState());
       }
-    } catch (IOException e) {
-      // Likely this would occur due to issues authenticating with GCP. Make sure the environment
-      // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
-      System.out.println("Error deleting the cluster controller client: \n" + e.getMessage());
     }
   }
 }

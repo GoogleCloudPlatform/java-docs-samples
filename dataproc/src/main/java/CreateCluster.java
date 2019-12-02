@@ -27,9 +27,18 @@ import java.util.concurrent.ExecutionException;
 
 public class CreateCluster {
 
+  public static void createCluster()
+      throws IOException, InterruptedException, ExecutionException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String region = "your-project-region";
+    String clusterName = "your-cluster-name";
+    createCluster(projectId, region, clusterName);
+  }
+
   public static void createCluster(String projectId, String region, String clusterName)
-      throws IOException, InterruptedException {
-    String myEndpoint = region + "-dataproc.googleapis.com:443";
+      throws IOException, InterruptedException, ExecutionException {
+    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client
     ClusterControllerSettings clusterControllerSettings =
@@ -66,16 +75,8 @@ public class CreateCluster {
       Cluster response = createClusterAsyncRequest.get();
 
       // Print out a success message
-      System.out.println("Cluster created successfully: " + response.getClusterName());
+      System.out.printf("Cluster created successfully: %s", response.getClusterName());
 
-    } catch (IOException e) {
-      // Likely this would occur due to issues authenticating with GCP. Make sure the environment
-      // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
-      System.err.println("Error creating the cluster controller client: \n" + e.getMessage());
-    } catch (ExecutionException e) {
-      // Common issues for this include needing to increase compute engine quotas or a cluster of
-      // the same name already exists.
-      System.err.println("Error during cluster creation request: \n" + e.getMessage());
     }
   }
 }

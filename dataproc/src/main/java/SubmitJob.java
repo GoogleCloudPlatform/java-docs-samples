@@ -22,12 +22,23 @@ import com.google.cloud.dataproc.v1.JobPlacement;
 import com.google.cloud.dataproc.v1.JobStatus;
 import com.google.cloud.dataproc.v1.PySparkJob;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class SubmitJob {
 
+  public static void submitJob()
+      throws IOException, InterruptedException, ExecutionException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String region = "your-project-region";
+    String clusterName = "your-cluster-name";
+    String jobFilePath = "your-job-file-path";
+    submitJob(projectId, region, clusterName, jobFilePath);
+  }
+
   public static void submitJob(
       String projectId, String region, String clusterName, String jobFilePath) throws IOException {
-    String myEndpoint = region + "-dataproc.googleapis.com:443";
+    String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client
     JobControllerSettings jobControllerSettings =
@@ -51,17 +62,13 @@ public class SubmitJob {
       while (true) {
         Job jobInfo = jobControllerClient.getJob(projectId, region, jobId);
         if (jobInfo.getStatus().getState().equals(JobStatus.State.ERROR)) {
-          System.err.printf("Job %s failed: %s", jobId, jobInfo.getStatus().getDetails());
+          System.out.printf("Job %s failed: %s", jobId, jobInfo.getStatus().getDetails());
           break;
         } else if (jobInfo.getStatus().getState().equals(JobStatus.State.DONE)) {
           System.out.printf("Job %s finished.", jobId);
           break;
         }
       }
-    } catch (IOException e) {
-      // Likely this would occur due to issues authenticating with GCP. Make sure the environment
-      // variable GOOGLE_APPLICATION_CREDENTIALS is configured.
-      System.err.println("Error creating the cluster controller client: \n" + e.getMessage());
     }
   }
 }

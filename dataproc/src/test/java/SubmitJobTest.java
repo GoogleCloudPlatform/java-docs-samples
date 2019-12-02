@@ -115,7 +115,7 @@ public class SubmitJobTest {
   }
 
   @After
-  public void teardown() throws IOException, InterruptedException {
+  public void teardown() throws IOException, InterruptedException, ExecutionException {
     System.setOut(standardOutOrig);
     blob.delete();
 
@@ -127,8 +127,6 @@ public class SubmitJobTest {
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
       deleteClusterAsyncRequest.get();
-    } catch (ExecutionException e) {
-      System.err.println("[SubmitJob] Error during test cluster deletion: \n" + e.getMessage());
     }
   }
 }
