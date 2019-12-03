@@ -25,12 +25,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CreateDatasetIT {
+public class UpdateDatasetDescriptionIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -42,9 +42,15 @@ public class CreateDatasetIT {
   }
 
   @Test
-  public void testCreateDataset() {
+  public void updateDatasetDescription() {
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
+    String newDescription = "new description!";
+    // Create a dataset in order to modify its description
     CreateDataset.createDataset(generatedDatasetName);
-    assertThat(bout.toString()).contains(generatedDatasetName + " created successfully");
+
+    // Modify dataset's description
+    UpdateDatasetDescription.updateDatasetDescription(generatedDatasetName, newDescription);
+    assertThat(bout.toString())
+        .contains("Dataset description updated successfully to " + newDescription);
   }
 }
