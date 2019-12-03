@@ -21,6 +21,10 @@ You must set your project ID in order to run the tests
 
 `GOOGLE_CLOUD_PROJECT=<your-project-id-here>`
 
+### Grant Permissions
+
+You must ensure that the [user account or service account](https://cloud.google.com/iam/docs/service-accounts#differences_between_a_service_account_and_a_user_account) you used to authorize your gcloud session has the proper permissions to edit KMS resources for your project. More information can be found in the [Google KMS Docs](https://cloud.google.com/kms/docs/reference/permissions-and-roles)
+
 ## Quickstart
 
 Install [Maven](http://maven.apache.org/).
