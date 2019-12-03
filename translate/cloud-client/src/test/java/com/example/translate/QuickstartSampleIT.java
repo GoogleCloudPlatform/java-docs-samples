@@ -17,11 +17,13 @@
 package com.example.translate;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -34,6 +36,19 @@ import org.junit.runners.JUnit4;
 public class QuickstartSampleIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+            System.getenv(varName),
+            "Environment variable '%s' is required to perform these tests.".format(varName)
+    );
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
 
   @Before
   public void setUp() {

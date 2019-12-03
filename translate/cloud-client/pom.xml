@@ -40,13 +40,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
-      <version>1.94.0</version>
+      <version>1.94.1</version>
     </dependency>
     <!-- [END translate_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.62.0</version>
+      <version>1.101.0</version>
     </dependency>
 
     <!-- Test dependencies -->
