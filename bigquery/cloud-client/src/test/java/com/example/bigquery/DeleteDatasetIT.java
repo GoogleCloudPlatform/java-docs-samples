@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,18 @@ package com.example.bigquery;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.DatasetId;
+import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-/** Tests for auth samples. */
-@RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class AuthSnippetsIT {
+public class DeleteDatasetIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -46,9 +46,18 @@ public class AuthSnippetsIT {
   }
 
   @Test
-  public void testAuthSnippetsImplicit() throws Exception {
-    AuthSnippets.main(new String[] {"implicit"});
-    String got = bout.toString();
-    assertThat(got).contains("Datasets:");
+  public void deleteDataset() {
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+
+    // create the dataset to be deleted
+    String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
+    DatasetInfo datasetInfo = DatasetInfo.newBuilder(generatedDatasetName).build();
+    bigquery.create(datasetInfo);
+
+    // delete the dataset that was just created
+    DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), generatedDatasetName);
+    DeleteDataset.deleteDataset(datasetId.getProject(), generatedDatasetName);
+
+    assertThat(bout.toString()).contains("Dataset deleted successfully");
   }
 }
