@@ -47,6 +47,30 @@ Project should have a `pom.xml` that is readably formatted, declares a parent po
   </parent>
 ```
 
+When adding a dependency to a GCP client library, the [libraries-bom](https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM)
+should be used instead of explicitly declaring the client version. See the below example:
+
+```xml
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>SPECIFY_LATEST_VERSION</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+    </dependency>
+  </dependencies>
+```
+
 ### Project Configuration
 Use of environment variables over system properties is strongly preferred for configuration. 
 
