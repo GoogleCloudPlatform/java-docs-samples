@@ -35,23 +35,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- [START speech_quickstart_dependencies] -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>libraries-bom</artifactId>
-        <version>3.0.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
+    <!-- [START speech_quickstart_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-speech</artifactId>
+      <version>1.22.0</version>
     </dependency>
     <!-- [END speech_quickstart_dependencies] -->
     <dependency>
@@ -72,9 +61,8 @@
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- [START speech_quickstart_dependencies] -->
   </dependencies>
-  <!-- [END speech_quickstart_dependencies] -->
+
   <build>
     <plugins>
       <plugin>
