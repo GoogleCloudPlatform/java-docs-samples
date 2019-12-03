@@ -31,12 +31,23 @@
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
+  <!-- [START asset_java_dependencies] -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-    <!-- [START asset_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-asset</artifactId>
-      <version>0.115.0-beta</version>
     </dependency>
     <!-- [END asset_java_dependencies] -->
 
@@ -69,5 +80,7 @@
       <artifactId>google-cloud-resourcemanager</artifactId>
       <version>0.116.0-alpha</version>
     </dependency>
+    <!-- [START asset_java_dependencies] -->
   </dependencies>
+  <!-- [END asset_java_dependencies] -->
 </project>
