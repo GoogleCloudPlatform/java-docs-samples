@@ -33,14 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InspectImageFile {
-
-  public static void inspectString() {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = "my-project-id";
-    String textToInspect = "My name is Gary and my email is gary@example.com";
-    inspectString(projectId, textToInspect);
-  }
-
   // Inspects the specified image file.
   public static void inspectImageFile(String projectId, String filePath) {
     // Initialize client that will be used to send requests. This client only needs to be created
