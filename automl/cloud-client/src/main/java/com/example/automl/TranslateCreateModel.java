@@ -29,7 +29,8 @@ import java.util.concurrent.ExecutionException;
 
 class TranslateCreateModel {
 
-  static void createModel() throws IOException, ExecutionException, InterruptedException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String datasetId = "YOUR_DATASET_ID";
@@ -59,6 +60,9 @@ class TranslateCreateModel {
       // Create a model with the model metadata in the region.
       OperationFuture<Model, OperationMetadata> future =
           client.createModelAsync(projectLocation, model);
+      // OperationFuture.get() will block until the model is created, which may take several hours.
+      // You can use OperationFuture.getInitialFuture to get a future representing the initial
+      // response to the request, which contains information while the operation is in progress.
       System.out.format("Training operation name: %s\n", future.getInitialFuture().get().getName());
       System.out.println("Training started...");
     }

@@ -17,6 +17,7 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 |[Image Magick](image-processing/) | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_image] |
 |[Manual Logging](logging-manual/) | Structured logging for Stackdriver | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_log] |
 |[Local Troubleshooting](hello-broken/) | Broken services for local troubleshooting tutorial | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_broken] |
+|[Cloud SQL (MySQL)][mysql]        | Use MySQL with Cloud Run | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_sql] |
 
 For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
@@ -140,3 +141,5 @@ gcloud beta run deploy $SAMPLE \
 [jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
 [startup]: https://cwiki.apache.org/confluence/display/TOMCAT/HowTo+FasterStartUp
 [testing]: https://cloud.google.com/run/docs/testing/local#running_locally_using_docker_with_access_to_services
+[mysql]: ../cloud-sql/mysql/servlet
+[run_button_sql]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=cloud-sql/mysql/servlet

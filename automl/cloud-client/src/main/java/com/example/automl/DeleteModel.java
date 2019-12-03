@@ -26,14 +26,15 @@ import java.util.concurrent.ExecutionException;
 
 class DeleteModel {
 
-  static void deleteModel() throws IOException, ExecutionException, InterruptedException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
     deleteModel(projectId, modelId);
   }
 
-  // Get a model
+  // Delete a model
   static void deleteModel(String projectId, String modelId)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
