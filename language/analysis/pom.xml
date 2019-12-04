@@ -34,23 +34,12 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
-  <!-- [START language_java_dependencies] -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>libraries-bom</artifactId>
-        <version>3.0.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
+    <!-- [START language_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
+      <version>1.83.0</version>
     </dependency>
     <!-- [END language_java_dependencies] -->
     <dependency>
@@ -70,9 +59,7 @@ limitations under the License.
       <artifactId>truth</artifactId>
       <version>1.0</version>
     </dependency>
-    <!-- [START language_java_dependencies] -->
   </dependencies>
-  <!-- [END language_java_dependencies] -->
   <build>
     <plugins>
       <plugin>
