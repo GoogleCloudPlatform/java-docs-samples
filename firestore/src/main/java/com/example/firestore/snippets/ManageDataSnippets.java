@@ -345,21 +345,16 @@ class ManageDataSnippets {
     docRef.set(city).get();
 
     // run an asynchronous transaction
-    ApiFuture<Void> transaction =
-        db.runTransaction(
-            new Transaction.Function<Void>() {
-              @Override
-              public Void updateCallback(Transaction transaction) throws Exception {
-                // retrieve document and increment population field
-                DocumentSnapshot snapshot = transaction.get(docRef).get();
-                long oldPopulation = snapshot.getLong("population");
-                transaction.update(docRef, "population", oldPopulation + 1);
-                return null;
-              }
-            });
+    ApiFuture<Void> futureTransaction = db.runTransaction(transaction -> {
+      // retrieve document and increment population field
+      DocumentSnapshot snapshot = transaction.get(docRef).get();
+      long oldPopulation = snapshot.getLong("population");
+      transaction.update(docRef, "population", oldPopulation + 1);
+      return null;
+    });
     // block on transaction operation using transaction.get()
     // [END fs_run_simple_transaction]
-    return transaction;
+    return futureTransaction;
   }
 
   /**
@@ -375,26 +370,21 @@ class ManageDataSnippets {
     db.collection("cities").document("SF").set(map).get();
     // [START fs_return_info_transaction]
     final DocumentReference docRef = db.collection("cities").document("SF");
-    ApiFuture<String> transaction =
-        db.runTransaction(
-            new Transaction.Function<String>() {
-              @Override
-              public String updateCallback(Transaction transaction) throws Exception {
-                DocumentSnapshot snapshot = transaction.get(docRef).get();
-                Long newPopulation = snapshot.getLong("population") + 1;
-                // conditionally update based on current population
-                if (newPopulation <= 1000000L) {
-                  transaction.update(docRef, "population", newPopulation);
-                  return "Population increased to " + newPopulation;
-                } else {
-                  throw new Exception("Sorry! Population is too big.");
-                }
-              }
-            });
+    ApiFuture<String> futureTransaction = db.runTransaction(transaction -> {
+      DocumentSnapshot snapshot = transaction.get(docRef).get();
+      Long newPopulation = snapshot.getLong("population") + 1;
+      // conditionally update based on current population
+      if (newPopulation <= 1000000L) {
+        transaction.update(docRef, "population", newPopulation);
+        return "Population increased to " + newPopulation;
+      } else {
+        throw new Exception("Sorry! Population is too big.");
+      }
+    });
     // Print information retrieved from transaction
-    System.out.println(transaction.get());
+    System.out.println(futureTransaction.get());
     // [END fs_return_info_transaction]
-    return transaction.get();
+    return futureTransaction.get();
   }
 
   /** Write documents in a batch. */
