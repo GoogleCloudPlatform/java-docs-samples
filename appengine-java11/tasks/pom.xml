@@ -40,6 +40,8 @@ Copyright 2019 Google LLC
   </properties>
 
   <!-- [START gae_java11_task_pom] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
     <dependencies>
       <dependency>

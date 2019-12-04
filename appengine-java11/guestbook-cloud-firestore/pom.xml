@@ -39,6 +39,8 @@
     ${project.build.directory}/appengine-staging -->
 
   <!-- [START gae_java11_firestore_pom] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
     <dependencies>
       <dependency>
