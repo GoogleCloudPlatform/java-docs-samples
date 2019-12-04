@@ -34,11 +34,11 @@ import java.util.List;
 
 public class InspectImageFile {
 
-  public static void inspectImageFile() {
+  public static void inspectString() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
-    String filePath = "path/to/image/file";
-    inspectImageFile(projectId, filePath);
+    String textToInspect = "My name is Gary and my email is gary@example.com";
+    inspectString(projectId, textToInspect);
   }
 
   // Inspects the specified image file.
