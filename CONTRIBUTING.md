@@ -39,11 +39,11 @@ guidelines.
 
 ## Build Tools
 
- All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
+All new samples should build and run integration tests with both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/).
 
 ## Integration Testing
 
-All samples must have Integration Tests that run with Maven and Gradle
+All samples must have integration tests that run with Maven and Gradle
 
 * Test Library: [JUnit4](https://junit.org/junit4/)
 * Test Runner: [Maven Failsafe plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/) and [Maven Surefire plugin](https://maven.apache.org/surefire/maven-surefire-plugin/).
@@ -51,9 +51,9 @@ All samples must have Integration Tests that run with Maven and Gradle
 ### Running Tests Locally
 
 Run tests locally with commands:
+
 * Maven: `mvn verify`
 * Gradle: `gradle build test`
-
 
 ### Gradle Specifcs
 Your `build.gradle` should have the following section:
@@ -91,15 +91,14 @@ mind when setting up tests.
   * `GOOGLE_CLOUD_PROJECT`
   * `PROJECT_ID`
 
-
 * **API library**  
-  Add a note in the pull request, if an API needs to be enable in the testing
-  project.
+  If an API needs to be enabled in the testing project, add this information to the
+  directory's CONTRIBUTING.md file. If there is no CONTRIBUTING.md file, add one in your PR.
 
 * **Cloud resources**  
   Most Java samples create the Cloud resources that they need to run. If this
-  is resource intensive or not possible, add a note in the pull request for the
-  resource to be added to the testing project.
+  is resource intensive or not possible, add instructions to the directory's CONTRIBUTING.md file
+  to add the resource to the testing project.
 
 * **Keys and Secrets**
   Add a note in the pull request, in order for a Java maintainer to assist you
