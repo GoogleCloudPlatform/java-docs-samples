@@ -21,17 +21,17 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
+import java.util.concurrent.TimeUnit;
 
 public class UpdateDatasetExpiration {
 
   public static void runUpdateDatasetExpiration() {
     // TODO(developer): Replace these variables before running the sample.
     String datasetName = "my-dataset-name";
-    Long newExpiration = 24 * 60 * 60 * 1000L; // one day in milliseconds
-    updateDatasetExpiration(datasetName, newExpiration);
+    updateDatasetExpiration(datasetName);
   }
 
-  public static void updateDatasetExpiration(String datasetName, Long newExpiration) {
+  public static void updateDatasetExpiration(String datasetName) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
@@ -39,6 +39,7 @@ public class UpdateDatasetExpiration {
     Dataset dataset = bigquery.getDataset(datasetName);
 
     // Update dataset expiration to one day
+    Long newExpiration = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
     try {
       bigquery.update(dataset.toBuilder().setDefaultTableLifetime(newExpiration).build());
       System.out.println("Dataset description updated successfully to " + newExpiration);

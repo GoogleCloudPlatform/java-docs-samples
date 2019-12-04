@@ -44,13 +44,11 @@ public class UpdateDatasetExpirationIT {
   @Test
   public void updateDatasetExpiration() {
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
-    Long newExpiration = 24 * 60 * 60 * 1000L; // one day in milliseconds
     // Create a dataset in order to modify its expiration
     CreateDataset.createDataset(generatedDatasetName);
 
     // Modify dataset's expiration
-    UpdateDatasetExpiration.updateDatasetExpiration(generatedDatasetName, newExpiration);
-    assertThat(bout.toString())
-        .contains("Dataset description updated successfully to " + newExpiration);
+    UpdateDatasetExpiration.updateDatasetExpiration(generatedDatasetName);
+    assertThat(bout.toString()).contains("Dataset description updated successfully");
   }
 }
