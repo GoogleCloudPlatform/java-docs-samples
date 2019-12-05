@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
 /** Tests for Get Supported Languages sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class GetSupportedLanguagesIT {
+public class GetSupportedLanguagesTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
@@ -40,9 +40,8 @@ public class GetSupportedLanguagesIT {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -66,7 +65,7 @@ public class GetSupportedLanguagesIT {
   @Test
   public void testGetSupportedLanguages() throws IOException {
     // Act
-    GetSupportedLanguages.getSupportedLanguages(PROJECT_ID, "global");
+    GetSupportedLanguages.getSupportedLanguages(PROJECT_ID);
 
     // Assert
     String got = bout.toString();

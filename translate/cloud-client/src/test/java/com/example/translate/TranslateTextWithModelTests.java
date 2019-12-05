@@ -29,20 +29,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Translate Text sample. */
+/** Tests for Batch Translate Text With Model sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class TranslateTextIT {
+public class TranslateTextWithModelTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String MODEL_ID = "TRL2188848820815848149";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -64,21 +64,13 @@ public class TranslateTextIT {
   }
 
   @Test
-  public void testTranslateText() throws IOException {
+  public void testTranslateTextWithModel() throws IOException {
     // Act
-    TranslateText.translateText(PROJECT_ID, "global", "sr-Latn", "Hello world");
+    TranslateTextWithModel.translateTextWithModel(
+        PROJECT_ID, "en", "ja", "That' il do it. deception", MODEL_ID);
 
     // Assert
     String got = bout.toString();
-
-    int count = 0;
-    if (got.contains("Zdravo svet")) {
-      count = 1;
-    }
-    if (got.contains("Pozdrav svijetu")) {
-      count = 1;
-    }
-
-    assertThat(1).isEqualTo(count);
+    assertThat(got).contains("それはそうだ");
   }
 }

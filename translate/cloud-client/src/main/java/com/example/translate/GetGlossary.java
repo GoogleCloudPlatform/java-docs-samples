@@ -28,21 +28,22 @@ public class GetGlossary {
 
   public static void getGlossary() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "us-central1";
-    String glossaryId = "[Your Glossary ID]";
-    getGlossary(projectId, location, glossaryId);
+    String projectId = "YOUR-PROJECT-ID";
+    String glossaryId = "your-glossary-display-name";
+    getGlossary(projectId, glossaryId);
   }
 
   // Get Glossary
-  public static void getGlossary(String projectId, String location, String glossaryId)
-      throws IOException {
+  public static void getGlossary(String projectId, String glossaryId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      GlossaryName glossaryName = GlossaryName.of(projectId, location, glossaryId);
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      GlossaryName glossaryName = GlossaryName.of(projectId, "us-central1", glossaryId);
       GetGlossaryRequest request =
           GetGlossaryRequest.newBuilder().setName(glossaryName.toString()).build();
 

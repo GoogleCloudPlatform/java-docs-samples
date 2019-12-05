@@ -38,21 +38,20 @@ public class BatchTranslateTextWithGlossary {
   public static void batchTranslateTextWithGlossary()
       throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "us-central1";
-    String sourceLanguage = "en";
-    String targetLanguage = "ja";
-    String inputUri = "gs://cloud-samples-data/text.txt";
-    String outputUri = "gs://YOUR_BUCKET_ID/path_to_store_results/";
-    String glossaryId = "[Your Glossary ID]";
+    String projectId = "YOUR-PROJECT-ID";
+    // Supported Languages: https://cloud.google.com/translate/docs/languages
+    String sourceLanguage = "your-source-language";
+    String targetLanguage = "your-target-language";
+    String inputUri = "gs://your-gcs-bucket/path/to/input/file.txt";
+    String outputUri = "gs://your-gcs-bucket/path/to/results/";
+    String glossaryId = "your-glossary-display-name";
     batchTranslateTextWithGlossary(
-        projectId, location, sourceLanguage, targetLanguage, inputUri, outputUri, glossaryId);
+        projectId, sourceLanguage, targetLanguage, inputUri, outputUri, glossaryId);
   }
 
   // Batch Translate Text with a Glossary.
   public static void batchTranslateTextWithGlossary(
       String projectId,
-      String location,
       String sourceLanguage,
       String targetLanguage,
       String inputUri,
@@ -64,18 +63,26 @@ public class BatchTranslateTextWithGlossary {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      String location = "us-central1";
       LocationName parent = LocationName.of(projectId, location);
+
       GcsSource gcsSource = GcsSource.newBuilder().setInputUri(inputUri).build();
-      // Optional. Can be "text/plain" or "text/html".
+      // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       InputConfig inputConfig =
           InputConfig.newBuilder().setGcsSource(gcsSource).setMimeType("text/plain").build();
+
       GcsDestination gcsDestination =
           GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
       OutputConfig outputConfig =
           OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+
       GlossaryName glossaryName = GlossaryName.of(projectId, location, glossaryId);
       TranslateTextGlossaryConfig glossaryConfig =
           TranslateTextGlossaryConfig.newBuilder().setGlossary(glossaryName.toString()).build();
+
       BatchTranslateTextRequest request =
           BatchTranslateTextRequest.newBuilder()
               .setParent(parent.toString())
@@ -83,7 +90,7 @@ public class BatchTranslateTextWithGlossary {
               .addTargetLanguageCodes(targetLanguage)
               .addInputConfigs(inputConfig)
               .setOutputConfig(outputConfig)
-              .putGlossaries("ja", glossaryConfig)
+              .putGlossaries(targetLanguage, glossaryConfig)
               .build();
 
       OperationFuture<BatchTranslateResponse, BatchTranslateMetadata> future =

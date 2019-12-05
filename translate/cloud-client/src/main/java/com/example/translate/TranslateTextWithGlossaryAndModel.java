@@ -31,21 +31,20 @@ public class TranslateTextWithGlossaryAndModel {
 
   public static void translateTextWithGlossaryAndModel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "us-central1";
-    String sourceLanguage = "en";
-    String targetLanguage = "ja";
-    String text = "Hello, world!";
-    String glossaryId = "[Your Glossary ID]";
-    String modelId = "[Your Model ID]";
+    String projectId = "YOUR-PROJECT-ID";
+    // Supported Languages: https://cloud.google.com/translate/docs/languages
+    String sourceLanguage = "your-source-language";
+    String targetLanguage = "your-target-language";
+    String text = "your-text";
+    String glossaryId = "your-glossary-display-name";
+    String modelId = "YOUR-MODEL-ID";
     translateTextWithGlossaryAndModel(
-        projectId, location, sourceLanguage, targetLanguage, text, glossaryId, modelId);
+        projectId, sourceLanguage, targetLanguage, text, glossaryId, modelId);
   }
 
   // Translating Text with Glossary and Model
   public static void translateTextWithGlossaryAndModel(
       String projectId,
-      String location,
       String sourceLanguage,
       String targetLanguage,
       String text,
@@ -57,16 +56,24 @@ public class TranslateTextWithGlossaryAndModel {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      String location = "us-central1";
       LocationName parent = LocationName.of(projectId, location);
+
       GlossaryName glossaryName = GlossaryName.of(projectId, location, glossaryId);
       TranslateTextGlossaryConfig glossaryConfig =
           TranslateTextGlossaryConfig.newBuilder().setGlossary(glossaryName.toString()).build();
+
       String modelPath =
           String.format("projects/%s/locations/%s/models/%s", projectId, location, modelId);
+
+      // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       TranslateTextRequest request =
           TranslateTextRequest.newBuilder()
               .setParent(parent.toString())
-              .setMimeType("text/plain") // Optional. Can be "text/plain" or "text/html".
+              .setMimeType("text/plain")
               .setSourceLanguageCode(sourceLanguage)
               .setTargetLanguageCode(targetLanguage)
               .addContents(text)

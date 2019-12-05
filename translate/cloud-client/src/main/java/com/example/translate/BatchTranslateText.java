@@ -36,19 +36,18 @@ public class BatchTranslateText {
   public static void batchTranslateText()
       throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "us-central1";
-    String sourceLanguage = "en";
-    String targetLanguage = "ja";
-    String inputUri = "gs://cloud-samples-data/text.txt";
-    String outputUri = "gs://YOUR_BUCKET_ID/path_to_store_results/";
-    batchTranslateText(projectId, location, sourceLanguage, targetLanguage, inputUri, outputUri);
+    String projectId = "YOUR-PROJECT-ID";
+    // Supported Languages: https://cloud.google.com/translate/docs/languages
+    String sourceLanguage = "your-source-language";
+    String targetLanguage = "your-target-language";
+    String inputUri = "gs://your-gcs-bucket/path/to/input/file.txt";
+    String outputUri = "gs://your-gcs-bucket/path/to/results/";
+    batchTranslateText(projectId, sourceLanguage, targetLanguage, inputUri, outputUri);
   }
 
   // Batch translate text
   public static void batchTranslateText(
       String projectId,
-      String location,
       String sourceLanguage,
       String targetLanguage,
       String inputUri,
@@ -59,15 +58,19 @@ public class BatchTranslateText {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(projectId, location);
+      // Supported Locations: `us-central1`
+      LocationName parent = LocationName.of(projectId, "us-central1");
+
       GcsSource gcsSource = GcsSource.newBuilder().setInputUri(inputUri).build();
-      // Optional. Can be "text/plain" or "text/html".
+      // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       InputConfig inputConfig =
           InputConfig.newBuilder().setGcsSource(gcsSource).setMimeType("text/plain").build();
+
       GcsDestination gcsDestination =
           GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
       OutputConfig outputConfig =
           OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+
       BatchTranslateTextRequest request =
           BatchTranslateTextRequest.newBuilder()
               .setParent(parent.toString())

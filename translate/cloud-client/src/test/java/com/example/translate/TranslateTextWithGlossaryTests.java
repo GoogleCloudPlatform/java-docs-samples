@@ -19,9 +19,24 @@ package com.example.translate;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.translate.v3.CreateGlossaryMetadata;
+import com.google.cloud.translate.v3.CreateGlossaryRequest;
+import com.google.cloud.translate.v3.DeleteGlossaryMetadata;
+import com.google.cloud.translate.v3.DeleteGlossaryRequest;
+import com.google.cloud.translate.v3.DeleteGlossaryResponse;
+import com.google.cloud.translate.v3.GcsSource;
+import com.google.cloud.translate.v3.Glossary;
+import com.google.cloud.translate.v3.GlossaryInputConfig;
+import com.google.cloud.translate.v3.GlossaryName;
+import com.google.cloud.translate.v3.LocationName;
+import com.google.cloud.translate.v3.TranslationServiceClient;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -32,12 +47,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Create and Delete Glossary samples. */
+/** Tests for Translate Text With Glossary sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class CreateAndDeleteGlossaryIT {
-
+public class TranslateTextWithGlossaryTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION = "us-central1";
   private static final String GLOSSARY_INPUT_URI =
       "gs://cloud-samples-data/translation/glossary_ja.csv";
   private static final String GLOSSARY_ID =
@@ -48,9 +63,8 @@ public class CreateAndDeleteGlossaryIT {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -60,36 +74,34 @@ public class CreateAndDeleteGlossaryIT {
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws InterruptedException, ExecutionException, IOException {
+    // Create a glossary that can be used in the test
+    List<String> languageCodes = new ArrayList<>();
+    languageCodes.add("en");
+    languageCodes.add("ja");
+    CreateGlossary.createGlossary(PROJECT_ID, GLOSSARY_ID, languageCodes, GLOSSARY_INPUT_URI);
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws InterruptedException, ExecutionException, IOException {
+    // Clean up
+    // Delete the created glossary
+    DeleteGlossary.deleteGlossary(PROJECT_ID, GLOSSARY_ID);
     System.setOut(null);
   }
 
   @Test
-  public void testCreateAndDeleteGlossary()
-      throws InterruptedException, ExecutionException, IOException {
+  public void testTranslateTextWithGlossary() throws IOException {
     // Act
-    CreateGlossary.createGlossary(PROJECT_ID, "us-central1", GLOSSARY_ID, GLOSSARY_INPUT_URI);
+    TranslateTextWithGlossary.translateTextWithGlossary(
+        PROJECT_ID, "en", "ja", "account", GLOSSARY_ID);
 
     // Assert
     String got = bout.toString();
-
-    assertThat(got).contains("Created");
-    assertThat(got).contains(GLOSSARY_ID);
-    assertThat(got).contains(GLOSSARY_INPUT_URI);
-
-    // Clean up
-    DeleteGlossary.deleteGlossary(PROJECT_ID, "us-central1", GLOSSARY_ID);
-
-    // Assert
-    got = bout.toString();
-    assertThat(got).contains("us-central1");
-    assertThat(got).contains(GLOSSARY_ID);
+    assertThat(got).contains("アカウント");
   }
 }

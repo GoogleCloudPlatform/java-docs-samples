@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 /** Tests for Batch Translate Text sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class BatchTranslateTextIT {
+public class BatchTranslateTextTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String INPUT_URI = "gs://cloud-samples-data/translation/text.txt";
 
@@ -74,9 +74,8 @@ public class BatchTranslateTextIT {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -104,12 +103,7 @@ public class BatchTranslateTextIT {
       throws InterruptedException, ExecutionException, IOException {
     // Act
     BatchTranslateText.batchTranslateText(
-        PROJECT_ID,
-        "us-central1",
-        "en",
-        "es",
-        INPUT_URI,
-        "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/");
+        PROJECT_ID, "en", "es", INPUT_URI, "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/");
 
     // Assert
     String got = bout.toString();

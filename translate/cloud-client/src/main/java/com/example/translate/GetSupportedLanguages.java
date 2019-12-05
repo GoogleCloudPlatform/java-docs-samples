@@ -29,19 +29,21 @@ public class GetSupportedLanguages {
 
   public static void getSupportedLanguages() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "global";
-    getSupportedLanguages(projectId, location);
+    String projectId = "YOUR-PROJECT-ID";
+    getSupportedLanguages(projectId);
   }
 
   // Getting a list of supported language codes
-  public static void getSupportedLanguages(String projectId, String location) throws IOException {
+  public static void getSupportedLanguages(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(projectId, location);
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      LocationName parent = LocationName.of(projectId, "global");
       GetSupportedLanguagesRequest request =
           GetSupportedLanguagesRequest.newBuilder().setParent(parent.toString()).build();
 

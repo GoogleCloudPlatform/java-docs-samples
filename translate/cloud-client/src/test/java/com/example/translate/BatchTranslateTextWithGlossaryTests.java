@@ -20,6 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.translate.v3.CreateGlossaryMetadata;
 import com.google.cloud.translate.v3.CreateGlossaryRequest;
 import com.google.cloud.translate.v3.DeleteGlossaryMetadata;
@@ -35,6 +39,8 @@ import com.google.cloud.translate.v3.TranslationServiceClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -45,13 +51,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for List Glossaries sample. */
+/** Tests for Batch Translate Text With Glossary and Model sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class ListGlossariesIT {
-
+public class BatchTranslateTextWithGlossaryTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
+  private static final String INPUT_URI =
+      "gs://cloud-samples-data/translation/text_with_glossary.txt";
   private static final String GLOSSARY_INPUT_URI =
       "gs://cloud-samples-data/translation/glossary_ja.csv";
   private static final String GLOSSARY_ID =
@@ -60,11 +67,36 @@ public class ListGlossariesIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
+  private static final void cleanUpBucket() {
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    Page<Blob> blobs =
+        storage.list(
+            PROJECT_ID,
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
+
+    deleteDirectory(storage, blobs);
+  }
+
+  private static void deleteDirectory(Storage storage, Page<Blob> blobs) {
+    for (Blob blob : blobs.iterateAll()) {
+      System.out.println(blob.getBlobId());
+      if (!blob.delete()) {
+        Page<Blob> subBlobs =
+            storage.list(
+                PROJECT_ID,
+                Storage.BlobListOption.currentDirectory(),
+                Storage.BlobListOption.prefix(blob.getName()));
+
+        deleteDirectory(storage, subBlobs);
+      }
+    }
+  }
+
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -75,60 +107,40 @@ public class ListGlossariesIT {
 
   @Before
   public void setUp() throws InterruptedException, ExecutionException, IOException {
+    // Create a glossary that can be used in the test
+    List<String> languageCodes = new ArrayList<>();
+    languageCodes.add("en");
+    languageCodes.add("ja");
+    CreateGlossary.createGlossary(PROJECT_ID, GLOSSARY_ID, languageCodes, GLOSSARY_INPUT_URI);
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(PROJECT_ID, LOCATION);
-      GlossaryName glossaryName = GlossaryName.of(PROJECT_ID, LOCATION, GLOSSARY_ID);
-      Glossary.LanguageCodesSet languageCodesSet =
-          Glossary.LanguageCodesSet.newBuilder()
-              .addLanguageCodes("en")
-              .addLanguageCodes("ja")
-              .build();
-      GcsSource gcsSource = GcsSource.newBuilder().setInputUri(GLOSSARY_INPUT_URI).build();
-      GlossaryInputConfig inputConfig =
-          GlossaryInputConfig.newBuilder().setGcsSource(gcsSource).build();
-      Glossary glossary =
-          Glossary.newBuilder()
-              .setName(glossaryName.toString())
-              .setLanguageCodesSet(languageCodesSet)
-              .setInputConfig(inputConfig)
-              .build();
-      CreateGlossaryRequest request =
-          CreateGlossaryRequest.newBuilder()
-              .setParent(parent.toString())
-              .setGlossary(glossary)
-              .build();
-
-      OperationFuture<Glossary, CreateGlossaryMetadata> future =
-          client.createGlossaryAsync(request);
-      Glossary response = future.get();
-    }
-
     System.setOut(out);
   }
 
   @After
   public void tearDown() throws InterruptedException, ExecutionException, IOException {
-    try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      GlossaryName glossaryName = GlossaryName.of(PROJECT_ID, LOCATION, GLOSSARY_ID);
-      DeleteGlossaryRequest request =
-          DeleteGlossaryRequest.newBuilder().setName(glossaryName.toString()).build();
-      OperationFuture<DeleteGlossaryResponse, DeleteGlossaryMetadata> future =
-          client.deleteGlossaryAsync(request);
-      DeleteGlossaryResponse response = future.get();
-    }
+    // Clean up
+    cleanUpBucket();
+    // Delete the created glossary
+    DeleteGlossary.deleteGlossary(PROJECT_ID, GLOSSARY_ID);
     System.setOut(null);
   }
 
   @Test
-  public void testListGlossaries() throws IOException {
+  public void testBatchTranslateTextWithGlossary()
+      throws InterruptedException, ExecutionException, IOException {
     // Act
-    ListGlossaries.listGlossaries(PROJECT_ID, LOCATION);
-    String got = bout.toString();
+    BatchTranslateTextWithGlossary.batchTranslateTextWithGlossary(
+        PROJECT_ID,
+        "en",
+        "ja",
+        INPUT_URI,
+        "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/",
+        GLOSSARY_ID);
 
     // Assert
-    assertThat(got).contains(GLOSSARY_ID);
-    assertThat(got).contains(GLOSSARY_INPUT_URI);
+    String got = bout.toString();
+    assertThat(got).contains("Total Characters: 9");
   }
 }

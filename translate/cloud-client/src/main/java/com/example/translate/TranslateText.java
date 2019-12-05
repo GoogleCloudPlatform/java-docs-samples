@@ -29,25 +29,31 @@ public class TranslateText {
 
   public static void translateText() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "global";
-    String targetLanguage = "fr";
-    String text = "Hello, world!";
-    translateText(projectId, location, targetLanguage, text);
+    String projectId = "YOUR-PROJECT-ID";
+    // Supported Languages: https://cloud.google.com/translate/docs/languages
+    String targetLanguage = "your-target-language";
+    String text = "your-text";
+    translateText(projectId, targetLanguage, text);
   }
 
   // Translating Text
-  public static void translateText(
-      String projectId, String location, String targetLanguage, String text) throws IOException {
+  public static void translateText(String projectId, String targetLanguage, String text)
+      throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(projectId, location);
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      LocationName parent = LocationName.of(projectId, "global");
+
+      // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       TranslateTextRequest request =
           TranslateTextRequest.newBuilder()
               .setParent(parent.toString())
+              .setMimeType("text/plain")
               .setTargetLanguageCode(targetLanguage)
               .addContents(text)
               .build();

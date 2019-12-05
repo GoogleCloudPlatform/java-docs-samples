@@ -35,6 +35,8 @@ import com.google.cloud.translate.v3.TranslationServiceClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -45,13 +47,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Batch Translate Text With Glossary and Model sample. */
+/** Tests for Get Glossary sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class TranslateTextWithGlossaryAndModelIT {
+public class GetGlossaryTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  private static final String MODEL_ID = "TRL2188848820815848149";
   private static final String GLOSSARY_INPUT_URI =
       "gs://cloud-samples-data/translation/glossary_ja.csv";
   private static final String GLOSSARY_ID =
@@ -62,9 +63,8 @@ public class TranslateTextWithGlossaryAndModelIT {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -75,62 +75,32 @@ public class TranslateTextWithGlossaryAndModelIT {
 
   @Before
   public void setUp() throws InterruptedException, ExecutionException, IOException {
+    // Create a glossary that can be used in the test
+    List<String> languageCodes = new ArrayList<>();
+    languageCodes.add("en");
+    languageCodes.add("ja");
+    CreateGlossary.createGlossary(PROJECT_ID, GLOSSARY_ID, languageCodes, GLOSSARY_INPUT_URI);
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(PROJECT_ID, LOCATION);
-      GlossaryName glossaryName = GlossaryName.of(PROJECT_ID, LOCATION, GLOSSARY_ID);
-      Glossary.LanguageCodesSet languageCodesSet =
-          Glossary.LanguageCodesSet.newBuilder()
-              .addLanguageCodes("en")
-              .addLanguageCodes("ja")
-              .build();
-      GcsSource gcsSource = GcsSource.newBuilder().setInputUri(GLOSSARY_INPUT_URI).build();
-      GlossaryInputConfig inputConfig =
-          GlossaryInputConfig.newBuilder().setGcsSource(gcsSource).build();
-      Glossary glossary =
-          Glossary.newBuilder()
-              .setName(glossaryName.toString())
-              .setLanguageCodesSet(languageCodesSet)
-              .setInputConfig(inputConfig)
-              .build();
-      CreateGlossaryRequest request =
-          CreateGlossaryRequest.newBuilder()
-              .setParent(parent.toString())
-              .setGlossary(glossary)
-              .build();
-
-      OperationFuture<Glossary, CreateGlossaryMetadata> future =
-          client.createGlossaryAsync(request);
-      Glossary response = future.get();
-    }
     System.setOut(out);
   }
 
   @After
   public void tearDown() throws InterruptedException, ExecutionException, IOException {
-    // Clean up
-    try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      GlossaryName glossaryName = GlossaryName.of(PROJECT_ID, LOCATION, GLOSSARY_ID);
-      DeleteGlossaryRequest request =
-          DeleteGlossaryRequest.newBuilder().setName(glossaryName.toString()).build();
-      OperationFuture<DeleteGlossaryResponse, DeleteGlossaryMetadata> future =
-          client.deleteGlossaryAsync(request);
-      DeleteGlossaryResponse response = future.get();
-    }
+    // Delete the created glossary
+    DeleteGlossary.deleteGlossary(PROJECT_ID, GLOSSARY_ID);
     System.setOut(null);
   }
 
   @Test
-  public void testTranslateTextWithGlossaryAndModel() throws IOException {
+  public void testGetGlossary() throws IOException {
     // Act
-    TranslateTextWithGlossaryAndModel.translateTextWithGlossaryAndModel(
-        PROJECT_ID, LOCATION, "en", "ja", "That' il do it. deception", GLOSSARY_ID, MODEL_ID);
-
-    // Assert
+    GetGlossary.getGlossary(PROJECT_ID, GLOSSARY_ID);
     String got = bout.toString();
 
-    assertThat(got).contains("それはそうだ"); // custom model
-    assertThat(got).contains("欺く"); // glossary
+    // Assert
+    assertThat(got).contains(GLOSSARY_ID);
+    assertThat(got).contains(GLOSSARY_INPUT_URI);
   }
 }

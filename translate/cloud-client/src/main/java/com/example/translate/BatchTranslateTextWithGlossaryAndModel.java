@@ -38,29 +38,21 @@ public class BatchTranslateTextWithGlossaryAndModel {
   public static void batchTranslateTextWithGlossaryAndModel()
       throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "us-central1";
-    String sourceLanguage = "en";
-    String targetLanguage = "ja";
-    String inputUri = "gs://cloud-samples-data/text.txt";
-    String outputUri = "gs://YOUR_BUCKET_ID/path_to_store_results/";
-    String glossaryId = "[Your Glossary ID]";
-    String modelId = "[Your Model ID]";
+    String projectId = "YOUR-PROJECT-ID";
+    // Supported Languages: https://cloud.google.com/translate/docs/languages
+    String sourceLanguage = "your-source-language";
+    String targetLanguage = "your-target-language";
+    String inputUri = "gs://your-gcs-bucket/path/to/input/file.txt";
+    String outputUri = "gs://your-gcs-bucket/path/to/results/";
+    String glossaryId = "your-glossary-display-name";
+    String modelId = "YOUR-MODEL-ID";
     batchTranslateTextWithGlossaryAndModel(
-        projectId,
-        location,
-        sourceLanguage,
-        targetLanguage,
-        inputUri,
-        outputUri,
-        glossaryId,
-        modelId);
+        projectId, sourceLanguage, targetLanguage, inputUri, outputUri, glossaryId, modelId);
   }
 
   // Batch translate text with Model and Glossary
   public static void batchTranslateTextWithGlossaryAndModel(
       String projectId,
-      String location,
       String sourceLanguage,
       String targetLanguage,
       String inputUri,
@@ -73,21 +65,29 @@ public class BatchTranslateTextWithGlossaryAndModel {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      String location = "us-central1";
       LocationName parent = LocationName.of(projectId, location);
+
       GcsSource gcsSource = GcsSource.newBuilder().setInputUri(inputUri).build();
-      // Optional. Can be "text/plain" or "text/html".
-      String mimeType = "text/plain";
+      // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       InputConfig inputConfig =
-          InputConfig.newBuilder().setGcsSource(gcsSource).setMimeType(mimeType).build();
+          InputConfig.newBuilder().setGcsSource(gcsSource).setMimeType("text/plain").build();
+
       GcsDestination gcsDestination =
           GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
       OutputConfig outputConfig =
           OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+
       GlossaryName glossaryName = GlossaryName.of(projectId, location, glossaryId);
       TranslateTextGlossaryConfig glossaryConfig =
           TranslateTextGlossaryConfig.newBuilder().setGlossary(glossaryName.toString()).build();
+
       String modelPath =
           String.format("projects/%s/locations/%s/models/%s", projectId, location, modelId);
+
       BatchTranslateTextRequest request =
           BatchTranslateTextRequest.newBuilder()
               .setParent(parent.toString())
@@ -95,8 +95,8 @@ public class BatchTranslateTextWithGlossaryAndModel {
               .addTargetLanguageCodes(targetLanguage)
               .addInputConfigs(inputConfig)
               .setOutputConfig(outputConfig)
-              .putGlossaries("ja", glossaryConfig)
-              .putModels("ja", modelPath)
+              .putGlossaries(targetLanguage, glossaryConfig)
+              .putModels(targetLanguage, modelPath)
               .build();
 
       OperationFuture<BatchTranslateResponse, BatchTranslateMetadata> future =

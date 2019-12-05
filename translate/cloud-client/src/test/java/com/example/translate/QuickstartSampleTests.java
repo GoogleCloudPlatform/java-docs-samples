@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -29,21 +28,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Batch Translate Text With Model sample. */
+/** Tests for quickstart sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class TranslateTextWithModelIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "TRL2188848820815848149";
-
+public class QuickstartSampleTests {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -65,22 +60,13 @@ public class TranslateTextWithModelIT {
   }
 
   @Test
-  public void testTranslateTextWithModel() throws IOException {
+  public void testQuickstart() throws Exception {
     // Act
-    TranslateTextWithModel.translateTextWithModel(
-        PROJECT_ID, "us-central1", "en", "ja", "That' il do it. deception", MODEL_ID);
+    QuickstartSample.main();
 
     // Assert
     String got = bout.toString();
-
-    int count = 0;
-    if (got.contains("それはそうだ")) {
-      count = 1;
-    }
-    if (got.contains("それじゃあ")) {
-      count = 1;
-    }
-
-    assertThat(1).isEqualTo(count);
+    assertThat(got).contains("Text: Hello, world!");
+    assertThat(got).contains("Translation: ");
   }
 }

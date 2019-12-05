@@ -28,19 +28,21 @@ public class ListGlossaries {
 
   public static void listGlossaries() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "us-central1";
-    listGlossaries(projectId, location);
+    String projectId = "YOUR-PROJECT-ID";
+    listGlossaries(projectId);
   }
 
   // List Glossaries
-  public static void listGlossaries(String projectId, String location) throws IOException {
+  public static void listGlossaries(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(projectId, location);
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      LocationName parent = LocationName.of(projectId, "us-central1");
       ListGlossariesRequest request =
           ListGlossariesRequest.newBuilder().setParent(parent.toString()).build();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -28,20 +29,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for quickstart sample.
- */
+/** Tests for Detect Languages sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartSampleIT {
+public class DetectLanguageTests {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -63,13 +63,12 @@ public class QuickstartSampleIT {
   }
 
   @Test
-  public void testQuickstart() throws Exception {
+  public void testDetectLanguage() throws IOException {
     // Act
-    QuickstartSample.main();
+    DetectLanguage.detectLanguage(PROJECT_ID, "Hæ sæta");
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Text: Hello, world!");
-    assertThat(got).contains("Translation: ");
+    assertThat(got).contains("is");
   }
 }

@@ -29,26 +29,29 @@ public class DetectLanguage {
 
   public static void detectLanguage() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "[Google Cloud Project ID]";
-    String location = "global";
-    String text = "Hello, world!";
+    String projectId = "YOUR-PROJECT-ID";
+    String text = "your-text";
 
-    detectLanguage(projectId, location, text);
+    detectLanguage(projectId, text);
   }
 
   // Detecting the language of a text string
-  public static void detectLanguage(String projectId, String location, String text)
-      throws IOException {
+  public static void detectLanguage(String projectId, String text) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
-      LocationName parent = LocationName.of(projectId, location);
+      // Supported Locations: `global`, [glossary location], or [model location]
+      // Glossaries must be hosted in `us-central1`
+      // Custom Models must use the same location as your model. (us-central1)
+      LocationName parent = LocationName.of(projectId, "global");
+
+      // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       DetectLanguageRequest request =
           DetectLanguageRequest.newBuilder()
               .setParent(parent.toString())
-              .setMimeType("text/plain") // Optional. Can be "text/plain" or "text/html".
+              .setMimeType("text/plain")
               .setContent(text)
               .build();
 

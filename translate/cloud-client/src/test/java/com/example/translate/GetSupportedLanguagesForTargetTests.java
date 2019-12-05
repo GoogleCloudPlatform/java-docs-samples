@@ -29,10 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Detect Languages sample. */
+/** Tests for Get Supported Languages For Target sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectLanguageIT {
+public class GetSupportedLanguagesForTargetTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
@@ -40,9 +40,8 @@ public class DetectLanguageIT {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -64,12 +63,13 @@ public class DetectLanguageIT {
   }
 
   @Test
-  public void testDetectLanguage() throws IOException {
+  public void testGetSupportedLanguages() throws IOException {
     // Act
-    DetectLanguage.detectLanguage(PROJECT_ID, "global", "Hæ sæta");
+    GetSupportedLanguagesForTarget.getSupportedLanguagesForTarget(PROJECT_ID, "is");
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("is");
+    assertThat(got).contains("Language Code: sq");
+    assertThat(got).contains("Display Name: albanska");
   }
 }
