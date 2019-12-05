@@ -16,7 +16,7 @@
 
 package com.example.bigquerystorage;
 
-// [START bigquerystorage_quickstart]
+// [START bigquerystorage_arrow_quickstart]
 
 import com.google.api.gax.rpc.ServerStream;
 import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowRecordBatch;
@@ -188,4 +188,4 @@ public class StorageArrowSample {
   }
 }
 
-// [END bigquerystorage_quickstart]
+// [END bigquerystorage_arrow_quickstart]
