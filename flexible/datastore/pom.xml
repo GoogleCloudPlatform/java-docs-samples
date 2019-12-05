@@ -40,7 +40,27 @@
     <jetty>9.4.4.v20170414</jetty>
   </properties>
 
+  <!-- [START gae_flex_datastore_config] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-datastore</artifactId>
+    </dependency>
+    <!-- [END gae_flex_datastore_config] -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -49,13 +69,8 @@
       <scope>provided</scope>
     </dependency>
     <!-- [START gae_flex_datastore_config] -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-datastore</artifactId>
-      <version>1.100.0</version>
-    </dependency>
-    <!-- [END gae_flex_datastore_config] -->
   </dependencies>
+  <!-- [END gae_flex_datastore_config] -->
   <build>
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
