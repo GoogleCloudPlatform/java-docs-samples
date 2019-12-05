@@ -16,10 +16,11 @@
 
 package com.example.bigquerystorage;
 
-// [START bigquerystorage_quickstart]
+// [START bigquerystorage_arrow_quickstart]
 
 import com.google.api.gax.rpc.ServerStream;
-import com.google.cloud.bigquery.storage.v1beta1.AvroProto.AvroRows;
+import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowRecordBatch;
+import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowSchema;
 import com.google.cloud.bigquery.storage.v1beta1.BigQueryStorageClient;
 import com.google.cloud.bigquery.storage.v1beta1.ReadOptions.TableReadOptions;
 import com.google.cloud.bigquery.storage.v1beta1.Storage;
@@ -34,49 +35,72 @@ import com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto.TableRefere
 import com.google.common.base.Preconditions;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.DatumReader;
-import org.apache.avro.io.DecoderFactory;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.memory.RootAllocator;
+import org.apache.arrow.vector.FieldVector;
+import org.apache.arrow.vector.VectorLoader;
+import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.ipc.ReadChannel;
+import org.apache.arrow.vector.ipc.message.MessageSerializer;
+import org.apache.arrow.vector.types.pojo.Field;
+import org.apache.arrow.vector.types.pojo.Schema;
+import org.apache.arrow.vector.util.ByteArrayReadableSeekableByteChannel;
 
-public class StorageSample {
+public class StorageArrowSample {
 
   /*
-   * SimpleRowReader handles deserialization of the Avro-encoded row blocks transmitted
+   * SimpleRowReader handles deserialization of the Apache Arrow-encoded row batches transmitted
    * from the storage API using a generic datum decoder.
    */
-  private static class SimpleRowReader {
+  private static class SimpleRowReader implements AutoCloseable {
 
-    private final DatumReader<GenericRecord> datumReader;
+    BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
 
     // Decoder object will be reused to avoid re-allocation and too much garbage collection.
-    private BinaryDecoder decoder = null;
+    private final VectorSchemaRoot root;
+    private final VectorLoader loader;
 
-    // GenericRecord object will be reused.
-    private GenericRecord row = null;
 
-    public SimpleRowReader(Schema schema) {
+    public SimpleRowReader(ArrowSchema arrowSchema) throws IOException {
+      Schema schema = MessageSerializer.deserializeSchema(new ReadChannel(
+          new ByteArrayReadableSeekableByteChannel(
+              arrowSchema.getSerializedSchema().toByteArray())));
       Preconditions.checkNotNull(schema);
-      datumReader = new GenericDatumReader<>(schema);
+      List<FieldVector> vectors = new ArrayList<>();
+      for (Field field : schema.getFields()) {
+        vectors.add(field.createVector(allocator));
+      }
+      root = new VectorSchemaRoot(vectors);
+      loader = new VectorLoader(root);
     }
 
     /**
-     * Sample method for processing AVRO rows which only validates decoding.
+     * Sample method for processing Arrow data which only validates decoding.
      *
-     * @param avroRows object returned from the ReadRowsResponse.
+     * @param batch object returned from the ReadRowsResponse.
      */
-    public void processRows(AvroRows avroRows) throws IOException {
-      decoder =
-          DecoderFactory.get()
-              .binaryDecoder(avroRows.getSerializedBinaryRows().toByteArray(), decoder);
+    public void processRows(ArrowRecordBatch batch) throws IOException {
+      org.apache.arrow.vector.ipc.message.ArrowRecordBatch deserializedBatch = MessageSerializer
+          .deserializeRecordBatch(
+              new ReadChannel(new ByteArrayReadableSeekableByteChannel(
+                  batch.getSerializedRecordBatch().toByteArray())),
+              allocator);
 
-      while (!decoder.isEnd()) {
-        // Reusing object row
-        row = datumReader.read(row, decoder);
-        System.out.println(row.toString());
-      }
+      loader.load(deserializedBatch);
+      // Release buffers from batch (they are still held in the vectors in root).
+      deserializedBatch.close();
+      System.out.println(root.contentToTSVString());
+      // Release buffers from vectors in root.
+      root.clear();
+
+    }
+
+    @Override
+    public void close() {
+      root.close();
+      allocator.close();
     }
   }
 
@@ -116,9 +140,9 @@ public class StorageSample {
               .setParent(parent)
               .setTableReference(tableReference)
               .setReadOptions(options)
-              // This API can also deliver data serialized in Apache Arrow format.
-              // This example leverages Apache Avro.
-              .setFormat(DataFormat.AVRO)
+              // This API can also deliver data serialized in Apache Avro format.
+              // This example leverages Apache Arrow.
+              .setFormat(DataFormat.ARROW)
               // We use a LIQUID strategy in this example because we only
               // read from a single stream.  Consider BALANCED if you're consuming
               // multiple streams concurrently and want more consistent stream sizes.
@@ -136,32 +160,32 @@ public class StorageSample {
         builder.setTableModifiers(modifiers);
       }
 
-      // Request the session creation.
       ReadSession session = client.createReadSession(builder.build());
+      // Setup a simple reader and start a read session.
+      try (SimpleRowReader reader = new SimpleRowReader(session.getArrowSchema())) {
 
-      SimpleRowReader reader =
-          new SimpleRowReader(new Schema.Parser().parse(session.getAvroSchema().getSchema()));
+        // Assert that there are streams available in the session.  An empty table may not have
+        // data available.  If no sessions are available for an anonymous (cached) table, consider
+        // writing results of a query to a named table rather than consuming cached results
+        // directly.
+        Preconditions.checkState(session.getStreamsCount() > 0);
 
-      // Assert that there are streams available in the session.  An empty table may not have
-      // data available.  If no sessions are available for an anonymous (cached) table, consider
-      // writing results of a query to a named table rather than consuming cached results directly.
-      Preconditions.checkState(session.getStreamsCount() > 0);
+        // Use the first stream to perform reading.
+        StreamPosition readPosition =
+            StreamPosition.newBuilder().setStream(session.getStreams(0)).build();
 
-      // Use the first stream to perform reading.
-      StreamPosition readPosition =
-          StreamPosition.newBuilder().setStream(session.getStreams(0)).build();
+        ReadRowsRequest readRowsRequest =
+            ReadRowsRequest.newBuilder().setReadPosition(readPosition).build();
 
-      ReadRowsRequest readRowsRequest =
-          ReadRowsRequest.newBuilder().setReadPosition(readPosition).build();
-
-      // Process each block of rows as they arrive and decode using our simple row reader.
-      ServerStream<ReadRowsResponse> stream = client.readRowsCallable().call(readRowsRequest);
-      for (ReadRowsResponse response : stream) {
-        Preconditions.checkState(response.hasAvroRows());
-        reader.processRows(response.getAvroRows());
+        // Process each block of rows as they arrive and decode using our simple row reader.
+        ServerStream<ReadRowsResponse> stream = client.readRowsCallable().call(readRowsRequest);
+        for (ReadRowsResponse response : stream) {
+          Preconditions.checkState(response.hasArrowRecordBatch());
+          reader.processRows(response.getArrowRecordBatch());
+        }
       }
     }
   }
 }
 
-// [END bigquerystorage_quickstart]
+// [END bigquerystorage_arrow_quickstart]
