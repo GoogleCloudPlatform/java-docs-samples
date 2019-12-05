@@ -52,7 +52,6 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TranslateTextWithGlossaryAndModelTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "us-central1";
   private static final String MODEL_ID = "TRL2188848820815848149";
   private static final String GLOSSARY_INPUT_URI =
       "gs://cloud-samples-data/translation/glossary_ja.csv";
@@ -77,6 +76,8 @@ public class TranslateTextWithGlossaryAndModelTests {
   @Before
   public void setUp() throws InterruptedException, ExecutionException, IOException {
     // Create a glossary that can be used in the test
+    PrintStream temp = new PrintStream(new ByteArrayOutputStream());
+    System.setOut(temp);
     List<String> languageCodes = new ArrayList<>();
     languageCodes.add("en");
     languageCodes.add("ja");

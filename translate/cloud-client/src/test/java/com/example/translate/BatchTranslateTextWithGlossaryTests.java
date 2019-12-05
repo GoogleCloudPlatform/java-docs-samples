@@ -56,7 +56,6 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class BatchTranslateTextWithGlossaryTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "us-central1";
   private static final String INPUT_URI =
       "gs://cloud-samples-data/translation/text_with_glossary.txt";
   private static final String GLOSSARY_INPUT_URI =
@@ -108,6 +107,8 @@ public class BatchTranslateTextWithGlossaryTests {
   @Before
   public void setUp() throws InterruptedException, ExecutionException, IOException {
     // Create a glossary that can be used in the test
+    PrintStream temp = new PrintStream(new ByteArrayOutputStream());
+    System.setOut(temp);
     List<String> languageCodes = new ArrayList<>();
     languageCodes.add("en");
     languageCodes.add("ja");

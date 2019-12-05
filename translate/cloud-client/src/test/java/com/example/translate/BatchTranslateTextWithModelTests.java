@@ -88,7 +88,6 @@ public class BatchTranslateTextWithModelTests {
 
   @Before
   public void setUp() {
-
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
