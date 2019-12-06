@@ -21,6 +21,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UrlEncodedContent;
@@ -28,7 +29,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.GenericData;
+import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.IdTokenCredentials;
+import com.google.auth.oauth2.IdTokenProvider;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -54,63 +58,14 @@ public class BuildIapRequest {
 
   private BuildIapRequest() {}
 
-  private static ServiceAccountCredentials getCredentials() throws Exception {
+  private static IdTokenProvider getIdTokenProvider() throws Exception {
     GoogleCredentials credentials =
         GoogleCredentials.getApplicationDefault().createScoped(Collections.singleton(IAM_SCOPE));
     // service account credentials are required to sign the jwt token
-    if (credentials == null || !(credentials instanceof ServiceAccountCredentials)) {
-      throw new Exception("Google credentials : service accounts credentials expected");
+    if (credentials == null || !(credentials instanceof IdTokenProvider)) {
+      throw new Exception("Google credentials : credentials that can provide id tokens expected");
     }
-    return (ServiceAccountCredentials) credentials;
-  }
-
-  private static String getSignedJwt(ServiceAccountCredentials credentials, String iapClientId)
-      throws Exception {
-    Instant now = Instant.now(clock);
-    long expirationTime = now.getEpochSecond() + EXPIRATION_TIME_IN_SECONDS;
-
-    // generate jwt signed by service account
-    // header must contain algorithm ("alg") and key ID ("kid")
-    JWSHeader jwsHeader =
-        new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(credentials.getPrivateKeyId()).build();
-
-    // set required claims
-    JWTClaimsSet claims =
-        new JWTClaimsSet.Builder()
-            .audience(OAUTH_TOKEN_URI)
-            .issuer(credentials.getClientEmail())
-            .subject(credentials.getClientEmail())
-            .issueTime(Date.from(now))
-            .expirationTime(Date.from(Instant.ofEpochSecond(expirationTime)))
-            .claim("target_audience", iapClientId)
-            .build();
-
-    // sign using service account private key
-    JWSSigner signer = new RSASSASigner(credentials.getPrivateKey());
-    SignedJWT signedJwt = new SignedJWT(jwsHeader, claims);
-    signedJwt.sign(signer);
-
-    return signedJwt.serialize();
-  }
-
-  private static String getGoogleIdToken(String jwt) throws Exception {
-    final GenericData tokenRequest =
-        new GenericData().set("grant_type", JWT_BEARER_TOKEN_GRANT_TYPE).set("assertion", jwt);
-    final UrlEncodedContent content = new UrlEncodedContent(tokenRequest);
-
-    final HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
-
-    final HttpRequest request =
-        requestFactory
-            .buildPostRequest(new GenericUrl(OAUTH_TOKEN_URI), content)
-            .setParser(new JsonObjectParser(JacksonFactory.getDefaultInstance()));
-
-    HttpResponse response;
-    String idToken = null;
-    response = request.execute();
-    GenericData responseData = response.parseAs(GenericData.class);
-    idToken = (String) responseData.get("id_token");
-    return idToken;
+    return (IdTokenProvider) credentials;
   }
 
   /**
@@ -123,31 +78,18 @@ public class BuildIapRequest {
    */
   public static HttpRequest buildIapRequest(HttpRequest request, String iapClientId)
       throws Exception {
-    // get service account credentials
-    ServiceAccountCredentials credentials = getCredentials();
-    // get the base url of the request URL
-    String jwt = getSignedJwt(credentials, iapClientId);
-    if (jwt == null) {
-      throw new Exception(
-          "Unable to create a signed jwt token for : "
-              + iapClientId
-              + "with issuer : "
-              + credentials.getClientEmail());
-    }
 
-    String idToken = getGoogleIdToken(jwt);
-    if (idToken == null) {
-      throw new Exception("Unable to retrieve open id token");
-    }
+    IdTokenProvider idTokenProvider = getIdTokenProvider();
+    IdTokenCredentials credentials = IdTokenCredentials.newBuilder()
+        .setIdTokenProvider(idTokenProvider)
+        .setTargetAudience(iapClientId)
+        .build();
 
-    // Create an authorization header with bearer token
-    HttpHeaders httpHeaders = request.getHeaders().clone().setAuthorization("Bearer " + idToken);
+    HttpRequestInitializer httpRequestInitializer = new HttpCredentialsAdapter(credentials);
 
-    // create request with jwt authorization header
     return httpTransport
-        .createRequestFactory()
-        .buildRequest(request.getRequestMethod(), request.getUrl(), request.getContent())
-        .setHeaders(httpHeaders);
+        .createRequestFactory(httpRequestInitializer)
+        .buildRequest(request.getRequestMethod(), request.getUrl(), request.getContent());
   }
 }
 // [END iap_make_request]
