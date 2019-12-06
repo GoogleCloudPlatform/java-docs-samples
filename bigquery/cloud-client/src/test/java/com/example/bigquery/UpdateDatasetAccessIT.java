@@ -25,12 +25,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CreateDatasetIT {
+public class UpdateDatasetAccessIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -42,9 +42,13 @@ public class CreateDatasetIT {
   }
 
   @Test
-  public void testCreateDataset() {
+  public void updateDatasetAccess() {
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
+    // Create a dataset in order to modify its ACL
     CreateDataset.createDataset(generatedDatasetName);
-    assertThat(bout.toString()).contains(generatedDatasetName + " created successfully");
+
+    // Modify dataset's ACL
+    UpdateDatasetAccess.updateDatasetAccess(generatedDatasetName);
+    assertThat(bout.toString()).contains("Dataset Access Control updated successfully");
   }
 }

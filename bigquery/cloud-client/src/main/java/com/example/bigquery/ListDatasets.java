@@ -16,33 +16,36 @@
 
 package com.example.bigquery;
 
-// [START bigquery_delete_dataset]
+// [START bigquery_list_datasets]
+import com.google.api.gax.paging.Page;
 import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.BigQuery.DatasetListOption;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.DatasetId;
+import com.google.cloud.bigquery.Dataset;
 
-public class DeleteDataset {
+public class ListDatasets {
 
-  public static void runDeleteDataset() {
-    // TODO(developer): Replace these variables before running the sample.\
+  public static void runListDatasets() {
+    // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
-    String datasetName = "my-dataset-name";
-    deleteDataset(projectId, datasetName);
+    listDatasets(projectId);
   }
 
-  public static void deleteDataset(String projectId, String datasetName) {
+  public static void listDatasets(String projectId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
-    DatasetId datasetId = DatasetId.of(projectId, datasetName);
-    boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
-    if (success) {
-      System.out.println("Dataset deleted successfully");
-    } else {
-      System.out.println("Dataset was not found");
+    // List datasets in a specified project
+    try {
+      Page<Dataset> datasets = bigquery.listDatasets(projectId, DatasetListOption.pageSize(100));
+      for (Dataset dataset : datasets.iterateAll()) {
+        System.out.println(dataset.getDatasetId() + " dataset in project listed successfully");
+      }
+    } catch (BigQueryException e) {
+      System.out.println("Project does not contain any datasets \n" + e.toString());
     }
   }
 }
-// [END bigquery_delete_dataset]
+// [END bigquery_list_datasets]

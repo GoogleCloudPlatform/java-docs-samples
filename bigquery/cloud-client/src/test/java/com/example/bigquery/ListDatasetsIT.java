@@ -18,19 +18,18 @@ package com.example.bigquery;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CreateDatasetIT {
+public class ListDatasetsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -42,9 +41,9 @@ public class CreateDatasetIT {
   }
 
   @Test
-  public void testCreateDataset() {
-    String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
-    CreateDataset.createDataset(generatedDatasetName);
-    assertThat(bout.toString()).contains(generatedDatasetName + " created successfully");
+  public void listDatasets() {
+    // List datasets in bigquery-public-data project
+    ListDatasets.listDatasets("bigquery-public-data");
+    assertThat(bout.toString()).contains("dataset in project listed successfully");
   }
 }

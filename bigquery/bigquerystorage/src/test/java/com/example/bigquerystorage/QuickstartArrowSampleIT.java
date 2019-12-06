@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2019 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package com.example.bigquery;
+package com.example.bigquerystorage;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class CreateDatasetIT {
+/** Tests for quickstart sample. */
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class QuickstartArrowSampleIT {
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -42,9 +48,11 @@ public class CreateDatasetIT {
   }
 
   @Test
-  public void testCreateDataset() {
-    String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
-    CreateDataset.createDataset(generatedDatasetName);
-    assertThat(bout.toString()).contains(generatedDatasetName + " created successfully");
+  public void testQuickstart() throws Exception {
+    StorageArrowSample.main(PROJECT_ID);
+    String got = bout.toString();
+    // Ensure at least 1k of output generated and a specific token was present in the output.
+    assertThat(bout.size()).isGreaterThan(1024);
+    assertThat(got).contains("Zayvion");
   }
 }

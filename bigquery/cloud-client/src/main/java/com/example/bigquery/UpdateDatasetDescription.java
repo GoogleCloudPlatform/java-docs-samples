@@ -16,33 +16,35 @@
 
 package com.example.bigquery;
 
-// [START bigquery_delete_dataset]
+// [START bigquery_update_dataset_description]
 import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.DatasetId;
+import com.google.cloud.bigquery.Dataset;
 
-public class DeleteDataset {
+public class UpdateDatasetDescription {
 
-  public static void runDeleteDataset() {
-    // TODO(developer): Replace these variables before running the sample.\
-    String projectId = "my-project-id";
+  public static void runUpdateDatasetDescription() {
+    // TODO(developer): Replace these variables before running the sample.
     String datasetName = "my-dataset-name";
-    deleteDataset(projectId, datasetName);
+    String newDescription = "this is the new dataset description";
+    updateDatasetDescription(datasetName, newDescription);
   }
 
-  public static void deleteDataset(String projectId, String datasetName) {
+  public static void updateDatasetDescription(String datasetName, String newDescription) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
-    DatasetId datasetId = DatasetId.of(projectId, datasetName);
-    boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
-    if (success) {
-      System.out.println("Dataset deleted successfully");
-    } else {
-      System.out.println("Dataset was not found");
+    Dataset dataset = bigquery.getDataset(datasetName);
+
+    // Update dataset description
+    try {
+      bigquery.update(dataset.toBuilder().setDescription(newDescription).build());
+      System.out.println("Dataset description updated successfully to " + newDescription);
+    } catch (BigQueryException e) {
+      System.out.println("Dataset description was not updated \n" + e.toString());
     }
   }
 }
-// [END bigquery_delete_dataset]
+// [END bigquery_update_dataset_description]

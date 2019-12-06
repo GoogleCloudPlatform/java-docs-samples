@@ -25,12 +25,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CreateDatasetIT {
+public class UpdateDatasetExpirationIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -42,9 +42,13 @@ public class CreateDatasetIT {
   }
 
   @Test
-  public void testCreateDataset() {
+  public void updateDatasetExpiration() {
     String generatedDatasetName = RemoteBigQueryHelper.generateDatasetName();
+    // Create a dataset in order to modify its expiration
     CreateDataset.createDataset(generatedDatasetName);
-    assertThat(bout.toString()).contains(generatedDatasetName + " created successfully");
+
+    // Modify dataset's expiration
+    UpdateDatasetExpiration.updateDatasetExpiration(generatedDatasetName);
+    assertThat(bout.toString()).contains("Dataset description updated successfully");
   }
 }
