@@ -26,9 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ListRecommendationsTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "global";
-  private static final String RECOMMENDER = "google.iam.policy.Recommender";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -47,7 +44,7 @@ public class ListRecommendationsTest {
 
   @Test
   public void listRecommendations() throws IOException {
-    ListRecommendations.listRecommendations(PROJECT_ID, LOCATION, RECOMMENDER);
+    ListRecommendations.listRecommendations();
 
     assertThat(bout.toString()).contains("List recommendations successful");
   }

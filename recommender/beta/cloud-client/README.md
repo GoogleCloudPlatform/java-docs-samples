@@ -11,7 +11,7 @@ application demonstrates how to access the Recommender API using the
 ## Quickstart
 
 ### Setup
-- Install [Maven](http://maven.apache.org/).
+- [Set up a Java Development Environment for Maven](https://cloud.google.com/java/docs/setup).
 - [Enable Recommender API](https://cloud.google.com/recommender/docs/enabling) for your project.
 - [Authenticate using a service account](https://cloud.google.com/docs/authentication/getting-started).
 Create a service account, download a JSON key file, and set the 
@@ -25,23 +25,11 @@ mvn clean package -DskipTests
 ```
 	
 ### List Recommendations
-To list recommendations for your project:
-```
-mvn exec:java -Dexec.mainClass=com.example.recommender.ListRecommendations \
-    -Dexec.args="location-id recommender-id"
-```
-		
-`location-id` is the [Google Cloud location](https://cloud.google.com/compute/docs/regions-zones/)
-where resources associated with the recommendations are located and 
-`recommender-id` is the fully-qualified [recommender ID](https://cloud.google.com/recommender/docs/recommenders#recommenders).
-
-Press `Ctrl+C` to exit the application.
-		
 To list IAM recommendations for your project:
 ```
-mvn exec:java -Dexec.mainClass=com.example.recommender.ListRecommendations \
-    -Dexec.args="global google.iam.policy.Recommender"
-```   
+mvn exec:java -Dexec.mainClass=com.example.recommender.ListRecommendations
+```
+		 
 ## Testing
 To run the unit tests:
 ```
