@@ -29,12 +29,14 @@ public class ListRecommendations {
   public static void listRecommendations() throws IOException {
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-    // Supported Google Cloud locations can be found at
+    // Google Cloud location where resources associated with the recommendations are located (for
+    // example, "global" or "us-central1-a"). For a full list of supported regions, visit
     // https://cloud.google.com/compute/docs/regions-zones/
     String location = "global";
 
-    // Supported recommenders can be found at
-    // https://cloud.google.com/recommender/docs/recommenders#recommenders
+    // Fully-qualified recommender ID (for example, "google.iam.policy.Recommender" or
+    // "google.compute.instance.MachineTypeRecommender"). For a full list of supported recommenders
+    // visit https://cloud.google.com/recommender/docs/recommenders#recommenders
     String recommender = "google.iam.policy.Recommender";
 
     listRecommendations(projectId, location, recommender);
