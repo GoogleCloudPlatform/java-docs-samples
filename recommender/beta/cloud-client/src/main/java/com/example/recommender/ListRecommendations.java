@@ -18,16 +18,20 @@ package com.example.recommender;
 
 // [START recommender_list_recommendations]
 
+import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.api.gax.rpc.PermissionDeniedException;
 import com.google.cloud.recommender.v1beta1.ListRecommendationsRequest;
 import com.google.cloud.recommender.v1beta1.Recommendation;
 import com.google.cloud.recommender.v1beta1.RecommenderClient;
+import com.google.cloud.recommender.v1beta1.RecommenderClient.ListRecommendationsPagedResponse;
 import java.io.IOException;
 
 public class ListRecommendations {
 
   // List IAM recommendations for GOOGLE_CLOUD_PROJECT environment variable
   public static void listRecommendations() throws IOException {
-    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+    // TODO(developer): Replace the projectId variable before running the sample.
+    String projectId = "my-project-id";
 
     // Google Cloud location where resources associated with the recommendations are located (for
     // example, "global" or "us-central1-a"). For a full list of supported regions, visit
@@ -45,33 +49,44 @@ public class ListRecommendations {
   // List recommendations for a specified project, location, and recommender
   public static void listRecommendations(String projectId, String location, String recommender)
       throws IOException {
-    RecommenderClient recommenderClient = RecommenderClient.create();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (RecommenderClient recommenderClient = RecommenderClient.create()) {
+      /// Build the request
+      String parent =
+          String.format(
+              "projects/%s/locations/%s/recommenders/%s", projectId, location, recommender);
+      ListRecommendationsRequest request =
+          ListRecommendationsRequest.newBuilder().setParent(parent).build();
 
-    /// Build the request
-    String parent =
-        String.format(
-            "projects/%s/locations/%s/recommenders/%s", projectId, location, recommender);
-    ListRecommendationsRequest request =
-        ListRecommendationsRequest.newBuilder().setParent(parent).build();
+      try {
+        // Send the request
+        ListRecommendationsPagedResponse response = recommenderClient.listRecommendations(request);
 
-    // Send the request and print out each recommendation
-    for (Recommendation responseItem :
-        recommenderClient.listRecommendations(request).iterateAll()) {
-      Recommendation recommendation = responseItem;
-      System.out.println("Recommendation name: " + recommendation.getName());
-      System.out.println("- description: " + recommendation.getDescription());
-      System.out.println(
-          "- primary_impact.category: " + recommendation.getPrimaryImpact().getCategory());
-      System.out.println("- state_info.state: " + recommendation.getStateInfo().getState());
-      System.out.println();
+        // Print out each recommendation
+        for (Recommendation responseItem : response.iterateAll()) {
+          Recommendation recommendation = responseItem;
+          System.out.println("Recommendation name: " + recommendation.getName());
+          System.out.println("- description: " + recommendation.getDescription());
+          System.out.println(
+              "- primary_impact.category: " + recommendation.getPrimaryImpact().getCategory());
+          System.out.println("- state_info.state: " + recommendation.getStateInfo().getState());
+          System.out.println();
+        }
+
+        // Indicate the request was successful
+        System.out.println("List recommendations successful");
+      } catch (PermissionDeniedException e) {
+        System.out.println("Permission denied for project '" + projectId
+            + "'. Ensure you have the appropriate permissions to list recommendations: \n" + e
+            .toString());
+      } catch (InvalidArgumentException e) {
+        System.out.println(
+            ("Invalid argument for projectId. Ensure you have 'GOOGLE_CLOUD_PROJECT' set: \n"
+                + e.toString()));
+      }
     }
-
-    // Indicate the request was successful
-    System.out.println("List recommendations successful");
-  }
-
-  public static void main(String... args) throws IOException {
-    listRecommendations();
   }
 }
 // [END recommender_list_recommendations]

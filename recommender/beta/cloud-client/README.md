@@ -23,12 +23,6 @@ Build your project with:
 ```
 mvn clean package -DskipTests
 ```
-	
-### List Recommendations
-To list IAM recommendations for your project:
-```
-mvn exec:java -Dexec.mainClass=com.example.recommender.ListRecommendations
-```
 		 
 ## Testing
 To run the unit tests:
