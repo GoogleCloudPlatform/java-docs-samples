@@ -150,10 +150,10 @@ public class RetrieveDataSnippets {
    *
    * @return iterable of collection references.
    */
-  public Iterable<CollectionReference> getCollections() throws Exception {
+  public Iterable<CollectionReference> listCollections() throws Exception {
     // [START fs_get_collections]
     Iterable<CollectionReference> collections =
-        db.collection("cities").document("SF").getCollections();
+        db.collection("cities").document("SF").listCollections();
 
     for (CollectionReference collRef : collections) {
       System.out.println("Found subcollection with id: " + collRef.getId());
