@@ -16,7 +16,7 @@
 
 package com.example.automl;
 
-// [START automl_language_batch_predict]
+// [START automl_batch_predict]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1.BatchPredictInputConfig;
 import com.google.cloud.automl.v1.BatchPredictOutputConfig;
@@ -31,19 +31,19 @@ import com.google.cloud.automl.v1.PredictionServiceClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-class LanguageBatchPredict {
+class BatchPredict {
 
   static void batchPredict() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
-    String inputUri = "gs://YOUR_BUCKET_ID/path_to_your_input_file.jsonl";
+    String inputUri = "gs://YOUR_BUCKET_ID/path_to_your_input_csv_or_jsonl";
     String outputUri = "gs://YOUR_BUCKET_ID/path_to_save_results/";
     batchPredict(projectId, modelId, inputUri, outputUri);
   }
 
   static void batchPredict(String projectId, String modelId, String inputUri, String outputUri)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -52,20 +52,22 @@ class LanguageBatchPredict {
       ModelName name = ModelName.of(projectId, "us-central1", modelId);
       GcsSource gcsSource = GcsSource.newBuilder().addInputUris(inputUri).build();
       BatchPredictInputConfig inputConfig =
-          BatchPredictInputConfig.newBuilder().setGcsSource(gcsSource).build();
+              BatchPredictInputConfig.newBuilder().setGcsSource(gcsSource).build();
       GcsDestination gcsDestination =
-          GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
+              GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
       BatchPredictOutputConfig outputConfig =
-          BatchPredictOutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
+              BatchPredictOutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
       BatchPredictRequest request =
-          BatchPredictRequest.newBuilder()
-              .setName(name.toString())
-              .setInputConfig(inputConfig)
-              .setOutputConfig(outputConfig)
-              .build();
+              BatchPredictRequest.newBuilder()
+                      .setName(name.toString())
+                      .setInputConfig(inputConfig)
+                      .setOutputConfig(outputConfig)
+                      // [0.0-1.0] Only produce results higher than this value
+                      .putParams("score_threshold", "0.8")
+                      .build();
 
       OperationFuture<BatchPredictResult, OperationMetadata> future =
-          client.batchPredictAsync(request);
+              client.batchPredictAsync(request);
 
       System.out.println("Waiting for operation to complete...");
       BatchPredictResult response = future.get();
@@ -73,4 +75,4 @@ class LanguageBatchPredict {
     }
   }
 }
-// [END automl_language_batch_predict]
+// [END automl_batch_predict]
