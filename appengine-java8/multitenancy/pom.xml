@@ -42,7 +42,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.76</version>
+      <version>1.9.77</version>
     </dependency>
 
     <dependency>
@@ -88,13 +88,13 @@
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-testing</artifactId>
-        <version>1.9.76</version>
+        <version>1.9.77</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-api-stubs</artifactId>
-        <version>1.9.76</version>
+        <version>1.9.77</version>
         <scope>test</scope>
     </dependency>
     <dependency>

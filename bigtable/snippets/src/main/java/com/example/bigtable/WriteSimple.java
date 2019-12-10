@@ -33,25 +33,24 @@ public class WriteSimple {
     try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
       long timestamp = System.currentTimeMillis() * 1000;
 
-      String rowKey = "phone#4c410523#20190501";
-      ByteString one = ByteString.copyFrom(new byte[] {0, 0, 0, 0, 0, 0, 0, 1});
+      String rowkey = "phone#4c410523#20190501";
 
       RowMutation rowMutation =
-          RowMutation.create(tableId, rowKey)
+          RowMutation.create(tableId, rowkey)
               .setCell(
                   COLUMN_FAMILY_NAME,
                   ByteString.copyFrom("connected_cell".getBytes()),
                   timestamp,
-                  one)
+                  1)
               .setCell(
                   COLUMN_FAMILY_NAME,
                   ByteString.copyFrom("connected_wifi".getBytes()),
                   timestamp,
-                  one)
+                  1)
               .setCell(COLUMN_FAMILY_NAME, "os_build", timestamp, "PQ2A.190405.003");
 
       dataClient.mutateRow(rowMutation);
-      System.out.printf("Successfully wrote row %s", rowKey);
+      System.out.printf("Successfully wrote row %s", rowkey);
 
     } catch (Exception e) {
       System.out.println("Error during WriteSimple: \n" + e.toString());
