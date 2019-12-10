@@ -35,7 +35,6 @@ import org.junit.runners.JUnit4;
 public class AnalyzeBetaIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = "cloud-samples-data";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
