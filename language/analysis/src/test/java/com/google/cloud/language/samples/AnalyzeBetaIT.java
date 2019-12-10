@@ -35,7 +35,7 @@ import org.junit.runners.JUnit4;
 public class AnalyzeBetaIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET = PROJECT_ID;
+  private static final String BUCKET = "cloud-samples-data";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -66,7 +66,7 @@ public class AnalyzeBetaIT {
 
   @Test
   public void analyzeCategoriesInFileReturnsExpectedResult() throws Exception {
-    String gcsFile = "gs://" + PROJECT_ID + "/natural-language/android_text.txt";
+    String gcsFile = "gs://cloud-samples-data/language/android.txt";
     AnalyzeBeta.classifyFile(gcsFile);
     String got = bout.toString();
     assertThat(got).contains("Computers & Electronics");
