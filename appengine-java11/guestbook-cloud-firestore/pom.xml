@@ -38,7 +38,6 @@
     Dependent-jars are created and added to
     ${project.build.directory}/appengine-staging -->
 
-  <!-- [START gae_java11_firestore_pom] -->
   <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
@@ -59,7 +58,6 @@
       <artifactId>google-cloud-firestore</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- [END gae_java11_firestore_pom] -->
 
     <!-- Dependency needs to be locally install from directory -->
 		<!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
@@ -89,9 +87,7 @@
       <artifactId>jstl</artifactId>
       <version>1.2</version>
     </dependency>
-    <!-- [START gae_java11_firestore_pom] -->
   </dependencies>
-  <!-- [END gae_java11_firestore_pom] -->
   <build>
     <finalName>guestbook</finalName>
     <plugins>
