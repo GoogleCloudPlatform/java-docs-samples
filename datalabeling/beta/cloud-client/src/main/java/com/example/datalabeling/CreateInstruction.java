@@ -21,6 +21,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.datalabeling.v1beta1.CreateInstructionMetadata;
 import com.google.cloud.datalabeling.v1beta1.CreateInstructionRequest;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
+import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceSettings;
 import com.google.cloud.datalabeling.v1beta1.DataType;
 import com.google.cloud.datalabeling.v1beta1.Instruction;
 import com.google.cloud.datalabeling.v1beta1.PdfInstruction;
@@ -35,7 +36,15 @@ class CreateInstruction {
     // String projectId = "YOUR_PROJECT_ID";
     // String pdfUri = "gs://YOUR_BUCKET_ID/path_to_pdf_or_csv";
 
-    try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    if (endpoint == null) {
+      endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
+    }
+
+    try (DataLabelingServiceClient dataLabelingServiceClient =
+             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
+                 .setEndpoint(endpoint)
+                 .build())) {
 
       ProjectName projectName = ProjectName.of(projectId);
 

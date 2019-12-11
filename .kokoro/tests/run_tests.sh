@@ -58,6 +58,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
     export QUEUE_ID=my-appengine-queue
     export LOCATION_ID=us-east1
+	export DATALABELING_ENDPOINT=test-datalabeling.sandbox.googleapis.com:443
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"

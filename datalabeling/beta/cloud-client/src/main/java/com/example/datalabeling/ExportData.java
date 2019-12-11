@@ -19,6 +19,7 @@ package com.example.datalabeling;
 // [START datalabeling_export_data_beta]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
+import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceSettings;
 import com.google.cloud.datalabeling.v1beta1.ExportDataOperationMetadata;
 import com.google.cloud.datalabeling.v1beta1.ExportDataOperationResponse;
 import com.google.cloud.datalabeling.v1beta1.ExportDataRequest;
@@ -42,7 +43,15 @@ class ExportData {
     //     "YOUR_ANNOTATED_DATASET_UUID");
     // String gcsOutputUri = "gs://YOUR_BUCKET_ID/export_path";
 
-    try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    if (endpoint == null) {
+      endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
+    }
+
+    try (DataLabelingServiceClient dataLabelingServiceClient =
+             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
+                 .setEndpoint(endpoint)
+                 .build())) {
       GcsDestination gcsDestination = GcsDestination.newBuilder()
           .setOutputUri(gcsOutputUri)
           .setMimeType("text/csv")

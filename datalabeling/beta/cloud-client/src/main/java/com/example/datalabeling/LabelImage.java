@@ -20,6 +20,7 @@ package com.example.datalabeling;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.datalabeling.v1beta1.AnnotatedDataset;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
+import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceSettings;
 import com.google.cloud.datalabeling.v1beta1.HumanAnnotationConfig;
 import com.google.cloud.datalabeling.v1beta1.ImageClassificationConfig;
 import com.google.cloud.datalabeling.v1beta1.LabelImageRequest;
@@ -44,8 +45,15 @@ class LabelImage {
     // String formattedDatasetName = DataLabelingServiceClient.formatDatasetName(
     //      "YOUR_PROJECT_ID", "YOUR_DATASET_UUID");
 
-    try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    if (endpoint == null) {
+      endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
+    }
 
+    try (DataLabelingServiceClient dataLabelingServiceClient =
+             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
+                 .setEndpoint(endpoint)
+                 .build())) {
       HumanAnnotationConfig humanAnnotationConfig =
           HumanAnnotationConfig.newBuilder()
               .setAnnotatedDatasetDisplayName("annotated_displayname")

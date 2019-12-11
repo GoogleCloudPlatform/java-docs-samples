@@ -19,6 +19,7 @@ package com.example.datalabeling;
 // [START datalabeling_import_data_beta]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
+import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceSettings;
 import com.google.cloud.datalabeling.v1beta1.DataType;
 import com.google.cloud.datalabeling.v1beta1.GcsSource;
 import com.google.cloud.datalabeling.v1beta1.ImportDataOperationMetadata;
@@ -36,7 +37,15 @@ class ImportData {
     //     "YOUR_PROJECT_ID", "YOUR_DATASETS_UUID");
     // String gcsSourceUri = "gs://YOUR_BUCKET_ID/path_to_data";
 
-    try (DataLabelingServiceClient dataLabelingServiceClient = DataLabelingServiceClient.create()) {
+    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    if (endpoint == null) {
+      endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
+    }
+
+    try (DataLabelingServiceClient dataLabelingServiceClient =
+        DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
+            .setEndpoint(endpoint)
+            .build())) {
       GcsSource gcsSource = GcsSource.newBuilder()
           .setInputUri(gcsSourceUri)
           .setMimeType("text/csv")

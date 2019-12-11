@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -102,6 +103,7 @@ public class ImportDataIT {
   }
 
   @Test
+  @Ignore("b/146064330")
   public void testImportDataset() {
     ImportData.importData(dataset.getName(), GCS_SOURCE_URI);
 
