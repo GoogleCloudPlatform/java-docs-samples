@@ -1,6 +1,10 @@
 # Google Cloud Tasks Samples
 
-This sample demonstrates using the Cloud Tasks client library.
+This sample demonstrates using the Cloud Tasks client library. These code snippets
+are not executable, but are a copy-and-pasteable resource for your own code
+base. For executable code, see the [App Engine Quickstart](https://cloud.google.com/tasks/docs/quickstart-appengine).
+
+See the [Cloud Tasks documentation](https://cloud.google.com/tasks/docs/) for more info on [Creating HTTP Target tasks](https://cloud.google.com/tasks/docs/creating-http-target-tasks).
 
 `CreateHttpTask.java` constructs a task with an HTTP target and pushes it
 to your queue.
@@ -48,7 +52,7 @@ Set an endpoint to your task handler by replacing the variable `url` with your
 HTTP target in `CreateHttpTaskWithToken.java`.
 
 Your Cloud Tasks [service account][sa],
-(service-<project-number>@gcp-sa-cloudtasks.iam.gserviceaccount.com), must
+(service-PROJECT_NUMBER@gcp-sa-cloudtasks.iam.gserviceaccount.com), must
 have the role of: `Service Account Token Creator` to generate a tokens.
 
 Create or use an existing [service account][sa] to authenticate the OIDC token.
