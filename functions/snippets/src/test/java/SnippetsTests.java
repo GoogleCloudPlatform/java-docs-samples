@@ -16,6 +16,7 @@
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -216,5 +217,25 @@ public class SnippetsTests {
   public void helloExecutionCount() throws IOException {
     new Concepts().executionCount(request, response);
     assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
+  }
+
+  @Test
+  public void tipsRetryPubSub() throws Exception {
+    PubSub ps = new PubSub();
+    PubSub.PubSubMessage pubsubMessage = ps.new PubSubMessage();
+    pubsubMessage.data = "{\"retry\":\"true\"}";
+    assertThrows(Exception.class, () -> {
+      new PubSub().retryPubSub(pubsubMessage);
+    });
+  }
+
+  @Test
+  public void tipsInfiniteRetryPubSub() throws Exception {
+    PubSub ps = new PubSub();
+    PubSub.PubSubMessage pubsubMessage = ps.new PubSubMessage();
+    pubsubMessage.data = "{\"timestamp\":\"2020-01-30 12:12:12\"}";
+    assertThrows(Exception.class, () -> {
+      new PubSub().infiniteRetryPubSub(pubsubMessage);
+    });
   }
 }
