@@ -35,17 +35,28 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <!-- [START video_java_dependencies_beta] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
-    <!-- [START video_java_dependencies_beta] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-video-intelligence</artifactId>
-      <version>0.106.0-beta</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.83.0</version>
     </dependency>
     <!-- [END video_java_dependencies_beta] -->
 
@@ -62,7 +73,9 @@
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- [START video_java_dependencies_beta] -->
   </dependencies>
+  <!-- [END video_java_dependencies_beta] -->
   <build>
     <plugins>
       <plugin>

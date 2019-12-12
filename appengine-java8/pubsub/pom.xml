@@ -35,11 +35,35 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <appengine.maven.plugin>2.1.0</appengine.maven.plugin>
+    <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
     <jetty>9.4.4.v20170414</jetty>
   </properties>
 
+  <!-- [START dependencies] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-datastore</artifactId>
+    </dependency>
+    <!-- [END dependencies] -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -52,20 +76,9 @@
       <artifactId>jatl</artifactId>
       <version>0.2.3</version>
     </dependency>
-
     <!-- [START dependencies] -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.83.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-datastore</artifactId>
-      <version>1.83.0</version>
-    </dependency>
-    <!-- [END dependencies] -->
   </dependencies>
+  <!-- [END dependencies] -->
   <build>
     <!-- for hot reload of the web application -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>

@@ -31,12 +31,25 @@
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
+  <!-- [START asset_java_dependencies] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-    <!-- [START asset_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-asset</artifactId>
-      <version>0.106.0-beta</version>
     </dependency>
     <!-- [END asset_java_dependencies] -->
 
@@ -56,18 +69,20 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.83.0</version>
+      <version>1.100.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.88.0</version>
+      <version>1.100.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-resourcemanager</artifactId>
-      <version>0.106.0-alpha</version>
+      <version>0.116.0-alpha</version>
     </dependency>
+    <!-- [START asset_java_dependencies] -->
   </dependencies>
+  <!-- [END asset_java_dependencies] -->
 </project>

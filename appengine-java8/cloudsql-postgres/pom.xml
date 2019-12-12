@@ -66,20 +66,20 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.2</version>
+      <version>1.30.5</version>
     </dependency>
 
     <!-- [START gae_java8_postgres_dependencies] -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.6</version>
+      <version>42.2.8</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.0.14</version>
+      <version>1.0.15</version>
     </dependency>
     <!-- [END gae_java8_postgres_dependencies] -->
   </dependencies>
