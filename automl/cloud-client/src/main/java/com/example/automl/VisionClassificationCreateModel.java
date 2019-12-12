@@ -50,8 +50,7 @@ class VisionClassificationCreateModel {
       // Set model metadata.
       ImageClassificationModelMetadata metadata =
           ImageClassificationModelMetadata.newBuilder()
-              .setTrainBudgetMilliNodeHours(
-                  8) // The train budget of creating this model, expressed in hours.
+              .setTrainBudgetMilliNodeHours(24000)
               .build();
       Model model =
           Model.newBuilder()

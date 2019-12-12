@@ -54,8 +54,6 @@ class VisionClassificationPredict {
           PredictRequest.newBuilder()
               .setName(name.toString())
               .setPayload(payload)
-              .putParams(
-                  "score_threshold", "0.8") // [0.0-1.0] Only produce results higher than this value
               .build();
 
       PredictResponse response = client.predict(predictRequest);

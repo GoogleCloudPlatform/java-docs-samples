@@ -13,7 +13,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example.automl</groupId>
-    <artifactId>automl-google-cloud-samples</artifactId>
+    <artifactId>automl-google-cloud-samples-beta</artifactId>
     <packaging>jar</packaging>
 
     <!--
@@ -27,8 +27,8 @@
     </parent>
 
     <properties>
-        <maven.compiler.target>1.11</maven.compiler.target>
-        <maven.compiler.source>1.11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
