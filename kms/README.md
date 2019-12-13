@@ -19,11 +19,19 @@ You must [enable the Google Cloud KMS API](https://console.cloud.google.com/flow
 
 You must set your project ID in order to run the tests
 
-`GOOGLE_CLOUD_PROJECT=<your-project-id-here>`
+`$export GOOGLE_CLOUD_PROJECT=<your-project-id-here>`
 
 ### Grant Permissions
 
-You must ensure that the [user account or service account](https://cloud.google.com/iam/docs/service-accounts#differences_between_a_service_account_and_a_user_account) you used to authorize your gcloud session has the proper permissions to edit KMS resources for your project. More information can be found in the [Google KMS Docs](https://cloud.google.com/kms/docs/reference/permissions-and-roles)
+You must ensure that the [user account or service account](https://cloud.google.com/iam/docs/service-accounts#differences_between_a_service_account_and_a_user_account) you used to authorize your gcloud session has the proper permissions to edit KMS resources for your project. In the Cloud Console uner IAM, add the following permissions to the project whose service account you're using to test:
+
+* Cloud KMS Admin
+* Cloud KMS CryptoKey Encrypter/Decrypter
+* Cloud KMS Importer
+* Cloud KMS CryptoKey Public Key Viewer
+* Cloud KMS CryptoKey Signer/Verifier
+
+More information can be found in the [Google KMS Docs](https://cloud.google.com/kms/docs/reference/permissions-and-roles)
 
 ## Quickstart
 
