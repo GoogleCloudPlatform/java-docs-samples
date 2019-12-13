@@ -43,15 +43,15 @@ Build your project with:
 
 You can run the quickstart with:
 
-    java -cp target/kms-samples-1.0.0-jar-with-dependencies.jar \
+    java -cp target/kms-samples-1.0.11-jar-with-dependencies.jar \
         com.example.Quickstart [your-project-id] [your-location]
 
 and can see the available snippet commands with:
 
-    java -cp target/kms-samples-1.0.0-jar-with-dependencies.jar \
+    java -cp target/kms-samples-1.0.11-jar-with-dependencies.jar \
         com.example.Snippets
 
 For example:
 
-    java -cp target/kms-samples-1.0.0-jar-with-dependencies.jar \
+    java -cp target/kms-samples-1.0.11-jar-with-dependencies.jar \
         com.example.Snippets createKeyRing -p [your-project-id] [your-location] myFirstKeyRing
