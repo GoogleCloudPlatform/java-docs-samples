@@ -37,12 +37,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /** Integration (system) tests for {@link LabelText}. */
 @RunWith(JUnit4.class)
+@Ignore("b/146064330")
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class LabelTextIT {
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");

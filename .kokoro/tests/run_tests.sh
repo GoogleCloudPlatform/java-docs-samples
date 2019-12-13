@@ -59,8 +59,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # For Tasks samples
     export QUEUE_ID=my-appengine-queue
     export LOCATION_ID=us-east1
-    # For Datalabeling samples
-    export DATALABELING_ENDPOINT=test-datalabeling.sandbox.googleapis.com:443
+    # For Datalabeling samples to hit the testing endpoint
+    export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"

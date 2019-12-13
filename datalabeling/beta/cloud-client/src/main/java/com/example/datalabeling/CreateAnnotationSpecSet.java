@@ -33,21 +33,28 @@ import java.util.Map.Entry;
 class CreateAnnotationSpecSet {
 
   // Create an annotation spec set.
-  static void createAnnotationSpecSet(String projectId) {
+  static void createAnnotationSpecSet(String projectId) throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
 
     Map<String, String> annotationLabels = new HashMap<>();
     annotationLabels.put("label_1", "label_1_description");
     annotationLabels.put("label_2", "label_2_description");
 
+    // [END datalabeling_create_annotation_spec_set_beta]
     String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }
+    // [START datalabeling_create_annotation_spec_set_beta]
 
+    DataLabelingServiceSettings settings = DataLabelingServiceSettings
+        .newBuilder()
+        // [END datalabeling_create_annotation_spec_set_beta]
+        .setEndpoint(endpoint)
+        // [START datalabeling_create_annotation_spec_set_beta]
+        .build();
     try (DataLabelingServiceClient dataLabelingServiceClient =
-        DataLabelingServiceClient.create(
-            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
+             DataLabelingServiceClient.create(settings)) {
       ProjectName projectName = ProjectName.of(projectId);
 
       List<AnnotationSpec> annotationSpecs = new ArrayList<>();

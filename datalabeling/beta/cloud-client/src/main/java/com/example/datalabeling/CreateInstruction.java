@@ -32,18 +32,25 @@ import java.util.concurrent.ExecutionException;
 class CreateInstruction {
 
   // Create a instruction for a dataset.
-  static void createInstruction(String projectId, String pdfUri) {
+  static void createInstruction(String projectId, String pdfUri) throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
     // String pdfUri = "gs://YOUR_BUCKET_ID/path_to_pdf_or_csv";
 
+    // [END datalabeling_create_instruction_beta]
     String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }
+    // [START datalabeling_create_instruction_beta]
 
+    DataLabelingServiceSettings settings = DataLabelingServiceSettings
+        .newBuilder()
+        // [END datalabeling_create_instruction_beta]
+        .setEndpoint(endpoint)
+        // [START datalabeling_create_instruction_beta]
+        .build();
     try (DataLabelingServiceClient dataLabelingServiceClient =
-        DataLabelingServiceClient.create(
-            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
+             DataLabelingServiceClient.create(settings)) {
       ProjectName projectName = ProjectName.of(projectId);
 
       // There are two types of instructions: CSV (CsvInstruction) or PDF (PdfInstruction)

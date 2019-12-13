@@ -38,6 +38,7 @@ import org.junit.runners.JUnit4;
  * Integration (system) tests for {@link ImportData}.
  */
 @RunWith(JUnit4.class)
+@Ignore("b/146064330")
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ImportDataIT {
 
@@ -103,7 +104,6 @@ public class ImportDataIT {
   }
 
   @Test
-  @Ignore("b/146064330")
   public void testImportDataset() {
     ImportData.importData(dataset.getName(), GCS_SOURCE_URI);
 

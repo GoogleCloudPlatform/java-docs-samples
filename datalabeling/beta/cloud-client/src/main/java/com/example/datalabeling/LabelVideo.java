@@ -34,7 +34,7 @@ class LabelVideo {
 
   // Start a Video Labeling Task
   static void labelVideo(String formattedInstructionName, String formattedAnnotationSpecSetName,
-      String formattedDatasetName) {
+      String formattedDatasetName) throws IOException {
     // String formattedInstructionName = DataLabelingServiceClient.formatInstructionName(
     //      "YOUR_PROJECT_ID", "YOUR_INSTRUCTION_UUID");
     // String formattedAnnotationSpecSetName =
@@ -43,14 +43,21 @@ class LabelVideo {
     // String formattedDatasetName = DataLabelingServiceClient.formatDatasetName(
     //      "YOUR_PROJECT_ID", "YOUR_DATASET_UUID");
 
+    // [END datalabeling_label_video_beta]
     String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }
+    // [START datalabeling_label_video_beta]
 
+    DataLabelingServiceSettings settings = DataLabelingServiceSettings
+        .newBuilder()
+        // [END datalabeling_label_video_beta]
+        .setEndpoint(endpoint)
+        // [START datalabeling_label_video_beta]
+        .build();
     try (DataLabelingServiceClient dataLabelingServiceClient =
-        DataLabelingServiceClient.create(
-            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
+             DataLabelingServiceClient.create(settings)) {
       HumanAnnotationConfig humanAnnotationConfig = HumanAnnotationConfig.newBuilder()
           .setAnnotatedDatasetDisplayName("annotated_displayname")
           .setAnnotatedDatasetDescription("annotated_description")

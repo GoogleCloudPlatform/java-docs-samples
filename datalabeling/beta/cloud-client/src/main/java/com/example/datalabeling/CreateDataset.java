@@ -27,18 +27,25 @@ import java.io.IOException;
 class CreateDataset {
 
   // Create a dataset that is initially empty.
-  static void createDataset(String projectId, String datasetName) {
+  static void createDataset(String projectId, String datasetName) throws IOException {
     // String projectId = "YOUR_PROJECT_ID";
     // String datasetName = "YOUR_DATASET_DISPLAY_NAME";
 
+    // [END datalabeling_create_dataset_beta]
     String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }
+    // [START datalabeling_create_dataset_beta]
 
+    DataLabelingServiceSettings settings = DataLabelingServiceSettings
+        .newBuilder()
+        // [END datalabeling_create_dataset_beta]
+        .setEndpoint(endpoint)
+        // [START datalabeling_create_dataset_beta]
+        .build();
     try (DataLabelingServiceClient dataLabelingServiceClient =
-        DataLabelingServiceClient.create(
-            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
+             DataLabelingServiceClient.create(settings)) {
       ProjectName projectName = ProjectName.of(projectId);
 
       Dataset dataset =
