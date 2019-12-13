@@ -1,4 +1,5 @@
-# Copyright 2019 Google LLC
+# [START_EXCLUDE]
+# Copyright 2015 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# [END_EXCLUDE]
+#
+# This sample has manual_scaling set to 1.
+#
+runtime: java
+env: flex
 
-runtime: java11
-instance_class: F1
+runtime_config:  # Optional
+  jdk: openjdk8
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+
+manual_scaling:
+  instances: 1
