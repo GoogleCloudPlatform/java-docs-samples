@@ -49,9 +49,8 @@ class ExportData {
     }
 
     try (DataLabelingServiceClient dataLabelingServiceClient =
-             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
-                 .setEndpoint(endpoint)
-                 .build())) {
+        DataLabelingServiceClient.create(
+            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
       GcsDestination gcsDestination = GcsDestination.newBuilder()
           .setOutputUri(gcsOutputUri)
           .setMimeType("text/csv")

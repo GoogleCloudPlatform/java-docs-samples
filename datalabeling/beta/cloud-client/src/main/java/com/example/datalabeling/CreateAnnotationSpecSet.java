@@ -46,31 +46,32 @@ class CreateAnnotationSpecSet {
     }
 
     try (DataLabelingServiceClient dataLabelingServiceClient =
-             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
-                 .setEndpoint(endpoint)
-                 .build())) {
-
+        DataLabelingServiceClient.create(
+            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
       ProjectName projectName = ProjectName.of(projectId);
 
       List<AnnotationSpec> annotationSpecs = new ArrayList<>();
       for (Entry<String, String> entry : annotationLabels.entrySet()) {
-        AnnotationSpec annotationSpec = AnnotationSpec.newBuilder()
-            .setDisplayName(entry.getKey())
-            .setDescription(entry.getValue())
-            .build();
+        AnnotationSpec annotationSpec =
+            AnnotationSpec.newBuilder()
+                .setDisplayName(entry.getKey())
+                .setDescription(entry.getValue())
+                .build();
         annotationSpecs.add(annotationSpec);
       }
 
-      AnnotationSpecSet annotationSpecSet = AnnotationSpecSet.newBuilder()
-          .setDisplayName("YOUR_ANNOTATION_SPEC_SET_DISPLAY_NAME")
-          .setDescription("YOUR_DESCRIPTION")
-          .addAllAnnotationSpecs(annotationSpecs)
-          .build();
+      AnnotationSpecSet annotationSpecSet =
+          AnnotationSpecSet.newBuilder()
+              .setDisplayName("YOUR_ANNOTATION_SPEC_SET_DISPLAY_NAME")
+              .setDescription("YOUR_DESCRIPTION")
+              .addAllAnnotationSpecs(annotationSpecs)
+              .build();
 
-      CreateAnnotationSpecSetRequest request = CreateAnnotationSpecSetRequest.newBuilder()
-          .setAnnotationSpecSet(annotationSpecSet)
-          .setParent(projectName.toString())
-          .build();
+      CreateAnnotationSpecSetRequest request =
+          CreateAnnotationSpecSetRequest.newBuilder()
+              .setAnnotationSpecSet(annotationSpecSet)
+              .setParent(projectName.toString())
+              .build();
 
       AnnotationSpecSet result = dataLabelingServiceClient.createAnnotationSpecSet(request);
 

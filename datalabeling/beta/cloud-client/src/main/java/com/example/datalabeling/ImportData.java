@@ -43,9 +43,8 @@ class ImportData {
     }
 
     try (DataLabelingServiceClient dataLabelingServiceClient =
-        DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
-            .setEndpoint(endpoint)
-            .build())) {
+        DataLabelingServiceClient.create(
+            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
       GcsSource gcsSource = GcsSource.newBuilder()
           .setInputUri(gcsSourceUri)
           .setMimeType("text/csv")

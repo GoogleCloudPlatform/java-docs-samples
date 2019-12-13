@@ -51,9 +51,8 @@ class LabelImage {
     }
 
     try (DataLabelingServiceClient dataLabelingServiceClient =
-             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
-                 .setEndpoint(endpoint)
-                 .build())) {
+        DataLabelingServiceClient.create(
+            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
       HumanAnnotationConfig humanAnnotationConfig =
           HumanAnnotationConfig.newBuilder()
               .setAnnotatedDatasetDisplayName("annotated_displayname")

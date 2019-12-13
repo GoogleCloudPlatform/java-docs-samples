@@ -42,10 +42,8 @@ class CreateInstruction {
     }
 
     try (DataLabelingServiceClient dataLabelingServiceClient =
-             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
-                 .setEndpoint(endpoint)
-                 .build())) {
-
+        DataLabelingServiceClient.create(
+            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
       ProjectName projectName = ProjectName.of(projectId);
 
       // There are two types of instructions: CSV (CsvInstruction) or PDF (PdfInstruction)

@@ -37,20 +37,21 @@ class CreateDataset {
     }
 
     try (DataLabelingServiceClient dataLabelingServiceClient =
-             DataLabelingServiceClient.create(DataLabelingServiceSettings.newBuilder()
-                 .setEndpoint(endpoint)
-                 .build())) {
+        DataLabelingServiceClient.create(
+            DataLabelingServiceSettings.newBuilder().setEndpoint(endpoint).build())) {
       ProjectName projectName = ProjectName.of(projectId);
 
-      Dataset dataset = Dataset.newBuilder()
-          .setDisplayName(datasetName)
-          .setDescription("YOUR_DESCRIPTION")
-          .build();
+      Dataset dataset =
+          Dataset.newBuilder()
+              .setDisplayName(datasetName)
+              .setDescription("YOUR_DESCRIPTION")
+              .build();
 
-      CreateDatasetRequest createDatasetRequest = CreateDatasetRequest.newBuilder()
-          .setParent(projectName.toString())
-          .setDataset(dataset)
-          .build();
+      CreateDatasetRequest createDatasetRequest =
+          CreateDatasetRequest.newBuilder()
+              .setParent(projectName.toString())
+              .setDataset(dataset)
+              .build();
 
       Dataset createdDataset = dataLabelingServiceClient.createDataset(createDatasetRequest);
 
