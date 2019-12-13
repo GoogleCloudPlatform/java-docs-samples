@@ -40,7 +40,7 @@ class CreateAnnotationSpecSet {
     annotationLabels.put("label_1", "label_1_description");
     annotationLabels.put("label_2", "label_2_description");
 
-    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }

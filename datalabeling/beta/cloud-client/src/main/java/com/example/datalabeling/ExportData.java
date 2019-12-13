@@ -43,7 +43,7 @@ class ExportData {
     //     "YOUR_ANNOTATED_DATASET_UUID");
     // String gcsOutputUri = "gs://YOUR_BUCKET_ID/export_path";
 
-    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }

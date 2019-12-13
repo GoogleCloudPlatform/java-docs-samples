@@ -37,7 +37,7 @@ class ImportData {
     //     "YOUR_PROJECT_ID", "YOUR_DATASETS_UUID");
     // String gcsSourceUri = "gs://YOUR_BUCKET_ID/path_to_data";
 
-    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }

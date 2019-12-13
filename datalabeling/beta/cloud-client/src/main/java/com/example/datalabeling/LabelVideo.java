@@ -43,7 +43,7 @@ class LabelVideo {
     // String formattedDatasetName = DataLabelingServiceClient.formatDatasetName(
     //      "YOUR_PROJECT_ID", "YOUR_DATASET_UUID");
 
-    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }

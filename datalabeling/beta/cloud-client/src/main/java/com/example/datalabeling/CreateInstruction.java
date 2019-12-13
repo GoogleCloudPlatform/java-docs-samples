@@ -36,7 +36,7 @@ class CreateInstruction {
     // String projectId = "YOUR_PROJECT_ID";
     // String pdfUri = "gs://YOUR_BUCKET_ID/path_to_pdf_or_csv";
 
-    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }

@@ -31,7 +31,7 @@ class CreateDataset {
     // String projectId = "YOUR_PROJECT_ID";
     // String datasetName = "YOUR_DATASET_DISPLAY_NAME";
 
-    String endpoint = System.getenv("DATALEBELING_ENDPOINT");
+    String endpoint = System.getenv("DATALABELING_ENDPOINT");
     if (endpoint == null) {
       endpoint = DataLabelingServiceSettings.getDefaultEndpoint();
     }
