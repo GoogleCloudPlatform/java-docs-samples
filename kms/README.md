@@ -23,7 +23,7 @@ You must set your project ID in order to run the tests
 
 ### Grant Permissions
 
-You must ensure that the [user account or service account](https://cloud.google.com/iam/docs/service-accounts#differences_between_a_service_account_and_a_user_account) you used to authorize your gcloud session has the proper permissions to edit KMS resources for your project. In the Cloud Console uner IAM, add the following permissions to the project whose service account you're using to test:
+You must ensure that the [user account or service account](https://cloud.google.com/iam/docs/service-accounts#differences_between_a_service_account_and_a_user_account) you used to authorize your gcloud session has the proper permissions to edit KMS resources for your project. In the Cloud Console under IAM, add the following roles to the project whose service account you're using to test:
 
 * Cloud KMS Admin
 * Cloud KMS CryptoKey Encrypter/Decrypter
