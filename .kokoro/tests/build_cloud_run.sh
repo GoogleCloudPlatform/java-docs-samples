@@ -50,7 +50,9 @@ gcloud beta run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
   --platform=managed \
-  --quiet --no-user-output-enabled
+  --quiet --no-user-output-enabled  \
+  `if [ $SAMPLE_NAME = "image-processing" ]; then echo "--memory 512M"; fi`
+
 
 set +x
 

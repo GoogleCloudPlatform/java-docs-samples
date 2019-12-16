@@ -47,7 +47,7 @@ public class AuthSnippetsIT {
 
   @Test
   public void testAuthSnippetsImplicit() throws Exception {
-    AuthSnippets.main(new String[]{"implicit"});
+    AuthSnippets.main(new String[] {"implicit"});
     String got = bout.toString();
     assertThat(got).contains("Datasets:");
   }

@@ -160,7 +160,6 @@ public class StorageSample {
         Preconditions.checkState(response.hasAvroRows());
         reader.processRows(response.getAvroRows());
       }
-      client.close();
     }
   }
 }
