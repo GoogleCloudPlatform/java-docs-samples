@@ -7,6 +7,9 @@ samples in this format are located
 Larger sample applications should attempt to follow many of these guidelines as well, but some may
 be ignored or waived as there can be many structural differences between applications and snippets.
 
+## Java Version
+
+All samples should be written to run on both Java 8 and Java 11, samples that don't run on Java 8 should clearly says so in their README and disable testing on Java 8.  There should be a clear reason why Java 8 isn't supported.
 
 ## Specific Goals
 This sample format is intended to help enforce some specific goals in our samples. Even if not 
@@ -199,6 +202,16 @@ Snippets should have tests that should verify the snippet works and compiles cor
 The following are some general Java best practices that should be followed in samples to remain
 idiomatic. 
 
+### Modern Java
+Prefer using modern ideoms / language features over older styles.
+
+* Lambda's should be about 1-3 lines at most, otherwise it should be in a named method.
+  * Prefer to annonymous classes
+* Streams can be extremely compact, efficient, and easy to use - consider using them.
+  * Avoid side effects
+  * Prefer for each loops to `.foreach`
+  * Checked Exceptions can be problematic inside streams.
+* Parallel Streams make make sense in some situations, but there are many situations where there use is a net loss.  Really think through your usage and consider what they might mean if you are already doing concurrent operations.
 
 ### Style
 Wherever possible (and when not conflicting any of the above guidelines), follow the
