@@ -197,21 +197,26 @@ Snippets should have tests that should verify the snippet works and compiles cor
  verify that it works correctly. See the tests in the canonical for an example of how to do this
  correctly. 
 
+## Modern Java
+Prefer using modern idioms / language features over older styles.
+
+### Lambda's
+Should be about 1-3 lines at most, otherwise it should be in a named method.
+* Prefer lambda's to annonymous classes
+  
+### Streams
+Streams can be extremely compact, efficient, and easy to use - consider using them.
+* Avoid side effects (changes outside the scope of the stream)
+* Prefer `for` each loops to `.foreach()`
+* Checked Exceptions can be problematic inside streams.
+  
+### Parallel Streams
+Parallel Streams make make sense in a few situations. There are many situations where there use is a net loss.  Really think through your usage and consider what they might mean if you are already doing concurrent operations.
+
 ## Additional Best Practices 
 
 The following are some general Java best practices that should be followed in samples to remain
 idiomatic. 
-
-### Modern Java
-Prefer using modern idioms / language features over older styles.
-
-* Lambda's should be about 1-3 lines at most, otherwise it should be in a named method.
-  * Prefer to annonymous classes
-* Streams can be extremely compact, efficient, and easy to use - consider using them.
-  * Avoid side effects
-  * Prefer for each loops to `.foreach`
-  * Checked Exceptions can be problematic inside streams.
-* Parallel Streams make make sense in some situations, but there are many situations where there use is a net loss.  Really think through your usage and consider what they might mean if you are already doing concurrent operations.
 
 ### Style
 Wherever possible (and when not conflicting any of the above guidelines), follow the
