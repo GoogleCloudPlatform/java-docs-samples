@@ -203,7 +203,7 @@ The following are some general Java best practices that should be followed in sa
 idiomatic. 
 
 ### Modern Java
-Prefer using modern ideoms / language features over older styles.
+Prefer using modern idioms / language features over older styles.
 
 * Lambda's should be about 1-3 lines at most, otherwise it should be in a named method.
   * Prefer to annonymous classes
