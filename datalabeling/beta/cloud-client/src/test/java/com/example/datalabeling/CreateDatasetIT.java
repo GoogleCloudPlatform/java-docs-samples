@@ -79,7 +79,7 @@ public class CreateDatasetIT {
   }
 
   @Test
-  public void testCreateDataset() {
+  public void testCreateDataset() throws IOException {
     CreateDataset.createDataset(PROJECT_ID,datasetName);
 
     String output = bout.toString();

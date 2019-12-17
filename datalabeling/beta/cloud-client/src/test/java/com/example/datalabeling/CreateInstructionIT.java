@@ -80,7 +80,7 @@ public class CreateInstructionIT {
   }
 
   @Test
-  public void testCreateInstruction() {
+  public void testCreateInstruction() throws IOException {
     CreateInstruction.createInstruction(PROJECT_ID, GCS_SOURCE_URI);
 
     String output = bout.toString();

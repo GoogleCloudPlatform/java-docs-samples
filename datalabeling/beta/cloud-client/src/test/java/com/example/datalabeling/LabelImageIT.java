@@ -129,7 +129,7 @@ public class LabelImageIT {
   }
 
   @Test
-  public void testLabelImage() {
+  public void testLabelImage() throws IOException {
     // Start the labeling task
     LabelImage.labelImage(instruction.getName(), annotationSpecSet.getName(), dataset.getName());
   }

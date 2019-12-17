@@ -147,7 +147,7 @@ public class LabelTextIT {
   }
 
   @Test
-  public void testLabelText() {
+  public void testLabelText() throws IOException {
     // Start the labeling task
     LabelText.labelText(instruction.getName(), annotationSpecSet.getName(), dataset.getName());
   }

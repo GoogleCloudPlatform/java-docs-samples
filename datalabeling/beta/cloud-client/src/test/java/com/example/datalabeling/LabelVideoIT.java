@@ -149,7 +149,7 @@ public class LabelVideoIT {
   }
 
   @Test
-  public void testLabelVideo() {
+  public void testLabelVideo() throws IOException {
     // Start the labeling task
     LabelVideo.labelVideo(instruction.getName(), annotationSpecSet.getName(), dataset.getName());
   }

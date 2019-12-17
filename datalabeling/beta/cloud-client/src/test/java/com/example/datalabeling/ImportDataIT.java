@@ -52,7 +52,7 @@ public class ImportDataIT {
   private static Dataset dataset;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
@@ -104,7 +104,7 @@ public class ImportDataIT {
   }
 
   @Test
-  public void testImportDataset() {
+  public void testImportDataset() throws IOException {
     ImportData.importData(dataset.getName(), GCS_SOURCE_URI);
 
     String output = bout.toString();

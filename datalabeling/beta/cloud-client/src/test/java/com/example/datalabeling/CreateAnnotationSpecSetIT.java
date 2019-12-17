@@ -78,7 +78,7 @@ public class CreateAnnotationSpecSetIT {
   }
 
   @Test
-  public void testCreateAnnotationSpecSet() {
+  public void testCreateAnnotationSpecSet() throws IOException {
     CreateAnnotationSpecSet.createAnnotationSpecSet(PROJECT_ID);
 
     String output = bout.toString();
