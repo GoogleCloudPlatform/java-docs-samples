@@ -202,7 +202,7 @@ Prefer using modern idioms / language features over older styles.
 
 ### Lambda's
 Should be about 1-3 lines at most, otherwise it should be in a named method.
-* Prefer lambda's to annonymous classes
+* Prefer lambdas to annonymous classes
   
 ### Streams
 Streams can be extremely compact, efficient, and easy to use - consider using them.
