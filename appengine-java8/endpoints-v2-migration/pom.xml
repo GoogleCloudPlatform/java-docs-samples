@@ -83,7 +83,7 @@ limitations under the License.
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>endpoints-framework-maven-plugin</artifactId>
-          <version>1.0.3</version>
+          <version>2.0.1</version>
           <configuration>
               <!-- plugin configuration -->
               <hostname>YOUR-PROJECT-ID.appspot.com</hostname>
