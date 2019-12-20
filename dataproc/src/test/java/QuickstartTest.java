@@ -20,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dataproc.v1.Cluster;
-import com.google.cloud.dataproc.v1.ClusterConfig;
 import com.google.cloud.dataproc.v1.ClusterControllerClient;
 import com.google.cloud.dataproc.v1.ClusterControllerSettings;
 import com.google.cloud.dataproc.v1.ClusterOperationMetadata;
@@ -44,7 +43,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class SubmitJobTest {
+public class QuickstartTest {
 
   private static final String MY_UUID = UUID.randomUUID().toString();
   private static final String REGION = "us-central1";
@@ -86,32 +85,17 @@ public class SubmitJobTest {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Bucket bucket = storage.create(BucketInfo.of(BUCKET_NAME));
     blob = bucket.create(JOB_FILE_NAME, SORT_CODE.getBytes(UTF_8), "text/plain");
-
-    ClusterControllerSettings clusterControllerSettings =
-        ClusterControllerSettings.newBuilder().setEndpoint(ENDPOINT).build();
-
-    Cluster cluster =
-        Cluster.newBuilder()
-            .setClusterName(CLUSTER_NAME)
-            .setConfig(ClusterConfig.newBuilder().build())
-            .build();
-
-    try (ClusterControllerClient clusterControllerClient =
-        ClusterControllerClient.create(clusterControllerSettings)) {
-      OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
-          clusterControllerClient.createClusterAsync(PROJECT_ID, REGION, cluster);
-      createClusterAsyncRequest.get();
-    } catch (ExecutionException e) {
-      System.err.println("[SubmitJob] Error during test cluster creation: \n" + e.getMessage());
-    }
   }
 
   @Test
-  public void submitJobTest() throws IOException {
-    SubmitJob.submitJob(PROJECT_ID, REGION, CLUSTER_NAME, JOB_FILE_PATH);
+  public void quickstartTest() throws IOException, InterruptedException, ExecutionException {
+    Quickstart.quickstart(PROJECT_ID, REGION, CLUSTER_NAME, JOB_FILE_PATH);
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString("finished"));
+    assertThat(output, CoreMatchers.containsString("Cluster created successfully"));
+    assertThat(output, CoreMatchers.containsString("Submitted job"));
+    assertThat(output, CoreMatchers.containsString("finished with state DONE:"));
+    assertThat(output, CoreMatchers.containsString("successfully deleted"));
   }
 
   @After
@@ -124,9 +108,15 @@ public class SubmitJobTest {
 
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
-      OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
-          clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
-      deleteClusterAsyncRequest.get();
+      for (Cluster element :
+          clusterControllerClient.listClusters(PROJECT_ID, REGION).iterateAll()) {
+        if (element.getClusterName() == CLUSTER_NAME) {
+          OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
+              clusterControllerClient.deleteClusterAsync(PROJECT_ID, REGION, CLUSTER_NAME);
+          deleteClusterAsyncRequest.get();
+          break;
+        }
+      }
     }
   }
 }
