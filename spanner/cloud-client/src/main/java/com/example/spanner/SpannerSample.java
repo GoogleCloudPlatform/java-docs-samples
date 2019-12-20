@@ -168,11 +168,11 @@ public class SpannerSample {
 
   // [START spanner_insert_datatypes_data]
   static Value availableDates1 = Value.dateArray(Arrays.asList(
-      Date.parseDate("2020-12-01"), 
+      Date.parseDate("2020-12-01"),
       Date.parseDate("2020-12-02"),
       Date.parseDate("2020-12-03")));
   static Value availableDates2 = Value.dateArray(Arrays.asList(
-      Date.parseDate("2020-11-01"), 
+      Date.parseDate("2020-11-01"),
       Date.parseDate("2020-11-05"),
       Date.parseDate("2020-11-15")));
   static Value availableDates3 = Value.dateArray(Arrays.asList(
@@ -185,7 +185,7 @@ public class SpannerSample {
       Arrays.asList(
         new Venue(4, "Venue 4", exampleBytes1, 1800,
           availableDates1, "2018-09-02", false, 0.85543f),
-        new Venue(19, "Venue 19", exampleBytes2, 6300, 
+        new Venue(19, "Venue 19", exampleBytes2, 6300,
           availableDates2, "2019-01-15", true, 0.98716f),
         new Venue(42, "Venue 42", exampleBytes3, 3000,
           availableDates3, "2018-10-01", false, 0.72598f));
@@ -328,7 +328,7 @@ public class SpannerSample {
 
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
-    try (ResultSet resultSet = dbClient 
+    try (ResultSet resultSet = dbClient
             .singleUse() // Execute a single read or query against Cloud Spanner.
             .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
       while (resultSet.next()) {
@@ -459,7 +459,7 @@ public class SpannerSample {
   // [START spanner_query_data_with_new_column]
   static void queryMarketingBudget(DatabaseClient dbClient) {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
-    // null. A try-with-resource block is used to automatically release resources held by 
+    // null. A try-with-resource block is used to automatically release resources held by
     // ResultSet.
     try (ResultSet resultSet = dbClient
             .singleUse()
@@ -834,7 +834,8 @@ public class SpannerSample {
         Statement.newBuilder(
                 "SELECT SingerId FROM Singers WHERE "
                     + "STRUCT<FirstName STRING, LastName STRING>(FirstName, LastName) "
-                    + "IN UNNEST(@names)")
+                    + "IN UNNEST(@names) "
+                    + "ORDER BY SingerId DESC")
             .bind("names")
             .toStructArray(nameType, bandMembers)
             .build();
@@ -1009,8 +1010,8 @@ public class SpannerSample {
                 try (ResultSet resultSet = transaction.executeQuery(Statement.of(sql))) {
                   while (resultSet.next()) {
                     System.out.printf(
-                        "%s %s\n", 
-                        resultSet.getString("FirstName"), 
+                        "%s %s\n",
+                        resultSet.getString("FirstName"),
                         resultSet.getString("LastName"));
                   }
                 }
@@ -1255,7 +1256,7 @@ public class SpannerSample {
   // [START spanner_query_with_array_parameter]
   static void queryWithArray(DatabaseClient dbClient) {
     Value exampleArray = Value.dateArray(Arrays.asList(
-        Date.parseDate("2020-10-01"), 
+        Date.parseDate("2020-10-01"),
         Date.parseDate("2020-11-01")));
 
     Statement statement =
@@ -1319,7 +1320,7 @@ public class SpannerSample {
             resultSet.getString("VenueName"));
       }
     }
-  } 
+  }
   // [END spanner_query_with_bytes_parameter]
 
   // [START spanner_query_with_date_parameter]
