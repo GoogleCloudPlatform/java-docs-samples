@@ -108,7 +108,7 @@ limitations under the License.
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <version>1.3.30</version>
+                <version>1.3.61</version>
                 <executions>
                     <execution>
                         <id>compile</id>
