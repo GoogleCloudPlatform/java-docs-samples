@@ -49,7 +49,7 @@ limitations under the License.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.8.0-alpha2</version>
+      <version>1.8.0-beta4</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
