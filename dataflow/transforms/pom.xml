@@ -42,8 +42,8 @@
     <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
-    <slf4j.version>1.7.25</slf4j.version>
-    <surefire-plugin.version>3.0.0-M3</surefire-plugin.version>
+    <slf4j.version>1.7.30</slf4j.version>
+    <surefire-plugin.version>3.0.0-M4</surefire-plugin.version>
   </properties>
 
   <build>
@@ -172,7 +172,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.1.0</version>
+      <version>3.2.4</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

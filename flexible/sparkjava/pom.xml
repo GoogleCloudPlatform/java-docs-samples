@@ -49,7 +49,7 @@ limitations under the License.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.8.0-alpha2</version>
+      <version>1.8.0-beta4</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -94,7 +94,7 @@ limitations under the License.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.4.0</version>
+        <version>1.6.0</version>
         <configuration>
           <mainClass>com.google.appengine.sparkdemo.Main</mainClass>
           <arguments>
