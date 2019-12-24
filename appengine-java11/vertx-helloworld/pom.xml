@@ -41,7 +41,7 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>3.8.0</version>
+      <version>3.8.4</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
