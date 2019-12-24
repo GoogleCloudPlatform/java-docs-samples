@@ -72,13 +72,13 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.6.v20170531</version>
+        <version>9.4.6.v20180619</version>
       </plugin>
       <!-- END -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.5.1</version>
+        <version>3.8.1</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <source>1.8</source>

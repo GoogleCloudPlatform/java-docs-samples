@@ -5,6 +5,7 @@ assign_issues:
   - kurtisvg
   - nnegrey
 assign_prs:
+  - averikitsch
   - dzlier-gcp
   - kurtisvg
   - lesv

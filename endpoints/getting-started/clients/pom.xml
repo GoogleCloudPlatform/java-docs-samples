@@ -28,7 +28,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.5</version>
+      <version>1.30.6</version>
     </dependency>
     <dependency>
       <groupId>com.auth0</groupId>
@@ -61,7 +61,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.6.0</version>
         <configuration>
           <mainClass>com.example.app.GoogleJwtClient</mainClass>
         </configuration>
