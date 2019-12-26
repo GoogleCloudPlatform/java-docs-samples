@@ -39,6 +39,26 @@ import java.util.concurrent.TimeoutException;
 
 public class Quickstart {
 
+  public static Job waitForJobCompletion(JobControllerClient jobControllerClient, String projectId, String region, String jobId) {
+    while (true) {
+      // Poll the service periodically until the Job is in a finished state.
+      Job jobInfo = jobControllerClient.getJob(projectId, region, jobId);
+      switch (jobInfo.getStatus().getState()) {
+        case DONE:
+        case CANCELLED:
+        case ERROR:
+          return jobInfo;
+        default:
+          try {
+            // Wait a second in between polling attempts.
+            TimeUnit.SECONDS.sleep(1);
+          } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+          }
+      }
+    }
+  }
+
   public static void quickstart() throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
@@ -107,34 +127,8 @@ public class Quickstart {
 
       // Wait for the job to finish
       CompletableFuture<Job> finishedJobFuture =
-          CompletableFuture.supplyAsync(
-              () -> {
-                // States that indicate a job is "finished"
-                while (true) {
-                  // Poll the service periodically until the Job is in a finished state.
-                  Job jobInfo = jobControllerClient.getJob(projectId, region, jobId);
-                  switch (jobInfo.getStatus().getState()) {
-                    case DONE:
-                      return jobInfo;
-                    case CANCELLED:
-                    case ERROR:
-                    case ATTEMPT_FAILURE:
-                      throw new RuntimeException(
-                          String.format(
-                              "Job %s failed due to %s: %s",
-                              jobId,
-                              jobInfo.getStatus().getState(),
-                              jobInfo.getStatus().getDetails()));
-                    default:
-                      try {
-                        // Wait a second in between polling attempts.
-                        TimeUnit.SECONDS.sleep(1);
-                      } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                      }
-                  }
-                }
-              });
+          CompletableFuture.supplyAsync(() ->
+           waitForJobCompletion(jobControllerClient, projectId, region, jobId));
       int timeout = 10;
       try {
         Job jobInfo = finishedJobFuture.get(timeout, TimeUnit.MINUTES);
