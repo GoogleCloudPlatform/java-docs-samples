@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.google.cloud.bigtable', name: 'bigtable-hbase-1.2', version:'0.9.6.2'
+    compile group: 'com.google.cloud.bigtable', name: 'bigtable-hbase-1.2', version:'0.9.7.1'
     compile group: 'org.apache.hbase', name: 'hbase-client', version:'2.2.2'
     compile group: 'io.netty', name: 'netty-tcnative-boringssl-static', version:'2.0.28.Final'
     compile group: 'jstl', name: 'jstl', version:'1.2'
