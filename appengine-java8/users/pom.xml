@@ -90,7 +90,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.76</version>
+      <version>1.9.77</version>
       <scope>test</scope>
     </dependency>
     <dependency>
