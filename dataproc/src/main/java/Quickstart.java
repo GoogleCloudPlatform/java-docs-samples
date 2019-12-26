@@ -159,7 +159,7 @@ public class Quickstart {
       System.out.println(String.format("Cluster \"%s\" successfully deleted.", clusterName));
 
     } catch (ExecutionException e) {
-      System.err.println(String.format("Error executing quickstart: " + e.getMessage()));
+      System.err.println(String.format("Error executing quickstart: %s ", e.getMessage()));
     }
   }
 }
