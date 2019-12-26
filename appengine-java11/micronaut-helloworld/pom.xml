@@ -180,7 +180,7 @@
               <path>
                 <groupId>io.micronaut</groupId>
                 <artifactId>micronaut-validation</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.8</version>
               </path>
             </annotationProcessorPaths>
           </configuration>
@@ -203,7 +203,7 @@
                   <path>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-validation</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.8</version>
                   </path>
                 </annotationProcessorPaths>
               </configuration>
