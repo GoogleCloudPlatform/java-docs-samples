@@ -49,8 +49,10 @@ public class QuickstartTest {
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
-  private static final String CLUSTER_NAME = String.format("test-cluster-%s", MY_UUID);
-  private static final String BUCKET_NAME = String.format("test-bucket-%s", MY_UUID);
+  private static final String CLUSTER_NAME =
+      String.format("java-dataproc-quickstart-test-bucket%s", MY_UUID);
+  private static final String BUCKET_NAME =
+      String.format("java-dataproc-quickstart-test-bucket-%s", MY_UUID);
   private static final String JOB_FILE_NAME = "sum.py";
   private static final String JOB_FILE_PATH =
       String.format("gs://%s/%s", BUCKET_NAME, JOB_FILE_NAME);
@@ -62,6 +64,7 @@ public class QuickstartTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream standardOutOrig;
+  private Bucket bucket;
   private Blob blob;
 
   private static void requireEnv(String varName) {
@@ -83,7 +86,7 @@ public class QuickstartTest {
     System.setOut(new PrintStream(bout));
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
-    Bucket bucket = storage.create(BucketInfo.of(BUCKET_NAME));
+    bucket = storage.create(BucketInfo.of(BUCKET_NAME));
     blob = bucket.create(JOB_FILE_NAME, SORT_CODE.getBytes(UTF_8), "text/plain");
   }
 
@@ -102,6 +105,7 @@ public class QuickstartTest {
   public void teardown() throws IOException, InterruptedException, ExecutionException {
     System.setOut(standardOutOrig);
     blob.delete();
+    bucket.delete();
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(ENDPOINT).build();
