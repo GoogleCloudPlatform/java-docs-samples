@@ -19,11 +19,6 @@
     <!-- Update database on startup -->
     <property name="hibernate.hbm2ddl.auto">update</property>
 
-    <!-- [START spanner_hibernate_bulk_id_setting] -->
-    <!-- Modify the default bulk id strategy if using InheritanceType.JOINED with Spanner. -->
-    <property name="hibernate.hql.bulk_id_strategy">org.hibernate.hql.spi.id.inline.InlineIdsOrClauseBulkIdStrategy</property>
-    <!-- [END spanner_hibernate_bulk_id_setting] -->
-
     <!-- Annotated entity classes -->
     <mapping class="com.example.spanner.Person"/>
     <mapping class="com.example.spanner.Payment"/>
