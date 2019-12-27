@@ -64,7 +64,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-3</version>
+      <version>4.13-rc-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -82,7 +82,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>

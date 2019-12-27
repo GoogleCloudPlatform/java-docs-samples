@@ -63,7 +63,6 @@ public class FhirStoreGet {
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };

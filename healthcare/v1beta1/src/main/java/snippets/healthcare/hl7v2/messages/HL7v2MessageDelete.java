@@ -17,7 +17,6 @@
 package snippets.healthcare.hl7v2.messages;
 
 // [START healthcare_delete_hl7v2_message]
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -64,7 +63,6 @@ public class HL7v2MessageDelete {
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };

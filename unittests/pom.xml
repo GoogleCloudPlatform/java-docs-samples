@@ -47,7 +47,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13-beta-3</version>
+            <version>4.13-rc-2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -65,13 +65,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-tools-sdk</artifactId>
-            <version>1.9.76</version>
+            <version>1.9.77</version>
             <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>com.google.api-client</groupId>
           <artifactId>google-api-client-appengine</artifactId>
-          <version>1.30.5</version>
+          <version>1.30.7</version>
           <scope>test</scope>
         </dependency>
     </dependencies>
@@ -81,7 +81,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.3</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
