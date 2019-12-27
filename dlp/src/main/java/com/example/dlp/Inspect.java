@@ -17,15 +17,11 @@
 package com.example.dlp;
 
 import com.google.api.core.SettableApiFuture;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.BigQueryOptions;
 import com.google.privacy.dlp.v2.BigQueryTable;
-import com.google.privacy.dlp.v2.ByteContentItem;
-import com.google.privacy.dlp.v2.CloudStorageOptions;
-import com.google.privacy.dlp.v2.ContentItem;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.CustomInfoType;
 import com.google.privacy.dlp.v2.CustomInfoType.Dictionary;
@@ -33,34 +29,26 @@ import com.google.privacy.dlp.v2.CustomInfoType.Dictionary.WordList;
 import com.google.privacy.dlp.v2.CustomInfoType.Regex;
 import com.google.privacy.dlp.v2.DatastoreOptions;
 import com.google.privacy.dlp.v2.DlpJob;
-import com.google.privacy.dlp.v2.Finding;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectConfig.FindingLimits;
-import com.google.privacy.dlp.v2.InspectContentRequest;
-import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.InspectResult;
 import com.google.privacy.dlp.v2.KindExpression;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.PartitionId;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.StorageConfig;
-import com.google.protobuf.ByteString;
+import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.activation.MimetypesFileTypeMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -71,129 +59,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class Inspect {
-
-  // [START dlp_inspect_gcs]
-  /**
-   * Inspect GCS file for Info types and wait on job completion using Google Cloud Pub/Sub
-   * notification
-   *
-   * @param bucketName The name of the bucket where the file resides.
-   * @param fileName The path to the file within the bucket to inspect (can include wildcards, eg.
-   *     my-image.*)
-   * @param minLikelihood The minimum likelihood required before returning a match
-   * @param infoTypes The infoTypes of information to match
-   * @param maxFindings The maximum number of findings to report (0 = server maximum)
-   * @param topicId Google Cloud Pub/Sub topic Id to notify of job status
-   * @param subscriptionId Google Cloud Subscription to above topic to listen for job status updates
-   * @param projectId Google Cloud project ID
-   */
-  private static void inspectGcsFile(
-      String bucketName,
-      String fileName,
-      Likelihood minLikelihood,
-      List<InfoType> infoTypes,
-      List<CustomInfoType> customInfoTypes,
-      int maxFindings,
-      String topicId,
-      String subscriptionId,
-      String projectId)
-      throws Exception {
-    // Instantiates a client
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-      CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder()
-              .setFileSet(
-                  CloudStorageOptions.FileSet.newBuilder()
-                      .setUrl("gs://" + bucketName + "/" + fileName))
-              .build();
-
-      StorageConfig storageConfig =
-          StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
-
-      FindingLimits findingLimits =
-          FindingLimits.newBuilder().setMaxFindingsPerRequest(maxFindings).build();
-
-      InspectConfig inspectConfig =
-          InspectConfig.newBuilder()
-              .addAllInfoTypes(infoTypes)
-              .addAllCustomInfoTypes(customInfoTypes)
-              .setMinLikelihood(minLikelihood)
-              .setLimits(findingLimits)
-              .build();
-
-      String pubSubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
-      Action.PublishToPubSub publishToPubSub =
-          Action.PublishToPubSub.newBuilder().setTopic(pubSubTopic).build();
-
-      Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
-
-      InspectJobConfig inspectJobConfig =
-          InspectJobConfig.newBuilder()
-              .setStorageConfig(storageConfig)
-              .setInspectConfig(inspectConfig)
-              .addActions(action)
-              .build();
-
-      // Semi-synchronously submit an inspect job, and wait on results
-      CreateDlpJobRequest createDlpJobRequest =
-          CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
-              .setInspectJob(inspectJobConfig)
-              .build();
-
-      DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
-
-      System.out.println("Job created with ID:" + dlpJob.getName());
-
-      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
-
-      // Set up a Pub/Sub subscriber to listen on the job completion status
-      Subscriber subscriber =
-          Subscriber.newBuilder(
-                  ProjectSubscriptionName.of(projectId, subscriptionId),
-            (pubsubMessage, ackReplyConsumer) -> {
-              if (pubsubMessage.getAttributesCount() > 0
-                  && pubsubMessage
-                      .getAttributesMap()
-                      .get("DlpJobName")
-                      .equals(dlpJob.getName())) {
-                // notify job completion
-                done.set(true);
-                ackReplyConsumer.ack();
-              }
-            })
-              .build();
-      subscriber.startAsync();
-
-      // Wait for job completion semi-synchronously
-      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-      try {
-        done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500); // Wait for the job to become available
-      } catch (Exception e) {
-        System.out.println("Unable to verify job completion.");
-      }
-
-      DlpJob completedJob =
-          dlpServiceClient.getDlpJob(
-              GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build());
-
-      System.out.println("Job status: " + completedJob.getState());
-      InspectDataSourceDetails inspectDataSourceDetails = completedJob.getInspectDetails();
-      InspectDataSourceDetails.Result result = inspectDataSourceDetails.getResult();
-      if (result.getInfoTypeStatsCount() > 0) {
-        System.out.println("Findings: ");
-        for (InfoTypeStats infoTypeStat : result.getInfoTypeStatsList()) {
-          System.out.print("\tInfo type: " + infoTypeStat.getInfoType().getName());
-          System.out.println("\tCount: " + infoTypeStat.getCount());
-        }
-      } else {
-        System.out.println("No findings.");
-      }
-    }
-  }
-  // [END dlp_inspect_gcs]
 
   // [START dlp_inspect_datastore]
   /**
@@ -549,7 +414,7 @@ public class Inspect {
         Boolean.parseBoolean(cmd.getOptionValue(includeQuoteOption.getOpt(), "true"));
 
     String projectId =
-        cmd.getOptionValue(projectIdOption.getOpt(), ServiceOptions.getDefaultProjectId());
+        cmd.getOptionValue(projectIdOption.getOpt());
     String topicId = cmd.getOptionValue(topicIdOption.getOpt());
     String subscriptionId = cmd.getOptionValue(subscriptionIdOption.getOpt());
 
@@ -597,21 +462,7 @@ public class Inspect {
     }
 
     // string inspection
-    if (cmd.hasOption("gcs")) {
-      String bucketName = cmd.getOptionValue(bucketNameOption.getOpt());
-      String fileName = cmd.getOptionValue(gcsFileNameOption.getOpt());
-      inspectGcsFile(
-          bucketName,
-          fileName,
-          minLikelihood,
-          infoTypesList,
-          customInfoTypesList,
-          maxFindings,
-          topicId,
-          subscriptionId,
-          projectId);
-      // datastore kind inspection
-    } else if (cmd.hasOption("ds")) {
+    if (cmd.hasOption("ds")) {
       String namespaceId = cmd.getOptionValue(datastoreNamespaceOption.getOpt(), "");
       String kind = cmd.getOptionValue(datastoreKindOption.getOpt());
       // use default project id when project id is not specified
