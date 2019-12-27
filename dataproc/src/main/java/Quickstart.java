@@ -73,11 +73,11 @@ public class Quickstart {
       throws IOException, InterruptedException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
-    // Configure the settings for the cluster controller client
+    // Configure the settings for the cluster controller client.
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
-    // Configure the settings for the job controller client
+    // Configure the settings for the job controller client.
     JobControllerSettings jobControllerSettings =
         JobControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
@@ -89,7 +89,7 @@ public class Quickstart {
             ClusterControllerClient.create(clusterControllerSettings);
         JobControllerClient jobControllerClient =
             JobControllerClient.create(jobControllerSettings)) {
-      // Configure the settings for our cluster
+      // Configure the settings for our cluster.
       InstanceGroupConfig masterConfig =
           InstanceGroupConfig.newBuilder()
               .setMachineTypeUri("n1-standard-1")
@@ -105,27 +105,27 @@ public class Quickstart {
               .setMasterConfig(masterConfig)
               .setWorkerConfig(workerConfig)
               .build();
-      // Create the cluster object with the desired cluster config
+      // Create the cluster object with the desired cluster config.
       Cluster cluster =
           Cluster.newBuilder().setClusterName(clusterName).setConfig(clusterConfig).build();
 
-      // Create the Cloud Dataproc cluster
+      // Create the Cloud Dataproc cluster.
       OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
           clusterControllerClient.createClusterAsync(projectId, region, cluster);
       Cluster response = createClusterAsyncRequest.get();
       System.out.printf("Cluster created successfully: %s", response.getClusterName());
 
-      // Configure the settings for our job
+      // Configure the settings for our job.
       JobPlacement jobPlacement = JobPlacement.newBuilder().setClusterName(clusterName).build();
       PySparkJob pySparkJob = PySparkJob.newBuilder().setMainPythonFileUri(jobFilePath).build();
       Job job = Job.newBuilder().setPlacement(jobPlacement).setPysparkJob(pySparkJob).build();
 
-      // Submit an asynchronous request to execute the job
+      // Submit an asynchronous request to execute the job.
       Job request = jobControllerClient.submitJob(projectId, region, job);
       String jobId = request.getReference().getJobId();
       System.out.println(String.format("Submitted job \"%s\"", jobId));
 
-      // Wait for the job to finish
+      // Wait for the job to finish.
       CompletableFuture<Job> finishedJobFuture =
           CompletableFuture.supplyAsync(() ->
            waitForJobCompletion(jobControllerClient, projectId, region, jobId));
@@ -152,7 +152,7 @@ public class Quickstart {
             String.format("Job timed out after %d minutes: %s", timeout, e.getMessage()));
       }
 
-      // Delete the cluster
+      // Delete the cluster.
       OperationFuture<Empty, ClusterOperationMetadata> deleteClusterAsyncRequest =
           clusterControllerClient.deleteClusterAsync(projectId, region, clusterName);
       deleteClusterAsyncRequest.get();

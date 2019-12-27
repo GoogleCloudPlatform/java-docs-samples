@@ -39,7 +39,7 @@ public class CreateCluster {
       throws IOException, InterruptedException, ExecutionException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
-    // Configure the settings for the cluster controller client
+    // Configure the settings for the cluster controller client.
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
@@ -48,7 +48,7 @@ public class CreateCluster {
     // closes the client, but this can also be done manually with the .close() method.
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
-      // Configure the settings for our cluster
+      // Configure the settings for our cluster.
       InstanceGroupConfig masterConfig =
           InstanceGroupConfig.newBuilder()
               .setMachineTypeUri("n1-standard-1")
@@ -64,16 +64,16 @@ public class CreateCluster {
               .setMasterConfig(masterConfig)
               .setWorkerConfig(workerConfig)
               .build();
-      // Create the cluster object with the desired cluster config
+      // Create the cluster object with the desired cluster config.
       Cluster cluster =
           Cluster.newBuilder().setClusterName(clusterName).setConfig(clusterConfig).build();
 
-      // Create the Cloud Dataproc cluster
+      // Create the Cloud Dataproc cluster.
       OperationFuture<Cluster, ClusterOperationMetadata> createClusterAsyncRequest =
           clusterControllerClient.createClusterAsync(projectId, region, cluster);
       Cluster response = createClusterAsyncRequest.get();
 
-      // Print out a success message
+      // Print out a success message.
       System.out.printf("Cluster created successfully: %s", response.getClusterName());
     }
   }
