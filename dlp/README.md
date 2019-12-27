@@ -34,7 +34,7 @@ An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories)
 
 The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
 ```
-   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.QuickStart
+   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart
 ```
 
 ## Inspect data for sensitive elements
