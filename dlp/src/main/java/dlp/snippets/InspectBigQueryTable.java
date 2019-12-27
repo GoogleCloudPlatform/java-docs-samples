@@ -27,7 +27,6 @@ import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.BigQueryOptions;
 import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
-import com.google.privacy.dlp.v2.DatastoreOptions;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
@@ -35,8 +34,6 @@ import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.KindExpression;
-import com.google.privacy.dlp.v2.PartitionId;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -135,6 +132,8 @@ public class InspectBigQueryTable {
             if (job.getName().equals(messageAttribute)) {
               jobDone.set(null);
               ackReplyConsumer.ack();
+            } else {
+              ackReplyConsumer.nack();
             }
           };
       Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();

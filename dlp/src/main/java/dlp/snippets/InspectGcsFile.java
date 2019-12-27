@@ -118,6 +118,8 @@ public class InspectGcsFile {
             if (job.getName().equals(messageAttribute)) {
               jobDone.set(null);
               ackReplyConsumer.ack();
+            } else {
+              ackReplyConsumer.nack();
             }
           };
       Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
