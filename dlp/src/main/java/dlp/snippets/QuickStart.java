@@ -16,6 +16,8 @@
 
 package dlp.snippets;
 
+// [START dlp_quickstart]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ContentItem;
@@ -33,7 +35,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// [START dlp_quickstart]
 public class QuickStart {
 
   public static void main(String[] args) throws IOException {
