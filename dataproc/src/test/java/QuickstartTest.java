@@ -50,9 +50,9 @@ public class QuickstartTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
   private static final String CLUSTER_NAME =
-      String.format("java-dataproc-quickstart-test-%s", MY_UUID);
+      String.format("java-qs-test-%s", MY_UUID);
   private static final String BUCKET_NAME =
-      String.format("java-dataproc-quickstart-test-%s", MY_UUID);
+      String.format("java-dataproc-qs-test-%s", MY_UUID);
   private static final String JOB_FILE_NAME = "sum.py";
   private static final String JOB_FILE_PATH =
       String.format("gs://%s/%s", BUCKET_NAME, JOB_FILE_NAME);
@@ -63,14 +63,13 @@ public class QuickstartTest {
           + "sum = rdd.reduce(lambda x, y: x + y)\n";
 
   private ByteArrayOutputStream bout;
-  private PrintStream standardOutOrig;
   private Bucket bucket;
   private Blob blob;
 
   private static void requireEnv(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName),
+    System.getenv(varName));
   }
 
   @BeforeClass
@@ -82,7 +81,6 @@ public class QuickstartTest {
   @Before
   public void setUp() throws IOException, InterruptedException {
     bout = new ByteArrayOutputStream();
-    standardOutOrig = System.out;
     System.setOut(new PrintStream(bout));
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -103,7 +101,6 @@ public class QuickstartTest {
 
   @After
   public void teardown() throws IOException, InterruptedException, ExecutionException {
-    System.setOut(standardOutOrig);
     blob.delete();
     bucket.delete();
 

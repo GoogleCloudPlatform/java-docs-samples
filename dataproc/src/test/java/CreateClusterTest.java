@@ -44,12 +44,11 @@ public class CreateClusterTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
-  private PrintStream standardOutOrig;
 
   private static void requireEnv(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName),
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -62,7 +61,6 @@ public class CreateClusterTest {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
-    standardOutOrig = System.out;
   }
 
   @Test
@@ -76,7 +74,6 @@ public class CreateClusterTest {
   @After
   public void tearDown() throws IOException, InterruptedException, ExecutionException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", REGION);
-    System.setOut(standardOutOrig);
 
     ClusterControllerSettings clusterControllerSettings =
         ClusterControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
