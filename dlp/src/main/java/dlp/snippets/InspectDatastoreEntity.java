@@ -140,9 +140,9 @@ public class InspectDatastoreEntity {
 
       // Wait for the original job to complete
       try {
-        jobDone.get(5, TimeUnit.MINUTES);
+        jobDone.get(10, TimeUnit.MINUTES);
       } catch (TimeoutException e) {
-        System.out.println("Job was not completed after 5 minutes.");
+        System.out.println("Job was not completed after 10 minutes.");
         return;
       }
 
