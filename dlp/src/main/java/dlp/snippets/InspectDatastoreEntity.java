@@ -24,9 +24,8 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.privacy.dlp.v2.Action;
-import com.google.privacy.dlp.v2.CloudStorageOptions;
-import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DatastoreOptions;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
@@ -34,6 +33,8 @@ import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
+import com.google.privacy.dlp.v2.KindExpression;
+import com.google.privacy.dlp.v2.PartitionId;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -46,31 +47,45 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class InspectGcsFile {
+public class InspectDatastoreEntity {
 
-  public static void inspectGcsFile() throws InterruptedException, ExecutionException, IOException {
+  public static void insepctDatastoreEntity()
+      throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String gcsUri = "gs://" + "your-bucket-name" + "/path/to/your/image.png";
+    String datastoreNamespace = "your-datastore-namespace";
+    String datastoreKind = "your-datastore-kind";
     String pubSubTopicId = "your-pubsub-topic-id";
     String pubSubSubscriptionId = "your-pubsub-subscription-id";
-    inspectGcsFile(projectId, gcsUri, pubSubTopicId, pubSubSubscriptionId);
+    insepctDatastoreEntity(
+        projectId, datastoreNamespace, datastoreKind, pubSubTopicId, pubSubSubscriptionId);
   }
 
-  // Inspects a file in a Google Cloud Storage Bucket.
-  public static void inspectGcsFile(
-      String projectId, String gcsUri, String pubSubTopicId, String pubSubSubscriptionName)
+  // Inspects a Datastore Entity.
+  public static void insepctDatastoreEntity(
+      String projectId,
+      String datastoreNamespce,
+      String datastoreKind,
+      String pubSubTopicId,
+      String pubSubSubscriptionName)
       throws ExecutionException, InterruptedException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify the GCS file to be inspected.
-      FileSet fileSet = FileSet.newBuilder().setUrl(gcsUri).build();
-      CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+      // Specify the Datastore entity to be inspected.
+      PartitionId partitionId =
+          PartitionId.newBuilder()
+              .setProjectId(projectId)
+              .setNamespaceId(datastoreNamespce)
+              .build();
+      KindExpression kindExpression = KindExpression.newBuilder().setName(datastoreKind).build();
+
+      DatastoreOptions datastoreOptions =
+          DatastoreOptions.newBuilder().setKind(kindExpression).setPartitionId(partitionId).build();
+
       StorageConfig storageConfig =
-          StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
+          StorageConfig.newBuilder().setDatastoreOptions(datastoreOptions).build();
 
       // Specify the type of info the inspection will look for.
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types

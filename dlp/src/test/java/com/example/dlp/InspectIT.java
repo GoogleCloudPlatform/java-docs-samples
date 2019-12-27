@@ -53,51 +53,6 @@ public class InspectIT {
     assertNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
   }
 
-  // Requires that bucket by the specified name exists
-  @Test
-  public void testGcsFileInspectionReturnsInfoTypes() throws Exception {
-    Inspect.main(
-        new String[] {
-          "-gcs",
-          "-bucketName",
-          bucketName,
-          "-topicId",
-          topicId,
-          "-subscriptionId",
-          subscriptionId,
-          "-fileName",
-          "test.txt",
-          "-infoTypes",
-          "PHONE_NUMBER",
-          "EMAIL_ADDRESS"
-        });
-    String output = bout.toString();
-    assertThat(output, containsString("PHONE_NUMBER"));
-    assertThat(output, containsString("EMAIL_ADDRESS"));
-  }
-
-  // Requires a Datastore kind containing an entity
-  // with phone number and email address properties.
-  @Test
-  public void testDatastoreInspectionReturnsInfoTypes() throws Exception {
-    Inspect.main(
-        new String[] {
-          "-ds",
-          "-kind",
-          datastoreKind,
-          "-topicId",
-          topicId,
-          "-subscriptionId",
-          subscriptionId,
-          "-infoTypes",
-          "PHONE_NUMBER",
-          "EMAIL_ADDRESS"
-        });
-    String output = bout.toString();
-    assertThat(output, containsString("PHONE_NUMBER"));
-    assertThat(output, containsString("EMAIL_ADDRESS"));
-  }
-
   @Test
   public void testBigqueryInspectionReturnsInfoTypes() throws Exception {
     Inspect.main(

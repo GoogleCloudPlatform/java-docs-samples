@@ -42,6 +42,9 @@ public class InspectTests {
   private static final String pubSubTopicId = "dlp-tests";
   private static final String pubSubSubscriptionId = "dlp-test";
 
+  private static final String datastoreNamespace = "";
+  private static final String datastoreKind = "dlp";
+
   private static void requireEnvVar(String varName) {
     assertNotNull(
         String.format("Environment variable '%s' must be set to perform these tests.", varName),
@@ -50,7 +53,7 @@ public class InspectTests {
 
   @Before
   public void checkRequirements() {
-    //requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
@@ -67,7 +70,7 @@ public class InspectTests {
   }
 
   @Test
-  public void  testInspectString() {
+  public void testInspectString() {
     InspectString.inspectString(PROJECT_ID, "I'm Gary and my email is gary@example.com");
 
     String output = bout.toString();
@@ -75,7 +78,7 @@ public class InspectTests {
   }
 
   @Test
-  public void  textInspectTestFile() {
+  public void textInspectTestFile() {
     InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
     String output = bout.toString();
     assertThat(output, containsString("Info type: PHONE_NUMBER"));
@@ -83,7 +86,7 @@ public class InspectTests {
   }
 
   @Test
-  public void  testInspectImageFile() {
+  public void testInspectImageFile() {
     InspectImageFile.inspectImageFile(PROJECT_ID, "src/test/resources/test.png");
 
     String output = bout.toString();
@@ -92,9 +95,20 @@ public class InspectTests {
   }
 
   @Test
-  public void  testInspectGcsFile() throws InterruptedException, ExecutionException, IOException {
+  public void testInspectGcsFile() throws InterruptedException, ExecutionException, IOException {
     String gcsUri = String.format("gs://%s/test.txt", bucketName);
     InspectGcsFile.inspectGcsFile(PROJECT_ID, gcsUri, pubSubTopicId, pubSubSubscriptionId);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Info type: PHONE_NUMBER"));
+    assertThat(output, containsString("Info type: EMAIL_ADDRESS"));
+  }
+
+  @Test
+  public void testInspectDatastoreEntity()
+      throws InterruptedException, ExecutionException, IOException {
+    InspectDatastoreEntity.insepctDatastoreEntity(
+        PROJECT_ID, datastoreNamespace, datastoreKind, pubSubTopicId, pubSubSubscriptionId);
 
     String output = bout.toString();
     assertThat(output, containsString("Info type: PHONE_NUMBER"));
