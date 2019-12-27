@@ -45,6 +45,8 @@ public class InspectTests {
   private static final String datastoreNamespace = "";
   private static final String datastoreKind = "dlp";
 
+  private static final String BIGQUERY_DATASET = "integration_tests_dlp";
+
   private static void requireEnvVar(String varName) {
     assertNotNull(
         String.format("Environment variable '%s' must be set to perform these tests.", varName),
@@ -113,5 +115,15 @@ public class InspectTests {
     String output = bout.toString();
     assertThat(output, containsString("Info type: PHONE_NUMBER"));
     assertThat(output, containsString("Info type: EMAIL_ADDRESS"));
+  }
+
+  @Test
+  public void testInspectBiqQueryTable()
+      throws InterruptedException, ExecutionException, IOException {
+    InspectBigQueryTable.inspectBigQueryTable(
+        PROJECT_ID, BIGQUERY_DATASET, "harmful", pubSubTopicId, pubSubSubscriptionId);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Info type: PHONE_NUMBER"));
   }
 }

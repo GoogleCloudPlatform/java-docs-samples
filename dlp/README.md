@@ -43,48 +43,6 @@ Inspect strings, files locally and on Google Cloud Storage, Cloud Datastore, and
 Note: image scanning is not currently supported on Google Cloud Storage.
 For more information, refer to the [API documentation](https://cloud.google.com/dlp/docs). 
 Optional flags are explained in [this resource](https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig).
-```
-usage: com.example.dlp.Inspect
- -bq,--Google BigQuery         inspect BigQuery table
- -bucketName <arg>
- -customDictionaries <arg>
- -customRegexes <arg>
- -datasetId <arg>
- -ds,--Google Datastore        inspect Datastore kind
- -f,--file path <arg>          inspect input file path
- -fileName <arg>
- -gcs,--Google Cloud Storage   inspect GCS file
- -includeQuote <arg>
- -infoTypes <arg>
- -kind <arg>
- -maxFindings <arg>
- -minLikelihood <arg>
- -namespace <arg>
- -projectId <arg>
- -s,--string <arg>             inspect string
- -subscriptionId <arg>
- -tableId <arg>
- -topicId <arg>
-```
-### Examples
- - Inspect a string:
-   ```
-   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" -infoTypes PHONE_NUMBER EMAIL_ADDRESS
-   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -s "My phone number is (123) 456-7890 and my email address is me@somedomain.com" -customDictionaries me@somedomain.com -customRegexes "\(\d{3}\) \d{3}-\d{4}"
-   ```
- - Inspect a local file (text / image):
-   ```
-     java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.txt -infoTypes PHONE_NUMBER EMAIL_ADDRESS
-     java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -f src/test/resources/test.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
-   ```
-- Inspect a file on Google Cloud Storage:
-  ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -gcs -bucketName my-bucket -fileName my-file.txt -infoTypes PHONE_NUMBER EMAIL_ADDRESS
-  ```
-- Inspect a Google Cloud Datastore kind:
-  ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Inspect -ds -kind my-kind -infoTypes PHONE_NUMBER EMAIL_ADDRESS
-  ```
 
 ## Automatic redaction of sensitive data from images
 [Automatic redaction](https://cloud.google.com/dlp/docs/redacting-sensitive-data-images) produces an output image with sensitive data matches removed.

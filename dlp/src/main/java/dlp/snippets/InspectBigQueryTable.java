@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_inspect_datastore]
+// [START dlp_inspect_gcs]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
@@ -24,6 +24,8 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.privacy.dlp.v2.Action;
+import com.google.privacy.dlp.v2.BigQueryOptions;
+import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DatastoreOptions;
 import com.google.privacy.dlp.v2.DlpJob;
@@ -47,25 +49,25 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class InspectDatastoreEntity {
+public class InspectBigQueryTable {
 
-  public static void insepctDatastoreEntity()
+  public static void inspectBigQueryTable()
       throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String datastoreNamespace = "your-datastore-namespace";
-    String datastoreKind = "your-datastore-kind";
+    String bigQueryDatasetId = "your-bigquery-dataset-id";
+    String bigQueryTableId = "your-bigquery-table-id";
     String pubSubTopicId = "your-pubsub-topic-id";
     String pubSubSubscriptionId = "your-pubsub-subscription-id";
-    insepctDatastoreEntity(
-        projectId, datastoreNamespace, datastoreKind, pubSubTopicId, pubSubSubscriptionId);
+    inspectBigQueryTable(
+        projectId, bigQueryDatasetId, bigQueryTableId, pubSubTopicId, pubSubSubscriptionId);
   }
 
-  // Inspects a Datastore Entity.
-  public static void insepctDatastoreEntity(
+  // Inspects a BigQuery Table
+  public static void inspectBigQueryTable(
       String projectId,
-      String datastoreNamespce,
-      String datastoreKind,
+      String bigQueryDatasetId,
+      String bigQueryTableId,
       String pubSubTopicId,
       String pubSubSubscriptionName)
       throws ExecutionException, InterruptedException, IOException {
@@ -73,19 +75,19 @@ public class InspectDatastoreEntity {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify the Datastore entity to be inspected.
-      PartitionId partitionId =
-          PartitionId.newBuilder()
+      // Specify the BigQuery table to be inspected.
+      BigQueryTable tableReference =
+          BigQueryTable.newBuilder()
               .setProjectId(projectId)
-              .setNamespaceId(datastoreNamespce)
+              .setDatasetId(bigQueryDatasetId)
+              .setTableId(bigQueryTableId)
               .build();
-      KindExpression kindExpression = KindExpression.newBuilder().setName(datastoreKind).build();
 
-      DatastoreOptions datastoreOptions =
-          DatastoreOptions.newBuilder().setKind(kindExpression).setPartitionId(partitionId).build();
+      BigQueryOptions bigQueryOptions =
+          BigQueryOptions.newBuilder().setTableReference(tableReference).build();
 
       StorageConfig storageConfig =
-          StorageConfig.newBuilder().setDatastoreOptions(datastoreOptions).build();
+          StorageConfig.newBuilder().setBigQueryOptions(bigQueryOptions).build();
 
       // Specify the type of info the inspection will look for.
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
@@ -161,4 +163,4 @@ public class InspectDatastoreEntity {
     }
   }
 }
-// [END dlp_inspect_datastore]
+// [END dlp_inspect_gcs]
