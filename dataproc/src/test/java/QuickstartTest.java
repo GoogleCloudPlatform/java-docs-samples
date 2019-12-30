@@ -50,8 +50,7 @@ public class QuickstartTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
   private static final String CLUSTER_NAME = String.format("java-qs-test-%s", MY_UUID);
-  private static final String BUCKET_NAME =
-      String.format("java-dataproc-qs-test-%s", MY_UUID);
+  private static final String BUCKET_NAME = String.format("java-dataproc-qs-test-%s", MY_UUID);
   private static final String JOB_FILE_NAME = "sum.py";
   private static final String JOB_FILE_PATH =
       String.format("gs://%s/%s", BUCKET_NAME, JOB_FILE_NAME);
@@ -68,7 +67,7 @@ public class QuickstartTest {
   private static void requireEnv(String varName) {
     assertNotNull(
         String.format("Environment variable '%s' is required to perform these tests.", varName),
-    System.getenv(varName));
+        System.getenv(varName));
   }
 
   @BeforeClass
