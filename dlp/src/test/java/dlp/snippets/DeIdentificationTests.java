@@ -40,7 +40,7 @@ public class DeIdentificationTests {
   private static final String bucketName = PROJECT_ID + "/dlp";
 
   private String wrappedKey = System.getenv("DLP_DEID_WRAPPED_KEY");
-  private String keyName = System.getenv("DLP_DEID_KEY_NAME");
+  private String kmsKeyName = System.getenv("DLP_DEID_KEY_NAME");
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -52,8 +52,8 @@ public class DeIdentificationTests {
   public void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    // requireEnvVar("DLP_DEID_WRAPPED_KEY");
-    // requireEnvVar("DLP_DEID_KEY_NAME");
+    requireEnvVar("DLP_DEID_WRAPPED_KEY");
+    requireEnvVar("DLP_DEID_KEY_NAME");
   }
 
   @Before
@@ -70,10 +70,17 @@ public class DeIdentificationTests {
 
   @Test
   public void testDeIdentifyWithMasking() throws IOException {
-    DeIdentifyWithMasking.deIdentifyWithMasking(PROJECT_ID, "I'm Gary and my email is gary@example.com");
+    DeIdentifyWithMasking.deIdentifyWithMasking(PROJECT_ID, "My SSN is 372819127");
 
     String output = bout.toString();
     assertThat(output, containsString("Text after masking:"));
   }
 
+  @Test
+  public void testDeIdentifyWithFpe() throws IOException {
+    DeIdentifyWithFpe.deIdentifyWithFpe(PROJECT_ID, "My SSN is 372819127", kmsKeyName, wrappedKey);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Text after masking:"));
+  }
 }
