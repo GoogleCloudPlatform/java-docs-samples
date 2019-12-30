@@ -150,7 +150,7 @@ public class MoveServletTest {
         .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 
-  @Ignore // TODO: this wasn't running, and I've turned it off.
+  @Test
   public void doPost_notMyTurn_move() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
