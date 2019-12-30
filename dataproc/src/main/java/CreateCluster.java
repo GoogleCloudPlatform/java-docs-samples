@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 public class CreateCluster {
 
-  public static void createCluster() throws IOException, InterruptedException, ExecutionException {
+  public static void createCluster() throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";
@@ -36,7 +36,7 @@ public class CreateCluster {
   }
 
   public static void createCluster(String projectId, String region, String clusterName)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
     // Configure the settings for the cluster controller client.
@@ -75,6 +75,9 @@ public class CreateCluster {
 
       // Print out a success message.
       System.out.printf("Cluster created successfully: %s", response.getClusterName());
+
+    } catch (ExecutionException e) {
+      System.err.println(String.format("Error executing createCluster: %s ", e.getMessage()));
     }
   }
 }
