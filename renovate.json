@@ -14,10 +14,6 @@
     {
       "packagePatterns": [ "^io.vertx:vertex-" ],
       "groupName": "Vertx packages"
-    },
-    {
-      "packagePatterns": [ "^io.ktor:ktor-" ],
-      "groupName": "Ktor packages"
     }
   ],
   "prConcurrentLimit": 5,
