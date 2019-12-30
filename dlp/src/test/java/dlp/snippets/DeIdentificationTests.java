@@ -81,6 +81,14 @@ public class DeIdentificationTests {
     DeIdentifyWithFpe.deIdentifyWithFpe(PROJECT_ID, "My SSN is 372819127", kmsKeyName, wrappedKey);
 
     String output = bout.toString();
-    assertThat(output, containsString("Text after masking:"));
+    assertThat(output, containsString("Text after format-preserving encryption:"));
+  }
+
+  @Test
+  public void testReIdentifyWithFpe() throws IOException {
+    ReIdentifyWithFpe.reIdentifyWithFpe(PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", kmsKeyName, wrappedKey);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Text after re-identification:"));
   }
 }

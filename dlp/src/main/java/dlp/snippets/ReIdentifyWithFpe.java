@@ -8,6 +8,8 @@ import com.google.privacy.dlp.v2.ContentItem;
 import com.google.privacy.dlp.v2.CryptoKey;
 import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig;
 import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet;
+import com.google.privacy.dlp.v2.CustomInfoType;
+import com.google.privacy.dlp.v2.CustomInfoType.SurrogateType;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
 import com.google.privacy.dlp.v2.DeidentifyContentRequest;
 import com.google.privacy.dlp.v2.DeidentifyContentResponse;
@@ -18,40 +20,47 @@ import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.KmsWrappedCryptoKey;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.ReidentifyContentRequest;
+import com.google.privacy.dlp.v2.ReidentifyContentResponse;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
-import java.util.Arrays;
 
-public class DeIdentifyWithFpe {
+public class ReIdentifyWithFpe {
 
-  public static void deIdentifyWithFpe() throws IOException {
+  public static void reIdentifyWithFpe() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
-    String textToDeIdentify = "I'm Gary and my email is gary@example.com";
+    String textToReIdentify = "My SSN is SSN_TOKEN(9):731997681";
     String kmsKeyName =
         "projects/YOUR_PROJECT/"
             + "locations/YOUR_KEYRING_REGION/"
             + "keyRings/YOUR_KEYRING_NAME/"
             + "cryptoKeys/YOUR_KEY_NAME";
     String wrappedAesKey = "YOUR_ENCRYPTED_AES_256_KEY";
-    deIdentifyWithFpe(projectId, textToDeIdentify, kmsKeyName, wrappedAesKey);
+    reIdentifyWithFpe(projectId, textToReIdentify, kmsKeyName, wrappedAesKey);
   }
 
-  public static void deIdentifyWithFpe(
-      String projectId, String textToDeIdentify, String kmsKeyName, String wrappedAesKey)
+  public static void reIdentifyWithFpe(
+      String projectId, String textToReIdentify, String kmsKeyName, String wrappedAesKey)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify what content you want the service to DeIdentify
-      ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
+      // Specify what content you want the service to re-identify
+      ContentItem contentItem = ContentItem.newBuilder().setValue(textToReIdentify).build();
 
-      // Specify the type of info the inspection will look for.
-      // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
-      InfoType infoType = InfoType.newBuilder().setName("US_SOCIAL_SECURITY_NUMBER").build();
+      // Specify the type of info the inspection will re-identify. This must use the same custom
+      // into type that was used as a surrogate during the initial encryption.
+      InfoType surrogateInfoType = InfoType.newBuilder().setName("SSN_TOKEN").build();
+
+      CustomInfoType customInfoType =
+          CustomInfoType.newBuilder()
+              .setInfoType(surrogateInfoType)
+              .setSurrogateType(SurrogateType.getDefaultInstance())
+              .build();
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addAllInfoTypes(Arrays.asList(infoType)).build();
+          InspectConfig.newBuilder().addCustomInfoTypes(customInfoType).build();
 
       // Specify an encrypted AES-256 key and the name of the Cloud KMS key that encrypted it
       KmsWrappedCryptoKey kmsWrappedCryptoKey =
@@ -61,8 +70,7 @@ public class DeIdentifyWithFpe {
               .build();
       CryptoKey cryptoKey = CryptoKey.newBuilder().setKmsWrapped(kmsWrappedCryptoKey).build();
 
-      // Specify how the info from the inspection should be encrypted.
-      InfoType surrogateInfoType = InfoType.newBuilder().setName("SSN_TOKEN").build();
+      // Specify how to un-encrypt the previously de-identified information
       CryptoReplaceFfxFpeConfig cryptoReplaceFfxFpeConfig =
           CryptoReplaceFfxFpeConfig.newBuilder()
               .setCryptoKey(cryptoKey)
@@ -78,28 +86,28 @@ public class DeIdentifyWithFpe {
       InfoTypeTransformation infoTypeTransformation =
           InfoTypeTransformation.newBuilder()
               .setPrimitiveTransformation(primitiveTransformation)
+              .addInfoTypes(surrogateInfoType)
               .build();
       InfoTypeTransformations transformations =
           InfoTypeTransformations.newBuilder().addTransformations(infoTypeTransformation).build();
 
-      DeidentifyConfig deidentifyConfig =
+      DeidentifyConfig reidentifyConfig =
           DeidentifyConfig.newBuilder().setInfoTypeTransformations(transformations).build();
 
       // Combine configurations into a request for the service.
-      DeidentifyContentRequest request =
-          DeidentifyContentRequest.newBuilder()
+      ReidentifyContentRequest request =
+          ReidentifyContentRequest.newBuilder()
               .setParent(ProjectName.of(projectId).toString())
               .setItem(contentItem)
               .setInspectConfig(inspectConfig)
-              .setDeidentifyConfig(deidentifyConfig)
+              .setReidentifyConfig(reidentifyConfig)
               .build();
 
       // Send the request and receive response from the service
-      DeidentifyContentResponse response = dlp.deidentifyContent(request);
+      ReidentifyContentResponse response = dlp.reidentifyContent(request);
 
       // Print the results
-      System.out.println(
-          "Text after format-preserving encryption: " + response.getItem().getValue());
+      System.out.println("Text after re-identification: " + response.getItem().getValue());
     }
   }
 }

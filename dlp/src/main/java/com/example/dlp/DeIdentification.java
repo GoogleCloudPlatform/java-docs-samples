@@ -71,102 +71,6 @@ import org.apache.commons.cli.ParseException;
 
 public class DeIdentification {
 
-  // [START dlp_reidentify_fpe]
-  /**
-   * Reidentify a string by encrypting sensitive information while preserving format.
-   *
-   * @param string The string to reidentify.
-   * @param alphabet The set of characters used when encrypting the input. For more information, see
-   *     cloud.google.com/dlp/docs/reference/rest/v2/content/deidentify
-   * @param keyName The name of the Cloud KMS key to use when decrypting the wrapped key.
-   * @param wrappedKey The encrypted (or "wrapped") AES-256 encryption key.
-   * @param projectId ID of Google Cloud project to run the API under.
-   * @param surrogateType The name of the surrogate custom info type to used during the encryption
-   *     process.
-   */
-  private static void reIdentifyWithFpe(
-      String string,
-      FfxCommonNativeAlphabet alphabet,
-      String keyName,
-      String wrappedKey,
-      String projectId,
-      String surrogateType) {
-    // instantiate a client
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-      ContentItem contentItem = ContentItem.newBuilder().setValue(string).build();
-
-      InfoType surrogateTypeObject = InfoType.newBuilder().setName(surrogateType).build();
-
-      // Create the format-preserving encryption (FPE) configuration
-      KmsWrappedCryptoKey kmsWrappedCryptoKey =
-          KmsWrappedCryptoKey.newBuilder()
-              .setWrappedKey(ByteString.copyFrom(BaseEncoding.base64().decode(wrappedKey)))
-              .setCryptoKeyName(keyName)
-              .build();
-
-      CryptoKey cryptoKey = CryptoKey.newBuilder().setKmsWrapped(kmsWrappedCryptoKey).build();
-
-      CryptoReplaceFfxFpeConfig cryptoReplaceFfxFpeConfig =
-          CryptoReplaceFfxFpeConfig.newBuilder()
-              .setCryptoKey(cryptoKey)
-              .setCommonAlphabet(alphabet)
-              .setSurrogateInfoType(surrogateTypeObject)
-              .build();
-
-      // Create the deidentification transformation configuration
-      PrimitiveTransformation primitiveTransformation =
-          PrimitiveTransformation.newBuilder()
-              .setCryptoReplaceFfxFpeConfig(cryptoReplaceFfxFpeConfig)
-              .build();
-
-      InfoTypeTransformation infoTypeTransformationObject =
-          InfoTypeTransformation.newBuilder()
-              .setPrimitiveTransformation(primitiveTransformation)
-              .addInfoTypes(surrogateTypeObject)
-              .build();
-
-      InfoTypeTransformations infoTypeTransformationArray =
-          InfoTypeTransformations.newBuilder()
-              .addTransformations(infoTypeTransformationObject)
-              .build();
-
-      // Create the inspection config
-      CustomInfoType customInfoType =
-          CustomInfoType.newBuilder()
-              .setInfoType(surrogateTypeObject)
-              .setSurrogateType(SurrogateType.newBuilder().build())
-              .build();
-
-      InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addCustomInfoTypes(customInfoType).build();
-
-      // Create the reidentification request object
-      DeidentifyConfig reidentifyConfig =
-          DeidentifyConfig.newBuilder()
-              .setInfoTypeTransformations(infoTypeTransformationArray)
-              .build();
-
-      ReidentifyContentRequest request =
-          ReidentifyContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
-              .setReidentifyConfig(reidentifyConfig)
-              .setInspectConfig(inspectConfig)
-              .setItem(contentItem)
-              .build();
-
-      // Execute the deidentification request
-      ReidentifyContentResponse response = dlpServiceClient.reidentifyContent(request);
-
-      // Print the reidentified input value
-      // e.g. "My SSN is 7261298621" --> "My SSN is 123456789"
-      String result = response.getItem().getValue();
-      System.out.println(result);
-    } catch (Exception e) {
-      System.out.println("Error in reidentifyWithFpe: " + e.getMessage());
-    }
-  }
-  // [END dlp_reidentify_fpe]
-
   // [START dlp_deidentify_date_shift]
   /**
    * @param inputCsvPath The path to the CSV file to deidentify
@@ -473,17 +377,6 @@ public class DeIdentification {
           wrappedKey,
           keyName,
           projectId);
-    } else if (cmd.hasOption("r")) {
-      // reidentification with FPE
-      String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
-      String keyName = cmd.getOptionValue(keyNameOption.getOpt());
-      String val = cmd.getOptionValue(reidentifyFpeOption.getOpt());
-      String surrogateType = cmd.getOptionValue(surrogateTypeOption.getOpt());
-      FfxCommonNativeAlphabet alphabet =
-          FfxCommonNativeAlphabet.valueOf(
-              cmd.getOptionValue(
-                  alphabetOption.getOpt(), FfxCommonNativeAlphabet.ALPHA_NUMERIC.name()));
-      reIdentifyWithFpe(val, alphabet, keyName, wrappedKey, projectId, surrogateType);
     }
   }
 }
