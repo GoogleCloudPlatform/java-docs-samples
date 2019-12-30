@@ -71,71 +71,6 @@ import org.apache.commons.cli.ParseException;
 
 public class DeIdentification {
 
-  // [START dlp_deidentify_replace_with_info_type]
-  /**
-   * Deidentify a string by replacing sensitive information with its info type using the DLP API.
-   *
-   * @param string The string to deidentify.
-   * @param projectId ID of Google Cloud project to run the API under.
-   */
-  private static void deIdentifyReplaceWithInfoType(
-      String string,
-      List<InfoType> infoTypes,
-      String projectId) {
-
-    // instantiate a client
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-      ContentItem contentItem = ContentItem.newBuilder().setValue(string).build();
-
-      // Create the deidentification transformation configuration
-      PrimitiveTransformation primitiveTransformation =
-          PrimitiveTransformation.newBuilder()
-              .setReplaceWithInfoTypeConfig(ReplaceWithInfoTypeConfig.getDefaultInstance())
-              .build();
-
-      InfoTypeTransformation infoTypeTransformationObject =
-          InfoTypeTransformation.newBuilder()
-              .setPrimitiveTransformation(primitiveTransformation)
-              .build();
-
-      InfoTypeTransformations infoTypeTransformationArray =
-          InfoTypeTransformations.newBuilder()
-              .addTransformations(infoTypeTransformationObject)
-              .build();
-
-      InspectConfig inspectConfig =
-          InspectConfig.newBuilder()
-              .addAllInfoTypes(infoTypes)
-              .build();
-
-      DeidentifyConfig deidentifyConfig =
-          DeidentifyConfig.newBuilder()
-              .setInfoTypeTransformations(infoTypeTransformationArray)
-              .build();
-
-      // Create the deidentification request object
-      DeidentifyContentRequest request =
-          DeidentifyContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
-              .setInspectConfig(inspectConfig)
-              .setDeidentifyConfig(deidentifyConfig)
-              .setItem(contentItem)
-              .build();
-
-      // Execute the deidentification request
-      DeidentifyContentResponse response = dlpServiceClient.deidentifyContent(request);
-
-      // Print the redacted input value
-      // e.g. "My SSN is 123456789" --> "My SSN is [US_SOCIAL_SECURITY_NUMBER]"
-      String result = response.getItem().getValue();
-      System.out.println(result);
-    } catch (Exception e) {
-      System.out.println("Error in deIdentifyReplaceWithInfoType: " + e.getMessage());
-    }
-  }
-  // [END dlp_deidentify_replace_with_info_type]
-
   // [START dlp_deidentify_masking]
   /**
    * Deidentify a string by masking sensitive information with a character using the DLP API.
@@ -675,17 +610,7 @@ public class DeIdentification {
       }
     }
 
-    if (cmd.hasOption("it")) {
-      // replace with info type
-      String val = cmd.getOptionValue(deidentifyReplaceWithInfoTypeOption.getOpt());
-      deIdentifyReplaceWithInfoType(val, infoTypesList, projectId);
-    } else if (cmd.hasOption("m")) {
-      // deidentification with character masking
-      int numberToMask = Integer.parseInt(cmd.getOptionValue(numberToMaskOption.getOpt(), "0"));
-      char maskingCharacter = cmd.getOptionValue(maskingCharacterOption.getOpt(), "*").charAt(0);
-      String val = cmd.getOptionValue(deidentifyMaskingOption.getOpt());
-      deIdentifyWithMask(val, infoTypesList, maskingCharacter, numberToMask, projectId);
-    } else if (cmd.hasOption("f")) {
+    if (cmd.hasOption("f")) {
       // deidentification with FPE
       String wrappedKey = cmd.getOptionValue(wrappedKeyOption.getOpt());
       String keyName = cmd.getOptionValue(keyNameOption.getOpt());
