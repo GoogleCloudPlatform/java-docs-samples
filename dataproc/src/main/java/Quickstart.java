@@ -39,7 +39,8 @@ import java.util.concurrent.TimeoutException;
 
 public class Quickstart {
 
-  public static Job waitForJobCompletion(JobControllerClient jobControllerClient, String projectId, String region, String jobId) {
+  public static Job waitForJobCompletion(
+      JobControllerClient jobControllerClient, String projectId, String region, String jobId) {
     while (true) {
       // Poll the service periodically until the Job is in a finished state.
       Job jobInfo = jobControllerClient.getJob(projectId, region, jobId);
@@ -127,8 +128,8 @@ public class Quickstart {
 
       // Wait for the job to finish.
       CompletableFuture<Job> finishedJobFuture =
-          CompletableFuture.supplyAsync(() ->
-           waitForJobCompletion(jobControllerClient, projectId, region, jobId));
+          CompletableFuture.supplyAsync(
+              () -> waitForJobCompletion(jobControllerClient, projectId, region, jobId));
       int timeout = 10;
       try {
         Job jobInfo = finishedJobFuture.get(timeout, TimeUnit.MINUTES);

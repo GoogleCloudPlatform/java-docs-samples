@@ -49,8 +49,7 @@ public class QuickstartTest {
   private static final String REGION = "us-central1";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ENDPOINT = String.format("%s-dataproc.googleapis.com:443", REGION);
-  private static final String CLUSTER_NAME =
-      String.format("java-qs-test-%s", MY_UUID);
+  private static final String CLUSTER_NAME = String.format("java-qs-test-%s", MY_UUID);
   private static final String BUCKET_NAME =
       String.format("java-dataproc-qs-test-%s", MY_UUID);
   private static final String JOB_FILE_NAME = "sum.py";
@@ -79,7 +78,7 @@ public class QuickstartTest {
   }
 
   @Before
-  public void setUp() throws IOException, InterruptedException {
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
@@ -89,7 +88,7 @@ public class QuickstartTest {
   }
 
   @Test
-  public void quickstartTest() throws IOException, InterruptedException, ExecutionException {
+  public void quickstartTest() throws IOException, InterruptedException {
     Quickstart.quickstart(PROJECT_ID, REGION, CLUSTER_NAME, JOB_FILE_PATH);
     String output = bout.toString();
 
