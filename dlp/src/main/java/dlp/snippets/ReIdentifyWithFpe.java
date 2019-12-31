@@ -1,6 +1,6 @@
 package dlp.snippets;
 
-// [START dlp_deidentify_fpe]
+// [START dlp_reidentify_fpe]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.io.BaseEncoding;
@@ -111,4 +111,4 @@ public class ReIdentifyWithFpe {
     }
   }
 }
-// [END dlp_deidentify_fpe]
+// [END dlp_reidentify_fpe]

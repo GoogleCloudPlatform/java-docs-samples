@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,4 +93,17 @@ public class DeIdentificationTests {
     String output = bout.toString();
     assertThat(output, containsString("Text after re-identification:"));
   }
+
+  @Test
+  public void testDeIdentifyWithDateShift() throws IOException {
+    Path inputFile = Paths.get("src/test/resources/dates.csv");
+    assertThat("Input file must exist", inputFile.toFile().exists());
+    Path outputFile = Paths.get("src/test/resources/results.csv");
+    assertThat("Output file must be writeable", inputFile.toFile().canWrite());
+    DeIdentifyWithDateShift.deIdentifyWithDateShift(PROJECT_ID, inputFile, outputFile);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Content written to file: "));
+  }
+
 }
