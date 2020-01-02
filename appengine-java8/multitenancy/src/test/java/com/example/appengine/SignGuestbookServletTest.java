@@ -90,6 +90,7 @@ public class SignGuestbookServletTest {
 
     servletUnderTest = new SignGuestbookServlet();
 
+    ObjectifyService.init();
     ObjectifyService.register(Guestbook.class);
     ObjectifyService.register(Greeting.class);
 

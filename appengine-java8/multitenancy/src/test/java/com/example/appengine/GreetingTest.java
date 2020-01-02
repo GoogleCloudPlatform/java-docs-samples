@@ -58,6 +58,7 @@ public class GreetingTest {
     helper.setUp();
     ds = DatastoreServiceFactory.getDatastoreService();
 
+    ObjectifyService.init();
     ObjectifyService.register(Guestbook.class);
     ObjectifyService.register(Greeting.class);
 
