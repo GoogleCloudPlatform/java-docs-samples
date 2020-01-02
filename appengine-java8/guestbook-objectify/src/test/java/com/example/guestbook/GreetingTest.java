@@ -29,8 +29,10 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
+import javax.servlet.ServletContextEvent;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -58,6 +60,7 @@ public class GreetingTest {
     helper.setUp();
     ds = DatastoreServiceFactory.getDatastoreService();
 
+    ObjectifyService.init();
     ObjectifyService.register(Guestbook.class);
     ObjectifyService.register(Greeting.class);
 
