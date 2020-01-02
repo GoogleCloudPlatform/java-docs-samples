@@ -46,12 +46,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.8.1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <configuration>
           <systemPropertyVariables>
             <spanner.test.instance>default-instance</spanner.test.instance>
@@ -98,7 +98,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.25</version>
+      <version>1.7.30</version>
     </dependency>
 
   </dependencies>

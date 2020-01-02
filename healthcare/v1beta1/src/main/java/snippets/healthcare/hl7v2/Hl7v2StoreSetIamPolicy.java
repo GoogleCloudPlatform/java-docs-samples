@@ -17,7 +17,6 @@
 package snippets.healthcare.hl7v2;
 
 // [START healthcare_hl7v2_store_set_iam_policy]
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -82,7 +81,6 @@ public class Hl7v2StoreSetIamPolicy {
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };
