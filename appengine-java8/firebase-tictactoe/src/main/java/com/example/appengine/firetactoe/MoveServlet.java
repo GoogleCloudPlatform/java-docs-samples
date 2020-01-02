@@ -42,7 +42,7 @@ public class MoveServlet extends HttpServlet {
 
     int cell = new Integer(request.getParameter("cell"));
     if (!game.makeMove(cell, currentUserId)) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN);
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     } else {
       ofy.save().entity(game).now();
     }

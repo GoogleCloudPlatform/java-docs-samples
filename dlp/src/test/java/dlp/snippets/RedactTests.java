@@ -17,11 +17,11 @@
 package dlp.snippets;
 
 import static junit.framework.TestCase.assertNotNull;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,9 +38,10 @@ public class RedactTests {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        String.format("Environment variable '%s' must be set to perform these tests.", varName),
+        System.getenv(varName));
   }
+
 
   @BeforeClass
   public static void checkRequirements() {
@@ -65,6 +66,6 @@ public class RedactTests {
     RedactImageFile.redactImageFile(PROJECT_ID, "src/test/resources/test.png");
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Redacted image written"));
+    assertThat(output, containsString("Redacted image written"));
   }
 }

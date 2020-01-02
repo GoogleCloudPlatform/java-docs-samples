@@ -22,12 +22,9 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import java.io.PrintWriter;
@@ -82,7 +79,7 @@ public class SignGuestbookServletTest {
 
     //  Set up some fake HTTP requests
     when(mockRequest.getRequestURI()).thenReturn(FAKE_URL);
-    when(mockRequest.getParameter("guestbookName")).thenReturn("default");
+    when(mockRequest.getParameter("guestbookName")).thenReturn("default2");
     when(mockRequest.getParameter("content")).thenReturn(testPhrase);
 
     stringWriter = new StringWriter();
@@ -90,6 +87,7 @@ public class SignGuestbookServletTest {
 
     servletUnderTest = new SignGuestbookServlet();
 
+    ObjectifyService.init();
     ObjectifyService.register(Guestbook.class);
     ObjectifyService.register(Greeting.class);
 
@@ -109,11 +107,8 @@ public class SignGuestbookServletTest {
   public void doPost_userNotLoggedIn() throws Exception {
     servletUnderTest.doPost(mockRequest, mockResponse);
 
-    Query query =
-        new Query("Greeting").setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
-    PreparedQuery pq = ds.prepare(query);
-
-    Entity greeting = pq.asSingleEntity(); // Should only be one at this point.
-    assertEquals(greeting.getProperty("content"), testPhrase);
+    Greeting greeting = ObjectifyService.ofy().load().type(Greeting.class)
+        .ancestor(Key.create(Guestbook.class, "default2")).first().now();
+    assertEquals(greeting.content, testPhrase);
   }
 }

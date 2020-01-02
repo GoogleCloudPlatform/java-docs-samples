@@ -17,7 +17,6 @@
 package snippets.healthcare.dicom;
 
 // [START healthcare_dicomweb_retrieve_instance]
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;

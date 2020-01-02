@@ -43,14 +43,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.98.0</version>
+      <version>1.99.0</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-3</version>
+      <version>4.13-rc-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
