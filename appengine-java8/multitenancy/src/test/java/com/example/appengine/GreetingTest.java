@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import org.junit.After;
@@ -58,6 +59,7 @@ public class GreetingTest {
     helper.setUp();
     ds = DatastoreServiceFactory.getDatastoreService();
 
+    ObjectifyService.init();
     ObjectifyService.register(Guestbook.class);
     ObjectifyService.register(Greeting.class);
 
@@ -79,10 +81,8 @@ public class GreetingTest {
     Greeting g = new Greeting("default", TEST_CONTENT);
     ObjectifyService.ofy().save().entity(g).now();
 
-    Query query =
-        new Query("Greeting").setAncestor(new KeyFactory.Builder("Guestbook", "default").getKey());
-    PreparedQuery pq = ds.prepare(query);
-    Entity greeting = pq.asSingleEntity(); // Should only be one at this point.
-    assertEquals(greeting.getProperty("content"), TEST_CONTENT);
+    Greeting greeting = ObjectifyService.ofy().load().type(Greeting.class).ancestor(
+        Key.create(Guestbook.class, "default")).first().now();
+    assertEquals(greeting.content, TEST_CONTENT);
   }
 }
