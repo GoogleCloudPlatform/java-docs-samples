@@ -11,8 +11,6 @@ import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphab
 import com.google.privacy.dlp.v2.CustomInfoType;
 import com.google.privacy.dlp.v2.CustomInfoType.SurrogateType;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
-import com.google.privacy.dlp.v2.DeidentifyContentRequest;
-import com.google.privacy.dlp.v2.DeidentifyContentResponse;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;

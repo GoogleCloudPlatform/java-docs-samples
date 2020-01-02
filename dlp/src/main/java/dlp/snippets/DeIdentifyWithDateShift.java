@@ -1,6 +1,6 @@
 package dlp.snippets;
 
-// [START dlp_deidentify_fpe]
+// [START dlp_deidentify_date_shift]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.base.Splitter;
@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DeIdentifyWithDateShift {
 
@@ -101,7 +100,9 @@ public class DeIdentifyWithDateShift {
         writer.write(headerOut + "\n");
 
         List<String> rowOutput =
-            outTable.getRowsList().stream().map(row -> joinRow(row.getValuesList())).collect(Collectors.toList());
+            outTable.getRowsList().stream()
+                .map(row -> joinRow(row.getValuesList()))
+                .collect(Collectors.toList());
         for (String line : rowOutput) {
           writer.write(line + "\n");
         }
@@ -135,7 +136,7 @@ public class DeIdentifyWithDateShift {
         .build();
   }
 
-  public static String formatDate(Date d){
+  public static String formatDate(Date d) {
     return String.format("%s/%s/%s", d.getMonth(), d.getDay(), d.getYear());
   }
 
@@ -147,4 +148,4 @@ public class DeIdentifyWithDateShift {
     return String.join(",", name, birthDate, creditCardNumber, registerDate);
   }
 }
-// [END dlp_deidentify_fpe]
+// [END dlp_deidentify_date_shift]
