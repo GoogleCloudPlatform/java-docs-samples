@@ -87,6 +87,6 @@ public class ImportDatasetTest {
   public void testImportDataset() throws IOException, ExecutionException, InterruptedException {
     ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity_extraction/dataset.csv");
     String got = bout.toString();
-    assertThat(got).contains("Dataset id:");
+    assertThat(got).contains("Dataset imported.");
   }
 }
