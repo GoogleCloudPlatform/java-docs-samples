@@ -15,17 +15,16 @@
  */
 
 // [START functions_tips_infinite_retries]
-import java.sql.Timestamp;
 // [START functions_tips_retry]
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.text.ParseException;
 import java.util.Map;
 
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 public class PubSub {
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
+  // Use Gson (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
 
   // [END functions_tips_infinite_retries]
@@ -33,15 +32,15 @@ public class PubSub {
   public String retryPubSub(PubSubMessage message) throws Exception, ParseException {
     JsonObject body = gsonParser.fromJson(message.data, JsonObject.class);
     
-    boolean retry = false;
+    boolean retry = body.has("retry") && body.get("retry").getAsBoolean();
     if (body.has("retry")) {
       retry = body.get("retry").getAsBoolean();
     }
     
     if (retry) {
-      throw new Exception("Retrying...");
+      throw new RuntimeException("Retrying...");
     } else {
-      throw new Exception("Not retrying...");
+      throw new RuntimeException("Not retrying...");
     }
   }
   // [END functions_tips_retry]
@@ -55,11 +54,11 @@ public class PubSub {
     JsonObject body = gsonParser.fromJson(message.data, JsonObject.class);
     final long MAX_AGE = 10_000;
 
-    long eventAge = 0;
+    LocalDateTime timestamp = LocalDateTime.now();
     if (body.has("timestamp")) {
-      long ts = Timestamp.valueOf(body.get("timestamp").getAsString()).getTime();
-      eventAge = System.currentTimeMillis() - ts;
+      timestamp = LocalDateTime.parse(body.get("timestamp").getAsString());
     }
+    long eventAge = Duration.between(timestamp, LocalDateTime.now()).toMillis();
 
     // Ignore events that are too old
     if (eventAge > MAX_AGE) {
@@ -72,6 +71,7 @@ public class PubSub {
   }
 
   // [START functions_tips_retry]
+  // Cloud Functions will marshall it using Gson.
   public class PubSubMessage {
     String data;
     Map<String, String> attributes;
