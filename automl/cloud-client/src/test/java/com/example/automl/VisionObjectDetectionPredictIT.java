@@ -19,10 +19,11 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.automl.v1.AutoMlClient;
+import com.google.cloud.automl.v1.DeployModelRequest;
+import com.google.cloud.automl.v1.Model;
+import com.google.cloud.automl.v1.ModelName;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -35,21 +36,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for automl vision object detection "Predict" sample.
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class VisionObjectDetectionPredictIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BUCKET_ID = PROJECT_ID + "-vcm";
-  private static final String modelId = "IOD1854128448151224320";
+  private static final String MODEL_ID = "IOD1854128448151224320";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -59,7 +57,19 @@ public class VisionObjectDetectionPredictIT {
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException, ExecutionException, InterruptedException {
+    // Verify that the model is deployed for prediction
+    try (AutoMlClient client = AutoMlClient.create()) {
+      ModelName modelFullId = ModelName.of(PROJECT_ID, "us-central1", MODEL_ID);
+      Model model = client.getModel(modelFullId);
+      if (model.getDeploymentState() == Model.DeploymentState.UNDEPLOYED) {
+        // Deploy the model if not deployed
+        DeployModelRequest request =
+            DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
+        client.deployModelAsync(request).get();
+      }
+    }
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -73,45 +83,9 @@ public class VisionObjectDetectionPredictIT {
   @Test
   public void testPredict() throws IOException {
     String filePath = "resources/salad.jpg";
-    // Act
-    VisionObjectDetectionPredict.predict(PROJECT_ID, modelId, filePath);
-
-    // Assert
+    VisionObjectDetectionPredict.predict(PROJECT_ID, MODEL_ID, filePath);
     String got = bout.toString();
     assertThat(got).contains("X:");
     assertThat(got).contains("Y:");
-  }
-
-  @Test
-  public void testBatchPredict() throws IOException, ExecutionException, InterruptedException {
-    String inputUri =
-        String.format("gs://%s/vision_object_detection_batch_predict_test.csv", BUCKET_ID);
-    String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
-    // Act
-    BatchPredict.batchPredict(PROJECT_ID, modelId, inputUri, outputUri);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Batch Prediction results saved to specified Cloud Storage bucket");
-
-    Storage storage = StorageOptions.getDefaultInstance().getService();
-    Page<Blob> blobs =
-        storage.list(
-            BUCKET_ID,
-            Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix("TEST_BATCH_PREDICT/"));
-
-    for (Blob blob : blobs.iterateAll()) {
-      Page<Blob> fileBlobs =
-          storage.list(
-              BUCKET_ID,
-              Storage.BlobListOption.currentDirectory(),
-              Storage.BlobListOption.prefix(blob.getName()));
-      for (Blob fileBlob : fileBlobs.iterateAll()) {
-        if (!fileBlob.isDirectory()) {
-          fileBlob.delete();
-        }
-      }
-    }
   }
 }

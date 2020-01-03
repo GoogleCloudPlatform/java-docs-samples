@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,19 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.automl.v1.AutoMlClient;
+import com.google.cloud.automl.v1.DeployModelRequest;
+import com.google.cloud.automl.v1.Model;
+import com.google.cloud.automl.v1.ModelName;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
-import com.google.cloud.automl.v1.AutoMlClient;
-import com.google.cloud.automl.v1.DeployModelRequest;
-import com.google.cloud.automl.v1.Model;
-import com.google.cloud.automl.v1.ModelName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,9 +41,10 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class LanguageSentimentAnalysisPredictIT {
+public class BatchPredictTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "TST864310464894223026";
+  private static final String BUCKET_ID = PROJECT_ID + "-lcm";
+  private static final String MODEL_ID = "TEN1974951581904273408";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -76,14 +81,39 @@ public class LanguageSentimentAnalysisPredictIT {
 
   @After
   public void tearDown() {
+    // Delete the created files from GCS
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    Page<Blob> blobs =
+        storage.list(
+            BUCKET_ID,
+            Storage.BlobListOption.currentDirectory(),
+            Storage.BlobListOption.prefix("TEST_BATCH_PREDICT/"));
+
+    for (Blob blob : blobs.iterateAll()) {
+      Page<Blob> fileBlobs =
+          storage.list(
+              BUCKET_ID,
+              Storage.BlobListOption.currentDirectory(),
+              Storage.BlobListOption.prefix(blob.getName()));
+      for (Blob fileBlob : fileBlobs.iterateAll()) {
+        if (!fileBlob.isDirectory()) {
+          fileBlob.delete();
+        }
+      }
+    }
+
     System.setOut(null);
   }
 
   @Test
-  public void testPredict() throws IOException {
-    String text = "Hopefully this Claritin kicks in soon";
-    LanguageSentimentAnalysisPredict.predict(PROJECT_ID, MODEL_ID, text);
+  public void testBatchPredict() throws IOException, ExecutionException, InterruptedException {
+    String inputUri = String.format("gs://%s/entity_extraction/input.jsonl", BUCKET_ID);
+    String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
+    // Act
+    BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
+
+    // Assert
     String got = bout.toString();
-    assertThat(got).contains("Predicted sentiment score:");
+    assertThat(got).contains("Batch Prediction results saved to specified Cloud Storage bucket");
   }
 }
