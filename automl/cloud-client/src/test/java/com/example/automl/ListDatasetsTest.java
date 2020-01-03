@@ -64,10 +64,7 @@ public class ListDatasetsTest {
 
   @Test
   public void testListDataset() throws IOException {
-    // Act
     ListDatasets.listDatasets(PROJECT_ID);
-
-    // Assert
     String got = bout.toString();
     assertThat(got).contains("Dataset id:");
   }
