@@ -78,7 +78,7 @@ public class LanguageEntityExtractionPredictIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("Text Extract Entity Types:");
+    assertThat(got).contains("Text Extract Entity Type:");
   }
 
   @Test
