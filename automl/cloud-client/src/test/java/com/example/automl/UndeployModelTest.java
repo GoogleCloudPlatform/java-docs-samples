@@ -31,19 +31,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for Automl natural language sentiment analysis models.
 @RunWith(JUnit4.class)
-public class LanguageSentimentAnalysisModelManagementIT {
+public class UndeployModelTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "TST864310464894223026";
+  private static final String MODEL_ID = "TEN0000000000000000000";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -65,14 +63,16 @@ public class LanguageSentimentAnalysisModelManagementIT {
   }
 
   @Test
-  public void testDeployUndeployModel()
-      throws IOException, ExecutionException, InterruptedException {
-    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
-    String got = bout.toString();
-    assertThat(got).contains("Model undeployment finished");
-
-    DeployModel.deployModel(PROJECT_ID, MODEL_ID);
-    got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
+  public void testUndeployModel() {
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
   }
 }

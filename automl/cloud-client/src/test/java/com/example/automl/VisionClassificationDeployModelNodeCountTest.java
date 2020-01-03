@@ -31,19 +31,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for Automl vision image classification models.
 @RunWith(JUnit4.class)
-public class VisionClassificationModelManagementIT {
+public class VisionClassificationDeployModelNodeCountTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "ICN6418888056864606028";
+  private static final String MODEL_ID = "ICN0000000000000000000";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -65,27 +63,17 @@ public class VisionClassificationModelManagementIT {
   }
 
   @Test
-  public void testDeployUndeployModel()
-      throws IOException, ExecutionException, InterruptedException {
-    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
-    String got = bout.toString();
-    assertThat(got).contains("Model undeployment finished");
-
-    DeployModel.deployModel(PROJECT_ID, MODEL_ID);
-    got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
-  }
-
-  @Test
-  public void testDeployUndeployModelWithNodeCount()
-      throws IOException, ExecutionException, InterruptedException {
-    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
-    String got = bout.toString();
-    assertThat(got).contains("Model undeployment finished");
-
-    VisionClassificationDeployModelNodeCount.visionClassificationDeployModelNodeCount(
-        PROJECT_ID, MODEL_ID);
-    got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
+  public void testDeployModelWithNodeCount() {
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      VisionClassificationDeployModelNodeCount.visionClassificationDeployModelNodeCount(
+          PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
   }
 }
