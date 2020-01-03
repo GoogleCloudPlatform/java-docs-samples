@@ -84,6 +84,6 @@ public class LanguageEntityExtractionPredictIT {
     String text = "Constitutional mutations in the WT1 gene in patients with Denys-Drash syndrome.";
     LanguageEntityExtractionPredict.predict(PROJECT_ID, MODEL_ID, text);
     String got = bout.toString();
-    assertThat(got).contains("Text Extract Entity Types:");
+    assertThat(got).contains("Text Extract Entity Type:");
   }
 }
