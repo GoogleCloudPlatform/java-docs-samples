@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import static junit.framework.TestCase.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,26 +32,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for automl natural language text classification "Predict" sample.
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class LanguageTextClassificationPredictIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String modelId = "TCN6871084728972835631";
+public class LanguageSentimentAnalysisCreateDatasetTest {
+
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private String datasetId;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
   }
 
   @Before
@@ -60,18 +61,23 @@ public class LanguageTextClassificationPredictIT {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws InterruptedException, ExecutionException, IOException {
+    // Delete the created dataset
+    DeleteDataset.deleteDataset(PROJECT_ID, datasetId);
     System.setOut(null);
   }
 
   @Test
-  public void testPredict() throws IOException {
-    String text = "Fruit and nut flavour";
-    // Act
-    LanguageTextClassificationPredict.predict(PROJECT_ID, modelId, text);
+  public void testCreateDataset() throws IOException, ExecutionException, InterruptedException {
+    // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
+    // To prevent name collisions when running tests in multiple java versions at once.
+    // AutoML doesn't allow "-", but accepts "_"
+    String datasetName =
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+    LanguageSentimentAnalysisCreateDataset.createDataset(PROJECT_ID, datasetName);
 
-    // Assert
     String got = bout.toString();
-    assertThat(got).contains("Predicted class name:");
+    assertThat(got).contains("Dataset id:");
+    datasetId = got.split("Dataset id: ")[1].split("\n")[0];
   }
 }
