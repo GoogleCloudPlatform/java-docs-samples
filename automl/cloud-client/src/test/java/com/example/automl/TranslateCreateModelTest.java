@@ -36,7 +36,7 @@ import org.junit.runners.JUnit4;
 
 // Tests for Automl translation models.
 @RunWith(JUnit4.class)
-public class TranslateModelManagementIT {
+public class TranslateCreateModelTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String DATASET_ID = System.getenv("TRANSLATION_DATASET_ID");
   private ByteArrayOutputStream bout;
