@@ -41,7 +41,7 @@ import org.junit.runners.JUnit4;
 public class ExportDatasetTest {
 
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String DATASET_ID = System.getenv("ENTITY_EXTRACTION_DATASET_ID");
+  private static final String DATASET_ID = "TEN0000000000000000000";
   private static final String BUCKET_ID = PROJECT_ID + "-lcm";
   private static final String BUCKET = "gs://" + BUCKET_ID;
   private ByteArrayOutputStream bout;
@@ -69,34 +69,21 @@ public class ExportDatasetTest {
 
   @After
   public void tearDown() {
-    // Delete the created files from GCS
-    Storage storage = StorageOptions.getDefaultInstance().getService();
-    Page<Blob> blobs =
-        storage.list(
-            BUCKET_ID,
-            Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix("TEST_EXPORT_OUTPUT/"));
-
-    for (Blob blob : blobs.iterateAll()) {
-      Page<Blob> fileBlobs =
-          storage.list(
-              BUCKET_ID,
-              Storage.BlobListOption.currentDirectory(),
-              Storage.BlobListOption.prefix(blob.getName()));
-      for (Blob fileBlob : fileBlobs.iterateAll()) {
-        if (!fileBlob.isDirectory()) {
-          fileBlob.delete();
-        }
-      }
-    }
-
     System.setOut(null);
   }
 
   @Test
   public void testExportDataset() throws IOException, ExecutionException, InterruptedException {
-    ExportDataset.exportDataset(PROJECT_ID, DATASET_ID, BUCKET + "/TEST_EXPORT_OUTPUT/");
-    String got = bout.toString();
-    assertThat(got).contains("Dataset exported.");
+    // As exporting a dataset can take a long time and only one operation can be run on a dataset
+    // at once. Try to export a nonexistent dataset and confirm that the dataset was not found, but
+    // other elements of the request were valid.
+    try {
+      ExportDataset.exportDataset(PROJECT_ID, DATASET_ID, BUCKET + "/TEST_EXPORT_OUTPUT/");
+      String got = bout.toString();
+      assertThat(got).contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage())
+          .contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
+    }
   }
 }
