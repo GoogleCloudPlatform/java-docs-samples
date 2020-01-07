@@ -18,6 +18,14 @@ package com.example.asset;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.Dataset;
+import com.google.cloud.bigquery.DatasetId;
+import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -38,8 +46,10 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
   private static final String bucketName = UUID.randomUUID().toString();
+  private static final String datasetName = RemoteBigQueryHelper.generateDatasetName();
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private BigQuery bigquery;
 
   private static final void deleteBucket(String bucketName) {
     Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -62,6 +72,10 @@ public class QuickStartIT {
   @Before
   public void setUp() {
     createBucket(bucketName);
+    bigquery = BigQueryOptions.getDefaultInstance().getService();
+    if (bigquery.getDataset(datasetName) == null) {
+      Dataset dataset = bigquery.create(DatasetInfo.newBuilder(datasetName).build());
+    }
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -72,6 +86,8 @@ public class QuickStartIT {
     String consoleOutput = bout.toString();
     System.setOut(null);
     deleteBucket(bucketName);
+    DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), datasetName);
+    bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
   }
 
   @Test
@@ -80,6 +96,16 @@ public class QuickStartIT {
     ExportAssetsExample.main(assetDumpPath);
     String got = bout.toString();
     assertThat(got).contains(String.format("uri: \"%s\"", assetDumpPath));
+  }
+
+  @Test
+  public void testExportAssetBigqueryExample() throws Exception {
+    String dataset =
+        String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+    String table = "java_test";
+    ExportAssetsBigqueryExample.main(dataset, table);
+    String got = bout.toString();
+    assertThat(got).contains(String.format("dataset: \"%s\"", dataset));
   }
 
   @Test
