@@ -16,9 +16,7 @@ import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.ReplaceWithInfoTypeConfig;
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
 
 public class DeIdentifyWithMasking {
 
@@ -41,12 +39,9 @@ public class DeIdentifyWithMasking {
 
       // Specify the type of info the inspection will look for.
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
-      List<InfoType> infoTypes =
-          Stream.of("US_SOCIAL_SECURITY_NUMBER")
-              .map(it -> InfoType.newBuilder().setName(it).build())
-              .collect(Collectors.toList());
-
-      InspectConfig inspectConfig = InspectConfig.newBuilder().addAllInfoTypes(infoTypes).build();
+      InfoType infoType = InfoType.newBuilder().setName("US_SOCIAL_SECURITY_NUMBER").build();
+      InspectConfig inspectConfig =
+          InspectConfig.newBuilder().addAllInfoTypes(Arrays.asList(infoType)).build();
 
       // Specify how the info from the inspection should be masked.
       CharacterMaskConfig characterMaskConfig =
