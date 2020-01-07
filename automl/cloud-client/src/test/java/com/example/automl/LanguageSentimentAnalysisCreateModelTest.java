@@ -45,8 +45,8 @@ public class LanguageSentimentAnalysisCreateModelTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName));
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -74,12 +74,13 @@ public class LanguageSentimentAnalysisCreateModelTest {
   }
 
   @Test
-  public void testLanguageSentimentAnalysisCreateModel() throws IOException, ExecutionException, InterruptedException {
+  public void testLanguageSentimentAnalysisCreateModel()
+      throws IOException, ExecutionException, InterruptedException {
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
     String modelName =
-            String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
     LanguageSentimentAnalysisCreateModel.createModel(PROJECT_ID, DATASET_ID, modelName);
 
     String got = bout.toString();
