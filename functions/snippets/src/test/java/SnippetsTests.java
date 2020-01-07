@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,6 +47,9 @@ public class SnippetsTests {
 
   private ByteArrayOutputStream stdOut;
   private StringWriter responseOut;
+
+  // Use GSON (https://github.com/google/gson) to parse JSON content.
+  private Gson gson = new Gson();
 
   @Rule
   public final EnvironmentVariables environmentVariables
@@ -191,6 +195,14 @@ public class SnippetsTests {
   public void filesTest() throws IOException {
     new FileSystem().listFiles(request, response);
     assertThat(responseOut.toString(), containsString("Files:"));
+  }
+
+  @Test
+  public void logEntry() throws IOException {
+    LogEntry.PubSubMessage message = gson.fromJson(
+        "{\"data\":\"data\",\"messageId\":\"id\"}", LogEntry.PubSubMessage.class);
+    String res = new LogEntry().helloPubSub(message);
+    assertThat(res, containsString("Hello, data"));
   }
 
   @Test

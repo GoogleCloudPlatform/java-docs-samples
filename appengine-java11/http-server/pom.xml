@@ -25,7 +25,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -37,7 +37,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>2.2.0</version>
         <configuration>
           <version>http-server</version>
         </configuration>

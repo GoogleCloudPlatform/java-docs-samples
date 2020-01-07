@@ -32,12 +32,25 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <!-- [START tts_java_dependencies] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-    <!-- [START tts_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-texttospeech</artifactId>
-      <version>0.101.0-beta</version>
     </dependency>
     <!-- [END tts_java_dependencies] -->
 
@@ -54,5 +67,7 @@
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- [START tts_java_dependencies] -->
   </dependencies>
+  <!-- [END tts_java_dependencies] -->
 </project>

@@ -46,6 +46,10 @@ mvn appengine:run
 export GOOGLE_CLOUD_SDK_HOME=/path/to/google-cloud-sdk
 ```
 
+* If you see the error `Unauthorized request.`:
+    * Make sure you've set the environment variable [`GOOGLE_APPLICATION_CREDENTIALS`](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application) with
+    your service account key.
+
 ## Contributing changes
 
 See [CONTRIBUTING.md](../../CONTRIBUTING.md).
@@ -53,4 +57,3 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md).
 ## Licensing
 
 See [LICENSE](../../LICENSE).
-

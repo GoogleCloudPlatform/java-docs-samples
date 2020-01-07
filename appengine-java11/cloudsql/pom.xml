@@ -66,26 +66,26 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.25</version>
+      <version>1.7.30</version>
       <scope>provided</scope>
     </dependency>
     <!-- Dependencies for Cloud SQL -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.11</version>
+      <version>8.0.18</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory-connector-j-8</artifactId>
-      <version>1.0.14</version>
+      <version>1.0.15</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>3.3.1</version>
+      <version>3.4.1</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -96,7 +96,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -137,7 +137,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>2.2.0</version>
         <configuration>
           <version>cloudsql</version>
         </configuration>

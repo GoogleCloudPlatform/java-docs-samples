@@ -6,7 +6,7 @@
 
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3.6.1-jdk-11 as builder
+FROM maven:3.6.3-jdk-11 as builder
 
 # Copy local code to the container image.
 WORKDIR /app

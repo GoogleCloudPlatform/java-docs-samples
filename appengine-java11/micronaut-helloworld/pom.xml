@@ -22,11 +22,11 @@
   The parent pom defines common style checks and testing strategies for our samples.
   Removing or replacing it should not affect the execution of the samples in anyway.
   -->
-  <parent>
+  <!-- <parent>
       <groupId>com.google.cloud.samples</groupId>
       <artifactId>shared-configuration</artifactId>
       <version>1.0.11</version>
-  </parent>
+  </parent> -->
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,7 +40,7 @@
       <dependency>
         <groupId>io.micronaut</groupId>
         <artifactId>micronaut-bom</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.8</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -81,7 +81,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.3.0-alpha4</version>
+      <version>1.3.0-alpha5</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -102,7 +102,7 @@
     <dependency>
     <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-3</version>
+      <version>4.13-rc-2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -112,7 +112,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>2.2.0</version>
         <configuration>
           <version>micronaut-helloworld</version>
         </configuration>
@@ -120,7 +120,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -165,23 +165,23 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.8.1</version>
           <configuration>
             <encoding>UTF-8</encoding>
             <compilerArgs>
               <arg>-parameters</arg>
             </compilerArgs>
             <annotationProcessorPaths>
-                  <path>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-inject-java</artifactId>
-                    <version>1.1.0</version>
-                  </path>
-                  <path>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-validation</artifactId>
-                    <version>1.1.0</version>
-                  </path>
+              <path>
+                <groupId>io.micronaut</groupId>
+                <artifactId>micronaut-inject-java</artifactId>
+                <version>1.2.8</version>
+              </path>
+              <path>
+                <groupId>io.micronaut</groupId>
+                <artifactId>micronaut-validation</artifactId>
+                <version>1.2.8</version>
+              </path>
             </annotationProcessorPaths>
           </configuration>
           <executions>
@@ -198,12 +198,12 @@
                   <path>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-inject-java</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.8</version>
                   </path>
                   <path>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-validation</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.8</version>
                   </path>
                 </annotationProcessorPaths>
               </configuration>

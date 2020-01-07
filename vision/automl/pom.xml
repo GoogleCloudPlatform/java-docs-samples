@@ -35,36 +35,50 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <!-- [START automl_vision_java_dependencies] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-    <!-- [START automl_vision_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-automl</artifactId>
-      <version>0.112.0-beta</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
       <artifactId>argparse4j</artifactId>
       <version>0.8.1</version>
     </dependency>
-    <!-- [START automl_vision_java_dependencies] -->
+    <!-- [END automl_vision_java_dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13-beta-3</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.41</version>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- [START automl_vision_java_dependencies] -->
   </dependencies>
-
+  <!-- [END automl_vision_java_dependencies] -->
   <profiles>
     <profile>
       <id>DatasetApi</id>

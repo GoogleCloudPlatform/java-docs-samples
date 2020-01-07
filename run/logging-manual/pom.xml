@@ -34,18 +34,18 @@ limitations under the License.
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.8.0</version>
+      <version>2.9.1</version>
     </dependency>
     <!-- [START run_manual_logging_dep] -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.5</version>
+      <version>1.7.30</version>
     </dependency>
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>5.2</version>
+      <version>6.3</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -56,12 +56,12 @@ limitations under the License.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.0.1</version>
+      <version>4.2.2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

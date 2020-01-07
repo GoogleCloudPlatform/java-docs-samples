@@ -39,20 +39,32 @@ Copyright 2019 Google LLC
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <!-- [START gae_java11_task_pom] -->
+  <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.3.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-    <!-- Cloud Tasks dependency -->
-    <!-- [START gae_java11_task_pom] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>1.10.0</version>
     </dependency>
     <!-- [END gae_java11_task_pom] -->
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-3</version>
+      <version>4.13-rc-2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -61,15 +73,16 @@ Copyright 2019 Google LLC
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- [START gae_java11_task_pom] -->
   </dependencies>
-
+  <!-- [END gae_java11_task_pom] -->
   <build>
     <finalName>tasks</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>

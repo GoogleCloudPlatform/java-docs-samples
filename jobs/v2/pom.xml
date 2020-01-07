@@ -40,13 +40,13 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.40</version>
+      <version>0.46</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>RELEASE</version>
+      <version>4.12</version>
     </dependency>
   </dependencies>
 </project>
