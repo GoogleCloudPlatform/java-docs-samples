@@ -108,7 +108,7 @@ public class BatchPredictTest {
 
   @Test
   public void testBatchPredict() throws IOException, ExecutionException, InterruptedException {
-    String inputUri = String.format("gs://%s/entity_extraction/input.jsonl", BUCKET_ID);
+    String inputUri = String.format("gs://%s/entity-extraction/input.jsonl", BUCKET_ID);
     String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
     // Act
     BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
