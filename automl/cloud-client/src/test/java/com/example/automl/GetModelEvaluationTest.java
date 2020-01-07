@@ -32,8 +32,8 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GetModelEvaluationTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "TEN1974951581904273408";
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
+  private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");
   private String modelEvaluationId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -47,7 +47,8 @@ public class GetModelEvaluationTest {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
+    requireEnvVar("ENTITY_EXTRACTION_MODEL_ID");
   }
 
   @Before

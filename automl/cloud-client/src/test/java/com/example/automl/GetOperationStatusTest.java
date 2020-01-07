@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GetOperationStatusTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private String operationId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -46,7 +46,7 @@ public class GetOperationStatusTest {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
   }
 
   @Before
