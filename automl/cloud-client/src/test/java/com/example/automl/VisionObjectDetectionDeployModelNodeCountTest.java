@@ -63,7 +63,7 @@ public class VisionObjectDetectionDeployModelNodeCountTest {
   }
 
   @Test
-  public void testDeployModelWithNodeCount() {
+  public void testVisionObjectDetectionCreateModel() {
     // As model deployment can take a long time, instead try to deploy a
     // nonexistent model and confirm that the model was not found, but other
     // elements of the request were valid.
