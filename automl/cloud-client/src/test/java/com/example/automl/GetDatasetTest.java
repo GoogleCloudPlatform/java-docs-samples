@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import static junit.framework.TestCase.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,25 +30,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for Automl natural language sentiment analysis models.
 @RunWith(JUnit4.class)
-public class LanguageSentimentAnalysisModelManagementIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "TST864310464894223026";
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class GetDatasetTest {
+
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
+  private static final String DATASET_ID = System.getenv("ENTITY_EXTRACTION_DATASET_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
+    requireEnvVar("ENTITY_EXTRACTION_DATASET_ID");
   }
 
   @Before
@@ -65,14 +65,9 @@ public class LanguageSentimentAnalysisModelManagementIT {
   }
 
   @Test
-  public void testDeployUndeployModel()
-      throws IOException, ExecutionException, InterruptedException {
-    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
+  public void testGetDataset() throws IOException {
+    GetDataset.getDataset(PROJECT_ID, DATASET_ID);
     String got = bout.toString();
-    assertThat(got).contains("Model undeployment finished");
-
-    DeployModel.deployModel(PROJECT_ID, MODEL_ID);
-    got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
+    assertThat(got).contains("Dataset id:");
   }
 }
