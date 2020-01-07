@@ -31,15 +31,16 @@ import com.google.cloud.automl.v1.ModelName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class LanguageSentimentAnalysisPredictIT {
+public class LanguageEntityExtractionPredictTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String MODEL_ID = System.getenv("SENTIMENT_ANALYSIS_MODEL_ID");
+  private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -52,8 +53,9 @@ public class LanguageSentimentAnalysisPredictIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("AUTOML_PROJECT_ID");
-    requireEnvVar("SENTIMENT_ANALYSIS_MODEL_ID");
+    requireEnvVar("ENTITY_EXTRACTION_MODEL_ID");
   }
 
   @Before
@@ -82,9 +84,9 @@ public class LanguageSentimentAnalysisPredictIT {
 
   @Test
   public void testPredict() throws IOException {
-    String text = "Hopefully this Claritin kicks in soon";
-    LanguageSentimentAnalysisPredict.predict(PROJECT_ID, MODEL_ID, text);
+    String text = "Constitutional mutations in the WT1 gene in patients with Denys-Drash syndrome.";
+    LanguageEntityExtractionPredict.predict(PROJECT_ID, MODEL_ID, text);
     String got = bout.toString();
-    assertThat(got).contains("Predicted sentiment score:");
+    assertThat(got).contains("Text Extract Entity Type:");
   }
 }

@@ -19,28 +19,28 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.automl.v1.AutoMlClient;
+import com.google.cloud.automl.v1.DeployModelRequest;
+import com.google.cloud.automl.v1.Model;
+import com.google.cloud.automl.v1.ModelName;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
-import com.google.cloud.automl.v1.AutoMlClient;
-import com.google.cloud.automl.v1.DeployModelRequest;
-import com.google.cloud.automl.v1.Model;
-import com.google.cloud.automl.v1.ModelName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class LanguageEntityExtractionPredictIT {
+public class VisionObjectDetectionPredictTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");
+  private static final String MODEL_ID = System.getenv("OBJECT_DETECTION_MODEL_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -53,9 +53,8 @@ public class LanguageEntityExtractionPredictIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("AUTOML_PROJECT_ID");
-    requireEnvVar("ENTITY_EXTRACTION_MODEL_ID");
+    requireEnvVar("OBJECT_DETECTION_MODEL_ID");
   }
 
   @Before
@@ -84,9 +83,10 @@ public class LanguageEntityExtractionPredictIT {
 
   @Test
   public void testPredict() throws IOException {
-    String text = "Constitutional mutations in the WT1 gene in patients with Denys-Drash syndrome.";
-    LanguageEntityExtractionPredict.predict(PROJECT_ID, MODEL_ID, text);
+    String filePath = "resources/salad.jpg";
+    VisionObjectDetectionPredict.predict(PROJECT_ID, MODEL_ID, filePath);
     String got = bout.toString();
-    assertThat(got).contains("Text Extract Entity Type:");
+    assertThat(got).contains("X:");
+    assertThat(got).contains("Y:");
   }
 }
