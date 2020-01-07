@@ -39,8 +39,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class VisionClassificationPredictIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "ICN6418888056864606028";
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
+  private static final String MODEL_ID = System.getenv("VISION_CLASSIFICATION_MODEL_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -53,7 +53,8 @@ public class VisionClassificationPredictIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
+    requireEnvVar("VISION_CLASSIFICATION_MODEL_ID");
   }
 
   @Before

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
@@ -31,25 +32,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for Automl vision image classification models.
 @RunWith(JUnit4.class)
-public class VisionClassificationModelManagementIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "ICN6418888056864606028";
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class LanguageSentimentAnalysisCreateDatasetTest {
+
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private String datasetId;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
   }
 
   @Before
@@ -60,32 +61,23 @@ public class VisionClassificationModelManagementIT {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws InterruptedException, ExecutionException, IOException {
+    // Delete the created dataset
+    DeleteDataset.deleteDataset(PROJECT_ID, datasetId);
     System.setOut(null);
   }
 
   @Test
-  public void testDeployUndeployModel()
-      throws IOException, ExecutionException, InterruptedException {
-    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
+  public void testCreateDataset() throws IOException, ExecutionException, InterruptedException {
+    // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
+    // To prevent name collisions when running tests in multiple java versions at once.
+    // AutoML doesn't allow "-", but accepts "_"
+    String datasetName =
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+    LanguageSentimentAnalysisCreateDataset.createDataset(PROJECT_ID, datasetName);
+
     String got = bout.toString();
-    assertThat(got).contains("Model undeployment finished");
-
-    DeployModel.deployModel(PROJECT_ID, MODEL_ID);
-    got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
-  }
-
-  @Test
-  public void testDeployUndeployModelWithNodeCount()
-      throws IOException, ExecutionException, InterruptedException {
-    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
-    String got = bout.toString();
-    assertThat(got).contains("Model undeployment finished");
-
-    VisionClassificationDeployModelNodeCount.visionClassificationDeployModelNodeCount(
-        PROJECT_ID, MODEL_ID);
-    got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
+    assertThat(got).contains("Dataset id:");
+    datasetId = got.split("Dataset id: ")[1].split("\n")[0];
   }
 }
