@@ -50,8 +50,8 @@ public class BatchPredictTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName));
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -83,10 +83,10 @@ public class BatchPredictTest {
       BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
       String got = bout.toString();
       assertThat(got)
-              .contains("The model is either not found or not supported for prediction yet.");
+          .contains("The model is either not found or not supported for prediction yet.");
     } catch (IOException | ExecutionException | InterruptedException e) {
       assertThat(e.getMessage())
-              .contains("The model is either not found or not supported for prediction yet.");
+          .contains("The model is either not found or not supported for prediction yet.");
     }
   }
 }
