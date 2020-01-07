@@ -19,19 +19,19 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.automl.v1.AutoMlClient;
+import com.google.cloud.automl.v1.DeployModelRequest;
+import com.google.cloud.automl.v1.Model;
+import com.google.cloud.automl.v1.ModelName;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
-import com.google.cloud.automl.v1.AutoMlClient;
-import com.google.cloud.automl.v1.DeployModelRequest;
-import com.google.cloud.automl.v1.Model;
-import com.google.cloud.automl.v1.ModelName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
