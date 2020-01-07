@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4;
 @Ignore
 public class LanguageEntityExtractionModelManagementIT {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");;
+  private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
