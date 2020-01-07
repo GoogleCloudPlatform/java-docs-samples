@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4;
 public class ImportDatasetTest {
 
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String BUCKET_ID = System.getenv("GOOGLE_CLOUD_PROJECT") + "-lcm";
+  private static final String BUCKET_ID = PROJECT_ID + "-lcm";
   private static final String BUCKET = "gs://" + BUCKET_ID;
   private String datasetId;
   private ByteArrayOutputStream bout;
@@ -52,7 +52,6 @@ public class ImportDatasetTest {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("AUTOML_PROJECT_ID");
   }
 

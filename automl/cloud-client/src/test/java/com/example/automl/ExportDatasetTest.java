@@ -40,7 +40,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ExportDatasetTest {
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String DATASET_ID = System.getenv("ENTITY_EXTRACTION_DATASET_ID");
   private static final String BUCKET_ID = PROJECT_ID + "-lcm";
   private static final String BUCKET = "gs://" + BUCKET_ID;
@@ -56,7 +56,7 @@ public class ExportDatasetTest {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("AUTOML_PROJECT_ID");
     requireEnvVar("ENTITY_EXTRACTION_DATASET_ID");
   }
 
