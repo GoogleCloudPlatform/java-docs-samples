@@ -41,7 +41,7 @@ import org.junit.runners.JUnit4;
 public class ExportDatasetTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String DATASET_ID = "TEN477786180780294144";
+  private static final String DATASET_ID = System.getenv("ENTITY_EXTRACTION_DATASET_ID");
   private static final String BUCKET_ID = PROJECT_ID + "-lcm";
   private static final String BUCKET = "gs://" + BUCKET_ID;
   private ByteArrayOutputStream bout;
@@ -57,6 +57,7 @@ public class ExportDatasetTest {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("ENTITY_EXTRACTION_DATASET_ID");
   }
 
   @Before
