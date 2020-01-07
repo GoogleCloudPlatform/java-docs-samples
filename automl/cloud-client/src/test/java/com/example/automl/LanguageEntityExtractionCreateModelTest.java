@@ -79,7 +79,7 @@ public class LanguageEntityExtractionCreateModelTest {
       String got = bout.toString();
       assertThat(got).contains("Dataset does not exist");
     } catch (IOException | ExecutionException | InterruptedException e) {
-      assertThat(e.getMessage()).contains("Dataset does not exist\"");
+      assertThat(e.getMessage()).contains("Dataset does not exist");
     }
   }
 }
