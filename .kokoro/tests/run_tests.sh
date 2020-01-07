@@ -65,6 +65,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
     source "${KOKORO_GFILE_DIR}/bigtable_secrets.txt"
+    source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
