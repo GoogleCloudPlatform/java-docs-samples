@@ -22,20 +22,22 @@ import static junit.framework.TestCase.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-// Tests for automl natural language sentiment analysis "Predict" sample.
+// Tests for Automl vision image classification models.
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class LanguageSentimentAnalysisPredictIT {
+@Ignore
+public class VisionClassificationModelManagementIT {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String modelId = System.getenv("SENTIMENT_ANALYSIS_MODEL_ID");
+  private static final String MODEL_ID = System.getenv("VISION_CLASSIFICATION_MODEL_ID");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -50,7 +52,7 @@ public class LanguageSentimentAnalysisPredictIT {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("AUTOML_PROJECT_ID");
-    requireEnvVar("SENTIMENT_ANALYSIS_MODEL_ID");
+    requireEnvVar("VISION_CLASSIFICATION_MODEL_ID");
   }
 
   @Before
@@ -66,13 +68,27 @@ public class LanguageSentimentAnalysisPredictIT {
   }
 
   @Test
-  public void testPredict() throws IOException {
-    String text = "Hopefully this Claritin kicks in soon";
-    // Act
-    LanguageSentimentAnalysisPredict.predict(PROJECT_ID, modelId, text);
-
-    // Assert
+  public void testDeployUndeployModel()
+      throws IOException, ExecutionException, InterruptedException {
+    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
     String got = bout.toString();
-    assertThat(got).contains("Predicted sentiment score:");
+    assertThat(got).contains("Model undeployment finished");
+
+    DeployModel.deployModel(PROJECT_ID, MODEL_ID);
+    got = bout.toString();
+    assertThat(got).contains("Model deployment finished");
+  }
+
+  @Test
+  public void testDeployUndeployModelWithNodeCount()
+      throws IOException, ExecutionException, InterruptedException {
+    UndeployModel.undeployModel(PROJECT_ID, MODEL_ID);
+    String got = bout.toString();
+    assertThat(got).contains("Model undeployment finished");
+
+    VisionClassificationDeployModelNodeCount.visionClassificationDeployModelNodeCount(
+        PROJECT_ID, MODEL_ID);
+    got = bout.toString();
+    assertThat(got).contains("Model deployment finished");
   }
 }
