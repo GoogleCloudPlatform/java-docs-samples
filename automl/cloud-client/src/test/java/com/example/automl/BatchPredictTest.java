@@ -44,14 +44,14 @@ import org.junit.runners.JUnit4;
 public class BatchPredictTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String BUCKET_ID = PROJECT_ID + "-lcm";
-  private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");
+  private static final String MODEL_ID = "TEN0000000000000000000";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+            System.getenv(varName),
+            "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -62,19 +62,7 @@ public class BatchPredictTest {
   }
 
   @Before
-  public void setUp() throws IOException, ExecutionException, InterruptedException {
-    // Verify that the model is deployed for prediction
-    try (AutoMlClient client = AutoMlClient.create()) {
-      ModelName modelFullId = ModelName.of(PROJECT_ID, "us-central1", MODEL_ID);
-      Model model = client.getModel(modelFullId);
-      if (model.getDeploymentState() == Model.DeploymentState.UNDEPLOYED) {
-        // Deploy the model if not deployed
-        DeployModelRequest request =
-            DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
-        client.deployModelAsync(request).get();
-      }
-    }
-
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -82,39 +70,23 @@ public class BatchPredictTest {
 
   @After
   public void tearDown() {
-    // Delete the created files from GCS
-    Storage storage = StorageOptions.getDefaultInstance().getService();
-    Page<Blob> blobs =
-        storage.list(
-            BUCKET_ID,
-            Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix("TEST_BATCH_PREDICT/"));
-
-    for (Blob blob : blobs.iterateAll()) {
-      Page<Blob> fileBlobs =
-          storage.list(
-              BUCKET_ID,
-              Storage.BlobListOption.currentDirectory(),
-              Storage.BlobListOption.prefix(blob.getName()));
-      for (Blob fileBlob : fileBlobs.iterateAll()) {
-        if (!fileBlob.isDirectory()) {
-          fileBlob.delete();
-        }
-      }
-    }
-
     System.setOut(null);
   }
 
   @Test
-  public void testBatchPredict() throws IOException, ExecutionException, InterruptedException {
-    String inputUri = String.format("gs://%s/entity-extraction/input.jsonl", BUCKET_ID);
-    String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
-    // Act
-    BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Batch Prediction results saved to specified Cloud Storage bucket");
+  public void testBatchPredict() {
+    // As batch prediction can take a long time. Try to batch predict on a model and confirm that
+    // the model was not found, but other elements of the request were valid.
+    try {
+      String inputUri = String.format("gs://%s/entity_extraction/input.jsonl", BUCKET_ID);
+      String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
+      BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
+      String got = bout.toString();
+      assertThat(got)
+              .contains("The model is either not found or not supported for prediction yet.");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage())
+              .contains("The model is either not found or not supported for prediction yet.");
+    }
   }
 }
