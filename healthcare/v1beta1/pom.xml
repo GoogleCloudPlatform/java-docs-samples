@@ -36,7 +36,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>3.0.0</version>
+        <version>3.3.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.6</version>
+      <version>1.30.7</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
