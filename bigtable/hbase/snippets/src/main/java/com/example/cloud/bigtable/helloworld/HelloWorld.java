@@ -132,6 +132,11 @@ public class HelloWorld {
     } catch (IOException e) {
       System.err.println("Exception while running HelloWorld: " + e.getMessage());
       e.printStackTrace();
+      if (admin.tableExists(tableName.getName())) {
+        print("Cleaning up table");
+        admin.disableTable(table.getName());
+        admin.deleteTable(table.getName());
+      }
       System.exit(1);
     }
 
