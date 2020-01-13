@@ -68,7 +68,7 @@
     <dependency>
         <groupId>com.googlecode.objectify</groupId>
         <artifactId>objectify</artifactId>
-        <version>5.1.24</version>
+        <version>6.0.5</version>
     </dependency>
     <!-- [END Objectify_Dependencies] -->
 
@@ -76,7 +76,7 @@
     <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13-beta-3</version>
+        <version>4.13-rc-2</version>
         <scope>test</scope>
     </dependency>
     <dependency>
@@ -88,7 +88,7 @@
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-testing</artifactId>
-        <version>1.9.76</version>
+        <version>1.9.77</version>
         <scope>test</scope>
     </dependency>
     <dependency>
@@ -100,7 +100,7 @@
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-tools-sdk</artifactId>
-        <version>1.9.76</version>
+        <version>1.9.77</version>
         <scope>test</scope>
     </dependency>
     <dependency>

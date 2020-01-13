@@ -38,6 +38,18 @@
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.3.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <!-- All dependencies are scoped as provided.
     Dependent-jars are created and added to
     ${project.build.directory}/appengine-staging -->
@@ -55,7 +67,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>1.45.0</version>
       <scope>provided</scope>
     </dependency>
 
@@ -73,7 +84,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
