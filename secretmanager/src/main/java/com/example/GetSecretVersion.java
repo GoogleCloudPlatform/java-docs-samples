@@ -28,7 +28,9 @@ public class GetSecretVersion {
   // Get an existing secret version.
   public SecretVersion getSecretVersion(String projectId, String secretId, String versionId)
       throws IOException {
-    // Create a Secret Manager client with cleanup.
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the name from the version.
       SecretVersionName name = SecretVersionName.of(projectId, secretId, versionId);

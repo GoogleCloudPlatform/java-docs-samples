@@ -26,7 +26,9 @@ public class DeleteSecret {
 
   // Delete an existing secret with the given name.
   public void deleteSecret(String projectId, String secretId) throws IOException {
-    // Create a Secret Manager client with cleanup.
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the secret name.
       SecretName name = SecretName.of(projectId, secretId);
