@@ -46,12 +46,7 @@ public class QuickstartIT {
 
   @AfterClass
   public static void afterAll() throws Exception {
-    // Avoid running cleanup if project id was not given. This prevents an
-    // obtuse error from appearing in test output when the user forgets to set
-    // GOOGLE_CLOUD_PROJECT.
-    if (Strings.isNullOrEmpty(PROJECT_ID)) {
-      return;
-    }
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
 
