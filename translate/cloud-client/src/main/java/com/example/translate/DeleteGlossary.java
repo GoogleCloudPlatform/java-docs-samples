@@ -36,7 +36,7 @@ public class DeleteGlossary {
     deleteGlossary(projectId, glossaryId);
   }
 
-  /** Delete Glossary */
+  // Delete a specific glossary based on the glossary ID
   public static void deleteGlossary(String projectId, String glossaryId)
       throws InterruptedException, ExecutionException, IOException {
 
