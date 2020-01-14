@@ -24,17 +24,25 @@ package com.example.bigtable;
 // [START bigtable_reads_prefix]
 // [START bigtable_reads_filter]
 
-import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
-
-import com.google.api.gax.rpc.ServerStream;
-import com.google.cloud.bigtable.data.v2.BigtableDataClient;
-import com.google.cloud.bigtable.data.v2.models.Filters;
-import com.google.cloud.bigtable.data.v2.models.Query;
-import com.google.cloud.bigtable.data.v2.models.Row;
-import com.google.cloud.bigtable.data.v2.models.RowCell;
-import com.google.cloud.bigtable.data.v2.models.RowMutation;
-import com.google.protobuf.ByteString;
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.MultiRowRangeFilter;
+import org.apache.hadoop.hbase.filter.MultiRowRangeFilter.RowRange;
+import org.apache.hadoop.hbase.filter.RegexStringComparator;
+import org.apache.hadoop.hbase.filter.ValueFilter;
+import org.apache.hadoop.hbase.util.Bytes;
 
 public class Reads {
   // [END bigtable_reads_row]
@@ -58,10 +66,12 @@ public class Reads {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      String rowkey = "phone#4c410523#20190501";
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
 
-      Row row = dataClient.readRow(tableId, rowkey);
+      byte[] rowkey = Bytes.toBytes("phone#4c410523#20190501");
+
+      Result row = table.get(new Get(rowkey));
       printRow(row);
 
     } catch (IOException e) {
@@ -69,8 +79,6 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_row]
-
   // [START bigtable_reads_row_partial]
   public static void readRowPartial() {
     // TODO(developer): Replace these variables before running the sample.
@@ -84,15 +92,13 @@ public class Reads {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      String rowkey = "phone#4c410523#20190501";
-      Filters.Filter filter =
-          FILTERS
-              .chain()
-              .filter(FILTERS.family().exactMatch("stats_summary"))
-              .filter(FILTERS.qualifier().exactMatch("os_build"));
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+      byte[] rowkey = Bytes.toBytes("phone#4c410523#20190501");
 
-      Row row = dataClient.readRow(tableId, rowkey, filter);
+      Result row =
+          table.get(
+              new Get(rowkey).addColumn(Bytes.toBytes("stats_summary"), Bytes.toBytes("os_build")));
       printRow(row);
 
     } catch (IOException e) {
@@ -115,11 +121,15 @@ public class Reads {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      Query query =
-          Query.create(tableId).rowKey("phone#4c410523#20190501").rowKey("phone#4c410523#20190502");
-      ServerStream<Row> rows = dataClient.readRows(query);
-      for (Row row : rows) {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+      List<Get> queryRowList = new ArrayList<Get>();
+      queryRowList.add(new Get(Bytes.toBytes("phone#4c410523#20190501")));
+      queryRowList.add(new Get(Bytes.toBytes("phone#4c410523#20190502")));
+
+      Result[] rows = table.get(queryRowList);
+
+      for (Result row : rows) {
         printRow(row);
       }
     } catch (IOException e) {
@@ -139,18 +149,23 @@ public class Reads {
   }
 
   public static void readRowRange(String projectId, String instanceId, String tableId) {
-    String start = "phone#4c410523#20190501";
-    String end = "phone#4c410523#201906201";
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      Query query = Query.create(tableId).range(start, end);
-      ServerStream<Row> rows = dataClient.readRows(query);
-      for (Row row : rows) {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+
+      Scan rangeQuery =
+          new Scan()
+              .withStartRow(Bytes.toBytes("phone#4c410523#20190501"))
+              .withStopRow(Bytes.toBytes("phone#4c410523#201906201"));
+
+      ResultScanner rows = table.getScanner(rangeQuery);
+
+      for (Result row : rows) {
         printRow(row);
       }
+
     } catch (IOException e) {
       System.out.println(
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
@@ -171,13 +186,28 @@ public class Reads {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      Query query =
-          Query.create(tableId)
-              .range("phone#4c410523#20190501", "phone#4c410523#20190601")
-              .range("phone#5c10102#20190501", "phone#5c10102#20190601");
-      ServerStream<Row> rows = dataClient.readRows(query);
-      for (Row row : rows) {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+      List<RowRange> ranges = new ArrayList<>();
+
+      ranges.add(
+          new RowRange(
+              Bytes.toBytes("phone#4c410523#20190501"),
+              true,
+              Bytes.toBytes("phone#4c410523#20190601"),
+              false));
+      ranges.add(
+          new RowRange(
+              Bytes.toBytes("phone#5c10102#20190501"),
+              true,
+              Bytes.toBytes("phone#5c10102#20190601"),
+              false));
+      Filter filter = new MultiRowRangeFilter(ranges);
+      Scan scan = new Scan().setFilter(filter);
+
+      ResultScanner rows = table.getScanner(scan);
+
+      for (Result row : rows) {
         printRow(row);
       }
     } catch (IOException e) {
@@ -200,10 +230,12 @@ public class Reads {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      Query query = Query.create(tableId).prefix("phone");
-      ServerStream<Row> rows = dataClient.readRows(query);
-      for (Row row : rows) {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+      Scan prefixScan = new Scan().setRowPrefixFilter(Bytes.toBytes("phone"));
+      ResultScanner rows = table.getScanner(prefixScan);
+
+      for (Result row : rows) {
         printRow(row);
       }
     } catch (IOException e) {
@@ -223,15 +255,19 @@ public class Reads {
   }
 
   public static void readFilter(String projectId, String instanceId, String tableId) {
-    Filters.Filter filter = FILTERS.value().regex("PQ2A.*");
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-      Query query = Query.create(tableId).filter(filter);
-      ServerStream<Row> rows = dataClient.readRows(query);
-      for (Row row : rows) {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+
+      ValueFilter valueFilter =
+          new ValueFilter(CompareOp.EQUAL, new RegexStringComparator("PQ2A.*"));
+      Scan scan = new Scan().setFilter(valueFilter);
+
+      ResultScanner rows = table.getScanner(scan);
+
+      for (Result row : rows) {
         printRow(row);
       }
     } catch (IOException e) {
@@ -248,17 +284,20 @@ public class Reads {
   // [START bigtable_reads_row_ranges]
   // [START bigtable_reads_prefix]
   // [START bigtable_reads_filter]
-  private static void printRow(Row row) {
-    System.out.printf("Reading data for %s%n", row.getKey().toStringUtf8());
+  private static void printRow(Result row) {
+    System.out.printf("Reading data for %s%n", Bytes.toString(row.rawCells()[0].getRowArray()));
     String colFamily = "";
-    for (RowCell cell : row.getCells()) {
-      if (!cell.getFamily().equals(colFamily)) {
-        colFamily = cell.getFamily();
+    for (Cell cell : row.rawCells()) {
+      String currentFamily = Bytes.toString(cell.getFamilyArray());
+      if (!currentFamily.equals(colFamily)) {
+        colFamily = currentFamily;
         System.out.printf("Column Family %s%n", colFamily);
       }
       System.out.printf(
           "\t%s: %s @%s%n",
-          cell.getQualifier().toStringUtf8(), cell.getValue().toStringUtf8(), cell.getTimestamp());
+          Bytes.toString(cell.getQualifierArray()),
+          Bytes.toString(cell.getValueArray()),
+          cell.getTimestamp());
     }
     System.out.println();
   }
