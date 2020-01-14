@@ -55,6 +55,10 @@ See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+    </dependency>
     <!-- [END translate_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
