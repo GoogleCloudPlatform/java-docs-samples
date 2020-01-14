@@ -71,23 +71,28 @@ public class BatchTranslateTextWithGlossaryAndModel {
       String location = "us-central1";
       LocationName parent = LocationName.of(projectId, location);
 
+      // Configure the source of the file from a GCS bucket
       GcsSource gcsSource = GcsSource.newBuilder().setInputUri(inputUri).build();
       // Supported Mime Types: https://cloud.google.com/translate/docs/supported-formats
       InputConfig inputConfig =
           InputConfig.newBuilder().setGcsSource(gcsSource).setMimeType("text/plain").build();
 
+      // Configure where to store the output in a GCS bucket
       GcsDestination gcsDestination =
           GcsDestination.newBuilder().setOutputUriPrefix(outputUri).build();
       OutputConfig outputConfig =
           OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
 
+      // Configure the glossary used in the request
       GlossaryName glossaryName = GlossaryName.of(projectId, location, glossaryId);
       TranslateTextGlossaryConfig glossaryConfig =
           TranslateTextGlossaryConfig.newBuilder().setGlossary(glossaryName.toString()).build();
 
+      // Configure the model used in the request
       String modelPath =
           String.format("projects/%s/locations/%s/models/%s", projectId, location, modelId);
 
+      // Build the request that will be sent to the API
       BatchTranslateTextRequest request =
           BatchTranslateTextRequest.newBuilder()
               .setParent(parent.toString())
@@ -99,6 +104,7 @@ public class BatchTranslateTextWithGlossaryAndModel {
               .putModels(targetLanguage, modelPath)
               .build();
 
+      // Start an asynchronous request
       OperationFuture<BatchTranslateResponse, BatchTranslateMetadata> future =
           client.batchTranslateTextAsync(request);
 
