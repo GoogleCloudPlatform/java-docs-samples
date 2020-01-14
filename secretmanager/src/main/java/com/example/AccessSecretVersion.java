@@ -1,0 +1,52 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example;
+
+// [START secretmanager_access_secret_version]
+import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionRequest;
+import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionResponse;
+import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1beta1.SecretVersionName;
+import java.io.IOException;
+
+public class AccessSecretVersion {
+
+  // Access the payload for the given secret version if one exists. The version
+  // can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
+  public AccessSecretVersionResponse accessSecretVersion(
+      String projectId, String secretId, String versionId) throws IOException {
+    // Create a Secret Manager client with cleanup.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      SecretVersionName name = SecretVersionName.of(projectId, secretId, versionId);
+
+      // Access the secret version.
+      AccessSecretVersionRequest request =
+          AccessSecretVersionRequest.newBuilder().setName(name.toString()).build();
+      AccessSecretVersionResponse response = client.accessSecretVersion(request);
+
+      // Print the secret payload.
+      //
+      // WARNING: Do not print the secret in a production environment - this
+      // snippet is showing how to access the secret material.
+      String payload = response.getPayload().getData().toStringUtf8();
+      System.out.printf("Plaintext: %s\n", payload);
+
+      return response;
+    }
+  }
+}
+// [END secretmanager_access_secret_version]
