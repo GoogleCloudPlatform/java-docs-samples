@@ -19,6 +19,7 @@ package com.example.bigtable;
 import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 
 import com.google.api.gax.rpc.ServerStream;
+import com.google.bigtable.v2.ColumnRange;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.IOException;
 import java.time.Instant;
@@ -63,7 +64,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 // [START bigtable_filters_limit_value_regex]
 // [START bigtable_filters_limit_timestamp_range]
 // [START bigtable_filters_limit_block_all]
-// [START bigtable_filters_limit_pass_all]
 // [START bigtable_filters_modify_strip_value]
 // [START bigtable_filters_modify_apply_label]
 // [START bigtable_filters_composing_chain]
@@ -83,7 +83,6 @@ public class Filters {
   // [END bigtable_filters_limit_value_regex]
   // [END bigtable_filters_limit_timestamp_range]
   // [END bigtable_filters_limit_block_all]
-  // [END bigtable_filters_limit_pass_all]
   // [END bigtable_filters_modify_strip_value]
   // [END bigtable_filters_modify_apply_label]
   // [END bigtable_filters_composing_chain]
@@ -102,7 +101,8 @@ public class Filters {
   public static void filterLimitRowSample(String projectId, String instanceId, String tableId) {
     // A filter that matches cells from a row with probability .75
     Filter filter = new RandomRowFilter(.75f);
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_row_sample]
 
@@ -118,7 +118,8 @@ public class Filters {
   public static void filterLimitRowRegex(String projectId, String instanceId, String tableId) {
     // A filter that matches cells from rows whose keys satisfy the given regex
     Filter filter = new RowFilter(CompareOp.EQUAL, new RegexStringComparator(".*#20190501$"));
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter).setMaxVersions();
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_row_regex]
 
@@ -133,22 +134,8 @@ public class Filters {
 
   public static void filterLimitCellsPerCol(String projectId, String instanceId, String tableId) {
     // A filter that matches only the most recent 2 cells within each column
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
-      Table table = connection.getTable(TableName.valueOf(tableId));
-      Scan scan = new Scan().setMaxVersions(2);
-
-      ResultScanner rows = table.getScanner(scan);
-
-      for (Result row : rows) {
-        printRow(row);
-      }
-    } catch (IOException e) {
-      System.out.println(
-          "Unable to initialize service client, as a network error occurred: \n" + e.toString());
-    }
+    Scan scan = new Scan().setMaxVersions(2);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_cells_per_col]
 
@@ -163,9 +150,11 @@ public class Filters {
 
   public static void filterLimitCellsPerRow(String projectId, String instanceId, String tableId) {
     // A filter that matches the first 2 cells of each row
-    Filter filter = new ColumnCountGetFilter(2);
+    //    Filter filter = new ColumnCountGetFilter(2);
+    Filter filter = new ColumnPaginationFilter(2, 0);
 
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_cells_per_row]
 
@@ -182,7 +171,8 @@ public class Filters {
       String projectId, String instanceId, String tableId) {
     // A filter that skips the first 2 cells per row
     Filter filter = new ColumnPaginationFilter(Integer.MAX_VALUE, 2);
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_cells_per_row_offset]
 
@@ -199,7 +189,8 @@ public class Filters {
       String projectId, String instanceId, String tableId) {
     // A filter that matches cells whose column family satisfies the given regex
     Filter filter = new FamilyFilter(CompareOp.EQUAL, new RegexStringComparator("stats_.*$"));
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_col_family_regex]
 
@@ -217,7 +208,8 @@ public class Filters {
     // A filter that matches cells whose column qualifier satisfies the given regex
     Filter filter =
         new QualifierFilter(CompareOp.EQUAL, new RegexStringComparator("connected_.*$"));
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_col_qualifier_regex]
 
@@ -233,18 +225,11 @@ public class Filters {
   public static void filterLimitColRange(String projectId, String instanceId, String tableId) {
     // A filter that matches cells whose column qualifiers are between data_plan_01gb and
     // data_plan_10gb in the column family cell_plan
-    QualifierFilter qualifierGreaterFilter =
-        new QualifierFilter(
-            CompareFilter.CompareOp.GREATER_OR_EQUAL,
-            new BinaryComparator(Bytes.toBytes("data_plan_01gb")));
-//    QualifierFilter qualifierLesserFilter =
-//        new QualifierFilter(CompareOp.LESS, new BinaryComparator(Bytes.toBytes("data_plan_10gb")));
-
-    FilterList filter = new FilterList(FilterList.Operator.MUST_PASS_ALL);
-    filter.addFilter(qualifierGreaterFilter);
-//    filter.addFilter(qualifierLesserFilter);
-
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Filter filter =
+        new ColumnRangeFilter(
+            Bytes.toBytes("data_plan_01gb"), true, Bytes.toBytes("data_plan_10gb"), false);
+    Scan scan = new Scan().addFamily(Bytes.toBytes("cell_plan")).setFilter(filter).setMaxVersions();
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_col_range]
 
@@ -272,7 +257,8 @@ public class Filters {
     filter.addFilter(valueGreaterFilter);
     filter.addFilter(valueLesserFilter);
 
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_value_range]
 
@@ -289,7 +275,8 @@ public class Filters {
     // A filter that matches cells whose value satisfies the given regex
     Filter filter = new ValueFilter(CompareOp.EQUAL, new RegexStringComparator("PQ2A.*$"));
 
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_value_regex]
 
@@ -307,19 +294,11 @@ public class Filters {
     // A filter that matches cells whose timestamp is from an hour ago or earlier
     // Get a time representing one hour ago
     long timestamp = Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli();
-
-    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
-      Table table = connection.getTable(TableName.valueOf(tableId));
+    try {
       Scan scan = new Scan().setTimeRange(0, timestamp).setMaxVersions();
-
-      ResultScanner rows = table.getScanner(scan);
-
-      for (Result row : rows) {
-        printRow(row);
-      }
+      readWithFilter(projectId, instanceId, tableId, scan);
     } catch (IOException e) {
-      System.out.println(
-          "Unable to initialize service client, as a network error occurred: \n" + e.toString());
+      System.out.println("There was an issue with your timestamp \n" + e.toString());
     }
   }
   // [END bigtable_filters_limit_timestamp_range]
@@ -336,25 +315,10 @@ public class Filters {
   public static void filterLimitBlockAll(String projectId, String instanceId, String tableId) {
     // A filter that does not match any cells
     Filter filter = new SkipFilter(new RandomRowFilter(1));
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_limit_block_all]
-
-  // [START bigtable_filters_limit_pass_all]
-  public static void filterLimitPassAll() {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = "my-project-id";
-    String instanceId = "my-instance-id";
-    String tableId = "mobile-time-series";
-    filterLimitPassAll(projectId, instanceId, tableId);
-  }
-
-  public static void filterLimitPassAll(String projectId, String instanceId, String tableId) {
-    // TODO A filter that does not match any cells
-    Filter filter = new SkipFilter(new PrefixFilter(Bytes.toBytes("")));
-    readWithFilter(projectId, instanceId, tableId, filter);
-  }
-  // [END bigtable_filters_limit_pass_all]
 
   // [START bigtable_filters_composing_chain]
   public static void filterComposingChain() {
@@ -374,7 +338,8 @@ public class Filters {
     FilterList filter = new FilterList(FilterList.Operator.MUST_PASS_ALL);
     filter.addFilter(columnCountGetFilter);
     filter.addFilter(familyFilter);
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter);
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_composing_chain]
 
@@ -399,7 +364,8 @@ public class Filters {
     filter.addFilter(qualifierFilter);
     filter.addFilter(valueFilter);
 
-    readWithFilter(projectId, instanceId, tableId, filter);
+    Scan scan = new Scan().setFilter(filter).setMaxVersions();
+    readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_composing_interleave]
 
@@ -415,20 +381,18 @@ public class Filters {
   // [START bigtable_filters_limit_value_regex]
   // [START bigtable_filters_limit_timestamp_range]
   // [START bigtable_filters_limit_block_all]
-  // [START bigtable_filters_limit_pass_all]
   // [START bigtable_filters_modify_strip_value]
   // [START bigtable_filters_modify_apply_label]
   // [START bigtable_filters_composing_chain]
   // [START bigtable_filters_composing_interleave]
   // [START bigtable_filters_composing_condition]
   public static void readWithFilter(
-      String projectId, String instanceId, String tableId, Filter filter) {
+      String projectId, String instanceId, String tableId, Scan scan) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
-      Scan scan = new Scan().setFilter(filter).setMaxVersions();
 
       ResultScanner rows = table.getScanner(scan);
 
@@ -471,7 +435,6 @@ public class Filters {
 // [END bigtable_filters_limit_value_regex]
 // [END bigtable_filters_limit_timestamp_range]
 // [END bigtable_filters_limit_block_all]
-// [END bigtable_filters_limit_pass_all]
 // [END bigtable_filters_modify_strip_value]
 // [END bigtable_filters_modify_apply_label]
 // [END bigtable_filters_composing_chain]

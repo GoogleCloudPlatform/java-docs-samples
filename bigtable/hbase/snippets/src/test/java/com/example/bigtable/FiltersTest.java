@@ -496,54 +496,6 @@ public class FiltersTest {
   }
 
   @Test
-  public void testFilterPassAll() {
-    Filters.filterLimitPassAll(projectId, instanceId, TABLE_ID);
-
-    String output = bout.toString();
-    assertThat(output)
-        .contains(
-            String.format(
-                "Reading data for phone#4c410523#20190501\n"
-                    + "Column Family cell_plan\n"
-                    + "\tdata_plan_01gb: false @%1$s\n"
-                    + "\tdata_plan_01gb: true @%2$s\n"
-                    + "\tdata_plan_05gb: true @%1$s\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tos_build: PQ2A.190405.003 @%1$s\n\n"
-                    + "Reading data for phone#4c410523#20190502\n"
-                    + "Column Family cell_plan\n"
-                    + "\tdata_plan_05gb: true @%1$s\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tos_build: PQ2A.190405.004 @%1$s\n\n"
-                    + "Reading data for phone#4c410523#20190505\n"
-                    + "Column Family cell_plan\n"
-                    + "\tdata_plan_05gb: true @%1$s\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tos_build: PQ2A.190406.000 @%1$s\n\n"
-                    + "Reading data for phone#5c10102#20190501\n"
-                    + "Column Family cell_plan\n"
-                    + "\tdata_plan_10gb: true @%1$s\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
-                    + "Reading data for phone#5c10102#20190502\n"
-                    + "Column Family cell_plan\n"
-                    + "\tdata_plan_10gb: true @%1$s\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "\tos_build: PQ2A.190406.000 @%1$s",
-                TIMESTAMP, TIMESTAMP_MINUS_HR));
-  }
-
-  @Test
   public void testFilterChain() {
     Filters.filterComposingChain(projectId, instanceId, TABLE_ID);
 
