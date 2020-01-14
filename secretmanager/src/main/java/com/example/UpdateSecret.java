@@ -26,8 +26,15 @@ import java.io.IOException;
 
 public class UpdateSecret {
 
+  public void updateSecret() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    updateSecret(projectId, secretId);
+  }
+
   // Update an existing secret.
-  public Secret updateSecret(String projectId, String secretId) throws IOException {
+  public void updateSecret(String projectId, String secretId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -49,8 +56,6 @@ public class UpdateSecret {
       // Create the secret.
       Secret updatedSecret = client.updateSecret(request);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
-
-      return updatedSecret;
     }
   }
 }

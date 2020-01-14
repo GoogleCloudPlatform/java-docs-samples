@@ -25,10 +25,18 @@ import java.io.IOException;
 
 public class AccessSecretVersion {
 
+  public void accessSecretVersion() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    String versionId = "your-version-id";
+    accessSecretVersion(projectId, secretId, versionId);
+  }
+
   // Access the payload for the given secret version if one exists. The version
   // can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
-  public AccessSecretVersionResponse accessSecretVersion(
-      String projectId, String secretId, String versionId) throws IOException {
+  public void accessSecretVersion(String projectId, String secretId, String versionId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -46,8 +54,6 @@ public class AccessSecretVersion {
       // snippet is showing how to access the secret material.
       String payload = response.getPayload().getData().toStringUtf8();
       System.out.printf("Plaintext: %s\n", payload);
-
-      return response;
     }
   }
 }

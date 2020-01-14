@@ -25,8 +25,16 @@ import java.io.IOException;
 
 public class DisableSecretVersion {
 
+  public void disableSecretVersion() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    String versionId = "your-version-id";
+    disableSecretVersion(projectId, secretId, versionId);
+  }
+
   // Disable an existing secret version.
-  public SecretVersion disableSecretVersion(String projectId, String secretId, String versionId)
+  public void disableSecretVersion(String projectId, String secretId, String versionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -42,8 +50,6 @@ public class DisableSecretVersion {
       // Create the secret.
       SecretVersion version = client.disableSecretVersion(request);
       System.out.printf("Disabled secret version %s\n", version.getName());
-
-      return version;
     }
   }
 }

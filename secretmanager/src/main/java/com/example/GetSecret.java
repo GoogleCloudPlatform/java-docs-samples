@@ -25,8 +25,15 @@ import java.io.IOException;
 
 public class GetSecret {
 
+  public void getSecret() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    getSecret(projectId, secretId);
+  }
+
   // Get an existing secret.
-  public Secret getSecret(String projectId, String secretId) throws IOException {
+  public void getSecret(String projectId, String secretId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -51,8 +58,6 @@ public class GetSecret {
       }
 
       System.out.printf("Secret %s, replication %s\n", secret.getName(), replication);
-
-      return secret;
     }
   }
 }

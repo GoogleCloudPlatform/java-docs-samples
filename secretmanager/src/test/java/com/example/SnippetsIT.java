@@ -18,14 +18,10 @@ package com.example;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1beta1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1beta1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1beta1.DeleteSecretRequest;
 import com.google.cloud.secretmanager.v1beta1.DisableSecretVersionRequest;
-import com.google.cloud.secretmanager.v1beta1.GetSecretRequest;
-import com.google.cloud.secretmanager.v1beta1.GetSecretVersionRequest;
 import com.google.cloud.secretmanager.v1beta1.ProjectName;
 import com.google.cloud.secretmanager.v1beta1.Replication;
 import com.google.cloud.secretmanager.v1beta1.Secret;
@@ -33,7 +29,6 @@ import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1beta1.SecretName;
 import com.google.cloud.secretmanager.v1beta1.SecretPayload;
 import com.google.cloud.secretmanager.v1beta1.SecretVersion;
-import com.google.cloud.secretmanager.v1beta1.SecretVersion.State;
 import com.google.cloud.secretmanager.v1beta1.SecretVersionName;
 import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
@@ -171,31 +166,25 @@ public class SnippetsIT {
   @Test
   public void testAccessSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION.getName());
-    AccessSecretVersionResponse version =
-        new AccessSecretVersion()
-            .accessSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
-    String payload = version.getPayload().getData().toStringUtf8();
-    assertThat(payload).isEqualTo("my super secret data");
-    assertThat(stdOut.toString()).contains("Plaintext: my super secret data");
+    new AccessSecretVersion()
+        .accessSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+
+    assertThat(stdOut.toString()).contains("my super secret data");
   }
 
   @Test
   public void testAddSecretVersion() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
-    SecretVersion version =
-        new AddSecretVersion().addSecretVersion(name.getProject(), name.getSecret());
+    new AddSecretVersion().addSecretVersion(name.getProject(), name.getSecret());
 
-    SecretVersionName versionName = SecretVersionName.parse(version.getName());
-    assertThat(versionName.getSecret()).isEqualTo(name.getSecret());
     assertThat(stdOut.toString()).contains("Added secret version");
   }
 
   @Test
   public void testCreateSecret() throws IOException {
     SecretName name = TEST_SECRET_TO_CREATE_NAME;
-    Secret secret = new CreateSecret().createSecret(name.getProject(), name.getSecret());
+    new CreateSecret().createSecret(name.getProject(), name.getSecret());
 
-    assertThat(secret.getName()).contains(name.getSecret());
     assertThat(stdOut.toString()).contains("Created secret");
   }
 
@@ -205,63 +194,33 @@ public class SnippetsIT {
     new DeleteSecret().deleteSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Deleted secret");
-    Assert.assertThrows(
-        NotFoundException.class,
-        () -> {
-          try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-            GetSecretRequest getRequest =
-                GetSecretRequest.newBuilder().setName(name.toString()).build();
-            client.getSecret(getRequest);
-          }
-        });
   }
 
   @Test
   public void testDestroySecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_DESTROY.getName());
-    SecretVersion version =
-        new DestroySecretVersion()
-            .destroySecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    new DestroySecretVersion()
+        .destroySecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Destroyed secret version");
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      GetSecretVersionRequest request =
-          GetSecretVersionRequest.newBuilder().setName(version.getName()).build();
-      SecretVersion newVersion = client.getSecretVersion(request);
-      assertThat(newVersion.getState()).isEqualTo(State.DESTROYED);
-    }
   }
 
   @Test
   public void testDisableSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_DISABLE.getName());
-    SecretVersion version =
-        new DisableSecretVersion()
-            .disableSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    new DisableSecretVersion()
+        .disableSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Disabled secret version");
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      GetSecretVersionRequest request =
-          GetSecretVersionRequest.newBuilder().setName(version.getName()).build();
-      SecretVersion newVersion = client.getSecretVersion(request);
-      assertThat(newVersion.getState()).isEqualTo(State.DISABLED);
-    }
   }
 
   @Test
   public void testEnableSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_ENABLE.getName());
-    SecretVersion version =
-        new EnableSecretVersion()
-            .enableSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    new EnableSecretVersion()
+        .enableSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Enabled secret version");
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      GetSecretVersionRequest request =
-          GetSecretVersionRequest.newBuilder().setName(version.getName()).build();
-      SecretVersion newVersion = client.getSecretVersion(request);
-      assertThat(newVersion.getState()).isEqualTo(State.ENABLED);
-    }
   }
 
   @Test
@@ -303,16 +262,8 @@ public class SnippetsIT {
   @Test
   public void testUpdateSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    Secret secret = new UpdateSecret().updateSecret(name.getProject(), name.getSecret());
-    Assert.assertTrue(secret.getLabelsMap() != null);
-    assertThat(secret.getLabelsMap().get("secretmanager")).isEqualTo("rocks");
+    new UpdateSecret().updateSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Updated secret");
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      GetSecretRequest request = GetSecretRequest.newBuilder().setName(name.toString()).build();
-      Secret newSecret = client.getSecret(request);
-      Assert.assertTrue(newSecret.getLabelsMap() != null);
-      assertThat(newSecret.getLabelsMap().get("secretmanager")).isEqualTo("rocks");
-    }
   }
 }

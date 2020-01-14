@@ -25,6 +25,12 @@ import java.io.IOException;
 
 public class ListSecrets {
 
+  public void listSecrets() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    listSecrets(projectId);
+  }
+
   // List all secrets for a project
   public void listSecrets(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

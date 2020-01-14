@@ -24,6 +24,13 @@ import java.io.IOException;
 
 public class DeleteSecret {
 
+  public void deleteSecret() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    deleteSecret(projectId, secretId);
+  }
+
   // Delete an existing secret with the given name.
   public void deleteSecret(String projectId, String secretId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

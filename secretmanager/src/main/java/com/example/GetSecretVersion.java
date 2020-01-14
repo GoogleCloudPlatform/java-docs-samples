@@ -25,8 +25,16 @@ import java.io.IOException;
 
 public class GetSecretVersion {
 
+  public void getSecretVersion() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    String versionId = "your-version-id";
+    getSecretVersion(projectId, secretId, versionId);
+  }
+
   // Get an existing secret version.
-  public SecretVersion getSecretVersion(String projectId, String secretId, String versionId)
+  public void getSecretVersion(String projectId, String secretId, String versionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -42,8 +50,6 @@ public class GetSecretVersion {
       // Create the secret.
       SecretVersion version = client.getSecretVersion(request);
       System.out.printf("Secret version %s, state %s\n", version.getName(), version.getState());
-
-      return version;
     }
   }
 }

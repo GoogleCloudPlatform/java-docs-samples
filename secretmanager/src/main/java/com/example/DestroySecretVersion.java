@@ -25,8 +25,16 @@ import java.io.IOException;
 
 public class DestroySecretVersion {
 
+  public void destroySecretVersion() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    String versionId = "your-version-id";
+    destroySecretVersion(projectId, secretId, versionId);
+  }
+
   // Destroy an existing secret version.
-  public SecretVersion destroySecretVersion(String projectId, String secretId, String versionId)
+  public void destroySecretVersion(String projectId, String secretId, String versionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -42,8 +50,6 @@ public class DestroySecretVersion {
       // Create the secret.
       SecretVersion version = client.destroySecretVersion(request);
       System.out.printf("Destroyed secret version %s\n", version.getName());
-
-      return version;
     }
   }
 }
