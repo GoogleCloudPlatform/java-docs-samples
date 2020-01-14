@@ -40,10 +40,10 @@ public class ListSecretVersions {
           ListSecretVersionsRequest.newBuilder().setParent(parent.toString()).build();
 
       // Get all versions, paginated.
-      ListSecretVersionsPagedResponse iterator = client.listSecretVersions(request);
+      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(request);
 
       // List all versions and their state.
-      for (SecretVersion version : iterator.iterateAll()) {
+      for (SecretVersion version : pagedResponse.iterateAll()) {
         System.out.printf("Secret version %s, %s\n", version.getName(), version.getState());
       }
     }

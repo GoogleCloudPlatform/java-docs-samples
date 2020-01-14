@@ -40,10 +40,10 @@ public class ListSecrets {
           ListSecretsRequest.newBuilder().setParent(parent.toString()).build();
 
       // Get all versions, paginated.
-      ListSecretsPagedResponse iterator = client.listSecrets(request);
+      ListSecretsPagedResponse pagedResponse = client.listSecrets(request);
 
       // List all versions and their state.
-      for (Secret secret : iterator.iterateAll()) {
+      for (Secret secret : pagedResponse.iterateAll()) {
         System.out.printf("Secret %s\n", secret.getName());
       }
     }
