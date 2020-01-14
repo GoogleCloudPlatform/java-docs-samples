@@ -46,6 +46,8 @@ public class GetSecret {
         replication = "AUTOMATIC";
       } else if (secret.getReplication().getUserManaged() != null) {
         replication = "MANAGED";
+      } else {
+        throw new IOException("Unknown replication type");
       }
 
       System.out.printf("Secret %s, replication %s\n", secret.getName(), replication);
