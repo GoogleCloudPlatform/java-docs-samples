@@ -21,7 +21,6 @@ import com.google.cloud.secretmanager.v1beta1.ListSecretVersionsRequest;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient.ListSecretVersionsPagedResponse;
 import com.google.cloud.secretmanager.v1beta1.SecretName;
-import com.google.cloud.secretmanager.v1beta1.SecretVersion;
 import java.io.IOException;
 
 public class ListSecretVersions {
@@ -43,9 +42,12 @@ public class ListSecretVersions {
       ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(request);
 
       // List all versions and their state.
-      for (SecretVersion version : pagedResponse.iterateAll()) {
-        System.out.printf("Secret version %s, %s\n", version.getName(), version.getState());
-      }
+      pagedResponse
+          .iterateAll()
+          .forEach(
+              version -> {
+                System.out.printf("Secret version %s, %s\n", version.getName(), version.getState());
+              });
     }
   }
 }

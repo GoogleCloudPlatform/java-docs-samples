@@ -19,7 +19,6 @@ package com.example;
 // [START secretmanager_list_secrets]
 import com.google.cloud.secretmanager.v1beta1.ListSecretsRequest;
 import com.google.cloud.secretmanager.v1beta1.ProjectName;
-import com.google.cloud.secretmanager.v1beta1.Secret;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient.ListSecretsPagedResponse;
 import java.io.IOException;
@@ -43,9 +42,12 @@ public class ListSecrets {
       ListSecretsPagedResponse pagedResponse = client.listSecrets(request);
 
       // List all versions and their state.
-      for (Secret secret : pagedResponse.iterateAll()) {
-        System.out.printf("Secret %s\n", secret.getName());
-      }
+      pagedResponse
+          .iterateAll()
+          .forEach(
+              secret -> {
+                System.out.printf("Secret %s\n", secret.getName());
+              });
     }
   }
 }
