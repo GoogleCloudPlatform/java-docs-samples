@@ -64,11 +64,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 // [START bigtable_filters_limit_value_regex]
 // [START bigtable_filters_limit_timestamp_range]
 // [START bigtable_filters_limit_block_all]
-// [START bigtable_filters_modify_strip_value]
-// [START bigtable_filters_modify_apply_label]
 // [START bigtable_filters_composing_chain]
 // [START bigtable_filters_composing_interleave]
-// [START bigtable_filters_composing_condition]
 
 public class Filters {
   // [END bigtable_filters_limit_row_sample]
@@ -83,11 +80,8 @@ public class Filters {
   // [END bigtable_filters_limit_value_regex]
   // [END bigtable_filters_limit_timestamp_range]
   // [END bigtable_filters_limit_block_all]
-  // [END bigtable_filters_modify_strip_value]
-  // [END bigtable_filters_modify_apply_label]
   // [END bigtable_filters_composing_chain]
   // [END bigtable_filters_composing_interleave]
-  // [END bigtable_filters_composing_condition]
 
   // [START bigtable_filters_limit_row_sample]
   public static void filterLimitRowSample() {
@@ -381,11 +375,8 @@ public class Filters {
   // [START bigtable_filters_limit_value_regex]
   // [START bigtable_filters_limit_timestamp_range]
   // [START bigtable_filters_limit_block_all]
-  // [START bigtable_filters_modify_strip_value]
-  // [START bigtable_filters_modify_apply_label]
   // [START bigtable_filters_composing_chain]
   // [START bigtable_filters_composing_interleave]
-  // [START bigtable_filters_composing_condition]
   public static void readWithFilter(
       String projectId, String instanceId, String tableId, Scan scan) {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -435,8 +426,5 @@ public class Filters {
 // [END bigtable_filters_limit_value_regex]
 // [END bigtable_filters_limit_timestamp_range]
 // [END bigtable_filters_limit_block_all]
-// [END bigtable_filters_modify_strip_value]
-// [END bigtable_filters_modify_apply_label]
 // [END bigtable_filters_composing_chain]
 // [END bigtable_filters_composing_interleave]
-// [END bigtable_filters_composing_condition]
