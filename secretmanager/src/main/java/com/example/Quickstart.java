@@ -31,7 +31,7 @@ import com.google.protobuf.ByteString;
 
 public class Quickstart {
 
-  public static void main(String... args) throws Exception {
+  public void quickstart(String... args) throws Exception {
     // GCP project in which to store secrets in Secret Manager.
     String projectId = "YOUR_PROJECT_ID";
 

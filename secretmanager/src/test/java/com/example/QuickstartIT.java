@@ -72,7 +72,7 @@ public class QuickstartIT {
     System.setOut(new PrintStream(redirected));
 
     try {
-      Quickstart.main(PROJECT_ID, SECRET_ID);
+      new Quickstart().quickstart(PROJECT_ID, SECRET_ID);
       assertThat(redirected.toString()).contains("Plaintext: hello world!");
     } finally {
       System.setOut(originalOut);

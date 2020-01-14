@@ -30,31 +30,3 @@ You must ensure that the [user account or service account](https://cloud.google.
 * Secret Manager Secret Accessor (`roles/secretmanager.secretAccessor`)
 
 More information can be found in the [Secret Manager Docs](https://cloud.google.com/secret-manager/docs/access-control)
-
-## Quickstart
-
-Install [Maven](http://maven.apache.org/).
-
-Build your project with:
-
-```text
-$ mvn clean compile assembly:single
-```
-
-You can run the quickstart with:
-
-```text
-$ java -cp target/secretmanager-samples-1.0.11-jar-with-dependencies.jar com.example.Quickstart [your-project-id] [your-secret]
-```
-
-and can see the available snippet commands with:
-
-```text
-$ java -cp target/secretmanager-samples-1.0.11-jar-with-dependencies.jar com.example.Snippets -help
-```
-
-For example:
-
-```text
-$ java -cp target/secretmanager-samples-1.0.11-jar-with-dependencies.jar com.example.Snippets accessSecretVersion "my-project" "my-secret" "my-version"
-```
