@@ -44,7 +44,8 @@ public class CreateGlossary {
     createGlossary(projectId, glossaryId, languageCodes, inputUri);
   }
 
-  // Create Glossary
+  // Create a equivalent term sets glossary
+  // https://cloud.google.com/translate/docs/advanced/glossary#format-glossary
   public static void createGlossary(
       String projectId, String glossaryId, List<String> languageCodes, String inputUri)
       throws IOException, ExecutionException, InterruptedException {
