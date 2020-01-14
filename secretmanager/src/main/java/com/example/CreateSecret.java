@@ -35,23 +35,26 @@ public class CreateSecret {
       // Build the parent name from the project.
       ProjectName parent = ProjectName.of(projectId);
 
+      // Build the secret to create.
+      Secret secret =
+          Secret.newBuilder()
+              .setReplication(
+                  Replication.newBuilder()
+                      .setAutomatic(Replication.Automatic.newBuilder().build())
+                      .build())
+              .build();
+
       // Create the request.
       CreateSecretRequest request =
           CreateSecretRequest.newBuilder()
               .setParent(parent.toString())
               .setSecretId(secretId)
-              .setSecret(
-                  Secret.newBuilder()
-                      .setReplication(
-                          Replication.newBuilder()
-                              .setAutomatic(Replication.Automatic.newBuilder().build())
-                              .build())
-                      .build())
+              .setSecret(secret)
               .build();
 
       // Create the secret.
-      Secret secret = client.createSecret(request);
-      System.out.printf("Created secret %s\n", secret.getName());
+      Secret createdSecret = client.createSecret(request);
+      System.out.printf("Created secret %s\n", createdSecret.getName());
 
       return secret;
     }

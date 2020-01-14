@@ -35,15 +35,17 @@ public class AddSecretVersion {
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       SecretName name = SecretName.of(projectId, secretId);
 
-      // Create the secret payload
-      String payload = "my super secret data";
+      // Create the secret payload.
+      SecretPayload payload =
+          SecretPayload.newBuilder()
+              .setData(ByteString.copyFromUtf8("my super secret data"))
+              .build();
 
       // Create the request.
       AddSecretVersionRequest request =
           AddSecretVersionRequest.newBuilder()
               .setParent(name.toString())
-              .setPayload(
-                  SecretPayload.newBuilder().setData(ByteString.copyFromUtf8(payload)).build())
+              .setPayload(payload)
               .build();
 
       // Add the secret version.

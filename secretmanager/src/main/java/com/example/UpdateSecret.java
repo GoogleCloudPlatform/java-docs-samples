@@ -35,14 +35,14 @@ public class UpdateSecret {
       // Build the name.
       SecretName name = SecretName.of(projectId, secretId);
 
+      // Build the updated secret.
+      Secret secret =
+          Secret.newBuilder().setName(name.toString()).putLabels("secretmanager", "rocks").build();
+
       // Create the request.
       UpdateSecretRequest request =
           UpdateSecretRequest.newBuilder()
-              .setSecret(
-                  Secret.newBuilder()
-                      .setName(name.toString())
-                      .putLabels("secretmanager", "rocks")
-                      .build())
+              .setSecret(secret)
               .setUpdateMask(FieldMaskUtil.fromString("labels"))
               .build();
 
