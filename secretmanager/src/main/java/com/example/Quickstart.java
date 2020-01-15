@@ -31,20 +31,14 @@ import com.google.protobuf.ByteString;
 
 public class Quickstart {
 
-  public void quickstart(String... args) throws Exception {
-    // GCP project in which to store secrets in Secret Manager.
-    String projectId = "YOUR_PROJECT_ID";
+  public void quickstart() throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String secretId = "your-secret-id";
+    quickstart(projectId, secretId);
+  }
 
-    // ID of the secret to create.
-    String secretId = "YOUR_SECRET_ID";
-
-    // [END secretmanager_quickstart]
-    if (args.length > 1) {
-      projectId = args[0];
-      secretId = args[1];
-    }
-    // [START secretmanager_quickstart]
-
+  public void quickstart(String projectId, String secretId) throws Exception {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
