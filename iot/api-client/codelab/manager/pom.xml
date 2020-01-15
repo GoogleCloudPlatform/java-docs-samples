@@ -82,7 +82,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.0</version>
+      <version>23.6.1-jre</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
