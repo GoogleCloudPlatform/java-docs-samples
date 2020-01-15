@@ -45,7 +45,7 @@ public class ListSecretVersions {
       ListSecretVersionsRequest request =
           ListSecretVersionsRequest.newBuilder().setParent(parent.toString()).build();
 
-      // Get all versions, paginated.
+      // Get all versions.
       ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(request);
 
       // List all versions and their state.

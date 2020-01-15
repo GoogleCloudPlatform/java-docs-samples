@@ -44,10 +44,10 @@ public class ListSecrets {
       ListSecretsRequest request =
           ListSecretsRequest.newBuilder().setParent(parent.toString()).build();
 
-      // Get all versions, paginated.
+      // Get all secrets.
       ListSecretsPagedResponse pagedResponse = client.listSecrets(request);
 
-      // List all versions and their state.
+      // List all secrets.
       pagedResponse
           .iterateAll()
           .forEach(
