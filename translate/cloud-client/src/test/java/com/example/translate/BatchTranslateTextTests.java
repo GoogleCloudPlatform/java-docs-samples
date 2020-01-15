@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -99,7 +100,7 @@ public class BatchTranslateTextTests {
 
   @Test
   public void testBatchTranslateText()
-      throws InterruptedException, ExecutionException, IOException {
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
     BatchTranslateText.batchTranslateText(
         PROJECT_ID, "en", "es", INPUT_URI, "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/");
     String got = bout.toString();
