@@ -14,6 +14,10 @@
     {
       "packagePatterns": [ "^io.vertx:vertex-" ],
       "groupName": "Vertx packages"
+    },
+    {
+      "packagePatterns": ["^javax.servlet:" ],
+      "enabled": false
     }
   ],
   "prConcurrentLimit": 5,
