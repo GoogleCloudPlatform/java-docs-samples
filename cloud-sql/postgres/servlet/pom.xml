@@ -71,7 +71,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.10.v20180503</version>
+        <version>9.4.25.v20191220</version>
         <configuration>
           <scanIntervalSeconds>1</scanIntervalSeconds>
         </configuration>
