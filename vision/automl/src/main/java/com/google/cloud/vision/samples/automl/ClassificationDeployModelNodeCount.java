@@ -31,7 +31,8 @@ import java.util.concurrent.ExecutionException;
 class ClassificationDeployModelNodeCount {
 
   // Deploy a model with a specified node count
-  static void classificationDeployModelNodeCount(String projectId, String modelId) {
+  static void classificationDeployModelNodeCount(String projectId, String modelId)
+          throws IOException, ExecutionException, InterruptedException {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
 
@@ -54,8 +55,6 @@ class ClassificationDeployModelNodeCount {
       OperationFuture<Empty, OperationMetadata> future = client.deployModelAsync(request);
       future.get();
       System.out.println("Model deployment on 2 nodes finished");
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }
