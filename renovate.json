@@ -17,6 +17,6 @@
     }
   ],
   "prConcurrentLimit": 5,
-  "rebaseStalePrs": true,
+  "rebaseStalePrs": false,
   "masterIssue": true
 }
