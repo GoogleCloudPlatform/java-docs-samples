@@ -52,7 +52,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
-      <version>9.4.19.v20190610</version>
+      <version>9.4.25.v20191220</version>
     </dependency>
   </dependencies>
   <!-- [END gae_java11_server_dependencies] -->
