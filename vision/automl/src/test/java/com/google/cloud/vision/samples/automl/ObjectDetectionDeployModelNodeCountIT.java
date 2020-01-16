@@ -40,7 +40,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ObjectDetectionDeployModelNodeCountIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "IOD1854128448151224320";
+  private static final String MODEL_ID = "0000000000000000000000";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -52,22 +52,21 @@ public class ObjectDetectionDeployModelNodeCountIT {
   }
 
   @After
-  public void tearDown() throws IOException, InterruptedException, ExecutionException {
+  public void tearDown() {
     System.setOut(null);
-
-    try (AutoMlClient client = AutoMlClient.create()) {
-      OperationFuture<Empty, OperationMetadata> future = client.undeployModelAsync(
-              ModelName.of(PROJECT_ID, "us-central1", MODEL_ID).toString());
-
-      future.get();
-    }
   }
 
   @Test
   public void testObjectDetectionDeployModelNodeCountApi() {
-    ObjectDetectionDeployModelNodeCount.objectDetectionDeployModelNodeCount(PROJECT_ID, MODEL_ID);
-
-    String got = bout.toString();
-    assertThat(got).contains("Model deployment on 2 nodes finished");
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      ObjectDetectionDeployModelNodeCount.objectDetectionDeployModelNodeCount(PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
   }
 }

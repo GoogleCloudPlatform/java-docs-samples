@@ -30,7 +30,8 @@ import java.util.concurrent.ExecutionException;
 class ClassificationDeployModel {
 
   // Deploy a model
-  static void classificationDeployModel(String projectId, String modelId) {
+  static void classificationDeployModel(String projectId, String modelId)
+          throws IOException, ExecutionException, InterruptedException {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
 
@@ -54,8 +55,6 @@ class ClassificationDeployModel {
 
       // Display the deployment details of model.
       System.out.println("Model deployment finished");
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
     }
   }
 }
