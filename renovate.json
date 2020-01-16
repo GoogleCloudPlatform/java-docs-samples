@@ -16,6 +16,8 @@
       "groupName": "Vertx packages"
     }
   ],
+  "schedule": ["after 5am and before 5pm on every weekday"]
+  "prHourlyLimit": 2,
   "prConcurrentLimit": 5,
   "rebaseStalePrs": false,
   "masterIssue": true
