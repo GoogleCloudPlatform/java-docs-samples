@@ -59,7 +59,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.0</version>
+      <version>28.2-jre</version>
       <scope>compile</scope>
     </dependency>
 
