@@ -35,7 +35,7 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
-    <jetty.version>9.4.4.v20170414</jetty.version>
+    <jetty.version>9.4.25.v20191220</jetty.version>
   </properties>
 
   <dependencies>
@@ -51,6 +51,11 @@ limitations under the License.
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>javax-websocket-client-impl</artifactId>
       <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>8.0.1</version>
     </dependency>
     <!--Optional dependency for SettableFuture, see com.example.flexible.websocket.jsr356.ServerSocket -->
     <dependency>
