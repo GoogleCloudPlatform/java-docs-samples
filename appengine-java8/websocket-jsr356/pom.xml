@@ -52,6 +52,11 @@ limitations under the License.
       <artifactId>javax-websocket-client-impl</artifactId>
       <version>${jetty.version}</version>
     </dependency>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>8.0.1</version>
+    </dependency>
     <!--Optional dependency for SettableFuture, see com.example.flexible.websocket.jsr356.ServerSocket -->
     <dependency>
       <groupId>com.google.guava</groupId>
