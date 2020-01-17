@@ -45,7 +45,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>25.1-jre</version>
+      <version>28.2-jre</version>
     </dependency>
 
     <dependency>
@@ -66,7 +66,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-rc-2</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
     <dependency>

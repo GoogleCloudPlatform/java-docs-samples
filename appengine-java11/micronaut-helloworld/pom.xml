@@ -40,7 +40,7 @@
       <dependency>
         <groupId>io.micronaut</groupId>
         <artifactId>micronaut-bom</artifactId>
-        <version>1.2.8</version>
+        <version>1.2.9</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -102,7 +102,7 @@
     <dependency>
     <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-rc-2</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -175,12 +175,12 @@
               <path>
                 <groupId>io.micronaut</groupId>
                 <artifactId>micronaut-inject-java</artifactId>
-                <version>1.2.8</version>
+                <version>1.2.9</version>
               </path>
               <path>
                 <groupId>io.micronaut</groupId>
                 <artifactId>micronaut-validation</artifactId>
-                <version>1.2.8</version>
+                <version>1.2.9</version>
               </path>
             </annotationProcessorPaths>
           </configuration>
@@ -198,12 +198,12 @@
                   <path>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-inject-java</artifactId>
-                    <version>1.2.8</version>
+                    <version>1.2.9</version>
                   </path>
                   <path>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-validation</artifactId>
-                    <version>1.2.8</version>
+                    <version>1.2.9</version>
                   </path>
                 </annotationProcessorPaths>
               </configuration>
