@@ -4,8 +4,12 @@ assign_issues:
   - gguuss
   - kurtisvg
   - nnegrey
+  - stephaniewang526
 assign_prs:
   - averikitsch
+#  - dzlier-gcp
+  - gguuss
   - kurtisvg
   - lesv
-#  - dzlier-gcp
+  - nnegrey
+  - stephaniewang526
