@@ -47,4 +47,4 @@ class DeleteDataset {
     }
   }
 }
-// [END automl_delete_datasetbeta]
+// [END automl_delete_dataset_beta]
