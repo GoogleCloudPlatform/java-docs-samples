@@ -58,6 +58,6 @@ public class SetEndpointIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("display_name: \"do_not_delete_me_eu\"");
+    assertThat(got).contains("display_name: \"do_not_delete_eu\"");
   }
 }
