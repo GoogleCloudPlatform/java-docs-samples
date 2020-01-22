@@ -16,8 +16,8 @@
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 import com.google.gson.Gson;
 import java.io.BufferedReader;
@@ -28,19 +28,28 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.truth.Truth;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(JUnit4.class)
+@RunWith(PowerMockRunner.class)
 public class SnippetsTests {
+  @Mock private Logger loggerInstance;
 
   private HttpServletRequest request;
   private HttpServletResponse response;
@@ -61,6 +70,9 @@ public class SnippetsTests {
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
 
+    BufferedReader reader = new BufferedReader(new StringReader("{}"));
+    when(request.getReader()).thenReturn(reader);
+
     responseOut = new StringWriter();
     PrintWriter writer = new PrintWriter(responseOut);
     when(response.getWriter()).thenReturn(writer);
@@ -68,6 +80,12 @@ public class SnippetsTests {
     // Capture std out
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
+    // Capture logs
+    loggerInstance = mock(Logger.class);
+    PowerMockito.mockStatic(Logger.class);
+
+    when(Logger.getLogger(anyString())).thenReturn(loggerInstance);
   }
 
   @After
@@ -77,6 +95,7 @@ public class SnippetsTests {
     responseOut = null;
     stdOut = null;
     System.setOut(null);
+    Mockito.reset();
   }
 
   @Test
@@ -216,5 +235,83 @@ public class SnippetsTests {
   public void helloExecutionCount() throws IOException {
     new Concepts().executionCount(request, response);
     assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
+  }
+
+  public void helloHttp_noParamsGet() throws Exception {
+    new HelloHttpSample().helloWorld(request, response);
+    Truth.assertThat(responseOut.toString()).isEqualTo("Hello world!");
+  }
+
+  @Test
+  public void helloHttp_urlParamsGet() throws Exception {
+    when(request.getParameter("name")).thenReturn("Tom");
+
+    new HelloHttpSample().helloWorld(request, response);
+    Truth.assertThat(responseOut.toString()).isEqualTo("Hello Tom!");
+  }
+
+  @Test
+  public void helloHttp_bodyParamsPost() throws Exception {
+    BufferedReader jsonReader = new BufferedReader(new StringReader("{'name': 'Jane'}"));
+    when(request.getReader()).thenReturn(jsonReader);
+
+    new HelloHttpSample().helloWorld(request, response);
+    Truth.assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
+  }
+
+  @PrepareForTest({Logger.class, HelloBackgroundSample.class})
+  @Test
+  public void helloBackground_printsName() throws Exception {
+    BackgroundEvent event = new BackgroundEvent();
+    event.name = "John";
+
+    new HelloBackgroundSample().helloBackground(event);
+    verify(loggerInstance, times(1)).info("Hello John!");
+  }
+
+  @PrepareForTest({Logger.class, HelloBackgroundSample.class})
+  @Test
+  public void helloBackground_printsHelloWorld() throws Exception {
+    BackgroundEvent event = new BackgroundEvent();
+    new HelloBackgroundSample().helloBackground(event);
+
+    verify(loggerInstance, times(1)).info("Hello world!");
+  }
+
+  @PrepareForTest({Logger.class, HelloGcsSample.class})
+  @Test
+  public void helloGcs_shouldPrintUploadedMessage() throws Exception {
+    GcsEvent event = new GcsEvent();
+    event.name = "foo.txt";
+    event.metageneration = "1";
+    new HelloGcsSample().helloGcs(event);
+    verify(loggerInstance, times(1)).info("File foo.txt uploaded.");
+  }
+
+  @PrepareForTest({Logger.class, HelloGcsSample.class})
+  @Test
+  public void helloGcs_shouldPrintMetadataUpdatedMessage() throws Exception {
+    GcsEvent event = new GcsEvent();
+    event.name = "baz.txt";
+    event.metageneration = "2";
+    new HelloGcsSample().helloGcs(event);
+    verify(loggerInstance, times(1)).info("File baz.txt metadata updated.");
+  }
+
+  @PrepareForTest({Logger.class, HelloPubSubSample.class})
+  @Test
+  public void helloPubSub_shouldPrintName() throws Exception {
+    PubSubMessage message = new PubSubMessage();
+    message.data = Base64.getEncoder().encodeToString("John".getBytes());
+    new HelloPubSubSample().helloPubSub(message);
+    verify(loggerInstance, times(1)).info("Hello John!");
+  }
+
+  @PrepareForTest({Logger.class, HelloPubSubSample.class})
+  @Test
+  public void helloPubSub_shouldPrintHelloWorld() throws Exception {
+    PubSubMessage message = new PubSubMessage();
+    new HelloPubSubSample().helloPubSub(message);
+    verify(loggerInstance, times(1)).info("Hello world!");
   }
 }

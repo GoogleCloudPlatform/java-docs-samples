@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package com.example.functions;
-
 // [START functions_helloworld_http]
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,11 +21,14 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 public class HelloHttpSample {
+  private static final Logger LOGGER = Logger.getLogger(HelloHttpSample.class.getName());
+
   public void helloWorld(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String name = "world";
@@ -47,7 +48,7 @@ public class HelloHttpSample {
       }
 
     } catch (JsonParseException e) {
-      System.out.println("Error parsing JSON: " + e.getMessage());
+      LOGGER.severe("Error parsing JSON: " + e.getMessage());
     }
 
     if (request.getParameter("name") != null) {

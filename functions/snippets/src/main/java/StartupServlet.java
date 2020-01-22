@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package com.example.functions;
-
 import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

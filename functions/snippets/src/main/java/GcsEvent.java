@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.functions;
-
-// [START functions_helloworld_background_event]
-public class BackgroundEvent {
+// [START functions_helloworld_gcs_event]
+public class GcsEvent {
+  String bucket;
   String name;
+  String metageneration;
 }
-// [START functions_helloworld_background_event]
+// [END functions_helloworld_gcs_event]

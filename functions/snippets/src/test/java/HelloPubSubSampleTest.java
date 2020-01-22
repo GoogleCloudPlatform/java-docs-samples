@@ -15,12 +15,12 @@
  */
 
 // [START functions_pubsub_unit_test]
-package com.example.functions;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Base64;
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -33,13 +33,16 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+// [END functions_pubsub_unit_test]
+
 /**
  * Unit tests for {@link HelloPubSubSample}.
  */
+// [START functions_pubsub_unit_test]
 @RunWith(PowerMockRunner.class)
-public class HelloBackgroundSampleTest {
+public class HelloPubSubSampleTest {
 
-  private HelloBackgroundSample sampleUnderTest;
+  private HelloPubSubSample sampleUnderTest;
   @Mock private Logger loggerInstance;
 
   @Before
@@ -48,10 +51,10 @@ public class HelloBackgroundSampleTest {
     PowerMockito.mockStatic(Logger.class);
 
     Mockito
-        .when(Logger.getLogger(HelloBackgroundSample.class.getName()))
+        .when(Logger.getLogger(HelloPubSubSample.class.getName()))
         .thenReturn(loggerInstance);
 
-    sampleUnderTest = new HelloBackgroundSample();
+    sampleUnderTest = new HelloPubSubSample();
   }
 
   @After
@@ -59,20 +62,20 @@ public class HelloBackgroundSampleTest {
     Mockito.reset();
   }
 
-  @PrepareForTest({Logger.class, HelloBackgroundSample.class})
+  @PrepareForTest({Logger.class, HelloPubSubSample.class})
   @Test
-  public void helloBackground_shouldPrintName() throws Exception {
-    BackgroundEvent event = new BackgroundEvent();
-    event.name = "John";
-    sampleUnderTest.helloBackground(event);
+  public void helloPubSub_shouldPrintName() throws Exception {
+    PubSubMessage message = new PubSubMessage();
+    message.data = Base64.getEncoder().encodeToString("John".getBytes());
+    sampleUnderTest.helloPubSub(message);
     verify(loggerInstance, times(1)).info("Hello John!");
   }
 
-  @PrepareForTest({Logger.class, HelloBackgroundSample.class})
+  @PrepareForTest({Logger.class, HelloPubSubSample.class})
   @Test
-  public void helloBackground_shouldPrintHelloWorld() throws Exception {
-    BackgroundEvent event = new BackgroundEvent();
-    sampleUnderTest.helloBackground(event);
+  public void helloPubSub_shouldPrintHelloWorld() throws Exception {
+    PubSubMessage message = new PubSubMessage();
+    sampleUnderTest.helloPubSub(message);
     verify(loggerInstance, times(1)).info("Hello world!");
   }
 }

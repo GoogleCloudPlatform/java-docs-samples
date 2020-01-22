@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package com.example.functions;
-
 // [START functions_background_helloworld]
+// [START functions_helloworld_pubsub]
+import java.util.Base64;
 import java.util.logging.Logger;
 
-public class HelloBackgroundSample {
-  private static Logger logger = Logger.getLogger(HelloBackgroundSample.class.getName());
+public class HelloPubSubSample {
+  private static final Logger LOGGER = Logger.getLogger(HelloPubSubSample.class.getName());
 
-  public void helloBackground(BackgroundEvent data) throws Exception {
+  public void helloPubSub(PubSubMessage message) throws Exception {
     String name = "world";
-    if (data.name != null) {
-      name = data.name;
+    if (message.data != null) {
+      name = new String(Base64.getDecoder().decode(message.data.getBytes("UTF-8")));
     }
-    logger.info(String.format("Hello %s!", name));
+    LOGGER.info(String.format("Hello %s!", name));
   }
 }
 // [END functions_background_helloworld]
+// [END functions_helloworld_pubsub]

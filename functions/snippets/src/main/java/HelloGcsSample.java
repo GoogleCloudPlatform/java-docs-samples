@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package com.example.functions;
-
 // [START functions_helloworld_storage]
 import java.util.logging.Logger;
 

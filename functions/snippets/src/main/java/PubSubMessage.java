@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package com.example.functions;
-
 // [START functions_helloworld_pubsub_message]
 import java.util.Map;
 
