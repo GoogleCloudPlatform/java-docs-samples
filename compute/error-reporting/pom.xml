@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.fluentd</groupId>
       <artifactId>fluent-logger</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.4</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>
@@ -47,7 +47,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>package</phase>

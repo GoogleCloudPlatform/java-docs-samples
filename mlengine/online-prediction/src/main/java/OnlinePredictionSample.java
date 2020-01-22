@@ -30,9 +30,11 @@ import com.google.api.services.discovery.model.JsonSchema;
 import com.google.api.services.discovery.model.RestDescription;
 import com.google.api.services.discovery.model.RestMethod;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
- * Sample code for doing Cloud Machine Learning Engine online prediction in Java.
+ * Sample code for sending an online prediction request to Cloud Machine Learning Engine.
  */
 
 public class OnlinePredictionSample {
@@ -61,8 +63,11 @@ public class OnlinePredictionSample {
     File requestBodyFile = new File("input.txt");
     HttpContent content = new FileContent(contentType, requestBodyFile);
     System.out.println(content.getLength());
-
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    
+    List<String> scopes = new ArrayList<>();
+    scopes.add("https://www.googleapis.com/auth/cloud-platform");
+    
+    GoogleCredential credential = GoogleCredential.getApplicationDefault().createScoped(scopes);
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
     HttpRequest request = requestFactory.buildRequest(method.getHttpMethod(), url, content);
 

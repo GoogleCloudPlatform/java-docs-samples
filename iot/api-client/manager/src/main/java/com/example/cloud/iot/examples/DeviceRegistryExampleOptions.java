@@ -16,6 +16,7 @@
 
 package com.example.cloud.iot.examples;
 
+import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -28,8 +29,8 @@ import org.apache.commons.cli.ParseException;
 public class DeviceRegistryExampleOptions {
   static final Options options = new Options();
   String projectId;
-  String ecPublicKeyFile = "ec_public.pem";
-  String rsaCertificateFile = "rsa_cert.pem";
+  String ecPublicKeyFile = null;
+  String rsaCertificateFile = null;
   String cloudRegion = "us-central1";
   String command = "help";
   String commandData = "Specify with --data";
@@ -52,6 +53,7 @@ public class DeviceRegistryExampleOptions {
             .hasArg()
             .desc(
                 "Command to run:"
+                    + "\n\tclear-registry"
                     + "\n\tcreate-iot-topic" // TODO: Descriptions or too verbose?
                     + "\n\tcreate-rsa"
                     + "\n\tcreate-es"
@@ -69,7 +71,12 @@ public class DeviceRegistryExampleOptions {
                     + "\n\tpatch-device-rsa"
                     + "\n\tset-config"
                     + "\n\tset-iam-permissions"
-                    + "\n\tsend-command")
+                    + "\n\tsend-command"
+                    + "\n\tcreate-gateway"
+                    + "\n\tbind-device-to-gateway"
+                    + "\n\tunbind-device-from-gateway"
+                    + "\n\tlist-gateways"
+                    + "\n\tlist-devices-for-gateway")
             .required()
             .build());
 
@@ -125,11 +132,11 @@ public class DeviceRegistryExampleOptions {
             .build());
     options.addOption(
             Option.builder()
-                    .type(String.class)
-                    .longOpt("gateway_id")
-                    .hasArg()
-                    .desc("Name for your Device.")
-                    .build());
+            .type(String.class)
+            .longOpt("gateway_id")
+            .hasArg()
+            .desc("Name for your Device.")
+            .build());
     options.addOption(
         Option.builder()
             .type(String.class)
@@ -170,10 +177,10 @@ public class DeviceRegistryExampleOptions {
     CommandLine commandLine;
     try {
       commandLine = parser.parse(options, args);
+
       DeviceRegistryExampleOptions res = new DeviceRegistryExampleOptions();
 
       res.command = commandLine.getOptionValue("command");
-
       if (res.command.equals("help") || res.command.equals("")) {
         throw new ParseException("Invalid command, showing help.");
       }

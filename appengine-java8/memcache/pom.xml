@@ -48,7 +48,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.76</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.xmemcached</groupId>
@@ -74,7 +74,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.3</version>
       </plugin>
 
     </plugins>

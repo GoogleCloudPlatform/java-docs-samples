@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "packagePatterns": [ "^com.google.appengine:" ],
+      "groupName": "AppEngine packages"
+    },
+    {
+      "packagePatterns": [ "^io.grpc:grpc-" ],
+      "groupName": "gRPC packages"
+    },
+    {
+      "packagePatterns": [ "^io.vertx:vertex-" ],
+      "groupName": "Vertx packages"
+    }
+  ],
+  "prConcurrentLimit": 5,
+  "rebaseStalePrs": false,
+  "masterIssue": true
+}

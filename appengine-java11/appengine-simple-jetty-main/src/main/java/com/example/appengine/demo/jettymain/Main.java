@@ -32,11 +32,10 @@ public class Main {
     System.setProperty("org.eclipse.jetty.util.log.class", "org.eclipse.jetty.util.log.StrErrLog");
     System.setProperty("org.eclipse.jetty.LEVEL", "INFO");
 
-    // Create a basic Jetty server object that will listen on port 8080.
-    // Note: If you set this to port 0, a randomly available port will be
-    // assigned. You can find the assigned port in the logs or programmatically
-    // obtain it.
-    Server server = new Server(8080);
+    // Create a basic Jetty server object that will listen on port defined by
+    // the PORT environment variable when present, otherwise on 8080.
+    int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+    Server server = new Server(port);
 
     // The WebAppContext is the interface to provide configuration for a web
     // application. In this example, the context path is being set to "/" so

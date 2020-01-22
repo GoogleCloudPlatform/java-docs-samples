@@ -16,7 +16,6 @@
 
 package com.example.dlp;
 
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CreateJobTriggerRequest;
@@ -262,13 +261,13 @@ public class Triggers {
       cmd = parser.parse(commandLineOptions, args);
     } catch (ParseException e) {
       System.out.println(e.getMessage());
-      formatter.printHelp(DeIdentification.class.getName(), commandLineOptions);
+      formatter.printHelp(Triggers.class.getName(), commandLineOptions);
       System.exit(1);
       return;
     }
 
     String projectId =
-        cmd.getOptionValue(projectIdOption.getOpt(), ServiceOptions.getDefaultProjectId());
+        cmd.getOptionValue(projectIdOption.getOpt());
     if (cmd.hasOption("c")) {
       Likelihood minLikelihood =
           Likelihood.valueOf(

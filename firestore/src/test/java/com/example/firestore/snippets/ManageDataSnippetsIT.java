@@ -188,6 +188,16 @@ public class ManageDataSnippetsIT extends BaseIntegrationTest {
     assertFalse(document.get().exists());
   }
 
+  @Test
+  public void testUpdateDocumentIncrementSuccessful() throws Exception {
+    manageDataSnippets.updateDocumentIncrement();
+    CollectionReference collection = db.collection("cities");
+    DocumentReference documentReference = collection.document("DC");
+    final DocumentSnapshot data = documentReference.get().get();
+    assertTrue(data.contains("population"));
+    assertEquals((Long) 150L, data.getLong("population"));
+  }
+
   @AfterClass
   public static void tearDown() throws Exception {
     manageDataSnippets.deleteCollection(db.collection("cities"), 10);

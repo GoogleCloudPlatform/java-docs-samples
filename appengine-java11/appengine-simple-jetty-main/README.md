@@ -58,8 +58,8 @@ To use the dependency add the entrypoint to your `app.yaml` file. The
 entrypoint field will start the Jetty server and load your `WAR` file.
 ```
 runtime: java11
-instance_class: F2
-entrypoint: 'java -cp * com.example.appengine.demo.jettymain.Main helloworld.war'
+instance_class: F1
+entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main helloworld.war'
 ```
 
 ## Running locally
@@ -70,7 +70,7 @@ the provided server is running your application as expected.
 
 - Start the server with your `WAR` file as an argument:
 ```
-mvn exec:java -Dexec.args="<path/to/your/war/file"
+mvn exec:java -Dexec.args="../sample/target/sample.war"
 ```
 
 [jetty-plugin]: https://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html

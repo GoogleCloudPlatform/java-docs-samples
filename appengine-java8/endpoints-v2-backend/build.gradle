@@ -19,9 +19,9 @@ buildscript {
 
   dependencies {
     // [START endpoints_plugin]
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:2.0.1'
     // [END endpoints_plugin]
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.3.3'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
   }
 }
 
@@ -31,10 +31,6 @@ repositories {
     }
     jcenter()
     mavenCentral()
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.5'
 }
 
 def projectId = 'YOUR_PROJECT_ID'
@@ -47,10 +43,10 @@ apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
 apply plugin: 'com.google.cloud.tools.appengine'
 
 dependencies {
-    compile 'com.google.endpoints:endpoints-framework:2.0.8'
+    compile 'com.google.endpoints:endpoints-framework:2.2.1'
     // [START api_management]
-    compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
-    compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
+    compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.12'
+    compile 'com.google.endpoints:endpoints-framework-auth:1.0.12'
     // [END api_management]
 }
 // [START endpoints_plugin_config]

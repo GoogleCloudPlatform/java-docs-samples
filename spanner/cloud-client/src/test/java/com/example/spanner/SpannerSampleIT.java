@@ -22,7 +22,6 @@ import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -32,9 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Unit tests for {@code SpannerSample}
- */
+/** Unit tests for {@code SpannerSample} */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
@@ -50,7 +47,7 @@ public class SpannerSampleIT {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    SpannerSample.main(new String[]{command, instanceId, databaseId});
+    SpannerSample.main(new String[] {command, instanceId, databaseId});
     System.setOut(stdOut);
     return bout.toString();
   }
@@ -185,13 +182,13 @@ public class SpannerSampleIT {
     assertThat(out).contains("12 Melissa Garcia");
 
     runSample("writewithtransactionusingdml");
-    out = runSample("querymarketingbudget");    
-    assertThat(out).contains("1 1 1800000");
-    assertThat(out).contains("2 2 200000");
-    
+    out = runSample("querymarketingbudget");
+    assertThat(out).contains("1 1 2200000");
+    assertThat(out).contains("2 2 550000");
+
     runSample("updateusingpartitioneddml");
     out = runSample("querymarketingbudget");
-    assertThat(out).contains("1 1 1800000");
+    assertThat(out).contains("1 1 2200000");
     assertThat(out).contains("2 2 100000");
 
     runSample("deleteusingpartitioneddml");
@@ -205,6 +202,40 @@ public class SpannerSampleIT {
     out = runSample("updateusingbatchdml");
     assertThat(out).contains("1 record updated by stmt 0");
     assertThat(out).contains("1 record updated by stmt 1");
+
+    out = runSample("createtablewithdatatypes");
+    assertThat(out).contains("Created Venues table in database");
+
+    runSample("writedatatypesdata");
+    out = runSample("querywitharray");
+    assertThat(out).contains("19 Venue 19 2020-11-01");
+    assertThat(out).contains("42 Venue 42 2020-10-01");
+
+    out = runSample("querywithbool");
+    assertThat(out).contains("19 Venue 19 true");
+
+    out = runSample("querywithbytes");
+    assertThat(out).contains("4 Venue 4");
+  
+    out = runSample("querywithdate");
+    assertThat(out).contains("4 Venue 4 2018-09-02");
+    assertThat(out).contains("42 Venue 42 2018-10-01");
+
+    out = runSample("querywithfloat");
+    assertThat(out).contains("4 Venue 4 0.8");
+    assertThat(out).contains("19 Venue 19 0.9");
+
+    out = runSample("querywithint");
+    assertThat(out).contains("19 Venue 19 6300");
+    assertThat(out).contains("42 Venue 42 3000");
+
+    out = runSample("querywithstring");
+    assertThat(out).contains("42 Venue 42");
+
+    out = runSample("querywithtimestampparameter");
+    assertThat(out).contains("4 Venue 4");
+    assertThat(out).contains("19 Venue 19");
+    assertThat(out).contains("42 Venue 42");
   }
 
   private String formatForTest(String name) {

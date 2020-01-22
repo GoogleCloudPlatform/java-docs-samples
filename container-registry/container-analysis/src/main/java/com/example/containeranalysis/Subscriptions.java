@@ -78,7 +78,7 @@ public class Subscriptions {
   public static Subscription createOccurrenceSubscription(String subId, String projectId) 
       throws IOException, StatusRuntimeException, InterruptedException {
     // This topic id will automatically receive messages when Occurrences are added or modified
-    String topicId = "container-analysis-occurrences-v1beta1";
+    String topicId = "container-analysis-occurrences-v1";
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
     ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
 

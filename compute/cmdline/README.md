@@ -59,7 +59,7 @@ reuse an existing project by clicking on it.
     in to the newly created VM instance.
 
 1. Code checkout instructions:
-  1. Prerequisites: install [Java 7 or Java 8 JDK][2], [Git][7], and [Maven][8].
+  1. Prerequisites: install [Java 8 JDK][2], [Git][7], and [Maven][8].
 You may need to set your `JAVA_HOME` environment variable as well.
     * To install these prerequisites on a Linux (Debian or Ubuntu) based Compute Engine VM
     instance, run these commands:

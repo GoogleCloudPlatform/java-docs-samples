@@ -26,6 +26,8 @@ import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
@@ -42,10 +44,10 @@ public class DetectIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ASSET_BUCKET = "cloud-samples-data";
   private static final String OUTPUT_BUCKET = PROJECT_ID;
-  private static final String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT";
+  private static final String OUTPUT_PREFIX = "OCR_PDF_TEST_OUTPUT_" + UUID.randomUUID().toString();
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -311,8 +313,8 @@ public class DetectIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("vertices {");
-    assertThat(got).contains("x: 599");
-    assertThat(got).contains("y: 475");
+    assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("y: 4\\d{2}"));
   }
 
   @Test
@@ -324,8 +326,8 @@ public class DetectIT {
     // Assert
     String got = bout.toString();
     assertThat(got).contains("vertices {");
-    assertThat(got).contains("x: 599");
-    assertThat(got).contains("y: 475");
+    assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("y: 4\\d{2}"));
   }
 
   @Test
@@ -363,13 +365,13 @@ public class DetectIT {
 
     // Assert
     String got = bout.toString();
+
     assertThat(got).contains("OIL, GAS AND MINERAL LEASE");
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
 
     Page<Blob> blobs = storage.list(OUTPUT_BUCKET, BlobListOption.currentDirectory(),
         BlobListOption.prefix(OUTPUT_PREFIX + "/"));
-
     for (Blob blob : blobs.iterateAll()) {
       blob.delete();
     }

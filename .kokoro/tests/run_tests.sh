@@ -19,6 +19,8 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # `--debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -42,6 +44,7 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging.
+    gcloud components install beta --quiet
     gcloud components update --quiet
     echo "********** GCLOUD INFO ***********"
     gcloud -v
@@ -53,9 +56,16 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Setup required env variables
     export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
     export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+    # For Tasks samples
+    export QUEUE_ID=my-appengine-queue
+    export LOCATION_ID=us-east1
+    # For Datalabeling samples to hit the testing endpoint
+    export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
+    source "${KOKORO_GFILE_DIR}/bigtable_secrets.txt"
+    source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
@@ -67,7 +77,7 @@ fi
 # Package local jetty dependency for Java11 samples
 if [[ "$JAVA_VERSION" == "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
-  mvn install
+  mvn install --quiet
   cd ../../
 fi
 
@@ -130,6 +140,21 @@ for file in **/pom.xml; do
       echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"
     else
       echo -e "\n Testing completed.\n"
+    fi
+
+    # Build and deploy Cloud Run samples
+    if [[ "$file" == "run/"* ]]; then
+      export SAMPLE_NAME=${file#"run/"}
+      # chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
+      "$SCRIPT_DIR"/build_cloud_run.sh
+      EXIT=$?
+
+      if [[ $EXIT -ne 0 ]]; then
+        RTN=1
+        echo -e "\n Cloud Run build/deploy failed: gcloud returned a non-zero exit code. \n"
+      else
+        echo -e "\n Cloud Run build/deploy completed.\n"
+      fi
     fi
 
 done

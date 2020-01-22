@@ -17,33 +17,33 @@
 package com.example.task;
 
 // [START cloud_tasks_create_http_task]
-import com.google.cloud.tasks.v2beta3.CloudTasksClient;
-import com.google.cloud.tasks.v2beta3.HttpMethod;
-import com.google.cloud.tasks.v2beta3.HttpRequest;
-import com.google.cloud.tasks.v2beta3.QueueName;
-import com.google.cloud.tasks.v2beta3.Task;
+import com.google.cloud.tasks.v2.CloudTasksClient;
+import com.google.cloud.tasks.v2.HttpMethod;
+import com.google.cloud.tasks.v2.HttpRequest;
+import com.google.cloud.tasks.v2.QueueName;
+import com.google.cloud.tasks.v2.Task;
 import com.google.protobuf.ByteString;
 import java.nio.charset.Charset;
 
 public class CreateHttpTask {
-
-  public static void main(String[] args) throws Exception {
-    String projectId = System.getenv("PROJECT_ID");
-    String queueName = System.getenv("QUEUE_ID");
-    String location = System.getenv("LOCATION_ID");
-    String url = System.getenv("URL");
+  /**
+   * Create a task with a HTTP target using the Cloud Tasks client.
+   *
+   * @param projectId the Id of the project.
+   * @param queueId the name of your Queue.
+   * @param locationId the GCP region of your queue.
+   * @throws Exception on Cloud Tasks Client errors.
+   */
+  public static void createTask(String projectId, String locationId, String queueId)
+      throws Exception {
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
-      // Variables provided by the system variables.
-      // projectId = "my-project-id";
-      // queueName = "my-queue";
-      // location = "us-central1";
-      // url = "https://example.com/taskhandler";
-      String payload = "hello";
+      String url = "https://example.com/taskhandler";
+      String payload = "Hello, World!";
 
       // Construct the fully qualified queue name.
-      String queuePath = QueueName.of(projectId, location, queueName).toString();
+      String queuePath = QueueName.of(projectId, locationId, queueId).toString();
 
       // Construct the task body.
       Task.Builder taskBuilder =

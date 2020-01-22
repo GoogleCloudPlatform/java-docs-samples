@@ -16,7 +16,7 @@
 
 package com.example.appengine.search;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
@@ -56,8 +56,8 @@ public class UtilsTest {
     IndexSpec indexSpec = IndexSpec.newBuilder().setName(INDEX).build();
     Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
     Document fetched = index.get(id);
-    assertThat(fetched.getOnlyField("f").getText())
-        .named("A value of the fetched document")
+    assertWithMessage("A value of the fetched document")
+        .that(fetched.getOnlyField("f").getText())
         .isEqualTo("v");
   }
 }

@@ -17,6 +17,7 @@
 package com.example.appengine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -40,9 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Unit tests to demonstrate App Engine Datastore entities.
- */
+/** Unit tests to demonstrate App Engine Datastore entities. */
 @RunWith(JUnit4.class)
 public class EntitiesTest {
 
@@ -81,11 +80,15 @@ public class EntitiesTest {
     // [END kind_example]
 
     Entity got = datastore.get(employee.getKey());
-    assertThat((String) got.getProperty("firstName")).named("got.firstName").isEqualTo("Antonio");
-    assertThat((String) got.getProperty("lastName")).named("got.lastName").isEqualTo("Salieri");
-    assertThat((Date) got.getProperty("hireDate")).named("got.hireDate").isNotNull();
-    assertThat((boolean) got.getProperty("attendedHrTraining"))
-        .named("got.attendedHrTraining")
+    assertWithMessage("got.firstName")
+        .that((String) got.getProperty("firstName"))
+        .isEqualTo("Antonio");
+    assertWithMessage("got.lastName")
+        .that((String) got.getProperty("lastName"))
+        .isEqualTo("Salieri");
+    assertWithMessage("got.hireDate").that((Date) got.getProperty("hireDate")).isNotNull();
+    assertWithMessage("got.attendedHrTraining")
+        .that((boolean) got.getProperty("attendedHrTraining"))
         .isTrue();
   }
 
@@ -96,7 +99,7 @@ public class EntitiesTest {
     // [END identifiers_1]
     datastore.put(employee);
 
-    assertThat(employee.getKey().getName()).named("key name").isEqualTo("asalieri");
+    assertWithMessage("key name").that(employee.getKey().getName()).isEqualTo("asalieri");
   }
 
   @Test
@@ -109,7 +112,7 @@ public class EntitiesTest {
     // [END identifiers_2]
     datastore.put(employee);
 
-    assertThat(employee.getKey().getId()).named("key id").isNotEqualTo(usedId);
+    assertWithMessage("key id").that(employee.getKey().getId()).isNotEqualTo(usedId);
   }
 
   @Test
@@ -122,7 +125,7 @@ public class EntitiesTest {
     datastore.put(address);
     // [END parent_1]
 
-    assertThat(address.getParent()).named("address parent").isEqualTo(employee.getKey());
+    assertWithMessage("address parent").that(address.getParent()).isEqualTo(employee.getKey());
   }
 
   @Test
@@ -135,7 +138,7 @@ public class EntitiesTest {
     // [END parent_2]
     datastore.put(address);
 
-    assertThat(address.getKey().getName()).named("address key name").isEqualTo("addr1");
+    assertWithMessage("address key name").that(address.getKey().getName()).isEqualTo("addr1");
   }
 
   @Test
@@ -143,7 +146,7 @@ public class EntitiesTest {
     // [START working_with_entities]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // [END working_with_entities]
-    assertThat(datastore).named("datastore").isNotNull();
+    assertWithMessage("datastore").that(datastore).isNotNull();
   }
 
   @Test
@@ -155,7 +158,7 @@ public class EntitiesTest {
     datastore.put(employee);
     // [END creating_an_entity_1]
 
-    assertThat(employee.getKey().getName()).named("employee key name").isEqualTo("asalieri");
+    assertWithMessage("employee key name").that(employee.getKey().getName()).isEqualTo("asalieri");
   }
 
   private Key writeEmptyEmployee() {
@@ -176,7 +179,9 @@ public class EntitiesTest {
     Entity employee = datastore.get(employeeKey);
     // [END retrieving_an_entity]
 
-    assertThat(employee.getKey().getId()).named("retrieved key ID").isEqualTo(employeeKey.getId());
+    assertWithMessage("retrieved key ID")
+        .that(employee.getKey().getId())
+        .isEqualTo(employeeKey.getId());
   }
 
   @Test
@@ -194,7 +199,9 @@ public class EntitiesTest {
       Entity got = datastore.get(employeeKey);
       fail("Expected EntityNotFoundException");
     } catch (EntityNotFoundException expected) {
-      assertThat(expected.getKey().getName()).named("exception key name").isEqualTo("asalieri");
+      assertWithMessage("exception key name")
+          .that(expected.getKey().getName())
+          .isEqualTo("asalieri");
     }
   }
 
@@ -211,13 +218,13 @@ public class EntitiesTest {
     // Sometime later
     employee = datastore.get(employee.getKey());
     @SuppressWarnings("unchecked") // Cast can't verify generic type.
-        ArrayList<String> retrievedFruits = (ArrayList<String>) employee
-        .getProperty("favoriteFruit");
+    ArrayList<String> retrievedFruits = (ArrayList<String>) employee.getProperty("favoriteFruit");
     // [END repeated_properties]
 
     assertThat(retrievedFruits).containsExactlyElementsIn(favoriteFruit).inOrder();
   }
 
+  // CHECKSTYLE.OFF: VariableDeclarationUsageDistance
   @SuppressWarnings("VariableDeclarationUsageDistance")
   @Test
   public void embeddedEntity_fromEmbedded_embedsProperties() throws Exception {
@@ -236,10 +243,11 @@ public class EntitiesTest {
 
     Entity gotEmployee = datastore.get(employee.getKey());
     EmbeddedEntity got = (EmbeddedEntity) gotEmployee.getProperty("contactInfo");
-    assertThat((String) got.getProperty("homeAddress"))
-        .named("got.homeAddress")
+    assertWithMessage("got.homeAddress")
+        .that((String) got.getProperty("homeAddress"))
         .isEqualTo("123 Fake St, Made, UP 45678");
   }
+  // CHECKSTYLE.ON: VariableDeclarationUsageDistance
 
   private Key putEmployeeWithContactInfo(Entity contactInfo) {
     Entity employee = new Entity("Employee");
@@ -278,8 +286,8 @@ public class EntitiesTest {
 
     Entity got = datastore.get(infoKey);
     assertThat(got.getKey()).isEqualTo(initialContactInfo.getKey());
-    assertThat((String) got.getProperty("homeAddress"))
-        .named("got.homeAddress")
+    assertWithMessage("got.homeAddress")
+        .that((String) got.getProperty("homeAddress"))
         .isEqualTo("123 Fake St, Made, UP 45678");
   }
 
@@ -301,14 +309,14 @@ public class EntitiesTest {
 
     Map<Key, Entity> got =
         datastore.get(Arrays.asList(employee1.getKey(), employee2.getKey(), employee3.getKey()));
-    assertThat((String) got.get(employee1.getKey()).getProperty("firstName"))
-        .named("employee1.firstName")
+    assertWithMessage("employee1.firstName")
+        .that((String) got.get(employee1.getKey()).getProperty("firstName"))
         .isEqualTo("Bill");
-    assertThat((String) got.get(employee2.getKey()).getProperty("firstName"))
-        .named("employee2.firstName")
+    assertWithMessage("employee2.firstName")
+        .that((String) got.get(employee2.getKey()).getProperty("firstName"))
         .isEqualTo("Jane");
-    assertThat((String) got.get(employee3.getKey()).getProperty("firstName"))
-        .named("employee3.firstName")
+    assertWithMessage("employee3.firstName")
+        .that((String) got.get(employee3.getKey()).getProperty("firstName"))
         .isEqualTo("Alex");
   }
 
@@ -358,8 +366,8 @@ public class EntitiesTest {
     // [END generating_keys_3]
 
     assertThat(personKey).isEqualTo(k);
-    assertThat((String) person.getProperty("relationship"))
-        .named("person.relationship")
+    assertWithMessage("person.relationship")
+        .that((String) person.getProperty("relationship"))
         .isEqualTo("Me");
   }
 }

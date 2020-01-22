@@ -29,11 +29,11 @@ import java.time.Clock;
 import java.time.Instant;
 
 public class CreateTask {
-  public static void main(String[] args) throws Exception {
+  public static void main(String... args) throws Exception {
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
       // Variables provided by system variables.
-      String projectId = System.getenv("PROJECT_ID");
+      String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
       String queueName = System.getenv("QUEUE_ID");
       String location = System.getenv("LOCATION_ID");
       // Optional variables.

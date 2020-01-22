@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import snippets.healthcare.datasets.DatasetCreate;
+import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.fhir.FhirStoreCreate;
 import snippets.healthcare.fhir.FhirStoreDelete;
 import snippets.healthcare.fhir.FhirStoreExecuteBundle;
@@ -45,15 +46,12 @@ import snippets.healthcare.fhir.FhirStorePatch;
 import snippets.healthcare.fhir.FhirStoreSetIamPolicy;
 
 @RunWith(JUnit4.class)
-public class FhirStoreTests extends TestBase {
+public class FhirStoreTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
 
   private static final String GCLOUD_BUCKET_NAME = "java-docs-samples-testing";
   private static final String GCLOUD_PUBSUB_TOPIC = System.getenv("GCLOUD_PUBSUB_TOPIC");
-
-  private static String storageFileName = "IM-0002-0001-JPEG-BASELINE.dcm";
-  private static String gcsFileName = GCLOUD_BUCKET_NAME + "/" + storageFileName;
 
   private static String datasetName;
 
@@ -85,7 +83,7 @@ public class FhirStoreTests extends TestBase {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    deleteDatasets();
+    DatasetDelete.datasetDelete(datasetName);
   }
 
   @Before
@@ -176,7 +174,9 @@ public class FhirStoreTests extends TestBase {
 
   @Test
   public void test_FhirStoreImport() throws Exception {
-    FhirStoreImport.fhirStoreImport(fhirStoreName, "gs://" + gcsFileName);
+    FhirStoreImport.fhirStoreImport(
+        fhirStoreName,
+        "gs://" + GCLOUD_BUCKET_NAME + "/healthcare-api/Patient.json");
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR store import complete:"));

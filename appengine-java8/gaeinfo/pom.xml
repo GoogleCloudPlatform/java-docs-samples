@@ -32,7 +32,7 @@ Copyright 2017 Google Inc.
   </parent>
 
   <!-- [START compiler] -->
-  <properties>  <!-- App Engine Standard currently requires Java 7 -->
+  <properties>  <!-- App Engine Standard currently requires Java 8 -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
@@ -42,7 +42,7 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.71</version>
+      <version>1.9.76</version>
     </dependency>
 
     <dependency>
@@ -56,13 +56,13 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>3.13.1</version>
+      <version>4.2.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.5</version>
+      <version>2.8.6</version>
     </dependency>
 
     <dependency>
@@ -81,7 +81,7 @@ Copyright 2017 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.2.3</version>
         <configuration>
           <webResources>
             <!-- in order to interpolate version from pom into appengine-web.xml -->

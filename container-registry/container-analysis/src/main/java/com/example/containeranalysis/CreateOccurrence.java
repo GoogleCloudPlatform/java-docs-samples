@@ -17,17 +17,19 @@
 package com.example.containeranalysis;
 
 // [START containeranalysis_create_occurrence]
-import com.google.cloud.devtools.containeranalysis.v1beta1.GrafeasV1Beta1Client;
-import com.google.containeranalysis.v1beta1.NoteName;
-import com.google.containeranalysis.v1beta1.ProjectName;
-import io.grafeas.v1beta1.Occurrence;
-import io.grafeas.v1beta1.Resource;
-import io.grafeas.v1beta1.vulnerability.Details;
+import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
+import io.grafeas.v1.GrafeasClient;
+import io.grafeas.v1.NoteName;
+import io.grafeas.v1.Occurrence;
+import io.grafeas.v1.ProjectName;
+import io.grafeas.v1.Version;
+import io.grafeas.v1.VulnerabilityOccurrence;
+import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
 import java.io.IOException;
 import java.lang.InterruptedException;
 
 public class CreateOccurrence {
-  // Creates and returns a new Occurrence associated with an existing Note
+  // Creates and returns a new vulnerability Occurrence associated with an existing Note
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
       String occProjectId, String noteProjectId) throws IOException, InterruptedException {
     // String resourceUrl = "https://gcr.io/project/image@sha256:123";
@@ -37,22 +39,22 @@ public class CreateOccurrence {
     final NoteName noteName = NoteName.of(noteProjectId, noteId);
     final String occProjectName = ProjectName.format(occProjectId);
 
-    Occurrence.Builder occBuilder = Occurrence.newBuilder();
-    occBuilder.setNoteName(noteName.toString());
-    // Associate the Occurrence with the metadata type (should match the parent Note's type)
-    // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
-    // Here, we use the type "vulnerability"
-    Details.Builder detailsBuilder = Details.newBuilder();
-    occBuilder.setVulnerability(detailsBuilder);
-    // Attach the occurrence to the associated image uri
-    Resource.Builder resourceBuilder = Resource.newBuilder();
-    resourceBuilder.setUri(resourceUrl);
-    occBuilder.setResource(resourceBuilder);
-    Occurrence newOcc = occBuilder.build();
+    Occurrence newOcc = Occurrence.newBuilder()
+        .setNoteName(noteName.toString())
+        .setResourceUri(resourceUrl)
+        .setVulnerability(VulnerabilityOccurrence.newBuilder()
+            .addPackageIssue(PackageIssue.newBuilder()
+                .setAffectedCpeUri("your-uri-here")
+                .setAffectedPackage("your-package-here")
+                .setAffectedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MINIMUM))
+                .setFixedVersion(Version.newBuilder()
+                    .setKind(Version.VersionKind.MAXIMUM))))
+        .build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
     // call the "close" method on the client to safely clean up any remaining background resources.
-    GrafeasV1Beta1Client client = GrafeasV1Beta1Client.create();
+    GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
     Occurrence result = client.createOccurrence(occProjectName, newOcc);
     return result;
   }

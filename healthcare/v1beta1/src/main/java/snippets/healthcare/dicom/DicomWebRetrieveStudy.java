@@ -17,7 +17,6 @@
 package snippets.healthcare.dicom;
 
 // [START healthcare_dicomweb_retrieve_study]
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -28,10 +27,12 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.DicomStores.Studies;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -62,15 +63,26 @@ public class DicomWebRetrieveStudy {
 
     // Execute the request and process the results.
     HttpResponse response = request.executeUnparsed();
-    String content = new BufferedReader(
-        new InputStreamReader(response.getContent())).lines().collect(Collectors.joining("\n"));
+
+    // When specifying the output file, use an extension like ".multipart".
+    // Then, parse the downloaded multipart file to get each individual
+    // DICOM file.
+    String outputPath = "study.multipart";
+    OutputStream outputStream = new FileOutputStream(new File(outputPath));
+    try {
+      response.download(outputStream);
+      System.out.println("DICOM study written to file " + outputPath);
+    } finally {
+      outputStream.close();
+    }
+
     if (!response.isSuccessStatusCode()) {
-      System.err.print(String.format(
-          "Exception storing DICOM instance: %s\n", response.getStatusMessage()));
-      System.out.println(content);
+      System.err.print(
+          String.format(
+              "Exception retrieving DICOM study: %s\n", response.getStatusMessage()));
       throw new RuntimeException();
     }
-    System.out.println("DICOM study retrieved: \n" + content);
+    
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -80,11 +92,20 @@ public class DicomWebRetrieveStudy {
         GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
+    HttpHeaders headers = new HttpHeaders();
+    // The response's default transfer syntax is Little Endian Explicit.
+    // As a result, if the file was uploaded using a compressed transfer syntax,
+    // the returned object will be decompressed. This can negatively impact performance and lead
+    // to errors for transfer syntaxes that the Cloud Healthcare API doesn't support.
+    // To avoid these issues, and if the returned object's transfer syntax doesn't matter to
+    // your application, use the
+    // multipart/related; type="application/dicom"; transfer-syntax=* Accept Header.
+    headers.setAccept("multipart/related; type=application/dicom; transfer-syntax=*");
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
+          request.setHeaders(headers);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };
@@ -96,3 +117,4 @@ public class DicomWebRetrieveStudy {
   }
 }
 // [END healthcare_dicomweb_retrieve_study]
+

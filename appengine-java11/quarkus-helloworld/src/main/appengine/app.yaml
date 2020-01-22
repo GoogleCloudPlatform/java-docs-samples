@@ -14,6 +14,3 @@
 
 runtime: java11
 instance_class: F1
-# The entrypoint here is mandatory as the appengine-staging area contains an
-# exploded fatjar.
-entrypoint: 'java -XX:MaxRAM=128m -XX:ActiveProcessorCount=2 -Xmx32m -Dquarkus.log.file.enable=false -Dquarkus.http.host=0.0.0.0 -jar quarkus-helloworld-1.0-SNAPSHOT-runner.jar'
