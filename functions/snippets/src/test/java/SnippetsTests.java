@@ -81,11 +81,18 @@ public class SnippetsTests {
 
   @Test
   public void helloWorldTest() throws IOException {
-    new HelloWorld().helloGet(request, response);
+    new HelloWorld().helloWorld(request, response);
 
     assertThat(responseOut.toString(), containsString("Hello World!"));
   }
 
+  @Test
+  public void helloGetTest() throws IOException {
+    new HelloWorld().helloGet(request, response);
+
+    assertThat(responseOut.toString(), containsString("Hello World!"));
+  }
+  
   @Test
   public void logHelloWorldTest() throws IOException {
     new LogHelloWorld().logHelloWorld(request, response);
