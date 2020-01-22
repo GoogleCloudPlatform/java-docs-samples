@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_helloworld_http]
 // [START functions_helloworld_get]
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,3 +31,4 @@ public class HelloWorld {
 }
 
 // [END functions_helloworld_get]
+// [END functions_helloworld_http]
