@@ -102,16 +102,17 @@ limitations under the License.
   <build>
     <plugins>
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.2.2.RELEASE</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>1.8.0</version>
+        <configuration>
+          <from>
+            <image>gcr.io/PROJECT_ID/imagemagick</image>
+          </from>
+          <to>
+            <image>gcr.io/PROJECT_ID/pubsub</image>
+          </to>
+        </configuration>
       </plugin>
     </plugins>
   </build>
