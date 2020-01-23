@@ -21,11 +21,27 @@
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
+
+  <!--
+    Using libraries-bom to manage versions.
+    See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
+  -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>3.4.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-kms</artifactId>
-      <version>1.35.1</version>
     </dependency>
     <dependency>
       <groupId>args4j</groupId>
