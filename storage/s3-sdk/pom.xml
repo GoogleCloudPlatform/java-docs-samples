@@ -45,7 +45,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-      <version>4.13-beta-3</version>
+      <version>4.13</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>

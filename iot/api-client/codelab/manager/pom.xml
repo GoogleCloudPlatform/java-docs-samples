@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.googlecode.lanterna</groupId>
       <artifactId>lanterna</artifactId>
-      <version>3.0.1</version>
+      <version>3.0.2</version>
     </dependency>
 
     <dependency>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.102.0</version>
+      <version>1.102.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.oauth-client</groupId>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.0</version>
+      <version>28.2-jre</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
@@ -99,7 +99,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-rc-2</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
     <dependency>

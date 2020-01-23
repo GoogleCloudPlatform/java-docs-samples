@@ -53,7 +53,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-beta-3</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -103,7 +103,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.3</version>
       </plugin>
     </plugins>
   </build>
