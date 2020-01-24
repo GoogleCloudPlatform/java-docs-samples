@@ -121,7 +121,7 @@ for file in **/pom.xml; do
     fi
 
     # Skip tests that don't have the correct Java version.
-    if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
+    if ! [[ "${JAVA_VERSION[@]}" =~ "${POM_JAVA}" ]]; then
         echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
         continue
     fi
