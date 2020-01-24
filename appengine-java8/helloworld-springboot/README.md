@@ -84,7 +84,7 @@ These settings should be revisited for production use.
 
 ## Deploy to App Engine flexible environment
 
-1. `mvn appengine:deploy`
+1. `mvn package appengine:deploy -DprojectId=PROJECT_ID`
 1. Visit `http://YOUR_PROJECT.appspot.com`.
 
 Note that deployment to the App Engine flexible environment requires the new
@@ -93,4 +93,3 @@ Note that deployment to the App Engine flexible environment requires the new
 [new-maven-plugin]: https://cloud.google.com/appengine/docs/flexible/java/using-maven
 
 Java is a registered trademark of Oracle Corporation and/or its affiliates.
-
