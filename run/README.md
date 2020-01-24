@@ -31,9 +31,7 @@ For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samp
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
     ```
 
-    Note: Some samples in the list above are hosted in other repositories. They are noted with the symbol "&#10149;".
-
-1. In the samples's `pom.xml`, update the image field for the `jib-maven-plugin`  
+1. In the samples's `pom.xml`, update the image field for the `jib-maven-plugin`
 with your Google Cloud Project Id:
 
     ```XML
@@ -57,7 +55,7 @@ with your Google Cloud Project Id:
     mvn jib:build
     ```
 
-1. [Run containers locally](https://cloud.google.com/run/docs/testing/local), by
+1. [Run containers locally](https://cloud.google.com/run/docs/testing/local) by
 replacing `PROJECT_ID` and `SAMPLE_NAME` with your values.
 
     With the built container:
@@ -102,9 +100,9 @@ Learn more about [testing your container image locally.][testing]
 
 1. Deploy to Cloud Run:
 
-  ```bash
-  gcloud run deploy SAMPLE_NAME --image gcr.io/PROJECT_ID/SAMPLE_NAME
-  ```
+    ```bash
+    gcloud run deploy SAMPLE_NAME --image gcr.io/PROJECT_ID/SAMPLE_NAME
+    ```
 
 ## Next Steps
 * See [building containers][run_build] and [deploying container images][run_deploy]
