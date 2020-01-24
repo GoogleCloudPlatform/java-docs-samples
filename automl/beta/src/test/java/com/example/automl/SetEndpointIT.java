@@ -16,7 +16,7 @@
 
 package com.example.automl;
 
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -58,6 +58,6 @@ public class SetEndpointIT {
 
     // Assert
     String got = bout.toString();
-    assertTrue(got.contains("display_name: \"do_not_delete_me_eu\""));
+    assertThat(got).contains("display_name: \"do_not_delete_me_eu\"");
   }
 }
