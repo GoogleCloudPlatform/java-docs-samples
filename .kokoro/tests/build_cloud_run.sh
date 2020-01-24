@@ -45,9 +45,10 @@ export SPECIAL_BASE_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/imagemagick"
 
 # Build the service
 set -x
-mvn jib:build -Dimage="${CONTAINER_IMAGE}" \
-  `if [ $SAMPLE_NAME = "image-processing" ]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
+BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
 
+mvn jib:build -Dimage="${CONTAINER_IMAGE}" \
+  `if [[ "${BASE_IMAGE_SAMPLES[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
 
 gcloud run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
