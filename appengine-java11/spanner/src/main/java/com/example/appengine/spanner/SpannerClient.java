@@ -94,7 +94,7 @@ public class SpannerClient implements ServletContextListener {
     }
     // try system properties
     if (INSTANCE_ID == null) {
-      INSTANCE_ID = System.getProperty("SPANNER_INSTANCE");
+      INSTANCE_ID = System.getenv("SPANNER_INSTANCE");
     }
 
     if (DATABASE_ID == null) {
