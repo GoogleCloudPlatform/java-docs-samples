@@ -44,9 +44,9 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # Build the service
 set -x
-gcloud builds submit --tag="${CONTAINER_IMAGE}" --quiet --no-user-output-enabled
+mvn jib:build -Dimage="${CONTAINER_IMAGE}"
 
-gcloud beta run deploy "${SERVICE_NAME}" \
+gcloud run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
   --platform=managed \
