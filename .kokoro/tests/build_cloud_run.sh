@@ -41,12 +41,15 @@ export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
+export SPECIAL_BASE_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/imagemagick"
 
 # Build the service
 set -x
-gcloud builds submit --tag="${CONTAINER_IMAGE}" --quiet --no-user-output-enabled
+mvn jib:build -Dimage="${CONTAINER_IMAGE}" \
+  `if [ $SAMPLE_NAME = "image-processing" ]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
 
-gcloud beta run deploy "${SERVICE_NAME}" \
+
+gcloud run deploy "${SERVICE_NAME}" \
   --image="${CONTAINER_IMAGE}" \
   --region="${REGION:-us-central1}" \
   --platform=managed \
