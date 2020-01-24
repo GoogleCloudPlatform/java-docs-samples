@@ -42,10 +42,10 @@ SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 export SPECIAL_BASE_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/imagemagick"
+BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
 
 # Build the service
 set -x
-BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
 
 mvn jib:build -Dimage="${CONTAINER_IMAGE}" \
   `if [[ "${BASE_IMAGE_SAMPLES[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
@@ -59,10 +59,6 @@ gcloud run deploy "${SERVICE_NAME}" \
 
 
 set +x
-
-echo 'Cloud Run Links:'
-echo "- Logs: https://console.cloud.google.com/logs/viewer?project=${GOOGLE_CLOUD_PROJECT}&resource=cloud_run_revision%2Fservice_name%2F${SERVICE_NAME}"
-echo "- Console: https://console.cloud.google.com/run/detail/${REGION:-us-central1}/${SERVICE_NAME}/metrics?project=${GOOGLE_CLOUD_PROJECT}"
 
 echo
 echo '---'
