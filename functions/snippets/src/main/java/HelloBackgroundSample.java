@@ -17,13 +17,18 @@
 // [START functions_background_helloworld]
 import java.util.logging.Logger;
 
-public class HelloBackgroundSample {
+import com.google.cloud.functions.BackgroundFunction;
+import com.google.cloud.functions.Context;
+import com.google.cloud.functions.HttpRequest;
+
+public class HelloBackgroundSample implements BackgroundFunction<HttpRequest> {
   private static final Logger LOGGER = Logger.getLogger(HelloBackgroundSample.class.getName());
 
-  public void helloBackground(BackgroundEvent data) throws Exception {
+  @Override
+  public void accept(HttpRequest request, Context context) {
     String name = "world";
-    if (data.name != null) {
-      name = data.name;
+    if (request.getFirstQueryParameter("name").isPresent()) {
+      name = request.getFirstQueryParameter("name").get();
     }
     LOGGER.info(String.format("Hello %s!", name));
   }

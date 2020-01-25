@@ -23,4 +23,4 @@ public class PubSubMessage {
   String messageId;
   String publishTime;
 }
-// [START functions_helloworld_pubsub_message]
+// [END functions_helloworld_pubsub_message]

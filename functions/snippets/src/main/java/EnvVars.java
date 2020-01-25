@@ -16,15 +16,19 @@
 
 // [START functions_env_vars]
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 
-public class EnvVars {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class EnvVars implements HttpFunction {
+
   // Returns the environment variable "foo" set during function deployment.
-  public void envVar(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     String foo = System.getenv("FOO");
     if (foo == null) {
       foo = "Specified environment variable is not set.";
@@ -32,5 +36,4 @@ public class EnvVars {
     writer.write(foo);
   }
 }
-
 // [END functions_env_vars]

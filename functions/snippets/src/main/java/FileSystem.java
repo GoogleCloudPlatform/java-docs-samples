@@ -17,23 +17,25 @@
 // [START functions_concepts_filesystem]
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 
-public class FileSystem {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class FileSystem implements HttpFunction {
 
   // Lists the files in the current directory.
-  public void listFiles(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     File curDir = new File(".");
     File[] files = curDir.listFiles();
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write("Files: \n");
     for (File f : files) {
       writer.write(String.format("\t%s\n", f.getName()));
     }
   }
 }
-
 // [END functions_concepts_filesystem]

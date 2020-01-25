@@ -16,16 +16,24 @@
 
 // [START functions_background_helloworld]
 // [START functions_helloworld_pubsub]
+import com.google.cloud.functions.BackgroundFunction;
+import com.google.cloud.functions.Context;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
-public class HelloPubSubSample {
+public class HelloPubSubSample implements BackgroundFunction<PubSubMessage> {
   private static final Logger LOGGER = Logger.getLogger(HelloPubSubSample.class.getName());
 
-  public void helloPubSub(PubSubMessage message) throws Exception {
+  @Override
+  public void accept(PubSubMessage message, Context context) {
     String name = "world";
     if (message.data != null) {
-      name = new String(Base64.getDecoder().decode(message.data.getBytes("UTF-8")));
+      name = new String(
+          Base64.getDecoder().decode(message.data.getBytes(StandardCharsets.UTF_8)),
+          Charset.defaultCharset());
     }
     LOGGER.info(String.format("Hello %s!", name));
   }

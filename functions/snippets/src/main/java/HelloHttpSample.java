@@ -15,28 +15,31 @@
  */
 
 // [START functions_helloworld_http]
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
-public class HelloHttpSample {
+public class HelloHttpSample implements HttpFunction {
   private static final Logger LOGGER = Logger.getLogger(HelloHttpSample.class.getName());
 
-  public void helloWorld(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     String name = "world";
 
     try {
       String requestString = IOUtils.toString(request.getReader());
 
-      JsonElement requestParsed = (new JsonParser()).parse(requestString);
+      JsonElement requestParsed = new JsonParser().parse(requestString);
       JsonObject requestJson = null;
 
       if (requestParsed.isJsonObject()) {
@@ -51,11 +54,11 @@ public class HelloHttpSample {
       LOGGER.severe("Error parsing JSON: " + e.getMessage());
     }
 
-    if (request.getParameter("name") != null) {
-      name = request.getParameter("name");
+    if (request.getFirstQueryParameter("name").isPresent()) {
+      name = request.getFirstQueryParameter("name").get();
     }
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write(String.format("Hello %s!", name));
   }
 }

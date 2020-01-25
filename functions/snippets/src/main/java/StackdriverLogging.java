@@ -15,21 +15,22 @@
  */
 
 // [START functions_log_stackdriver]
-import java.io.IOException;
+import com.google.cloud.functions.BackgroundFunction;
+import com.google.cloud.functions.Context;
+
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class LogEntry {
+public class StackdriverLogging implements BackgroundFunction<StackdriverLogging.PubSubMessage> {
+  private static final Logger LOGGER = Logger.getLogger(StackdriverLogging.class.getName());
 
-  private static Logger LOGGER = Logger.getLogger(LogEntry.class.getName());
-
-  public String helloPubSub(PubSubMessage message) throws IOException {
+  @Override
+  public void accept(PubSubMessage message, Context context) {
     if (message.data.isEmpty()) {
       message.data = "World";
     }
     String res = String.format("Hello, %s", message.data);
     LOGGER.info(res);
-    return res;
   }
 
   // A Pub/Sub message.
@@ -42,5 +43,4 @@ public class LogEntry {
     String publishTime;
   }
 }
-
 // [END functions_log_stackdriver]

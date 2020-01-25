@@ -15,15 +15,19 @@
  */
 
 // [START functions_helloworld_storage]
+import com.google.cloud.functions.BackgroundFunction;
+import com.google.cloud.functions.Context;
+
 import java.util.logging.Logger;
 
-public class HelloGcsSample {
+public class HelloGcsSample implements BackgroundFunction<GcsEvent> {
   private static Logger logger = Logger.getLogger(HelloGcsSample.class.getName());
 
-  public void helloGcs(GcsEvent event) throws Exception {
+  @Override
+  public void accept(GcsEvent event, Context context) {
     logger.info("Processing file: " + event.name);
 
-    if (event.metageneration == "1") {
+    if (event.metageneration.equals("1")) {
       // metageneration attribute is updated on metadata changes.
       // value is 1 if file was newly created or overwritten
       logger.info(String.format("File %s uploaded.", event.name));

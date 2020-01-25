@@ -18,12 +18,14 @@
 // [START run_tips_global_lazy]
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class Lazy {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class Lazy implements HttpFunction {
   // Always initialized (at cold-start)
   // Warning: Class variables used in Servlet classes must be thread-safe,
   // or else might introduce race conditions in your code.
@@ -31,14 +33,15 @@ public class Lazy {
   // Declared at cold-start, but only initialized if/when the function executes
   private static Integer lazyGlobal = null;
 
-  public void lazyGlobal(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // This value is initialized only if (and when) the function is called
     if (lazyGlobal == null) {
       lazyGlobal = functionSpecificComputation();
     }
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write(String.format("Lazy global: %s; non-lazy global: %s", lazyGlobal, nonLazyGlobal));
   }
 

@@ -18,25 +18,28 @@
 // [START run_tips_global_scope]
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class Scopes {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class Scopes implements HttpFunction {
   // Global (instance-wide) scope
   // This computation runs at instance cold-start.
   // Warning: Class variables used in Servlet classes must be thread-safe,
   // or else might introduce race conditions in your code.
   private static final int InstanceVar = heavyComputation();
 
-  public void scopeDemo(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // Per-function scope
     // This computation runs every time this function is called
     int functionVar = lightComputation();
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write(String.format("Instance: %s; function: %s", InstanceVar, functionVar));
   }
 

@@ -19,43 +19,49 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.nio.charset.Charset;
 import java.util.Base64;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class ParseContentType {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class ParseContentType implements HttpFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
 
   // Responds to an HTTP request using data from the request body parsed according to the
   // "content-type" header.
-  public void parseContentType(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     String name;
-    String contentType = request.getContentType();
+    String contentType = request.getContentType().get();
     if (contentType.equals("application/json")) {
       // '{"name":"John"}'
       JsonObject body = gsonParser.fromJson(request.getReader(), JsonObject.class);
       name = body.get("name").getAsString();
     } else if (contentType.equals("application/octet-stream")) {
       // 'John', stored in a Buffer
-      name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()));
+      name = new String(
+          Base64.getDecoder().decode(request.getInputStream().readAllBytes()),
+          Charset.defaultCharset());
     } else if (contentType.equals("text/plain")) {
       // 'John'
       name = request.getReader().readLine();
-    } else if (contentType.equals("application/x-www-form-urlencoded")) {
+    } else if (contentType.equals("application/x-www-form-urlencoded") &&
+               request.getFirstQueryParameter("name").isPresent()) {
       // 'name=John' in the body of a POST request (not the URL)
-      name = request.getParameter("name");
+      name = request.getFirstQueryParameter("name").get();
     } else {
       // Invalid or missing header "Content-Type"
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.setStatusCode(400);
       return;
     }
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write(String.format("Hello %s!", name));
   }
 }
-
 // [END functions_http_content]

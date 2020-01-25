@@ -21,16 +21,19 @@ import com.google.cloud.logging.v2.LoggingClient.ListLogEntriesPagedResponse;
 import com.google.logging.v2.ListLogEntriesRequest;
 import com.google.logging.v2.LogEntry;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 
-public class RetrieveLogs {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class RetrieveLogs implements HttpFunction {
 
   private LoggingClient client;
 
   // Retrieve the latest Cloud Function log entries
-  public void retrieveLogs(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // Get the LoggingClient for the function.
     client = getClient();
@@ -44,11 +47,11 @@ public class RetrieveLogs {
 
     ListLogEntriesPagedResponse entriesResponse = client.listLogEntries(entriesRequest);
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     for (LogEntry entry : entriesResponse.getPage().getValues()) {
-      writer.println(String.format("%s: %s", entry.getLogName(), entry.getTextPayload()));
+      writer.write(String.format("%s: %s\n", entry.getLogName(), entry.getTextPayload()));
     }
-    writer.println("\n\nLogs retrieved successfully.");
+    writer.write("\n\nLogs retrieved successfully.\n");
   }
 
   // Returns a client for interacting with the Logging API. The client is stored in the global scope
@@ -60,5 +63,4 @@ public class RetrieveLogs {
     return client;
   }
 }
-
 // [END functions_log_retrieve]

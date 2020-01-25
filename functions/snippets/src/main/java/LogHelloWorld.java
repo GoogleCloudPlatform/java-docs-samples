@@ -16,23 +16,25 @@
 
 // [START functions_log_helloworld]
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class LogHelloWorld {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class LogHelloWorld implements HttpFunction {
 
   private static final Logger LOGGER = Logger.getLogger(LogHelloWorld.class.getName());
 
-  public void logHelloWorld(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     LOGGER.info("I am an info log!");
     LOGGER.warning("I am a warning log!");
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write("Messages successfully logged!");
   }
 }
-
 // [END functions_log_helloworld]

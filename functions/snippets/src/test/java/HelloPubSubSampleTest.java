@@ -20,11 +20,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.logging.Logger;
 
+import com.google.common.primitives.Chars;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,15 +43,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
  */
 // [START functions_pubsub_unit_test]
 @RunWith(PowerMockRunner.class)
+@PrepareForTest({Logger.class, HelloPubSubSample.class})
 public class HelloPubSubSampleTest {
 
   private HelloPubSubSample sampleUnderTest;
-  @Mock private Logger loggerInstance;
+  @Mock private static Logger loggerInstance;
 
   @Before
   public void setUp() throws Exception {
-    loggerInstance = mock(Logger.class);
     PowerMockito.mockStatic(Logger.class);
+
+    if (loggerInstance == null) {
+      loggerInstance = mock(Logger.class);
+    }
 
     Mockito
         .when(Logger.getLogger(HelloPubSubSample.class.getName()))
@@ -59,23 +66,21 @@ public class HelloPubSubSampleTest {
 
   @After
   public void tearDown() throws Exception {
-    Mockito.reset();
+    //Mockito.reset();
   }
 
-  @PrepareForTest({Logger.class, HelloPubSubSample.class})
   @Test
   public void helloPubSub_shouldPrintName() throws Exception {
     PubSubMessage message = new PubSubMessage();
-    message.data = Base64.getEncoder().encodeToString("John".getBytes());
-    sampleUnderTest.helloPubSub(message);
+    message.data = Base64.getEncoder().encodeToString("John".getBytes(Charset.defaultCharset()));
+    sampleUnderTest.accept(message, null);
     verify(loggerInstance, times(1)).info("Hello John!");
   }
 
-  @PrepareForTest({Logger.class, HelloPubSubSample.class})
   @Test
   public void helloPubSub_shouldPrintHelloWorld() throws Exception {
     PubSubMessage message = new PubSubMessage();
-    sampleUnderTest.helloPubSub(message);
+    sampleUnderTest.accept(message, null);
     verify(loggerInstance, times(1)).info("Hello world!");
   }
 }

@@ -14,68 +14,68 @@
  * limitations under the License.
  */
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.Base64;
-import java.util.logging.Level;
+import java.util.Optional;
 import java.util.logging.Logger;
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+import org.junit.*;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import com.google.common.truth.Truth;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"javax.net.ssl.*", "com.google.*"})
+@PrepareForTest(StackdriverLogging.class)
 public class SnippetsTests {
   @Mock private Logger loggerInstance;
 
-  private HttpServletRequest request;
-  private HttpServletResponse response;
+  private HttpRequest request;
+  private HttpResponse response;
 
   private ByteArrayOutputStream stdOut;
+  private BufferedWriter writerOut;
   private StringWriter responseOut;
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
 
   @Rule
-  public final EnvironmentVariables environmentVariables
-      = new EnvironmentVariables();
+  private EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @Before
   public void beforeTest() throws Exception {
     // Use a new mock for each test
-    request = mock(HttpServletRequest.class);
-    response = mock(HttpServletResponse.class);
+    request = mock(HttpRequest.class);
+    response = mock(HttpResponse.class);
 
     BufferedReader reader = new BufferedReader(new StringReader("{}"));
     when(request.getReader()).thenReturn(reader);
 
     responseOut = new StringWriter();
-    PrintWriter writer = new PrintWriter(responseOut);
-    when(response.getWriter()).thenReturn(writer);
+    writerOut = new BufferedWriter(responseOut);
+    when(response.getWriter()).thenReturn(writerOut);
 
     // Capture std out
     stdOut = new ByteArrayOutputStream();
@@ -85,7 +85,7 @@ public class SnippetsTests {
     loggerInstance = mock(Logger.class);
     PowerMockito.mockStatic(Logger.class);
 
-    when(Logger.getLogger(anyString())).thenReturn(loggerInstance);
+    Mockito.when(Logger.getLogger(anyString())).thenReturn(loggerInstance);
   }
 
   @After
@@ -100,153 +100,166 @@ public class SnippetsTests {
 
   @Test
   public void helloWorldTest() throws IOException {
-    new HelloWorld().helloGet(request, response);
+    new HelloWorld().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Hello World!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Hello World!");
   }
 
   @Test
   public void logHelloWorldTest() throws IOException {
-    new LogHelloWorld().logHelloWorld(request, response);
+    new LogHelloWorld().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Messages successfully logged!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Messages successfully logged!");
   }
 
   @Test
   public void sendHttpRequestTest() throws IOException, InterruptedException {
-    new SendHttpRequest().sendHttpRequest(request, response);
+    new SendHttpRequest().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Received code "));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Received code ");
   }
 
   @Test
   public void corsEnabledTest() throws IOException {
     when(request.getMethod()).thenReturn("GET");
 
-    new CorsEnabled().corsEnabled(request, response);
+    new CorsEnabled().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("CORS headers set successfully!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("CORS headers set successfully!");
   }
 
   @Test
   public void parseContentTypeTest_json() throws IOException {
     // Send a request with JSON data
-    when(request.getContentType()).thenReturn("application/json");
+    when(request.getContentType()).thenReturn(Optional.of("application/json"));
     BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
     when(request.getReader()).thenReturn(bodyReader);
 
-    new ParseContentType().parseContentType(request, response);
+    new ParseContentType().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Hello John!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Hello John!");
   }
 
   @Test
   public void parseContentTypeTest_base64() throws IOException {
     // Send a request with octet-stream
-    when(request.getContentType()).thenReturn("application/octet-stream");
+    when(request.getContentType()).thenReturn(Optional.of("application/octet-stream"));
     // Create mock input stream to return the data
-    byte[] b64Body = Base64.getEncoder().encode("John".getBytes());
+    byte[] b64Body = Base64.getEncoder().encode("John".getBytes(Charset.defaultCharset()));
     ServletInputStream bodyInputStream = mock(ServletInputStream.class);
     when(bodyInputStream.readAllBytes()).thenReturn(b64Body);
     // Return the input stream when the request calls it
     when(request.getInputStream()).thenReturn(bodyInputStream);
 
-    new ParseContentType().parseContentType(request, response);
+    new ParseContentType().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Hello John!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Hello John!");
   }
 
   @Test
   public void parseContentTypeTest_text() throws IOException {
     // Send a request with plain text
-    when(request.getContentType()).thenReturn("text/plain");
+    when(request.getContentType()).thenReturn(Optional.of("text/plain"));
     BufferedReader bodyReader = new BufferedReader(new StringReader("John"));
     when(request.getReader()).thenReturn(bodyReader);
 
-    new ParseContentType().parseContentType(request, response);
+    new ParseContentType().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Hello John!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Hello John!");
   }
 
   @Test
   public void parseContentTypeTest_form() throws IOException {
     // Send a request with plain text
-    when(request.getContentType()).thenReturn("application/x-www-form-urlencoded");
-    when(request.getParameter("name")).thenReturn("John");
+    when(request.getContentType()).thenReturn(Optional.of("application/x-www-form-urlencoded"));
+    when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
 
-    new ParseContentType().parseContentType(request, response);
+    new ParseContentType().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Hello John!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Hello John!");
   }
 
   @Test
   public void scopesTest() throws IOException {
-    new Scopes().scopeDemo(request, response);
+    new Scopes().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Instance:"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Instance:");
   }
 
   @Test
   public void lazyTest() throws IOException {
-    new Lazy().lazyGlobal(request, response);
+    new Lazy().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Lazy global:"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Lazy global:");
   }
 
   @Test
   public void retrieveLogsTest() throws IOException {
-    new RetrieveLogs().retrieveLogs(request, response);
+    new RetrieveLogs().service(request, response);
 
-    assertThat(responseOut.toString(), containsString("Logs retrieved successfully."));
-  }
-
-  @Test
-  public void helloBackgroundTest() throws IOException {
-    when(request.getContentType()).thenReturn("application/json");
-    BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
-    when(request.getReader()).thenReturn(bodyReader);
-
-    new HelloBackground().helloBackground(request, response);
-    assertThat(responseOut.toString(), containsString("Hello John!"));
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Logs retrieved successfully.");
   }
 
   @Test
   public void filesTest() throws IOException {
-    new FileSystem().listFiles(request, response);
-    assertThat(responseOut.toString(), containsString("Files:"));
+    new FileSystem().service(request, response);
+
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Files:");
   }
 
   @Test
-  public void logEntry() throws IOException {
-    LogEntry.PubSubMessage message = gson.fromJson(
-        "{\"data\":\"data\",\"messageId\":\"id\"}", LogEntry.PubSubMessage.class);
-    String res = new LogEntry().helloPubSub(message);
-    assertThat(res, containsString("Hello, data"));
+  public void stackdriverLogging() throws IOException {
+    StackdriverLogging.PubSubMessage message = gson.fromJson(
+        "{\"data\":\"data\",\"messageId\":\"id\"}", StackdriverLogging.PubSubMessage.class);
+    new StackdriverLogging().accept(message, null);
+
+    verify(loggerInstance, times(1)).info("Hello, data");
   }
 
   @Test
   public void envTest() throws IOException {
     environmentVariables.set("FOO", "BAR");
-    new EnvVars().envVar(request, response);
-    assertThat(responseOut.toString(), containsString("BAR"));
+    new EnvVars().service(request, response);
+
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("BAR");
   }
 
   @Test
   public void helloExecutionCount() throws IOException {
-    new Concepts().executionCount(request, response);
-    assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
+    new ExecutionCount().service(request, response);
+
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("Instance execution count: 1");
   }
 
+  @Test
   public void helloHttp_noParamsGet() throws Exception {
-    new HelloHttpSample().helloWorld(request, response);
+    new HelloHttpSample().service(request, response);
+
+    writerOut.flush();
     Truth.assertThat(responseOut.toString()).isEqualTo("Hello world!");
   }
 
   @Test
   public void helloHttp_urlParamsGet() throws Exception {
-    when(request.getParameter("name")).thenReturn("Tom");
+    when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("Tom"));
 
-    new HelloHttpSample().helloWorld(request, response);
+    new HelloHttpSample().service(request, response);
+
+    writerOut.flush();
     Truth.assertThat(responseOut.toString()).isEqualTo("Hello Tom!");
   }
 
@@ -255,63 +268,9 @@ public class SnippetsTests {
     BufferedReader jsonReader = new BufferedReader(new StringReader("{'name': 'Jane'}"));
     when(request.getReader()).thenReturn(jsonReader);
 
-    new HelloHttpSample().helloWorld(request, response);
+    new HelloHttpSample().service(request, response);
+    writerOut.flush();
+
     Truth.assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
-  }
-
-  @PrepareForTest({Logger.class, HelloBackgroundSample.class})
-  @Test
-  public void helloBackground_printsName() throws Exception {
-    BackgroundEvent event = new BackgroundEvent();
-    event.name = "John";
-
-    new HelloBackgroundSample().helloBackground(event);
-    verify(loggerInstance, times(1)).info("Hello John!");
-  }
-
-  @PrepareForTest({Logger.class, HelloBackgroundSample.class})
-  @Test
-  public void helloBackground_printsHelloWorld() throws Exception {
-    BackgroundEvent event = new BackgroundEvent();
-    new HelloBackgroundSample().helloBackground(event);
-
-    verify(loggerInstance, times(1)).info("Hello world!");
-  }
-
-  @PrepareForTest({Logger.class, HelloGcsSample.class})
-  @Test
-  public void helloGcs_shouldPrintUploadedMessage() throws Exception {
-    GcsEvent event = new GcsEvent();
-    event.name = "foo.txt";
-    event.metageneration = "1";
-    new HelloGcsSample().helloGcs(event);
-    verify(loggerInstance, times(1)).info("File foo.txt uploaded.");
-  }
-
-  @PrepareForTest({Logger.class, HelloGcsSample.class})
-  @Test
-  public void helloGcs_shouldPrintMetadataUpdatedMessage() throws Exception {
-    GcsEvent event = new GcsEvent();
-    event.name = "baz.txt";
-    event.metageneration = "2";
-    new HelloGcsSample().helloGcs(event);
-    verify(loggerInstance, times(1)).info("File baz.txt metadata updated.");
-  }
-
-  @PrepareForTest({Logger.class, HelloPubSubSample.class})
-  @Test
-  public void helloPubSub_shouldPrintName() throws Exception {
-    PubSubMessage message = new PubSubMessage();
-    message.data = Base64.getEncoder().encodeToString("John".getBytes());
-    new HelloPubSubSample().helloPubSub(message);
-    verify(loggerInstance, times(1)).info("Hello John!");
-  }
-
-  @PrepareForTest({Logger.class, HelloPubSubSample.class})
-  @Test
-  public void helloPubSub_shouldPrintHelloWorld() throws Exception {
-    PubSubMessage message = new PubSubMessage();
-    new HelloPubSubSample().helloPubSub(message);
-    verify(loggerInstance, times(1)).info("Hello world!");
   }
 }

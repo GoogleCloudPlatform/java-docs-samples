@@ -16,31 +16,33 @@
 
 // [START functions_http_cors]
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 
-public class CorsEnabled {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class CorsEnabled implements HttpFunction {
   // corsEnabled is an example of setting CORS headers.
   // For more information about CORS and CORS preflight requests, see
   // https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request.
-  public void corsEnabled(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // Set CORS headers for preflight requests
     if (request.getMethod().equals("OPTIONS")) {
-      response.setHeader("Access-Control-Allow-Origin", "*");
-      response.setHeader("Access-Control-Allow-Methods", "POST");
-      response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-      response.setHeader("Access-Control-Max-Age", "3600");
-      response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+      response.appendHeader("Access-Control-Allow-Origin", "*");
+      response.appendHeader("Access-Control-Allow-Methods", "POST");
+      response.appendHeader("Access-Control-Allow-Headers", "Content-Type");
+      response.appendHeader("Access-Control-Max-Age", "3600");
+      response.setStatusCode(204);
       return;
     }
 
     // Set CORS headers for the main request.
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    PrintWriter writer = response.getWriter();
+    response.appendHeader("Access-Control-Allow-Origin", "*");
+    BufferedWriter writer = response.getWriter();
     writer.write("CORS headers set successfully!");
   }
 }
-
 // [END functions_http_cors]

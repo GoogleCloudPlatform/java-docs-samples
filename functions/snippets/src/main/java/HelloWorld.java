@@ -15,18 +15,21 @@
  */
 
 // [START functions_helloworld_get]
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 
-public class HelloWorld {
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+
+public class HelloWorld implements HttpFunction {
   // Simple function to return "Hello World"
-  public void helloGet(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write("Hello World!");
   }
 }
-
 // [END functions_helloworld_get]
