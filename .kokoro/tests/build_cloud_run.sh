@@ -21,7 +21,7 @@ set -eo pipefail
 function cleanup {
   set -x
   gcloud container images delete "${CONTAINER_IMAGE}" --quiet --no-user-output-enabled || true
-  gcloud beta run services delete ${SERVICE_NAME} \
+  gcloud run services delete ${SERVICE_NAME} \
     --platform=managed \
     --region="${REGION:-us-central1}" \
     --quiet --no-user-output-enabled
