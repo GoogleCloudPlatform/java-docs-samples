@@ -84,7 +84,11 @@ These settings should be revisited for production use.
 
 ## Deploy to App Engine flexible environment
 
-1. `mvn clean package appengine:deploy -Dapp.deploy.projectId=projectId`
+1. `mvn clean package appengine:deploy`
+
+* Note: The `projectId` property for the `appengine-maven-plugin` is set to 
+"GCLOUD_CONFIG" which will deploy using the gcloud settings for `projectId`.
+
 1. Visit `http://YOUR_PROJECT.appspot.com`.
 
 Note that deployment to the App Engine flexible environment requires the new
