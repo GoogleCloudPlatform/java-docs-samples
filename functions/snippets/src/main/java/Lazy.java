@@ -17,13 +17,13 @@
 // [START functions_tips_lazy_globals]
 // [START run_tips_global_lazy]
 
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.util.Arrays;
-
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class Lazy implements HttpFunction {
   // Always initialized (at cold-start)

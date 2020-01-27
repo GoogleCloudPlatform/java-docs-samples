@@ -15,16 +15,16 @@
  */
 
 // [START functions_helloworld_http]
+
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import java.io.IOException;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 

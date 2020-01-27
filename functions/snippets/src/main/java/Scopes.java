@@ -17,13 +17,13 @@
 // [START functions_tips_scopes]
 // [START run_tips_global_scope]
 
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.util.Arrays;
-
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class Scopes implements HttpFunction {
   // Global (instance-wide) scope

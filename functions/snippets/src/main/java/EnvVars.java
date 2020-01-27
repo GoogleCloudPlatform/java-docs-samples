@@ -15,12 +15,13 @@
  */
 
 // [START functions_env_vars]
-import java.io.IOException;
-import java.io.BufferedWriter;
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 public class EnvVars implements HttpFunction {
 

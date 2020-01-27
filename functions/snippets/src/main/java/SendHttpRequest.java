@@ -15,16 +15,17 @@
  */
 
 // [START functions_concepts_requests]
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.time.Duration;
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
 
 public class SendHttpRequest implements HttpFunction {
 
@@ -37,10 +38,12 @@ public class SendHttpRequest implements HttpFunction {
       throws IOException, InterruptedException {
     // Create a GET sendHttpRequest to "http://example.com"
     String url = "http://example.com";
-    java.net.http.HttpRequest getRequest = java.net.http.HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    java.net.http.HttpRequest getRequest =
+        java.net.http.HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
 
     // Send the sendHttpRequest using the client
-    java.net.http.HttpResponse<String> getResponse = client.send(getRequest, BodyHandlers.ofString());
+    java.net.http.HttpResponse<String> getResponse =
+        client.send(getRequest, BodyHandlers.ofString());
 
     // Write the results to the output:
     BufferedWriter writer = response.getWriter();

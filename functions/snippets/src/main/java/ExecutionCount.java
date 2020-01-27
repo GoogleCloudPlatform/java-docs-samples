@@ -16,13 +16,13 @@
 
 // [START functions_concepts_stateless]
 
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecutionCount implements HttpFunction {
   

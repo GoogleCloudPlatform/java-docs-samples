@@ -15,6 +15,7 @@
  */
 
 // [START functions_log_stackdriver]
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 

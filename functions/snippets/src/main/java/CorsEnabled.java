@@ -15,12 +15,13 @@
  */
 
 // [START functions_http_cors]
-import java.io.IOException;
-import java.io.BufferedWriter;
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 public class CorsEnabled implements HttpFunction {
   // corsEnabled is an example of setting CORS headers.

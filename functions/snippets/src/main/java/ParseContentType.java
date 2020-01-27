@@ -16,16 +16,16 @@
 
 // [START functions_http_content]
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.nio.charset.Charset;
-import java.util.Base64;
-
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Base64;
 
 public class ParseContentType implements HttpFunction {
 
@@ -51,8 +51,8 @@ public class ParseContentType implements HttpFunction {
     } else if (contentType.equals("text/plain")) {
       // 'John'
       name = request.getReader().readLine();
-    } else if (contentType.equals("application/x-www-form-urlencoded") &&
-               request.getFirstQueryParameter("name").isPresent()) {
+    } else if (contentType.equals("application/x-www-form-urlencoded")
+        && request.getFirstQueryParameter("name").isPresent()) {
       // 'name=John' in the body of a POST request (not the URL)
       name = request.getFirstQueryParameter("name").get();
     } else {

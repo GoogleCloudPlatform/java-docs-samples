@@ -18,18 +18,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.*;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.BufferedWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
+
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
-import javax.servlet.ServletInputStream;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 
@@ -151,7 +145,7 @@ public class SnippetsTests {
     when(request.getContentType()).thenReturn(Optional.of("application/octet-stream"));
     // Create mock input stream to return the data
     byte[] b64Body = Base64.getEncoder().encode("John".getBytes(Charset.defaultCharset()));
-    ServletInputStream bodyInputStream = mock(ServletInputStream.class);
+    InputStream bodyInputStream = mock(InputStream.class);
     when(bodyInputStream.readAllBytes()).thenReturn(b64Body);
     // Return the input stream when the request calls it
     when(request.getInputStream()).thenReturn(bodyInputStream);
