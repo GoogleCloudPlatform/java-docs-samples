@@ -16,6 +16,8 @@
 
 package com.google.samples;
 
+// [START job_search_create_company]
+
 import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
 import com.google.cloud.talent.v4beta1.CreateCompanyRequest;
@@ -24,14 +26,17 @@ import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
 
 public class JobSearchCreateCompany {
-  // [START job_search_create_company]
 
-  /**
-   * Create Company
-   *
-   * @param projectId Your Google Cloud Project ID
-   * @param tenantId Identifier of the Tenant
-   */
+  public static void createCompany() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    String displayName = "your-company-display-name";
+    String externalId = "your-external-id";
+    createCompany(projectId, tenantId, displayName, externalId);
+  }
+
+  // Create a company.
   public static void createCompany(
       String projectId, String tenantId, String displayName, String externalId) {
     // [START job_search_create_company_core]

@@ -26,7 +26,15 @@ import com.google.cloud.talent.v4beta1.JobWithTenantName;
 public class JobSearchGetJob {
   // [START job_search_get_job]
 
-  /** Get Job */
+  public static void getJob() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    String jobId = "your-job-id";
+    getJob(projectId, tenantId, jobId);
+  }
+
+  // Get Job.
   public static void getJob(String projectId, String tenantId, String jobId) {
     // [START job_search_get_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {

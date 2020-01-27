@@ -26,7 +26,15 @@ import com.google.cloud.talent.v4beta1.GetCompanyRequest;
 public class JobSearchGetCompany {
   // [START job_search_get_company]
 
-  /** Get Company */
+  public static void getCompany() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    String companyId = "your-company-id";
+    getCompany(projectId, tenantId, companyId);
+  }
+
+  // Get Company.
   public static void getCompany(String projectId, String tenantId, String companyId) {
     // [START job_search_get_company_core]
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {

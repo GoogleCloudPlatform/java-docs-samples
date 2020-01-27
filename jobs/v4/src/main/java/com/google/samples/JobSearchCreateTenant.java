@@ -25,7 +25,14 @@ import com.google.cloud.talent.v4beta1.TenantServiceClient;
 public class JobSearchCreateTenant {
   // [START job_search_create_tenant]
 
-  /** Create Tenant for scoping resources, e.g. companies and jobs */
+  public static void createTenant() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String externalId ="your-external-id";
+    createTenant(projectId, externalId);
+  }
+
+  // Create Tenant for scoping resources, e.g. companies and jobs.
   public static void createTenant(String projectId, String externalId) {
     // [START job_search_create_tenant_core]
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {

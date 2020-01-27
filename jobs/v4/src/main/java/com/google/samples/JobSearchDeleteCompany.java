@@ -25,7 +25,15 @@ import com.google.cloud.talent.v4beta1.DeleteCompanyRequest;
 public class JobSearchDeleteCompany {
   // [START job_search_delete_company]
 
-  /** Delete Company */
+  public static void deleteCompany() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    String companyId = "your-company-id";
+    deleteCompany(projectId, tenantId, companyId);
+  }
+
+  // Delete Company.
   public static void deleteCompany(String projectId, String tenantId, String companyId) {
     // [START job_search_delete_company_core]
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {

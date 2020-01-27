@@ -28,12 +28,24 @@ import java.util.List;
 public class JobSearchCreateJob {
   // [START job_search_create_job]
 
-  /**
-   * Create Job
-   *
-   * @param projectId Your Google Cloud Project ID
-   * @param tenantId Identifier of the Tenant
-   */
+  public static void createJob() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    String companyName  = "your-company-name";
+    String requisitionId  = "your-unique-req-id";
+    String title  = "your-job-title";
+    String description  = "your-job-description";
+    String jobApplicationUrl = "your-job-url";
+    String addressOne = "your-job-address-1";
+    String addressTwo = "your-job-address-2";
+    String languageCode = "your-lang-code";
+
+    createJob(projectId, tenantId, companyName, requisitionId, title,
+            description, jobApplicationUrl, addressOne, addressTwo, languageCode);
+  }
+
+  // Create a job.
   public static void createJob(
       String projectId,
       String tenantId,

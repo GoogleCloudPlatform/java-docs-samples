@@ -25,7 +25,15 @@ import com.google.cloud.talent.v4beta1.JobWithTenantName;
 public class JobSearchDeleteJob {
   // [START job_search_delete_job]
 
-  /** Delete Job */
+  public static void deleteJob() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    String jobId = "your-job-id";
+    deleteJob(projectId, tenantId, jobId);
+  }
+
+  // Delete Job.
   public static void deleteJob(String projectId, String tenantId, String jobId) {
     // [START job_search_delete_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {

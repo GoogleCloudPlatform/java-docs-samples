@@ -25,7 +25,14 @@ import com.google.cloud.talent.v4beta1.TenantServiceClient;
 public class JobSearchGetTenant {
   // [START job_search_get_tenant]
 
-  /** Get Tenant by name */
+  public static void getTenant() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    getTenant(projectId, tenantId);
+  }
+
+  // Get Tenant by name.
   public static void getTenant(String projectId, String tenantId) {
     // [START job_search_get_tenant_core]
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {

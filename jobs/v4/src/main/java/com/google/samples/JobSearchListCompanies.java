@@ -26,12 +26,14 @@ import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 public class JobSearchListCompanies {
   // [START job_search_list_companies]
 
-  /**
-   * List Companies
-   *
-   * @param projectId Your Google Cloud Project ID
-   * @param tenantId Identifier of the Tenant
-   */
+  public static void listCompanies()  {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String tenantId = "your-tenant-id";
+    listCompanies(projectId, tenantId);
+  }
+
+  // List Companies.
   public static void listCompanies(String projectId, String tenantId) {
     // [START job_search_list_companies_core]
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
