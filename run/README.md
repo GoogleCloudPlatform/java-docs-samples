@@ -21,6 +21,13 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 
 For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
+## Jib
+
+These samples use [Jib](https://github.com/GoogleContainerTools/jib) to
+build Docker images using common Java tools. Jib optimizes container builds
+without the need for a Dockerfile or having [Docker](https://www.docker.com/)
+installed. Learn more about [how Jib works](https://github.com/GoogleContainerTools/jib).
+
 ## Setup
 
 1. [Set up for Cloud Run development](https://cloud.google.com/run/docs/setup)
