@@ -25,6 +25,7 @@ function cleanup {
     --platform=managed \
     --region="${REGION:-us-central1}" \
     --quiet --no-user-output-enabled
+  mvn clean
 }
 trap cleanup EXIT
 
