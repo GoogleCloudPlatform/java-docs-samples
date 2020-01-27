@@ -66,9 +66,9 @@ limitations under the License.
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <!-- [START run_broken_service_build] -->
   <build>
     <plugins>
+      <!-- [START run_broken_service_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -77,14 +77,15 @@ limitations under the License.
           <to>
             <image>gcr.io/PROJECT_ID/hello-broken</image>
           </to>
-    <!-- <container>
+          <!-- Set the environment variable, "NAME", in the container  -->
+     <!-- <container>
             <environment>
               <NAME>Test</NAME>
             </environment>
           </container> -->
         </configuration>
       </plugin>
+      <!-- [END run_broken_service_jib] -->
     </plugins>
   </build>
-  <!-- [END run_broken_service_build] -->
 </project>

@@ -66,6 +66,7 @@ limitations under the License.
 
   <build>
     <plugins>
+      <!-- [START run_manual_logging_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -76,6 +77,7 @@ limitations under the License.
           </to>
         </configuration>
       </plugin>
+      <!-- [END run_manual_logging_jib] -->
     </plugins>
   </build>
 </project>

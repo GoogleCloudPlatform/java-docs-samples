@@ -61,7 +61,7 @@ replacing `PROJECT_ID` and `SAMPLE_NAME` with your values.
     With the built container:
 
     ```Bash
-    PORT=8080 && docker run --rm -p 8080:${PORT} -e PORT=${PORT} gcr.io/PROJECT_ID/SAMPLE_NAME
+    PORT=8080 && docker run --rm -p 9090:${PORT} -e PORT=${PORT} gcr.io/PROJECT_ID/SAMPLE_NAME
     ```
 
     Injecting your service account key for access to GCP services:
@@ -84,6 +84,8 @@ replacing `PROJECT_ID` and `SAMPLE_NAME` with your values.
 
     * Use the --environment (-e) flag to set the `GOOGLE_APPLICATION_CREDENTIALS`
       variable inside the container
+
+1. Open http://localhost:9090 in your browser.
 
 Learn more about [testing your container image locally.][testing]
 

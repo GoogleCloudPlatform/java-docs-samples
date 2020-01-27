@@ -48,7 +48,7 @@ limitations under the License.
       </dependency>
     </dependencies>
   </dependencyManagement>
-	
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -68,6 +68,7 @@ limitations under the License.
 
   <build>
     <plugins>
+      <!-- [START run_pubsub_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -78,6 +79,7 @@ limitations under the License.
           </to>
         </configuration>
       </plugin>
+      <!-- [END run_pubsub_jib] -->
     </plugins>
   </build>
 </project>
