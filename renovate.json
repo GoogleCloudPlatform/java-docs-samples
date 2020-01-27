@@ -2,16 +2,21 @@
   "extends": [
     "config:base"
   ],
-  "labels": [
-    "kokoro:run"
-  ],
-   "packageRules": [
+  "packageRules": [
     {
-      "packagePatterns": ["^io.grpc:grpc-"],
+      "packagePatterns": [ "^com.google.appengine:" ],
+      "groupName": "AppEngine packages"
+    },
+    {
+      "packagePatterns": [ "^io.grpc:grpc-" ],
       "groupName": "gRPC packages"
+    },
+    {
+      "packagePatterns": [ "^io.vertx:vertex-" ],
+      "groupName": "Vertx packages"
     }
   ],
   "prConcurrentLimit": 5,
-  "prCreation": "not-pending",
-  "rebaseStalePrs": true
+  "rebaseStalePrs": false,
+  "masterIssue": true
 }
