@@ -45,7 +45,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>3.0.0</version>
+        <version>3.4.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>27.1-jre</version>
+      <version>28.2-jre</version>
     </dependency>
 
     <dependency>
@@ -103,7 +103,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.2.v20180619</version>
+        <version>9.4.25.v20191220</version>
       </plugin>
 
       <plugin>

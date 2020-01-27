@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>1.47.0</version>
+      <version>1.48.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.77</version>
+      <version>1.9.78</version>
     </dependency>
   </dependencies>
 
@@ -72,7 +72,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.6.v20180619</version>
+        <version>9.4.25.v20191220</version>
       </plugin>
       <!-- END -->
 

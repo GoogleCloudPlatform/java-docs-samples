@@ -34,13 +34,25 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13-rc-2</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
       <version>1.12.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigtable -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-bigtable</artifactId>
+      <version>1.9.1</version>
     </dependency>
   </dependencies>
 </project>

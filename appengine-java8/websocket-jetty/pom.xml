@@ -38,7 +38,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
-    <jetty.version>9.4.4.v20180619</jetty.version>
+    <jetty.version>9.4.25.v20191220</jetty.version>
   </properties>
 
   <dependencies>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.0</version>
+      <version>28.2-jre</version>
     </dependency>
   </dependencies>
 
