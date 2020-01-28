@@ -53,9 +53,9 @@ public class IamRevokeAccess {
 
       // Search through bindings and remove matches.
       String roleToFind = "roles/secretmanager.secretAccessor";
-      for (Binding b : policy.getBindingsList()) {
-        if (b.getRole() == roleToFind && b.getMembersList().contains(member)) {
-          b.getMembersList().remove(member);
+      for (Binding binding : policy.getBindingsList()) {
+        if (binding.getRole() == roleToFind && binding.getMembersList().contains(member)) {
+          binding.getMembersList().remove(member);
         }
       }
 
