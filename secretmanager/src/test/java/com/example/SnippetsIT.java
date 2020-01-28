@@ -48,7 +48,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SnippetsIT {
   private static final String IAM_USER =
-      "iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
+      "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static Secret TEST_SECRET;
