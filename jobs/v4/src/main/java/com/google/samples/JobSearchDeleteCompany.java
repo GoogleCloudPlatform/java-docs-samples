@@ -16,16 +16,18 @@
 
 package com.google.samples;
 
+// [START job_search_delete_company]
+
 import com.google.cloud.talent.v4beta1.CompanyName;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
 import com.google.cloud.talent.v4beta1.CompanyWithTenantName;
 import com.google.cloud.talent.v4beta1.DeleteCompanyRequest;
 
+import java.io.IOException;
 
 public class JobSearchDeleteCompany {
-  // [START job_search_delete_company]
 
-  public static void deleteCompany() {
+  public static void deleteCompany() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
@@ -34,22 +36,19 @@ public class JobSearchDeleteCompany {
   }
 
   // Delete Company.
-  public static void deleteCompany(String projectId, String tenantId, String companyId) {
+  public static void deleteCompany(String projectId, String tenantId, String companyId)
+      throws IOException {
     // [START job_search_delete_company_core]
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // tenantId = "Your Tenant ID (using tenancy is optional)";
-      // companyId = "ID of the company to delete";
       CompanyName name = CompanyWithTenantName.of(projectId, tenantId, companyId);
+
       DeleteCompanyRequest request =
           DeleteCompanyRequest.newBuilder().setName(name.toString()).build();
+
       companyServiceClient.deleteCompany(request);
       System.out.println("Deleted company");
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_delete_company_core]
   }
-  // [END job_search_delete_company]
-
 }
+// [END job_search_delete_company]

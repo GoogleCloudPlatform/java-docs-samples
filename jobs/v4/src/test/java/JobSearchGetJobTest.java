@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.samples.JobSearchCreateCompany;
@@ -22,11 +23,9 @@ import com.google.samples.JobSearchDeleteCompany;
 import com.google.samples.JobSearchDeleteJob;
 import com.google.samples.JobSearchDeleteTenant;
 import com.google.samples.JobSearchGetJob;
-import com.google.samples.JobSearchGetTenant;
-import com.google.samples.JobSearchListCompanies;
-import com.google.samples.JobSearchListTenants;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 
@@ -34,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JobSearchJobMgmtIT {
+public class JobSearchGetJobTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_EXT_ID = "EXTERNAL_TEMP_TENANT_ID";
   private static final String COMPANY_DISPLAY_NAME = "GOOGLE_DEVREL";
@@ -52,7 +51,7 @@ public class JobSearchJobMgmtIT {
   private PrintStream out;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -62,7 +61,7 @@ public class JobSearchJobMgmtIT {
     String got = bout.toString();
     assertThat(got).contains("Created Tenant");
 
-    tenantId = extractLastId(got.split("\n")[1]);
+    tenantId = JobSearchListGetCompanyTest.extractLastId(got.split("\n")[1]);
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
@@ -75,7 +74,7 @@ public class JobSearchJobMgmtIT {
     got = bout.toString();
     assertThat(got).contains("Created Company");
 
-    companyId = extractLastId(got.split("\n")[1]);
+    companyId = JobSearchListGetCompanyTest.extractLastId(got.split("\n")[1]);
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
@@ -96,19 +95,28 @@ public class JobSearchJobMgmtIT {
 
     got = bout.toString();
     assertThat(got).contains("Created job:");
-    jobId = extractLastId(got.split("\n")[0].trim());
+    jobId = JobSearchListGetCompanyTest.extractLastId(got.split("\n")[0].trim());
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
   }
 
+  @Test
+  public void testGetJob() throws IOException {
+    // retrieve a job.
+    JobSearchGetJob.getJob(PROJECT_ID, tenantId, jobId);
+    String got = bout.toString();
+    assertThat(got).contains("Job name: ");
+    assertThat(got).contains("Website:");
+  }
+
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException {
     JobSearchDeleteJob.deleteJob(PROJECT_ID, tenantId, jobId);
     String got = bout.toString();
-
     assertThat(got).contains("Deleted job.");
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -126,53 +134,5 @@ public class JobSearchJobMgmtIT {
     assertThat(got).contains("Deleted Tenant.");
 
     System.setOut(null);
-  }
-
-  @Test
-  public void testJobSearchGetList() {
-    // retrieve tenant.
-    JobSearchGetTenant.getTenant(PROJECT_ID, tenantId);
-    String got = bout.toString();
-    assertThat(got).contains(String.format("External ID: %s", TENANT_EXT_ID));
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
-    // retrieve a job.
-    JobSearchGetJob.getJob(PROJECT_ID, tenantId, jobId);
-    got = bout.toString();
-    assertThat(got).contains("Job name:");
-    assertThat(got).contains("Title:");
-    assertThat(got).contains("Website:");
-
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
-    // list tenants.
-    JobSearchListTenants.listTenants(PROJECT_ID);
-    got = bout.toString();
-    assertThat(got).contains(TENANT_EXT_ID);
-    assertThat(got).contains("Tenant Name:");
-    assertThat(got).contains("External ID:");
-
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
-    // list companies.
-    JobSearchListCompanies.listCompanies(PROJECT_ID, tenantId);
-    got = bout.toString();
-    assertThat(got).contains("Company Name:");
-  }
-
-  // Helper method for getting the last id from the full path.
-  private static String extractLastId(String fullPath) {
-    if (fullPath == null || fullPath.length() < 1 || !fullPath.contains("/")) {
-      throw new IllegalArgumentException("Not valid path");
-    }
-
-    String[] parts = fullPath.split("/");
-    return parts[parts.length - 1];
   }
 }

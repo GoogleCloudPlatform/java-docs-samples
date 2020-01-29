@@ -16,15 +16,18 @@
 
 package com.google.samples;
 
+// [START job_search_delete_tenant]
+
 import com.google.cloud.talent.v4beta1.DeleteTenantRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
+import java.io.IOException;
+
 
 public class JobSearchDeleteTenant {
-  // [START job_search_delete_tenant]
 
-  public static void deleteTenant() {
+  public static void deleteTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
@@ -32,21 +35,19 @@ public class JobSearchDeleteTenant {
   }
 
   // Delete Tenant.
-  public static void deleteTenant(String projectId, String tenantId) {
+  public static void deleteTenant(String projectId, String tenantId) throws IOException {
     // [START job_search_delete_tenant_core]
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // tenantId = "Your Tenant ID)";
       TenantName name = TenantName.of(projectId, tenantId);
+
       DeleteTenantRequest request =
           DeleteTenantRequest.newBuilder().setName(name.toString()).build();
+
       tenantServiceClient.deleteTenant(request);
       System.out.println("Deleted Tenant.");
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_delete_tenant_core]
   }
-  // [END job_search_delete_tenant]
 
 }
+// [END job_search_delete_tenant]

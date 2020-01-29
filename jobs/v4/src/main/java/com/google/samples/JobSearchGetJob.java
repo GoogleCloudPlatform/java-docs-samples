@@ -16,17 +16,20 @@
 
 package com.google.samples;
 
+// [START job_search_get_job]
+
 import com.google.cloud.talent.v4beta1.GetJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobName;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.JobWithTenantName;
 
+import java.io.IOException;
+
 
 public class JobSearchGetJob {
-  // [START job_search_get_job]
 
-  public static void getJob() {
+  public static void getJob() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
@@ -35,14 +38,13 @@ public class JobSearchGetJob {
   }
 
   // Get Job.
-  public static void getJob(String projectId, String tenantId, String jobId) {
+  public static void getJob(String projectId, String tenantId, String jobId) throws IOException {
     // [START job_search_get_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // tenantId = "Your Tenant ID (using tenancy is optional)";
-      // jobId = "Job ID";
       JobName name = JobWithTenantName.of(projectId, tenantId, jobId);
+
       GetJobRequest request = GetJobRequest.newBuilder().setName(name.toString()).build();
+
       Job response = jobServiceClient.getJob(request);
       System.out.printf("Job name: %s\n", response.getName());
       System.out.printf("Requisition ID: %s\n", response.getRequisitionId());
@@ -58,11 +60,8 @@ public class JobSearchGetJob {
       for (String websiteUri : response.getApplicationInfo().getUrisList()) {
         System.out.printf("Website: %s\n", websiteUri);
       }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_get_job_core]
   }
-  // [END job_search_get_job]
-
 }
+// [END job_search_get_job]

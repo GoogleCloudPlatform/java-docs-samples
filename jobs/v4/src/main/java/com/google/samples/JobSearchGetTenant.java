@@ -16,16 +16,19 @@
 
 package com.google.samples;
 
+// [START job_search_get_tenant]
+
 import com.google.cloud.talent.v4beta1.GetTenantRequest;
 import com.google.cloud.talent.v4beta1.Tenant;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
+import java.io.IOException;
+
 
 public class JobSearchGetTenant {
-  // [START job_search_get_tenant]
 
-  public static void getTenant() {
+  public static void getTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
@@ -33,21 +36,19 @@ public class JobSearchGetTenant {
   }
 
   // Get Tenant by name.
-  public static void getTenant(String projectId, String tenantId) {
+  public static void getTenant(String projectId, String tenantId) throws IOException {
     // [START job_search_get_tenant_core]
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // tenantId = "Your Tenant ID";
       TenantName name = TenantName.of(projectId, tenantId);
+
       GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
+
       Tenant response = tenantServiceClient.getTenant(request);
       System.out.printf("Name: %s\n", response.getName());
       System.out.printf("External ID: %s\n", response.getExternalId());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_get_tenant_core]
   }
-  // [END job_search_get_tenant]
 
 }
+// [END job_search_get_tenant]

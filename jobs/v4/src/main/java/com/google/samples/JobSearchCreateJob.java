@@ -16,23 +16,26 @@
 
 package com.google.samples;
 
+// [START job_search_create_job]
+
 import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 
 public class JobSearchCreateJob {
-  // [START job_search_create_job]
 
-  public static void createJob() {
+  public static void createJob() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
-    String companyName  = "your-company-name";
+    String companyId  = "your-company-id";
     String requisitionId  = "your-unique-req-id";
     String title  = "your-job-title";
     String description  = "your-job-description";
@@ -41,7 +44,7 @@ public class JobSearchCreateJob {
     String addressTwo = "your-job-address-2";
     String languageCode = "your-lang-code";
 
-    createJob(projectId, tenantId, companyName, requisitionId, title,
+    createJob(projectId, tenantId, companyId, requisitionId, title,
             description, jobApplicationUrl, addressOne, addressTwo, languageCode);
   }
 
@@ -49,26 +52,16 @@ public class JobSearchCreateJob {
   public static void createJob(
       String projectId,
       String tenantId,
-      String companyName,
+      String companyId,
       String requisitionId,
       String title,
       String description,
       String jobApplicationUrl,
       String addressOne,
       String addressTwo,
-      String languageCode) {
+      String languageCode) throws IOException {
     // [START job_search_create_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // tenantId = "Your Tenant ID (using tenancy is optional)";
-      // companyName = "Company name, e.g. projects/your-project/companies/company-id";
-      // requisitionId = "Job requisition ID, aka Posting ID. Unique per job.";
-      // title = "Software Engineer";
-      // description = "This is a description of this <i>wonderful</i> job!";
-      // jobApplicationUrl = "https://www.example.org/job-posting/123";
-      // addressOne = "1600 Amphitheatre Parkway, Mountain View, CA 94043";
-      // addressTwo = "111 8th Avenue, New York, NY 10011";
-      // languageCode = "en-US";
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
       List<String> uris = Arrays.asList(jobApplicationUrl);
       Job.ApplicationInfo applicationInfo =
@@ -76,7 +69,7 @@ public class JobSearchCreateJob {
       List<String> addresses = Arrays.asList(addressOne, addressTwo);
       Job job =
           Job.newBuilder()
-              .setCompany(companyName)
+              .setCompany(companyId)
               .setRequisitionId(requisitionId)
               .setTitle(title)
               .setDescription(description)
@@ -84,15 +77,15 @@ public class JobSearchCreateJob {
               .addAllAddresses(addresses)
               .setLanguageCode(languageCode)
               .build();
+
       CreateJobRequest request =
           CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
+
       Job response = jobServiceClient.createJob(request);
       System.out.printf("Created job: %s\n", response.getName());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_create_job_core]
   }
-  // [END job_search_create_job]
 
 }
+// [END job_search_create_job]

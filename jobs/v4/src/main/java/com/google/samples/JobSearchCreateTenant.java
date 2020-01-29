@@ -16,41 +16,41 @@
 
 package com.google.samples;
 
+// [START job_search_create_tenant]
+
 import com.google.cloud.talent.v4beta1.CreateTenantRequest;
 import com.google.cloud.talent.v4beta1.ProjectName;
 import com.google.cloud.talent.v4beta1.Tenant;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
+import java.io.IOException;
 
 public class JobSearchCreateTenant {
-  // [START job_search_create_tenant]
 
-  public static void createTenant() {
+  public static void createTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String externalId ="your-external-id";
+    String externalId = "your-external-id";
     createTenant(projectId, externalId);
   }
 
   // Create Tenant for scoping resources, e.g. companies and jobs.
-  public static void createTenant(String projectId, String externalId) {
+  public static void createTenant(String projectId, String externalId) throws IOException {
     // [START job_search_create_tenant_core]
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // externalId = "Your Unique Identifier for Tenant";
       ProjectName parent = ProjectName.of(projectId);
       Tenant tenant = Tenant.newBuilder().setExternalId(externalId).build();
+
       CreateTenantRequest request =
           CreateTenantRequest.newBuilder().setParent(parent.toString()).setTenant(tenant).build();
+
       Tenant response = tenantServiceClient.createTenant(request);
       System.out.println("Created Tenant");
       System.out.printf("Name: %s\n", response.getName());
       System.out.printf("External ID: %s\n", response.getExternalId());
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_create_tenant_core]
   }
-  // [END job_search_create_tenant]
 
 }
+// [END job_search_create_tenant]

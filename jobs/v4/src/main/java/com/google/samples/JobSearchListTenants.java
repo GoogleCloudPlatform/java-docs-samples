@@ -16,37 +16,39 @@
 
 package com.google.samples;
 
+// [START job_search_list_tenants]
+
 import com.google.cloud.talent.v4beta1.ListTenantsRequest;
 import com.google.cloud.talent.v4beta1.ProjectName;
 import com.google.cloud.talent.v4beta1.Tenant;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
+import java.io.IOException;
+
 
 public class JobSearchListTenants {
-  // [START job_search_list_tenants]
 
-  public static void listTenants()  {
+  public static void listTenants() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     listTenants(projectId);
   }
 
   // List Tenants.
-  public static void listTenants(String projectId) {
+  public static void listTenants(String projectId) throws IOException {
     // [START job_search_list_tenants_core]
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
       ProjectName parent = ProjectName.of(projectId);
+
       ListTenantsRequest request =
           ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
+
       for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
         System.out.printf("Tenant Name: %s\n", responseItem.getName());
         System.out.printf("External ID: %s\n", responseItem.getExternalId());
       }
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_list_tenants_core]
   }
-  // [END job_search_list_tenants]
 }
+// [END job_search_list_tenants]

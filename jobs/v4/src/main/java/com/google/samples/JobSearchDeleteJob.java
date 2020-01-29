@@ -16,16 +16,19 @@
 
 package com.google.samples;
 
+// [START job_search_delete_job]
+
 import com.google.cloud.talent.v4beta1.DeleteJobRequest;
 import com.google.cloud.talent.v4beta1.JobName;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.JobWithTenantName;
 
+import java.io.IOException;
+
 
 public class JobSearchDeleteJob {
-  // [START job_search_delete_job]
 
-  public static void deleteJob() {
+  public static void deleteJob() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
@@ -34,21 +37,18 @@ public class JobSearchDeleteJob {
   }
 
   // Delete Job.
-  public static void deleteJob(String projectId, String tenantId, String jobId) {
+  public static void deleteJob(String projectId, String tenantId, String jobId) throws IOException {
     // [START job_search_delete_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      // projectId = "Your Google Cloud Project ID";
-      // tenantId = "Your Tenant ID (using tenancy is optional)";
-      // jobId = "Company ID";
       JobName name = JobWithTenantName.of(projectId, tenantId, jobId);
+
       DeleteJobRequest request = DeleteJobRequest.newBuilder().setName(name.toString()).build();
+
       jobServiceClient.deleteJob(request);
       System.out.println("Deleted job.");
-    } catch (Exception exception) {
-      System.err.println("Failed to create the client due to: " + exception);
     }
     // [END job_search_delete_job_core]
   }
-  // [END job_search_delete_job]
 
 }
+// [END job_search_delete_job]
