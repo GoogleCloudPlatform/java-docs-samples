@@ -19,6 +19,11 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.automl.v1.AutoMlClient;
+import com.google.cloud.automl.v1.ListModelEvaluationsRequest;
+import com.google.cloud.automl.v1.ModelEvaluation;
+import com.google.cloud.automl.v1.ModelName;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -53,15 +58,20 @@ public class GetModelEvaluationTest {
 
   @Before
   public void setUp() throws IOException {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
     // Get a model evaluation ID from the List request first to be used in the Get call
-    ListModelEvaluations.listModelEvaluations(PROJECT_ID, MODEL_ID);
-    String got = bout.toString();
-    modelEvaluationId = got.split(MODEL_ID + "/modelEvaluations/")[1].split("\n")[0];
-    assertThat(got).contains("Model Evaluation Name:");
+    try (AutoMlClient client = AutoMlClient.create()) {
+      ModelName modelFullId = ModelName.of(PROJECT_ID, "us-central1", MODEL_ID);
+      ListModelEvaluationsRequest modelEvaluationsrequest =
+          ListModelEvaluationsRequest.newBuilder().setParent(modelFullId.toString()).build();
+      ModelEvaluation modelEvaluation =
+          client
+              .listModelEvaluations(modelEvaluationsrequest)
+              .getPage()
+              .getValues()
+              .iterator()
+              .next();
+      modelEvaluationId = modelEvaluation.getName().split("/modelEvaluations/")[1];
+    }
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
