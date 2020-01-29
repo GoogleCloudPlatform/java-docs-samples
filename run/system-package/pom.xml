@@ -62,10 +62,10 @@ limitations under the License.
         <version>1.8.0</version>
         <configuration>
           <from>
-            <image>gcr.io/PROJECT_ID/imagemagick</image>
+            <image>gcr.io/PROJECT_ID/graphviz-base</image>
           </from>
           <to>
-            <image>gcr.io/PROJECT_ID/pubsub</image>
+            <image>gcr.io/PROJECT_ID/graphviz</image>
           </to>
         </configuration>
       </plugin>

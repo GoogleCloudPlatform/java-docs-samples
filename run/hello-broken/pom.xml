@@ -76,7 +76,7 @@ limitations under the License.
         <version>1.8.0</version>
         <configuration>
           <to>
-            <image>gcr.io/PROJECT_ID/hello-broken</image>
+            <image>gcr.io/PROJECT_ID/hello-service</image>
           </to>
         </configuration>
       </plugin>
