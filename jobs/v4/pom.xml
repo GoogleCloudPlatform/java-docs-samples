@@ -66,5 +66,7 @@
         </dependency>
 
 
+    <!-- [START jobs_java_dependencies_beta] -->
     </dependencies>
+    <!-- [END jobs_java_dependencies_beta] -->
 </project>
