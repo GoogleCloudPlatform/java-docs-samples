@@ -9,15 +9,15 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 
 ## Samples
 
-|           Sample                |        Description       |
-| ------------------------------- | ------------------------ |
-|[Hello World][helloworld]        | Quickstart |
-|[Cloud Pub/Sub](pubsub/)         | Handling Pub/Sub push messages |
-|[System Packages](system-package/)| Using system packages with containers |
-|[Image Magick](image-processing/) | Event-driven image analysis & transformation |
-|[Manual Logging](logging-manual/) | Structured logging for Stackdriver |
-|[Local Troubleshooting](hello-broken/) | Broken services for local troubleshooting tutorial |
-|[Cloud SQL (MySQL)][mysql]        | Use MySQL with Cloud Run |
+|           Sample                |        Description       |     Deploy    |
+| ------------------------------- | ------------------------ | ------------- |
+|[Hello World][helloworld] | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
+|[Cloud Pub/Sub](pubsub/) | Handling Pub/Sub push messages | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_pubsub] |
+|[System Packages](system-package/) | Using system packages with containers | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_sys_package] |
+|[Image Magick](image-processing/) | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_image] |
+|[Manual Logging](logging-manual/) | Structured logging for Stackdriver | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_log] |
+|[Local Troubleshooting](hello-broken/) | Broken services for local troubleshooting tutorial | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_broken] |
+|[Cloud SQL (MySQL)][mysql]        | Use MySQL with Cloud Run | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_sql] |
 
 For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 

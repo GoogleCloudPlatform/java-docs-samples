@@ -6,6 +6,8 @@ Use it with the [Image Processing with Cloud Run tutorial](http://cloud.google.c
 
 For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
 
+[![Run in Google Cloud][run_img]][run_link]
+
 ## Dependencies
 
 * **Spring Boot**: Web server framework.
