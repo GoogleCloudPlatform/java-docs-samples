@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_create_job]
+// [START job_search_create_job_beta]
 
 import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
@@ -28,24 +28,32 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class JobSearchCreateJob {
 
   public static void createJob() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
-    String companyId  = "your-company-id";
-    String requisitionId  = "your-unique-req-id";
-    String title  = "your-job-title";
-    String description  = "your-job-description";
+    String companyId = "your-company-id";
+    String requisitionId = "your-unique-req-id";
+    String title = "your-job-title";
+    String description = "your-job-description";
     String jobApplicationUrl = "your-job-url";
     String addressOne = "your-job-address-1";
     String addressTwo = "your-job-address-2";
     String languageCode = "your-lang-code";
 
-    createJob(projectId, tenantId, companyId, requisitionId, title,
-            description, jobApplicationUrl, addressOne, addressTwo, languageCode);
+    createJob(
+        projectId,
+        tenantId,
+        companyId,
+        requisitionId,
+        title,
+        description,
+        jobApplicationUrl,
+        addressOne,
+        addressTwo,
+        languageCode);
   }
 
   // Create a job.
@@ -59,8 +67,8 @@ public class JobSearchCreateJob {
       String jobApplicationUrl,
       String addressOne,
       String addressTwo,
-      String languageCode) throws IOException {
-    // [START job_search_create_job_core]
+      String languageCode)
+      throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
       List<String> uris = Arrays.asList(jobApplicationUrl);
@@ -84,8 +92,6 @@ public class JobSearchCreateJob {
       Job response = jobServiceClient.createJob(request);
       System.out.printf("Created job: %s\n", response.getName());
     }
-    // [END job_search_create_job_core]
   }
-
 }
-// [END job_search_create_job]
+// [END job_search_create_job_beta]

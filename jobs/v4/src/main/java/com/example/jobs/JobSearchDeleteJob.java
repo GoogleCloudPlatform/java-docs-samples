@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_delete_job]
+// [START job_search_delete_job_beta]
 
 import com.google.cloud.talent.v4beta1.DeleteJobRequest;
 import com.google.cloud.talent.v4beta1.JobName;
@@ -24,7 +24,6 @@ import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.JobWithTenantName;
 
 import java.io.IOException;
-
 
 public class JobSearchDeleteJob {
 
@@ -38,7 +37,6 @@ public class JobSearchDeleteJob {
 
   // Delete Job.
   public static void deleteJob(String projectId, String tenantId, String jobId) throws IOException {
-    // [START job_search_delete_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       JobName name = JobWithTenantName.of(projectId, tenantId, jobId);
 
@@ -47,8 +45,6 @@ public class JobSearchDeleteJob {
       jobServiceClient.deleteJob(request);
       System.out.println("Deleted job.");
     }
-    // [END job_search_delete_job_core]
   }
-
 }
-// [END job_search_delete_job]
+// [END job_search_delete_job_beta]

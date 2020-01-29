@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_list_companies]
+// [START job_search_list_companies_beta]
 
 import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
@@ -25,7 +25,6 @@ import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
 import java.io.IOException;
-
 
 public class JobSearchListCompanies {
 
@@ -38,7 +37,6 @@ public class JobSearchListCompanies {
 
   // List Companies.
   public static void listCompanies(String projectId, String tenantId) throws IOException {
-    // [START job_search_list_companies_core]
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
 
@@ -51,8 +49,6 @@ public class JobSearchListCompanies {
         System.out.printf("External ID: %s\n", responseItem.getExternalId());
       }
     }
-    // [END job_search_list_companies_core]
   }
-
 }
-// [END job_search_list_companies]
+// [END job_search_list_companies_beta]

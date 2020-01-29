@@ -14,41 +14,37 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_list_tenants]
+// [START job_search_get_tenant_beta]
 
-import com.google.cloud.talent.v4beta1.ListTenantsRequest;
-import com.google.cloud.talent.v4beta1.ProjectName;
+import com.google.cloud.talent.v4beta1.GetTenantRequest;
 import com.google.cloud.talent.v4beta1.Tenant;
+import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
 import java.io.IOException;
 
+public class JobSearchGetTenant {
 
-public class JobSearchListTenants {
-
-  public static void listTenants() throws IOException {
+  public static void getTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    listTenants(projectId);
+    String tenantId = "your-tenant-id";
+    getTenant(projectId, tenantId);
   }
 
-  // List Tenants.
-  public static void listTenants(String projectId) throws IOException {
-    // [START job_search_list_tenants_core]
+  // Get Tenant by name.
+  public static void getTenant(String projectId, String tenantId) throws IOException {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      ProjectName parent = ProjectName.of(projectId);
+      TenantName name = TenantName.of(projectId, tenantId);
 
-      ListTenantsRequest request =
-          ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
+      GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
 
-      for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
-        System.out.printf("Tenant Name: %s\n", responseItem.getName());
-        System.out.printf("External ID: %s\n", responseItem.getExternalId());
-      }
+      Tenant response = tenantServiceClient.getTenant(request);
+      System.out.printf("Name: %s\n", response.getName());
+      System.out.printf("External ID: %s\n", response.getExternalId());
     }
-    // [END job_search_list_tenants_core]
   }
 }
-// [END job_search_list_tenants]
+// [END job_search_get_tenant_beta]

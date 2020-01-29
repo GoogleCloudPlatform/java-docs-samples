@@ -16,10 +16,10 @@
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.samples.JobSearchCreateTenant;
-import com.google.samples.JobSearchDeleteTenant;
-import com.google.samples.JobSearchGetTenant;
-import com.google.samples.JobSearchListTenants;
+import com.example.jobs.JobSearchCreateTenant;
+import com.example.jobs.JobSearchDeleteTenant;
+import com.example.jobs.JobSearchGetTenant;
+import com.example.jobs.JobSearchListTenants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

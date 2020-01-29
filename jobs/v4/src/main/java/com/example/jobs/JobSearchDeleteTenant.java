@@ -14,41 +14,36 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_get_tenant]
+// [START job_search_delete_tenant_beta]
 
-import com.google.cloud.talent.v4beta1.GetTenantRequest;
-import com.google.cloud.talent.v4beta1.Tenant;
+import com.google.cloud.talent.v4beta1.DeleteTenantRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
 import java.io.IOException;
 
+public class JobSearchDeleteTenant {
 
-public class JobSearchGetTenant {
-
-  public static void getTenant() throws IOException {
+  public static void deleteTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
-    getTenant(projectId, tenantId);
+    deleteTenant(projectId, tenantId);
   }
 
-  // Get Tenant by name.
-  public static void getTenant(String projectId, String tenantId) throws IOException {
-    // [START job_search_get_tenant_core]
+  // Delete Tenant.
+  public static void deleteTenant(String projectId, String tenantId) throws IOException {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
       TenantName name = TenantName.of(projectId, tenantId);
 
-      GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
+      DeleteTenantRequest request =
+          DeleteTenantRequest.newBuilder().setName(name.toString()).build();
 
-      Tenant response = tenantServiceClient.getTenant(request);
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      tenantServiceClient.deleteTenant(request);
+      System.out.println("Deleted Tenant.");
     }
-    // [END job_search_get_tenant_core]
   }
-
 }
-// [END job_search_get_tenant]
+// [END job_search_delete_tenant_beta]

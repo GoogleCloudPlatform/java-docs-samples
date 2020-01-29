@@ -14,42 +14,39 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_get_company]
+// [START job_search_delete_company_beta]
 
-import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyName;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
 import com.google.cloud.talent.v4beta1.CompanyWithTenantName;
-import com.google.cloud.talent.v4beta1.GetCompanyRequest;
+import com.google.cloud.talent.v4beta1.DeleteCompanyRequest;
 
 import java.io.IOException;
 
-public class JobSearchGetCompany {
+public class JobSearchDeleteCompany {
 
-  public static void getCompany() throws IOException {
+  public static void deleteCompany() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String tenantId = "your-tenant-id";
     String companyId = "your-company-id";
-    getCompany(projectId, tenantId, companyId);
+    deleteCompany(projectId, tenantId, companyId);
   }
 
-  // Get Company.
-  public static void getCompany(String projectId, String tenantId, String companyId)
+  // Delete Company.
+  public static void deleteCompany(String projectId, String tenantId, String companyId)
       throws IOException {
-    // [START job_search_get_company_core]
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       CompanyName name = CompanyWithTenantName.of(projectId, tenantId, companyId);
 
-      GetCompanyRequest request = GetCompanyRequest.newBuilder().setName(name.toString()).build();
+      DeleteCompanyRequest request =
+          DeleteCompanyRequest.newBuilder().setName(name.toString()).build();
 
-      Company response = companyServiceClient.getCompany(request);
-      System.out.printf("Company name: %s\n", response.getName());
-      System.out.printf("Display name: %s\n", response.getDisplayName());
+      companyServiceClient.deleteCompany(request);
+      System.out.println("Deleted company");
     }
-    // [END job_search_get_company_core]
   }
 }
-// [END job_search_get_company]
+// [END job_search_delete_company_beta]

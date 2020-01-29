@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_get_job]
+// [START job_search_get_job_beta]
 
 import com.google.cloud.talent.v4beta1.GetJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
@@ -25,7 +25,6 @@ import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.JobWithTenantName;
 
 import java.io.IOException;
-
 
 public class JobSearchGetJob {
 
@@ -39,7 +38,6 @@ public class JobSearchGetJob {
 
   // Get Job.
   public static void getJob(String projectId, String tenantId, String jobId) throws IOException {
-    // [START job_search_get_job_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       JobName name = JobWithTenantName.of(projectId, tenantId, jobId);
 
@@ -61,7 +59,6 @@ public class JobSearchGetJob {
         System.out.printf("Website: %s\n", websiteUri);
       }
     }
-    // [END job_search_get_job_core]
   }
 }
-// [END job_search_get_job]
+// [END job_search_get_job_beta]

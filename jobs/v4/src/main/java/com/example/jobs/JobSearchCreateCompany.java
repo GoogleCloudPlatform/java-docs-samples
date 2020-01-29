@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.samples;
+package com.example.jobs;
 
-// [START job_search_create_company]
+// [START job_search_create_company_beta]
 
 import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
@@ -25,7 +25,6 @@ import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
 import java.io.IOException;
-
 
 public class JobSearchCreateCompany {
 
@@ -58,8 +57,6 @@ public class JobSearchCreateCompany {
       System.out.printf("Display Name: %s\n", response.getDisplayName());
       System.out.printf("External ID: %s\n", response.getExternalId());
     }
-    // [END job_search_create_company_core]
   }
-
 }
-// [END job_search_create_company]
+// [END job_search_create_company_beta]
