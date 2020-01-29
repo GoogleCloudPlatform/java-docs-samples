@@ -19,7 +19,9 @@ package com.google.cloud.vision.samples.automl;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +29,7 @@ import org.junit.Test;
 
 public class ClassificationDeployModelIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String MODEL_ID = "ICN3125115511348658176";
+  private static final String MODEL_ID = "ICN0000000000000000000";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -45,27 +47,44 @@ public class ClassificationDeployModelIT {
 
   @Test
   public void testClassificationDeployModelApi() {
-    ClassificationDeployModel.classificationDeployModel(PROJECT_ID, MODEL_ID);
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      ClassificationDeployModel.classificationDeployModel(PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
+  }
 
-    String got = bout.toString();
-    assertThat(got).contains("Model deployment finished");
+  @Test
+  public void testClassificationUndeployModelApi() {
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
 
-    ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
-
-    got = bout.toString();
-    assertThat(got).contains("Model undeploy finished");
   }
 
   @Test
   public void testClassificationDeployModelNodeCountApi() {
-    ClassificationDeployModelNodeCount.classificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
-
-    String got = bout.toString();
-    assertThat(got).contains("Model deployment on 2 nodes finished");
-
-    ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
-
-    got = bout.toString();
-    assertThat(got).contains("Model undeploy finished");
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      ClassificationDeployModelNodeCount.classificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
   }
 }

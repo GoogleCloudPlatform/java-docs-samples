@@ -1,11 +1,15 @@
 assign_issues:
   - averikitsch
-  - dzlier-gcp
+#  - dzlier-gcp
   - gguuss
   - kurtisvg
   - nnegrey
+  - stephaniewang526
 assign_prs:
   - averikitsch
-  - dzlier-gcp
+#  - dzlier-gcp
+  - gguuss
   - kurtisvg
   - lesv
+  - nnegrey
+  - stephaniewang526

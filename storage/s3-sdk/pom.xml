@@ -38,14 +38,14 @@
    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.11.671</version>
+      <version>1.11.712</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-      <version>4.13-beta-3</version>
+      <version>4.13</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
