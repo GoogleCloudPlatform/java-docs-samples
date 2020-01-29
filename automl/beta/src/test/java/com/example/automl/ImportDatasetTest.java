@@ -19,6 +19,11 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.Dataset;
+import com.google.cloud.automl.v1beta1.LocationName;
+import com.google.cloud.automl.v1beta1.TextExtractionDatasetMetadata;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -37,6 +42,8 @@ import org.junit.runners.JUnit4;
 public class ImportDatasetTest {
 
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
+  private static final String BUCKET_ID = PROJECT_ID + "-lcm";
+  private static final String BUCKET = "gs://" + BUCKET_ID;
   private String datasetId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -54,21 +61,25 @@ public class ImportDatasetTest {
   }
 
   @Before
-  public void setUp() throws InterruptedException, ExecutionException, IOException {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
-    // Create a dataset that can be used for the import test
+  public void setUp() throws IOException {
+    // Create a fake dataset to be deleted
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
     String datasetName =
-        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_")
-                .substring(0, 26));
-    VideoClassificationCreateDataset.createDataset(PROJECT_ID, datasetName);
-    String got = bout.toString();
-    datasetId = got.split("Dataset id: ")[1].split("\n")[0];
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+    try (AutoMlClient client = AutoMlClient.create()) {
+      LocationName projectLocation = LocationName.of(PROJECT_ID, "us-central1");
+      TextExtractionDatasetMetadata metadata = TextExtractionDatasetMetadata.newBuilder().build();
+      Dataset dataset =
+          Dataset.newBuilder()
+              .setDisplayName(datasetName)
+              .setTextExtractionDatasetMetadata(metadata)
+              .build();
+      Dataset createdDataset = client.createDataset(projectLocation, dataset);
+      String[] names = createdDataset.getName().split("/");
+      datasetId = names[names.length - 1];
+    }
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
@@ -85,7 +96,7 @@ public class ImportDatasetTest {
   @Test
   public void testImportDataset() throws IOException, ExecutionException, InterruptedException {
     ImportDataset.importDataset(
-        PROJECT_ID, datasetId, "gs://automl-video-demo-data/hmdb_split1.csv");
+        PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
     String got = bout.toString();
     assertThat(got).contains("Dataset imported.");
   }
