@@ -59,7 +59,7 @@ with your Google Cloud Project Id:
 1. [Build the sample container using Jib](https://github.com/GoogleContainerTools/jib):
 
     ```Bash
-    mvn jib:build
+    mvn compile jib:dockerBuild
     ```
 
 1. [Run containers locally](https://cloud.google.com/run/docs/testing/local) by
@@ -101,16 +101,16 @@ Learn more about [testing your container image locally.][testing]
 1. [Build the sample container using Jib](https://github.com/GoogleContainerTools/jib):
 
     ```
-    mvn jib:build
+    mvn compile jib:build
     ```
 
     **Note**: Using the image tag `gcr.io/PROJECT_ID/SAMPLE_NAME` automatically
     pushes the image to [Google Container Registry](https://cloud.google.com/container-registry/).
 
-1. Deploy to Cloud Run:
+1. Deploy to Cloud Run by replacing `PROJECT_ID` and `SAMPLE_NAME` with your values:
 
     ```bash
-    gcloud run deploy SAMPLE_NAME --image gcr.io/PROJECT_ID/SAMPLE_NAME
+    gcloud run deploy --image gcr.io/PROJECT_ID/SAMPLE_NAME
     ```
 
 ## Next Steps
