@@ -85,12 +85,9 @@ public class Quickstart {
         JobControllerSettings.newBuilder().setEndpoint(myEndpoint).build();
 
     // Create both a cluster controller client and job controller client with the
-    // configured
-    // settings. The client only needs to be created once and can be reused for
-    // multiple requests.
-    // Using a try-with-resources closes the client, but this can also be done
-    // manually with
-    // the .close() method.
+    // configured settings. The client only needs to be created once and can be reused for
+    // multiple requests. Using a try-with-resources closes the client, but this can also be done
+    // manually with the .close() method.
     try (ClusterControllerClient clusterControllerClient =
             ClusterControllerClient.create(clusterControllerSettings);
         JobControllerClient jobControllerClient =
