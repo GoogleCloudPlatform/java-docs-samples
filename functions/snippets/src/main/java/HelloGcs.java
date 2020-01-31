@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-// [START functions_background_helloworld]
-
+// [START functions_helloworld_storage]
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import com.google.cloud.functions.HttpRequest;
 
 import java.util.logging.Logger;
 
-public class HelloBackgroundSample implements BackgroundFunction<HttpRequest> {
-  private static final Logger LOGGER = Logger.getLogger(HelloBackgroundSample.class.getName());
+public class HelloGcs implements BackgroundFunction<GcsEvent> {
+  private static final Logger LOGGER = Logger.getLogger(HelloGcs.class.getName());
 
   @Override
-  public void accept(HttpRequest request, Context context) {
-    String name = "world";
-    if (request.getFirstQueryParameter("name").isPresent()) {
-      name = request.getFirstQueryParameter("name").get();
+  public void accept(GcsEvent event, Context context) {
+    LOGGER.info("Processing file: " + event.name);
+
+    if (event.metageneration.equals("1")) {
+      // metageneration attribute is updated on metadata changes.
+      // value is 1 if file was newly created or overwritten
+      LOGGER.info(String.format("File %s uploaded.", event.name));
+    } else {
+      LOGGER.info(String.format("File %s metadata updated.", event.name));
     }
-    LOGGER.info(String.format("Hello %s!", name));
   }
 }
-// [END functions_background_helloworld]
+// [END functions_helloworld_storage]

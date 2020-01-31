@@ -30,8 +30,8 @@ public class FileSystem implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    File curDir = new File(".");
-    File[] files = curDir.listFiles();
+    File currentDirectory = new File(".");
+    File[] files = currentDirectory.listFiles();
     BufferedWriter writer = response.getWriter();
     writer.write("Files: \n");
     for (File f : files) {

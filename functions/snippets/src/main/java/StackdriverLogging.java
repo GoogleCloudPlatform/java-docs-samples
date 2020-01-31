@@ -18,30 +18,22 @@
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Logger;
 
-public class StackdriverLogging implements BackgroundFunction<StackdriverLogging.PubSubMessage> {
+public class StackdriverLogging implements BackgroundFunction<PubSubMessage> {
   private static final Logger LOGGER = Logger.getLogger(StackdriverLogging.class.getName());
 
   @Override
   public void accept(PubSubMessage message, Context context) {
-    if (message.data.isEmpty()) {
-      message.data = "World";
-    }
-    String res = String.format("Hello, %s", message.data);
-    LOGGER.info(res);
-  }
+    String name = "World";
 
-  // A Pub/Sub message.
-  // Make sure to include the PubSubMessage class verbatim
-  // The GCF environment will marshal the request data into it.
-  public class PubSubMessage {
-    String data;
-    Map<String, String> attributes;
-    String messageId;
-    String publishTime;
+    if (!message.data.isEmpty()) {
+      name = new String(Base64.getDecoder().decode(message.data.getBytes(StandardCharsets.UTF_8)));
+    }
+    String res = String.format("Hello, %s", name);
+    LOGGER.info(res);
   }
 }
 // [END functions_log_stackdriver]

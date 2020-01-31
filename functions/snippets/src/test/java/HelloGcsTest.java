@@ -14,9 +14,22 @@
  * limitations under the License.
  */
 
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +41,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.*;
-import java.util.logging.Logger;
-
-import static org.mockito.Mockito.*;
-
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Logger.class, HelloGcsSample.class})
-public class HelloGcsSampleTest {
+@PrepareForTest({Logger.class, HelloGcs.class})
+public class HelloGcsTest {
   @Mock private static Logger loggerInstance;
 
   private HttpRequest request;
@@ -92,7 +100,7 @@ public class HelloGcsSampleTest {
     GcsEvent event = new GcsEvent();
     event.name = "foo.txt";
     event.metageneration = "1";
-    new HelloGcsSample().accept(event, null);
+    new HelloGcs().accept(event, null);
     verify(loggerInstance, times(1)).info("File foo.txt uploaded.");
   }
 
@@ -101,7 +109,7 @@ public class HelloGcsSampleTest {
     GcsEvent event = new GcsEvent();
     event.name = "baz.txt";
     event.metageneration = "2";
-    new HelloGcsSample().accept(event, null);
+    new HelloGcs().accept(event, null);
     verify(loggerInstance, times(1)).info("File baz.txt metadata updated.");
   }
 }

@@ -24,8 +24,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
-public class HelloPubSubSample implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(HelloPubSubSample.class.getName());
+public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
+  private static final Logger LOGGER = Logger.getLogger(HelloPubSub.class.getName());
 
   @Override
   public void accept(PubSubMessage message, Context context) {

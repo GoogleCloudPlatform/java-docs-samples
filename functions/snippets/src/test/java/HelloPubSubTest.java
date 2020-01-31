@@ -23,11 +23,8 @@ import static org.mockito.Mockito.verify;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.logging.Logger;
-
-import com.google.common.primitives.Chars;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -39,14 +36,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 // [END functions_pubsub_unit_test]
 
 /**
- * Unit tests for {@link HelloPubSubSample}.
+ * Unit tests for {@link HelloPubSub}.
  */
 // [START functions_pubsub_unit_test]
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Logger.class, HelloPubSubSample.class})
-public class HelloPubSubSampleTest {
+@PrepareForTest({Logger.class, HelloPubSub.class})
+public class HelloPubSubTest {
 
-  private HelloPubSubSample sampleUnderTest;
+  private HelloPubSub sampleUnderTest;
   @Mock private static Logger loggerInstance;
 
   @Before
@@ -58,10 +55,10 @@ public class HelloPubSubSampleTest {
     }
 
     Mockito
-        .when(Logger.getLogger(HelloPubSubSample.class.getName()))
+        .when(Logger.getLogger(HelloPubSub.class.getName()))
         .thenReturn(loggerInstance);
 
-    sampleUnderTest = new HelloPubSubSample();
+    sampleUnderTest = new HelloPubSub();
   }
 
   @After

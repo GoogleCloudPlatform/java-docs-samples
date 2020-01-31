@@ -25,7 +25,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Lazy implements HttpFunction {
+public class LazyFields implements HttpFunction {
   // Always initialized (at cold-start)
   // Warning: Class variables used in Servlet classes must be thread-safe,
   // or else might introduce race conditions in your code.

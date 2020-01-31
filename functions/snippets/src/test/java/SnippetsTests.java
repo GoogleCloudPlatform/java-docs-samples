@@ -15,22 +15,33 @@
  */
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+import com.google.common.truth.Truth;
 import com.google.gson.Gson;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
-import com.google.cloud.functions.HttpRequest;
-import com.google.cloud.functions.HttpResponse;
-
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
-
-import com.google.common.truth.Truth;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -191,7 +202,7 @@ public class SnippetsTests {
 
   @Test
   public void lazyTest() throws IOException {
-    new Lazy().service(request, response);
+    new LazyFields().service(request, response);
 
     writerOut.flush();
     assertThat(responseOut.toString()).contains("Lazy global:");
@@ -215,8 +226,8 @@ public class SnippetsTests {
 
   @Test
   public void stackdriverLogging() throws IOException {
-    StackdriverLogging.PubSubMessage message = gson.fromJson(
-        "{\"data\":\"data\",\"messageId\":\"id\"}", StackdriverLogging.PubSubMessage.class);
+    PubSubMessage message = gson.fromJson(
+        "{\"data\":\"ZGF0YQ==\",\"messageId\":\"id\"}", PubSubMessage.class);
     new StackdriverLogging().accept(message, null);
 
     verify(loggerInstance, times(1)).info("Hello, data");
@@ -241,7 +252,7 @@ public class SnippetsTests {
 
   @Test
   public void helloHttp_noParamsGet() throws Exception {
-    new HelloHttpSample().service(request, response);
+    new HelloHttp().service(request, response);
 
     writerOut.flush();
     Truth.assertThat(responseOut.toString()).isEqualTo("Hello world!");
@@ -251,7 +262,7 @@ public class SnippetsTests {
   public void helloHttp_urlParamsGet() throws Exception {
     when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("Tom"));
 
-    new HelloHttpSample().service(request, response);
+    new HelloHttp().service(request, response);
 
     writerOut.flush();
     Truth.assertThat(responseOut.toString()).isEqualTo("Hello Tom!");
@@ -262,7 +273,7 @@ public class SnippetsTests {
     BufferedReader jsonReader = new BufferedReader(new StringReader("{'name': 'Jane'}"));
     when(request.getReader()).thenReturn(jsonReader);
 
-    new HelloHttpSample().service(request, response);
+    new HelloHttp().service(request, response);
     writerOut.flush();
 
     Truth.assertThat(responseOut.toString()).isEqualTo("Hello Jane!");

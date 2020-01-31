@@ -14,9 +14,23 @@
  * limitations under the License.
  */
 
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Optional;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,15 +42,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.*;
-import java.util.Optional;
-import java.util.logging.Logger;
-
-import static org.mockito.Mockito.*;
-
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Logger.class, HelloBackgroundSample.class})
-public class HelloBackgroundSampleTest {
+@PrepareForTest({Logger.class, HelloBackground.class})
+public class HelloBackgroundTest {
   @Mock private static Logger loggerInstance;
 
   private HttpRequest request;
@@ -44,9 +52,6 @@ public class HelloBackgroundSampleTest {
 
   private ByteArrayOutputStream stdOut;
   private StringWriter responseOut;
-
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gson = new Gson();
 
   private EnvironmentVariables environmentVariables;
 
@@ -93,13 +98,13 @@ public class HelloBackgroundSampleTest {
 
     when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
 
-    new HelloBackgroundSample().accept(request, null);
+    new HelloBackground().accept(request, null);
     verify(loggerInstance, times(1)).info("Hello John!");
   }
 
   @Test
   public void helloBackground_printsHelloWorld() throws Exception {
-    new HelloBackgroundSample().accept(request, null);
+    new HelloBackground().accept(request, null);
 
     verify(loggerInstance, times(1)).info("Hello world!");
   }

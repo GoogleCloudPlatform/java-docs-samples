@@ -19,27 +19,27 @@
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.logging.Logger;
-import org.apache.commons.io.IOUtils;
 
-public class HelloHttpSample implements HttpFunction {
-  private static final Logger LOGGER = Logger.getLogger(HelloHttpSample.class.getName());
+public class HelloHttp implements HttpFunction {
+  private static final Logger LOGGER = Logger.getLogger(HelloHttp.class.getName());
+
+  private Gson gsonParser = new Gson();
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     String name = "world";
 
+    // Parse JSON request and check for "name" field
     try {
-      String requestString = IOUtils.toString(request.getReader());
-
-      JsonElement requestParsed = new JsonParser().parse(requestString);
+      JsonElement requestParsed = gsonParser.fromJson(request.getReader(), JsonElement.class);
       JsonObject requestJson = null;
 
       if (requestParsed.isJsonObject()) {
@@ -49,7 +49,6 @@ public class HelloHttpSample implements HttpFunction {
       if (requestJson != null && requestJson.has("name")) {
         name = requestJson.get("name").getAsString();
       }
-
     } catch (JsonParseException e) {
       LOGGER.severe("Error parsing JSON: " + e.getMessage());
     }

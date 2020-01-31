@@ -22,6 +22,7 @@ import com.google.cloud.functions.HttpResponse;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class CorsEnabled implements HttpFunction {
   // corsEnabled is an example of setting CORS headers.
@@ -36,7 +37,7 @@ public class CorsEnabled implements HttpFunction {
       response.appendHeader("Access-Control-Allow-Methods", "POST");
       response.appendHeader("Access-Control-Allow-Headers", "Content-Type");
       response.appendHeader("Access-Control-Max-Age", "3600");
-      response.setStatusCode(204);
+      response.setStatusCode(HttpURLConnection.HTTP_NO_CONTENT);
       return;
     }
 

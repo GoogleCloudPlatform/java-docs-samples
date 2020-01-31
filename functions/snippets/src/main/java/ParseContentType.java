@@ -21,10 +21,9 @@ import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.net.HttpURLConnection;
 import java.util.Base64;
 
 public class ParseContentType implements HttpFunction {
@@ -37,17 +36,20 @@ public class ParseContentType implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    String name;
+    String name = null;
     String contentType = request.getContentType().get();
     if (contentType.equals("application/json")) {
       // '{"name":"John"}'
       JsonObject body = gsonParser.fromJson(request.getReader(), JsonObject.class);
-      name = body.get("name").getAsString();
+      if (body.has("name")) {
+        name = body.get("name").getAsString();
+      } else {
+        // No "name" parameter specified
+        response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
     } else if (contentType.equals("application/octet-stream")) {
       // 'John', stored in a Buffer
-      name = new String(
-          Base64.getDecoder().decode(request.getInputStream().readAllBytes()),
-          Charset.defaultCharset());
+      name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()));
     } else if (contentType.equals("text/plain")) {
       // 'John'
       name = request.getReader().readLine();
@@ -57,11 +59,15 @@ public class ParseContentType implements HttpFunction {
       name = request.getFirstQueryParameter("name").get();
     } else {
       // Invalid or missing header "Content-Type"
-      response.setStatusCode(400);
+      response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
       return;
     }
-    BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Hello %s!", name));
+
+    // Respond with a name, if one was detected
+    if (name != null) {
+      BufferedWriter writer = response.getWriter();
+      writer.write(String.format("Hello %s!", name));
+    }
   }
 }
 // [END functions_http_content]
