@@ -24,6 +24,8 @@
  *     mvn clean package -DskipTests
  *
  *     mvn exec:java -Dexec.args="<PROJECT_ID> <REGION> <CLUSTER_NAME> <GCS_JOB_FILE_PATH>"
+ *
+ *     You can also set these arguments in the main function instead of providing them via the CLI.
  */
 
 import com.google.api.gax.longrunning.OperationFuture;
@@ -175,10 +177,10 @@ public class Quickstart {
       return;
     }
 
-    String projectId = args[0];
-    String region = args[1];
-    String clusterName = args[2];
-    String jobFilePath = args[3];
+    String projectId = args[0]; // project-id of project to create the cluster in
+    String region = args[1]; // region to create the cluster
+    String clusterName = args[2]; // name of the cluster
+    String jobFilePath = args[3]; // location in GCS of the PySpark job
 
     quickstart(projectId, region, clusterName, jobFilePath);
   }
