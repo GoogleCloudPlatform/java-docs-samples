@@ -37,6 +37,11 @@ public class HelloHttp implements HttpFunction {
       throws IOException {
     String name = "world";
 
+    // Check URL parameters for "name" field
+    if (request.getFirstQueryParameter("name").isPresent()) {
+      name = request.getFirstQueryParameter("name").get();
+    }
+
     // Parse JSON request and check for "name" field
     try {
       JsonElement requestParsed = gsonParser.fromJson(request.getReader(), JsonElement.class);
@@ -51,10 +56,6 @@ public class HelloHttp implements HttpFunction {
       }
     } catch (JsonParseException e) {
       LOGGER.severe("Error parsing JSON: " + e.getMessage());
-    }
-
-    if (request.getFirstQueryParameter("name").isPresent()) {
-      name = request.getFirstQueryParameter("name").get();
     }
 
     BufferedWriter writer = response.getWriter();

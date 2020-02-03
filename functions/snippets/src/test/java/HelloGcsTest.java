@@ -25,8 +25,6 @@ import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Logger;
@@ -46,11 +44,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class HelloGcsTest {
   @Mock private static Logger loggerInstance;
 
-  private HttpRequest request;
-  private HttpResponse response;
-
-  private ByteArrayOutputStream stdOut;
-  private StringWriter responseOut;
+  @Mock private HttpRequest request;
+  @Mock private HttpResponse response;
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
@@ -68,13 +63,8 @@ public class HelloGcsTest {
     BufferedReader reader = new BufferedReader(new StringReader("{}"));
     when(request.getReader()).thenReturn(reader);
 
-    responseOut = new StringWriter();
-    BufferedWriter writer = new BufferedWriter(responseOut);
+    BufferedWriter writer = new BufferedWriter(new StringWriter());
     when(response.getWriter()).thenReturn(writer);
-
-    // Capture std out
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
     // Capture logs
     if (loggerInstance == null) {
@@ -89,9 +79,6 @@ public class HelloGcsTest {
   public void afterTest() {
     request = null;
     response = null;
-    responseOut = null;
-    stdOut = null;
-    System.setOut(null);
     Mockito.reset();
   }
 

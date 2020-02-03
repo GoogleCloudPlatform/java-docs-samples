@@ -27,7 +27,7 @@ public class HelloGcs implements BackgroundFunction<GcsEvent> {
   public void accept(GcsEvent event, Context context) {
     LOGGER.info("Processing file: " + event.name);
 
-    if (event.metageneration.equals("1")) {
+    if ("1".equals(event.metageneration)) {
       // metageneration attribute is updated on metadata changes.
       // value is 1 if file was newly created or overwritten
       LOGGER.info(String.format("File %s uploaded.", event.name));

@@ -33,7 +33,7 @@ public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
     if (message.data != null) {
       name = new String(
           Base64.getDecoder().decode(message.data.getBytes(StandardCharsets.UTF_8)),
-          Charset.defaultCharset());
+          StandardCharsets.UTF_8);
     }
     LOGGER.info(String.format("Hello %s!", name));
   }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -69,7 +69,7 @@ public class HelloPubSubTest {
   @Test
   public void helloPubSub_shouldPrintName() throws Exception {
     PubSubMessage message = new PubSubMessage();
-    message.data = Base64.getEncoder().encodeToString("John".getBytes(Charset.defaultCharset()));
+    message.data = Base64.getEncoder().encodeToString("John".getBytes(StandardCharsets.UTF_8));
     sampleUnderTest.accept(message, null);
     verify(loggerInstance, times(1)).info("Hello John!");
   }

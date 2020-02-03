@@ -27,13 +27,11 @@ import com.google.common.truth.Truth;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -56,10 +54,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class SnippetsTests {
   @Mock private Logger loggerInstance;
 
-  private HttpRequest request;
-  private HttpResponse response;
+  @Mock private HttpRequest request;
+  @Mock private HttpResponse response;
 
-  private ByteArrayOutputStream stdOut;
   private BufferedWriter writerOut;
   private StringWriter responseOut;
 
@@ -82,10 +79,6 @@ public class SnippetsTests {
     writerOut = new BufferedWriter(responseOut);
     when(response.getWriter()).thenReturn(writerOut);
 
-    // Capture std out
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     // Capture logs
     loggerInstance = mock(Logger.class);
     PowerMockito.mockStatic(Logger.class);
@@ -98,7 +91,6 @@ public class SnippetsTests {
     request = null;
     response = null;
     responseOut = null;
-    stdOut = null;
     System.setOut(null);
     Mockito.reset();
   }
@@ -155,7 +147,7 @@ public class SnippetsTests {
     // Send a request with octet-stream
     when(request.getContentType()).thenReturn(Optional.of("application/octet-stream"));
     // Create mock input stream to return the data
-    byte[] b64Body = Base64.getEncoder().encode("John".getBytes(Charset.defaultCharset()));
+    byte[] b64Body = Base64.getEncoder().encode("John".getBytes(StandardCharsets.UTF_8));
     InputStream bodyInputStream = mock(InputStream.class);
     when(bodyInputStream.readAllBytes()).thenReturn(b64Body);
     // Return the input stream when the request calls it
