@@ -1,0 +1,9 @@
+# Ignore the following files and directories from the Cloud Build commands.
+.idea/
+.vscode/
+kafka_2.12-2.4.0/
+dependency-reduced-pom.xml
+target/**/*
+
+# Do an exception for the compiled jar files, we want those for the build.
+!target/*.jar

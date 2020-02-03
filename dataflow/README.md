@@ -113,3 +113,41 @@ The following instructions help you prepare your development environment.
    [Eclipse](https://www.eclipse.org/ide/).
    [NetBeans](https://netbeans.org),
    etc.
+
+## *[optional]* Create a new Apache Beam pipeline
+
+The easiest way to create a new Apache Beam pipeline is through the starter Maven archetype.
+
+```sh
+NAME=your-pipeline-name
+PACKAGE=org.apache.beam.samples
+BEAM_VERSION=2.16.0
+JAVA_VERSION=11
+
+# This creates a new directory with the pipeline's code within it.
+mvn archetype:generate \
+      -DarchetypeGroupId=org.apache.beam \
+      -DarchetypeArtifactId=beam-sdks-java-maven-archetypes-starter \
+      -DarchetypeVersion=$BEAM_VERSION \
+      -DartifactId=$NAME \
+      -DgroupId=$PACKAGE \
+      -Dversion='0.1' \
+      -DtargetPlatform=$JAVA_VERSION \
+      -DinteractiveMode=false
+
+# Navigate to the pipeline contents.
+cd $NAME
+```
+
+Make sure you have the latest plugin and dependency versions,
+and update your `pom.xml` file accordingly.
+
+```sh
+# Check your plugin versions.
+mvn versions:display-plugin-updates
+
+# Check your dependency versions.
+mvn versions:display-dependency-updates
+```
+
+Finally, add the runners or I/O transforms you need into your `pom.xml` file.

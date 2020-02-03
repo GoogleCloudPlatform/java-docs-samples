@@ -1,0 +1,37 @@
+{
+  "image": "<IMAGE>",
+  "sdk_info": {
+    "language": "JAVA",
+    "version": "2.16.0"
+  },
+  "metadata": {
+    "parameters": [
+      {
+        "name": "outputTable",
+        "label": "BigQuery output table",
+        "helpText": "BigQuery table spec to write to, in the form 'project:dataset.table'.",
+        "regexes": [
+          "[^:]+:[^.]+[.].+"
+        ]
+      },
+      {
+        "name": "inputTopic",
+        "label": "Kafka input topic.",
+        "helpText": "Apache Kafka topic to read from.",
+        "is_optional": true,
+        "regexes": [
+          "[-_.a-zA-Z0-9]+"
+        ]
+      },
+      {
+        "name": "bootstrapServer",
+        "label": "Kafka bootstrap server",
+        "helpText": "Apache Kafka bootstrap server in the form 'hostname:port'.",
+        "is_optional": true,
+        "regexes": [
+          "[-_.:a-zA-Z0-9]+"
+        ]
+      }
+    ]
+  }
+}
