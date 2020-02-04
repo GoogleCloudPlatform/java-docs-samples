@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.automl;
+package com.example.speech;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -28,15 +28,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Automl Set Endpoint */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class SetEndpointIT {
-
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+public class TranscribeContextClassesTests {
+  private static final String AUDIO_FILE = "gs://cloud-samples-data/speech/commercial_mono.wav";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-
 
   @Before
   public void setUp() {
@@ -50,14 +47,10 @@ public class SetEndpointIT {
     System.setOut(null);
   }
 
-
   @Test
-  public void testSetEndpoint() throws IOException {
-    // Act
-    SetEndpoint.setEndpoint(PROJECT_ID);
-
-    // Assert
+  public void testTranscribeContextClasses() throws IOException {
+    TranscribeContextClasses.transcribeContextClasses(AUDIO_FILE);
     String got = bout.toString();
-    assertThat(got).contains("display_name: \"do_not_delete_eu\"");
+    assertThat(got).contains("Transcript:");
   }
 }
