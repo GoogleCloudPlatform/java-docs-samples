@@ -68,6 +68,10 @@ limitations under the License.
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
       <!-- [START run_pubsub_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
