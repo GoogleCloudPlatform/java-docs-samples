@@ -63,6 +63,8 @@ public class BatchTranslateTextWithGlossaryTests {
       "gs://cloud-samples-data/translation/glossary_ja.csv";
   private static final String GLOSSARY_ID =
       String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+  private static final String PREFIX = "BATCH_TRANSLATION_OUTPUT/";
+  private static final String PREFIX_PATH = PREFIX + UUID.randomUUID().toString() + "/";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -73,7 +75,7 @@ public class BatchTranslateTextWithGlossaryTests {
         storage.list(
             PROJECT_ID,
             Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
+            Storage.BlobListOption.prefix(PREFIX));
 
     deleteDirectory(storage, blobs);
   }
@@ -137,7 +139,7 @@ public class BatchTranslateTextWithGlossaryTests {
         "en",
         "ja",
         INPUT_URI,
-        "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/",
+        "gs://" + PROJECT_ID + "/" + PREFIX_PATH,
         GLOSSARY_ID);
     String got = bout.toString();
     assertThat(got).contains("Total Characters: 9");

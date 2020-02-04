@@ -27,6 +27,7 @@ import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -45,6 +46,8 @@ public class BatchTranslateTextWithModelTests {
   private static final String INPUT_URI =
       "gs://cloud-samples-data/translation/custom_model_text.txt";
   private static final String MODEL_ID = "TRL2188848820815848149";
+  private static final String PREFIX = "BATCH_TRANSLATION_OUTPUT/";
+  private static final String PREFIX_PATH = PREFIX + UUID.randomUUID().toString() + "/";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -55,7 +58,7 @@ public class BatchTranslateTextWithModelTests {
         storage.list(
             PROJECT_ID,
             Storage.BlobListOption.currentDirectory(),
-            Storage.BlobListOption.prefix("BATCH_TRANSLATION_OUTPUT/"));
+            Storage.BlobListOption.prefix(PREFIX));
 
     deleteDirectory(storage, blobs);
   }
@@ -108,7 +111,7 @@ public class BatchTranslateTextWithModelTests {
         "en",
         "ja",
         INPUT_URI,
-        "gs://" + PROJECT_ID + "/BATCH_TRANSLATION_OUTPUT/",
+        "gs://" + PROJECT_ID + "/" + PREFIX_PATH,
         MODEL_ID);
     String got = bout.toString();
     assertThat(got).contains("Total Characters: 15");
