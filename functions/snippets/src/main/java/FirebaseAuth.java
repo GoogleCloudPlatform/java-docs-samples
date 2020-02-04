@@ -15,11 +15,11 @@
  */
 
 // [START functions_firebase_auth]
+import com.google.cloud.functions.Context;
+import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.logging.Logger;
-import com.google.cloud.functions.Context;
-import com.google.cloud.functions.RawBackgroundFunction;
 
 public class FirebaseAuth implements RawBackgroundFunction {
 
