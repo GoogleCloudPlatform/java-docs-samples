@@ -65,7 +65,7 @@ public class BatchTranslateTextWithGlossaryTests {
       String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
   private static final String PREFIX = "BATCH_TRANSLATION_OUTPUT/";
   private static final String OUTPUT_URI =
-          String.format("gs://%s/%s/%s/", PROJECT_ID, PREFIX, UUID.randomUUID());
+          String.format("gs://%s/%s%s/", PROJECT_ID, PREFIX, UUID.randomUUID());
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
