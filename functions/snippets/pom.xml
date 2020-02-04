@@ -67,6 +67,14 @@
       <version>1.19.0</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.0-alpha-2-rc3</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
 
   <!-- Required for Java 8 (Alpha) functions in the inline editor -->
