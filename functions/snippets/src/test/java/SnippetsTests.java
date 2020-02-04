@@ -220,6 +220,6 @@ public class SnippetsTests {
 
   @Test
   public void firebaseAuth() throws IOException {
-    new FirebaseAuth().accept("{}", null);
+    new FirebaseAuth().accept("{\"foo\": \"bar\"}", null);
   }
 }

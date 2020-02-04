@@ -15,17 +15,23 @@
  */
 
 // [START functions_firebase_auth]
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
 
 public class FirebaseAuth implements RawBackgroundFunction {
 
-  private static final Logger logger = Logger.getLogger(FirebaseAuth.class.getName());
+  // Use GSON (https://github.com/google/gson) to parse JSON content.
+  private Gson gsonParser = new Gson();
+
+  private static final Logger LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
 
   @Override
   public void accept(String json, Context context) {
-    logger.info("Function triggered by event: " + json);
+    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    LOGGER.info("Function triggered by event: " + json);
   }
 }
 
