@@ -65,7 +65,8 @@ public class BatchTranslateTextWithGlossaryAndModelTests {
   private static final String GLOSSARY_INPUT_URI =
       "gs://cloud-samples-data/translation/glossary_ja.csv";
   private static final String PREFIX = "BATCH_TRANSLATION_OUTPUT/";
-  private static final String PREFIX_PATH = PREFIX + UUID.randomUUID().toString() + "/";
+  private static final String OUTPUT_URI =
+          String.format("gs://%s/%s/%s/", PROJECT_ID, PREFIX, UUID.randomUUID());
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -139,7 +140,7 @@ public class BatchTranslateTextWithGlossaryAndModelTests {
         "en",
         "ja",
         INPUT_URI,
-        "gs://" + PROJECT_ID + "/" + PREFIX_PATH,
+        OUTPUT_URI,
         GLOSSARY_ID,
         MODEL_ID);
     String got = bout.toString();

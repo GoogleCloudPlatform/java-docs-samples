@@ -47,7 +47,8 @@ public class BatchTranslateTextWithModelTests {
       "gs://cloud-samples-data/translation/custom_model_text.txt";
   private static final String MODEL_ID = "TRL2188848820815848149";
   private static final String PREFIX = "BATCH_TRANSLATION_OUTPUT/";
-  private static final String PREFIX_PATH = PREFIX + UUID.randomUUID().toString() + "/";
+  private static final String OUTPUT_URI =
+          String.format("gs://%s/%s/%s/", PROJECT_ID, PREFIX, UUID.randomUUID());
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -111,7 +112,7 @@ public class BatchTranslateTextWithModelTests {
         "en",
         "ja",
         INPUT_URI,
-        "gs://" + PROJECT_ID + "/" + PREFIX_PATH,
+        OUTPUT_URI,
         MODEL_ID);
     String got = bout.toString();
     assertThat(got).contains("Total Characters: 15");
