@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START run_system_package_dockerfile]
 # Use the Official OpenJDK image for a lean production stage of our multi-stage build.
 # https://hub.docker.com/r/adoptopenjdk/openjdk11/
-# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM adoptopenjdk/openjdk11:alpine
 
-# [START run_system_package_alpine]
 RUN apk --no-cache add graphviz ttf-ubuntu-font-family
-# [END run_system_package_alpine]
+# [END run_system_package_dockerfile]
