@@ -15,9 +15,9 @@
  */
 
 // [START functions_firebase_auth]
-import java.util.logging.Logger;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
+import java.util.logging.Logger;
 
 public class FirebaseAuth implements RawBackgroundFunction {
 
