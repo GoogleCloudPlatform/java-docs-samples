@@ -129,7 +129,7 @@ gcloud beta run deploy $SAMPLE \
 [run_docs]: https://cloud.google.com/run/docs/
 [run_build]: https://cloud.google.com/run/docs/building/containers
 [run_deploy]: https://cloud.google.com/run/docs/deploying
-[helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-java
+[helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-java-spring
 [run_button_helloworld]: https://deploy.cloud.run/?git_repo=https://github.com/knative/docs&dir=docs/serving/samples/hello-world/helloworld-java-spring
 [run_button_broken]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/hello-broken
 [run_button_image]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/image-processing
