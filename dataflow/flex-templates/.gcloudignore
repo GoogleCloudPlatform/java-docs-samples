@@ -1,10 +1,7 @@
-# Ignore the following files and directories from the Cloud Build commands.
-.idea/
-.vscode/
-kafka/
-kafka_2.12-2.4.0/
-target/
-dependency-reduced-pom.xml
+# Ignore everything from the Cloud Build command.
+*
 
-# Do an exception for the compiled jar files, we want those for the build.
-!target/*.jar
+# Except for the following files:
+!Dockerfile
+!target/
+!target/kafka-to-bigquery-1.0.jar

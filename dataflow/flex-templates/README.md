@@ -67,7 +67,7 @@ For this, we need two parts running:
 * [kafka/create-topic.sh](kafka/create-topic.sh)
 
 > <details><summary>
-> <i>[optional]</i> Run the Kafka service locally for testing.
+> <i>[optional]</i> Run the Kafka service locally for development.
 > <i>(Click to expand)</i>
 > </summary>
 >
@@ -200,7 +200,7 @@ export ZONE=${$(gcloud config get-value compute/zone):-"$REGION-a"}
 # container to configure Kafka to use the static address of the VM.
 # The --tags "kafka-server" is used by the firewakll rule.
 gcloud compute instances create-with-container kafka-vm --zone "$ZONE" \
-  --machine-type "e2-small" \
+  --mayychine-type "e2-small" \
   --address "$KAFKA_ADDRESS" \
   --container-image "$KAFKA_IMAGE" \
   --container-env "KAFKA_ADDRESS=$KAFKA_ADDRESS" \
@@ -212,10 +212,10 @@ gcloud compute instances create-with-container kafka-vm --zone "$ZONE" \
 * [Dockerfile](Dockerfile)
 * [KafkaToBigQuery.java](src/main/java/org/apache/beam/samples/KafkaToBigQuery.java)
 * [pom.xml](pom.xml)
-* [command-spec.json](command-spec.json)
+* [metadata.json](metadata.json)
 
 > <details><summary>
-> <i>[optional]</i> Run the Apache Beam pipeline for testing.
+> <i>[optional]</i> Run the Apache Beam pipeline for development.
 > <i>(Click to expand)</i>
 > </summary>
 >
@@ -239,37 +239,48 @@ mvn clean package
 ls -lh target/*.jar
 ```
 
-The [container-spec.json](container-spec.json) file contains the link to the
-reference to the Container Registry image, as well as the SDK information and
-input parameters to run the template.
+The [metadata.json](metadata.json) file contains more information for the
+template such as the name, a description and the list of input parameters.
+
+We need to build using Cloud Build, and deploy it into a Cloud Storage file via the
+[`gcloud dataflow templates deploy`](https://cloud.google.com/sdk/gcloud/reference/beta/dataflow/templates/deploy)
+command.
 
 ```sh
 export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/kafka-to-bigquery:latest"
-export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/kafka_to_bigquery/container-spec.json"
+export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/kafka_to_bigquery.json"
 
-# Build the Dataflow Flex Template image.
+# Build the Dataflow Flex Template image in Cloud Build.
 gcloud builds submit --tag $TEMPLATE_IMAGE .
 
-# Copy the container-spec.json file to Cloud Storage, making sure to replace
-# the project ID placeholder with your project ID.
-sed "s|<IMAGE>|$TEMPLATE_IMAGE|g" container-spec.json | gsutil cp - $TEMPLATE_PATH
-
-# To launch the template using the container spec in Cloud Storage.
-curl -X POST \
-  "https://dataflow-staging.sandbox.googleapis.com/v1b3/projects/$PROJECT/locations/us-central1/flexTemplates:launch" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  -d '{
-    "launch_parameter": {
-      "jobName": "kafka-to-bigquery-'$(date +%Y%m%d-%H%M%S)'",
-      "parameters": {
-        "outputTable": "'$PROJECT:$DATASET.$TABLE'",
-        "bootstrapServer": "'$KAFKA_ADDRESS':9092"
-      },
-      "container_spec_gcs_path": "'$TEMPLATE_PATH'"
-    }
-  }'
+# Deploy the template into a Cloud Storage file.
+# We must specify the SDK language and version, and optionally a metadata file.
+gcloud dataflow templates deploy $TEMPLATE_PATH \
+  --image "$TEMPLATE_IMAGE" \
+  --sdk_language "JAVA" \
+  --sdk_version "2.16.0" \
+  --metadata_file "metadata.json"
 ```
+
+Once a template deployed, it's easy to run via the
+[`gcloud dataflow templates run`](https://cloud.google.com/sdk/gcloud/reference/beta/dataflow/templates/run)
+command.
+There is no need to modify any code for users running a deployed template.
+
+```sh
+# To run the template we can pass the input parameters after the `--`.
+# We can optionally still pass other standard PipelineOptions flags as part
+# of the template parameters such as the `--workerMachineType`.
+gcloud dataflow templates run $TEMPLATE_PATH \
+  --job-name "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`" \
+  -- \
+  --outputTable "$PROJECT:$DATASET.$TABLE" \
+  --bootstrapServer "$KAFKA_ADDRESS:9092" \
+  --workerMachineType "e2-micro"  # optional PipelineOptions flag
+```
+
+> To learn more about the supported `PipelineOptions`, see the
+> [Setting other Cloud Dataflow pipeline options](https://cloud.google.com/dataflow/docs/guides/specifying-exec-params#setting-other-cloud-dataflow-pipeline-options) page.
 
 ### Clean up
 
