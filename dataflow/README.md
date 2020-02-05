@@ -119,21 +119,18 @@ The following instructions help you prepare your development environment.
 The easiest way to create a new Apache Beam pipeline is through the starter Maven archetype.
 
 ```sh
-NAME=your-pipeline-name
-PACKAGE=org.apache.beam.samples
-BEAM_VERSION=2.16.0
-JAVA_VERSION=11
+export NAME=your-pipeline-name
+export PACKAGE=org.apache.beam.samples
+export JAVA_VERSION=11
 
 # This creates a new directory with the pipeline's code within it.
 mvn archetype:generate \
-      -DarchetypeGroupId=org.apache.beam \
-      -DarchetypeArtifactId=beam-sdks-java-maven-archetypes-starter \
-      -DarchetypeVersion=$BEAM_VERSION \
-      -DartifactId=$NAME \
-      -DgroupId=$PACKAGE \
-      -Dversion='0.1' \
-      -DtargetPlatform=$JAVA_VERSION \
-      -DinteractiveMode=false
+    -DarchetypeGroupId=org.apache.beam \
+    -DarchetypeArtifactId=beam-sdks-java-maven-archetypes-starter \
+    -DtargetPlatform=$JAVA_VERSION \
+    -DartifactId=$NAME \
+    -DgroupId=$PACKAGE \
+    -DinteractiveMode=false
 
 # Navigate to the pipeline contents.
 cd $NAME
