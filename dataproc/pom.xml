@@ -34,6 +34,16 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <mainClass>Quickstart</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencyManagement>
@@ -65,5 +75,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
