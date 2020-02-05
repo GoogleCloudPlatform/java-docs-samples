@@ -15,14 +15,14 @@ and a *service account JSON key* set up in your `GOOGLE_APPLICATION_CREDENTIALS`
 environment variable.
 Additionally, for this sample you need the following:
 
-1. Create a Cloud Storage bucket.
+1. Create a [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
 
     ```sh
     export BUCKET="your-gcs-bucket"
     gsutil mb gs://$BUCKET
     ```
 
-1. Create a BigQuery dataset.
+1. Create a [BigQuery dataset](https://cloud.google.com/bigquery/docs/datasets).
 
     ```sh
     export PROJECT="$(gcloud config get-value project)"
@@ -44,7 +44,21 @@ Additionally, for this sample you need the following:
     cd java-docs-samples/dataflow/flex-templates
     ```
 
-## Kafka to Cloud Storage sample
+## Kafka to BigQuery sample
+
+This sample shows how to deploy an Apache Beam streaming pipeline that reads
+[JSON encoded](https://www.w3schools.com/whatis/whatis_json.asp)
+messages from
+[Apache Kafka](https://kafka.apache.org/),
+and writes them into a BigQuery table.
+
+For this, we need two parts running:
+
+1. A Kafka service accessible through an external IP address.
+   This services publishes messages to a topic.
+2. An Apache Beam streaming pipeline running in Dataflow Flex Templates.
+   This subscribes to a Kafka topic, consumes the messages that are published
+   to that topic, processes them, and writes them into a BigQuery table.
 
 ### Starting the Kafka service
 
@@ -72,8 +86,8 @@ Additionally, for this sample you need the following:
 >
 > # Run a detached container (in the background) using the network we created.
 > docker run -d --rm \
->   --name=kafka \
->   --net=kafka-net \
+>   --name "kafka" \
+>   --net "kafka-net" \
 >   -p 2181:2181 -p 9092:9092 \
 >   kafka
 > ```
@@ -96,8 +110,9 @@ Additionally, for this sample you need the following:
 First we need to build the
 [Docker](https://docs.docker.com/engine/docker-overview/)
 image for the Kafka service.
-We are using [Cloud Build](https://cloud.google.com/cloud-build) so we don't
-need a local installation of Docker.
+We are using
+[Cloud Build](https://cloud.google.com/cloud-build)
+so we don't need a local installation of Docker.
 
 > *Note:* You can speed up subsequent builds with
 > [Kaniko cache](https://cloud.google.com/cloud-build/docs/kaniko-cache)
@@ -149,12 +164,13 @@ export KAFKA_ADDRESS=$(gcloud compute addresses describe --region="$REGION" --fo
 We also need to
 [create a firewall rule](https://cloud.google.com/compute/docs/containers/configuring-options-to-run-containers#publishing_container_ports)
 to allow incoming messages to the server.
+
 Kafka uses port `9092` and Zookeeper uses port `2181` by default, unless
 configured differently.
 
 ```sh
 # Create a firewall rule to open the port used by Zookeeper and Kafka.
-# Allow connections to port 9092 to VM instances with the "kafka-server" tag.
+# Allow connections to ports 2181, 9092 in VMs with the "kafka-server" tag.
 gcloud compute firewall-rules create allow-kafka \
   --target-tags "kafka-server" \
   --allow tcp:2181,tcp:9092
@@ -182,7 +198,7 @@ export ZONE=${$(gcloud config get-value compute/zone):-"$REGION-a"}
 # The --address flag binds the VM's address to the static address we created.
 # The --container-env KAFKA_ADDRESS is an environment variable passed to the
 # container to configure Kafka to use the static address of the VM.
-# The --tags "kafka-server" is used by the firewakll rule (next step).
+# The --tags "kafka-server" is used by the firewakll rule.
 gcloud compute instances create-with-container kafka-vm --zone "$ZONE" \
   --machine-type "e2-small" \
   --address "$KAFKA_ADDRESS" \
@@ -191,7 +207,7 @@ gcloud compute instances create-with-container kafka-vm --zone "$ZONE" \
   --tags "kafka-server"
 ```
 
-### Building the Flex Template image
+### Launching the Flex Template pipeline
 
 * [Dockerfile](Dockerfile)
 * [KafkaToBigQuery.java](src/main/java/org/apache/beam/samples/KafkaToBigQuery.java)
@@ -210,7 +226,7 @@ gcloud compute instances create-with-container kafka-vm --zone "$ZONE" \
 >   -Dexec.mainClass=org.apache.beam.samples.KafkaToBigQuery \
 >   -Dexec.args="\
 >     --outputTable=$PROJECT:$DATASET.$TABLE \
->     --bootstrapServer=$KAFKA_IP:9092"
+>     --bootstrapServer=$KAFKA_ADDRESS:9092"
 > ```
 >
 > </details>
@@ -248,16 +264,58 @@ curl -X POST \
       "jobName": "kafka-to-bigquery-'$(date +%Y%m%d-%H%M%S)'",
       "parameters": {
         "outputTable": "'$PROJECT:$DATASET.$TABLE'",
-        "bootstrapServer": "'$KAFKA_IP':9092"
+        "bootstrapServer": "'$KAFKA_ADDRESS':9092"
       },
       "container_spec_gcs_path": "'$TEMPLATE_PATH'"
     }
   }'
 ```
 
-#### Clean up
+### Clean up
+
+To avoid incurring charges to your Google Cloud account for the resources used
+in this guide, follow these steps.
 
 ```sh
+#===--- For the Dataflow Flex Template ---===#
+
+# Stop the Dataflow pipeline.
+# TODO!
+
+# Delete the Flex Template container spec from Cloud Storage.
+gsutil rm $TEMPLATE_PATH
+
+# Delete the Flex Template container image from Container Registry.
+gcloud container images delete $KAFKA_IMAGE --force-delete-tags
+
+
+#===--- For the Kafka service ---===#
+
+# Delete the Kafka service VM instance.
 gcloud compute instances delete kafka-vm
-gcloud container images delete gcr.io/[PROJECT-ID]/quickstart-image:tag1 --force-delete-tags
+
+# Delete the firewall rule, this does not incur any charges.
+gcloud compute firewall-rules delete -q allow-kafka
+
+# Delete the static address.
+gcloud compute addresses delete --region "$REGION" kafka-address
+
+# Delete the Kafka container image from Container Registry.
+gcloud container images delete $KAFKA_IMAGE --force-delete-tags
+
+
+#===--- For project resources ---===#
+
+# Delete the BigQuery table.
+bq rm -f -t $PROJECT:$DATASET.$TABLE
+
+# Delete the BigQuery dataset, this alone does not incur any charges.
+# WARNING: The following command also deletes all tables in the dataset.
+#          The tables and data cannot be recovered.
+bq rm -r -f -d $PROJECT:$DATASET
+
+# Delete the Cloud Storage bucket, this alone does not incur any charges.
+# WARNING: The following command also deletes all objects in the bucket.
+#          These objects cannot be recovered.
+gsutil rm -r gs://$BUCKET
 ```

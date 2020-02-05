@@ -1,17 +1,19 @@
 FROM openjdk:8-jre-alpine
 
+WORKDIR /usr/bin
+
 # Set versions to use, override them with the `--build-arg` flag.
 # https://docs.docker.com/engine/reference/builder/#arg
 ARG KAFKA_VERSION="2.4.0"
 ARG SCALA_VERSION="2.12"
 
 # Set variables with default values used by the `start-kafka.sh` script.
+# Override them wiht the `--env` or `-e` flag.
+# https://docs.docker.com/engine/reference/builder/#env
 ENV KAFKA_TOPIC="${KAFKA_TOPIC:-messages}"
 ENV KAFKA_ADDRESS="${KAFKA_ADDRESS:-localhost}"
 ENV KAFKA_PORT="${KAFKA_PORT:-9092}"
 ENV ZOOKEEPER_PORT="${ZOOKEEPER_PORT:-2181}"
-
-WORKDIR /usr/bin
 
 # Download and install Apache Kafka.
 RUN apk add --no-cache bash \
@@ -24,8 +26,8 @@ RUN apk add --no-cache bash \
 ENV KAFKA_HOME="/opt/kafka"
 ENV PATH="${KAFKA_HOME}/bin:${PATH}"
 
-# Copy everything into the working directory.
-COPY . ./
+# Copy all the scripts into the working directory.
+COPY *.sh ./
 
 # Expose Zookeeper and Kafka ports for externa communication.
 # https://docs.docker.com/engine/reference/builder/#expose
