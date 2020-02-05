@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.jobs.JobSearchGetJob;
+import com.example.jobs.JobSearchCreateJob;
+import com.example.jobs.JobSearchDeleteJob;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
-public class JobSearchGetJobTest {
+public class JobSearchDeleteJobTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = "50c14f00-dc38-4812-989b-d9b59c7fdf07";
-  private static final String JOB_ID = "76652042166117062";
+  private static final String COMPANY_ID = "bdad284d-9aca-4cb9-af09-ce65afcc5d6a";
+  private static final String POST_UNIQUE_ID =
+      String.format(
+          "TEST_POST_ID_%s",
+          UUID.randomUUID().toString().substring(0, 20)); // Posting ID. Unique per job.
 
+  private String jobId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -38,28 +44,39 @@ public class JobSearchGetJobTest {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
+
+    JobSearchCreateJob.createJob(
+        PROJECT_ID,
+        TENANT_ID,
+        COMPANY_ID,
+        POST_UNIQUE_ID,
+        "Job Title",
+        "Developer Programs Engineer",
+        "http://www.jobUrl.com",
+        "123 Test Address",
+        "Test City",
+        "en-US");
+
+    String got = bout.toString();
+    assertThat(got).contains("Created job:");
+    jobId = JobSearchGetJobTest.extractLastId(got.split("\n")[0].trim());
+
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
   }
 
   @Test
-  public void testGetJob() throws IOException {
-    // retrieve a job.
-    JobSearchGetJob.getJob(PROJECT_ID, TENANT_ID, JOB_ID);
+  public void testDeleteJob() throws IOException {
+    // delete a job.
+    JobSearchDeleteJob.deleteJob(PROJECT_ID, TENANT_ID, jobId);
     String got = bout.toString();
-    assertThat(got).contains("Job name: ");
-    assertThat(got).contains("Website:");
+
+    assertThat(got).contains("Deleted job");
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() {
     System.setOut(null);
-  }
-
-  // Helper method for getting the last id from the full path.
-  public static String extractLastId(String fullPath) {
-    if (fullPath == null || fullPath.length() < 1 || !fullPath.contains("/")) {
-      throw new IllegalArgumentException("Not valid path");
-    }
-    String[] parts = fullPath.split("/");
-    return parts[parts.length - 1];
   }
 }

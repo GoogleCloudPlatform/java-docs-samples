@@ -18,18 +18,14 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.example.jobs.JobSearchCreateTenant;
 import com.example.jobs.JobSearchDeleteTenant;
-import com.example.jobs.JobSearchGetTenant;
-import com.example.jobs.JobSearchListTenants;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JobSearchGetListTenantTest {
+public class JobSearchDeleteTenantTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_EXT_ID = "EXTERNAL_TEMP_TENANT_ID";
   private String tenantId;
@@ -48,37 +44,19 @@ public class JobSearchGetListTenantTest {
     String got = bout.toString();
     assertThat(got).contains("Created Tenant");
 
-    tenantId = JobSearchListGetCompanyTest.extractLastId(got.split("\n")[1]);
+    tenantId = JobSearchGetJobTest.extractLastId(got.split("\n")[1]);
   }
 
   @Test
-  public void testGetListTenant() throws IOException {
-    // retrieve tenant.
-    JobSearchGetTenant.getTenant(PROJECT_ID, tenantId);
+  public void testDeleteTenantTest() throws IOException {
+    // delete a tenant.
+    JobSearchDeleteTenant.deleteTenant(PROJECT_ID, tenantId);
     String got = bout.toString();
-    assertThat(got).contains(String.format("External ID: %s", TENANT_EXT_ID));
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
-    // list tenants.
-    JobSearchListTenants.listTenants(PROJECT_ID);
-    got = bout.toString();
-    assertThat(got).contains(TENANT_EXT_ID);
-    assertThat(got).contains("Tenant Name:");
-    assertThat(got).contains("External ID:");
-
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    assertThat(got).contains("Deleted Tenant.");
   }
 
   @After
   public void tearDown() throws IOException {
-    JobSearchDeleteTenant.deleteTenant(PROJECT_ID, tenantId);
-    String got = bout.toString();
-    assertThat(got).contains("Deleted Tenant.");
-
     System.setOut(null);
   }
 }

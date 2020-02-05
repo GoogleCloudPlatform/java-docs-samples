@@ -15,7 +15,7 @@
  */
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.jobs.JobSearchGetJob;
+import com.example.jobs.JobSearchListTenants;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -23,43 +23,30 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
-public class JobSearchGetJobTest {
+public class JobSearchListTenantsTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String TENANT_ID = "50c14f00-dc38-4812-989b-d9b59c7fdf07";
-  private static final String JOB_ID = "76652042166117062";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
   }
 
   @Test
-  public void testGetJob() throws IOException {
-    // retrieve a job.
-    JobSearchGetJob.getJob(PROJECT_ID, TENANT_ID, JOB_ID);
+  public void testListTenants() throws IOException {
+    // retrieve a tenant.
+    JobSearchListTenants.listTenants(PROJECT_ID);
     String got = bout.toString();
-    assertThat(got).contains("Job name: ");
-    assertThat(got).contains("Website:");
+    assertThat(got).contains("Tenant Name:");
+    assertThat(got).contains("External ID:");
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() {
     System.setOut(null);
-  }
-
-  // Helper method for getting the last id from the full path.
-  public static String extractLastId(String fullPath) {
-    if (fullPath == null || fullPath.length() < 1 || !fullPath.contains("/")) {
-      throw new IllegalArgumentException("Not valid path");
-    }
-    String[] parts = fullPath.split("/");
-    return parts[parts.length - 1];
   }
 }

@@ -71,10 +71,8 @@ public class JobSearchCreateJob {
       throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
-      List<String> uris = Arrays.asList(jobApplicationUrl);
       Job.ApplicationInfo applicationInfo =
-          Job.ApplicationInfo.newBuilder().addAllUris(uris).build();
-      List<String> addresses = Arrays.asList(addressOne, addressTwo);
+          Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
       Job job =
           Job.newBuilder()
               .setCompany(companyId)
@@ -82,7 +80,7 @@ public class JobSearchCreateJob {
               .setTitle(title)
               .setDescription(description)
               .setApplicationInfo(applicationInfo)
-              .addAllAddresses(addresses)
+              .addAddresses(addressOne + " " + addressTwo)
               .setLanguageCode(languageCode)
               .build();
 

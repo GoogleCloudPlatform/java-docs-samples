@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.jobs.JobSearchGetJob;
+import com.example.jobs.JobSearchCreateCompany;
+import com.example.jobs.JobSearchDeleteCompany;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-
-public class JobSearchGetJobTest {
+public class JobSearchDeleteCompanyTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = "50c14f00-dc38-4812-989b-d9b59c7fdf07";
-  private static final String JOB_ID = "76652042166117062";
 
+  private static final String COMPANY_EXT_ID = "DO_NOT_DELETE_EXT_ID";
+  private static final String COMPANY_DISPLAY_NAME = "DO_NOT_DELETE_COMPANY";
+
+  private String companyId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -38,28 +44,25 @@ public class JobSearchGetJobTest {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
+    // create a company
+    JobSearchCreateCompany.createCompany(
+        PROJECT_ID, TENANT_ID, COMPANY_DISPLAY_NAME, COMPANY_EXT_ID);
+    String got = bout.toString();
+    assertThat(got).contains("Created Company");
+
+    companyId = JobSearchGetJobTest.extractLastId(got.split("\n")[1]);
   }
 
   @Test
-  public void testGetJob() throws IOException {
-    // retrieve a job.
-    JobSearchGetJob.getJob(PROJECT_ID, TENANT_ID, JOB_ID);
+  public void testDeleteCompany() throws IOException {
+    // retrieve a tenant.
+    JobSearchDeleteCompany.deleteCompany(PROJECT_ID, TENANT_ID, companyId);
     String got = bout.toString();
-    assertThat(got).contains("Job name: ");
-    assertThat(got).contains("Website:");
+    assertThat(got).contains("Deleted company");
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() {
     System.setOut(null);
-  }
-
-  // Helper method for getting the last id from the full path.
-  public static String extractLastId(String fullPath) {
-    if (fullPath == null || fullPath.length() < 1 || !fullPath.contains("/")) {
-      throw new IllegalArgumentException("Not valid path");
-    }
-    String[] parts = fullPath.split("/");
-    return parts[parts.length - 1];
   }
 }
