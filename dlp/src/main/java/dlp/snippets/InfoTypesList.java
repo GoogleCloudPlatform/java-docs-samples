@@ -51,7 +51,7 @@ public class InfoTypesList  {
 
             // Parse the response and process the results */
             List<InfoTypeDescription> infoTypeDescriptions = infoTypesResponse.getInfoTypesList();
-            for (InfoTypeDescription infoTypeDescription : infoTypeDescriptions) {
+            for (InfoTypeDescription infoTypeDescription : response.getInfoTypesList()) {
                 System.out.println("Name : " + infoTypeDescription.getName());
                 System.out.println("Display name : " + infoTypeDescription.getDisplayName());
             }
