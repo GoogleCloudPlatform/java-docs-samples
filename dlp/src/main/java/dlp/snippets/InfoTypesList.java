@@ -45,11 +45,11 @@ public class InfoTypesList  {
                     .setLanguageCode("en-US").build();
 
             // Use the client to send the API request.
-            ListInfoTypesResponse infoTypesResponse = dlpClient.listInfoTypes(listInfoTypesRequest);
+            ListInfoTypesResponse response = dlpClient.listInfoTypes(listInfoTypesRequest);
 
-            // Parse the response and process the results */
-            List<InfoTypeDescription> infoTypeDescriptions = infoTypesResponse.getInfoTypesList();
-            for (InfoTypeDescription infoTypeDescription : infoTypeDescriptions) {
+            // Parse the response and process the results
+            List<InfoTypeDescription> infoTypeDescriptions = response.getInfoTypesList();
+            for (InfoTypeDescription infoTypeDescription : response.getInfoTypesList()) {
                 System.out.println("Name : " + infoTypeDescription.getName());
                 System.out.println("Display name : " + infoTypeDescription.getDisplayName());
             }
