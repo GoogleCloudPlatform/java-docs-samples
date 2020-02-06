@@ -17,11 +17,13 @@
 package dlp.snippets;
 
 // [START dlp_list_jobs]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.DlpJobType;
 import com.google.privacy.dlp.v2.ListDlpJobsRequest;
 import com.google.privacy.dlp.v2.ProjectName;
+
 import java.io.IOException;
 
 public class JobsList {

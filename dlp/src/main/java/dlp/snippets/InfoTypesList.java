@@ -17,10 +17,12 @@
 package dlp.snippets;
 
 // [START dlp_list_info_types]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.InfoTypeDescription;
 import com.google.privacy.dlp.v2.ListInfoTypesRequest;
 import com.google.privacy.dlp.v2.ListInfoTypesResponse;
+
 import java.io.IOException;
 import java.util.List;
 

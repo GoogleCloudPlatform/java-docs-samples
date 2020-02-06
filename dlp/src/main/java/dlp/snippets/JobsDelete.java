@@ -17,11 +17,11 @@
 package dlp.snippets;
 
 // [START dlp_delete_job]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.DeleteDlpJobRequest;
-import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.DlpJobName;
-import com.google.privacy.dlp.v2.ProjectName;
+
 import java.io.IOException;
 
 public class JobsDelete  {
