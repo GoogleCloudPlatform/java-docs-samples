@@ -36,24 +36,8 @@ public class JobSearchCreateJob {
     String tenantId = "your-tenant-id";
     String companyId = "your-company-id";
     String requisitionId = "your-unique-req-id";
-    String title = "your-job-title";
-    String description = "your-job-description";
     String jobApplicationUrl = "your-job-url";
-    String addressOne = "your-job-address-1";
-    String addressTwo = "your-job-address-2";
-    String languageCode = "your-lang-code";
-
-    createJob(
-        projectId,
-        tenantId,
-        companyId,
-        requisitionId,
-        title,
-        description,
-        jobApplicationUrl,
-        addressOne,
-        addressTwo,
-        languageCode);
+    createJob(projectId, tenantId, companyId, requisitionId, jobApplicationUrl);
   }
 
   // Create a job.
@@ -62,12 +46,7 @@ public class JobSearchCreateJob {
       String tenantId,
       String companyId,
       String requisitionId,
-      String title,
-      String description,
-      String jobApplicationUrl,
-      String addressOne,
-      String addressTwo,
-      String languageCode)
+      String jobApplicationUrl)
       throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
@@ -77,11 +56,11 @@ public class JobSearchCreateJob {
           Job.newBuilder()
               .setCompany(companyId)
               .setRequisitionId(requisitionId)
-              .setTitle(title)
-              .setDescription(description)
+              .setTitle("Software Developer")
+              .setDescription("Develop, maintain the software solutions.")
               .setApplicationInfo(applicationInfo)
-              .addAddresses(addressOne + " " + addressTwo)
-              .setLanguageCode(languageCode)
+              .addAddresses("601 N 34th ST, Seattle, WA")
+              .setLanguageCode("en-US")
               .build();
 
       CreateJobRequest request =

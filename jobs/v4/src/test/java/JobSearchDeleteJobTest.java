@@ -46,16 +46,7 @@ public class JobSearchDeleteJobTest {
     System.setOut(out);
 
     JobSearchCreateJob.createJob(
-        PROJECT_ID,
-        TENANT_ID,
-        COMPANY_ID,
-        POST_UNIQUE_ID,
-        "Job Title",
-        "Developer Programs Engineer",
-        "http://www.jobUrl.com",
-        "123 Test Address",
-        "Test City",
-        "en-US");
+        PROJECT_ID, TENANT_ID, COMPANY_ID, POST_UNIQUE_ID, "http://www.jobUrl.com");
 
     String got = bout.toString();
     assertThat(got).contains("Created job:");
