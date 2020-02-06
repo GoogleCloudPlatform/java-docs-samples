@@ -18,12 +18,15 @@ package dlp.snippets;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,10 +36,12 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class JobsTests {
 
-    private ByteArrayOutputStream bout;
-
-    private static final Pattern jobIdPattern = Pattern.compile("projects/.*/dlpJobs/i-\\d+");
+    private static final Pattern JOB_ID_PATTERN = Pattern.compile("projects/.*/dlpJobs/i-\\d+");
     private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+    private static final String GCS_PATH = System.getenv("GCS_PATH");
+    private static final String PUB_SUB_TOPIC_ID = "dlp-tests";
+    private static final String PUB_SUB_SUBSCRIPTION_ID = "dlp-test";
+    private ByteArrayOutputStream bout;
 
     private static void requireEnvVar(String varName) {
         assertNotNull(
@@ -48,14 +53,17 @@ public class JobsTests {
     public void checkRequirements() {
         requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
         requireEnvVar("GOOGLE_CLOUD_PROJECT");
+        requireEnvVar("GCS_PATH");
     }
 
     @Before
     public void setUp() {
         bout = new ByteArrayOutputStream();
         System.setOut(new PrintStream(bout));
+
     }
 
+    
     @After
     public void tearDown() {
         System.setOut(null);
@@ -65,26 +73,32 @@ public class JobsTests {
     @Test
     public void testListJobs() throws Exception {
         // Ensure that there is at least one job to list
-        InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
+        InspectGcsFile.inspectGcsFile(PROJECT_ID,
+                GCS_PATH,
+                PUB_SUB_TOPIC_ID,
+                PUB_SUB_SUBSCRIPTION_ID);
 
         // Call listJobs to print out a list of jobIds
         JobsList.listJobs(PROJECT_ID, "state=DONE", "INSPECT_JOB");
         String output = bout.toString();
 
         // Check that the output contains jobIds
-        Matcher matcher = jobIdPattern.matcher(bout.toString());
+        Matcher matcher = JOB_ID_PATTERN.matcher(bout.toString());
         assertTrue("List must contain results.", matcher.find());
     }
 
     @Test
     public void testDeleteJobs() throws Exception {
         // Ensure that there is at least one job to list
-        InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
+        InspectGcsFile.inspectGcsFile(PROJECT_ID,
+                GCS_PATH,
+                PUB_SUB_TOPIC_ID,
+                PUB_SUB_SUBSCRIPTION_ID);
 
         // Get a list of JobIds, and extract one to delete
         JobsList.listJobs(PROJECT_ID, "state=DONE", "INSPECT_JOB");
         String output = bout.toString();
-        Matcher matcher = jobIdPattern.matcher(bout.toString());
+        Matcher matcher = JOB_ID_PATTERN.matcher(bout.toString());
         assertTrue("List must contain results.", matcher.find());
 
         // Extract just the ID
