@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,6 +105,9 @@ public class DeIdentificationTests {
 
     String output = bout.toString();
     assertThat(output, containsString("Content written to file: "));
+
+    // Clean up test output
+    Files.delete(outputFile);
   }
 
 }

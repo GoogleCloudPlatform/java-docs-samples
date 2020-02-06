@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc.
+ * Copyright 2020 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.dlp;
+package dlp.snippets;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -58,7 +58,7 @@ public class InfoTypesTests {
 
     @Test
     public void testListInfoTypes() throws Exception {
-        ListInfoTypes.listInfoTypes("supported_by=INSPECT", "en-US");
+        InfoTypesList.listInfoTypes("supported_by=INSPECT", "en-US");
         String output = bout.toString();
         assertTrue(output.contains("Name") && output.contains("Display name"));
     }

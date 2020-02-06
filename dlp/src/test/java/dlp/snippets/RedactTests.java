@@ -22,6 +22,10 @@ import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -62,10 +66,14 @@ public class RedactTests {
   }
 
   @Test
-  public void testRedactImage() {
+  public void testRedactImage() throws IOException {
     RedactImageFile.redactImageFile(PROJECT_ID, "src/test/resources/test.png");
 
     String output = bout.toString();
     assertThat(output, containsString("Redacted image written"));
+
+    // Clean up test output
+    Path outputFile = Paths.get("redacted.png");
+    Files.delete(outputFile);
   }
 }
