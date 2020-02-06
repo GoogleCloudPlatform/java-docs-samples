@@ -16,6 +16,7 @@
 
 package dlp.snippets;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4.class)
 
@@ -59,8 +60,9 @@ public class InfoTypesTests {
 
     @Test
     public void testListInfoTypes() throws Exception {
-        InfoTypesList.listInfoTypes("supported_by=INSPECT", "en-US");
+        InfoTypesList.listInfoTypes();
         String output = bout.toString();
-        assertTrue(output.contains("Name") && output.contains("Display name"));
+        assertThat(output, CoreMatchers.containsString("Name"));
+        assertThat(output, CoreMatchers.containsString("Display name"));
     }
 }

@@ -27,9 +27,9 @@ import java.io.IOException;
 public class JobsDelete  {
     public static void deleteJobs() throws IOException {
         // TODO(developer): Replace these variables before running the sample.
-        String projectID = "your-project-id";
-        String jobID = "your-job-id";
-        deleteJobs(projectID,jobID);
+        String projectId = "your-project-id";
+        String jobId = "your-job-id";
+        deleteJobs(projectId,jobId);
     }
 
     // Deletes a DLP Job with the given jobId

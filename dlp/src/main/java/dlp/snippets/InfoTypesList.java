@@ -17,7 +17,6 @@
 package dlp.snippets;
 
 // [START dlp_list_info_types]
-
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.InfoTypeDescription;
 import com.google.privacy.dlp.v2.ListInfoTypesRequest;
@@ -28,23 +27,22 @@ import java.util.List;
 
 public class InfoTypesList  {
 
-    public static void listInfoTypes() throws IOException {
-        // TODO(developer): Replace these variables before running the sample.
-        String filter = "supported_by=INSPECT";
-        String languageCode= "en-US";
-        listInfoTypes(filter, languageCode);
-    }
-
     // Lists the types of sensitive information the DLP API supports.
-    public static void listInfoTypes(String filter, String languageCode) throws IOException {
+    public static void listInfoTypes() throws IOException {
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources.
         try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
 
             // Construct the request to be sent by the client
-            ListInfoTypesRequest listInfoTypesRequest =
-                    ListInfoTypesRequest.newBuilder().setFilter(filter).setLanguageCode(languageCode).build();
+            ListInfoTypesRequest listInfoTypesRequest = ListInfoTypesRequest.newBuilder()
+                    // Only return infoTypes supported by certain parts of the API.
+                    // Supported filters are "supported_by=INSPECT" and "supported_by=RISK_ANALYSIS"
+                    // Defaults to "supported_by=INSPECT"
+                    .setFilter("supported_by=INSPECT")
+                    // BCP-47 language code for localized infoType friendly names.
+                    // Defaults to "en_US"
+                    .setLanguageCode("en-US").build();
 
             // Use the client to send the API request.
             ListInfoTypesResponse infoTypesResponse = dlpClient.listInfoTypes(listInfoTypesRequest);

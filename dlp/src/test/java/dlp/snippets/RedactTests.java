@@ -66,15 +66,18 @@ public class RedactTests {
     bout.reset();
   }
 
+  @After
+  public void cleanUp() throws IOException {
+    Path outputFile = Paths.get("redacted.png");
+    Files.delete(outputFile);
+  }
+
   @Test
-  public void testRedactImage() throws IOException {
+  public void testRedactImage() {
     RedactImageFile.redactImageFile(PROJECT_ID, "src/test/resources/test.png");
 
     String output = bout.toString();
     assertThat(output, containsString("Redacted image written"));
 
-    // Clean up test output
-    Path outputFile = Paths.get("redacted.png");
-    Files.delete(outputFile);
   }
 }

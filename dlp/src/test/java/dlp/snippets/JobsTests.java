@@ -57,13 +57,18 @@ public class JobsTests {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         bout = new ByteArrayOutputStream();
         System.setOut(new PrintStream(bout));
 
+        // Ensure that there is at least one job to list
+        InspectGcsFile.inspectGcsFile(PROJECT_ID,
+                GCS_PATH,
+                PUB_SUB_TOPIC_ID,
+                PUB_SUB_SUBSCRIPTION_ID);
     }
 
-    
+
     @After
     public void tearDown() {
         System.setOut(null);
@@ -72,14 +77,8 @@ public class JobsTests {
 
     @Test
     public void testListJobs() throws Exception {
-        // Ensure that there is at least one job to list
-        InspectGcsFile.inspectGcsFile(PROJECT_ID,
-                GCS_PATH,
-                PUB_SUB_TOPIC_ID,
-                PUB_SUB_SUBSCRIPTION_ID);
-
         // Call listJobs to print out a list of jobIds
-        JobsList.listJobs(PROJECT_ID, "state=DONE", "INSPECT_JOB");
+        JobsList.listJobs(PROJECT_ID);
         String output = bout.toString();
 
         // Check that the output contains jobIds
@@ -89,14 +88,8 @@ public class JobsTests {
 
     @Test
     public void testDeleteJobs() throws Exception {
-        // Ensure that there is at least one job to list
-        InspectGcsFile.inspectGcsFile(PROJECT_ID,
-                GCS_PATH,
-                PUB_SUB_TOPIC_ID,
-                PUB_SUB_SUBSCRIPTION_ID);
-
         // Get a list of JobIds, and extract one to delete
-        JobsList.listJobs(PROJECT_ID, "state=DONE", "INSPECT_JOB");
+        JobsList.listJobs(PROJECT_ID);
         String output = bout.toString();
         Matcher matcher = JOB_ID_PATTERN.matcher(bout.toString());
         assertTrue("List must contain results.", matcher.find());

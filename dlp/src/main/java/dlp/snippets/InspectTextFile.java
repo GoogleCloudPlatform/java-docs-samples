@@ -36,7 +36,7 @@ public class InspectTextFile {
 
   public static void inspectTextFile() {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "my-project-id";
+    String projectId = "your-project-id";
     String filePath = "path/to/textfile.txt";
     inspectTextFile(projectId, filePath);
   }
