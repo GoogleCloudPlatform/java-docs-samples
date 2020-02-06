@@ -49,7 +49,7 @@ public class InfoTypesList  {
             // Use the client to send the API request.
             ListInfoTypesResponse infoTypesResponse = dlpClient.listInfoTypes(listInfoTypesRequest);
 
-            // Parse the response and process the results */
+            // Parse the response and process the results
             List<InfoTypeDescription> infoTypeDescriptions = infoTypesResponse.getInfoTypesList();
             for (InfoTypeDescription infoTypeDescription : response.getInfoTypesList()) {
                 System.out.println("Name : " + infoTypeDescription.getName());
