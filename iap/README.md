@@ -25,7 +25,7 @@ enabling you to adopt an application-level access control model instead of relyi
 verify the JWT token in an incoming request to an IAP protected resource.
 
 ## Testing
-- Deploy the [demo app engine application](../appengine/iap/README.md). This application will return the JWT token to an authorized incoming request.
+- Deploy the [demo app engine application](../appengine-java8/iap/README.md). This application will return the JWT token to an authorized incoming request.
 It will be used to test both the authorization of an incoming request to an IAP protected resource and the JWT token returned from IAP.
 
 - [Enable](https://cloud.google.com/iap/docs/app-engine-quickstart) Identity-Aware Proxy on the App Engine app.
