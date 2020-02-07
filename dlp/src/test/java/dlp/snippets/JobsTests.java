@@ -38,7 +38,7 @@ public class JobsTests {
 
     private static final Pattern JOB_ID_PATTERN = Pattern.compile("projects/.*/dlpJobs/i-\\d+");
     private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-    private static final String GCS_PATH = System.getenv("GCS_PATH");
+    private static final String GCS_PATH = "gs://" + PROJECT_ID + "/dlp";
     private static final String PUB_SUB_TOPIC_ID = "dlp-tests";
     private static final String PUB_SUB_SUBSCRIPTION_ID = "dlp-test";
     private ByteArrayOutputStream bout;
@@ -53,7 +53,6 @@ public class JobsTests {
     public static void checkRequirements() {
         requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
         requireEnvVar("GOOGLE_CLOUD_PROJECT");
-        requireEnvVar("GCS_PATH");
     }
 
     @Before
