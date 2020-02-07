@@ -18,7 +18,7 @@ package dlp.snippets;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -49,8 +49,8 @@ public class JobsTests {
                 System.getenv(varName));
     }
 
-    @Before
-    public void checkRequirements() {
+    @BeforeClass
+    public static void checkRequirements() {
         requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
         requireEnvVar("GOOGLE_CLOUD_PROJECT");
         requireEnvVar("GCS_PATH");
