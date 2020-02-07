@@ -75,7 +75,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 fi
 
 # Package local jetty dependency for Java11 samples
-if [[ "$JAVA_VERSION" == "11" ]]; then
+if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
   mvn install --quiet
   cd ../../
@@ -110,8 +110,7 @@ for file in **/pom.xml; do
 
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-    ALLOWED_VERSIONS=("1.8" "11")
-    if [[ "$POM_JAVA" = "" ]] || [[ !  "${ALLOWED_VERSIONS[@]}" =~ "${POM_JAVA}" ]]; then
+    if [[ "$POM_JAVA" = "" ]] || [[ !  "${ALLOWED_VERSIONS}" =~ ", 1.8, 11," ]]; then
         RTN=1
         echo -e "\n Testing failed: Unable to determine Java version. Please set in pom:"
         echo -e "\n<properties>"
