@@ -69,6 +69,7 @@ Commands:
 ## Integration tests
 ### Setup
 - [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt).
+- Set the `GCS_PATH` environment variable to point to the path for the bucket.
 - [Create a Google Cloud Datastore](https://console.cloud.google.com/datastore) kind and add an entity with properties:
   - `property1` : john@doe.com
   - `property2` : 343-343-3435
