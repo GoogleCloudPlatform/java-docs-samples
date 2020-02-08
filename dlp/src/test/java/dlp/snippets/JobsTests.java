@@ -16,6 +16,29 @@
 
 package dlp.snippets;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
+import com.google.common.util.concurrent.SettableFuture;
+import com.google.privacy.dlp.v2.Action;
+import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
+import com.google.privacy.dlp.v2.CloudStorageOptions;
+import com.google.privacy.dlp.v2.StorageConfig;
+import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectJobConfig;
+import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.DlpJobName;
+import com.google.privacy.dlp.v2.ProjectName;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.PubsubMessage;
+import com.google.cloud.dlp.v2.DlpServiceClient;
+import com.google.cloud.pubsub.v1.AckReplyConsumer;
+import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
+
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,13 +47,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
+import java.io.IOException;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
@@ -38,9 +64,10 @@ public class JobsTests {
 
     private static final Pattern JOB_ID_PATTERN = Pattern.compile("projects/.*/dlpJobs/i-\\d+");
     private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-    private static final String GCS_PATH = "gs://" + PROJECT_ID + "/dlp";
-    private static final String PUB_SUB_TOPIC_ID = "dlp-tests";
-    private static final String PUB_SUB_SUBSCRIPTION_ID = "dlp-test";
+    private static final String GCS_PATH = System.getenv("GCS_PATH");
+
+
+
     private ByteArrayOutputStream bout;
 
     private static void requireEnvVar(String varName) {
@@ -49,22 +76,43 @@ public class JobsTests {
                 System.getenv(varName));
     }
 
+    private static DlpJob createJob(String jobId) throws IOException {
+        try (DlpServiceClient dlp = DlpServiceClient.create()) {
+            FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
+            CloudStorageOptions cloudStorageOptions =
+                    CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+            StorageConfig storageConfig =
+                    StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
+
+            InspectJobConfig inspectJobConfig =
+                    InspectJobConfig.newBuilder()
+                            .setStorageConfig(storageConfig)
+                            .setInspectConfig(InspectConfig.newBuilder().build())
+                            .build();
+
+
+            CreateDlpJobRequest createDlpJobRequest =
+                    CreateDlpJobRequest.newBuilder()
+                            .setParent(ProjectName.of(PROJECT_ID).toString())
+                            .setInspectJob(inspectJobConfig)
+                            .setJobId(jobId)
+                            .build();
+
+            return dlp.createDlpJob(createDlpJobRequest);
+        }
+    }
+
     @BeforeClass
     public static void checkRequirements() {
         requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
         requireEnvVar("GOOGLE_CLOUD_PROJECT");
+        requireEnvVar("GCS_PATH");
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()  {
         bout = new ByteArrayOutputStream();
         System.setOut(new PrintStream(bout));
-
-        // Ensure that there is at least one job to list
-        InspectGcsFile.inspectGcsFile(PROJECT_ID,
-                GCS_PATH,
-                PUB_SUB_TOPIC_ID,
-                PUB_SUB_SUBSCRIPTION_ID);
     }
 
 
@@ -80,26 +128,19 @@ public class JobsTests {
         JobsList.listJobs(PROJECT_ID);
         String output = bout.toString();
 
-        // Check that the output contains jobIds
-        Matcher matcher = JOB_ID_PATTERN.matcher(bout.toString());
-        assertTrue("List must contain results.", matcher.find());
+        // Check that the output contains a list of jobs, or is empty
+        assertThat(output, CoreMatchers.containsString("DLP jobs found:"));
     }
 
     @Test
     public void testDeleteJobs() throws Exception {
-        // Get a list of JobIds, and extract one to delete
-        JobsList.listJobs(PROJECT_ID);
+        // Create a job with a unique UUID to be deleted
+        String jobId = UUID.randomUUID().toString();
+        createJob(jobId);
+
+        // Delete the job with the specified ID
+        JobsDelete.deleteJobs(PROJECT_ID, "i-" + jobId);
         String output = bout.toString();
-        Matcher matcher = JOB_ID_PATTERN.matcher(bout.toString());
-        assertTrue("List must contain results.", matcher.find());
-
-        // Extract just the ID
-        String jobId = matcher.group(0).split("/")[3];
-        bout.reset();
-
-        // Delete the Job
-        JobsDelete.deleteJobs(PROJECT_ID, jobId);
-        output = bout.toString();
-        assertTrue(output.contains("Job deleted successfully."));
+        assertThat(output, CoreMatchers.containsString("Job deleted successfully."));
     }
 }

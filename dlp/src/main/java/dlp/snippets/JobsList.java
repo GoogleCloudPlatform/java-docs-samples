@@ -54,6 +54,8 @@ public class JobsList {
             // Send the request to list jobs and process the response
             DlpServiceClient.ListDlpJobsPagedResponse response =
                     dlpServiceClient.listDlpJobs(listDlpJobsRequest);
+
+            System.out.println("DLP jobs found:");
             for (DlpJob dlpJob : response.getPage().getValues()) {
                 System.out.println(dlpJob.getName() + " -- " + dlpJob.getState());
             }

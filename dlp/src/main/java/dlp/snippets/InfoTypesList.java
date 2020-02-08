@@ -48,7 +48,7 @@ public class InfoTypesList  {
             ListInfoTypesResponse response = dlpClient.listInfoTypes(listInfoTypesRequest);
 
             // Parse the response and process the results
-            List<InfoTypeDescription> infoTypeDescriptions = response.getInfoTypesList();
+            System.out.println("Infotypes found:");
             for (InfoTypeDescription infoTypeDescription : response.getInfoTypesList()) {
                 System.out.println("Name : " + infoTypeDescription.getName());
                 System.out.println("Display name : " + infoTypeDescription.getDisplayName());
