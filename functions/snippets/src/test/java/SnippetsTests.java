@@ -217,4 +217,9 @@ public class SnippetsTests {
     new Concepts().executionCount(request, response);
     assertThat(responseOut.toString(), containsString("Instance execution count: 1"));
   }
+
+  @Test
+  public void firebaseAuth() throws IOException {
+    new FirebaseAuth().accept("{\"foo\": \"bar\"}", null);
+  }
 }

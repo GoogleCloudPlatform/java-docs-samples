@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.example.flexible.helloworld;
+package com.example.appengine.iap;
 
-// [START gae_flex_servlet]
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "helloworld", value = "")
+/**
+ * Identity Aware Proxy (IAP) Test application to reflect jwt token issued by IAP. IAP must be
+ * enabled on application. {@see https://cloud.google.com/iap/docs/app-engine-quickstart}
+ */
 @SuppressWarnings("serial")
-public class HelloServlet extends HttpServlet {
+public class JwtServlet extends HttpServlet {
+
+  private static final String IAP_JWT_HEADER = "x-goog-iap-jwt-assertion";
+  private static final String IAP_AUTHENTICATED_USER_HEADER = "x-goog-authenticated-user-jwt";
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    PrintWriter out = resp.getWriter();
-    out.println("Hello, world - App Engine Flexible");
+    resp.getWriter().print(IAP_AUTHENTICATED_USER_HEADER + ":" + req.getHeader(IAP_JWT_HEADER));
   }
 }
-// [END gae_flex_servlet]
