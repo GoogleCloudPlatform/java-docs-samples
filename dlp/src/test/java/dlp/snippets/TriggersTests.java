@@ -143,7 +143,6 @@ public class TriggersTests {
             throw new Exception("Could not extract triggerID");
         }
 
-
         // Delete the job with the specified ID
         TriggersDelete.deleteTrigger(PROJECT_ID, triggerId);
         String output = bout.toString();
