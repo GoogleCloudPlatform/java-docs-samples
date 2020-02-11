@@ -16,10 +16,6 @@
 
 package dlp.snippets;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
@@ -47,22 +43,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.io.IOException;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.io.PrintStream;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class JobsTests {
-
-    private static final Pattern JOB_ID_PATTERN = Pattern.compile("projects/.*/dlpJobs/i-\\d+");
+    
     private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
     private static final String GCS_PATH = System.getenv("GCS_PATH");
 
