@@ -69,10 +69,13 @@ Commands:
 ## Integration tests
 ### Setup
 - [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt).
+- Set the `GCS_PATH` environment variable to point to the path for the bucket.
 - [Create a Google Cloud Datastore](https://console.cloud.google.com/datastore) kind and add an entity with properties:
   - `property1` : john@doe.com
   - `property2` : 343-343-3435
-- Update the Google Cloud Storage path and Datastore kind in [InspectIT.java](src/test/java/com/example/dlp/InspectIT.java).
+- [Create a Google Cloud Pub/Sub](https://console.cloud.google.com/datastore) topic with the id `dlp-tests` and a subscription with the id `dlp-test`
+  - Set the `PUB_SUB_TOPIC_ID` and `PUB_SUB_SUBSCRIPTION_ID` to the corresponding values.
+- Update the Google Cloud Storage path and Datastore kind in [InspectTests.java](src/test/java/dlp/snippets/InspectTests.java).
 - Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
 
 ## Run
