@@ -79,6 +79,10 @@
           <groupId>com.google.api.grpc</groupId>
           <artifactId>grpc-google-common-protos</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.cloud.bigtable</groupId>
+          <artifactId>bigtable-client-core</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
