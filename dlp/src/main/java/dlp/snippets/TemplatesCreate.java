@@ -56,7 +56,7 @@ class TemplatesCreate {
                             .addAllInfoTypes(infoTypes)
                             .build();
 
-            // Optionally et a display name and a description for the template
+            // Optionally set a display name and a description for the template
             String displayName = "Inspection Config Template";
             String description = "Save configuration for future inspection jobs";
 
