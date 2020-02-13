@@ -11,7 +11,7 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 
 |           Sample                |        Description       |     Deploy    |
 | ------------------------------- | ------------------------ | ------------- |
-|[Hello World][helloworld] | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
+|[Hello World][helloworld/] | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
 |[Cloud Pub/Sub](pubsub/) | Handling Pub/Sub push messages | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_pubsub] |
 |[System Packages](system-package/) | Using system packages with containers | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_sys_package] |
 |[Image Magick](image-processing/) | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_image] |
@@ -129,8 +129,7 @@ Learn more about [testing your container image locally.][testing]
 [run_docs]: https://cloud.google.com/run/docs/
 [run_build]: https://cloud.google.com/run/docs/building/containers
 [run_deploy]: https://cloud.google.com/run/docs/deploying
-[helloworld]: https://github.com/knative/docs/tree/master/docs/serving/samples/hello-world/helloworld-java-spring
-[run_button_helloworld]: https://deploy.cloud.run/?git_repo=https://github.com/knative/docs&dir=docs/serving/samples/hello-world/helloworld-java-spring
+[run_button_helloworld]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/helloworld
 [run_button_broken]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/hello-broken
 [run_button_image]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/image-processing
 [run_button_log]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/logging-manual
