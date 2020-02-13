@@ -118,7 +118,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectBiqQueryTable()
+  public void testInspectBigQueryTable()
       throws InterruptedException, ExecutionException, IOException {
     InspectBigQueryTable.inspectBigQueryTable(
         PROJECT_ID, BIGQUERY_DATASET, "harmful", pubSubTopicId, pubSubSubscriptionId);
