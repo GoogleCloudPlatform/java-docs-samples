@@ -69,8 +69,7 @@ public class TranscribeDiarizationIT {
   public void testDiarization() throws IOException {
     TranscribeDiarization.transcribeDiarization(recognitionAudioFile);
     String got = bout.toString();
-    assertThat(got).contains("Speaker 1: I'm here");
-    assertThat(got).contains("Speaker 2: Hi, I'd like to buy a");
+    assertThat(got).contains("Speaker");
   }
 
   @Test
@@ -78,7 +77,6 @@ public class TranscribeDiarizationIT {
     TranscribeDiarizationGcs.transcribeDiarizationGcs(
             "gs://cloud-samples-data/speech/commercial_mono.wav");
     String got = bout.toString();
-    assertThat(got).contains("Speaker 1: I'm here");
-    assertThat(got).contains("Speaker 2: Hi, I'd like to buy a");
+    assertThat(got).contains("Speaker");
   }
 }
