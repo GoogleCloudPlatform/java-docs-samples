@@ -73,6 +73,11 @@
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-video-intelligence-v1p3beta1</artifactId>
+      <version>0.83.0</version>
+    </dependency>
     <!-- [START video_java_dependencies_beta] -->
   </dependencies>
   <!-- [END video_java_dependencies_beta] -->
