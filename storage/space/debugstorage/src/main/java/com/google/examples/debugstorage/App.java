@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Random;
+import com.google.api.client.googleapis.GoogleUtils;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -18,6 +18,10 @@ import com.google.cloud.storage.StorageOptions;
 public class App {
   
   public static void main(String[] args) throws IOException {
+    
+    System.out.println("GoogleUtils version: " + GoogleUtils.VERSION);
+
+    
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Random random = new SecureRandom();
     String bucketName = "testbucket" + random.nextInt();
@@ -31,6 +35,7 @@ public class App {
     
     com.google.api.gax.paging.Page<Blob> blobs = bucket.list();
     for (Blob file : blobs.iterateAll()) {
+      System.out.println(file.getBlobId());
       System.out.println(file.getName());
       System.out.println(file.getSelfLink());
     }
