@@ -16,6 +16,7 @@
 
 package com.example.flexible.helloworld;
 
+// [START gae_flex_servlet]
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -34,3 +35,4 @@ public class HelloServlet extends HttpServlet {
     out.println("Hello, world - App Engine Flexible");
   }
 }
+// [END gae_flex_servlet]
