@@ -34,6 +34,8 @@ import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.After;
@@ -43,6 +45,7 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerWriteIT {
 
+  private final Random random = new Random();
   private String instanceId;
   private String databaseId;
 
@@ -55,7 +58,7 @@ public class SpannerWriteIT {
   public void setUp() throws Exception {
 
     instanceId = System.getProperty("spanner.test.instance");
-    databaseId = "df-spanner-write-it";
+    databaseId = "df-spanner-write-it-" + random.nextInt(1000000000);
 
     spannerOptions = SpannerOptions.getDefaultInstance();
     spanner = spannerOptions.getService();
