@@ -17,6 +17,7 @@
 package dlp.snippets;
 
 // [START dlp_l_diversity]
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
@@ -41,159 +42,148 @@ import com.google.privacy.dlp.v2.ValueFrequency;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-class RiskAnalysisLDiversity{
+class RiskAnalysisLDiversity {
 
-    private static MessageReceiver buildMessageHandler(DlpJob dlpJob, SettableApiFuture<Boolean> done) {
-        MessageReceiver handleMessage =
-                (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
-                    String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-                    if (dlpJob.getName().equals(messageAttribute)) {
-                        done.set(true);
-                        ackReplyConsumer.ack();
-                    } else {
-                        ackReplyConsumer.nack();
-                    }
-                };
-        return handleMessage;
-    }
+  private static MessageReceiver buildMessageHandler(
+      DlpJob dlpJob, SettableApiFuture<Boolean> done) {
+    MessageReceiver handleMessage =
+        (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
+          String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+          if (dlpJob.getName().equals(messageAttribute)) {
+            done.set(true);
+            ackReplyConsumer.ack();
+          } else {
+            ackReplyConsumer.nack();
+          }
+        };
+    return handleMessage;
+  }
 
-    public static void calculateLDiversity() throws Exception {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String datasetId = "your-bigquery-dataset-id";
-        String tableId = "your-bigquery-table-id";
-        String topicId = "pub-sub-topic";
-        String subscriptionId = "pub-sub-subscription";
-        calculateLDiversity(projectId, datasetId, tableId, topicId, subscriptionId);
+  public static void calculateLDiversity() throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String datasetId = "your-bigquery-dataset-id";
+    String tableId = "your-bigquery-table-id";
+    String topicId = "pub-sub-topic";
+    String subscriptionId = "pub-sub-subscription";
+    calculateLDiversity(projectId, datasetId, tableId, topicId, subscriptionId);
+  }
 
-    }
-    public static void calculateLDiversity(
-            String projectId,
-            String datasetId,
-            String tableId,
-            String topicId,
-            String subscriptionId) throws Exception {
+  public static void calculateLDiversity(
+      String projectId, String datasetId, String tableId, String topicId, String subscriptionId)
+      throws Exception {
 
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-        try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-            // Specify the BigQuery table to analyze
-            BigQueryTable bigQueryTable =
-                    BigQueryTable.newBuilder()
-                            .setProjectId(projectId)
-                            .setDatasetId(datasetId)
-                            .setTableId(tableId)
-                            .build();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      // Specify the BigQuery table to analyze
+      BigQueryTable bigQueryTable =
+          BigQueryTable.newBuilder()
+              .setProjectId(projectId)
+              .setDatasetId(datasetId)
+              .setTableId(tableId)
+              .build();
 
-            // These values represent the column names of quasi-identifiers to analyze
-            List<String> quasiIds = Arrays.asList("Age","Mystery");
+      // These values represent the column names of quasi-identifiers to analyze
+      List<String> quasiIds = Arrays.asList("Age", "Mystery");
 
-            // This value represents the column name to compare the quasi-identifiers against
-            String sensitiveAttribute = "Name";
+      // This value represents the column name to compare the quasi-identifiers against
+      String sensitiveAttribute = "Name";
 
-            // Configure the privacy metric for the job
-            FieldId sensitiveAttributeField = FieldId.newBuilder().setName(sensitiveAttribute).build();
-            List<FieldId> quasiIdFields =
-                    quasiIds
-                            .stream()
-                            .map(columnName -> FieldId.newBuilder().setName(columnName).build())
-                            .collect(Collectors.toList());
-            LDiversityConfig ldiversityConfig =
-                    LDiversityConfig.newBuilder()
-                            .addAllQuasiIds(quasiIdFields)
-                            .setSensitiveAttribute(sensitiveAttributeField)
-                            .build();
-            PrivacyMetric privacyMetric =
-                    PrivacyMetric.newBuilder().setLDiversityConfig(ldiversityConfig).build();
+      // Configure the privacy metric for the job
+      FieldId sensitiveAttributeField = FieldId.newBuilder().setName(sensitiveAttribute).build();
+      List<FieldId> quasiIdFields =
+          quasiIds.stream()
+              .map(columnName -> FieldId.newBuilder().setName(columnName).build())
+              .collect(Collectors.toList());
+      LDiversityConfig ldiversityConfig =
+          LDiversityConfig.newBuilder()
+              .addAllQuasiIds(quasiIdFields)
+              .setSensitiveAttribute(sensitiveAttributeField)
+              .build();
+      PrivacyMetric privacyMetric =
+          PrivacyMetric.newBuilder().setLDiversityConfig(ldiversityConfig).build();
 
-            // Create action to publish job status notifications over Google Cloud Pub/
-            ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
-            PublishToPubSub publishToPubSub =
-                    PublishToPubSub.newBuilder()
-                            .setTopic(topicName.toString())
-                            .build();
-            Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
+      // Create action to publish job status notifications over Google Cloud Pub/
+      ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+      PublishToPubSub publishToPubSub =
+          PublishToPubSub.newBuilder().setTopic(topicName.toString()).build();
+      Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
-            // Configure the risk analysis job to perform
-            RiskAnalysisJobConfig riskAnalysisJobConfig =
-                    RiskAnalysisJobConfig.newBuilder()
-                            .setSourceTable(bigQueryTable)
-                            .setPrivacyMetric(privacyMetric)
-                            .addActions(action)
-                            .build();
+      // Configure the risk analysis job to perform
+      RiskAnalysisJobConfig riskAnalysisJobConfig =
+          RiskAnalysisJobConfig.newBuilder()
+              .setSourceTable(bigQueryTable)
+              .setPrivacyMetric(privacyMetric)
+              .addActions(action)
+              .build();
 
-            // Build the request to be sent by the client
-            CreateDlpJobRequest createDlpJobRequest =
-                    CreateDlpJobRequest.newBuilder()
-                            .setParent(ProjectName.of(projectId).toString())
-                            .setRiskJob(riskAnalysisJobConfig)
-                            .build();
+      // Build the request to be sent by the client
+      CreateDlpJobRequest createDlpJobRequest =
+          CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
+              .setRiskJob(riskAnalysisJobConfig)
+              .build();
 
-            // Send the request to the API using the client
-            DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
+      // Send the request to the API using the client
+      DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
 
-            // Set up a Pub/Sub subscriber to listen on the job completion status
-            final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+      // Set up a Pub/Sub subscriber to listen on the job completion status
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-            ProjectSubscriptionName subscriptionName =
-                    ProjectSubscriptionName.of(projectId, subscriptionId);
+      ProjectSubscriptionName subscriptionName =
+          ProjectSubscriptionName.of(projectId, subscriptionId);
 
-            MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
-            Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
-            subscriber.startAsync();
+      MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
+      Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
+      subscriber.startAsync();
 
-            // Wait for job completion semi-synchronously
-            // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-            try {
-                done.get(1, TimeUnit.MINUTES);
-                Thread.sleep(500); // Wait for the job to become available
-            } catch (TimeoutException e) {
-                System.out.println("Unable to verify job completion.");
-            }
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
+      try {
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500); // Wait for the job to become available
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
-            // Build a request to get the completed job
-            GetDlpJobRequest getDlpJobRequest =
-                    GetDlpJobRequest.newBuilder()
-                            .setName(dlpJob.getName())
-                            .build();
+      // Build a request to get the completed job
+      GetDlpJobRequest getDlpJobRequest =
+          GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build();
 
-            // Retrieve completed job status
-            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
-            System.out.println("Job status: " + completedJob.getState());
+      // Retrieve completed job status
+      DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
+      System.out.println("Job status: " + completedJob.getState());
 
-            // Get the result and parse through and process the information
-            LDiversityResult ldiversityResult = completedJob.getRiskDetails().getLDiversityResult();
-            List<LDiversityHistogramBucket> histogramBucketList =
-                    ldiversityResult.getSensitiveValueFrequencyHistogramBucketsList();
-            for (LDiversityHistogramBucket result : histogramBucketList) {
-                for (LDiversityEquivalenceClass bucket : result.getBucketValuesList()) {
-                    List<String> quasiIdValues =
-                            bucket
-                                    .getQuasiIdsValuesList()
-                                    .stream()
-                                    .map(Value::toString)
-                                    .collect(Collectors.toList());
+      // Get the result and parse through and process the information
+      LDiversityResult ldiversityResult = completedJob.getRiskDetails().getLDiversityResult();
+      List<LDiversityHistogramBucket> histogramBucketList =
+          ldiversityResult.getSensitiveValueFrequencyHistogramBucketsList();
+      for (LDiversityHistogramBucket result : histogramBucketList) {
+        for (LDiversityEquivalenceClass bucket : result.getBucketValuesList()) {
+          List<String> quasiIdValues =
+              bucket.getQuasiIdsValuesList().stream()
+                  .map(Value::toString)
+                  .collect(Collectors.toList());
 
-                    System.out.println("\tQuasi-ID values: " + String.join(", ", quasiIdValues));
-                    System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
+          System.out.println("\tQuasi-ID values: " + String.join(", ", quasiIdValues));
+          System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
 
-                    for (ValueFrequency valueFrequency : bucket.getTopSensitiveValuesList()) {
-                        System.out.printf(
-                                "\t\tSensitive value %s occurs %d time(s).\n",
-                                valueFrequency.getValue().toString(), valueFrequency.getCount());
-                    }
-                }
-            }
+          for (ValueFrequency valueFrequency : bucket.getTopSensitiveValuesList()) {
+            System.out.printf(
+                "\t\tSensitive value %s occurs %d time(s).\n",
+                valueFrequency.getValue().toString(), valueFrequency.getCount());
+          }
         }
+      }
     }
-
+  }
 }
 // [END dlp_l_diversity]

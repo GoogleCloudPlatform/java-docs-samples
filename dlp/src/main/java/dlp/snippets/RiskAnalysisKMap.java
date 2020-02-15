@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Google LLC
  *
@@ -42,10 +41,8 @@ import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -54,170 +51,160 @@ import java.util.stream.IntStream;
 
 class RiskAnalysisKMap {
 
-    private static MessageReceiver buildMessageHandler(DlpJob dlpJob, SettableApiFuture<Boolean> done) {
-        MessageReceiver handleMessage =
-                (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
-                    String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-                    if (dlpJob.getName().equals(messageAttribute)) {
-                        done.set(true);
-                        ackReplyConsumer.ack();
-                    } else {
-                        ackReplyConsumer.nack();
-                    }
-                };
-        return handleMessage;
-    }
+  private static MessageReceiver buildMessageHandler(
+      DlpJob dlpJob, SettableApiFuture<Boolean> done) {
+    MessageReceiver handleMessage =
+        (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
+          String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+          if (dlpJob.getName().equals(messageAttribute)) {
+            done.set(true);
+            ackReplyConsumer.ack();
+          } else {
+            ackReplyConsumer.nack();
+          }
+        };
+    return handleMessage;
+  }
 
-    public static void calculateKMap() throws Exception {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String datasetId = "your-bigquery-dataset-id";
-        String tableId = "your-bigquery-table-id";
-        String topicId = "pub-sub-topic";
-        String subscriptionId = "pub-sub-subscription";
-        calculateKMap(projectId, datasetId, tableId, topicId, subscriptionId);
-    }
+  public static void calculateKMap() throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String datasetId = "your-bigquery-dataset-id";
+    String tableId = "your-bigquery-table-id";
+    String topicId = "pub-sub-topic";
+    String subscriptionId = "pub-sub-subscription";
+    calculateKMap(projectId, datasetId, tableId, topicId, subscriptionId);
+  }
 
-    public static void calculateKMap(
-            String projectId,
-            String datasetId,
-            String tableId,
-            String topicId,
-            String subscriptionId) throws Exception {
+  public static void calculateKMap(
+      String projectId, String datasetId, String tableId, String topicId, String subscriptionId)
+      throws Exception {
 
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-        try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-            // Specify the BigQuery table to analyze
-            BigQueryTable bigQueryTable =
-                    BigQueryTable.newBuilder()
-                            .setProjectId(projectId)
-                            .setDatasetId(datasetId)
-                            .setTableId(tableId)
-                            .build();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      // Specify the BigQuery table to analyze
+      BigQueryTable bigQueryTable =
+          BigQueryTable.newBuilder()
+              .setProjectId(projectId)
+              .setDatasetId(datasetId)
+              .setTableId(tableId)
+              .build();
 
-            // These values represent the column names of quasi-identifiers to analyze
-            List<String> quasiIds = Arrays.asList("Age", "Gender");
+      // These values represent the column names of quasi-identifiers to analyze
+      List<String> quasiIds = Arrays.asList("Age", "Gender");
 
-            // These values represent the info types corresponding to the quasi-identifiers above
-            List<String> infoTypeNames = Arrays.asList("AGE", "GENDER");
+      // These values represent the info types corresponding to the quasi-identifiers above
+      List<String> infoTypeNames = Arrays.asList("AGE", "GENDER");
 
-            // Tag each of the quasiId column names with its corresponding infoType
-            List<InfoType> infoTypes =
-                    infoTypeNames.stream()
-                            .map(it -> InfoType.newBuilder().setName(it).build())
-                            .collect(Collectors.toList());
+      // Tag each of the quasiId column names with its corresponding infoType
+      List<InfoType> infoTypes =
+          infoTypeNames.stream()
+              .map(it -> InfoType.newBuilder().setName(it).build())
+              .collect(Collectors.toList());
 
-            if (quasiIds.size() != infoTypes.size()) {
-                throw new IllegalArgumentException("The numbers of quasi-IDs and infoTypes must be equal!");
-            }
+      if (quasiIds.size() != infoTypes.size()) {
+        throw new IllegalArgumentException("The numbers of quasi-IDs and infoTypes must be equal!");
+      }
 
-            ArrayList<TaggedField> taggedFields =
-                    IntStream
-                        .range(0, quasiIds.size())
-                        .mapToObj((i) ->
-                                TaggedField.newBuilder()
-                                    .setField(FieldId.newBuilder().setName(quasiIds.get(i)).build())
-                                    .setInfoType(infoTypes.get(i))
-                                    .build())
-                        .collect(Collectors.toCollection(ArrayList::new));
+      ArrayList<TaggedField> taggedFields =
+          IntStream.range(0, quasiIds.size())
+              .mapToObj(
+                  (i) ->
+                      TaggedField.newBuilder()
+                          .setField(FieldId.newBuilder().setName(quasiIds.get(i)).build())
+                          .setInfoType(infoTypes.get(i))
+                          .build())
+              .collect(Collectors.toCollection(ArrayList::new));
 
-            // The k-map distribution region can be specified by any ISO-3166-1 region code.
-            String regionCode = "US";
+      // The k-map distribution region can be specified by any ISO-3166-1 region code.
+      String regionCode = "US";
 
-            // Configure the privacy metric for the job
-            KMapEstimationConfig kmapConfig =
-                    KMapEstimationConfig.newBuilder()
-                            .addAllQuasiIds(taggedFields)
-                            .setRegionCode(regionCode)
-                            .build();
-            PrivacyMetric privacyMetric =
-                    PrivacyMetric.newBuilder().setKMapEstimationConfig(kmapConfig).build();
+      // Configure the privacy metric for the job
+      KMapEstimationConfig kmapConfig =
+          KMapEstimationConfig.newBuilder()
+              .addAllQuasiIds(taggedFields)
+              .setRegionCode(regionCode)
+              .build();
+      PrivacyMetric privacyMetric =
+          PrivacyMetric.newBuilder().setKMapEstimationConfig(kmapConfig).build();
 
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
+      ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+      PublishToPubSub publishToPubSub =
+          PublishToPubSub.newBuilder().setTopic(topicName.toString()).build();
+      Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
-            // Create action to publish job status notifications over Google Cloud Pub/Sub
-            ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
-            PublishToPubSub publishToPubSub =
-                    PublishToPubSub.newBuilder()
-                            .setTopic(topicName.toString())
-                            .build();
-            Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
+      // Configure the risk analysis job to perform
+      RiskAnalysisJobConfig riskAnalysisJobConfig =
+          RiskAnalysisJobConfig.newBuilder()
+              .setSourceTable(bigQueryTable)
+              .setPrivacyMetric(privacyMetric)
+              .addActions(action)
+              .build();
 
-            // Configure the risk analysis job to perform
-            RiskAnalysisJobConfig riskAnalysisJobConfig =
-                    RiskAnalysisJobConfig.newBuilder()
-                            .setSourceTable(bigQueryTable)
-                            .setPrivacyMetric(privacyMetric)
-                            .addActions(action)
-                            .build();
+      // Build the request to be sent by the client
+      CreateDlpJobRequest createDlpJobRequest =
+          CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
+              .setRiskJob(riskAnalysisJobConfig)
+              .build();
 
-            // Build the request to be sent by the client
-            CreateDlpJobRequest createDlpJobRequest =
-                    CreateDlpJobRequest.newBuilder()
-                            .setParent(ProjectName.of(projectId).toString())
-                            .setRiskJob(riskAnalysisJobConfig)
-                            .build();
+      // Send the request to the API using the client
+      DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
 
-            // Send the request to the API using the client
-            DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
+      // Set up a Pub/Sub subscriber to listen on the job completion status
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-            // Set up a Pub/Sub subscriber to listen on the job completion status
-            final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+      ProjectSubscriptionName subscriptionName =
+          ProjectSubscriptionName.of(projectId, subscriptionId);
 
-            ProjectSubscriptionName subscriptionName =
-                    ProjectSubscriptionName.of(projectId, subscriptionId);
+      MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
+      Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
+      subscriber.startAsync();
 
-            MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
-            Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
-            subscriber.startAsync();
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
+      try {
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500); // Wait for the job to become available
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
-            // Wait for job completion semi-synchronously
-            // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-            try {
-                done.get(1, TimeUnit.MINUTES);
-                Thread.sleep(500); // Wait for the job to become available
-            } catch (TimeoutException e) {
-                System.out.println("Unable to verify job completion.");
-            }
+      // Build a request to get the completed job
+      GetDlpJobRequest getDlpJobRequest =
+          GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build();
 
-            // Build a request to get the completed job
-            GetDlpJobRequest getDlpJobRequest =
-                    GetDlpJobRequest.newBuilder()
-                            .setName(dlpJob.getName())
-                            .build();
+      // Retrieve completed job status
+      DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
+      System.out.println("Job status: " + completedJob.getState());
 
-            // Retrieve completed job status
-            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
-            System.out.println("Job status: " + completedJob.getState());
+      // Get the result and parse through and process the information
+      KMapEstimationResult kmapResult = completedJob.getRiskDetails().getKMapEstimationResult();
 
-            // Get the result and parse through and process the information
-            KMapEstimationResult kmapResult = completedJob.getRiskDetails().getKMapEstimationResult();
+      for (KMapEstimationHistogramBucket result : kmapResult.getKMapEstimationHistogramList()) {
+        System.out.printf(
+            "\tAnonymity range: [%d, %d]\n", result.getMinAnonymity(), result.getMaxAnonymity());
+        System.out.printf("\tSize: %d\n", result.getBucketSize());
 
-            for (KMapEstimationHistogramBucket result : kmapResult.getKMapEstimationHistogramList()) {
-                System.out.printf(
-                        "\tAnonymity range: [%d, %d]\n",
-                        result.getMinAnonymity(),
-                        result.getMaxAnonymity());
-                System.out.printf("\tSize: %d\n", result.getBucketSize());
+        for (KMapEstimationQuasiIdValues valueBucket : result.getBucketValuesList()) {
+          List<String> quasiIdValues =
+              valueBucket.getQuasiIdsValuesList().stream()
+                  .map(
+                      value -> {
+                        String s = value.toString();
+                        return s.substring(s.indexOf(':') + 1).trim();
+                      })
+                  .collect(Collectors.toList());
 
-                for (KMapEstimationQuasiIdValues valueBucket : result.getBucketValuesList()) {
-                    List<String> quasiIdValues =
-                            valueBucket
-                                    .getQuasiIdsValuesList()
-                                    .stream()
-                                    .map(value -> {
-                                        String s = value.toString();
-                                        return s.substring(s.indexOf(':') + 1).trim();
-                                    })
-                                    .collect(Collectors.toList());
-
-                    System.out.printf("\tValues: {%s}\n", String.join(", ", quasiIdValues));
-                    System.out.printf(
-                            "\tEstimated k-map anonymity: %d\n", valueBucket.getEstimatedAnonymity());
-                }
-            }
+          System.out.printf("\tValues: {%s}\n", String.join(", ", quasiIdValues));
+          System.out.printf(
+              "\tEstimated k-map anonymity: %d\n", valueBucket.getEstimatedAnonymity());
         }
+      }
     }
+  }
 }
 // [END dlp_k_map]

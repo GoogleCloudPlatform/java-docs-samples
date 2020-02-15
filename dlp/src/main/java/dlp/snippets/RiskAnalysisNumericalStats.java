@@ -39,139 +39,130 @@ import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 class RiskAnalysisNumericalStats {
 
-    private static MessageReceiver buildMessageHandler(DlpJob dlpJob, SettableApiFuture<Boolean> done) {
-        MessageReceiver handleMessage =
-                (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
-                    String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-                    if (dlpJob.getName().equals(messageAttribute)) {
-                        done.set(true);
-                        ackReplyConsumer.ack();
-                    } else {
-                        ackReplyConsumer.nack();
-                    }
-                };
-        return handleMessage;
-    }
+  private static MessageReceiver buildMessageHandler(
+      DlpJob dlpJob, SettableApiFuture<Boolean> done) {
+    MessageReceiver handleMessage =
+        (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
+          String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+          if (dlpJob.getName().equals(messageAttribute)) {
+            done.set(true);
+            ackReplyConsumer.ack();
+          } else {
+            ackReplyConsumer.nack();
+          }
+        };
+    return handleMessage;
+  }
 
-    public static void numericalStatsAnalysis() throws Exception {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String datasetId = "your-bigquery-dataset-id";
-        String tableId = "your-bigquery-table-id";
-        String topicId = "pub-sub-topic";
-        String subscriptionId = "pub-sub-subscription";
-        numericalStatsAnalysis(projectId, datasetId, tableId, topicId, subscriptionId);
-    }
+  public static void numericalStatsAnalysis() throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String datasetId = "your-bigquery-dataset-id";
+    String tableId = "your-bigquery-table-id";
+    String topicId = "pub-sub-topic";
+    String subscriptionId = "pub-sub-subscription";
+    numericalStatsAnalysis(projectId, datasetId, tableId, topicId, subscriptionId);
+  }
 
-    public static void numericalStatsAnalysis(
-            String projectId,
-            String datasetId,
-            String tableId,
-            String topicId,
-            String subscriptionId) throws Exception {
+  public static void numericalStatsAnalysis(
+      String projectId, String datasetId, String tableId, String topicId, String subscriptionId)
+      throws Exception {
 
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-        try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
-            // Specify the BigQuery table to analyze
-            BigQueryTable bigQueryTable =
-                    BigQueryTable.newBuilder()
-                            .setTableId(tableId)
-                            .setDatasetId(datasetId)
-                            .setProjectId(projectId)
-                            .build();
+      // Specify the BigQuery table to analyze
+      BigQueryTable bigQueryTable =
+          BigQueryTable.newBuilder()
+              .setTableId(tableId)
+              .setDatasetId(datasetId)
+              .setProjectId(projectId)
+              .build();
 
-            // This represents the name of the column to analyze, which must contain numerical data
-            String columnName = "Age";
+      // This represents the name of the column to analyze, which must contain numerical data
+      String columnName = "Age";
 
-            // Configure the privacy metric for the job
-            FieldId fieldId = FieldId.newBuilder().setName(columnName).build();
-            NumericalStatsConfig numericalStatsConfig =
-                    NumericalStatsConfig.newBuilder().setField(fieldId).build();
-            PrivacyMetric privacyMetric =
-                    PrivacyMetric.newBuilder().setNumericalStatsConfig(numericalStatsConfig).build();
+      // Configure the privacy metric for the job
+      FieldId fieldId = FieldId.newBuilder().setName(columnName).build();
+      NumericalStatsConfig numericalStatsConfig =
+          NumericalStatsConfig.newBuilder().setField(fieldId).build();
+      PrivacyMetric privacyMetric =
+          PrivacyMetric.newBuilder().setNumericalStatsConfig(numericalStatsConfig).build();
 
-            // Create action to publish job status notifications over Google Cloud Pub/Sub
-            ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
-            PublishToPubSub publishToPubSub =
-                    PublishToPubSub.newBuilder()
-                            .setTopic(topicName.toString())
-                            .build();
-            Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
+      // Create action to publish job status notifications over Google Cloud Pub/Sub
+      ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+      PublishToPubSub publishToPubSub =
+          PublishToPubSub.newBuilder().setTopic(topicName.toString()).build();
+      Action action = Action.newBuilder().setPubSub(publishToPubSub).build();
 
-            // Configure the risk analysis job to perform
-            RiskAnalysisJobConfig riskAnalysisJobConfig =
-                    RiskAnalysisJobConfig.newBuilder()
-                            .setSourceTable(bigQueryTable)
-                            .setPrivacyMetric(privacyMetric)
-                            .addActions(action)
-                            .build();
+      // Configure the risk analysis job to perform
+      RiskAnalysisJobConfig riskAnalysisJobConfig =
+          RiskAnalysisJobConfig.newBuilder()
+              .setSourceTable(bigQueryTable)
+              .setPrivacyMetric(privacyMetric)
+              .addActions(action)
+              .build();
 
-            CreateDlpJobRequest createDlpJobRequest =
-                    CreateDlpJobRequest.newBuilder()
-                            .setParent(ProjectName.of(projectId).toString())
-                            .setRiskJob(riskAnalysisJobConfig)
-                            .build();
+      CreateDlpJobRequest createDlpJobRequest =
+          CreateDlpJobRequest.newBuilder()
+              .setParent(ProjectName.of(projectId).toString())
+              .setRiskJob(riskAnalysisJobConfig)
+              .build();
 
-            // Send the request to the API using the client
-            DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
+      // Send the request to the API using the client
+      DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
 
-            // Set up a Pub/Sub subscriber to listen on the job completion status
-            final SettableApiFuture<Boolean> done = SettableApiFuture.create();
+      // Set up a Pub/Sub subscriber to listen on the job completion status
+      final SettableApiFuture<Boolean> done = SettableApiFuture.create();
 
-            ProjectSubscriptionName subscriptionName =
-                    ProjectSubscriptionName.of(projectId, subscriptionId);
+      ProjectSubscriptionName subscriptionName =
+          ProjectSubscriptionName.of(projectId, subscriptionId);
 
-            MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
-            Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
-            subscriber.startAsync();
+      MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
+      Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
+      subscriber.startAsync();
 
-            // Wait for job completion semi-synchronously
-            // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
-            try {
-                done.get(1, TimeUnit.MINUTES);
-                Thread.sleep(500); // Wait for the job to become available
-            } catch (TimeoutException e) {
-                System.out.println("Unable to verify job completion.");
-            }
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
+      try {
+        done.get(1, TimeUnit.MINUTES);
+        Thread.sleep(500); // Wait for the job to become available
+      } catch (TimeoutException e) {
+        System.out.println("Unable to verify job completion.");
+      }
 
-            // Build a request to get the completed job
-            GetDlpJobRequest getDlpJobRequest =
-                    GetDlpJobRequest.newBuilder()
-                            .setName(dlpJob.getName())
-                            .build();
+      // Build a request to get the completed job
+      GetDlpJobRequest getDlpJobRequest =
+          GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build();
 
-            // Retrieve completed job status
-            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
-            System.out.println("Job status: " + completedJob.getState());
+      // Retrieve completed job status
+      DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
+      System.out.println("Job status: " + completedJob.getState());
 
-            // Get the result and parse through and process the information
-            NumericalStatsResult result =
-                    completedJob.getRiskDetails().getNumericalStatsResult();
+      // Get the result and parse through and process the information
+      NumericalStatsResult result = completedJob.getRiskDetails().getNumericalStatsResult();
 
-            System.out.printf(
-                    "Value range : [%.3f, %.3f]\n",
-                    result.getMinValue().getFloatValue(),
-                    result.getMaxValue().getFloatValue());
+      System.out.printf(
+          "Value range : [%.3f, %.3f]\n",
+          result.getMinValue().getFloatValue(), result.getMaxValue().getFloatValue());
 
-            int percent = 1;
-            Double lastValue = null;
-            for (Value quantileValue : result.getQuantileValuesList()) {
-                Double currentValue = quantileValue.getFloatValue();
-                if (lastValue == null || !lastValue.equals(currentValue)) {
-                    System.out.printf("Value at %s %% quantile : %.3f", percent, currentValue);
-                }
-                lastValue = currentValue;
-            }
+      int percent = 1;
+      Double lastValue = null;
+      for (Value quantileValue : result.getQuantileValuesList()) {
+        Double currentValue = quantileValue.getFloatValue();
+        if (lastValue == null || !lastValue.equals(currentValue)) {
+          System.out.printf("Value at %s %% quantile : %.3f", percent, currentValue);
         }
+        lastValue = currentValue;
+      }
     }
+  }
 }
 // [END dlp_numerical_stats]
