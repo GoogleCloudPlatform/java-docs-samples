@@ -54,6 +54,20 @@ import java.util.stream.IntStream;
 
 class RiskAnalysisKMap {
 
+    private static MessageReceiver buildMessageHandler(DlpJob dlpJob, SettableApiFuture<Boolean> done) {
+        MessageReceiver handleMessage =
+                (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
+                    String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+                    if (dlpJob.getName().equals(messageAttribute)) {
+                        done.set(true);
+                        ackReplyConsumer.ack();
+                    } else {
+                        ackReplyConsumer.nack();
+                    }
+                };
+        return handleMessage;
+    }
+
     public static void calculateKMap() throws Exception {
         // TODO(developer): Replace these variables before running the sample.
         String projectId = "your-project-id";
@@ -154,17 +168,7 @@ class RiskAnalysisKMap {
             ProjectSubscriptionName subscriptionName =
                     ProjectSubscriptionName.of(projectId, subscriptionId);
 
-            MessageReceiver handleMessage =
-                    (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
-                        String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-                        if (dlpJob.getName().equals(messageAttribute)) {
-                            done.set(true);
-                            ackReplyConsumer.ack();
-                        } else {
-                            ackReplyConsumer.nack();
-                        }
-                    };
-
+            MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
             Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
             subscriber.startAsync();
 

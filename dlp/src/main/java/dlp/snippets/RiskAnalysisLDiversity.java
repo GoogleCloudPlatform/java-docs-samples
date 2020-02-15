@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package dlp.snippets;
 
 // [START dlp_l_diversity]
@@ -48,6 +49,20 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 class RiskAnalysisLDiversity{
+
+    private static MessageReceiver buildMessageHandler(DlpJob dlpJob, SettableApiFuture<Boolean> done) {
+        MessageReceiver handleMessage =
+                (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
+                    String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+                    if (dlpJob.getName().equals(messageAttribute)) {
+                        done.set(true);
+                        ackReplyConsumer.ack();
+                    } else {
+                        ackReplyConsumer.nack();
+                    }
+                };
+        return handleMessage;
+    }
 
     public static void calculateLDiversity() throws Exception {
         // TODO(developer): Replace these variables before running the sample.
@@ -131,16 +146,7 @@ class RiskAnalysisLDiversity{
             ProjectSubscriptionName subscriptionName =
                     ProjectSubscriptionName.of(projectId, subscriptionId);
 
-            MessageReceiver handleMessage =
-                    (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
-                        String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-                        if (dlpJob.getName().equals(messageAttribute)) {
-                            done.set(true);
-                            ackReplyConsumer.ack();
-                        } else {
-                            ackReplyConsumer.nack();
-                        }
-                    };
+            MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
             Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
             subscriber.startAsync();
 
