@@ -25,14 +25,11 @@ public class HelloGcs implements BackgroundFunction<GcsEvent> {
 
   @Override
   public void accept(GcsEvent event, Context context) {
-    LOGGER.info("Processing file: " + event.name);
-
-    if ("1".equals(event.metageneration)) {
-      // metageneration attribute is updated on metadata changes.
-      // value is 1 if file was newly created or overwritten
+    if ("google.storage.object.finalize".equals(context.eventType())) {
+      // Default event type for GCS-triggered functions
       LOGGER.info(String.format("File %s uploaded.", event.name));
     } else {
-      LOGGER.info(String.format("File %s metadata updated.", event.name));
+      LOGGER.warning(String.format("Unsupported event type: %s", context.eventType()));
     }
   }
 }

@@ -19,7 +19,6 @@
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.HttpRequest;
-
 import java.util.logging.Logger;
 
 public class HelloBackground implements BackgroundFunction<HttpRequest> {

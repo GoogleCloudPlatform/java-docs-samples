@@ -16,10 +16,9 @@
 
 // [START functions_background_helloworld]
 // [START functions_helloworld_pubsub]
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;

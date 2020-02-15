@@ -16,10 +16,9 @@
 
 // [START functions_pubsub_unit_test]
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static com.google.common.truth.Truth.assertThat;
 
+import com.google.common.testing.TestLogHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -27,9 +26,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -40,25 +36,20 @@ import org.powermock.modules.junit4.PowerMockRunner;
  */
 // [START functions_pubsub_unit_test]
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Logger.class, HelloPubSub.class})
-public class HelloPubSubTest {
+@PrepareForTest(HelloPubSub.class)
+public class HelloPubSubIT {
 
   private HelloPubSub sampleUnderTest;
-  @Mock private static Logger loggerInstance;
+  private Logger logger;
+
+  public final TestLogHandler logHandler = new TestLogHandler();
 
   @Before
   public void setUp() throws Exception {
-    PowerMockito.mockStatic(Logger.class);
-
-    if (loggerInstance == null) {
-      loggerInstance = mock(Logger.class);
-    }
-
-    Mockito
-        .when(Logger.getLogger(HelloPubSub.class.getName()))
-        .thenReturn(loggerInstance);
-
     sampleUnderTest = new HelloPubSub();
+
+    logger = Logger.getLogger(HelloPubSub.class.getName());
+    logger.addHandler(logHandler);
   }
 
   @After
@@ -68,17 +59,22 @@ public class HelloPubSubTest {
 
   @Test
   public void helloPubSub_shouldPrintName() throws Exception {
-    PubSubMessage message = new PubSubMessage();
-    message.data = Base64.getEncoder().encodeToString("John".getBytes(StandardCharsets.UTF_8));
-    sampleUnderTest.accept(message, null);
-    verify(loggerInstance, times(1)).info("Hello John!");
+    PubSubMessage pubSubMessage = new PubSubMessage();
+    pubSubMessage.data = Base64.getEncoder().encodeToString(
+        "John".getBytes(StandardCharsets.UTF_8));
+    sampleUnderTest.accept(pubSubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Hello John!").isEqualTo(logMessage);
   }
 
   @Test
   public void helloPubSub_shouldPrintHelloWorld() throws Exception {
-    PubSubMessage message = new PubSubMessage();
-    sampleUnderTest.accept(message, null);
-    verify(loggerInstance, times(1)).info("Hello world!");
+    PubSubMessage pubSubMessage = new PubSubMessage();
+    sampleUnderTest.accept(pubSubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Hello world!").isEqualTo(logMessage);
   }
 }
 // [END functions_pubsub_unit_test]

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import static org.mockito.Mockito.anyString;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.common.testing.TestLogHandler;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.StringReader;
@@ -35,23 +34,26 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Logger.class, HelloBackground.class})
-public class HelloBackgroundTest {
-  @Mock private static Logger loggerInstance;
-
+@PrepareForTest(HelloBackground.class)
+public class HelloBackgroundIT {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
   private EnvironmentVariables environmentVariables;
 
+  private Logger logger = Logger.getLogger(HelloBackground.class.getName());
+  private TestLogHandler logHandler;
+
   @Before
   public void beforeTest() throws Exception {
     environmentVariables = new EnvironmentVariables();
+
+    logHandler = new TestLogHandler();
+    logger.addHandler(logHandler);
 
     // Use a new mock for each test
     request = mock(HttpRequest.class);
@@ -62,36 +64,31 @@ public class HelloBackgroundTest {
 
     BufferedWriter writer = new BufferedWriter(new StringWriter());
     when(response.getWriter()).thenReturn(writer);
-
-    // Capture logs
-    PowerMockito.mockStatic(Logger.class);
-    if (loggerInstance == null) {
-      loggerInstance = mock(Logger.class);
-    }
-
-    when(Logger.getLogger(anyString())).thenReturn(loggerInstance);
   }
 
   @After
   public void afterTest() {
     request = null;
     response = null;
+    logHandler.clear();
     Mockito.reset();
   }
 
   @Test
   public void helloBackground_printsName() throws Exception {
-
     when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
 
     new HelloBackground().accept(request, null);
-    verify(loggerInstance, times(1)).info("Hello John!");
+
+    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Hello John!").isEqualTo(message);
   }
 
   @Test
   public void helloBackground_printsHelloWorld() throws Exception {
     new HelloBackground().accept(request, null);
 
-    verify(loggerInstance, times(1)).info("Hello world!");
+    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Hello world!").isEqualTo(message);
   }
 }

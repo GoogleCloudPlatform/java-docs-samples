@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import static org.mockito.Mockito.anyString;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,18 +31,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Logger.class, HelloGcs.class})
-public class HelloGcsTest {
-  @Mock private static Logger loggerInstance;
-
+//@RunWith(PowerMockRunner.class)
+@PrepareForTest(HelloGcs.class)
+public class HelloGcsIT {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
@@ -52,9 +46,16 @@ public class HelloGcsTest {
 
   private EnvironmentVariables environmentVariables;
 
+  public final TestLogHandler logHandler = new TestLogHandler();
+
+  private Logger logger;
+
   @Before
   public void beforeTest() throws Exception {
     environmentVariables = new EnvironmentVariables();
+
+    logger = Logger.getLogger(HelloGcs.class.getName());
+    logger.addHandler(logHandler);
 
     // Use a new mock for each test
     request = mock(HttpRequest.class);
@@ -65,20 +66,13 @@ public class HelloGcsTest {
 
     BufferedWriter writer = new BufferedWriter(new StringWriter());
     when(response.getWriter()).thenReturn(writer);
-
-    // Capture logs
-    if (loggerInstance == null) {
-      loggerInstance = mock(Logger.class);
-    }
-    PowerMockito.mockStatic(Logger.class);
-
-    when(Logger.getLogger(anyString())).thenReturn(loggerInstance);
   }
 
   @After
   public void afterTest() {
     request = null;
     response = null;
+    logHandler.clear();
     Mockito.reset();
   }
 
@@ -86,17 +80,27 @@ public class HelloGcsTest {
   public void helloGcs_shouldPrintUploadedMessage() throws Exception {
     GcsEvent event = new GcsEvent();
     event.name = "foo.txt";
-    event.metageneration = "1";
-    new HelloGcs().accept(event, null);
-    verify(loggerInstance, times(1)).info("File foo.txt uploaded.");
+
+    MockContext context = new MockContext();
+    context.eventType = "google.storage.object.finalize";
+
+    new HelloGcs().accept(event, context);
+
+    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("File foo.txt uploaded.").isEqualTo(message);
   }
 
   @Test
-  public void helloGcs_shouldPrintMetadataUpdatedMessage() throws Exception {
+  public void helloGcs_shouldDisregardOtherEvents() throws Exception {
     GcsEvent event = new GcsEvent();
     event.name = "baz.txt";
-    event.metageneration = "2";
-    new HelloGcs().accept(event, null);
-    verify(loggerInstance, times(1)).info("File baz.txt metadata updated.");
+
+    MockContext context = new MockContext();
+    context.eventType = "google.storage.object.metadataUpdate";
+
+    new HelloGcs().accept(event, context);
+
+    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Unsupported event type: google.storage.object.metadataUpdate").isEqualTo(message);
   }
 }

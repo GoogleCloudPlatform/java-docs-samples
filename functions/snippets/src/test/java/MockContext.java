@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
-// [START functions_helloworld_get]
+import com.google.cloud.functions.Context;
 
-import com.google.cloud.functions.HttpFunction;
-import com.google.cloud.functions.HttpRequest;
-import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedWriter;
-import java.io.IOException;
+public class MockContext implements Context {
+  public String eventId;
+  public String eventType;
+  public String timestamp;
+  public String resource;
 
-public class HelloWorld implements HttpFunction {
-  // Simple function to return "Hello World"
   @Override
-  public void service(HttpRequest request, HttpResponse response)
-      throws IOException {
-    BufferedWriter writer = response.getWriter();
-    writer.write("Hello World!");
+  public String eventId() {
+    return this.eventId;
+  }
+
+  @Override
+  public String timestamp() {
+    return this.timestamp;
+  }
+
+  @Override
+  public String eventType() {
+    return this.eventType;
+  }
+
+  @Override
+  public String resource() {
+    return this.resource;
   }
 }
-// [END functions_helloworld_get]

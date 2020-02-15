@@ -15,15 +15,12 @@
  */
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import com.google.common.truth.Truth;
+import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -43,7 +40,6 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -52,13 +48,20 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PowerMockIgnore({"javax.net.ssl.*", "com.google.*"})
 @PrepareForTest(StackdriverLogging.class)
 public class SnippetsTests {
-  @Mock private Logger loggerInstance;
-
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
+
+  // Loggers + handlers for various tested classes
+  // (Must be declared at class-level, or LoggingHandler won't detect log records!)
+  private Logger backgroundLogger = Logger.getLogger(HelloBackground.class.getName());
+  private Logger pubsubLogger = Logger.getLogger(HelloPubSub.class.getName());
+  private Logger gcsLogger = Logger.getLogger(HelloGcs.class.getName());
+  private Logger stackdriverLogger = Logger.getLogger(StackdriverLogging.class.getName());
+
+  private TestLogHandler logHandler = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
@@ -68,6 +71,11 @@ public class SnippetsTests {
 
   @Before
   public void beforeTest() throws Exception {
+    backgroundLogger.addHandler(logHandler);
+    pubsubLogger.addHandler(logHandler);
+    gcsLogger.addHandler(logHandler);
+    stackdriverLogger.addHandler(logHandler);
+
     // Use a new mock for each test
     request = mock(HttpRequest.class);
     response = mock(HttpResponse.class);
@@ -79,11 +87,10 @@ public class SnippetsTests {
     writerOut = new BufferedWriter(responseOut);
     when(response.getWriter()).thenReturn(writerOut);
 
-    // Capture logs
-    loggerInstance = mock(Logger.class);
-    PowerMockito.mockStatic(Logger.class);
-
-    Mockito.when(Logger.getLogger(anyString())).thenReturn(loggerInstance);
+    // Use the same logging handler for all tests
+    Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
+    Logger.getLogger(HelloPubSub.class.getName()).addHandler(logHandler);
+    Logger.getLogger(HelloGcs.class.getName()).addHandler(logHandler);
   }
 
   @After
@@ -93,6 +100,7 @@ public class SnippetsTests {
     responseOut = null;
     System.setOut(null);
     Mockito.reset();
+    logHandler.flush();
   }
 
   @Test
@@ -218,11 +226,12 @@ public class SnippetsTests {
 
   @Test
   public void stackdriverLogging() throws IOException {
-    PubSubMessage message = gson.fromJson(
+    PubSubMessage pubsubMessage = gson.fromJson(
         "{\"data\":\"ZGF0YQ==\",\"messageId\":\"id\"}", PubSubMessage.class);
-    new StackdriverLogging().accept(message, null);
+    new StackdriverLogging().accept(pubsubMessage, null);
 
-    verify(loggerInstance, times(1)).info("Hello, data");
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Hello, data").isEqualTo(logMessage);
   }
 
   @Test
@@ -247,7 +256,7 @@ public class SnippetsTests {
     new HelloHttp().service(request, response);
 
     writerOut.flush();
-    Truth.assertThat(responseOut.toString()).isEqualTo("Hello world!");
+    assertThat(responseOut.toString()).isEqualTo("Hello world!");
   }
 
   @Test
@@ -257,7 +266,7 @@ public class SnippetsTests {
     new HelloHttp().service(request, response);
 
     writerOut.flush();
-    Truth.assertThat(responseOut.toString()).isEqualTo("Hello Tom!");
+    assertThat(responseOut.toString()).isEqualTo("Hello Tom!");
   }
 
   @Test
@@ -268,6 +277,6 @@ public class SnippetsTests {
     new HelloHttp().service(request, response);
     writerOut.flush();
 
-    Truth.assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
+    assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
   }
 }
