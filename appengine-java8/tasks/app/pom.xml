@@ -69,7 +69,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
