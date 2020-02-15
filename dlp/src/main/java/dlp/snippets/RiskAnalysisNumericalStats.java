@@ -17,14 +17,15 @@
 package dlp.snippets;
 
 // [START dlp_numerical_stats]
-import com.google.pubsub.v1.PubsubMessage;
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.Action.PublishToPubSub;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.NumericalStatsResult;
 import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
@@ -34,16 +35,15 @@ import com.google.privacy.dlp.v2.PrivacyMetric;
 import com.google.privacy.dlp.v2.PrivacyMetric.NumericalStatsConfig;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
-import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.NumericalStatsResult;
 import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PubsubMessage;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 class RiskAnalysisNumericalStats {
-
     public static void numericalStatsAnalysis() throws Exception {
         // TODO(developer): Replace these variables before running the sample.
         String projectId = "your-project-id";
@@ -51,9 +51,7 @@ class RiskAnalysisNumericalStats {
         String tableId = "your-bigquery-table-id";
         String topicId = "pub-sub-topic";
         String subscriptionId = "pub-sub-subscription";
-        String columnName = "column_name";
-        numericalStatsAnalysis(
-                projectId, datasetId, tableId, topicId, subscriptionId, columnName);
+        numericalStatsAnalysis(projectId, datasetId, tableId, topicId, subscriptionId);
     }
 
     public static void numericalStatsAnalysis(
@@ -61,8 +59,7 @@ class RiskAnalysisNumericalStats {
             String datasetId,
             String tableId,
             String topicId,
-            String subscriptionId,
-            String columnName) throws Exception {
+            String subscriptionId) throws Exception {
 
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -77,13 +74,15 @@ class RiskAnalysisNumericalStats {
                             .setProjectId(projectId)
                             .build();
 
+            // This represents the name of the column to analyze, which must contain numerical data
+            String columnName = "Age";
+
             // Configure the privacy metric for the job
             FieldId fieldId = FieldId.newBuilder().setName(columnName).build();
             NumericalStatsConfig numericalStatsConfig =
                     NumericalStatsConfig.newBuilder().setField(fieldId).build();
             PrivacyMetric privacyMetric =
                     PrivacyMetric.newBuilder().setNumericalStatsConfig(numericalStatsConfig).build();
-
 
             // Create action to publish job status notifications over Google Cloud Pub/Sub
             ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
@@ -138,12 +137,14 @@ class RiskAnalysisNumericalStats {
                 System.out.println("Unable to verify job completion.");
             }
 
+            // Build a request to get the completed job
+            GetDlpJobRequest getDlpJobRequest =
+                    GetDlpJobRequest.newBuilder()
+                            .setName(dlpJob.getName())
+                            .build();
+
             // Retrieve completed job status
-            DlpJob completedJob =
-                    dlpServiceClient.getDlpJob(
-                            GetDlpJobRequest.newBuilder()
-                                    .setName(dlpJob.getName())
-                                    .build());
+            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
             System.out.println("Job status: " + completedJob.getState());
 
             // Get the result and parse through and process the information
@@ -152,7 +153,8 @@ class RiskAnalysisNumericalStats {
 
             System.out.printf(
                     "Value range : [%.3f, %.3f]\n",
-                    result.getMinValue().getFloatValue(), result.getMaxValue().getFloatValue());
+                    result.getMinValue().getFloatValue(),
+                    result.getMaxValue().getFloatValue());
 
             int percent = 1;
             Double lastValue = null;

@@ -17,12 +17,12 @@
 
 package dlp.snippets;
 // [START dlp_k_map]
-import com.google.pubsub.v1.PubsubMessage;
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.Action.PublishToPubSub;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult;
@@ -41,15 +41,15 @@ import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PubsubMessage;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class RiskAnalysisKMap {
 
@@ -60,11 +60,7 @@ class RiskAnalysisKMap {
         String tableId = "your-bigquery-table-id";
         String topicId = "pub-sub-topic";
         String subscriptionId = "pub-sub-subscription";
-        List<String> quasiIdColumns = Arrays.asList("age", "gender");
-        List<String> infoTypeNames = Arrays.asList("AGE", "GENDER");
-        calculateKMap(
-                projectId, datasetId, tableId, topicId,
-                subscriptionId, quasiIdColumns, infoTypeNames);
+        calculateKMap(projectId, datasetId, tableId, topicId, subscriptionId);
     }
 
     public static void calculateKMap(
@@ -72,15 +68,12 @@ class RiskAnalysisKMap {
             String datasetId,
             String tableId,
             String topicId,
-            String subscriptionId,
-            List<String> quasiIds,
-            List<String> infoTypeNames) throws Exception {
+            String subscriptionId) throws Exception {
 
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources.
         try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
 
 
             // Specify the BigQuery table to analyze
@@ -91,6 +84,11 @@ class RiskAnalysisKMap {
                             .setTableId(tableId)
                             .build();
 
+            // These values represent the column names of quasi-identifiers to analyze
+            List<String> quasiIds = Arrays.asList("Age", "Gender");
+
+            // These values represent the info types corresponding to the quasi-identifiers above
+            List<String> infoTypeNames = Arrays.asList("AGE", "GENDER");
 
             // Tag each of the quasiId column names with its corresponding infoType
             List<InfoType> infoTypes =
@@ -170,6 +168,7 @@ class RiskAnalysisKMap {
                             ackReplyConsumer.nack();
                         }
                     };
+
             Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
             subscriber.startAsync();
 
@@ -182,36 +181,38 @@ class RiskAnalysisKMap {
                 System.out.println("Unable to verify job completion.");
             }
 
+            // Build a request to get the completed job
+            GetDlpJobRequest getDlpJobRequest =
+                    GetDlpJobRequest.newBuilder()
+                            .setName(dlpJob.getName())
+                            .build();
+
             // Retrieve completed job status
-            DlpJob completedJob =
-                    dlpServiceClient.getDlpJob(
-                            GetDlpJobRequest.newBuilder()
-                                    .setName(dlpJob.getName())
-                                    .build());
+            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
             System.out.println("Job status: " + completedJob.getState());
 
             // Get the result and parse through and process the information
-            KMapEstimationResult kmapResult  = completedJob.getRiskDetails().getKMapEstimationResult();
+            KMapEstimationResult kmapResult = completedJob.getRiskDetails().getKMapEstimationResult();
 
             for (KMapEstimationHistogramBucket result : kmapResult.getKMapEstimationHistogramList()) {
-
                 System.out.printf(
-                        "\tAnonymity range: [%d, %d]\n", result.getMinAnonymity(), result.getMaxAnonymity());
+                        "\tAnonymity range: [%d, %d]\n",
+                        result.getMinAnonymity(),
+                        result.getMaxAnonymity());
                 System.out.printf("\tSize: %d\n", result.getBucketSize());
 
                 for (KMapEstimationQuasiIdValues valueBucket : result.getBucketValuesList()) {
-                    String quasiIdValues =
+                    List<String> quasiIdValues =
                             valueBucket
                                     .getQuasiIdsValuesList()
                                     .stream()
-                                    .map(
-                                            v -> {
-                                                String s = v.toString();
-                                                return s.substring(s.indexOf(':') + 1).trim();
-                                            })
-                                    .collect(Collectors.joining(", "));
+                                    .map(value -> {
+                                        String s = value.toString();
+                                        return s.substring(s.indexOf(':') + 1).trim();
+                                    })
+                                    .collect(Collectors.toList());
 
-                    System.out.printf("\tValues: {%s}\n", quasiIdValues);
+                    System.out.printf("\tValues: {%s}\n", String.join(", ", quasiIdValues));
                     System.out.printf(
                             "\tEstimated k-map anonymity: %d\n", valueBucket.getEstimatedAnonymity());
                 }

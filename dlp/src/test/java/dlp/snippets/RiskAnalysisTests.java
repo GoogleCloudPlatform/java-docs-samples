@@ -68,7 +68,7 @@ public class RiskAnalysisTests {
     @Test
     public void testNumericalStats() throws Exception {
         RiskAnalysisNumericalStats.numericalStatsAnalysis(
-                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID, "Age");
+                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
         String output = bout.toString();
         assertThat(output, containsString("Value at "));
     }
@@ -76,7 +76,7 @@ public class RiskAnalysisTests {
     @Test
     public void testCategoricalStats() throws Exception {
         RiskAnalysisCategoricalStats.categoricalStatsAnalysis(
-                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID, "Mystery");
+                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
 
         String output = bout.toString();
 
@@ -87,8 +87,7 @@ public class RiskAnalysisTests {
     @Test
     public void testKAnonymity() throws Exception {
         RiskAnalysisKAnonymity.calculateKAnonymity(
-                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID,
-                Arrays.asList("Age","Mystery"));
+                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
         String output = bout.toString();
         assertTrue(Pattern.compile("Bucket size range: \\[\\d, \\d\\]").matcher(output).find());
         assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
@@ -98,8 +97,7 @@ public class RiskAnalysisTests {
     @Test
     public void testLDiversity() throws Exception {
         RiskAnalysisLDiversity.calculateLDiversity(
-                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID,
-                "Name", Arrays.asList("Age","Mystery"));
+                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
         String output = bout.toString();
         assertTrue(output.contains("Quasi-ID values: integer_value: 19"));
         assertTrue(output.contains("Class size: 1"));
@@ -109,8 +107,7 @@ public class RiskAnalysisTests {
     @Test
     public void testKMap() throws Exception {
         RiskAnalysisKMap.calculateKMap(
-                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID,
-                Arrays.asList("Age","Gender"), Arrays.asList("AGE", "GENDER"));
+                PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
 
         String output = bout.toString();
 

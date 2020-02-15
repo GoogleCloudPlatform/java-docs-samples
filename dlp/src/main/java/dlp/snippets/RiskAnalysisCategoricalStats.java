@@ -16,12 +16,12 @@
 
 package dlp.snippets;
 // [START dlp_categorical_stats]
-import com.google.pubsub.v1.PubsubMessage;
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.Action.PublishToPubSub;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.CategoricalStatsResult;
@@ -35,12 +35,15 @@ import com.google.privacy.dlp.v2.PrivacyMetric;
 import com.google.privacy.dlp.v2.PrivacyMetric.CategoricalStatsConfig;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
+import com.google.privacy.dlp.v2.Value;
 import com.google.privacy.dlp.v2.ValueFrequency;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PubsubMessage;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.List;
 
 class RiskAnalysisCategoricalStats {
 
@@ -51,9 +54,7 @@ class RiskAnalysisCategoricalStats {
         String tableId = "your-bigquery-table-id";
         String topicId = "pub-sub-topic";
         String subscriptionId = "pub-sub-subscription";
-        String columnName = "column_name";
-        categoricalStatsAnalysis(
-                projectId, datasetId, tableId, topicId, subscriptionId, columnName);
+        categoricalStatsAnalysis(projectId, datasetId, tableId, topicId, subscriptionId);
     }
 
     public static void categoricalStatsAnalysis(
@@ -61,8 +62,7 @@ class RiskAnalysisCategoricalStats {
             String datasetId,
             String tableId,
             String topicId,
-            String subscriptionId,
-            String columnName) throws Exception {
+            String subscriptionId) throws Exception {
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources.
@@ -74,6 +74,9 @@ class RiskAnalysisCategoricalStats {
                             .setDatasetId(datasetId)
                             .setTableId(tableId)
                             .build();
+
+            // The name of the column to analyze, which doesn't need to contain numerical data
+            String columnName = "Mystery";
 
             // Configure the privacy metric for the job
             FieldId fieldId = FieldId.newBuilder().setName(columnName).build();
@@ -100,7 +103,7 @@ class RiskAnalysisCategoricalStats {
                             .addActions(action)
                             .build();
 
-            // Build the request to be sent by the client
+            // Build the job creation request to be sent by the client
             CreateDlpJobRequest createDlpJobRequest =
                     CreateDlpJobRequest.newBuilder()
                             .setParent(ProjectName.of(projectId).toString())
@@ -126,6 +129,7 @@ class RiskAnalysisCategoricalStats {
                             ackReplyConsumer.nack();
                         }
                     };
+
             Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
             subscriber.startAsync();
 
@@ -138,24 +142,29 @@ class RiskAnalysisCategoricalStats {
                 System.out.println("Unable to verify job completion.");
             }
 
+            // Build a request to get the completed job
+            GetDlpJobRequest getDlpJobRequest =
+                    GetDlpJobRequest.newBuilder()
+                        .setName(dlpJob.getName())
+                        .build();
+
             // Retrieve completed job status
-            DlpJob completedJob =
-                    dlpServiceClient.getDlpJob(
-                            GetDlpJobRequest.newBuilder()
-                                    .setName(dlpJob.getName())
-                                    .build());
+            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
             System.out.println("Job status: " + completedJob.getState());
 
             // Get the result and parse through and process the information
             CategoricalStatsResult result =
                     completedJob.getRiskDetails().getCategoricalStatsResult();
+            List<CategoricalStatsHistogramBucket> histogramBucketList =
+                    result.getValueFrequencyHistogramBucketsList();
 
-            for (CategoricalStatsHistogramBucket bucket :
-                    result.getValueFrequencyHistogramBucketsList()) {
-                System.out.printf(
-                        "Most common value occurs %d time(s).\n", bucket.getValueFrequencyUpperBound());
-                System.out.printf(
-                        "Least common value occurs %d time(s).\n", bucket.getValueFrequencyLowerBound());
+            for (CategoricalStatsHistogramBucket bucket : histogramBucketList) {
+                long mostCommonFrequency = bucket.getValueFrequencyUpperBound();
+                System.out.printf("Most common value occurs %d time(s).\n", mostCommonFrequency);
+
+                long leastCommonFrequency = bucket.getValueFrequencyLowerBound();
+                System.out.printf("Least common value occurs %d time(s).\n", leastCommonFrequency);
+
                 for (ValueFrequency valueFrequency : bucket.getBucketValuesList()) {
                     System.out.printf(
                             "Value %s occurs %d time(s).\n",

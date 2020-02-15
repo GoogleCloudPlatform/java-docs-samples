@@ -16,12 +16,12 @@
 package dlp.snippets;
 
 // [START dlp_k_anonymity]
-import com.google.pubsub.v1.PubsubMessage;
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.Action.PublishToPubSub;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult;
@@ -36,8 +36,10 @@ import com.google.privacy.dlp.v2.PrivacyMetric;
 import com.google.privacy.dlp.v2.PrivacyMetric.KAnonymityConfig;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
+import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PubsubMessage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,17 +56,15 @@ class RiskAnalysisKAnonymity {
         String tableId = "your-bigquery-table-id";
         String topicId = "pub-sub-topic";
         String subscriptionId = "pub-sub-subscription";
-        List<String> quasiIdColumns = Arrays.asList("name", "age", "zip_code", "...");
-        calculateKAnonymity(
-                projectId, datasetId, tableId, topicId, subscriptionId, quasiIdColumns);
+        calculateKAnonymity(projectId, datasetId, tableId, topicId, subscriptionId);
     }
+
     public static void calculateKAnonymity(
             String projectId,
             String datasetId,
             String tableId,
             String topicId,
-            String subscriptionId,
-            List<String> quasiIds) throws Exception {
+            String subscriptionId) throws Exception {
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources.
@@ -78,6 +78,9 @@ class RiskAnalysisKAnonymity {
                             .setTableId(tableId)
                             .build();
 
+            // These values represent the column names of quasi-identifiers to analyze
+            List<String> quasiIds = Arrays.asList("Age","Mystery");
+
             // Configure the privacy metric for the job
             List<FieldId> quasiIdFields =
                     quasiIds
@@ -88,7 +91,6 @@ class RiskAnalysisKAnonymity {
                     KAnonymityConfig.newBuilder().addAllQuasiIds(quasiIdFields).build();
             PrivacyMetric privacyMetric =
                     PrivacyMetric.newBuilder().setKAnonymityConfig(kanonymityConfig).build();
-
 
 
             // Create action to publish job status notifications over Google Cloud Pub/Sub
@@ -133,6 +135,7 @@ class RiskAnalysisKAnonymity {
                             ackReplyConsumer.nack();
                         }
                     };
+
             Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
             subscriber.startAsync();
 
@@ -145,31 +148,32 @@ class RiskAnalysisKAnonymity {
                 System.out.println("Unable to verify job completion.");
             }
 
+            // Build a request to get the completed job
+            GetDlpJobRequest getDlpJobRequest =
+                    GetDlpJobRequest.newBuilder()
+                            .setName(dlpJob.getName())
+                            .build();
+
             // Retrieve completed job status
-            DlpJob completedJob =
-                    dlpServiceClient.getDlpJob(
-                            GetDlpJobRequest.newBuilder()
-                                    .setName(dlpJob.getName())
-                                    .build());
+            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
             System.out.println("Job status: " + completedJob.getState());
 
-
-            KAnonymityResult kanonymityResult =
-                    completedJob.getRiskDetails().getKAnonymityResult();
-
             // Get the result and parse through and process the information
-            for (KAnonymityHistogramBucket result :
-                    kanonymityResult.getEquivalenceClassHistogramBucketsList()) {
+            KAnonymityResult kanonymityResult = completedJob.getRiskDetails().getKAnonymityResult();
+            List<KAnonymityHistogramBucket> histogramBucketList =
+                    kanonymityResult.getEquivalenceClassHistogramBucketsList();
+            for (KAnonymityHistogramBucket result : histogramBucketList) {
                 System.out.printf(
                         "Bucket size range: [%d, %d]\n",
-                        result.getEquivalenceClassSizeLowerBound(), result.getEquivalenceClassSizeUpperBound());
+                        result.getEquivalenceClassSizeLowerBound(),
+                        result.getEquivalenceClassSizeUpperBound());
 
                 for (KAnonymityEquivalenceClass bucket : result.getBucketValuesList()) {
                     List<String> quasiIdValues =
                             bucket
                                     .getQuasiIdsValuesList()
                                     .stream()
-                                    .map(v -> v.toString())
+                                    .map(Value::toString)
                                     .collect(Collectors.toList());
 
                     System.out.println("\tQuasi-ID values: " + String.join(", ", quasiIdValues));

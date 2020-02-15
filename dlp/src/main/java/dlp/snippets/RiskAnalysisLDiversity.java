@@ -16,12 +16,12 @@
 package dlp.snippets;
 
 // [START dlp_l_diversity]
-import com.google.pubsub.v1.PubsubMessage;
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.Action.PublishToPubSub;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult;
@@ -40,6 +40,7 @@ import com.google.privacy.dlp.v2.Value;
 import com.google.privacy.dlp.v2.ValueFrequency;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PubsubMessage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,11 +57,7 @@ class RiskAnalysisLDiversity{
         String tableId = "your-bigquery-table-id";
         String topicId = "pub-sub-topic";
         String subscriptionId = "pub-sub-subscription";
-        String sensitiveAttrColumn = "name";
-        List<String> quasiIdColumns = Arrays.asList("age", "gender");
-        calculateLDiversity(
-                projectId, datasetId, tableId, topicId,
-                subscriptionId, sensitiveAttrColumn, quasiIdColumns);
+        calculateLDiversity(projectId, datasetId, tableId, topicId, subscriptionId);
 
     }
     public static void calculateLDiversity(
@@ -68,9 +65,7 @@ class RiskAnalysisLDiversity{
             String datasetId,
             String tableId,
             String topicId,
-            String subscriptionId,
-            String sensitiveAttribute,
-            List<String> quasiIds) throws Exception {
+            String subscriptionId) throws Exception {
 
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -83,6 +78,14 @@ class RiskAnalysisLDiversity{
                             .setDatasetId(datasetId)
                             .setTableId(tableId)
                             .build();
+
+
+
+            // These values represent the column names of quasi-identifiers to analyze
+            List<String> quasiIds = Arrays.asList("Age","Mystery");
+
+            // This value represents the column name to compare the quasi-identifiers against
+            String sensitiveAttribute = "Name";
 
             // Configure the privacy metric for the job
             FieldId sensitiveAttributeField = FieldId.newBuilder().setName(sensitiveAttribute).build();
@@ -155,19 +158,21 @@ class RiskAnalysisLDiversity{
                 System.out.println("Unable to verify job completion.");
             }
 
+            // Build a request to get the completed job
+            GetDlpJobRequest getDlpJobRequest =
+                    GetDlpJobRequest.newBuilder()
+                            .setName(dlpJob.getName())
+                            .build();
+
             // Retrieve completed job status
-            DlpJob completedJob =
-                    dlpServiceClient.getDlpJob(
-                            GetDlpJobRequest.newBuilder()
-                                    .setName(dlpJob.getName())
-                                    .build());
+            DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
             System.out.println("Job status: " + completedJob.getState());
 
             // Get the result and parse through and process the information
             LDiversityResult ldiversityResult = completedJob.getRiskDetails().getLDiversityResult();
-
-            for (LDiversityHistogramBucket result :
-                    ldiversityResult.getSensitiveValueFrequencyHistogramBucketsList()) {
+            List<LDiversityHistogramBucket> histogramBucketList =
+                    ldiversityResult.getSensitiveValueFrequencyHistogramBucketsList();
+            for (LDiversityHistogramBucket result : histogramBucketList) {
                 for (LDiversityEquivalenceClass bucket : result.getBucketValuesList()) {
                     List<String> quasiIdValues =
                             bucket
