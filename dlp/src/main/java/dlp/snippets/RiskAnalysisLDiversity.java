@@ -16,7 +16,6 @@
 package dlp.snippets;
 
 // [START dlp_l_diversity]
-
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
@@ -79,8 +78,6 @@ class RiskAnalysisLDiversity{
                             .setTableId(tableId)
                             .build();
 
-
-
             // These values represent the column names of quasi-identifiers to analyze
             List<String> quasiIds = Arrays.asList("Age","Mystery");
 
@@ -101,8 +98,6 @@ class RiskAnalysisLDiversity{
                             .build();
             PrivacyMetric privacyMetric =
                     PrivacyMetric.newBuilder().setLDiversityConfig(ldiversityConfig).build();
-
-
 
             // Create action to publish job status notifications over Google Cloud Pub/
             ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);

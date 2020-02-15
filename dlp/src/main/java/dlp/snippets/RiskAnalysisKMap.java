@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class RiskAnalysisKMap {
 
@@ -74,8 +75,6 @@ class RiskAnalysisKMap {
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources.
         try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-
-
             // Specify the BigQuery table to analyze
             BigQueryTable bigQueryTable =
                     BigQueryTable.newBuilder()
@@ -96,25 +95,22 @@ class RiskAnalysisKMap {
                             .map(it -> InfoType.newBuilder().setName(it).build())
                             .collect(Collectors.toList());
 
-            Iterator<String> quasiIdsIterator = quasiIds.iterator();
-            Iterator<InfoType> infoTypesIterator = infoTypes.iterator();
-
             if (quasiIds.size() != infoTypes.size()) {
                 throw new IllegalArgumentException("The numbers of quasi-IDs and infoTypes must be equal!");
             }
 
-            ArrayList<TaggedField> taggedFields = new ArrayList();
-            while (quasiIdsIterator.hasNext() || infoTypesIterator.hasNext()) {
-                taggedFields.add(
-                        TaggedField.newBuilder()
-                                .setField(FieldId.newBuilder().setName(quasiIdsIterator.next()).build())
-                                .setInfoType(infoTypesIterator.next())
-                                .build());
-            }
+            ArrayList<TaggedField> taggedFields =
+                    IntStream
+                        .range(0, quasiIds.size())
+                        .mapToObj((i) ->
+                                TaggedField.newBuilder()
+                                    .setField(FieldId.newBuilder().setName(quasiIds.get(i)).build())
+                                    .setInfoType(infoTypes.get(i))
+                                    .build())
+                        .collect(Collectors.toCollection(ArrayList::new));
 
             // The k-map distribution region can be specified by any ISO-3166-1 region code.
             String regionCode = "US";
-
 
             // Configure the privacy metric for the job
             KMapEstimationConfig kmapConfig =
@@ -220,5 +216,4 @@ class RiskAnalysisKMap {
         }
     }
 }
-
 // [END dlp_k_map]
