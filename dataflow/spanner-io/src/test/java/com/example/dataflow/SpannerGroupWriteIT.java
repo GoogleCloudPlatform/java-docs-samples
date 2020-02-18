@@ -39,6 +39,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nullable;
@@ -49,6 +51,7 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerGroupWriteIT {
 
+  private final Random random = new Random();
   private String instanceId;
   private String databaseId;
 
@@ -59,7 +62,7 @@ public class SpannerGroupWriteIT {
   @Before
   public void setUp() throws Exception {
     instanceId = System.getProperty("spanner.test.instance");
-    databaseId = "df-spanner-groupwrite-it";
+    databaseId = "df-spanner-gwrite-it-" + random.nextInt(1000000000);
 
     spannerOptions = SpannerOptions.getDefaultInstance();
     spanner = spannerOptions.getService();

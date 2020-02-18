@@ -61,12 +61,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.5</version>
+      <version>1.30.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.30.7</version>
+      <version>1.30.8</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
