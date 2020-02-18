@@ -49,21 +49,6 @@ import java.util.stream.Collectors;
 
 class RiskAnalysisKAnonymity {
 
-  private static MessageReceiver buildMessageHandler(
-      DlpJob dlpJob, SettableApiFuture<Boolean> done) {
-    MessageReceiver handleMessage =
-        (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
-          String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-          if (dlpJob.getName().equals(messageAttribute)) {
-            done.set(true);
-            ackReplyConsumer.ack();
-          } else {
-            ackReplyConsumer.nack();
-          }
-        };
-    return handleMessage;
-  }
-
   public static void calculateKAnonymity() throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
@@ -133,8 +118,9 @@ class RiskAnalysisKAnonymity {
       ProjectSubscriptionName subscriptionName =
           ProjectSubscriptionName.of(projectId, subscriptionId);
 
-      MessageReceiver handleMessage = buildMessageHandler(dlpJob, done);
-      Subscriber subscriber = Subscriber.newBuilder(subscriptionName, handleMessage).build();
+      Subscriber subscriber =
+          Subscriber.newBuilder(subscriptionName, new JobCompletionMessageReceiver(dlpJob, done))
+              .build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
@@ -175,6 +161,28 @@ class RiskAnalysisKAnonymity {
       }
     }
   }
-}
 
+  // JobCompletionMessageReciever takes in a DLP job and future and implements the recieveMessage
+  // function to be called by the subscriber
+  static class JobCompletionMessageReceiver implements MessageReceiver {
+    private DlpJob job;
+    private SettableApiFuture<Boolean> done;
+
+    public JobCompletionMessageReceiver(DlpJob dlpJob, SettableApiFuture<Boolean> future) {
+      job = dlpJob;
+      done = future;
+    }
+
+    @Override
+    public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) {
+      String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+      if (job.getName().equals(messageAttribute)) {
+        done.set(true);
+        ackReplyConsumer.ack();
+      } else {
+        ackReplyConsumer.nack();
+      }
+    };
+  }
+}
 // [END dlp_k_anonymity]
