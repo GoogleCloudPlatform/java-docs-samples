@@ -43,7 +43,7 @@
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-api</artifactId>
-      <version>0.12.2</version>
+      <version>0.25.0</version>
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
