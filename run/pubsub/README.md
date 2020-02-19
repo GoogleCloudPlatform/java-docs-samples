@@ -4,32 +4,16 @@ This sample shows how to create a service that processes Pub/Sub messages.
 
 Use it with the [Cloud Pub/Sub with Cloud Run tutorial](http://cloud.google.com/run/docs/tutorials/pubsub).
 
+For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
+
 [![Run in Google Cloud][run_img]][run_link]
 
 [run_img]: https://storage.googleapis.com/cloudrun/button.svg
 [run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/pubsub
 
-## Build
 
-```
-docker build --tag pubsub-tutorial:java .
-```
+## Dependencies
 
-## Run
-
-```
-PORT=8080 && docker run --rm -p 8080:${PORT} -e PORT=${PORT} pubsub-tutorial:java
-```
-
-## Test
-
-```
-mvn clean verify
-```
-
-## Deploy
-
-```
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/pubsub-tutorial
-gcloud beta run deploy pubsub-tutorial --image gcr.io/${GOOGLE_CLOUD_PROJECT}/pubsub-tutorial
-```
+* **Spark**: Web server framework.
+* **Jib**: Container build tool.
+* **Junit**: [development] Test running framework.
