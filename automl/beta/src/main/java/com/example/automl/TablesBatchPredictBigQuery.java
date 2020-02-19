@@ -37,8 +37,8 @@ class TablesBatchPredictBigQuery {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
-    String inputUri = "bq://path/to/your/table";
-    String outputUri = "bq://path/to/save/results/";
+    String inputUri = "bq://YOUR_PROJECT_ID.bqDatasetID.bqTableId";
+    String outputUri = "bq://YOUR_PROJECT_ID";
     batchPredict(projectId, modelId, inputUri, outputUri);
   }
 
@@ -56,7 +56,7 @@ class TablesBatchPredictBigQuery {
       BatchPredictInputConfig inputConfig =
           BatchPredictInputConfig.newBuilder().setBigquerySource(bigQuerySource).build();
 
-      // Configure where to store the output in a GCS bucket
+      // Configure where to store the output in BigQuery
       BigQueryDestination bigQueryDestination =
           BigQueryDestination.newBuilder().setOutputUri(outputUri).build();
       BatchPredictOutputConfig outputConfig =
@@ -76,7 +76,7 @@ class TablesBatchPredictBigQuery {
 
       System.out.println("Waiting for operation to complete...");
       BatchPredictResult response = future.get();
-      System.out.println("Batch Prediction results saved to specified Cloud Storage bucket.");
+      System.out.println("Batch Prediction results saved to BigQuery.");
     }
   }
 }

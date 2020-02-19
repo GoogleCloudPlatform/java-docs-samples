@@ -19,16 +19,9 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import com.google.cloud.automl.v1beta1.AutoMlClient;
-import com.google.cloud.automl.v1beta1.Dataset;
-import com.google.cloud.automl.v1beta1.LocationName;
-import com.google.cloud.automl.v1beta1.TablesDatasetMetadata;
-import com.google.cloud.automl.v1beta1.TextExtractionDatasetMetadata;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
@@ -43,9 +36,6 @@ import org.junit.runners.JUnit4;
 public class TablesImportDatasetTest {
 
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String BUCKET_ID = PROJECT_ID + "-lcm";
-  private static final String BUCKET = "gs://" + BUCKET_ID;
-  private String datasetId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -62,44 +52,27 @@ public class TablesImportDatasetTest {
   }
 
   @Before
-  public void setUp() throws IOException {
-    // Create a fake dataset to be deleted
-    // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
-    // To prevent name collisions when running tests in multiple java versions at once.
-    // AutoML doesn't allow "-", but accepts "_"
-    String datasetName =
-            String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
-    try (AutoMlClient client = AutoMlClient.create()) {
-      LocationName projectLocation = LocationName.of(PROJECT_ID, "us-central1");
-      TablesDatasetMetadata metadata = TablesDatasetMetadata.newBuilder().build();
-      Dataset dataset =
-              Dataset.newBuilder()
-                      .setDisplayName(datasetName)
-                      .setTablesDatasetMetadata(metadata)
-                      .build();
-
-      Dataset createdDataset = client.createDataset(projectLocation, dataset);
-      String[] names = createdDataset.getName().split("/");
-      datasetId = names[names.length - 1];
-    }
-
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
   }
 
   @After
-  public void tearDown() throws InterruptedException, ExecutionException, IOException {
-    // Delete the created dataset
-    DeleteDataset.deleteDataset(PROJECT_ID, datasetId);
+  public void tearDown() {
     System.setOut(null);
   }
 
   @Test
-  public void testTablesImportDataset() throws IOException, ExecutionException, InterruptedException {
-    ImportDataset.importDataset(
-            PROJECT_ID, datasetId, "gs://cloud-ml-tables-data/bank-marketing.csv");
-    String got = bout.toString();
-    assertThat(got).contains("Dataset imported.");
+  public void testTablesImportDataset() {
+    try {
+      ImportDataset.importDataset(
+              PROJECT_ID, "TEN0000000000000000000", "gs://cloud-ml-tables-data/bank-marketing.csv");
+      String got = bout.toString();
+      assertThat(got).contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage())
+              .contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
+    }
   }
 }
