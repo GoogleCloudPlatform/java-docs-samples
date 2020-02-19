@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-package com.example.jobs;
+package com.google.cloud.examples.talent.v4beta1;
 
-// [START job_search_list_tenants_beta]
+// [START job_search_create_tenant_beta]
 
-import com.google.cloud.talent.v4beta1.ListTenantsRequest;
+import com.google.cloud.talent.v4beta1.CreateTenantRequest;
 import com.google.cloud.talent.v4beta1.ProjectName;
 import com.google.cloud.talent.v4beta1.Tenant;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
 import java.io.IOException;
 
-public class JobSearchListTenants {
+public class JobSearchCreateTenant {
 
-  public static void listTenants() throws IOException {
+  public static void createTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    listTenants(projectId);
+    String externalId = "your-external-id";
+    createTenant(projectId, externalId);
   }
 
-  // List Tenants.
-  public static void listTenants(String projectId) throws IOException {
+  // Create Tenant for scoping resources, e.g. companies and jobs.
+  public static void createTenant(String projectId, String externalId) throws IOException {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
+      Tenant tenant = Tenant.newBuilder().setExternalId(externalId).build();
 
-      ListTenantsRequest request =
-          ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
+      CreateTenantRequest request =
+          CreateTenantRequest.newBuilder().setParent(parent.toString()).setTenant(tenant).build();
 
-      for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
-        System.out.printf("Tenant Name: %s\n", responseItem.getName());
-        System.out.printf("External ID: %s\n", responseItem.getExternalId());
-      }
+      Tenant response = tenantServiceClient.createTenant(request);
+      System.out.println("Created Tenant");
+      System.out.printf("Name: %s\n", response.getName());
+      System.out.printf("External ID: %s\n", response.getExternalId());
     }
   }
 }
-// [END job_search_list_tenants_beta]
+// [END job_search_create_tenant_beta]

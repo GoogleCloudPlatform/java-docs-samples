@@ -14,44 +14,52 @@
  * limitations under the License.
  */
 
-package com.example.jobs;
+package com.google.cloud.examples.talent.v4beta1;
 
-import com.google.cloud.talent.v4beta1.BatchDeleteJobsRequest;
+import com.google.cloud.talent.v4beta1.CreateJobRequest;
+import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
-public class JobSearchBatchDeleteJob {
-
-  // [START job_search_batch_delete_job]
+public class JobSearchCreateJobCustomAttributes {
+  // [START job_search_create_job_custom_attributes]
 
   /**
-   * Batch delete jobs using a filter
+   * Create Job with Custom Attributes
    *
    * @param projectId Your Google Cloud Project ID
    * @param tenantId Identifier of the Tenantd
-   * @param filter The filter string specifies the jobs to be deleted. For example: companyName =
-   *     "projects/api-test-project/companies/123" AND equisitionId = "req-1"
    */
-  public static void batchDeleteJobs(String projectId, String tenantId, String filter) {
-    // [START job_search_batch_delete_job_core]
+  public static void createJob(
+      String projectId,
+      String tenantId,
+      String companyName,
+      String requisitionId,
+      String languageCode) {
+    // [START job_search_create_job_custom_attributes_core]
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       // projectId = "Your Google Cloud Project ID";
       // tenantId = "Your Tenant ID (using tenancy is optional)";
-      // filter = "[Query]";
+      // companyName = "Company name, e.g. projects/your-project/companies/company-id";
+      // requisitionId = "Job requisition ID, aka Posting ID. Unique per job.";
+      // languageCode = "en-US";
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
-      BatchDeleteJobsRequest request =
-          BatchDeleteJobsRequest.newBuilder()
-              .setParent(parent.toString())
-              .setFilter(filter)
+      Job job =
+          Job.newBuilder()
+              .setCompany(companyName)
+              .setRequisitionId(requisitionId)
+              .setLanguageCode(languageCode)
               .build();
-      jobServiceClient.batchDeleteJobs(request);
-      System.out.println("Batch deleted jobs from filter");
+      CreateJobRequest request =
+          CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
+      Job response = jobServiceClient.createJob(request);
+      System.out.printf("Created job: %s\n", response.getName());
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
     }
-    // [END job_search_batch_delete_job_core]
+    // [END job_search_create_job_custom_attributes_core]
   }
-  // [END job_search_batch_delete_job]
+  // [END job_search_create_job_custom_attributes]
 
 }

@@ -14,40 +14,37 @@
  * limitations under the License.
  */
 
-package com.example.jobs;
+package com.google.cloud.examples.talent.v4beta1;
 
-// [START job_search_create_tenant_beta]
+// [START job_search_get_tenant_beta]
 
-import com.google.cloud.talent.v4beta1.CreateTenantRequest;
-import com.google.cloud.talent.v4beta1.ProjectName;
+import com.google.cloud.talent.v4beta1.GetTenantRequest;
 import com.google.cloud.talent.v4beta1.Tenant;
+import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
 import java.io.IOException;
 
-public class JobSearchCreateTenant {
+public class JobSearchGetTenant {
 
-  public static void createTenant() throws IOException {
+  public static void getTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String externalId = "your-external-id";
-    createTenant(projectId, externalId);
+    String tenantId = "your-tenant-id";
+    getTenant(projectId, tenantId);
   }
 
-  // Create Tenant for scoping resources, e.g. companies and jobs.
-  public static void createTenant(String projectId, String externalId) throws IOException {
+  // Get Tenant by name.
+  public static void getTenant(String projectId, String tenantId) throws IOException {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      ProjectName parent = ProjectName.of(projectId);
-      Tenant tenant = Tenant.newBuilder().setExternalId(externalId).build();
+      TenantName name = TenantName.of(projectId, tenantId);
 
-      CreateTenantRequest request =
-          CreateTenantRequest.newBuilder().setParent(parent.toString()).setTenant(tenant).build();
+      GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
 
-      Tenant response = tenantServiceClient.createTenant(request);
-      System.out.println("Created Tenant");
+      Tenant response = tenantServiceClient.getTenant(request);
       System.out.printf("Name: %s\n", response.getName());
       System.out.printf("External ID: %s\n", response.getExternalId());
     }
   }
 }
-// [END job_search_create_tenant_beta]
+// [END job_search_get_tenant_beta]

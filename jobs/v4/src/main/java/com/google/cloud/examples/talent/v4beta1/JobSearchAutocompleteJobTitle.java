@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jobs;
+package com.google.cloud.examples.talent.v4beta1;
 
 import com.google.cloud.talent.v4beta1.CompleteQueryRequest;
 import com.google.cloud.talent.v4beta1.CompleteQueryResponse;

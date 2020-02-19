@@ -14,37 +14,38 @@
  * limitations under the License.
  */
 
-package com.example.jobs;
+package com.google.cloud.examples.talent.v4beta1;
 
-// [START job_search_get_tenant_beta]
+// [START job_search_list_tenants_beta]
 
-import com.google.cloud.talent.v4beta1.GetTenantRequest;
+import com.google.cloud.talent.v4beta1.ListTenantsRequest;
+import com.google.cloud.talent.v4beta1.ProjectName;
 import com.google.cloud.talent.v4beta1.Tenant;
-import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
 import java.io.IOException;
 
-public class JobSearchGetTenant {
+public class JobSearchListTenants {
 
-  public static void getTenant() throws IOException {
+  public static void listTenants() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String tenantId = "your-tenant-id";
-    getTenant(projectId, tenantId);
+    listTenants(projectId);
   }
 
-  // Get Tenant by name.
-  public static void getTenant(String projectId, String tenantId) throws IOException {
+  // List Tenants.
+  public static void listTenants(String projectId) throws IOException {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      TenantName name = TenantName.of(projectId, tenantId);
+      ProjectName parent = ProjectName.of(projectId);
 
-      GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
+      ListTenantsRequest request =
+          ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
 
-      Tenant response = tenantServiceClient.getTenant(request);
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
+        System.out.printf("Tenant Name: %s\n", responseItem.getName());
+        System.out.printf("External ID: %s\n", responseItem.getExternalId());
+      }
     }
   }
 }
-// [END job_search_get_tenant_beta]
+// [END job_search_list_tenants_beta]
