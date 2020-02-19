@@ -14,37 +14,35 @@
  * limitations under the License.
  */
 
-package com.example.jobs;
+package com.google.cloud.examples.talent.v4beta1;
 
-// [START job_search_list_tenants]
+// [START job_search_delete_tenant]
 
-import com.google.cloud.talent.v4beta1.ListTenantsRequest;
-import com.google.cloud.talent.v4beta1.ProjectName;
-import com.google.cloud.talent.v4beta1.Tenant;
+import com.google.cloud.talent.v4beta1.DeleteTenantRequest;
+import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
 
 import java.io.IOException;
 
-public class JobSearchListTenants {
+public class JobSearchDeleteTenant {
 
-  public static void listTenants() throws IOException {
+  public static void deleteTenant() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    listTenants(projectId);
+    String tenantId = "your-tenant-id";
+    deleteTenant(projectId, tenantId);
   }
 
-  // List Tenants.
-  public static void listTenants(String projectId) throws IOException {
+  // Delete Tenant.
+  public static void deleteTenant(String projectId, String tenantId) throws IOException {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
-      ProjectName parent = ProjectName.of(projectId);
+      TenantName name = TenantName.of(projectId, tenantId);
 
-      ListTenantsRequest request = ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
+      DeleteTenantRequest request = DeleteTenantRequest.newBuilder().setName(name.toString()).build();
 
-      for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
-        System.out.printf("Tenant Name: %s\n", responseItem.getName());
-        System.out.printf("External ID: %s\n", responseItem.getExternalId());
-      }
+      tenantServiceClient.deleteTenant(request);
+      System.out.println("Deleted Tenant.");
     }
   }
 }
-// [END job_search_list_tenants]
+// [END job_search_delete_tenant]
