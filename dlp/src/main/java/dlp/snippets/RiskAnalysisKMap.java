@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 class RiskAnalysisKMap {
 
@@ -93,15 +92,15 @@ class RiskAnalysisKMap {
         throw new IllegalArgumentException("The numbers of quasi-IDs and infoTypes must be equal!");
       }
 
-      ArrayList<TaggedField> taggedFields =
-          IntStream.range(0, quasiIds.size())
-              .mapToObj(
-                  (i) ->
-                      TaggedField.newBuilder()
-                          .setField(FieldId.newBuilder().setName(quasiIds.get(i)).build())
-                          .setInfoType(infoTypes.get(i))
-                          .build())
-              .collect(Collectors.toCollection(ArrayList::new));
+      List<TaggedField> taggedFields = new ArrayList<TaggedField>();
+      for (int i = 0; i < quasiIds.size(); i++) {
+        TaggedField taggedField =
+            TaggedField.newBuilder()
+                .setField(FieldId.newBuilder().setName(quasiIds.get(i)).build())
+                .setInfoType(infoTypes.get(i))
+                .build();
+        taggedFields.add(taggedField);
+      }
 
       // The k-map distribution region can be specified by any ISO-3166-1 region code.
       String regionCode = "US";
