@@ -51,7 +51,7 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
-      <version>3.8.4</version>
+      <version>3.8.5</version>
     </dependency>
 
     <dependency>
