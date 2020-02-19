@@ -56,6 +56,11 @@
       <version>0.25.0</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+       <groupId>joda-time</groupId>
+       <artifactId>joda-time</artifactId>
+       <version>2.10.5</version>
+    </dependency>
     <!-- [END trace_setup_java_maven] -->
 
     <!-- Test dependencies -->
