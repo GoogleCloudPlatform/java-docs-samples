@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
@@ -53,8 +54,8 @@ public class KnowledgeBaseManagementIT {
   private static String TEST_DOCUMENT_ID = "MTUwNjk0ODg1NTU4NzkzMDExMg";
   private static String SESSION_ID = "fake_session_for_testing";
   private static String LANGUAGE_CODE = "en-US";
-  private static String KNOWLEDGE_BASE_NAME = "fake_knowledge_base_name";
-  private static String DOCUMENT_BASE_NAME = "fake_document_name";
+  private static String KNOWLEDGE_BASE_NAME = String.format("test_%s", UUID.randomUUID());
+  private static String DOCUMENT_BASE_NAME = String.format("test_%s", UUID.randomUUID());
 
   private static List<String> TEXTS = ImmutableList
       .of("How do I sign up?", "Is my data redundant?", "Where can I find pricing information?",
