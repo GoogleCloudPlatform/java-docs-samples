@@ -53,7 +53,7 @@
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-impl</artifactId>
-      <version>0.12.2</version>
+      <version>0.25.0</version>
       <scope>runtime</scope>
     </dependency>
     <!-- [END trace_setup_java_maven] -->
