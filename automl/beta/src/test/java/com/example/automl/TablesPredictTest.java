@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TablesPredictTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String MODEL_ID = "TBL5997440105332080640";
+  private static final String MODEL_ID = "TBL7972827093840953344";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
