@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_create_job_beta]
+// [START job_search_create_job]
 
 import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
@@ -41,34 +41,20 @@ public class JobSearchCreateJob {
   }
 
   // Create a job.
-  public static void createJob(
-      String projectId,
-      String tenantId,
-      String companyId,
-      String requisitionId,
-      String jobApplicationUrl)
-      throws IOException {
+  public static void createJob(String projectId, String tenantId, String companyId, String requisitionId,
+      String jobApplicationUrl) throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
-      Job.ApplicationInfo applicationInfo =
-          Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
-      Job job =
-          Job.newBuilder()
-              .setCompany(companyId)
-              .setRequisitionId(requisitionId)
-              .setTitle("Software Developer")
-              .setDescription("Develop, maintain the software solutions.")
-              .setApplicationInfo(applicationInfo)
-              .addAddresses("601 N 34th ST, Seattle, WA")
-              .setLanguageCode("en-US")
-              .build();
+      Job.ApplicationInfo applicationInfo = Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
+      Job job = Job.newBuilder().setCompany(companyId).setRequisitionId(requisitionId).setTitle("Software Developer")
+          .setDescription("Develop, maintain the software solutions.").setApplicationInfo(applicationInfo)
+          .addAddresses("601 N 34th ST, Seattle, WA").setLanguageCode("en-US").build();
 
-      CreateJobRequest request =
-          CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
+      CreateJobRequest request = CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
 
       Job response = jobServiceClient.createJob(request);
       System.out.printf("Created job: %s\n", response.getName());
     }
   }
 }
-// [END job_search_create_job_beta]
+// [END job_search_create_job]

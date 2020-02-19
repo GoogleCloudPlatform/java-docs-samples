@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_delete_tenant_beta]
+// [START job_search_delete_tenant]
 
 import com.google.cloud.talent.v4beta1.DeleteTenantRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
@@ -38,12 +38,11 @@ public class JobSearchDeleteTenant {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
       TenantName name = TenantName.of(projectId, tenantId);
 
-      DeleteTenantRequest request =
-          DeleteTenantRequest.newBuilder().setName(name.toString()).build();
+      DeleteTenantRequest request = DeleteTenantRequest.newBuilder().setName(name.toString()).build();
 
       tenantServiceClient.deleteTenant(request);
       System.out.println("Deleted Tenant.");
     }
   }
 }
-// [END job_search_delete_tenant_beta]
+// [END job_search_delete_tenant]

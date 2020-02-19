@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_get_company_beta]
+// [START job_search_get_company]
 
 import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyName;
@@ -37,8 +37,7 @@ public class JobSearchGetCompany {
   }
 
   // Get Company.
-  public static void getCompany(String projectId, String tenantId, String companyId)
-      throws IOException {
+  public static void getCompany(String projectId, String tenantId, String companyId) throws IOException {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       CompanyName name = CompanyWithTenantName.of(projectId, tenantId, companyId);
 
@@ -50,4 +49,4 @@ public class JobSearchGetCompany {
     }
   }
 }
-// [END job_search_get_company_beta]
+// [END job_search_get_company]

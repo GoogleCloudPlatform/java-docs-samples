@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_get_tenant_beta]
+// [START job_search_get_tenant]
 
 import com.google.cloud.talent.v4beta1.GetTenantRequest;
 import com.google.cloud.talent.v4beta1.Tenant;
@@ -47,4 +47,4 @@ public class JobSearchGetTenant {
     }
   }
 }
-// [END job_search_get_tenant_beta]
+// [END job_search_get_tenant]

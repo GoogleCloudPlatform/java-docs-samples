@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_create_tenant_beta]
+// [START job_search_create_tenant]
 
 import com.google.cloud.talent.v4beta1.CreateTenantRequest;
 import com.google.cloud.talent.v4beta1.ProjectName;
@@ -40,8 +40,8 @@ public class JobSearchCreateTenant {
       ProjectName parent = ProjectName.of(projectId);
       Tenant tenant = Tenant.newBuilder().setExternalId(externalId).build();
 
-      CreateTenantRequest request =
-          CreateTenantRequest.newBuilder().setParent(parent.toString()).setTenant(tenant).build();
+      CreateTenantRequest request = CreateTenantRequest.newBuilder().setParent(parent.toString()).setTenant(tenant)
+          .build();
 
       Tenant response = tenantServiceClient.createTenant(request);
       System.out.println("Created Tenant");
@@ -50,4 +50,4 @@ public class JobSearchCreateTenant {
     }
   }
 }
-// [END job_search_create_tenant_beta]
+// [END job_search_create_tenant]

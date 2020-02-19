@@ -46,13 +46,13 @@
             <artifactId>google-cloud-talent</artifactId>
         </dependency>
 
-        <!-- [START jobs_java_dependencies_beta] -->
+        <!-- [START jobs_java_dependencies] -->
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-jobs</artifactId>
             <version>v3-rev20190912-1.30.3</version>
         </dependency>
-        <!-- [END jobs_java_dependencies_beta] -->
+        <!-- [END jobs_java_dependencies] -->
 
         <!-- Test dependencies -->
         <dependency>

@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_list_tenants_beta]
+// [START job_search_list_tenants]
 
 import com.google.cloud.talent.v4beta1.ListTenantsRequest;
 import com.google.cloud.talent.v4beta1.ProjectName;
@@ -38,8 +38,7 @@ public class JobSearchListTenants {
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
 
-      ListTenantsRequest request =
-          ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
+      ListTenantsRequest request = ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
 
       for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
         System.out.printf("Tenant Name: %s\n", responseItem.getName());
@@ -48,4 +47,4 @@ public class JobSearchListTenants {
     }
   }
 }
-// [END job_search_list_tenants_beta]
+// [END job_search_list_tenants]

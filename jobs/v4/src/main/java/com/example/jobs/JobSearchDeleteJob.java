@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_delete_job_beta]
+// [START job_search_delete_job]
 
 import com.google.cloud.talent.v4beta1.DeleteJobRequest;
 import com.google.cloud.talent.v4beta1.JobName;
@@ -47,4 +47,4 @@ public class JobSearchDeleteJob {
     }
   }
 }
-// [END job_search_delete_job_beta]
+// [END job_search_delete_job]

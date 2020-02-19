@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_list_companies_beta]
+// [START job_search_list_companies]
 
 import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
@@ -40,8 +40,7 @@ public class JobSearchListCompanies {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
 
-      ListCompaniesRequest request =
-          ListCompaniesRequest.newBuilder().setParent(parent.toString()).build();
+      ListCompaniesRequest request = ListCompaniesRequest.newBuilder().setParent(parent.toString()).build();
 
       for (Company responseItem : companyServiceClient.listCompanies(request).iterateAll()) {
         System.out.printf("Company Name: %s\n", responseItem.getName());
@@ -51,4 +50,4 @@ public class JobSearchListCompanies {
     }
   }
 }
-// [END job_search_list_companies_beta]
+// [END job_search_list_companies]

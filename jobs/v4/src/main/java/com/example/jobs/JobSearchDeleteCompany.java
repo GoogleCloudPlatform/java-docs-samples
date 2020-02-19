@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_delete_company_beta]
+// [START job_search_delete_company]
 
 import com.google.cloud.talent.v4beta1.CompanyName;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
@@ -36,17 +36,15 @@ public class JobSearchDeleteCompany {
   }
 
   // Delete Company.
-  public static void deleteCompany(String projectId, String tenantId, String companyId)
-      throws IOException {
+  public static void deleteCompany(String projectId, String tenantId, String companyId) throws IOException {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       CompanyName name = CompanyWithTenantName.of(projectId, tenantId, companyId);
 
-      DeleteCompanyRequest request =
-          DeleteCompanyRequest.newBuilder().setName(name.toString()).build();
+      DeleteCompanyRequest request = DeleteCompanyRequest.newBuilder().setName(name.toString()).build();
 
       companyServiceClient.deleteCompany(request);
       System.out.println("Deleted company");
     }
   }
 }
-// [END job_search_delete_company_beta]
+// [END job_search_delete_company]
