@@ -145,9 +145,11 @@ class RiskAnalysisKMap {
       ProjectSubscriptionName subscriptionName =
           ProjectSubscriptionName.of(projectId, subscriptionId);
 
-      Subscriber subscriber =
-          Subscriber.newBuilder(subscriptionName, new JobCompletionMessageReceiver(dlpJob, done))
-              .build();
+      MessageReceiver messageHandler =
+          (PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) -> {
+            handleMessage(dlpJob, done, pubsubMessage, ackReplyConsumer);
+          };
+      Subscriber subscriber = Subscriber.newBuilder(subscriptionName, messageHandler).build();
       subscriber.startAsync();
 
       // Wait for job completion semi-synchronously
@@ -192,27 +194,19 @@ class RiskAnalysisKMap {
       }
     }
   }
-  // JobCompletionMessageReciever takes in a DLP job and future and implements the recieveMessage
-  // function to be called by the subscriber
-  static class JobCompletionMessageReceiver implements MessageReceiver {
-    private DlpJob job;
-    private SettableApiFuture<Boolean> done;
-
-    public JobCompletionMessageReceiver(DlpJob dlpJob, SettableApiFuture<Boolean> future) {
-      job = dlpJob;
-      done = future;
+  // handleMessage injects the job and settableFuture into the message reciever interface
+  private static void handleMessage(
+      DlpJob job,
+      SettableApiFuture<Boolean> done,
+      PubsubMessage pubsubMessage,
+      AckReplyConsumer ackReplyConsumer) {
+    String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
+    if (job.getName().equals(messageAttribute)) {
+      done.set(true);
+      ackReplyConsumer.ack();
+    } else {
+      ackReplyConsumer.nack();
     }
-
-    @Override
-    public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer ackReplyConsumer) {
-      String messageAttribute = pubsubMessage.getAttributesMap().get("DlpJobName");
-      if (job.getName().equals(messageAttribute)) {
-        done.set(true);
-        ackReplyConsumer.ack();
-      } else {
-        ackReplyConsumer.nack();
-      }
-    };
   }
 }
 // [END dlp_k_map]
