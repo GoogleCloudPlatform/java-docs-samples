@@ -68,15 +68,28 @@ Commands:
 
 ## Integration tests
 ### Setup
+- Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
 - [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt).
-- Set the `GCS_PATH` environment variable to point to the path for the bucket.
+    - Set the `GCS_PATH` environment variable to point to the path for the bucket.
+- Copy and paste the data below into a CSV file and [create a BigQuery table](https://cloud.google.com/bigquery/docs/loading-data-local) from the file:
+    ```$xslt
+    Name,TelephoneNumber,Mystery,Age,Gender
+    James,(567) 890-1234,8291 3627 8250 1234,19,Male
+    Gandalf,(123) 456-7890,4231 5555 6781 9876,27,Male
+    Dumbledore,(313) 337-1337,6291 8765 1095 7629,27,Male
+    Joe,(452) 123-1234,3782 2288 1166 3030,35,Male
+    Marie,(452) 123-1234,8291 3627 8250 1234,35,Female
+    Carrie,(567) 890-1234,2253 5218 4251 4526,35,Female
+    
+    ```
+  - Set the `BIGQUERY_DATASET` and `BIGQUERY_TABLE` environment values.
+- [Create a Google Cloud Pub/Sub](https://console.cloud.google.com/datastore) topic and and a subscription that is subscribed to the topic.
+    - Set the `PUB_SUB_TOPIC` and `PUB_SUB_SUBSCRIPTION` environment variables to the corresponding values.
 - [Create a Google Cloud Datastore](https://console.cloud.google.com/datastore) kind and add an entity with properties:
   - `property1` : john@doe.com
   - `property2` : 343-343-3435
-- [Create a Google Cloud Pub/Sub](https://console.cloud.google.com/datastore) topic with the id `dlp-tests` and a subscription with the id `dlp-test`
-  - Set the `PUB_SUB_TOPIC_ID` and `PUB_SUB_SUBSCRIPTION_ID` to the corresponding values.
-- Update the Google Cloud Storage path and Datastore kind in [InspectTests.java](src/test/java/dlp/snippets/InspectTests.java).
-- Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
+-  Update the Datastore kind in [InspectTests.java](src/test/java/dlp/snippets/InspectTests.java).
+
 
 ## Run
 Run all tests:

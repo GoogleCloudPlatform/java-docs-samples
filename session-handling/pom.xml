@@ -66,7 +66,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-contrib-http-util</artifactId>
-      <version>0.11.1</version>
+      <version>0.25.0</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -104,7 +104,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>1.7.0</version>
+        <version>1.8.0</version>
         <configuration>
           <to>
             <image>gcr.io/${gcloud.appId}/session-handling</image>
