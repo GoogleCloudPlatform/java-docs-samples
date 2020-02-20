@@ -77,7 +77,7 @@ The following instructions help you prepare your Google Cloud project.
    For more information, see
    [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts)
 
-1. Set your `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account key file.
+1. Set the `GOOGLE_APPLICATION_CREDENTIALS` to your service account key file.
 
    ```sh
    export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/credentials.json

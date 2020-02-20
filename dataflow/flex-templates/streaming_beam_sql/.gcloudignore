@@ -1,0 +1,7 @@
+# Ignore everything from the Cloud Build command.
+*
+
+# Except for the following files:
+!Dockerfile
+!target/
+!target/streaming-beam-sql-1.0.jar

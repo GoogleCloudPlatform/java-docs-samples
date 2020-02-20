@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.beam.samples</groupId>
-  <artifactId>kafka-to-bigquery</artifactId>
+  <artifactId>streaming-beam-sql</artifactId>
   <version>1.0</version>
 
   <properties>
@@ -28,8 +28,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.16.0</beam.version>
-    <kafka.version>2.4.0</kafka.version>
+    <beam.version>2.19.0</beam.version>
 
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -81,8 +80,8 @@
         <version>${maven-compiler-plugin.version}</version>
       </plugin>
 
-      <!-- The maven shade plugin is used to create a "fat JAR" with all the
-        dependencies needed to run as a standalone JAR.
+      <!-- The maven shade plugin is used to create an uber-jar with all the
+        dependencies needed to run as a standalone jar.
         Do not minimize the jar since that removes some of the required
         classes for the runners. -->
       <plugin>
@@ -95,6 +94,11 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+              </transformers>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -159,19 +163,6 @@
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
       <version>${beam.version}</version>
-    </dependency>
-
-    <!-- Apache Kafka -->
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-io-kafka</artifactId>
-      <version>${beam.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-      <version>${kafka.version}</version>
     </dependency>
   </dependencies>
 </project>
