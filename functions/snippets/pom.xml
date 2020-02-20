@@ -69,6 +69,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-testlib</artifactId>
+      <version>28.2-jre</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-core</artifactId>
       <version>${powermock.version}</version>
