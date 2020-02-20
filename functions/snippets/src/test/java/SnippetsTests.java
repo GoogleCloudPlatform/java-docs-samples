@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
  */
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import com.google.cloud.functions.HttpRequest;
-import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -37,55 +35,47 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"javax.net.ssl.*", "com.google.*"})
-@PrepareForTest(StackdriverLogging.class)
 public class SnippetsTests {
-  @Mock private HttpRequest request;
-  @Mock private HttpResponse response;
+  private MockHttpRequest request;
+  private MockHttpResponse response;
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
 
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private Logger backgroundLogger = Logger.getLogger(HelloBackground.class.getName());
-  private Logger pubsubLogger = Logger.getLogger(HelloPubSub.class.getName());
-  private Logger gcsLogger = Logger.getLogger(HelloGcs.class.getName());
-  private Logger stackdriverLogger = Logger.getLogger(StackdriverLogging.class.getName());
+  private static final Logger backgroundLogger = Logger.getLogger(HelloBackground.class.getName());
+  private static final Logger pubsubLogger = Logger.getLogger(HelloPubSub.class.getName());
+  private static final Logger gcsLogger = Logger.getLogger(HelloGcs.class.getName());
+  private static final Logger stackdriverLogger = Logger.getLogger(
+      StackdriverLogging.class.getName());
 
-  private TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler logHandler = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
 
   @Rule
-  private EnvironmentVariables environmentVariables = new EnvironmentVariables();
+  public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @Before
-  public void beforeTest() throws Exception {
+  public void beforeTest() throws IOException {
     backgroundLogger.addHandler(logHandler);
     pubsubLogger.addHandler(logHandler);
     gcsLogger.addHandler(logHandler);
     stackdriverLogger.addHandler(logHandler);
 
-    // Use a new mock for each test
-    request = mock(HttpRequest.class);
-    response = mock(HttpResponse.class);
+    // Use new mock objects for each test
+    request = new MockHttpRequest();
+    response = new MockHttpResponse();
 
     BufferedReader reader = new BufferedReader(new StringReader("{}"));
-    when(request.getReader()).thenReturn(reader);
+    request.bufferedReader = reader;
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    when(response.getWriter()).thenReturn(writerOut);
+    response.writer = writerOut;
 
     // Use the same logging handler for all tests
     Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
@@ -99,7 +89,6 @@ public class SnippetsTests {
     response = null;
     responseOut = null;
     System.setOut(null);
-    Mockito.reset();
     logHandler.flush();
   }
 
@@ -129,7 +118,7 @@ public class SnippetsTests {
 
   @Test
   public void corsEnabledTest() throws IOException {
-    when(request.getMethod()).thenReturn("GET");
+    request.httpMethod = "GET";
 
     new CorsEnabled().service(request, response);
 
@@ -140,9 +129,11 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_json() throws IOException {
     // Send a request with JSON data
-    when(request.getContentType()).thenReturn(Optional.of("application/json"));
+    request.contentType = Optional.of("application/json");
+
     BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
-    when(request.getReader()).thenReturn(bodyReader);
+
+    request.bufferedReader = bodyReader;
 
     new ParseContentType().service(request, response);
 
@@ -153,13 +144,14 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_base64() throws IOException {
     // Send a request with octet-stream
-    when(request.getContentType()).thenReturn(Optional.of("application/octet-stream"));
+    request.contentType = Optional.of("application/octet-stream");
+
     // Create mock input stream to return the data
     byte[] b64Body = Base64.getEncoder().encode("John".getBytes(StandardCharsets.UTF_8));
-    InputStream bodyInputStream = mock(InputStream.class);
-    when(bodyInputStream.readAllBytes()).thenReturn(b64Body);
+    InputStream bodyInputStream = new ByteArrayInputStream(b64Body);
+
     // Return the input stream when the request calls it
-    when(request.getInputStream()).thenReturn(bodyInputStream);
+    request.inputStream = bodyInputStream;
 
     new ParseContentType().service(request, response);
 
@@ -170,9 +162,10 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_text() throws IOException {
     // Send a request with plain text
-    when(request.getContentType()).thenReturn(Optional.of("text/plain"));
+    request.contentType = Optional.of("text/plain");
     BufferedReader bodyReader = new BufferedReader(new StringReader("John"));
-    when(request.getReader()).thenReturn(bodyReader);
+
+    request.bufferedReader = bodyReader;
 
     new ParseContentType().service(request, response);
 
@@ -183,8 +176,8 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_form() throws IOException {
     // Send a request with plain text
-    when(request.getContentType()).thenReturn(Optional.of("application/x-www-form-urlencoded"));
-    when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
+    request.contentType = Optional.of("application/x-www-form-urlencoded");
+    request.queryParams.put("name", Arrays.asList(new String[]{"John"}));
 
     new ParseContentType().service(request, response);
 
@@ -252,7 +245,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void helloHttp_noParamsGet() throws Exception {
+  public void helloHttp_noParamsGet() throws IOException {
     new HelloHttp().service(request, response);
 
     writerOut.flush();
@@ -260,8 +253,8 @@ public class SnippetsTests {
   }
 
   @Test
-  public void helloHttp_urlParamsGet() throws Exception {
-    when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("Tom"));
+  public void helloHttp_urlParamsGet() throws IOException {
+    request.queryParams.put("name", Arrays.asList(new String[]{"Tom"}));
 
     new HelloHttp().service(request, response);
 
@@ -270,9 +263,10 @@ public class SnippetsTests {
   }
 
   @Test
-  public void helloHttp_bodyParamsPost() throws Exception {
+  public void helloHttp_bodyParamsPost() throws IOException {
     BufferedReader jsonReader = new BufferedReader(new StringReader("{'name': 'Jane'}"));
-    when(request.getReader()).thenReturn(jsonReader);
+
+    request.bufferedReader = jsonReader;
 
     new HelloHttp().service(request, response);
     writerOut.flush();

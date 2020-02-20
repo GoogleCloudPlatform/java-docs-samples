@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 // [START functions_helloworld_pubsub_message]
 import java.util.Map;
 
-public class PubSubMessage {
+class PubSubMessage {
+  // Field types/names are specified by Cloud Functions
+  // Changing them may break your code!
   String data;
   Map<String, String> attributes;
   String messageId;

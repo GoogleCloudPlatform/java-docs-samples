@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START functions_storage_unit_test]
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,12 +33,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-//@RunWith(PowerMockRunner.class)
+/**
+ * Unit tests for HelloGcs.
+ */
 @PrepareForTest(HelloGcs.class)
-public class HelloGcsIT {
+public class HelloGcsTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
@@ -46,15 +48,14 @@ public class HelloGcsIT {
 
   private EnvironmentVariables environmentVariables;
 
-  public final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler logHandler = new TestLogHandler();
 
-  private Logger logger;
+  private static final Logger logger = Logger.getLogger(HelloGcs.class.getName());
 
   @Before
   public void beforeTest() throws Exception {
     environmentVariables = new EnvironmentVariables();
 
-    logger = Logger.getLogger(HelloGcs.class.getName());
     logger.addHandler(logHandler);
 
     // Use a new mock for each test
@@ -73,7 +74,6 @@ public class HelloGcsIT {
     request = null;
     response = null;
     logHandler.clear();
-    Mockito.reset();
   }
 
   @Test
@@ -104,3 +104,4 @@ public class HelloGcsIT {
     assertThat("Unsupported event type: google.storage.object.metadataUpdate").isEqualTo(message);
   }
 }
+// [END functions_storage_unit_test]

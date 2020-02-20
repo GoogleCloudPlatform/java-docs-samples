@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 import com.google.cloud.functions.Context;
 
+// Class that mocks Cloud Functions "context" objects
+// Used to create fake context objects for function tests
 public class MockContext implements Context {
   public String eventId;
   public String eventType;

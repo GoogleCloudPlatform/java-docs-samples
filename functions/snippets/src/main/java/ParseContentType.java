@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class ParseContentType implements HttpFunction {
       } else {
         // No "name" parameter specified
         response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
+        return;
       }
     } else if (contentType.equals("application/octet-stream")) {
       // 'John', stored in a Buffer

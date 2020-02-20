@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,28 +31,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest(HelloBackground.class)
-public class HelloBackgroundIT {
+public class HelloBackgroundTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
   private EnvironmentVariables environmentVariables;
 
-  private Logger logger = Logger.getLogger(HelloBackground.class.getName());
-  private TestLogHandler logHandler;
+  private static final Logger logger = Logger.getLogger(HelloBackground.class.getName());
+  private static final TestLogHandler logHandler = new TestLogHandler();
 
   @Before
   public void beforeTest() throws Exception {
     environmentVariables = new EnvironmentVariables();
 
-    logHandler = new TestLogHandler();
     logger.addHandler(logHandler);
 
     // Use a new mock for each test
@@ -71,7 +66,6 @@ public class HelloBackgroundIT {
     request = null;
     response = null;
     logHandler.clear();
-    Mockito.reset();
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,39 +22,29 @@ import com.google.common.testing.TestLogHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-// [END functions_pubsub_unit_test]
-
 /**
- * Unit tests for {@link HelloPubSub}.
+ * Unit tests for HelloPubSub.
  */
-// [START functions_pubsub_unit_test]
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HelloPubSub.class)
-public class HelloPubSubIT {
+public class HelloPubSubTest {
 
   private HelloPubSub sampleUnderTest;
-  private Logger logger;
+  private static final Logger logger = Logger.getLogger(HelloPubSub.class.getName());
 
-  public final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler logHandler = new TestLogHandler();
 
   @Before
   public void setUp() throws Exception {
     sampleUnderTest = new HelloPubSub();
-
-    logger = Logger.getLogger(HelloPubSub.class.getName());
     logger.addHandler(logHandler);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    //Mockito.reset();
+    logHandler.clear();
   }
 
   @Test
