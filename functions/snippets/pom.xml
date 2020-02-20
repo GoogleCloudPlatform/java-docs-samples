@@ -91,6 +91,7 @@
       <artifactId>powermock-api-mockito2</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
+    </dependency>
 
     <!-- Required for Function primitives -->
     <dependency>
