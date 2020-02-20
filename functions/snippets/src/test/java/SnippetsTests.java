@@ -273,4 +273,9 @@ public class SnippetsTests {
 
     assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
   }
+
+  @Test
+  public void firebaseAuth() throws IOException {
+    new FirebaseAuth().accept("{\"foo\": \"bar\"}", null);
+  }
 }

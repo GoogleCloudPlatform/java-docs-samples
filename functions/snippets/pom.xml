@@ -26,12 +26,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.0-alpha-2-rc3</version>
-    </dependency>
-
     <!-- Required to for ParseContentType -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -43,7 +37,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.99.0</version>
+      <version>1.100.0</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
@@ -91,6 +85,13 @@
       <artifactId>powermock-api-mockito2</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
+
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.0-alpha-2-rc3</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
 
