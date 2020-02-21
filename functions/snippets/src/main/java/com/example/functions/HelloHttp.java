@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_helloworld_http]
 
 import com.google.cloud.functions.HttpFunction;

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.example.functions.HelloBackground;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
@@ -41,14 +44,14 @@ public class HelloBackgroundTest {
 
   private EnvironmentVariables environmentVariables;
 
-  private static final Logger logger = Logger.getLogger(HelloBackground.class.getName());
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final Logger LOGGER = Logger.getLogger(HelloBackground.class.getName());
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
   public void beforeTest() throws Exception {
     environmentVariables = new EnvironmentVariables();
 
-    logger.addHandler(logHandler);
+    LOGGER.addHandler(LOG_HANDLER);
 
     // Use a new mock for each test
     request = mock(HttpRequest.class);
@@ -65,7 +68,7 @@ public class HelloBackgroundTest {
   public void afterTest() {
     request = null;
     response = null;
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -74,7 +77,7 @@ public class HelloBackgroundTest {
 
     new HelloBackground().accept(request, null);
 
-    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello John!").isEqualTo(message);
   }
 
@@ -82,7 +85,7 @@ public class HelloBackgroundTest {
   public void helloBackground_printsHelloWorld() throws Exception {
     new HelloBackground().accept(request, null);
 
-    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(message);
   }
 }

@@ -14,23 +14,30 @@
  * limitations under the License.
  */
 
-// [START functions_helloworld_storage]
+package com.example.functions;
+
+// [START functions_background_helloworld]
+// [START functions_helloworld_pubsub]
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Logger;
 
-public class HelloGcs implements BackgroundFunction<GcsEvent> {
-  private static final Logger LOGGER = Logger.getLogger(HelloGcs.class.getName());
+public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
+  private static final Logger LOGGER = Logger.getLogger(HelloPubSub.class.getName());
 
   @Override
-  public void accept(GcsEvent event, Context context) {
-    if ("google.storage.object.finalize".equals(context.eventType())) {
-      // Default event type for GCS-triggered functions
-      LOGGER.info(String.format("File %s uploaded.", event.name));
-    } else {
-      LOGGER.warning(String.format("Unsupported event type: %s", context.eventType()));
+  public void accept(PubSubMessage message, Context context) {
+    String name = "world";
+    if (message.data != null) {
+      name = new String(
+          Base64.getDecoder().decode(message.data.getBytes(StandardCharsets.UTF_8)),
+          StandardCharsets.UTF_8);
     }
+    LOGGER.info(String.format("Hello %s!", name));
   }
 }
-// [END functions_helloworld_storage]
+// [END functions_background_helloworld]
+// [END functions_helloworld_pubsub]

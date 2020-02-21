@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 import com.google.cloud.functions.Context;
 
 // Class that mocks Cloud Functions "context" objects

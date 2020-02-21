@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-// [START functions_tips_lazy_globals]
-// [START run_tips_global_lazy]
+package com.example.functions;
+
+// [START functions_tips_scopes]
+// [START run_tips_global_scope]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -24,35 +26,33 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class LazyFields implements HttpFunction {
-  // Always initialized (at cold-start)
+public class Scopes implements HttpFunction {
+  // Global (instance-wide) scope
+  // This computation runs at instance cold-start.
   // Warning: Class variables used in Servlet classes must be thread-safe,
   // or else might introduce race conditions in your code.
-  private static final int nonLazyGlobal = fileWideComputation();
-  // Declared at cold-start, but only initialized if/when the function executes
-  private static Integer lazyGlobal = null;
+  private static final int InstanceVar = heavyComputation();
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    // This value is initialized only if (and when) the function is called
-    if (lazyGlobal == null) {
-      lazyGlobal = functionSpecificComputation();
-    }
+    // Per-function scope
+    // This computation runs every time this function is called
+    int functionVar = lightComputation();
 
     BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Lazy global: %s; non-lazy global: %s", lazyGlobal, nonLazyGlobal));
+    writer.write(String.format("Instance: %s; function: %s", InstanceVar, functionVar));
   }
 
-  private static int functionSpecificComputation() {
-    int[] numbers = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  private static int lightComputation() {
+    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     return Arrays.stream(numbers).sum();
   }
 
-  private static int fileWideComputation() {
-    int[] numbers = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  private static int heavyComputation() {
+    int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 }
-// [END run_tips_global_lazy]
-// [END functions_tips_lazy_globals]
+// [END run_tips_global_scope]
+// [END functions_tips_scopes]

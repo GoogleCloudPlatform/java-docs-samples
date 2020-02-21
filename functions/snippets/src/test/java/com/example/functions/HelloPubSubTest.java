@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_pubsub_unit_test]
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.example.functions.HelloPubSub;
+import com.example.functions.PubSubMessage;
 import com.google.common.testing.TestLogHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -29,22 +33,22 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
- * Unit tests for HelloPubSub.
+ * Unit tests for com.example.functions.HelloPubSub.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HelloPubSub.class)
 public class HelloPubSubTest {
 
   private HelloPubSub sampleUnderTest;
-  private static final Logger logger = Logger.getLogger(HelloPubSub.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(HelloPubSub.class.getName());
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
   public void setUp() throws Exception {
     sampleUnderTest = new HelloPubSub();
-    logger.addHandler(logHandler);
-    logHandler.clear();
+    LOGGER.addHandler(LOG_HANDLER);
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -54,7 +58,7 @@ public class HelloPubSubTest {
         "John".getBytes(StandardCharsets.UTF_8));
     sampleUnderTest.accept(pubSubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello John!").isEqualTo(logMessage);
   }
 
@@ -63,7 +67,7 @@ public class HelloPubSubTest {
     PubSubMessage pubSubMessage = new PubSubMessage();
     sampleUnderTest.accept(pubSubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(logMessage);
   }
 }

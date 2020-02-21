@@ -14,15 +14,39 @@
  * limitations under the License.
  */
 
-// [START functions_helloworld_pubsub_message]
-import java.util.Map;
+package com.example.functions;
 
-class PubSubMessage {
+// [START functions_helloworld_gcs_event]
+class GcsEvent {
+  // Cloud Functions uses GSON to populate this object.
   // Field types/names are specified by Cloud Functions
   // Changing them may break your code!
-  String data;
-  Map<String, String> attributes;
-  String messageId;
-  String publishTime;
+  String bucket;
+  String name;
+  String metageneration;
+
+  public String getBucket() {
+    return bucket;
+  }
+
+  public void setBucket(String bucket) {
+    this.bucket = bucket;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getMetageneration() {
+    return metageneration;
+  }
+
+  public void setMetageneration(String metageneration) {
+    this.metageneration = metageneration;
+  }
 }
-// [END functions_helloworld_pubsub_message]
+// [END functions_helloworld_gcs_event]

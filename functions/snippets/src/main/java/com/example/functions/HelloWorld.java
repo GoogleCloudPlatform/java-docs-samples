@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-// [START functions_env_vars]
+package com.example.functions;
+
+// [START functions_helloworld_get]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -22,18 +24,13 @@ import com.google.cloud.functions.HttpResponse;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class EnvVars implements HttpFunction {
-
-  // Returns the environment variable "foo" set during function deployment.
+public class HelloWorld implements HttpFunction {
+  // Simple function to return "Hello World"
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     BufferedWriter writer = response.getWriter();
-    String foo = System.getenv("FOO");
-    if (foo == null) {
-      foo = "Specified environment variable is not set.";
-    }
-    writer.write(foo);
+    writer.write("Hello World!");
   }
 }
-// [END functions_env_vars]
+// [END functions_helloworld_get]

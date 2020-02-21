@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-// [START functions_helloworld_get]
+package com.example.functions;
+
+// [START functions_log_helloworld]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
-public class HelloWorld implements HttpFunction {
-  // Simple function to return "Hello World"
+public class LogHelloWorld implements HttpFunction {
+
+  private static final Logger LOGGER = Logger.getLogger(LogHelloWorld.class.getName());
+
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
+    LOGGER.info("I am an info log!");
+    LOGGER.warning("I am a warning log!");
+
     BufferedWriter writer = response.getWriter();
-    writer.write("Hello World!");
+    writer.write("Messages successfully logged!");
   }
 }
-// [END functions_helloworld_get]
+// [END functions_log_helloworld]

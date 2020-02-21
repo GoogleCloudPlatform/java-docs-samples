@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-// [START functions_log_helloworld]
+package com.example.functions;
 
-import com.google.cloud.functions.HttpFunction;
+// [START functions_background_helloworld]
+
+import com.google.cloud.functions.BackgroundFunction;
+import com.google.cloud.functions.Context;
 import com.google.cloud.functions.HttpRequest;
-import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.logging.Logger;
 
-public class LogHelloWorld implements HttpFunction {
-
-  private static final Logger LOGGER = Logger.getLogger(LogHelloWorld.class.getName());
+public class HelloBackground implements BackgroundFunction<HttpRequest> {
+  private static final Logger LOGGER = Logger.getLogger(HelloBackground.class.getName());
 
   @Override
-  public void service(HttpRequest request, HttpResponse response)
-      throws IOException {
-    LOGGER.info("I am an info log!");
-    LOGGER.warning("I am a warning log!");
-
-    BufferedWriter writer = response.getWriter();
-    writer.write("Messages successfully logged!");
+  public void accept(HttpRequest request, Context context) {
+    String name = "world";
+    if (request.getFirstQueryParameter("name").isPresent()) {
+      name = request.getFirstQueryParameter("name").get();
+    }
+    LOGGER.info(String.format("Hello %s!", name));
   }
 }
-// [END functions_log_helloworld]
+// [END functions_background_helloworld]

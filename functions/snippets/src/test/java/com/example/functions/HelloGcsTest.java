@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_storage_unit_test]
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
@@ -36,7 +38,7 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 /**
- * Unit tests for HelloGcs.
+ * Unit tests for com.example.functions.HelloGcs.
  */
 @PrepareForTest(HelloGcs.class)
 public class HelloGcsTest {
@@ -48,15 +50,15 @@ public class HelloGcsTest {
 
   private EnvironmentVariables environmentVariables;
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
-  private static final Logger logger = Logger.getLogger(HelloGcs.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(HelloGcs.class.getName());
 
   @Before
   public void beforeTest() throws Exception {
     environmentVariables = new EnvironmentVariables();
 
-    logger.addHandler(logHandler);
+    LOGGER.addHandler(LOG_HANDLER);
 
     // Use a new mock for each test
     request = mock(HttpRequest.class);
@@ -73,7 +75,7 @@ public class HelloGcsTest {
   public void afterTest() {
     request = null;
     response = null;
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -86,7 +88,7 @@ public class HelloGcsTest {
 
     new HelloGcs().accept(event, context);
 
-    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("File foo.txt uploaded.").isEqualTo(message);
   }
 
@@ -100,7 +102,7 @@ public class HelloGcsTest {
 
     new HelloGcs().accept(event, context);
 
-    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Unsupported event type: google.storage.object.metadataUpdate").isEqualTo(message);
   }
 }

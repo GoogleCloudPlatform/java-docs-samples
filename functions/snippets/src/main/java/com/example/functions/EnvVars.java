@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 
-// [START functions_background_helloworld]
+package com.example.functions;
 
-import com.google.cloud.functions.BackgroundFunction;
-import com.google.cloud.functions.Context;
+// [START functions_env_vars]
+
+import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
-import java.util.logging.Logger;
+import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
-public class HelloBackground implements BackgroundFunction<HttpRequest> {
-  private static final Logger LOGGER = Logger.getLogger(HelloBackground.class.getName());
+public class EnvVars implements HttpFunction {
 
+  // Returns the environment variable "foo" set during function deployment.
   @Override
-  public void accept(HttpRequest request, Context context) {
-    String name = "world";
-    if (request.getFirstQueryParameter("name").isPresent()) {
-      name = request.getFirstQueryParameter("name").get();
+  public void service(HttpRequest request, HttpResponse response)
+      throws IOException {
+    BufferedWriter writer = response.getWriter();
+    String foo = System.getenv("FOO");
+    if (foo == null) {
+      foo = "Specified environment variable is not set.";
     }
-    LOGGER.info(String.format("Hello %s!", name));
+    writer.write(foo);
   }
 }
-// [END functions_background_helloworld]
+// [END functions_env_vars]

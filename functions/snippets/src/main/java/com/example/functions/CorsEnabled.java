@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_http_cors]
 
 import com.google.cloud.functions.HttpFunction;

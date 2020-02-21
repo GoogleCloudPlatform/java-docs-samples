@@ -14,8 +14,32 @@
  * limitations under the License.
  */
 
-import static com.google.common.truth.Truth.assertThat;
+package com.example.functions;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import com.example.functions.CorsEnabled;
+import com.example.functions.EnvVars;
+import com.example.functions.ExecutionCount;
+import com.example.functions.FileSystem;
+import com.example.functions.FirebaseAuth;
+import com.example.functions.HelloBackground;
+import com.example.functions.HelloGcs;
+import com.example.functions.HelloHttp;
+import com.example.functions.HelloPubSub;
+import com.example.functions.HelloWorld;
+import com.example.functions.LazyFields;
+import com.example.functions.LogHelloWorld;
+import com.example.functions.ParseContentType;
+import com.example.functions.PubSubMessage;
+import com.example.functions.RetrieveLogs;
+import com.example.functions.Scopes;
+import com.example.functions.SendHttpRequest;
+import com.example.functions.StackdriverLogging;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
@@ -26,7 +50,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -35,20 +58,21 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.mockito.Mock;
 
 public class SnippetsTests {
-  private MockHttpRequest request;
-  private MockHttpResponse response;
+  @Mock private HttpRequest request;
+  @Mock private HttpResponse response;
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
 
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger backgroundLogger = Logger.getLogger(HelloBackground.class.getName());
-  private static final Logger pubsubLogger = Logger.getLogger(HelloPubSub.class.getName());
-  private static final Logger gcsLogger = Logger.getLogger(HelloGcs.class.getName());
-  private static final Logger stackdriverLogger = Logger.getLogger(
+  private static final Logger BACKGROUND_LOGGER = Logger.getLogger(HelloBackground.class.getName());
+  private static final Logger PUBSUB_LOGGER = Logger.getLogger(HelloPubSub.class.getName());
+  private static final Logger GCS_LOGGER = Logger.getLogger(HelloGcs.class.getName());
+  private static final Logger STACKDRIVER_LOGGER = Logger.getLogger(
       StackdriverLogging.class.getName());
 
   private static final TestLogHandler logHandler = new TestLogHandler();
@@ -61,21 +85,20 @@ public class SnippetsTests {
 
   @Before
   public void beforeTest() throws IOException {
-    backgroundLogger.addHandler(logHandler);
-    pubsubLogger.addHandler(logHandler);
-    gcsLogger.addHandler(logHandler);
-    stackdriverLogger.addHandler(logHandler);
+    BACKGROUND_LOGGER.addHandler(logHandler);
+    PUBSUB_LOGGER.addHandler(logHandler);
+    GCS_LOGGER.addHandler(logHandler);
+    STACKDRIVER_LOGGER.addHandler(logHandler);
 
-    // Use new mock objects for each test
-    request = new MockHttpRequest();
-    response = new MockHttpResponse();
+    request = mock(HttpRequest.class);
+    response = mock(HttpResponse.class);
 
     BufferedReader reader = new BufferedReader(new StringReader("{}"));
-    request.bufferedReader = reader;
+    when(request.getReader()).thenReturn(reader);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    response.writer = writerOut;
+    when(response.getWriter()).thenReturn(writerOut);
 
     // Use the same logging handler for all tests
     Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
@@ -85,9 +108,6 @@ public class SnippetsTests {
 
   @After
   public void afterTest() {
-    request = null;
-    response = null;
-    responseOut = null;
     System.setOut(null);
     logHandler.flush();
   }
@@ -118,7 +138,7 @@ public class SnippetsTests {
 
   @Test
   public void corsEnabledTest() throws IOException {
-    request.httpMethod = "GET";
+    when(request.getMethod()).thenReturn("GET");
 
     new CorsEnabled().service(request, response);
 
@@ -129,11 +149,10 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_json() throws IOException {
     // Send a request with JSON data
-    request.contentType = Optional.of("application/json");
-
     BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
 
-    request.bufferedReader = bodyReader;
+    when(request.getContentType()).thenReturn(Optional.of("application/json"));
+    when(request.getReader()).thenReturn(bodyReader);
 
     new ParseContentType().service(request, response);
 
@@ -144,14 +163,14 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_base64() throws IOException {
     // Send a request with octet-stream
-    request.contentType = Optional.of("application/octet-stream");
+    when(request.getContentType()).thenReturn(Optional.of("application/octet-stream"));
 
     // Create mock input stream to return the data
     byte[] b64Body = Base64.getEncoder().encode("John".getBytes(StandardCharsets.UTF_8));
     InputStream bodyInputStream = new ByteArrayInputStream(b64Body);
 
     // Return the input stream when the request calls it
-    request.inputStream = bodyInputStream;
+    when(request.getInputStream()).thenReturn(bodyInputStream);
 
     new ParseContentType().service(request, response);
 
@@ -162,10 +181,10 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_text() throws IOException {
     // Send a request with plain text
-    request.contentType = Optional.of("text/plain");
+    when(request.getContentType()).thenReturn(Optional.of("text/plain"));
     BufferedReader bodyReader = new BufferedReader(new StringReader("John"));
 
-    request.bufferedReader = bodyReader;
+    when(request.getReader()).thenReturn(bodyReader);
 
     new ParseContentType().service(request, response);
 
@@ -176,8 +195,8 @@ public class SnippetsTests {
   @Test
   public void parseContentTypeTest_form() throws IOException {
     // Send a request with plain text
-    request.contentType = Optional.of("application/x-www-form-urlencoded");
-    request.queryParams.put("name", Arrays.asList(new String[]{"John"}));
+    when(request.getContentType()).thenReturn(Optional.of("application/x-www-form-urlencoded"));
+    when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
 
     new ParseContentType().service(request, response);
 
@@ -254,7 +273,7 @@ public class SnippetsTests {
 
   @Test
   public void helloHttp_urlParamsGet() throws IOException {
-    request.queryParams.put("name", Arrays.asList(new String[]{"Tom"}));
+    when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("Tom"));
 
     new HelloHttp().service(request, response);
 
@@ -266,7 +285,7 @@ public class SnippetsTests {
   public void helloHttp_bodyParamsPost() throws IOException {
     BufferedReader jsonReader = new BufferedReader(new StringReader("{'name': 'Jane'}"));
 
-    request.bufferedReader = jsonReader;
+    when(request.getReader()).thenReturn(jsonReader);
 
     new HelloHttp().service(request, response);
     writerOut.flush();

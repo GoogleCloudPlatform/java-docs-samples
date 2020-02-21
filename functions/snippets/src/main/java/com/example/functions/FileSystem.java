@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-// [START functions_concepts_stateless]
+package com.example.functions;
+
+// [START functions_concepts_filesystem]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class ExecutionCount implements HttpFunction {
-  
-  private final AtomicInteger count = new AtomicInteger(0);
+public class FileSystem implements HttpFunction {
 
+  // Lists the files in the current directory.
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    count.getAndIncrement();
-
-    // Note: the total function invocation count across
-    // all instances may not be equal to this value!
+    File currentDirectory = new File(".");
+    File[] files = currentDirectory.listFiles();
     BufferedWriter writer = response.getWriter();
-    writer.write("Instance execution count: " + count);
+    writer.write("Files: \n");
+    for (File f : files) {
+      writer.write(String.format("\t%s\n", f.getName()));
+    }
   }
 }
-// [END functions_concepts_stateless]
+// [END functions_concepts_filesystem]
