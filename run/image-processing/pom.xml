@@ -46,7 +46,7 @@ limitations under the License.
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- // [START run_imageproc_dep_management] -->
+      <!-- [START run_imageproc_dep_management] -->
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
@@ -54,7 +54,7 @@ limitations under the License.
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- // [END run_imageproc_dep_management] -->
+      <!-- [END run_imageproc_dep_management] -->
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -72,7 +72,7 @@ limitations under the License.
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- // [START run_imageproc_dep] -->
+    <!-- [START run_imageproc_dep] -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
@@ -97,22 +97,29 @@ limitations under the License.
       <artifactId>commons-io</artifactId>
       <version>2.6</version>
     </dependency>
-    <!-- // [END run_imageproc_dep] -->
+    <!-- [END run_imageproc_dep] -->
   </dependencies>
   <build>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.2.2.RELEASE</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
+      <!-- [START run_imageproc_jib] -->
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <configuration>
+          <from>
+            <image>gcr.io/PROJECT_ID/imagemagick</image>
+          </from>
+          <to>
+            <image>gcr.io/PROJECT_ID/pubsub</image>
+          </to>
+        </configuration>
+      </plugin>
+      <!-- [END run_imageproc_jib] -->
     </plugins>
   </build>
 </project>

@@ -57,13 +57,13 @@ public class MailgunServlet extends HttpServlet {
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
     client.addFilter(new HTTPBasicAuthFilter("api", MAILGUN_API_KEY));
-    WebResource webResource =
-        client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     MultivaluedMapImpl formData = new MultivaluedMapImpl();
     formData.add("from", "Mailgun User <mailgun@" + MAILGUN_DOMAIN_NAME + ">");
     formData.add("to", recipient);
     formData.add("subject", "Simple Mailgun Example");
     formData.add("text", "Plaintext content");
+    WebResource webResource =
+        client.resource("https://api.mailgun.net/v3/" + MAILGUN_DOMAIN_NAME + "/messages");
     return webResource
         .type(MediaType.APPLICATION_FORM_URLENCODED)
         .post(ClientResponse.class, formData);
