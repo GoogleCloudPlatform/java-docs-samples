@@ -16,8 +16,7 @@
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.jobs.JobSearchHistogramSearch;
-
+import com.example.jobs.CommuteSearchJobs;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,7 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JobSearchHistogramSearchTest {
+public class CommuteSearchJobsTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = "50c14f00-dc38-4812-989b-d9b59c7fdf07";
 
@@ -41,11 +40,12 @@ public class JobSearchHistogramSearchTest {
   }
 
   @Test
-  public void testHistogramSearch() throws IOException {
+  public void testCommuteSearchJobs() throws IOException {
     // retrieve a job.
-    JobSearchHistogramSearch.searchJobs(
-        PROJECT_ID, TENANT_ID, "count(base_compensation, [bucket(12, 20)])");
+    CommuteSearchJobs.searchJobs(
+        PROJECT_ID, TENANT_ID);
     String got = bout.toString();
+
     assertThat(got).contains("Job summary:");
     assertThat(got).contains("Job title snippet:");
   }

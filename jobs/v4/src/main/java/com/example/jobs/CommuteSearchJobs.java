@@ -33,7 +33,7 @@ import com.google.type.LatLng;
 
 import java.io.IOException;
 
-public class JobSearchCommuteSearch {
+public class CommuteSearchJobs {
 
   public static void searchJobs() throws IOException {
     // TODO(developer): Replace these variables before running the sample.

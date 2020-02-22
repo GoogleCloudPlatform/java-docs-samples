@@ -16,7 +16,8 @@
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.jobs.JobSearchCommuteSearch;
+import com.example.jobs.CustomRankingSearchJobs;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -25,7 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JobSearchCommuteSearchTest {
+public class CustomRankingSearchJobsTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = "50c14f00-dc38-4812-989b-d9b59c7fdf07";
 
@@ -40,14 +41,15 @@ public class JobSearchCommuteSearchTest {
   }
 
   @Test
-  public void testCommuteSearchJobs() throws IOException {
+  public void testCustomRankingSearchJobs() throws IOException {
     // retrieve a job.
-    JobSearchCommuteSearch.searchJobs(
+    CustomRankingSearchJobs.searchCustomRankingJobs(
         PROJECT_ID, TENANT_ID);
     String got = bout.toString();
 
     assertThat(got).contains("Job summary:");
     assertThat(got).contains("Job title snippet:");
+    assertThat(got).contains("Job title:");
   }
 
   @After

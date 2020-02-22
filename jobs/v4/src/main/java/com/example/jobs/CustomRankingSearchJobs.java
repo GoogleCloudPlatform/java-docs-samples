@@ -29,7 +29,7 @@ import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
 import java.io.IOException;
 
-public class JobSearchCustomRankingSearch {
+public class CustomRankingSearchJobs {
 
   public static void searchCustomRankingJobs() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
