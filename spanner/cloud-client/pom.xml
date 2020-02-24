@@ -146,9 +146,9 @@ limitations under the License.
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.2.0</version>
         <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+          <descriptors>
+            <descriptor>assembly-descriptor.xml</descriptor>
+          </descriptors>
           <archive>
             <manifest>
               <mainClass>com.example.spanner.SpannerSample</mainClass>
