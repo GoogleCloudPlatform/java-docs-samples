@@ -88,7 +88,7 @@ public class ITNotificationConfigSnippets {
   }
 
   private static String getOrganizationId() {
-    return System.getenv("GCLOUD_ORGANIZATION");
+    return "1081635000895";
   }
 
   private static String getProject() {
