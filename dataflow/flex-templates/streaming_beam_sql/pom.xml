@@ -164,5 +164,12 @@
       <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
       <version>${beam.version}</version>
     </dependency>
+
+    <!-- Beam SQL extension -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-extensions-sql</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
   </dependencies>
 </project>

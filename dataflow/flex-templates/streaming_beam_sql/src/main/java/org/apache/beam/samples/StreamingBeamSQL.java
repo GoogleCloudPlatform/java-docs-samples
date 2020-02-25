@@ -30,19 +30,23 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.extensions.sql.SqlTransform;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation;
+import org.apache.beam.sdk.schemas.Schema;
+import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.WithTimestamps;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
+import org.apache.beam.sdk.values.Row;
 import org.apache.beam.sdk.values.TypeDescriptor;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -70,10 +74,9 @@ public class StreamingBeamSQL {
   }
 
   @DefaultCoder(AvroCoder.class)
-  private static class PageRating {
-    Instant processingTime;
+  private static class PageReviewMessage {
     @Nullable String url;
-    @Nullable String rating;
+    @Nullable String review;
   }
 
   public static void main(final String[] args) {
@@ -83,30 +86,71 @@ public class StreamingBeamSQL {
     var project = options.as(GcpOptions.class).getProject();
     var subscription = ProjectSubscriptionName.of(project, options.getInputSubscription()).toString();
 
+    var schema = Schema.builder()
+        .addStringField("url")
+        .addDoubleField("page_score")
+        .addDateTimeField("processing_time")
+        .build();
+
     var pipeline = Pipeline.create(options);
     pipeline
+        // Read, parse, and validate messages from Pub/Sub.
         .apply("Read messages from Pub/Sub", PubsubIO.readStrings().fromSubscription(subscription))
-        .apply("Parse JSON", MapElements.into(TypeDescriptor.of(PageRating.class))
-            .via(message -> GSON.fromJson(message, PageRating.class)))
+        .apply("Parse JSON into SQL rows", MapElements.into(TypeDescriptor.of(Row.class)).via(message -> {
+          // This is a good place to add error handling.
+          // The first transform should act as a validation layer to make sure
+          // that any data coming to the processing pipeline must be valid.
+          // See `MapElements.MapWithFailures` for more details.
+          LOG.info("message: {} {}", message);
+          var msg = GSON.fromJson(message, PageReviewMessage.class);
+          return Row.withSchema(schema).addValues(
+              msg.url,                             // row url
+              msg.review.equals("👍") ? 1.0 : 0.0, // row page_score
+              new Instant()                        // row processing_time
+          ).build();
+        })).setRowSchema(schema) // make sure to set the row schema for the PCollection
 
-        .apply("Add processing time", WithTimestamps.of((pageRating) -> new Instant(pageRating.processingTime)))
+        // Add timestamps and bundle elements into windows.
+        .apply("Add processing time", WithTimestamps.of((row) -> row.getDateTime("processing_time").toInstant()))
         .apply("Fixed-size windows", Window.into(FixedWindows.of(Duration.standardMinutes(1))))
 
-        .apply("Convert to BigQuery TableRow", MapElements.into(TypeDescriptor.of(TableRow.class))
-            .via(pageRating -> new TableRow()
-                .set("processing_time", pageRating.processingTime.toString())
-                .set("url", pageRating.url)
-                .set("rating", pageRating.rating)))
+        // Apply a SQL query for every window of elements.
+        .apply("Run Beam SQL query", SqlTransform.query(
+            "SELECT " +
+            "  url, " +
+            "  COUNT(page_score) AS num_reviews, " +
+            "  AVG(page_score) AS score, " +
+            "  MIN(processing_time) AS first_date, " +
+            "  MAX(processing_time) AS last_date " +
+            "FROM PCOLLECTION " +
+            "GROUP BY url"
+        ))
+
+        // Convert the SQL Rows into BigQuery TableRows and write them to BigQuery.
+        .apply("Convert to BigQuery TableRow", MapElements.into(TypeDescriptor.of(TableRow.class)).via(row -> {
+          LOG.info("rating summary: {} {} ({} reviews)", row.getDouble("score"), row.getString("url"),
+              row.getInt64("num_reviews"));
+          return new TableRow()
+              .set("url", row.getString("url"))
+              .set("num_reviews", row.getInt64("num_reviews"))
+              .set("score", row.getDouble("score"))
+              .set("first_date", row.getDateTime("first_date").toInstant().toString())
+              .set("last_date", row.getDateTime("last_date").toInstant().toString());
+        }))
         .apply("Write to BigQuery", BigQueryIO.writeTableRows()
             .to(options.getOutputTable())
             .withSchema(new TableSchema().setFields(Arrays.asList(
-                new TableFieldSchema().setName("processing_time").setType("TIMESTAMP"),
+                // To learn more about the valid BigQuery types:
+                //   https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types
                 new TableFieldSchema().setName("url").setType("STRING"),
-                new TableFieldSchema().setName("rating").setType("STRING"))))
+                new TableFieldSchema().setName("num_reviews").setType("INTEGER"),
+                new TableFieldSchema().setName("score").setType("FLOAT64"),
+                new TableFieldSchema().setName("first_date").setType("TIMESTAMP"),
+                new TableFieldSchema().setName("last_date").setType("TIMESTAMP"))))
             .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
             .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    // For a Dataflow Flex Template, do NOT waitUntilFinish() on the run.
+    // For a Dataflow Flex Template, do NOT waitUntilFinish().
     pipeline.run();
   }
 }

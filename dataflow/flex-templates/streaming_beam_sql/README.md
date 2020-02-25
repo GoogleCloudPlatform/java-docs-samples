@@ -15,15 +15,19 @@ and a *service account JSON key* set up in your `GOOGLE_APPLICATION_CREDENTIALS`
 environment variable.
 Additionally, for this sample you need the following:
 
-1. Create a [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
+1. Create a
+   [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
 
     ```sh
     export BUCKET="your-gcs-bucket"
     gsutil mb gs://$BUCKET
     ```
 
-1. Create a [Pub/Sub topic](https://cloud.google.com/pubsub/docs/admin#creating_a_topic) and a
-   [subscription](https://cloud.google.com/pubsub/docs/admin#creating_subscriptions) to that topic.
+1. Create a
+   [Pub/Sub topic](https://cloud.google.com/pubsub/docs/admin#creating_a_topic)
+   and a
+   [subscription](https://cloud.google.com/pubsub/docs/admin#creating_subscriptions)
+   to that topic.
 
     ```sh
     # For simplicity we use the same topic name as the subscription name.
@@ -34,18 +38,29 @@ Additionally, for this sample you need the following:
     gcloud pubsub subscriptions create --topic $TOPIC $SUBSCRIPTION
     ```
 
-1. Create a [Cloud Scheduler job](https://cloud.google.com/scheduler/docs/quickstart)
-   to publish [1 message per minute](https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules).
+1. Create a
+   [Cloud Scheduler job](https://cloud.google.com/scheduler/docs/quickstart)
+   to publish
+   [1 message per minute](https://cloud.google.com/scheduler/docs/configuring/cron-job-schedules).
 
     ```sh
     # If an App Engine app does not exist for the project, this step will create one.
-    gcloud scheduler jobs create pubsub publisher-job \
+    gcloud scheduler jobs create pubsub thumbs-up-publisher \
       --schedule="* * * * *" \
       --topic="$TOPIC" \
-      --message-body='{"url": "https://beam.apache.org/", "rating": "👍🏾"}'
+      --message-body='{"url": "https://beam.apache.org/", "review": "👍"}'
 
     # Start the job.
-    gcloud scheduler jobs run publisher-job
+    gcloud scheduler jobs run thumbs-up-publisher
+
+    # Now, let's create a similar publisher for thumbs down, but publish
+    # 1 message every 2 minutes.
+    gcloud scheduler jobs create pubsub thumbs-down-publisher \
+      --schedule="*/2 * * * *" \
+      --topic="$TOPIC" \
+      --message-body='{"url": "https://beam.apache.org/", "review": "👎"}'
+
+    gcloud scheduler jobs run thumbs-down-publisher
     ```
 
 1. Create a [BigQuery dataset](https://cloud.google.com/bigquery/docs/datasets).
@@ -58,15 +73,10 @@ Additionally, for this sample you need the following:
     bq mk --dataset "$PROJECT:$DATASET"
     ```
 
-1. Clone the `java-docs-samples` repository.
+1. Clone the `java-docs-samples` repository and navigate to the code sample.
 
     ```sh
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-    ```
-
-1. Navigate to the sample code directory.
-
-    ```sh
     cd java-docs-samples/dataflow/flex-templates/beam_sql
     ```
 
@@ -96,10 +106,18 @@ to transform the message data, and writes the results to a
 >   -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSQL \
 >   -Dexec.args="\
 >     --inputSubscription=$SUBSCRIPTION \
->     --outputTable=$PROJECT:$DATASET.$TABLE"
+>     --outputTable=$PROJECT:$DATASET.$TABLE \
+>     --gcpTempLocation=gs://$BUCKET/samples/dataflow/temp"
 > ```
 >
 > </details>
+
+mvn compile exec:java \
+  -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSQL \
+  -Dexec.args="\
+    --inputSubscription=$SUBSCRIPTION \
+    --outputTable=$PROJECT:$DATASET.$TABLE \
+    --tempLocation=gs://$BUCKET/samples/dataflow/temp"
 
 First, we build the Java project into an
 [*uber-jar* file](https://maven.apache.org/plugins/maven-shade-plugin/).
@@ -226,10 +244,33 @@ curl -X POST \
 > To learn more about the supported `PipelineOptions`, see the
 > [Setting other Cloud Dataflow pipeline options](https://cloud.google.com/dataflow/docs/guides/specifying-exec-params#setting-other-cloud-dataflow-pipeline-options) page.
 
+Now that your Dataflow pipeline is running, you should be able to see new rows
+being appended into the BigQuery table every minute or so,
+depending on the window size in your Dataflow job.
+
 Run the following query to check the results in BigQuery.
 
 ```sh
 bq query --use_legacy_sql=false 'SELECT * FROM `'"$PROJECT.$DATASET.$TABLE"'`'
+```
+
+You can manually publish more messages from the
+[Cloud Scheduler page](https://console.cloud.google.com/cloudscheduler)
+to see how that affects the page review scores.
+
+You can also publish messages directly to a topic through the
+[Pub/Sub topics page](https://console.cloud.google.com/cloudpubsub/topic/list)
+by selecting the topic you want to publish to,
+and then clicking the "Publish message" button at the top.
+This way you can test your pipeline with different URLs,
+just make sure you pass valid JSON data since this sample does not do any
+error handling for code simplicity.
+
+Try sending the following message and check back the BigQuery table about
+a minute later.
+
+```json
+{"url": "https://cloud.google.com/bigquery/", "review": "👍"}
 ```
 
 ### Clean up
@@ -256,8 +297,9 @@ gcloud container images delete $TEMPLATE_IMAGE --force-delete-tags
 Clean up project resources.
 
 ```sh
-# Delete the Cloud Scheduler job.
-gcloud scheduler jobs delete publisher-job
+# Delete the Cloud Scheduler jobs.
+gcloud scheduler jobs delete thumbs-down-publisher
+gcloud scheduler jobs delete thumbs-up-publisher
 
 # Delete the Pub/Sub subscription and topic.
 gcloud pubsub subscriptions delete $SUBSCRIPTION

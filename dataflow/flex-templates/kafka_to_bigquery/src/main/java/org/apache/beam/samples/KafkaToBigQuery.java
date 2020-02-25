@@ -120,7 +120,7 @@ public class KafkaToBigQuery {
             .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
             .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    // For a Dataflow Flex Template, do NOT waitUntilFinish() on the run.
+    // For a Dataflow Flex Template, do NOT waitUntilFinish().
     pipeline.run();
   }
 }
