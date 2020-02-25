@@ -27,7 +27,6 @@ import org.junit.runners.JUnit4;
 /** Smoke tests for {@link NotificationConfigSnippets} */
 @RunWith(JUnit4.class)
 public class NotificationConfigSnippetTests {
-  private NotificationConfigSnippetTests() {}
 
   @Test
   public void testCreateNotificationConfig() throws IOException {
