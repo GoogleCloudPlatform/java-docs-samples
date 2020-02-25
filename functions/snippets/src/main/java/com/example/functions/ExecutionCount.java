@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_concepts_stateless]
 
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class Concepts {
+public class ExecutionCount implements HttpFunction {
   
   private final AtomicInteger count = new AtomicInteger(0);
 
-  public void executionCount(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     count.getAndIncrement();
 
     // Note: the total function invocation count across
     // all instances may not be equal to this value!
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write("Instance execution count: " + count);
   }
 }
-
 // [END functions_concepts_stateless]

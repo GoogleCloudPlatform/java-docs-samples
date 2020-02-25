@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_log_retrieve]
 
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
 import com.google.cloud.logging.v2.LoggingClient;
 import com.google.cloud.logging.v2.LoggingClient.ListLogEntriesPagedResponse;
 import com.google.logging.v2.ListLogEntriesRequest;
 import com.google.logging.v2.LogEntry;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class RetrieveLogs {
+public class RetrieveLogs implements HttpFunction {
 
   private LoggingClient client;
 
   // Retrieve the latest Cloud Function log entries
-  public void retrieveLogs(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // Get the LoggingClient for the function.
     client = getClient();
@@ -44,11 +48,11 @@ public class RetrieveLogs {
 
     ListLogEntriesPagedResponse entriesResponse = client.listLogEntries(entriesRequest);
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     for (LogEntry entry : entriesResponse.getPage().getValues()) {
-      writer.println(String.format("%s: %s", entry.getLogName(), entry.getTextPayload()));
+      writer.write(String.format("%s: %s\n", entry.getLogName(), entry.getTextPayload()));
     }
-    writer.println("\n\nLogs retrieved successfully.");
+    writer.write("\n\nLogs retrieved successfully.\n");
   }
 
   // Returns a client for interacting with the Logging API. The client is stored in the global scope
@@ -60,5 +64,4 @@ public class RetrieveLogs {
     return client;
   }
 }
-
 // [END functions_log_retrieve]
