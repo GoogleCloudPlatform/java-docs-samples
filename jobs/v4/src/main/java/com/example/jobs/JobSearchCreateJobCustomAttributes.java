@@ -16,7 +16,7 @@
 
 package com.example.jobs;
 
-// [START job_search_create_job_beta]
+// [START job_search_create_job_custom_attributes]
 
 import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
@@ -25,10 +25,8 @@ import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
-public class JobSearchCreateJob {
+public class JobSearchCreateJobCustomAttributes {
 
   public static void createJob() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -36,43 +34,31 @@ public class JobSearchCreateJob {
     String tenantId = "your-tenant-id";
     String companyId = "your-company-id";
     String requisitionId = "your-unique-req-id";
-    String jobApplicationUrl = "your-job-url";
-    createJob(projectId, tenantId, companyId, requisitionId, jobApplicationUrl);
+    createJob(projectId, tenantId, companyId, requisitionId);
   }
 
-  // Create a job.
+  // Create Job with Custom Attributes.
   public static void createJob(
       String projectId,
       String tenantId,
       String companyId,
-      String requisitionId,
-      String jobApplicationUrl)
+      String requisitionId)
       throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
-      Job.ApplicationInfo applicationInfo =
-          Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
-
-      List<String> addresses = Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043",
-              "111 8th Avenue, New York, NY 10011");
-
       Job job =
-          Job.newBuilder()
-              .setCompany(companyId)
-              .setRequisitionId(requisitionId)
-              .setTitle("Software Developer")
-              .setDescription("Develop, maintain the software solutions.")
-              .setApplicationInfo(applicationInfo)
-              .addAllAddresses(addresses)
-              .setLanguageCode("en-US")
-              .build();
-
+              Job.newBuilder()
+                      .setCompany(companyId)
+                      .setTitle("Software Developer II")
+                      .setDescription("This is a description of this <i>wonderful</i> job!")
+                      .setRequisitionId(requisitionId)
+                      .setLanguageCode("en-US")
+                      .build();
       CreateJobRequest request =
-          CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
-
+              CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
       Job response = jobServiceClient.createJob(request);
       System.out.printf("Created job: %s\n", response.getName());
     }
   }
 }
-// [END job_search_create_job_beta]
+// [END job_search_create_job_custom_attributes]
