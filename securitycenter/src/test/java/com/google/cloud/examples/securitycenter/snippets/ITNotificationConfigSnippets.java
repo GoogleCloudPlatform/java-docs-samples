@@ -19,7 +19,6 @@ package com.google.cloud.examples.securitycenter.snippets;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-
 import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +31,8 @@ public class ITNotificationConfigSnippets {
   @Test
   public void testCreateNotificationConfig() throws IOException {
     assertNotNull(
-        NotificationConfigSnippets.createNotificationConfig(
-            getOrganizationId(), getPubsubTopic(), "java-notification-config-create"));
+        CreateNotificationConfigSnippets.createNotificationConfig(
+            getOrganizationId(), "java-notification-config-create", getProject(), getTopicName()));
 
     deleteConfig("java-notification-config-create");
   }
@@ -43,7 +42,7 @@ public class ITNotificationConfigSnippets {
     createConfig("java-notification-config-delete");
 
     assertTrue(
-        NotificationConfigSnippets.deleteNotificationConfig(
+        DeleteNotificationConfigSnippets.deleteNotificationConfig(
             getOrganizationId(), "java-notification-config-delete"));
   }
 
@@ -51,7 +50,7 @@ public class ITNotificationConfigSnippets {
   public void testListNotificationConfig() throws IOException {
     createConfig("java-notification-config-list");
 
-    assertNotNull(NotificationConfigSnippets.listNotificationConfigs(getOrganizationId()));
+    assertNotNull(ListNotificationConfigSnippets.listNotificationConfigs(getOrganizationId()));
 
     deleteConfig("java-notification-config-list");
   }
@@ -61,7 +60,7 @@ public class ITNotificationConfigSnippets {
     createConfig("java-notification-config-get");
 
     assertNotNull(
-        NotificationConfigSnippets.getNotificationConfig(
+        GetNotificationConfigSnippets.getNotificationConfig(
             getOrganizationId(), "java-notification-config-get"));
 
     deleteConfig("java-notification-config-get");
@@ -72,26 +71,31 @@ public class ITNotificationConfigSnippets {
     createConfig("java-notification-config-update");
 
     assertNotNull(
-        NotificationConfigSnippets.updateNotificationConfig(
-            getOrganizationId(), "java-notification-config-update", getPubsubTopic()));
+        UpdateNotificationConfigSnippets.updateNotificationConfig(
+            getOrganizationId(), "java-notification-config-update", getProject(), getTopicName()));
 
     deleteConfig("java-notification-config-update");
   }
 
   private static void createConfig(String configId) throws IOException {
-    NotificationConfigSnippets.createNotificationConfig(
-        getOrganizationId(), getPubsubTopic(), configId);
+    CreateNotificationConfigSnippets.createNotificationConfig(
+        getOrganizationId(), configId, getProject(), getTopicName());
   }
 
   private static void deleteConfig(String configId) throws IOException {
-    assertTrue(NotificationConfigSnippets.deleteNotificationConfig(getOrganizationId(), configId));
+    assertTrue(
+        DeleteNotificationConfigSnippets.deleteNotificationConfig(getOrganizationId(), configId));
   }
 
   private static String getOrganizationId() {
     return System.getenv("GCLOUD_ORGANIZATION");
   }
 
-  private static String getPubsubTopic() {
-    return "projects/project-a-id/topics/notifications-sample-topic";
+  private static String getProject() {
+    return "project-a-id";
+  }
+
+  private static String getTopicName() {
+    return "notifications-sample-topic";
   }
 }
