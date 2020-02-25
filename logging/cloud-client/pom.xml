@@ -63,7 +63,7 @@
       <plugin> <!-- Integration / System Tests -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <configuration>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           <forkCount>3</forkCount>
