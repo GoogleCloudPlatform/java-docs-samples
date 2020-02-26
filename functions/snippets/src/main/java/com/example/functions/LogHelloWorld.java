@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-// [START functions_log_helloworld]
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package com.example.functions;
 
-public class LogHelloWorld {
+// [START functions_log_helloworld]
+
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.logging.Logger;
+
+public class LogHelloWorld implements HttpFunction {
 
   private static final Logger LOGGER = Logger.getLogger(LogHelloWorld.class.getName());
 
-  public void logHelloWorld(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     LOGGER.info("I am an info log!");
     LOGGER.warning("I am a warning log!");
 
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write("Messages successfully logged!");
   }
 }
-
 // [END functions_log_helloworld]

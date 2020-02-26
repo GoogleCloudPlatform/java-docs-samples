@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-// [START functions_env_vars]
-import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package com.example.functions;
 
-public class EnvVars {
+// [START functions_env_vars]
+
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public class EnvVars implements HttpFunction {
+
   // Returns the environment variable "foo" set during function deployment.
-  public void envVar(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     String foo = System.getenv("FOO");
     if (foo == null) {
       foo = "Specified environment variable is not set.";
@@ -32,5 +38,4 @@ public class EnvVars {
     writer.write(foo);
   }
 }
-
 // [END functions_env_vars]

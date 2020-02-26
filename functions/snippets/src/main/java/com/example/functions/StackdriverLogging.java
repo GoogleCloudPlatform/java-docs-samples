@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_log_stackdriver]
-import java.io.IOException;
-import java.util.Map;
+
+import com.google.cloud.functions.BackgroundFunction;
+import com.google.cloud.functions.Context;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Logger;
 
-public class LogEntry {
+public class StackdriverLogging implements BackgroundFunction<PubSubMessage> {
+  private static final Logger LOGGER = Logger.getLogger(StackdriverLogging.class.getName());
 
-  private static Logger LOGGER = Logger.getLogger(LogEntry.class.getName());
+  @Override
+  public void accept(PubSubMessage message, Context context) {
+    String name = "World";
 
-  public String helloPubSub(PubSubMessage message) throws IOException {
-    if (message.data.isEmpty()) {
-      message.data = "World";
+    if (!message.data.isEmpty()) {
+      name = new String(Base64.getDecoder().decode(message.data.getBytes(StandardCharsets.UTF_8)));
     }
-    String res = String.format("Hello, %s", message.data);
+    String res = String.format("Hello, %s", name);
     LOGGER.info(res);
-    return res;
-  }
-
-  // A Pub/Sub message.
-  // Make sure to include the PubSubMessage class verbatim
-  // The GCF environment will marshal the request data into it.
-  public class PubSubMessage {
-    String data;
-    Map<String, String> attributes;
-    String messageId;
-    String publishTime;
   }
 }
-
 // [END functions_log_stackdriver]

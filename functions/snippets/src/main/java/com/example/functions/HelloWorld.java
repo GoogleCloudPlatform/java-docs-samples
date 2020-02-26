@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-// [START functions_helloworld_get]
-import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package com.example.functions;
 
-public class HelloWorld {
+// [START functions_helloworld_get]
+
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public class HelloWorld implements HttpFunction {
   // Simple function to return "Hello World"
-  public void helloGet(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    PrintWriter writer = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     writer.write("Hello World!");
   }
 }
-
 // [END functions_helloworld_get]
