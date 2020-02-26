@@ -16,7 +16,7 @@
 
 package com.example.functions;
 
-// [START functions_background_helloworld]
+// [START functions_helloworld_background]
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
@@ -35,4 +35,4 @@ public class HelloBackground implements BackgroundFunction<HttpRequest> {
     LOGGER.info(String.format("Hello %s!", name));
   }
 }
-// [END functions_background_helloworld]
+// [END functions_helloworld_background]
