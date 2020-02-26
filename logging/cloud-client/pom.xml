@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.98.0</version>
+      <version>1.100.0</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -63,7 +63,7 @@
       <plugin> <!-- Integration / System Tests -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <configuration>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           <forkCount>3</forkCount>
