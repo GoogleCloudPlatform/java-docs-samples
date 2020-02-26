@@ -34,6 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -44,6 +46,7 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerReadIT {
 
+  private final Random random = new Random();
   private String instanceId;
   private String databaseId;
 
@@ -53,7 +56,7 @@ public class SpannerReadIT {
   @Before
   public void setUp() throws InterruptedException, ExecutionException {
     instanceId = System.getProperty("spanner.test.instance");
-    databaseId = "df-spanner-read-it";
+    databaseId = "df-spanner-read-it-" + random.nextInt(1000000000);
 
     spannerOptions = SpannerOptions.getDefaultInstance();
     spanner = spannerOptions.getService();

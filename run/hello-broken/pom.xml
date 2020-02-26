@@ -69,27 +69,18 @@ limitations under the License.
   <!-- [START run_broken_service_build] -->
   <build>
     <plugins>
+      <!-- [START run_broken_service_jib] -->
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>2.1.0</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <to>
+            <image>gcr.io/PROJECT_ID/hello-service</image>
+          </to>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.example.cloudrun.App</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
-      </plugin>
+      <!-- [END run_broken_service_jib] -->
     </plugins>
   </build>
   <!-- [END run_broken_service_build] -->
