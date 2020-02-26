@@ -11,7 +11,7 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 
 |           Sample                |        Description       |     Deploy    |
 | ------------------------------- | ------------------------ | ------------- |
-|[Hello World][helloworld/] | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
+|[Hello World](helloworld/) | Quickstart | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_helloworld] |
 |[Cloud Pub/Sub](pubsub/) | Handling Pub/Sub push messages | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_pubsub] |
 |[System Packages](system-package/) | Using system packages with containers | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_sys_package] |
 |[Image Magick](image-processing/) | Event-driven image analysis & transformation | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_image] |
@@ -21,59 +21,68 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 
 For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
+## Jib
+
+These samples use [Jib](https://github.com/GoogleContainerTools/jib) to
+build Docker images using common Java tools. Jib optimizes container builds
+without the need for a Dockerfile or having [Docker](https://www.docker.com/)
+installed. Learn more about [how Jib works](https://github.com/GoogleContainerTools/jib).
+
 ## Setup
 
 1. [Set up for Cloud Run development](https://cloud.google.com/run/docs/setup)
 
-2. Clone this repository:
+1. Clone this repository:
 
     ```
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
     ```
 
-    Note: Some samples in the list above are hosted in other repositories. They are noted with the symbol "&#10149;".
+1. In the samples's `pom.xml`, update the image field for the `jib-maven-plugin`
+with your Google Cloud Project Id:
 
+    ```XML
+    <plugin>
+      <groupId>com.google.cloud.tools</groupId>
+      <artifactId>jib-maven-plugin</artifactId>
+      <version>2.0.0</version>
+      <configuration>
+        <to>
+          <image>gcr.io/PROJECT_ID/SAMPLE_NAME</image>
+        </to>
+      </configuration>
+    </plugin>
+    ```
 
 ## How to run a sample locally
 
-1. [Install docker locally](https://docs.docker.com/install/)
+1. [Build the sample container using Jib](https://github.com/GoogleContainerTools/jib):
 
-2. [Build the sample container](https://cloud.google.com/run/docs/building/containers#building_locally_and_pushing_using_docker):
-
-    ```
-    export SAMPLE=<SAMPLE_NAME>
-    cd $SAMPLE
-    docker build --tag $SAMPLE .
+    ```Bash
+    mvn compile jib:dockerBuild
     ```
 
-3. [Run containers locally](https://cloud.google.com/run/docs/testing/local)
+1. [Run containers locally](https://cloud.google.com/run/docs/testing/local) by
+replacing `PROJECT_ID` and `SAMPLE_NAME` with your values.
 
     With the built container:
 
-    ```
-    PORT=8080 && docker run --rm -p 8080:${PORT} -e PORT=${PORT} $SAMPLE
-    ```
-
-    Overriding the built container with local code:
-
-    ```
-    PORT=8080 && docker run --rm \
-        -p 8080:${PORT} -e PORT=${PORT} \
-        -v $PWD:/app $SAMPLE
+    ```Bash
+    PORT=8080 && docker run --rm -p 9090:${PORT} -e PORT=${PORT} gcr.io/PROJECT_ID/SAMPLE_NAME
     ```
 
     Injecting your service account key for access to GCP services:
 
-    ```
-    # Set the name of the service account key within the container
-    export SA_KEY_NAME=my-key-name-123
-
-    PORT=8080 && docker run --rm \
-        -p 8080:${PORT} \
-        -e PORT=${PORT} \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/${SA_KEY_NAME}.json \
-        -v $GOOGLE_APPLICATION_CREDENTIALS:/tmp/keys/${SA_KEY_NAME}.json:ro \
-        -v $PWD:/app $SAMPLE
+    ```Bash
+    PORT=8080 && docker run \
+       -p 9090:${PORT} \
+       -e PORT=${PORT} \
+       -e K_SERVICE=dev \
+       -e K_CONFIGURATION=dev \
+       -e K_REVISION=dev-00001 \
+       -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/[FILE_NAME].json \
+       -v $GOOGLE_APPLICATION_CREDENTIALS:/tmp/keys/[FILE_NAME].json:ro \
+        gcr.io/PROJECT_ID/SAMPLE_NAME
     ```
 
     * Use the --volume (-v) flag to inject the credential file into the container
@@ -83,35 +92,26 @@ For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samp
     * Use the --environment (-e) flag to set the `GOOGLE_APPLICATION_CREDENTIALS`
       variable inside the container
 
+1. Open http://localhost:9090 in your browser.
+
 Learn more about [testing your container image locally.][testing]
 
 ## Deploying
 
-1. Set your GCP Project ID as an environment variable:
-```
-export GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
-```
+1. [Build the sample container using Jib](https://github.com/GoogleContainerTools/jib):
 
-2. Choose to push your image to Google Container Registry or submit a build to
-Cloud Build:
-  *  Push the docker build to Google Container Registry:
-  ```
-  docker tag $SAMPLE gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
-  docker push gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
-  ```
-  Learn more about [pushing and pulling images][push-pull].
+    ```
+    mvn compile jib:build
+    ```
 
-  * Submit a build using Google Cloud Build:
-  ```
-  gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
-  ```
+    **Note**: Using the image tag `gcr.io/PROJECT_ID/SAMPLE_NAME` automatically
+    pushes the image to [Google Container Registry](https://cloud.google.com/container-registry/).
 
-3. Deploy to Cloud Run:
-```
-gcloud beta run deploy $SAMPLE \
-  --set-env-vars GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}  \
-  --image gcr.io/${GOOGLE_CLOUD_PROJECT}/${SAMPLE}
-```
+1. Deploy to Cloud Run by replacing `PROJECT_ID` and `SAMPLE_NAME` with your values:
+
+    ```bash
+    gcloud run deploy --image gcr.io/PROJECT_ID/SAMPLE_NAME
+    ```
 
 ## Next Steps
 * See [building containers][run_build] and [deploying container images][run_deploy]
