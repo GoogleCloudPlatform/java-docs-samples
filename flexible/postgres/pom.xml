@@ -46,7 +46,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <jetty>9.4.4.v20170414</jetty>
+    <jetty>9.4.26.v20200117</jetty>
 <!-- [END_EXCLUDE] -->
     <sqlURL>jdbc:postgresql://google/${database}?useSSL=false&amp;socketFactoryArg=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.postgres.SocketFactory&amp;user=${user}&amp;password=${password}</sqlURL>
   </properties>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.8</version>
+      <version>42.2.10</version>
     </dependency>
 
     <dependency>
@@ -105,7 +105,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>1.3.2</version>
       </plugin>
 
       <plugin>
