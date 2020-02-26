@@ -146,9 +146,9 @@ limitations under the License.
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.2.0</version>
         <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+          <descriptors>
+            <descriptor>assembly-descriptor.xml</descriptor>
+          </descriptors>
           <archive>
             <manifest>
               <mainClass>com.example.spanner.SpannerSample</mainClass>
@@ -168,7 +168,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <configuration>
           <systemPropertyVariables>
             <spanner.test.instance>default-instance</spanner.test.instance>

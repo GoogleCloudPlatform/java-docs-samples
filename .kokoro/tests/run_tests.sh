@@ -21,7 +21,7 @@ shopt -s globstar
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# `--debug` can be added make local testing of this script easier
+# `--script-debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
     JAVA_VERSION="1.8"
@@ -29,7 +29,7 @@ else
     SCRIPT_DEBUG="false"
 fi
 
-# `--only-changed` will only run tests on projects container changes from the master branch.
+# `--only-diff` will only run tests on projects container changes from the master branch.
 if [[ $* == *--only-diff* ]]; then
     ONLY_DIFF="true"
 else
@@ -61,10 +61,15 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export LOCATION_ID=us-east1
     # For Datalabeling samples to hit the testing endpoint
     export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
+    # shellcheck source=src/aws-secrets.sh
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
+    # shellcheck source=src/storage-hmac-credentials.sh
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
+    # shellcheck source=src/dlp_secrets.sh
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
+    # shellcheck source=src/bigtable_secrets.sh
     source "${KOKORO_GFILE_DIR}/bigtable_secrets.txt"
+    # shellcheck source=src/automl_secrets.sh
     source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
     # Activate service account
     gcloud auth activate-service-account \
@@ -74,8 +79,15 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     cd github/java-docs-samples
 fi
 
+# Don't check Appengine-java8 | flexible if using Java 11
+if [[ "$KOKORO_JOB_NAME" == */java11/* ]]; then
+  SKIP_LEGACY_GAE="true"
+else
+  SKIP_LEGACY_GAE="false"
+fi
+
 # Package local jetty dependency for Java11 samples
-if [[ "$JAVA_VERSION" == "11" ]]; then
+if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
   mvn install --quiet
   cd ../../
@@ -94,6 +106,20 @@ for file in **/pom.xml; do
     file=$(dirname "$file")
     cd "$file"
 
+    # Skip Legacy GAE
+    if [[ "$SKIP_LEGACY_GAE" = "true" ]]; then
+      if [[ ",$JAVA_VERSION," =~ "11" ]]; then
+        case "$file" in
+          *appengine-java8*)
+            continue
+            ;;
+          *flexible*)
+            continue
+            ;;
+        esac
+      fi
+    fi
+
     # If $DIFF_ONLY is true, skip projects without changes.
     if [[ "$ONLY_DIFF" = "true" ]]; then
         git diff --quiet origin/master.. .
@@ -111,6 +137,8 @@ for file in **/pom.xml; do
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
     ALLOWED_VERSIONS=("1.8" "11")
+    # shellcheck disable=SC2199
+    # shellcheck disable=SC2076
     if [[ "$POM_JAVA" = "" ]] || [[ !  "${ALLOWED_VERSIONS[@]}" =~ "${POM_JAVA}" ]]; then
         RTN=1
         echo -e "\n Testing failed: Unable to determine Java version. Please set in pom:"
@@ -122,6 +150,7 @@ for file in **/pom.xml; do
     fi
 
     # Skip tests that don't have the correct Java version.
+    # shellcheck disable=SC2076
     if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
         echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
         continue
