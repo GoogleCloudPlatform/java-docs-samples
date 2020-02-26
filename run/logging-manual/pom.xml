@@ -16,10 +16,7 @@ limitations under the License.
   <groupId>com.example.cloudrun</groupId>
   <artifactId>logging-manual</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <!--
-  The parent pom defines common style checks and testing strategies for our samples.
-  Removing or replacing it should not affect the execution of the samples in anyway.
-  -->
+  <!--  The parent pom defines common style checks and testing strategies for our samples.  Removing or replacing it should not affect the execution of the samples in anyway.  -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
@@ -30,6 +27,7 @@ limitations under the License.
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.sparkjava</groupId>
@@ -56,7 +54,7 @@ limitations under the License.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.3.1</version>
+      <version>4.4.0</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -65,25 +63,21 @@ limitations under the License.
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
+      <!-- [START run_manual_logging_jib] -->
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>2.1.0</version>
         <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.example.cloudrun.App</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+          <to>
+            <image>gcr.io/PROJECT_ID/logging-manual</image>
+          </to>
         </configuration>
       </plugin>
+      <!-- [END run_manual_logging_jib] -->
     </plugins>
   </build>
 </project>

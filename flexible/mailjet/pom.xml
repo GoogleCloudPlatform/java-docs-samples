@@ -37,7 +37,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
-    <jetty>9.4.4.v20170414</jetty>
+    <jetty>9.4.26.v20200117</jetty>
 
     <mailjet-version>4.2.1</mailjet-version>
   </properties>
