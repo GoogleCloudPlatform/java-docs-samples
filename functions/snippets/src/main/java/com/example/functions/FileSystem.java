@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
+package com.example.functions;
+
 // [START functions_concepts_filesystem]
+
+import com.google.cloud.functions.HttpFunction;
+import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class FileSystem {
+public class FileSystem implements HttpFunction {
 
   // Lists the files in the current directory.
-  public void listFiles(HttpServletRequest request, HttpServletResponse response)
+  @Override
+  public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    File curDir = new File(".");
-    File[] files = curDir.listFiles();
-    PrintWriter writer = response.getWriter();
+    File currentDirectory = new File(".");
+    File[] files = currentDirectory.listFiles();
+    BufferedWriter writer = response.getWriter();
     writer.write("Files: \n");
     for (File f : files) {
       writer.write(String.format("\t%s\n", f.getName()));
     }
   }
 }
-
 // [END functions_concepts_filesystem]
