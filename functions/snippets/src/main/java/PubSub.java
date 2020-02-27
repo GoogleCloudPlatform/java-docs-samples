@@ -62,12 +62,12 @@ public class PubSub {
 
     // Ignore events that are too old
     if (eventAge > MAX_AGE) {
-      System.out.printf("Dropping event %s with age %ld ms.", body, eventAge);
+      System.out.printf("Dropping event %s.", body);
       return;
     }
 
     // Do what the function is supposed to do
-    System.out.printf("Processing event %s with age %ld ms.", body, eventAge);
+    System.out.printf("Processing event %s.", body);
   }
 
   // [START functions_tips_retry]
