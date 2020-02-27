@@ -39,7 +39,7 @@ Copyright 2019 Google LLC
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
     <maven.war.filteringDeploymentDescriptors>false</maven.war.filteringDeploymentDescriptors>
-    <jetty.version>9.4.25.v20191220</jetty.version>
+    <jetty.version>9.4.26.v20200117</jetty.version>
   </properties>
 
   <dependencies>
@@ -47,7 +47,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>0.52.0-beta</version>
+      <version>1.32.4</version>
     </dependency>
 
     <dependency>
