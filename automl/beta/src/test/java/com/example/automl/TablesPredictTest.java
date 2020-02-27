@@ -42,7 +42,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TablesPredictTest {
-  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String MODEL_ID = "TBL7972827093840953344";
   private ByteArrayOutputStream bout;
   private PrintStream out;
