@@ -52,7 +52,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.11</version>
+      <version>8.0.19</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
@@ -81,7 +81,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.26.v20200117</version>
+        <version>9.4.27.v20200227</version>
         <configuration>
           <scanIntervalSeconds>1</scanIntervalSeconds>
         </configuration>
