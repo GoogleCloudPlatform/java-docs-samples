@@ -48,7 +48,7 @@ Additionally, for this sample you need the following:
     gcloud scheduler jobs create pubsub thumbs-up-publisher \
       --schedule="* * * * *" \
       --topic="$TOPIC" \
-      --message-body='{"url": "https://beam.apache.org/", "review": "👍"}'
+      --message-body='{"url": "https://beam.apache.org/", "review": "positive"}'
 
     # Start the job.
     gcloud scheduler jobs run thumbs-up-publisher
@@ -58,7 +58,7 @@ Additionally, for this sample you need the following:
     gcloud scheduler jobs create pubsub thumbs-down-publisher \
       --schedule="*/2 * * * *" \
       --topic="$TOPIC" \
-      --message-body='{"url": "https://beam.apache.org/", "review": "👎"}'
+      --message-body='{"url": "https://beam.apache.org/", "review": "negative"}'
 
     gcloud scheduler jobs run thumbs-down-publisher
     ```
@@ -107,17 +107,10 @@ to transform the message data, and writes the results to a
 >   -Dexec.args="\
 >     --inputSubscription=$SUBSCRIPTION \
 >     --outputTable=$PROJECT:$DATASET.$TABLE \
->     --gcpTempLocation=gs://$BUCKET/samples/dataflow/temp"
+>     --tempLocation=gs://$BUCKET/samples/dataflow/temp"
 > ```
 >
 > </details>
-
-mvn compile exec:java \
-  -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSQL \
-  -Dexec.args="\
-    --inputSubscription=$SUBSCRIPTION \
-    --outputTable=$PROJECT:$DATASET.$TABLE \
-    --tempLocation=gs://$BUCKET/samples/dataflow/temp"
 
 First, we build the Java project into an
 [*uber-jar* file](https://maven.apache.org/plugins/maven-shade-plugin/).
@@ -188,9 +181,8 @@ export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/streaming-beam-sql
 # Option A: Build the template via `gcloud`.
 gcloud dataflow flex-templates build $TEMPLATE_PATH \
   --image "$TEMPLATE_IMAGE" \
-  --sdk_language "JAVA" \
-  --sdk_version "2.19.0" \
-  --metadata_file "metadata.json"
+  --sdk-language "JAVA" \
+  --metadata-file "metadata.json"
 
 # Option B: Copy the template.json file to a Cloud Storage location.
 # NOTE: we need to set the image path to the one in the project it was built.
@@ -217,8 +209,8 @@ There is no need to modify any code for users running a deployed template.
 # Parameters after the `--` are passed to the pipeline.
 # We can optionally still pass other standard PipelineOptions,
 # such as `--workerMachineType`, flags alongside other template parameters.
-gcloud dataflow flex-templates run $TEMPLATE_PATH \
-  --jobName "streaming-beam-sql-`date +%Y%m%d-%H%M%S`"
+gcloud dataflow flex-templates run "streaming-beam-sql-`date +%Y%m%d-%H%M%S`"
+  --template-file-gcs-location $TEMPLATE_PATH \
   -- \
   --inputSubscription "$SUBSCRIPTION" \
   --outputTable "$PROJECT:$DATASET.$TABLE" \
@@ -270,7 +262,7 @@ Try sending the following message and check back the BigQuery table about
 a minute later.
 
 ```json
-{"url": "https://cloud.google.com/bigquery/", "review": "👍"}
+{"url": "https://cloud.google.com/bigquery/", "review": "positive"}
 ```
 
 ### Clean up

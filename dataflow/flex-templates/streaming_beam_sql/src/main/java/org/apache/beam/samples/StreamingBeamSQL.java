@@ -104,9 +104,9 @@ public class StreamingBeamSQL {
           LOG.info("message: {} {}", message);
           var msg = GSON.fromJson(message, PageReviewMessage.class);
           return Row.withSchema(schema).addValues(
-              msg.url,                             // row url
-              msg.review.equals("👍") ? 1.0 : 0.0, // row page_score
-              new Instant()                        // row processing_time
+              msg.url,                                    // row url
+              msg.review.equals("positive") ? 1.0 : 0.0,  // row page_score
+              new Instant()                               // row processing_time
           ).build();
         })).setRowSchema(schema) // make sure to set the row schema for the PCollection
 
