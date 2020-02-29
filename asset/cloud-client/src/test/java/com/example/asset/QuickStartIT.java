@@ -103,7 +103,7 @@ public class QuickStartIT {
     String dataset =
         String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
     String table = "java_test";
-    ExportAssetsBigqueryExample.main(dataset, table);
+    ExportAssetsBigqueryExample.exportBigQuery(dataset, table);
     String got = bout.toString();
     assertThat(got).contains(String.format("dataset: \"%s\"", dataset));
   }

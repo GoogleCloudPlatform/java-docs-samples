@@ -34,10 +34,7 @@ public class ExportAssetsBigqueryExample {
 
   // Export assets for a project.
   // @param args path where the results will be exported to.
-  public static void main(String... args) throws Exception {
-    String bigqueryDataset = args[0];
-    String bigqueryTable = args[1];
-
+  public static void exportBigQuery(String bigqueryDataset, String bigqueryTable) throws Exception {
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
       OutputConfig outputConfig =
