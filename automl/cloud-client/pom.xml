@@ -37,13 +37,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-automl</artifactId>
-      <version>0.115.1-beta</version>
+      <version>1.0.1</version>
     </dependency>
     <!-- [END automl_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>1.100.0</version>
+      <version>1.103.1</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>

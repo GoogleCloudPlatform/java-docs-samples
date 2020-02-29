@@ -30,9 +30,9 @@ limitations under the License.
   </parent>
 
   <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <project.compute.version>v1-rev20190905-1.30.3</project.compute.version>
+    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>8</maven.compiler.source>
+    <project.compute.version>v1-rev20200114-1.30.8</project.compute.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -40,7 +40,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.5</version>
+      <version>1.30.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>
@@ -72,22 +72,6 @@ limitations under the License.
             </systemProperty>
           </systemProperties>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.3</version>
-        <configuration>
-          <failOnError>false</failOnError>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>

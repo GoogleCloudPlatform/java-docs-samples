@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.After;
@@ -34,13 +35,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class DeIdentificationTests {
 
-  private ByteArrayOutputStream bout;
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-
   // TODO: Update as ENV_VARs
   private static final String bucketName = PROJECT_ID + "/dlp";
-
+  private ByteArrayOutputStream bout;
   private String wrappedKey = System.getenv("DLP_DEID_WRAPPED_KEY");
   private String kmsKeyName = System.getenv("DLP_DEID_KEY_NAME");
 
@@ -88,7 +86,8 @@ public class DeIdentificationTests {
 
   @Test
   public void testReIdentifyWithFpe() throws IOException {
-    ReIdentifyWithFpe.reIdentifyWithFpe(PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", kmsKeyName, wrappedKey);
+    ReIdentifyWithFpe.reIdentifyWithFpe(
+        PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", kmsKeyName, wrappedKey);
 
     String output = bout.toString();
     assertThat(output, containsString("Text after re-identification:"));
@@ -104,6 +103,8 @@ public class DeIdentificationTests {
 
     String output = bout.toString();
     assertThat(output, containsString("Content written to file: "));
-  }
 
+    // Clean up test output
+    Files.delete(outputFile);
+  }
 }
