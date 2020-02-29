@@ -85,7 +85,7 @@ mvn install
 
 - Start the server with your `WAR` file as an argument:
 ```
-mvn exec:java -Dexec.args="../helloworld-java8/target/helloworld.war"
+mvn exec:java -Dexec.args="../helloworld-servlet/target/helloworld.war"
 ```
 
 Then visit: http://localhost:8080/hello
