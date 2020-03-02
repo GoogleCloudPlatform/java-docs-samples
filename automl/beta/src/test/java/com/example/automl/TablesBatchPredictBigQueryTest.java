@@ -74,11 +74,9 @@ public class TablesBatchPredictBigQueryTest {
     try {
       TablesBatchPredictBigQuery.batchPredict(PROJECT_ID, MODEL_ID, INPUT_URI, OUTPUT_URI);
       String got = bout.toString();
-      assertThat(got)
-          .contains("does not exist");
+      assertThat(got).contains("does not exist");
     } catch (IOException | ExecutionException | InterruptedException e) {
-      assertThat(e.getMessage())
-          .contains("does not exist");
+      assertThat(e.getMessage()).contains("does not exist");
     }
   }
 }

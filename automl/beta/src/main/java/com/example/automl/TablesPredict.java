@@ -39,9 +39,9 @@ class TablesPredict {
     String modelId = "YOUR_MODEL_ID";
     // Values should match the input expected by your model.
     List<Value> values = new ArrayList<>();
-    values.add(Value.newBuilder().setBoolValue(true).build());
-    values.add(Value.newBuilder().setNumberValue(10).build());
-    values.add(Value.newBuilder().setStringValue("YOUR_STRING").build());
+    // values.add(Value.newBuilder().setBoolValue(true).build());
+    // values.add(Value.newBuilder().setNumberValue(10).build());
+    // values.add(Value.newBuilder().setStringValue("YOUR_STRING").build());
     predict(projectId, modelId, values);
   }
 

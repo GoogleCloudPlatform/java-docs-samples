@@ -23,6 +23,7 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.DeployModelRequest;
 import com.google.cloud.automl.v1.Model;
 import com.google.cloud.automl.v1.ModelName;
+import com.google.protobuf.Value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import com.google.protobuf.Value;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

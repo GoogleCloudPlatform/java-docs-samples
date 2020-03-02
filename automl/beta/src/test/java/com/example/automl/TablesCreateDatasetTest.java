@@ -16,12 +16,8 @@
 
 package com.example.automl;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,8 +25,12 @@ import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
@@ -68,7 +68,8 @@ public class TablesCreateDatasetTest {
   }
 
   @Test
-  public void testTablesCreateDataset() throws IOException, ExecutionException, InterruptedException {
+  public void testTablesCreateDataset()
+      throws IOException, ExecutionException, InterruptedException {
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
