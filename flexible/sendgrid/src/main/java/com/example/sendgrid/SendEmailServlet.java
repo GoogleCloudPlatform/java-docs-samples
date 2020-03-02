@@ -16,9 +16,13 @@
 
 package com.example.sendgrid;
 
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import com.sendgrid.SendGridException;
-
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -33,10 +37,13 @@ import javax.servlet.http.HttpServletResponse;
 public class SendEmailServlet extends HttpServlet {
 
   @Override
-  public void service(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void service(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    // Get parameters from environment variables.
     final String sendgridApiKey = System.getenv("SENDGRID_API_KEY");
     final String sendgridSender = System.getenv("SENDGRID_SENDER");
+
+    // Get email from query string.
     final String toEmail = req.getParameter("to");
     if (toEmail == null) {
       resp.getWriter()
@@ -44,21 +51,36 @@ public class SendEmailServlet extends HttpServlet {
       return;
     }
 
+    // Set content for request.
+    Email to = new Email(toEmail);
+    Email from = new Email(sendgridSender);
+    String subject = "This is a test email";
+    Content content = new Content("text/plain", "Example text body.");
+    Mail mail = new Mail(from, subject, to, content);
+
+    // Instantiates SendGrid client.
     SendGrid sendgrid = new SendGrid(sendgridApiKey);
-    SendGrid.Email email = new SendGrid.Email();
-    email.addTo(toEmail);
-    email.setFrom(sendgridSender);
-    email.setSubject("This is a test email");
-    email.setText("Example text body.");
+
+    // Instantiate SendGrid request.
+    Request request = new Request();
 
     try {
-      SendGrid.Response response = sendgrid.send(email);
-      if (response.getCode() != 200) {
-        resp.getWriter().print(String.format("An error occurred: %s", response.getMessage()));
+      // Set request configuration.
+      request.setMethod(Method.POST);
+      request.setEndpoint("mail/send");
+      request.setBody(mail.build());
+
+      // Use the client to send the API request.
+      Response response = sendgrid.api(request);
+
+      if (response.getStatusCode() != 202) {
+        resp.getWriter().print(String.format("An error occurred: %s", response.getStatusCode()));
         return;
       }
+
+      // Print response.
       resp.getWriter().print("Email sent.");
-    } catch (SendGridException e) {
+    } catch (IOException e) {
       throw new ServletException("SendGrid error", e);
     }
   }
