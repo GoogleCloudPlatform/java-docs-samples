@@ -46,8 +46,8 @@ public class VideoObjectTrackingCreateDatasetTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName));
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -80,7 +80,7 @@ public class VideoObjectTrackingCreateDatasetTest {
     // To prevent name collisions when running tests in multiple java versions at once.
     // AutoML doesn't allow "-", but accepts "_"
     String datasetName =
-            String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+        String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
     VideoObjectTrackingCreateDataset.createDataset(PROJECT_ID, datasetName);
 
     String got = bout.toString();
