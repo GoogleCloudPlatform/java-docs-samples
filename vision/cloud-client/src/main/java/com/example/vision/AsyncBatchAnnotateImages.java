@@ -52,8 +52,11 @@ public class AsyncBatchAnnotateImages {
       // First specify where the vision api can find the image
       ImageSource source = ImageSource.newBuilder().setImageUri(inputImageUri).build();
       Image image = Image.newBuilder().setSource(source).build();
+
       // Set the type of annotation you want to perform on the image
+      // https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.Feature.Type
       Feature feature = Feature.newBuilder().setType(Feature.Type.LABEL_DETECTION).build();
+
       // Build the request object for that one image. Note: for additional images you have to create
       // additional `AnnotateImageRequest` objects and store them in a list to be used below.
       AnnotateImageRequest imageRequest =
