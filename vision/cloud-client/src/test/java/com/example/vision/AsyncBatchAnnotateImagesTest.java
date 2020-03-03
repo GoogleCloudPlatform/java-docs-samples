@@ -80,10 +80,7 @@ public class AsyncBatchAnnotateImagesTest {
 
   @Test
   public void testSetEndpoint() throws IOException, ExecutionException, InterruptedException {
-    // Act
     AsyncBatchAnnotateImages.asyncBatchAnnotateImages(INPUT_URI, OUTPUT_URI);
-
-    // Assert
     String got = bout.toString();
     assertThat(got).contains("Output written to GCS with prefix");
   }
