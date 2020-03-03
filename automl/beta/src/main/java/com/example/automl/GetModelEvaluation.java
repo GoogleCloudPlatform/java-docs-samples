@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_video_classification_get_model_evaluation_beta]
+// [START automl_video_object_tracking_get_model_evaluation_beta]
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.ModelEvaluation;
 import com.google.cloud.automl.v1beta1.ModelEvaluationName;
@@ -55,10 +56,19 @@ class GetModelEvaluation {
       System.out.format(
           "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
 
+      // [END automl_video_object_tracking_get_model_evaluation_beta]
       System.out.format(
           "Classification Model Evaluation Metrics: %s\n",
           modelEvaluation.getClassificationEvaluationMetrics());
+      // [END automl_video_classification_get_model_evaluation_beta]
+
+      // [START automl_video_object_tracking_get_model_evaluation_beta]
+      System.out.format(
+              "Video Object Tracking Evaluation Metrics: %s\n",
+              modelEvaluation.getVideoObjectTrackingEvaluationMetrics());
+      // [START automl_video_classification_get_model_evaluation_beta]
     }
   }
 }
 // [END automl_video_classification_get_model_evaluation_beta]
+// [END automl_video_object_tracking_get_model_evaluation_beta]
