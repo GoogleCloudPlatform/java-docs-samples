@@ -47,7 +47,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-healthcare</artifactId>
-      <version>v1beta1-rev20200120-1.30.8</version>
+      <version>v1beta1-rev20200131-1.30.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>

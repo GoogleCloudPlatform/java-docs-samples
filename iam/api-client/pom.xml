@@ -40,13 +40,13 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20200131-1.30.8</version>
+      <version>v1-rev20200221-1.30.8</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20200203-1.30.8</version>
+      <version>v1-rev20200210-1.30.8</version>
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>
