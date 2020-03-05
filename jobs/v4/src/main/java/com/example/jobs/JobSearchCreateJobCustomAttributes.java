@@ -70,7 +70,6 @@ public class JobSearchCreateJobCustomAttributes {
                       .setLanguageCode("en-US")
                       .build();
 
-
       CreateJobRequest request =
               CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
       Job response = jobServiceClient.createJob(request);
