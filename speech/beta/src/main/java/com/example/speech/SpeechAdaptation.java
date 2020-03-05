@@ -41,7 +41,8 @@ public class SpeechAdaptation {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SpeechClient speechClient = SpeechClient.create()) {
 
-      // Provides "hints" to the speech recognizer to favor specific words and phrases in the results.
+      // Provides "hints" to the speech recognizer to favor specific words and phrases in the
+      // results.
       // https://cloud.google.com/speech-to-text/docs/reference/rpc/google.cloud.speech.v1p1beta1#google.cloud.speech.v1p1beta1.SpeechContext
       SpeechContext speechContext =
           SpeechContext.newBuilder().addPhrases("Brooklyn Bridge").setBoost(20.0F).build();
