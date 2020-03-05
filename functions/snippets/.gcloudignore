@@ -1,0 +1,8 @@
+# Don't run tests when deploying a function using gcloud
+# Comment out (with a leading '#') or remove the line below
+# if you want to run tests upon deployment with 'gcloud'
+src/test/
+
+# If you want your code to be automatically tested and
+# deployed to Cloud Functions, we recommend using
+# a continuous integration pipeline to enable this.

@@ -37,7 +37,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
-    <jetty>9.4.4.v20170414</jetty>
+    <jetty>9.4.27.v20200227</jetty>
   </properties>
 
   <dependencies>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.sendgrid</groupId>
       <artifactId>sendgrid-java</artifactId>
-      <version>2.2.2</version>
+      <version>4.4.5</version>
     </dependency>
     <!-- [END gae_flex_sendgrid_dependencies] -->
   </dependencies>

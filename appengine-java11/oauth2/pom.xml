@@ -71,7 +71,7 @@
       <dependency>
         <groupId>com.google.apis</groupId>
         <artifactId>google-api-services-oauth2</artifactId>
-        <version>v2-rev20190313-1.30.8</version>
+        <version>v2-rev20200213-1.30.8</version>
         <scope>provided</scope>
       </dependency>
       <!-- [END gae_java11_oauth2_dependencies] -->
@@ -108,7 +108,7 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.25.v20191220</version>
+          <version>9.4.27.v20200227</version>
         </plugin>
 
         <plugin>

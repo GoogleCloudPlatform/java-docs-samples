@@ -26,6 +26,7 @@ import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -68,6 +69,7 @@ public class JobSearchCreateJobCustomAttributes {
                       .setRequisitionId(requisitionId)
                       .setLanguageCode("en-US")
                       .build();
+
 
       CreateJobRequest request =
               CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
