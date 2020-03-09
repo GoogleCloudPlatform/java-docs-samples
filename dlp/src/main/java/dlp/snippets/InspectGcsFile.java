@@ -143,6 +143,7 @@ public class InspectGcsFile {
       }
     }
   }
+
   // handleMessage injects the job and settableFuture into the message reciever interface
   private static void handleMessage(
       DlpJob job,
