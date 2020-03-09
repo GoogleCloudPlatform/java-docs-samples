@@ -80,6 +80,9 @@ public class InstantiateInlineWorkflowTemplate {
               .build();
 
       // Configure the cluster placement for the workflow.
+      // Leave "ZoneUri" empty for "autozone".
+      // GceClusterConfig gceClusterConfig =
+      //     GceClusterConfig.newBuilder().setZoneUri("").build();
       GceClusterConfig gceClusterConfig =
           GceClusterConfig.newBuilder().setZoneUri("us-central1-a").build();
       ClusterConfig clusterConfig =
