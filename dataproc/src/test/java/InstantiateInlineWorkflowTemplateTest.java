@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class InstantiateInlineWorkflowTest {
+public class InstantiateInlineWorkflowTemplateTest {
 
 
   private static final String REGION = "us-central1";
@@ -55,8 +55,8 @@ public class InstantiateInlineWorkflowTest {
   }
 
   @Test
-  public void InstanstiateInlineWorkflowTest() throws IOException, InterruptedException {
-    InstantiateInlineWorkflow.instantiateInlineWorkflow(PROJECT_ID, REGION);
+  public void instanstiateInlineWorkflowTest() throws IOException, InterruptedException {
+    InstantiateInlineWorkflowTemplate.instantiateInlineWorkflowTemplate(PROJECT_ID, REGION);
     String output = bout.toString();
 
     assertThat(output, CoreMatchers.containsString("successfully"));

@@ -31,16 +31,16 @@ import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class InstantiateInlineWorkflow {
+public class InstantiateInlineWorkflowTemplate {
 
-  public static void InstantiateInlineWorkflow() throws IOException, InterruptedException {
+  public static void instantiateInlineWorkflowTemplate() throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String region = "your-project-region";
-    instantiateInlineWorkflow(projectId, region);
+    instantiateInlineWorkflowTemplate(projectId, region);
   }
 
-  public static void instantiateInlineWorkflow(String projectId, String region)
+  public static void instantiateInlineWorkflowTemplate(String projectId, String region)
       throws IOException, InterruptedException {
     String myEndpoint = String.format("%s-dataproc.googleapis.com:443", region);
 
