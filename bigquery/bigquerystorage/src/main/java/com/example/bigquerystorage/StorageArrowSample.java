@@ -19,19 +19,16 @@ package com.example.bigquerystorage;
 // [START bigquerystorage_arrow_quickstart]
 
 import com.google.api.gax.rpc.ServerStream;
-import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowRecordBatch;
-import com.google.cloud.bigquery.storage.v1beta1.ArrowProto.ArrowSchema;
-import com.google.cloud.bigquery.storage.v1beta1.BigQueryStorageClient;
-import com.google.cloud.bigquery.storage.v1beta1.ReadOptions.TableReadOptions;
-import com.google.cloud.bigquery.storage.v1beta1.Storage;
-import com.google.cloud.bigquery.storage.v1beta1.Storage.CreateReadSessionRequest;
-import com.google.cloud.bigquery.storage.v1beta1.Storage.DataFormat;
-import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadRowsRequest;
-import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadRowsResponse;
-import com.google.cloud.bigquery.storage.v1beta1.Storage.ReadSession;
-import com.google.cloud.bigquery.storage.v1beta1.Storage.StreamPosition;
-import com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto.TableModifiers;
-import com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto.TableReference;
+import com.google.cloud.bigquery.storage.v1.ArrowRecordBatch;
+import com.google.cloud.bigquery.storage.v1.ArrowSchema;
+import com.google.cloud.bigquery.storage.v1.BigQueryReadClient;
+import com.google.cloud.bigquery.storage.v1.CreateReadSessionRequest;
+import com.google.cloud.bigquery.storage.v1.DataFormat;
+import com.google.cloud.bigquery.storage.v1.ReadRowsRequest;
+import com.google.cloud.bigquery.storage.v1.ReadRowsResponse;
+import com.google.cloud.bigquery.storage.v1.ReadSession;
+import com.google.cloud.bigquery.storage.v1.ReadSession.TableModifiers;
+import com.google.cloud.bigquery.storage.v1.ReadSession.TableReadOptions;
 import com.google.common.base.Preconditions;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
@@ -62,11 +59,12 @@ public class StorageArrowSample {
     private final VectorSchemaRoot root;
     private final VectorLoader loader;
 
-
     public SimpleRowReader(ArrowSchema arrowSchema) throws IOException {
-      Schema schema = MessageSerializer.deserializeSchema(new ReadChannel(
-          new ByteArrayReadableSeekableByteChannel(
-              arrowSchema.getSerializedSchema().toByteArray())));
+      Schema schema =
+          MessageSerializer.deserializeSchema(
+              new ReadChannel(
+                  new ByteArrayReadableSeekableByteChannel(
+                      arrowSchema.getSerializedSchema().toByteArray())));
       Preconditions.checkNotNull(schema);
       List<FieldVector> vectors = new ArrayList<>();
       for (Field field : schema.getFields()) {
@@ -82,10 +80,11 @@ public class StorageArrowSample {
      * @param batch object returned from the ReadRowsResponse.
      */
     public void processRows(ArrowRecordBatch batch) throws IOException {
-      org.apache.arrow.vector.ipc.message.ArrowRecordBatch deserializedBatch = MessageSerializer
-          .deserializeRecordBatch(
-              new ReadChannel(new ByteArrayReadableSeekableByteChannel(
-                  batch.getSerializedRecordBatch().toByteArray())),
+      org.apache.arrow.vector.ipc.message.ArrowRecordBatch deserializedBatch =
+          MessageSerializer.deserializeRecordBatch(
+              new ReadChannel(
+                  new ByteArrayReadableSeekableByteChannel(
+                      batch.getSerializedRecordBatch().toByteArray())),
               allocator);
 
       loader.load(deserializedBatch);
@@ -94,7 +93,6 @@ public class StorageArrowSample {
       System.out.println(root.contentToTSVString());
       // Release buffers from vectors in root.
       root.clear();
-
     }
 
     @Override
@@ -113,16 +111,14 @@ public class StorageArrowSample {
       snapshotMillis = Integer.parseInt(args[1]);
     }
 
-    try (BigQueryStorageClient client = BigQueryStorageClient.create()) {
+    try (BigQueryReadClient client = BigQueryReadClient.create()) {
       String parent = String.format("projects/%s", projectId);
 
       // This example uses baby name data from the public datasets.
-      TableReference tableReference =
-          TableReference.newBuilder()
-              .setProjectId("bigquery-public-data")
-              .setDatasetId("usa_names")
-              .setTableId("usa_1910_current")
-              .build();
+      String srcTable =
+          String.format(
+              "projects/%s/datasets/%s/tables/%s",
+              "bigquery-public-data", "usa_names", "usa_1910_current");
 
       // We specify the columns to be projected by adding them to the selected fields,
       // and set a simple filter to restrict which rows are transmitted.
@@ -134,20 +130,14 @@ public class StorageArrowSample {
               .setRowRestriction("state = \"WA\"")
               .build();
 
-      // Begin building the session request.
-      CreateReadSessionRequest.Builder builder =
-          CreateReadSessionRequest.newBuilder()
-              .setParent(parent)
-              .setTableReference(tableReference)
-              .setReadOptions(options)
+      // Start specifying the read session we want created.
+      ReadSession.Builder sessionBuilder =
+          ReadSession.newBuilder()
+              .setTable(srcTable)
               // This API can also deliver data serialized in Apache Avro format.
               // This example leverages Apache Arrow.
-              .setFormat(DataFormat.ARROW)
-              // We use a LIQUID strategy in this example because we only
-              // read from a single stream.  Consider BALANCED if you're consuming
-              // multiple streams concurrently and want more consistent stream sizes.
-              .setShardingStrategy(Storage.ShardingStrategy.LIQUID)
-              .setRequestedStreams(1);
+              .setDataFormat(DataFormat.ARROW)
+              .setReadOptions(options);
 
       // Optionally specify the snapshot time.  When unspecified, snapshot time is "now".
       if (snapshotMillis != null) {
@@ -157,8 +147,15 @@ public class StorageArrowSample {
                 .setNanos((int) ((snapshotMillis % 1000) * 1000000))
                 .build();
         TableModifiers modifiers = TableModifiers.newBuilder().setSnapshotTime(t).build();
-        builder.setTableModifiers(modifiers);
+        sessionBuilder.setTableModifiers(modifiers);
       }
+
+      // Begin building the session creation request.
+      CreateReadSessionRequest.Builder builder =
+          CreateReadSessionRequest.newBuilder()
+              .setParent(parent)
+              .setReadSession(sessionBuilder)
+              .setMaxStreamCount(1);
 
       ReadSession session = client.createReadSession(builder.build());
       // Setup a simple reader and start a read session.
@@ -171,11 +168,10 @@ public class StorageArrowSample {
         Preconditions.checkState(session.getStreamsCount() > 0);
 
         // Use the first stream to perform reading.
-        StreamPosition readPosition =
-            StreamPosition.newBuilder().setStream(session.getStreams(0)).build();
+        String streamName = session.getStreams(0).getName();
 
         ReadRowsRequest readRowsRequest =
-            ReadRowsRequest.newBuilder().setReadPosition(readPosition).build();
+            ReadRowsRequest.newBuilder().setReadStream(streamName).build();
 
         // Process each block of rows as they arrive and decode using our simple row reader.
         ServerStream<ReadRowsResponse> stream = client.readRowsCallable().call(readRowsRequest);

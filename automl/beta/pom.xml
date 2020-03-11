@@ -52,6 +52,10 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-automl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-bigquery</artifactId>
+        </dependency>
         <!-- [END automl_java_dependencies] -->
         <dependency>
             <groupId>com.google.cloud</groupId>

@@ -47,7 +47,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-healthcare</artifactId>
-      <version>v1beta1-rev20200120-1.30.8</version>
+      <version>v1beta1-rev20200229-1.30.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpmime</artifactId>
-      <version>4.5.11</version>
+      <version>4.5.12</version>
     </dependency>
     <!-- [START dependencies] -->
   </dependencies>

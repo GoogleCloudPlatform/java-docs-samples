@@ -19,6 +19,6 @@
   "labels": [
     "automerge"
   ],
-  "rebaseStalePrs": false,
+  "rebaseWhen": "never",
   "masterIssue": true
 }
