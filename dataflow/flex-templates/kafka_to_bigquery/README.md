@@ -85,17 +85,8 @@ For this, we need two parts running:
 
 ### Starting the Kafka server
 
-> *NOTE:* If you already have a Kafka server running you can skip this step.
-> Just make sure to store its IP address into an environment variable.
->
-> ```sh
-> export KAFKA_ADDRESS="123.456.789"
-> ```
-
----
-
 > <details><summary>
-> <i>[optional]</i> Run the Kafka server locally for development.
+> <i>(Optional)</i> Run the Kafka server locally for development.
 > <i>(Click to expand)</i>
 > </summary>
 >
@@ -139,6 +130,13 @@ The Kafka server must be accessible to *external* applications.
 For this we need a
 [static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address)
 for the Kafka server to live.
+
+> *Note:* If you already have a Kafka server running you can skip this section.
+> Just make sure to store its IP address into an environment variable.
+>
+> ```sh
+> export KAFKA_ADDRESS="123.456.789"
+> ```
 
 ```sh
 # Create a new static IP address for the Kafka server to use.
@@ -199,10 +197,10 @@ gcloud compute instances create-with-container kafka-vm \
   --tags "kafka-server"
 ```
 
-### Creating the Dataflow Flex Template
+### Creating and running a Flex Template
 
 > <details><summary>
-> <i>[optional]</i> Run the Apache Beam pipeline locally for development.
+> <i>(Optional)</i> Run the Apache Beam pipeline locally for development.
 > <i>(Click to expand)</i>
 > </summary>
 >
@@ -221,13 +219,13 @@ gcloud compute instances create-with-container kafka-vm \
 First, let's build the container image.
 
 ```sh
-export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/kafka-to-bigquery:latest"
+export TEMPLATE_IMAGE="$PROJECT/samples/dataflow/streaming-beam-sql:latest"
 
 # Build and package the application as an uber-jar file.
 mvn clean package
 
 # Build the Dataflow Flex template image into Container Registry.
-gcloud builds submit --tag $TEMPLATE_IMAGE .
+gcloud builds submit --tag "gcr.io/$TEMPLATE_IMAGE" .
 ```
 
 Now we can create the template file.
@@ -235,46 +233,20 @@ Now we can create the template file.
 ```sh
 export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/kafka-to-bigquery.json"
 
-# Option A: Build the template via `gcloud`.
-gcloud dataflow flex-templates build $TEMPLATE_PATH \
-  --image "$TEMPLATE_IMAGE" \
-  --sdk_language "JAVA" \
-  --sdk_version "2.19.0" \
-  --metadata_file "metadata.json"
-
-# Option B: Copy the template.json file to a Cloud Storage location.
-# NOTE: we need to set the image path to the one in the project it was built.
-sed "s|<IMAGE>|$TEMPLATE_IMAGE|g" template.json | gsutil cp - $TEMPLATE_PATH
+# Build the Flex Template.
+gcloud beta dataflow flex-template build $TEMPLATE_PATH \
+  --image "gcr://$TEMPLATE_IMAGE" \
+  --sdk-language "JAVA" \
+  --metadata-file "metadata.json"
 ```
 
 Finally, to run a Dataflow job using the template.
 
 ```sh
-# Option A: Run the template via `gcloud`.
-gcloud dataflow flex-templates run $TEMPLATE_PATH \
-  --jobName "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`"
-  -- \
-  --inputTopic "messages" \
-  --outputTable "$PROJECT:$DATASET.$TABLE" \
-  --bootstrapServer "$KAFKA_ADDRESS:9092" \
-  --workerMachineType "e2-micro"  # optional PipelineOptions flag
-
-# Option B: Run via a POST request using curl.
-curl -X POST \
-  "https://dataflow-staging.sandbox.googleapis.com/v1b3/projects/$PROJECT/locations/us-central1/flexTemplates:launch" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  -d '{
-    "launch_parameter": {
-      "jobName": "kafka-to-bigquery-'$(date +%Y%m%d-%H%M%S)'",
-      "parameters": {
-        "inputTopic": "messages",
-        "outputTable": "'$PROJECT:$DATASET.$TABLE'",
-        "bootstrapServer": "'$KAFKA_ADDRESS':9092"
-      },
-      "container_spec_gcs_path": "'$TEMPLATE_PATH'"
-    }
-  }'
+# Run the Flex Template.
+gcloud beta dataflow flex-template run "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`" \
+  --template-file-gcs-location "$TEMPLATE_PATH" \
+  --parameters "inputTopic=messages,outputTable=$PROJECT:$DATASET.$TABLE,bootstrapServer=$KAFKA_ADDRESS:9092"
 ```
 
 Run the following query to check the results in BigQuery.
@@ -283,56 +255,83 @@ Run the following query to check the results in BigQuery.
 bq query --use_legacy_sql=false 'SELECT * FROM `'"$PROJECT.$DATASET.$TABLE"'`'
 ```
 
-### Clean up
+### Cleaning up
 
-To avoid incurring charges to your Google Cloud account for the resources used
-in this guide, follow these steps.
+After you've finished this tutorial, you can clean up the resources you created
+on Google Cloud so you won't be billed for them in the future.
+The following sections describe how to delete or turn off these resources.
 
-Clean up the Dataflow Flex template resources.
+#### Clean up the Flex template resources
 
-```sh
-# Stop the Dataflow pipeline.
-gcloud dataflow jobs list \
-    --filter 'NAME:kafka-to-bigquery AND STATE=Running' \
-    --format 'value(JOB_ID)' \
-  | xargs gcloud dataflow jobs cancel
+1. Stop the Dataflow pipeline.
 
-# Delete the Flex Template container spec from Cloud Storage.
-gsutil rm $TEMPLATE_PATH
+    ```sh
+    gcloud dataflow jobs list \
+        --filter 'NAME:kafka-to-bigquery AND STATE=Running' \
+        --format 'value(JOB_ID)' \
+      | xargs gcloud dataflow jobs cancel
+    ```
 
-# Delete the Flex Template container image from Container Registry.
-gcloud container images delete $KAFKA_IMAGE --force-delete-tags
-```
+1. Delete the template spec file from Cloud Storage.
 
-Clean up the Kafka server.
+    ```sh
+    gsutil rm $TEMPLATE_PATH
+    ```
 
-```sh
-# Delete the Kafka server VM instance.
-gcloud compute instances delete kafka-vm
+1. Delete the Flex Template container images from Container Registry.
 
-# Delete the firewall rule, this does not incur any charges.
-gcloud compute firewall-rules delete allow-kafka
+    ```sh
+    gcloud container images delete $TEMPLATE_IMAGE --force-delete-tags
+    ```
 
-# Delete the static address.
-gcloud compute addresses delete --region "$REGION" kafka-address
+#### Clean up the Kafka server
 
-# Delete the Kafka container image from Container Registry.
-gcloud container images delete $KAFKA_IMAGE --force-delete-tags
-```
+1. Delete the Kafka server VM instance.
 
-Clean up project resources.
+    ```sh
+    gcloud compute instances delete kafka-vm
+    ```
 
-```sh
-# Delete the BigQuery table.
-bq rm -f -t $PROJECT:$DATASET.$TABLE
+1. Delete the firewall rule, this does not incur any charges.
 
-# Delete the BigQuery dataset, this alone does not incur any charges.
-# WARNING: The following command also deletes all tables in the dataset.
-#          The tables and data cannot be recovered.
-bq rm -r -f -d $PROJECT:$DATASET
+    ```sh
+    gcloud compute firewall-rules delete allow-kafka
+    ```
 
-# Delete the Cloud Storage bucket, this alone does not incur any charges.
-# WARNING: The following command also deletes all objects in the bucket.
-#          These objects cannot be recovered.
-gsutil rm -r gs://$BUCKET
-```
+1. Delete the static address.
+
+    ```sh
+    gcloud compute addresses delete --region "$REGION" kafka-address
+    ```
+
+1. Delete the Kafka container image from Container Registry.
+
+    ```sh
+    gcloud container images delete $KAFKA_IMAGE --force-delete-tags
+    ```
+
+#### Clean up Google Cloud project resources
+
+1. Delete the BigQuery table.
+
+    ```sh
+    bq rm -f -t $PROJECT:$DATASET.$TABLE
+    ```
+
+1. Delete the BigQuery dataset, this alone does not incur any charges.
+
+    > ⚠️ The following command also deletes all tables in the dataset.
+    > The tables and data cannot be recovered.
+    >
+    > ```sh
+    > bq rm -r -f -d $PROJECT:$DATASET
+    > ```
+
+1. Delete the Cloud Storage bucket, this alone does not incur any charges.
+
+    > ⚠️ The following command also deletes all objects in the bucket.
+    > These objects cannot be recovered.
+    >
+    > ```sh
+    > gsutil rm -r gs://$BUCKET
+    > ```
