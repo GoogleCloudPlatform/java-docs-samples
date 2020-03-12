@@ -14,6 +14,7 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 * **Image Magick**: for image processing.
 * **@google-cloud/storage**: Google Cloud Storage client library.
 * **@google-cloud/vision**: Cloud Vision API client library.
+* **Jib**: Container build tool.
 
 ## Environment Variables
 

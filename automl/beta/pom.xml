@@ -52,11 +52,15 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-automl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-bigquery</artifactId>
+        </dependency>
         <!-- [END automl_java_dependencies] -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
-            <version>1.83.0</version>
+            <version>1.103.1</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.argparse4j</groupId>
@@ -74,7 +78,7 @@
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>0.41</version>
+            <version>0.46</version>
             <scope>test</scope>
         </dependency>
         <!-- [START automl_java_dependencies] -->

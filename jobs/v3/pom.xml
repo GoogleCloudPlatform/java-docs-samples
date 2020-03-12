@@ -32,7 +32,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v3-rev20190912-1.30.3</version>
+      <version>v3-rev20200219-1.30.9</version>
     </dependency>
     <!-- [END dependencies] -->
 

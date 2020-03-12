@@ -52,6 +52,10 @@ public class JobSearchCreateJob {
       TenantOrProjectName parent = TenantName.of(projectId, tenantId);
       Job.ApplicationInfo applicationInfo =
           Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
+
+      List<String> addresses = Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043",
+              "111 8th Avenue, New York, NY 10011");
+
       Job job =
           Job.newBuilder()
               .setCompany(companyId)
@@ -59,7 +63,7 @@ public class JobSearchCreateJob {
               .setTitle("Software Developer")
               .setDescription("Develop, maintain the software solutions.")
               .setApplicationInfo(applicationInfo)
-              .addAddresses("601 N 34th ST, Seattle, WA")
+              .addAllAddresses(addresses)
               .setLanguageCode("en-US")
               .build();
 
