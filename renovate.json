@@ -16,6 +16,9 @@
       "groupName": "Vertx packages"
     }
   ],
-  "rebaseStalePrs": false,
+  "labels": [
+    "automerge"
+  ],
+  "rebaseWhen": "never",
   "masterIssue": true
 }

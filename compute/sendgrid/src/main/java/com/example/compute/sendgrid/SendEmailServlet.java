@@ -16,8 +16,14 @@
 
 package com.example.compute.sendgrid;
 
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import com.sendgrid.SendGridException;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import java.io.IOException;
 
 // [START example]
 public class SendEmailServlet {
@@ -25,20 +31,35 @@ public class SendEmailServlet {
   static final String SENDGRID_SENDER = "YOUR-SENDGRID-FROM-EMAIL";
   static final String TO_EMAIL = "DESTINATION-EMAIL";
 
-  public static void main(String[] args) throws SendGridException {
+  public static void main(String[] args) throws IOException {
 
+
+    // Set content for request.
+    Email to = new Email(TO_EMAIL);
+    Email from = new Email(SENDGRID_SENDER);
+    String subject = "This is a test email";
+    Content content = new Content("text/plain", "Example text body.");
+    Mail mail = new Mail(from, subject, to, content);
+
+    // Instantiates SendGrid client.
     SendGrid sendgrid = new SendGrid(SENDGRID_API_KEY);
-    SendGrid.Email email = new SendGrid.Email();
-    email.addTo(TO_EMAIL);
-    email.setFrom(SENDGRID_SENDER);
-    email.setSubject("This is a test email");
-    email.setText("Example text body.");
 
-    SendGrid.Response response = sendgrid.send(email);
-    if (response.getCode() != 200) {
-      System.out.print(String.format("An error occurred: %s", response.getMessage()));
+    // Instantiate SendGrid request.
+    Request request = new Request();
+
+    // Set request configuration.
+    request.setMethod(Method.POST);
+    request.setEndpoint("mail/send");
+    request.setBody(mail.build());
+
+    // Use the client to send the API request.
+    Response response = sendgrid.api(request);
+
+    if (response.getStatusCode() != 202) {
+      System.out.print(String.format("An error occurred: %s", response.getStatusCode()));
       return;
     }
+
     System.out.print("Email sent.");
   }
 

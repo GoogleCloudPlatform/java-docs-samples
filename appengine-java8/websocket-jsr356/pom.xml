@@ -35,7 +35,7 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
-    <jetty.version>9.4.25.v20191220</jetty.version>
+    <jetty.version>9.4.27.v20200227</jetty.version>
   </properties>
 
   <dependencies>

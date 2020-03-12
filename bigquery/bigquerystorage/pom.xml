@@ -33,25 +33,28 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <!-- the arrow-vector library currently necessitates setting the netty property -->
+      <!-- For more info: https://github.com/apache/arrow/tree/master/java#java-properties -->
+    <argLine>-Dio.netty.tryReflectionSetAccessible=true</argLine>
   </properties>
 
   <dependencies>
     <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-bigquerystorage</artifactId>
-    <version>0.118.0-beta</version>
+    <version>0.125.0-beta</version>
     </dependency>
 
     <dependency>
     <groupId>org.apache.avro</groupId>
     <artifactId>avro</artifactId>
-    <version>1.9.1</version>
+    <version>1.9.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.arrow</groupId>
       <artifactId>arrow-vector</artifactId>
-      <version>0.15.0</version>
+      <version>0.16.0</version>
     </dependency>
 
     <!-- Test dependencies -->
