@@ -39,6 +39,7 @@ import org.junit.runners.JUnit4;
 public class SampleTests {
 
   private static ByteArrayOutputStream bout;
+  private long timeInMillis;
 
   @BeforeClass
   public static void setUp() {
@@ -111,6 +112,13 @@ public class SampleTests {
   @Test
   public void customAttributeSampleTest() throws Exception {
     CustomAttributeSample.main();
+
+    // wait for 10 seconds to elapse and then run it.
+    timeInMillis = System.currentTimeMillis();
+    while (System.currentTimeMillis() < timeInMillis + 10000) {
+      Thread.sleep(1000);
+    }
+
     assertThat(bout.toString())
         .containsMatch(
             ".*Job created:.*jobWithACustomAttribute.*\n"
