@@ -114,10 +114,19 @@
     </dependency>
   </dependencies>
 
-  <!-- Required for Java 8 (Alpha) functions in the inline editor -->
   <build>
     <plugins>
-      <plugin>
+      <plugin> <!-- Disable unit tests (when deploying to GCF) -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <configuration>
+          <skipTests>true</skipTests>
+          <reportNameSuffix>sponge_log</reportNameSuffix>
+          <trimStackTrace>false</trimStackTrace>
+        </configuration>
+      </plugin>
+      <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
