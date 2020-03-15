@@ -1439,7 +1439,7 @@ public class SpannerSample {
     SpannerOptions options =
         SpannerOptions.newBuilder()
             .setDefaultQueryOptions(
-                db, QueryOptions.newBuilder().setOptimizerVersion("latest").build())
+                db, QueryOptions.newBuilder().setOptimizerVersion("1").build())
             .build();
     Spanner spanner = options.getService();
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
@@ -1463,7 +1463,7 @@ public class SpannerSample {
             .executeQuery(
                 Statement
                     .newBuilder("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")
-                    .withQueryOptions(QueryOptions.newBuilder().setOptimizerVersion("latest").build())
+                    .withQueryOptions(QueryOptions.newBuilder().setOptimizerVersion("1").build())
                     .build())) {
       while (resultSet.next()) {
         System.out.printf(
