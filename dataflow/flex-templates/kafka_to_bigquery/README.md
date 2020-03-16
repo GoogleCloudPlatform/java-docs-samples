@@ -131,7 +131,7 @@ For this we need a
 [static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address)
 for the Kafka server to live.
 
-> *Note:* If you already have a Kafka server running you can skip this section.
+> ℹ️ If you already have a Kafka server running you can skip this section.
 > Just make sure to store its IP address into an environment variable.
 >
 > ```sh
@@ -146,7 +146,7 @@ gcloud compute addresses create --region "$REGION" kafka-address
 export KAFKA_ADDRESS=$(gcloud compute addresses describe --region="$REGION" --format='value(address)' kafka-address)
 ```
 
-> *Note:* Do not use `--global` to create the static IP address since the
+> ℹ️ Do not use `--global` to create the static IP address since the
 > Kafka server must reside in a specific region.
 
 We also need to
@@ -219,13 +219,13 @@ gcloud compute instances create-with-container kafka-vm \
 First, let's build the container image.
 
 ```sh
-export TEMPLATE_IMAGE="$PROJECT/samples/dataflow/streaming-beam-sql:latest"
+export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/streaming-beam-sql:latest"
 
 # Build and package the application as an uber-jar file.
 mvn clean package
 
 # Build the Dataflow Flex template image into Container Registry.
-gcloud builds submit --tag "gcr.io/$TEMPLATE_IMAGE" .
+gcloud builds submit --tag "$TEMPLATE_IMAGE" .
 ```
 
 Now we can create the template file.
@@ -235,7 +235,7 @@ export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/kafka-to-bigquery.
 
 # Build the Flex Template.
 gcloud beta dataflow flex-template build $TEMPLATE_PATH \
-  --image "gcr://$TEMPLATE_IMAGE" \
+  --image "$TEMPLATE_IMAGE" \
   --sdk-language "JAVA" \
   --metadata-file "metadata.json"
 ```

@@ -142,7 +142,7 @@ We are using
 [Cloud Build](https://cloud.google.com/cloud-build)
 so we don't need a local installation of Docker.
 
-> *Note:* You can speed up subsequent builds with
+> ℹ️ You can speed up subsequent builds with
 > [Kaniko cache](https://cloud.google.com/cloud-build/docs/kaniko-cache)
 > in Cloud Build.
 >
@@ -158,14 +158,21 @@ and saves it into
 where the image is accessible to other Google Cloud products.
 
 ```sh
-export TEMPLATE_IMAGE="$PROJECT/samples/dataflow/streaming-beam-sql:latest"
+export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/streaming-beam-sql:latest"
 
 # Build the image into Container Registry, this is roughly equivalent to:
 #   gcloud auth configure-docker
 #   docker image build -t $TEMPLATE_IMAGE .
 #   docker push $TEMPLATE_IMAGE
-gcloud builds submit --tag "gcr.io/$TEMPLATE_IMAGE" .
+gcloud builds submit --tag "$TEMPLATE_IMAGE" .
 ```
+
+> ℹ️ We use the [`.gcloudignore`](.gcloudignore) file to ignore large
+> files not used for the container image, such as build files.
+> This helps speed up the build by uploading less data.
+>
+> To learn more about `.gcloudignore`, see
+> [`gcloud topic gcloudignore`](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore)
 
 Images starting with `gcr.io/PROJECT/` are saved into your project's
 Container Registry, where the image is accessible to other Google Cloud products.
@@ -186,7 +193,7 @@ export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/streaming-beam-sql
 
 # Build the Flex Template.
 gcloud beta dataflow flex-template build $TEMPLATE_PATH \
-  --image "gcr://$TEMPLATE_IMAGE" \
+  --image "$TEMPLATE_IMAGE" \
   --sdk-language "JAVA" \
   --metadata-file "metadata.json"
 ```
