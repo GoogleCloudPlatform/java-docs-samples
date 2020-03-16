@@ -33,8 +33,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -77,9 +75,7 @@ public class SlackSlashCommandTest {
     // Construct valid header list
     HashMap<String, List<String>> validHeaders = new HashMap<String, List<String>>();
     String validSlackSignature = System.getenv("SLACK_TEST_SIGNATURE");
-    String timestamp =
-        Long.toString(ZonedDateTime.of(1970,  1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
-            .toInstant().toEpochMilli());
+    String timestamp = "0"; // start of Unix epoch
 
     validHeaders.put("X-Slack-Signature", Arrays.asList(validSlackSignature));
     validHeaders.put("X-Slack-Request-Timestamp", Arrays.asList(timestamp));
