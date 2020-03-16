@@ -32,8 +32,12 @@ public class LogHelloWorld implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    LOGGER.info("I am an info log!");
-    LOGGER.warning("I am a warning log!");
+    System.out.println("I am an info log to stdout!");
+    System.err.println("I am an info log to stderr!");
+
+    // Stackdriver does not detect severity from Cloud Functions log output
+    LOGGER.info("I am an info log to Stackdriver!");
+    LOGGER.warning("I am an info log to Stackdriver!");
 
     BufferedWriter writer = response.getWriter();
     writer.write("Messages successfully logged!");
