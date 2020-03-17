@@ -18,6 +18,9 @@ and a *service account JSON key* set up in your `GOOGLE_APPLICATION_CREDENTIALS`
 environment variable.
 Additionally, for this sample you need the following:
 
+1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=appengine.googleapis.com,cloudscheduler.googleapis.com,cloudbuild.googleapis.com):
+    App Engine, Cloud Scheduler, Cloud Build.
+
 1. Create a [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
 
     ```sh
@@ -210,6 +213,7 @@ gcloud compute instances create-with-container kafka-vm \
 > mvn compile exec:java \
 >   -Dexec.mainClass=org.apache.beam.samples.KafkaToBigQuery \
 >   -Dexec.args="\
+>     --project=$PROJECT \
 >     --outputTable=$PROJECT:$DATASET.$TABLE \
 >     --bootstrapServer=$KAFKA_ADDRESS:9092"
 > ```

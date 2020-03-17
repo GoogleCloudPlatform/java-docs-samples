@@ -101,7 +101,7 @@ public class StreamingBeamSQL {
           // The first transform should act as a validation layer to make sure
           // that any data coming to the processing pipeline must be valid.
           // See `MapElements.MapWithFailures` for more details.
-          LOG.info("message: {} {}", message);
+          LOG.info("message: {}", message);
           var msg = GSON.fromJson(message, PageReviewMessage.class);
           return Row.withSchema(schema).addValues(
               msg.url,                                    // row url

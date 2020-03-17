@@ -56,7 +56,8 @@ The following instructions help you prepare your Google Cloud project.
       --role roles/owner
 
     # Create a JSON file with the service account credentials.
-    gcloud iam service-accounts keys create path/to/your/credentials.json \
+    export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/credentials.json
+    gcloud iam service-accounts keys create $GOOGLE_APPLICATION_CREDENTIALS \
       --iam-account=$IAM_ACCOUNT
     ```
 
