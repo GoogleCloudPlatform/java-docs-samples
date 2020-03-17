@@ -213,8 +213,7 @@ template file and passing the template
 required by the pipeline.
 
 ```sh
-# Parameters before the `--` are passed to the `gcloud` command.
-# Parameters after the `--` are passed to the Beam pipeline.
+# Run the Flex Template.
 gcloud beta dataflow flex-template run "streaming-beam-sql-`date +%Y%m%d-%H%M%S`" \
   --template-file-gcs-location "$TEMPLATE_PATH" \
   --parameters "inputSubscription=$SUBSCRIPTION,outputTable=$PROJECT:$DATASET.$TABLE"
