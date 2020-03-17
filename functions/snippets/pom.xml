@@ -114,14 +114,31 @@
     </dependency>
   </dependencies>
 
+  <!-- Disable tests when deploying to GCF -->
+  <!-- (where .gcloudignore isn't present) -->
+  <profiles>
+    <profile>
+      <activation>
+        <file>
+          <missing>.gcloudignore</missing>
+        </file>
+      </activation>
+
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
-      <plugin> <!-- Disable unit tests (when deploying to GCF) -->
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M3</version>
         <configuration>
-          <skipTests>true</skipTests>
+          <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
           <trimStackTrace>false</trimStackTrace>
         </configuration>
