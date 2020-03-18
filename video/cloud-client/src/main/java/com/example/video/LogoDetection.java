@@ -15,7 +15,7 @@
  */
 
 package com.example.video;
-
+// [START video_detect_logo]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
