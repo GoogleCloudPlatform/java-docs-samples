@@ -48,7 +48,7 @@
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-exporter-trace-stackdriver</artifactId>
-      <version>0.25.0</version>
+      <version>0.26.0</version>
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
