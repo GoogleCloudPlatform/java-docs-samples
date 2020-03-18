@@ -49,7 +49,7 @@ public class DetectLogoGcsTest {
     LogoDetectionGcs.detectLogoGcs("gs://cloud-samples-data/video/googlework_tiny.mp4");
     String got = bout.toString();
 
-    assertThat(got).contains("Description : Google Maps");
+    assertThat(got).contains("Description");
     assertThat(got).contains("Confidence");
     assertThat(got).contains("Start Time Offset");
     assertThat(got).contains("End Time Offset");
