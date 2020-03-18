@@ -19,7 +19,10 @@ package com.example.video;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +44,8 @@ public class DetectLogoTest {
   }
 
   @Test
-  public void testLogoDetect() throws Exception {
+  public void testLogoDetect()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     LogoDetection.detectLogo("resources/googlework_short.mp4");
     String got = bout.toString();
 
