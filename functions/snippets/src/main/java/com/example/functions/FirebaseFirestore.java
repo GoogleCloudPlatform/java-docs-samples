@@ -16,37 +16,36 @@
 
 package com.example.functions;
 
-// [START functions_firebase_auth]
+// [START functions_firebase_firestore]
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
-public class FirebaseAuth implements RawBackgroundFunction {
+public class FirebaseFirestore implements RawBackgroundFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
 
-  private static final Logger LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FirebaseFirestore.class.getName());
 
   @Override
   public void accept(String json, Context context) {
     JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    LOGGER.info("Function triggered by event on: " + context.resource());
+    LOGGER.info("Event type: " + context.eventType());
 
-    if (body != null && body.has("uid")) {
-      LOGGER.info("Function triggered by change to user: " + body.get("uid").getAsString());
+    if (body != null && body.has("oldValue")) {
+      LOGGER.info("Old value:");
+      LOGGER.info(body.get("oldValue").getAsString());
     }
 
-    if (body != null && body.has("metadata")) {
-      JsonObject metadata = body.get("metadata").getAsJsonObject();
-      LOGGER.info("Created at: " + metadata.get("createdAt").getAsString());
-    }
-
-    if (body != null && body.has("email")) {
-      LOGGER.info("Email: " + body.get("email").getAsString());
+    if (body != null && body.has("value")) {
+      LOGGER.info("New value:");
+      LOGGER.info(body.get("value").getAsString());
     }
   }
 }
 
-// [END functions_firebase_auth]
+// [END functions_firebase_firestore]

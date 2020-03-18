@@ -16,37 +16,39 @@
 
 package com.example.functions;
 
-// [START functions_firebase_auth]
+// [START functions_firebase_rtdb]
+import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
+import com.google.cloud.logging.LoggingHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
-public class FirebaseAuth implements RawBackgroundFunction {
+public class FirebaseRemoteConfig implements RawBackgroundFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
 
-  private static final Logger LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FirebaseRemoteConfig.class.getName());
 
   @Override
   public void accept(String json, Context context) {
     JsonObject body = gsonParser.fromJson(json, JsonObject.class);
 
-    if (body != null && body.has("uid")) {
-      LOGGER.info("Function triggered by change to user: " + body.get("uid").getAsString());
-    }
-
-    if (body != null && body.has("metadata")) {
-      JsonObject metadata = body.get("metadata").getAsJsonObject();
-      LOGGER.info("Created at: " + metadata.get("createdAt").getAsString());
-    }
-
-    if (body != null && body.has("email")) {
-      LOGGER.info("Email: " + body.get("email").getAsString());
+    if (body != null) {
+      if (body.has("updateType")) {
+        LOGGER.info("Update type: " + body.get("updateType").getAsString());
+      }
+      if (body.has("updateOrigin")) {
+        LOGGER.info("Origin: " + body.get("updateOrigin").getAsString());
+      }
+      if (body.has("versionNumber")) {
+        LOGGER.info("Version: " + body.get("versionNumber").getAsString());
+      }
     }
   }
 }
 
-// [END functions_firebase_auth]
+// [END functions_firebase_rtdb]

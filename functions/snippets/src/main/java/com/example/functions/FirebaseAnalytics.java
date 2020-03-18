@@ -23,28 +23,35 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
-public class FirebaseAuth implements RawBackgroundFunction {
+public class FirebaseAnalytics implements RawBackgroundFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
 
-  private static final Logger LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FirebaseAnalytics.class.getName());
 
   @Override
   public void accept(String json, Context context) {
     JsonObject body = gsonParser.fromJson(json, JsonObject.class);
 
-    if (body != null && body.has("uid")) {
-      LOGGER.info("Function triggered by change to user: " + body.get("uid").getAsString());
+    LOGGER.info("Function triggered by event: " + context.resource());
+
+    if (body != null && body.has("eventDim")) {
+      JsonObject analyticsEvent = body.get("eventDim").getAsJsonObject();
+      LOGGER.info("Name: " + analyticsEvent.get("name").getAsString());
+      LOGGER.info("Timestamp: " + analyticsEvent.get("timestamp").getAsString());
     }
 
-    if (body != null && body.has("metadata")) {
-      JsonObject metadata = body.get("metadata").getAsJsonObject();
-      LOGGER.info("Created at: " + metadata.get("createdAt").getAsString());
-    }
+    if (body != null && body.has("userDim")) {
+      JsonObject userObj = body.get("userDim").getAsJsonObject();
+      JsonObject geoObj = userObj.get("geoInfo").getAsJsonObject();
 
-    if (body != null && body.has("email")) {
-      LOGGER.info("Email: " + body.get("email").getAsString());
+      JsonObject deviceInfo = userObj.get("deviceInfo").getAsJsonObject();
+      LOGGER.info("Device Model: " + deviceInfo.get("deviceModel").getAsString());
+
+      String city = geoObj.get("city").getAsString();
+      String country = geoObj.get("country").getAsString();
+      LOGGER.info(String.format("Location: %s, %s", city, country));
     }
   }
 }
