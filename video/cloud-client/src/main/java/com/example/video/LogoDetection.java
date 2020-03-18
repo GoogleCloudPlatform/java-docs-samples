@@ -15,7 +15,9 @@
  */
 
 package com.example.video;
+
 // [START video_detect_logo]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
@@ -32,38 +34,41 @@ import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1.VideoSegment;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
-
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class LogoDetection {
 
   public static void detectLogo() throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String localFilePath = "resources/googlework_short.mp4";
+    String localFilePath = "path/to/your/video.mp4";
     detectLogo(localFilePath);
   }
 
-  // [START video_detect_logo]
-  public static void detectLogo(String filePath) throws Exception {
+  public static void detectLogo(String filePath)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {```
+    try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
       // Read file
       Path path = Paths.get(filePath);
       byte[] data = Files.readAllBytes(path);
       // Create the request
-      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
+      AnnotateVideoRequest request =
+          AnnotateVideoRequest.newBuilder()
               .setInputContent(ByteString.copyFrom(data))
               .addFeatures(Feature.LOGO_RECOGNITION)
               .build();
 
       // asynchronously perform object tracking on videos
       OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future =
-              client.annotateVideoAsync(request);
+          client.annotateVideoAsync(request);
 
       System.out.println("Waiting for operation to complete...");
       // The first result is retrieved because a single video was processed.
@@ -72,14 +77,13 @@ public class LogoDetection {
 
       // Annotations for list of logos detected, tracked and recognized in video.
       for (LogoRecognitionAnnotation logoRecognitionAnnotation :
-              annotationResult.getLogoRecognitionAnnotationsList()) {
+          annotationResult.getLogoRecognitionAnnotationsList()) {
         Entity entity = logoRecognitionAnnotation.getEntity();
         // Opaque entity ID. Some IDs may be available in
         // [Google Knowledge Graph Search API](https://developers.google.com/knowledge-graph/).
         System.out.printf("Entity Id : %s\n", entity.getEntityId());
-        // Textual description, e.g. `Google`.
         System.out.printf("Description : %s\n", entity.getDescription());
-// All logo tracks where the recognized logo appears. Each track corresponds to one logo
+        // All logo tracks where the recognized logo appears. Each track corresponds to one logo
         // instance appearing in consecutive frames.
         for (Track track : logoRecognitionAnnotation.getTracksList()) {
 
@@ -142,5 +146,5 @@ public class LogoDetection {
       }
     }
   }
-  // [END video_detect_logo]
 }
+// [END video_detect_logo]

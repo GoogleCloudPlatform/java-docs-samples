@@ -82,28 +82,6 @@ public class DetectIT {
   }
 
   @Test
-  public void testLogoDetect() throws Exception {
-    LogoDetection.detectLogo("resources/googlework_short.mp4");
-    String got = bout.toString();
-
-    assertThat(got).contains("Description : Google Maps");
-    assertThat(got).contains("Confidence");
-    assertThat(got).contains("Start Time Offset");
-    assertThat(got).contains("End Time Offset");
-  }
-
-  @Test
-  public void testLogoDetectGcs() throws Exception {
-    LogoDetectionGcs.detectLogoGcs("gs://cloud-samples-data/video/googlework_tiny.mp4");
-    String got = bout.toString();
-
-    assertThat(got).contains("Description : Google Maps");
-    assertThat(got).contains("Confidence");
-    assertThat(got).contains("Start Time Offset");
-    assertThat(got).contains("End Time Offset");
-  }
-
-  @Test
   public void testExplicitContent() throws Exception {
     String[] args = {"explicit-content", EXPLICIT_CONTENT_LOCATION};
     Detect.argsHelper(args);

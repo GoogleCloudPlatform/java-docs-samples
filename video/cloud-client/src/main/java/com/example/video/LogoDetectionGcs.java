@@ -16,6 +16,8 @@
 
 package com.example.video;
 
+// [START video_detect_logo_gcs]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.videointelligence.v1.AnnotateVideoProgress;
 import com.google.cloud.videointelligence.v1.AnnotateVideoRequest;
@@ -31,29 +33,35 @@ import com.google.cloud.videointelligence.v1.VideoAnnotationResults;
 import com.google.cloud.videointelligence.v1.VideoIntelligenceServiceClient;
 import com.google.cloud.videointelligence.v1.VideoSegment;
 import com.google.protobuf.Duration;
-
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class LogoDetectionGcs {
 
   public static void detectLogoGcs() throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String gcsUri = "gs://cloud-samples-data/video/googlework_short.mp4";
+    String gcsUri = "gs://path/to/your/bucket/video.mp4";
     detectLogoGcs(gcsUri);
   }
 
-  // [START video_detect_logo_gcs]
-  public static void detectLogoGcs(String inputUri) throws Exception {
+  public static void detectLogoGcs(String inputUri)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoIntelligenceServiceClient client = VideoIntelligenceServiceClient.create()) {
       // Create the request
-      AnnotateVideoRequest request = AnnotateVideoRequest.newBuilder()
+      AnnotateVideoRequest request =
+          AnnotateVideoRequest.newBuilder()
               .setInputUri(inputUri)
               .addFeatures(Feature.LOGO_RECOGNITION)
               .build();
 
       // asynchronously perform object tracking on videos
       OperationFuture<AnnotateVideoResponse, AnnotateVideoProgress> future =
-              client.annotateVideoAsync(request);
+          client.annotateVideoAsync(request);
 
       System.out.println("Waiting for operation to complete...");
       // The first result is retrieved because a single video was processed.
@@ -62,36 +70,39 @@ public class LogoDetectionGcs {
 
       // Annotations for list of logos detected, tracked and recognized in video.
       for (LogoRecognitionAnnotation logoRecognitionAnnotation :
-              annotationResult.getLogoRecognitionAnnotationsList()) {
+          annotationResult.getLogoRecognitionAnnotationsList()) {
         Entity entity = logoRecognitionAnnotation.getEntity();
         // Opaque entity ID. Some IDs may be available in
         // [Google Knowledge Graph Search API](https://developers.google.com/knowledge-graph/).
         System.out.printf("Entity Id : %s\n", entity.getEntityId());
-        // Textual description, e.g. `Google`.
         System.out.printf("Description : %s\n", entity.getDescription());
         // All logo tracks where the recognized logo appears. Each track corresponds
         // to one logo instance appearing in consecutive frames.
         for (Track track : logoRecognitionAnnotation.getTracksList()) {
+
           // Video segment of a track.
           VideoSegment segment = track.getSegment();
           Duration segmentStartTimeOffset = segment.getStartTimeOffset();
           System.out.printf(
-                  "\n\tStart Time Offset : %s.%s\n",
-                  segmentStartTimeOffset.getSeconds(), segmentStartTimeOffset.getNanos());
+              "\n\tStart Time Offset : %s.%s\n",
+              segmentStartTimeOffset.getSeconds(), segmentStartTimeOffset.getNanos());
           Duration segmentEndTimeOffset = segment.getEndTimeOffset();
           System.out.printf(
-                  "\tEnd Time Offset : %s.%s\n",
-                  segmentEndTimeOffset.getSeconds(), segmentEndTimeOffset.getNanos());
+              "\tEnd Time Offset : %s.%s\n",
+              segmentEndTimeOffset.getSeconds(), segmentEndTimeOffset.getNanos());
           System.out.printf("\tConfidence : %s\n", track.getConfidence());
+
           // The object with timestamp and attributes per frame in the track.
           for (TimestampedObject timestampedObject : track.getTimestampedObjectsList()) {
+
             // Normalized Bounding box in a frame, where the object is located.
             NormalizedBoundingBox normalizedBoundingBox =
-                    timestampedObject.getNormalizedBoundingBox();
+                timestampedObject.getNormalizedBoundingBox();
             System.out.printf("\n\t\tLeft : %s\n", normalizedBoundingBox.getLeft());
             System.out.printf("\t\tTop : %s\n", normalizedBoundingBox.getTop());
             System.out.printf("\t\tRight : %s\n", normalizedBoundingBox.getRight());
             System.out.printf("\t\tBottom : %s\n", normalizedBoundingBox.getBottom());
+
             // Optional. The attributes of the object in the bounding box.
             for (DetectedAttribute attribute : timestampedObject.getAttributesList()) {
               System.out.printf("\n\t\t\tName : %s\n", attribute.getName());
@@ -99,6 +110,7 @@ public class LogoDetectionGcs {
               System.out.printf("\t\t\tValue : %s\n", attribute.getValue());
             }
           }
+
           // Optional. Attributes in the track level.
           for (DetectedAttribute trackAttribute : track.getAttributesList()) {
             System.out.printf("\n\t\tName : %s\n", trackAttribute.getName());
@@ -106,26 +118,26 @@ public class LogoDetectionGcs {
             System.out.printf("\t\tValue : %s\n", trackAttribute.getValue());
           }
         }
+
         // All video segments where the recognized logo appears.
         // There might be multiple instances of the same logo class appearing in one VideoSegment.
         for (VideoSegment logoRecognitionAnnotationSegment :
-                logoRecognitionAnnotation.getSegmentsList()) {
+            logoRecognitionAnnotation.getSegmentsList()) {
           Duration logoRecognitionAnnotationSegmentStartTimeOffset =
-                  logoRecognitionAnnotationSegment.getStartTimeOffset();
+              logoRecognitionAnnotationSegment.getStartTimeOffset();
           System.out.printf(
-                  "\n\tStart Time Offset : %s.%s\n",
-                  logoRecognitionAnnotationSegmentStartTimeOffset.getSeconds(),
-                  logoRecognitionAnnotationSegmentStartTimeOffset.getNanos());
+              "\n\tStart Time Offset : %s.%s\n",
+              logoRecognitionAnnotationSegmentStartTimeOffset.getSeconds(),
+              logoRecognitionAnnotationSegmentStartTimeOffset.getNanos());
           Duration logoRecognitionAnnotationSegmentEndTimeOffset =
-                  logoRecognitionAnnotationSegment.getEndTimeOffset();
+              logoRecognitionAnnotationSegment.getEndTimeOffset();
           System.out.printf(
-                  "\tEnd Time Offset : %s.%s\n",
-                  logoRecognitionAnnotationSegmentEndTimeOffset.getSeconds(),
-                  logoRecognitionAnnotationSegmentEndTimeOffset.getNanos());
+              "\tEnd Time Offset : %s.%s\n",
+              logoRecognitionAnnotationSegmentEndTimeOffset.getSeconds(),
+              logoRecognitionAnnotationSegmentEndTimeOffset.getNanos());
         }
       }
     }
   }
-  // [END video_detect_logo_gcs]
 }
-
+// [END video_detect_logo_gcs]
