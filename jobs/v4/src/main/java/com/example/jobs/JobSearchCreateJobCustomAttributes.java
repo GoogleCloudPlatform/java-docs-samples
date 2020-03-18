@@ -53,10 +53,9 @@ public class JobSearchCreateJobCustomAttributes {
 
       // Custom attribute can be string or numeric value, and can be filtered in search queries.
       // https://cloud.google.com/talent-solution/job-search/docs/custom-attributes
-      ArrayList<String> customJobAttributes =
-              new ArrayList<>(Arrays.asList("Internship", "Apprenticeship"));
       CustomAttribute customAttribute = CustomAttribute.newBuilder()
-              .addAllStringValues(customJobAttributes)
+              .addStringValues("Internship")
+              .addStringValues("Apprenticeship")
               .setFilterable(true)
               .build();
 

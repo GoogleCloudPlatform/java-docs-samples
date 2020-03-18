@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google Inc.
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package com.example.video;
+package com.example.speech;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class DetectFacesIT {
-
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class SpeechAdaptationTest {
+  private static final String AUDIO_FILE = "gs://cloud-samples-data/speech/brooklyn_bridge.mp3";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -43,9 +48,9 @@ public class DetectFacesIT {
   }
 
   @Test
-  public void testDetectFaces() throws Exception {
-    DetectFaces.detectFaces("resources/googlework_short.mp4");
+  public void testTranscribeContextClasses() throws IOException {
+    SpeechAdaptation.speechAdaptation(AUDIO_FILE);
     String got = bout.toString();
-    assertThat(got).contains("Attribute");
+    assertThat(got).contains("Transcript:");
   }
 }

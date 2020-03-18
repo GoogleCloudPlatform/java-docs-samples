@@ -19,18 +19,14 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.automl.v1.AutoMlClient;
-import com.google.cloud.automl.v1.DeployModelRequest;
-import com.google.cloud.automl.v1.Model;
-import com.google.cloud.automl.v1.ModelName;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.LocationName;
+import com.google.longrunning.ListOperationsRequest;
+import com.google.longrunning.Operation;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,11 +36,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class BatchPredictTest {
+public class GetOperationStatusTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String BUCKET_ID = PROJECT_ID + "-lcm";
-  private static final String MODEL_ID = "TEN0000000000000000000";
+  private String operationId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -58,11 +52,20 @@ public class BatchPredictTest {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("AUTOML_PROJECT_ID");
-    requireEnvVar("ENTITY_EXTRACTION_MODEL_ID");
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
+    // Use list operations to get a single operation id for the get call.
+    try (AutoMlClient client = AutoMlClient.create()) {
+      LocationName projectLocation = LocationName.of(PROJECT_ID, "us-central1");
+      ListOperationsRequest request =
+          ListOperationsRequest.newBuilder().setName(projectLocation.toString()).build();
+      Operation operation =
+          client.getOperationsClient().listOperations(request).iterateAll().iterator().next();
+      operationId = operation.getName();
+    }
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -74,19 +77,9 @@ public class BatchPredictTest {
   }
 
   @Test
-  public void testBatchPredict() {
-    // As batch prediction can take a long time. Try to batch predict on a model and confirm that
-    // the model was not found, but other elements of the request were valid.
-    try {
-      String inputUri = String.format("gs://%s/entity-extraction/input.jsonl", BUCKET_ID);
-      String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
-      BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
-      String got = bout.toString();
-      assertThat(got)
-          .contains("does not exist");
-    } catch (IOException | ExecutionException | InterruptedException e) {
-      assertThat(e.getMessage())
-          .contains("does not exist");
-    }
+  public void testGetOperationStatus() throws IOException {
+    GetOperationStatus.getOperationStatus(operationId);
+    String got = bout.toString();
+    assertThat(got).contains("Operation details:");
   }
 }
