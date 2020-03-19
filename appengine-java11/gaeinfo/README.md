@@ -44,7 +44,7 @@ Main class to your classpath:
 
 - Deploy to App Engine standard environment using the following Maven command.
 ```
-   mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+   mvn clean package appengine:deploy
 ```
 - Direct your browser to `https://<your-project-id>.appspot.com`.
 - View more in-depth metrics data on the [StackDriver Monitoring Dashboard][dashboard]
