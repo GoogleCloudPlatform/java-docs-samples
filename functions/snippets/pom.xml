@@ -114,20 +114,20 @@
     </dependency>
   </dependencies>
 
-  <!-- Disable tests when deploying to GCF -->
-  <!-- (where .gcloudignore isn't present) -->
+  <!-- Disable tests during GCF builds -->
+  <!--   You can remove this profile to run tests -->
+  <!--   when deploying, but we recommend creating -->
+  <!--   a CI/CD pipeline via Cloud Build instead -->
   <profiles>
     <profile>
       <activation>
         <file>
-          <missing>.gcloudignore</missing>
+          <exists>/builder/home</exists>
         </file>
       </activation>
-
       <properties>
         <skipTests>true</skipTests>
       </properties>
-
     </profile>
   </profiles>
 
