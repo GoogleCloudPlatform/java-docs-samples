@@ -21,7 +21,7 @@ If this is your first time creating an App engine application:
 ```
 - [Create a Spanner instance](https://cloud.google.com/spanner/docs/quickstart-console#create_an_instance).
 
-- Update `SPANNER_INSTANCE` value in `[appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml).
+- Update `SPANNER_INSTANCE` value in `[appengine-web.xml](src/main/webapp/WEB-INF/appengine-web.xml).`
 
 ## Endpoints
 - `/spanner` : will run sample operations against the spanner instance in order. Individual tasks can be run
@@ -49,9 +49,8 @@ Note : by default all the spanner example operations run in order, this operatio
 
 ## Deploying
 
-    $ mvn clean appengine:deploy
+    $ mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 
 To see the results of the deployed sample application, open
 `https://spanner-dot-PROJECTID.appspot.com/spanner` in a web browser.
 Note : by default all the spanner example operations run in order, this operation may take a while to show results.
-

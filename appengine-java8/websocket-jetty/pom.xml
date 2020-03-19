@@ -79,6 +79,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
         <configuration>
+          <version>websocket-jetty</version>
         </configuration>
       </plugin>
       <!-- for local testing of web application -->

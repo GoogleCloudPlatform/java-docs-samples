@@ -89,6 +89,7 @@
         <version>${appengine.maven.plugin}</version>
         <configuration>
           <!-- deploy configuration -->
+          <version>pubsub</version>
         </configuration>
       </plugin>
     </plugins>

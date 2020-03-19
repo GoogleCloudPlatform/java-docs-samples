@@ -20,4 +20,4 @@ To run this sample locally:
 In the following command, replace YOUR-PROJECT-ID with your
 [Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber).
 
-    $ mvn appengine:deploy
+    $ mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>

@@ -113,6 +113,9 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
+        <configuration>
+          <version>guestbook-datastore</version>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -25,7 +25,7 @@ This application depends on being enabled behind an IAP, so this program should 
 
 - Deploy the application to the project
   ```
-       mvn clean appengine:deploy
+       mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
     ```
 - [Enable](https://cloud.google.com/iap/docs/app-engine-quickstart) Identity-Aware Proxy on the App Engine app.
 - Add the email account you'll be running the test as to the Identity-Aware Proxy access list for the project.

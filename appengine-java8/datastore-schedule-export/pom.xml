@@ -87,6 +87,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <version>datastore-schedule</version>
         </configuration>
       </plugin>
     </plugins>

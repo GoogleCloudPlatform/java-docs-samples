@@ -34,14 +34,14 @@ cd java-docs-samples/appengine-java8/translate-pubsub
    gcloud app create
 ```
 - For local development, [set up](https://cloud.google.com/docs/authentication/getting-started) authentication
-- Enable [Pub/Sub](https://console.cloud.google.com/launcher/details/google/pubsub.googleapis.com) and 
+- Enable [Pub/Sub](https://console.cloud.google.com/launcher/details/google/pubsub.googleapis.com) and
   [Translate](https://console.cloud.google.com/launcher/details/google/translate.googleapis.com) APIs
 
 - Choose a topic name and verification token.
 
   - Set the following environment variables. The verification token is used to ensure that the end point only handles
     requests that are sent matching the verification token. You can use `uuidgen` on MacOS X, Windows, and Linux to
-    generate a unique verification token. There are also online tools to generate UUIDs, such as 
+    generate a unique verification token. There are also online tools to generate UUIDs, such as
     [uuidgenerator.net][uuid].
 
 ```
@@ -88,7 +88,7 @@ Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` 
 [`appengine-web.xml`](src/main/webapp/WEB-INF/appengine-web.xml), then:
 
 ```
-   mvn appengine:deploy
+mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 ```
 
 Direct your browser to `https://<your-project-id>.appspot.com`.

@@ -24,7 +24,7 @@ Use either:
 
 ### Deploying
 
-    $ mvn appengine:deploy
+    $ mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 
 <!--
 ## Intelij Idea

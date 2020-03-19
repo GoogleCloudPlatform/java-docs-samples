@@ -51,7 +51,7 @@ in a web browser.
 Deploy your application to App Engine standard with the following command:
 
   ```shell
-  mvn appengine:deploy
+  mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
   ```
 
 To send an email, visit `https://[YOUR-PROJECT-ID].appspot.com/send/email?to=[EMAIL-ADDRESS]`

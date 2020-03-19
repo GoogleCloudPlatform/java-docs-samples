@@ -105,6 +105,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- deploy configuration -->
+          <version>endpoints-backend</version>
         </configuration>
       </plugin>
       <!-- [START endpoints_plugin] -->

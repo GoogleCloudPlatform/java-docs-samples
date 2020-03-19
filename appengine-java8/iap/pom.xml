@@ -70,6 +70,9 @@ Copyright 2017 Google Inc.
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
+        <configuration>
+          <version>iap</version>
+        </configuration>
       </plugin>
     </plugins>
   </build>

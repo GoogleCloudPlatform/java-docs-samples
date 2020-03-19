@@ -78,6 +78,7 @@ limitations under the License.
           <version>2.2.0</version>
           <configuration>
               <!-- deploy configuration -->
+              <version>endpoints-migration</version>
           </configuration>
         </plugin>
         <plugin>

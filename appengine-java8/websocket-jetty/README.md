@@ -51,7 +51,7 @@ For more details on configuring your `app.yaml`, please refer to [this resource]
 The sample application is packaged as a war, and hence will be automatically run using the [Java 8/Jetty 9 with Servlet 3.1 Runtime](https://cloud.google.com/appengine/docs/flexible/java/dev-jetty9).
 
 ```
-mvn appengine:deploy
+mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 ```
 You can then direct your browser to `https://YOUR_PROJECT_ID.appspot.com/`
 

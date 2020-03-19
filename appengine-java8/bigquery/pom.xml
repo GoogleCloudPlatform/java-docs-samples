@@ -119,6 +119,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <version>bigquery</version>
           <deploy.promote>true</deploy.promote>
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>

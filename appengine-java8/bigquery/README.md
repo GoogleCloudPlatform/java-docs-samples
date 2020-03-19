@@ -3,7 +3,7 @@
 
 # Google Cloud API Showcase: Cloud BigQuery & StackDriver Monitoring in App Engine Standard Environment for Java 8
 
-This API Showcase demonstrates how to run an AppEngine standard environment application with dependencies on both 
+This API Showcase demonstrates how to run an AppEngine standard environment application with dependencies on both
 [Google BigQuery][bigquery] and [StackDriver Monitoring][stackdriver].
 
 [bigquery]: https://cloud.google.com/bigquery/docs
@@ -36,7 +36,7 @@ cd appengine-java8/bigquery
 - For local development, [set up][set-up] authentication
 - Enable [BigQuery][bigquery-api] and [Monitoring][monitoring-api] APIs
 - If you have not already enabled your project for StackDriver, do so by following [these instructions][stackdriver-setup].
-  
+
 [set-up]: https://cloud.google.com/docs/authentication/getting-started
 [bigquery-api]: https://console.cloud.google.com/launcher/details/google/bigquery-json.googleapis.com
 [monitoring-api]: https://console.cloud.google.com/launcher/details/google/monitoring.googleapis.com
@@ -58,10 +58,9 @@ few moments and try again.
 
 - Deploy to AppEngine standard environment using the following Maven command.
 ```
-   mvn appengine:deploy
+   mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 ```
 - Direct your browser to `https://<your-project-id>.appspot.com`.
 - View more in-depth metrics data on the [StackDriver Monitoring Dashboard][dashboard]
 
 [dashboard]: https://pantheon.corp.google.com/monitoring
-

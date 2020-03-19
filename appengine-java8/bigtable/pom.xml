@@ -153,6 +153,7 @@ limitations under the License.
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <projectId>${bigtable.projectID}</projectId>
         </configuration>
       </plugin>
 

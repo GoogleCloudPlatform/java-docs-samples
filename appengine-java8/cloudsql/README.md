@@ -40,12 +40,11 @@ $ mvn clean appengine:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Dus
 ## Deploying
 
 ```bash
-$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root
--Dpassword=myPassword -Ddatabase=myDatabase
+$ mvn clean package appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root
+-Dpassword=myPassword -Ddatabase=myDatabase -Dapp.deploy.projectId=projectId
 ```
 
 
 ## Cleaning up
 
 * [Delete your Instance](https://cloud.google.com/sql/docs/mysql/delete-instance)
-

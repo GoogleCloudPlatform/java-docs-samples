@@ -24,5 +24,4 @@ Go to the site `localhost:8080` to add elements to the queue.  They will appear 
 
 ## Deploying
 
-    mvn appengine:deploy
-
+    mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>

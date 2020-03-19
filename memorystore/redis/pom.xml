@@ -70,6 +70,10 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
+        <configuration>
+          <projectId>YOUR_PROJECT_ID</projectId>
+          <version>redis</version>
+        </configuration>
      </plugin>
      <!-- [END memorystore_appengine_maven_plugin] -->
     </plugins>

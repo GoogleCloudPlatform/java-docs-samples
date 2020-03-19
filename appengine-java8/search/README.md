@@ -18,12 +18,12 @@ detailed instructions.
     $ mvn appengine:run
 
 ## Deploying
-    $ mvn appengine:deploy
-    
+    $ mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+
 ## URI's
 
 `/search` | Create a Search API Document
-`/search/index` | Index a document 
+`/search/index` | Index a document
 `/search/delete` | Delete a search document
 `/search/option` | Search w/ query options
 `/search/search` | Search for a document

@@ -21,10 +21,10 @@ Client ID from the prior step.
 ## Running locally
 NOTE: The app can be run locally, but the Oauth2 APIs do not work with the development server.
 
-    $ mvn appengine:devserver
+    $ mvn appengine:run
 
 ## Deploying
-    $ mvn appengine:update -Dappengine.appId=YOUR-PROJECT-ID -Dappengine.version=SOME-VERSION
+    $ mvn package appengine:deploy -Dappengine.appId=YOUR-PROJECT-ID -Dappengine.version=SOME-VERSION
 
 1. Using your browser, visit `https://YOUR-PROJECT-ID.appspot.com`, click Sign In.
 

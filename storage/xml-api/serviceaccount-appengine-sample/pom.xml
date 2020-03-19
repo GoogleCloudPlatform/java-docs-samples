@@ -82,17 +82,19 @@
       </plugin>
 
       <!--
-        The actual appengine-maven-plugin. Type "mvn appengine:devserver" to run project,
-        "mvn appengine:update" to upload to GAE.
+        The actual appengine-maven-plugin. Type "mvn appengine:run" to run project,
+        "mvn package appengine:deploy" to upload to GAE.
       -->
       <plugin>
-        <groupId>com.google.appengine</groupId>
+        <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>1.9.77</version>
+        <version>2.2.0</version>
         <configuration>
+          <projectId>YOUR_PROJECT_ID</projectId>
+          <version>redis</version>
           <port>8888</port>
         </configuration>
-      </plugin>
+     </plugin>
 
       <!--
         Upload application to the appspot automatically, during

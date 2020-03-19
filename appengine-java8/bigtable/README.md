@@ -29,7 +29,7 @@ Then you need to [Create a Cloud Bigtable Instance](https://cloud.google.com/big
 
 ### Deploy to App Engine Standard for Java 8
 
-    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID appengine:deploy
+    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID package appengine:deploy 
 
 ### Run Integration Tests
 

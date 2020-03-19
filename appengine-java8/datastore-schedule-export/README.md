@@ -1,7 +1,7 @@
 # Scheduling a Cloud Datastore export
 
 This Google App Engine (GAE) app receives export requests at `/cloud-datastore-export` and
-sends an export request to the [Cloud Datastore Admin API](https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export). 
+sends an export request to the [Cloud Datastore Admin API](https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export).
 
 ## Before you begin
 
@@ -23,7 +23,7 @@ Set the target project in gcloud:
 
 Deploy the GAE app:
 
-    mvn appengine:deploy
+    mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
 
 The app takes the following parameters:
 
