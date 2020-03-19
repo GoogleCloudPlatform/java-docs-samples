@@ -31,10 +31,6 @@
     <version>1.0.12</version>
   </parent>
 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
-
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>

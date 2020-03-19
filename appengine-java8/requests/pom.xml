@@ -37,11 +37,6 @@ limitations under the License.
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-maven-plugin</artifactId>
-      <version>1.9.78</version>
-    </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>

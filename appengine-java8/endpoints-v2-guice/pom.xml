@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Copyright 2017 Google Inc.
 
@@ -25,15 +26,12 @@
     The parent pom defines common style checks and testing strategies for our samples.
     Removing or replacing it should not effect the execution of the samples in anyway.
   -->
-  <?xml version="1.0" encoding="UTF-8"?>
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.12</version>
   </parent>
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
+
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
