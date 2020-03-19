@@ -38,7 +38,7 @@ mvn clean endpoints-framework:openApiDocs
 gcloud endpoints services deploy target/openapi-docs/openapi.json
 
 # Test with Maven
-mvn appengine:deploy \
+mvn clean package appengine:deploy \
     -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
     -Dapp.deploy.promote=false
 

@@ -30,7 +30,7 @@ Copyright 2018 Google LLC
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.12</version>
     <relativePath></relativePath>
   </parent>
 
@@ -85,6 +85,8 @@ Copyright 2018 Google LLC
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <projectId>GCLOUD_CONFIG</projectId>
+          <version>GCLOUD_CONFIG</version>
           <deploy.promote>true</deploy.promote>
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>

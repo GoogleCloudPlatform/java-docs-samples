@@ -37,7 +37,7 @@ cd java-docs-samples/appengine-java8/pubsub
 
 - Create a topic
 ```
-gcloud beta pubsub topics create <your-topic-name>
+gcloud pubsub topics create <your-topic-name>
 ```
 
 - Create a push subscription, to send messages to a Google Cloud Project URL such as https://<your-project-id>.appspot.com/push.
@@ -46,7 +46,7 @@ The verification token is used to ensure that the end point only handles request
 You can use `uuidgen` on MacOS X, Windows, and Linux to generate a unique verification token.
 
 ```
-gcloud beta pubsub subscriptions create <your-subscription-name> \
+gcloud pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
   --push-endpoint \
   https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
@@ -59,7 +59,7 @@ The push auth service account must have Service Account Token Creator Role assig
 `--push-auth-token-audience` is optional. If set, remember to modify the audience field check in [PubSubAuthenticatedPush.java](src/main/java/com/example/appengine/pubsub/PubSubAuthenticatedPush.java#L48).
 
 ```
-gcloud beta pubsub subscriptions create <your-subscription-name> \
+gcloud pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
   --push-endpoint \
     https://<your-project-id>.appspot.com/pubsub/authenticated-push?token=<your-verification-token> \
@@ -101,7 +101,7 @@ Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` 
 then:
 
 ```
-   mvn appengine:deploy
+   mvn clean package appengine:deploy
 ```
 
 Direct your browser to `https://project-id.appspot.com`.
