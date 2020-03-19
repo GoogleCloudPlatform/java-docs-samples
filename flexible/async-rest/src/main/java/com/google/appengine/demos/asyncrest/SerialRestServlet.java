@@ -42,7 +42,7 @@ import org.eclipse.jetty.util.ajax.JSON;
  */
 public class SerialRestServlet extends AbstractRestServlet {
 
-  // CHECKSTYLE OFF: VariableDeclarationUsageDistance
+  // CHECKSTYLE.OFF: VariableDeclarationUsageDistance
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -121,7 +121,7 @@ public class SerialRestServlet extends AbstractRestServlet {
     out.println("</body></html>");
     out.close();
   }
-  // CHECKSTYLE ON: VariableDeclarationUsageDistance
+  // CHECKSTYLE.ON: VariableDeclarationUsageDistance
 
   /**
    * Handle HTTP POST request.

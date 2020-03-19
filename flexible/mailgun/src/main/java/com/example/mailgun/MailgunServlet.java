@@ -53,7 +53,7 @@ public class MailgunServlet extends HttpServlet {
     }
   }
 
-  // CHECKSTYLE OFF: VariableDeclarationUsageDistance
+  // CHECKSTYLE.OFF: VariableDeclarationUsageDistance
   // [START gae_flex_mailgun_simple_message]
   private ClientResponse sendSimpleMessage(String recipient) {
     Client client = Client.create();
@@ -90,5 +90,5 @@ public class MailgunServlet extends HttpServlet {
         .post(ClientResponse.class, formData);
   }
   // [END gae_flex_mailgun_complex_message]
-  // CHECKSTYLE ON: VariableDeclarationUsageDistance
+  // CHECKSTYLE.ON: VariableDeclarationUsageDistance
 }
