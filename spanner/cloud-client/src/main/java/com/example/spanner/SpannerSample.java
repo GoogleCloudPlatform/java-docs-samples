@@ -1715,8 +1715,8 @@ public class SpannerSample {
       String clientProject = spanner.getOptions().getProjectId();
       if (!db.getInstanceId().getProject().equals(clientProject)) {
         System.err.println(
-            "Invalid project specified. Project in the database id should match"
-                + "the project name set in the environment variable GCLOUD_PROJECT. Expected: "
+            "Invalid project specified. Project in the database id should match the"
+                + "project name set in the environment variable GOOGLE_CLOUD_PROJECT. Expected: "
                 + clientProject);
         printUsageAndExit();
       }
