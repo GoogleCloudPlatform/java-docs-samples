@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,7 +103,9 @@ public class InspectTests {
 
   @Test
   public void testInspectGcsFile() throws InterruptedException, ExecutionException, IOException {
+
     InspectGcsFile.inspectGcsFile(PROJECT_ID, GCS_PATH, TOPIC_ID, SUBSCRIPTION_ID);
+    TimeUnit.SECONDS.sleep(3);
 
     String output = bout.toString();
     assertThat(output, containsString("Job created: "));
@@ -117,8 +120,10 @@ public class InspectTests {
   @Test
   public void testInspectDatastoreEntity()
       throws InterruptedException, ExecutionException, IOException {
+
     InspectDatastoreEntity.insepctDatastoreEntity(
         PROJECT_ID, datastoreNamespace, datastoreKind, TOPIC_ID, SUBSCRIPTION_ID);
+    TimeUnit.SECONDS.sleep(3);
 
     String output = bout.toString();
     assertThat(output, containsString("Job created: "));
@@ -133,8 +138,10 @@ public class InspectTests {
   @Test
   public void testInspectBigQueryTable()
       throws InterruptedException, ExecutionException, IOException {
+
     InspectBigQueryTable.inspectBigQueryTable(
         PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
+    TimeUnit.SECONDS.sleep(3);
 
     String output = bout.toString();
     assertThat(output, containsString("Job created: "));
