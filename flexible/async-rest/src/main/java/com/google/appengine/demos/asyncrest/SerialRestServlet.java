@@ -34,15 +34,15 @@ import org.eclipse.jetty.util.ajax.JSON;
  * Servlet which makes REST calls serially.
  *
  * <p>May be configured with init parameters:
+ *
  * <dl>
- * <dt>appid</dt>
- * <dd>The Google app key to use</dd>
+ *   <dt>appid
+ *   <dd>The Google app key to use
  * </dl>
  */
-
 public class SerialRestServlet extends AbstractRestServlet {
 
-  //CHECKSTYLE OFF: VariableDeclarationUsageDistance
+  // CHECKSTYLE OFF: VariableDeclarationUsageDistance
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -52,7 +52,6 @@ public class SerialRestServlet extends AbstractRestServlet {
     }
 
     long start = System.nanoTime();
-
 
     String loc = sanitize(request.getParameter(LOC_PARAM));
     String lat = sanitize(request.getParameter(LATITUDE_PARAM));
@@ -107,7 +106,9 @@ public class SerialRestServlet extends AbstractRestServlet {
     out.println(
         "<img border='0px' src='asyncrest/red.png' "
             + "height='20px' "
-            + "width='" + width(total) + "px'>");
+            + "width='"
+            + width(total)
+            + "px'>");
 
     out.println("<br/>");
     out.print("First 5 results of " + results.size() + ":<br/>");
@@ -120,7 +121,7 @@ public class SerialRestServlet extends AbstractRestServlet {
     out.println("</body></html>");
     out.close();
   }
-  //CHECKSTYLE ON: VariableDeclarationUsageDistance
+  // CHECKSTYLE ON: VariableDeclarationUsageDistance
 
   /**
    * Handle HTTP POST request.
@@ -132,5 +133,4 @@ public class SerialRestServlet extends AbstractRestServlet {
       throws ServletException, IOException {
     doGet(request, response);
   }
-
 }
