@@ -24,6 +24,7 @@ import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -73,6 +74,8 @@ public class SnippetsTests {
   private static final Logger REMOTE_CONFIG_LOGGER = Logger.getLogger(
       FirebaseRemoteConfig.class.getName());
   private static final Logger AUTH_LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
+  private static final Logger ANALYTICS_LOGGER = Logger.getLogger(
+      FirebaseAnalytics.class.getName());
 
   private static final TestLogHandler logHandler = new TestLogHandler();
 
@@ -94,6 +97,7 @@ public class SnippetsTests {
     RTDB_LOGGER.addHandler(logHandler);
     REMOTE_CONFIG_LOGGER.addHandler(logHandler);
     AUTH_LOGGER.addHandler(logHandler);
+    ANALYTICS_LOGGER.addHandler(logHandler);
   }
 
   @Before
@@ -502,5 +506,39 @@ public class SnippetsTests {
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Email: foo@google.com");
+  }
+
+  @Test
+  public void firebaseAnalytics_shouldShowEventData() throws IOException {
+    String jsonStr = "{\"eventDim\": {\"name\": \"foo\", \"timestamp\": 12345}}";
+    MockContext context = new MockContext();
+    context.resource = "event_1";
+
+    new FirebaseAnalytics().accept(jsonStr, context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by event: event_1");
+    assertThat(logs.get(1).getMessage()).isEqualTo("Name: foo");
+    assertThat(logs.get(2).getMessage()).isEqualTo("Timestamp: 12345");
+  }
+
+  @Test
+  public void firebaseAnalytics_shouldShowUserData() throws IOException {
+    // Use intermediate json objects for code clarity
+    JsonObject deviceInfo = gson.fromJson("{\"deviceModel\":\"some_device\"}", JsonObject.class);
+    JsonObject geoInfo = gson.fromJson("{\"city\":\"SF\",\"country\":\"US\"}", JsonObject.class);
+
+    String jsonStr = String.format("{\"userDim\":{\"deviceInfo\":%s,\"geoInfo\":%s}}",
+        gson.toJson(deviceInfo), gson.toJson(geoInfo));
+
+    MockContext context = new MockContext();
+    context.resource = "event_2";
+
+    new FirebaseAnalytics().accept(jsonStr, context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by event: event_2");
+    assertThat(logs.get(1).getMessage()).isEqualTo("Device Model: some_device");
+    assertThat(logs.get(2).getMessage()).isEqualTo("Location: SF, US");
   }
 }
