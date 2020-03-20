@@ -67,7 +67,7 @@ from the Select a database service screen:
 Deploy your application using the maven plugin:
 
 ```
-mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+mvn clean package appengine:deploy
 ```
 
 View your application:

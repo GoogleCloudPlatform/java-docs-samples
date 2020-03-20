@@ -62,7 +62,7 @@ cp ../../../appengine-java11/cloudsql/pom.xml ./
 
 The following command will deploy the application to your Google Cloud project:
 ```
-mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+mvn clean package appengine:deploy
 ```
 
 View your application:
