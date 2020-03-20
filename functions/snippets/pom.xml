@@ -121,9 +121,9 @@
   <profiles>
     <profile>
       <activation>
-        <file>
-          <exists>/builder/home</exists>
-        </file>
+        <property>
+          <name>env.NEW_BUILD</name>
+        </property>
       </activation>
       <properties>
         <skipTests>true</skipTests>
