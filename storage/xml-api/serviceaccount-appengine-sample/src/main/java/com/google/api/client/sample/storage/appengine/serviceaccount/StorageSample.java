@@ -23,12 +23,10 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,8 +44,7 @@ public class StorageSample extends HttpServlet {
   private static final int HTTP_OK = 200;
 
   /** The base endpoint for Google Cloud Storage api calls. */
-  private static final String GCS_URI =
-      "http://commondatastorage.googleapis.com";
+  private static final String GCS_URI = "http://commondatastorage.googleapis.com";
 
   /** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
   private static final String STORAGE_SCOPE =
@@ -65,35 +62,30 @@ public class StorageSample extends HttpServlet {
       throws IOException {
 
     try {
-      AppIdentityCredential credential = new AppIdentityCredential(
-          Arrays.asList(STORAGE_SCOPE));
+      AppIdentityCredential credential = new AppIdentityCredential(Arrays.asList(STORAGE_SCOPE));
 
       // Set up and execute Google Cloud Storage request.
       String bucketName = req.getRequestURI();
       if (bucketName.equals("/")) {
         resp.sendError(
-            HTTP_NOT_FOUND,
-            "No bucket specified - append /bucket-name to the URL and retry.");
+            HTTP_NOT_FOUND, "No bucket specified - append /bucket-name to the URL and retry.");
         return;
       }
       // Remove any trailing slashes, if found.
-      //[START snippet]
+      // [START snippet]
       String cleanBucketName = bucketName.replaceAll("/$", "");
       String uri = GCS_URI + cleanBucketName;
-      HttpRequestFactory requestFactory =
-          HTTP_TRANSPORT.createRequestFactory(credential);
+      HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(credential);
       GenericUrl url = new GenericUrl(uri);
       HttpRequest request = requestFactory.buildGetRequest(url);
       HttpResponse response = request.execute();
       String content = response.parseAsString();
-      //[END snippet]
+      // [END snippet]
 
       // Display the output XML.
       resp.setContentType("text/xml");
-      BufferedWriter writer = new BufferedWriter(
-          new OutputStreamWriter(resp.getOutputStream()));
-      String formattedContent = content.replaceAll(
-          "(<ListBucketResult)", XSL + "$1");
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream()));
+      String formattedContent = content.replaceAll("(<ListBucketResult)", XSL + "$1");
       writer.append(formattedContent);
       writer.flush();
       resp.setStatus(HTTP_OK);
