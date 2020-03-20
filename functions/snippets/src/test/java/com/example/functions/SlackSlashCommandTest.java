@@ -86,10 +86,6 @@ public class SlackSlashCommandTest {
 
   @Test
   public void onlyAcceptsPostRequestsTest() throws IOException, GeneralSecurityException {
-    // DBG
-    String envStr = String.join("/", System.getenv().keySet());
-    assertThat("DBG").isEqualTo(envStr);
-
     when(request.getMethod()).thenReturn("GET");
     new SlackSlashCommand().service(request, response);
 
