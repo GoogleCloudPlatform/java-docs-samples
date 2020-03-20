@@ -105,11 +105,13 @@ public class InspectTests {
   public void testInspectGcsFile() throws InterruptedException, ExecutionException, IOException {
 
     InspectGcsFile.inspectGcsFile(PROJECT_ID, GCS_PATH, TOPIC_ID, SUBSCRIPTION_ID);
+    // Await job creation
     TimeUnit.SECONDS.sleep(3);
 
     String output = bout.toString();
     assertThat(output, containsString("Job created: "));
 
+    // Cancelling the job early to conserve quota
     String jobId = output.split("Job created: ")[1].split("\n")[0];
     CancelDlpJobRequest request = CancelDlpJobRequest.newBuilder().setName(jobId).build();
     try (DlpServiceClient client = DlpServiceClient.create()) {
@@ -123,11 +125,13 @@ public class InspectTests {
 
     InspectDatastoreEntity.insepctDatastoreEntity(
         PROJECT_ID, datastoreNamespace, datastoreKind, TOPIC_ID, SUBSCRIPTION_ID);
+    // Await job creation
     TimeUnit.SECONDS.sleep(3);
 
     String output = bout.toString();
     assertThat(output, containsString("Job created: "));
 
+    // Cancelling the job early to conserve quota
     String jobId = output.split("Job created: ")[1].split("\n")[0];
     CancelDlpJobRequest request = CancelDlpJobRequest.newBuilder().setName(jobId).build();
     try (DlpServiceClient client = DlpServiceClient.create()) {
@@ -141,11 +145,13 @@ public class InspectTests {
 
     InspectBigQueryTable.inspectBigQueryTable(
         PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
+    // Await job creation
     TimeUnit.SECONDS.sleep(3);
 
     String output = bout.toString();
     assertThat(output, containsString("Job created: "));
 
+    // Cancelling the job early to conserve quota
     String jobId = output.split("Job created: ")[1].split("\n")[0];
     CancelDlpJobRequest request = CancelDlpJobRequest.newBuilder().setName(jobId).build();
     try (DlpServiceClient client = DlpServiceClient.create()) {
