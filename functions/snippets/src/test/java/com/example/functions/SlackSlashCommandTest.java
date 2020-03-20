@@ -86,12 +86,12 @@ public class SlackSlashCommandTest {
 
   @Test
   public void onlyAcceptsPostRequestsTest() throws IOException, GeneralSecurityException {
-    when(request.getMethod()).thenReturn("GET");
-    new SlackSlashCommand().service(request, response);
-
     // DBG
     String envStr = String.join("/", System.getenv().keySet());
     assertThat("DBG").isEqualTo(envStr);
+
+    when(request.getMethod()).thenReturn("GET");
+    new SlackSlashCommand().service(request, response);
 
     writerOut.flush();
     verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
