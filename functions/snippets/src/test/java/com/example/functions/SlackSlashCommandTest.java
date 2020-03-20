@@ -36,6 +36,7 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -90,6 +91,10 @@ public class SlackSlashCommandTest {
 
     writerOut.flush();
     verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
+
+    // DBG
+    String envStr = String.join("/", System.getenv().keySet());
+    Logger.getAnonymousLogger().info(envStr);
   }
 
   @Test
