@@ -273,6 +273,10 @@ public class SnippetsTests {
     writerOut.flush();
 
     assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
+
+    // DBG
+    String envStr = String.join("/", System.getenv().keySet());
+    GCS_LOGGER.info(envStr);
   }
 
   @Test
