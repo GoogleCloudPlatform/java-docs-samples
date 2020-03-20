@@ -89,12 +89,12 @@ public class SlackSlashCommandTest {
     when(request.getMethod()).thenReturn("GET");
     new SlackSlashCommand().service(request, response);
 
-    writerOut.flush();
-    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
-
     // DBG
     String envStr = String.join("/", System.getenv().keySet());
-    Logger.getAnonymousLogger().info(envStr);
+    assertThat("DBG").isEqualTo(envStr);
+
+    writerOut.flush();
+    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
   }
 
   @Test
