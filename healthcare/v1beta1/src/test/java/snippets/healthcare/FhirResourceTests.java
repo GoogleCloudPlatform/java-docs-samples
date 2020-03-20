@@ -19,6 +19,7 @@ package snippets.healthcare;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
@@ -49,6 +50,7 @@ import snippets.healthcare.fhir.resources.FhirResourceGet;
 import snippets.healthcare.fhir.resources.FhirResourceGetHistory;
 import snippets.healthcare.fhir.resources.FhirResourceGetMetadata;
 import snippets.healthcare.fhir.resources.FhirResourceGetPatientEverything;
+import snippets.healthcare.fhir.resources.FhirResourceListHistory;
 import snippets.healthcare.fhir.resources.FhirResourcePatch;
 import snippets.healthcare.fhir.resources.FhirResourceSearch;
 import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
@@ -235,9 +237,25 @@ public class FhirResourceTests {
     FhirResourcePatch.fhirResourcePatch(
         fhirResourceName,
         "[{\"op\": \"add\", \"path\": \"/active\", \"value\": false}]");
-    FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName);
+    // Get versionId from results of fhirResourcePatch.
+    String versionId;
+    Matcher idMatcher = Pattern.compile("\"versionId\": \"(.*)\"").matcher(bout.toString());
+    assertTrue(idMatcher.find());
+    versionId = idMatcher.group(1);
+    FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName, versionId);
 
     String output = bout.toString();
+    assertThat(output, containsString("FHIR resource history list retrieved:"));
+  }
+
+  @Test
+  public void test_FhirResourceListHistory() throws Exception {
+    FhirResourcePatch.fhirResourcePatch(
+        fhirResourceName,
+        "[{\"op\": \"add\", \"path\": \"/active\", \"value\": false}]");
+    FhirResourceListHistory.fhirResourceListHistory(fhirResourceName);
+    String output = bout.toString();
+
     assertThat(output, containsString("FHIR resource history retrieved:"));
   }
 
