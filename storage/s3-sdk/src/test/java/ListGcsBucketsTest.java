@@ -18,7 +18,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.s3.model.Bucket;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
