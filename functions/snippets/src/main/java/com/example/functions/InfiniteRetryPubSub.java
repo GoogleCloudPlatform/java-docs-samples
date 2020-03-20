@@ -17,18 +17,14 @@
 package com.example.functions;
 
 // [START functions_tips_infinite_retries]
-import com.google.api.client.util.DateTime;
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InfiniteRetryPubSub implements BackgroundFunction<PubSubMessage> {
@@ -43,7 +39,7 @@ public class InfiniteRetryPubSub implements BackgroundFunction<PubSubMessage> {
    * a certain time period after the triggering event
    */
   @Override
-  public void accept(com.example.functions.PubSubMessage message, Context context) {
+  public void accept(PubSubMessage message, Context context) {
     ZonedDateTime utcNow = ZonedDateTime.now(ZoneOffset.UTC);
     ZonedDateTime timestamp = utcNow;
 
@@ -56,12 +52,12 @@ public class InfiniteRetryPubSub implements BackgroundFunction<PubSubMessage> {
 
     // Ignore events that are too old
     if (eventAge > MAX_EVENT_AGE) {
-      LOGGER.info(String.format("Dropping event %s.", body));
+      LOGGER.info(String.format("Dropping event %s.", message.data));
       return;
     }
 
-    // Do what the function is supposed to do
-    LOGGER.info(String.format("Processing event %s.", body));
+    // Process events that are recent enough
+    LOGGER.info(String.format("Processing event %s.", message.data));
   }
 }
 // [END functions_tips_infinite_retries]
