@@ -11,7 +11,7 @@ See [Prerequisites](../README.md#Prerequisites).
 ## Deploy to App Engine Standard
 
 ```
-mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+mvn clean package appengine:deploy
 ```
 
 To view your app, use command:
