@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-kgsearch</artifactId>
-      <version>v1-rev253-1.25.0</version>
+      <version>v1-rev20200210-1.30.9</version>
     </dependency>
     <dependency>
       <groupId>com.github.seratch</groupId>
