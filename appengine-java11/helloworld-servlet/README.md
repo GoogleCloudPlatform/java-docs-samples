@@ -94,6 +94,6 @@ Then visit: http://localhost:8080/hello
 While in the `helloworld-servlet` directory, use the `appengine-maven-plugin` to
 deploy your app:
 ```
-mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+mvn clean package appengine:deploy
 ```
 Then visit:  https://YOUR-PROJECT-ID.appspot.com/hello
