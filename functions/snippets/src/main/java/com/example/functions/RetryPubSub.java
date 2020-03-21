@@ -20,7 +20,9 @@ package com.example.functions;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.Base64;
 import java.util.logging.Logger;
 
 public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
@@ -31,9 +33,17 @@ public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
 
   @Override
   public void accept(PubSubMessage message, Context context) {
-    JsonObject body = gsonParser.fromJson(message.data, JsonObject.class);
+    String bodyJson = new String(Base64.getDecoder().decode(message.data));
+    JsonElement bodyElement = gsonParser.fromJson(bodyJson, JsonElement.class);
 
-    boolean retry = body != null && body.has("retry") && body.get("retry").getAsBoolean();
+    boolean retry = false;
+    if (bodyElement != null && bodyElement.isJsonObject()) {
+      JsonObject body = bodyElement.getAsJsonObject();
+
+      if (body.has("retry") && body.get("retry").getAsBoolean()) {
+        retry = true;
+      }
+    }
 
     if (retry) {
       throw new RuntimeException("Retrying...");

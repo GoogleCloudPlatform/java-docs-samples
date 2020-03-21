@@ -290,8 +290,11 @@ public class SnippetsTests {
 
   @Test(expected = RuntimeException.class)
   public void retryPubsub_handlesRetryMsg() throws IOException {
+    String data = "{\"retry\": true}";
+    String encodedData = new String(Base64.getEncoder().encode(data.getBytes()));
+
     PubSubMessage pubsubMessage = new PubSubMessage();
-    pubsubMessage.setData("{\"retry\": true}");
+    pubsubMessage.setData(encodedData);
 
     new RetryPubSub().accept(pubsubMessage, null);
 
@@ -300,8 +303,11 @@ public class SnippetsTests {
 
   @Test
   public void retryPubsub_handlesStopMsg() throws IOException {
+    String data = "{\"retry\": false}";
+    String encodedData = new String(Base64.getEncoder().encode(data.getBytes()));
+
     PubSubMessage pubsubMessage = new PubSubMessage();
-    pubsubMessage.setData("{\"retry\": false}");
+    pubsubMessage.setData(encodedData);
 
     new RetryPubSub().accept(pubsubMessage, null);
 
@@ -311,7 +317,10 @@ public class SnippetsTests {
 
   @Test
   public void retryPubsub_handlesEmptyMsg() throws IOException {
-    new RetryPubSub().accept(new PubSubMessage(), null);
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData("");
+
+    new RetryPubSub().accept(pubsubMessage, null);
 
     String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
     assertThat("Not retrying...").isEqualTo(logMessage);
