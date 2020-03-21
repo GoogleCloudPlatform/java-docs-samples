@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-jobs</artifactId>
-            <version>v3-rev20200109-1.30.8</version>
+            <version>v3-rev20200219-1.30.9</version>
         </dependency>
         <!-- [END jobs_java_dependencies_beta] -->
 

@@ -65,12 +65,14 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     # shellcheck source=src/storage-hmac-credentials.sh
     source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
-    # shellcheck source=src/dlp_secrets.sh
+    # shellcheck source=src/dlp_secrets.txt
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
-    # shellcheck source=src/bigtable_secrets.sh
+    # shellcheck source=src/bigtable_secrets.txt
     source "${KOKORO_GFILE_DIR}/bigtable_secrets.txt"
-    # shellcheck source=src/automl_secrets.sh
+    # shellcheck source=src/automl_secrets.txt
     source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
+    # shellcheck source=src/functions_secrets.txt
+    source "${KOKORO_GFILE_DIR}/functions_secrets.txt"
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
@@ -185,6 +187,13 @@ for file in **/pom.xml; do
       else
         echo -e "\n Cloud Run build/deploy completed.\n"
       fi
+    fi
+
+    # If this is a periodic build, send the test log to the Build Cop Bot.
+    # See https://github.com/googleapis/repo-automation-bots/tree/master/packages/buildcop.
+    if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
+      chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
+      $KOKORO_GFILE_DIR/linux_amd64/buildcop
     fi
 
 done

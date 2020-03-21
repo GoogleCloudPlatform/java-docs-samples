@@ -14,11 +14,15 @@
     {
       "packagePatterns": [ "^io.vertx:vertex-" ],
       "groupName": "Vertx packages"
+    },
+    {
+      "packagePatterns": [ "^io.opencensus:" ],
+      "groupName": "OpenCensus packages"
     }
   ],
   "labels": [
     "automerge"
   ],
-  "rebaseStalePrs": false,
+  "rebaseWhen": "never",
   "masterIssue": true
 }
