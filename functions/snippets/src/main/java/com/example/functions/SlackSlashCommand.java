@@ -155,7 +155,7 @@ public class SlackSlashCommand implements HttpFunction {
     String query = body.get("text").getAsString();
 
     // Call knowledge graph API
-    JsonObject kgResponse = searchKnowledgeGraph(query);
+    //JsonObject kgResponse = searchKnowledgeGraph(query);
 
     // Format response to Slack
     BufferedWriter writer = response.getWriter();
