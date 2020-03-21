@@ -82,6 +82,9 @@ public class SlackSlashCommandTest {
     validHeaders.put("X-Slack-Request-Timestamp", Arrays.asList(timestamp));
 
     when(request.getHeaders()).thenReturn(validHeaders);
+
+    // Reset knowledge graph API key
+    Whitebox.setInternalState(SlackSlashCommand.class, "API_KEY", System.getenv("KG_API_KEY"));
   }
 
   @Test
