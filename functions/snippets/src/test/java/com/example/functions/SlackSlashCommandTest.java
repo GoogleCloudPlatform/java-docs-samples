@@ -36,7 +36,6 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;

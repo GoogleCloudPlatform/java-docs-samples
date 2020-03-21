@@ -122,7 +122,6 @@ public class SlackSlashCommand implements HttpFunction {
 
   JsonObject searchKnowledgeGraph(String query) throws IOException {
     Kgsearch.Entities.Search kgRequest = kgClient.entities().search();
-
     kgRequest.setQuery(query);
     kgRequest.setKey(API_KEY);
 
@@ -155,10 +154,10 @@ public class SlackSlashCommand implements HttpFunction {
     String query = body.get("text").getAsString();
 
     // Call knowledge graph API
-    //JsonObject kgResponse = searchKnowledgeGraph(query);
+    JsonObject kgResponse = searchKnowledgeGraph(query);
 
     // Format response to Slack
     BufferedWriter writer = response.getWriter();
-    writer.write(API_KEY); // formatSlackMessage(kgResponse, query));
+    writer.write(formatSlackMessage(kgResponse, query));
   }
 }
