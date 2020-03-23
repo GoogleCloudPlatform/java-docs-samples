@@ -81,15 +81,13 @@ public class LogoDetectionGcs {
         for (Track track : logoRecognitionAnnotation.getTracksList()) {
 
           // Video segment of a track.
-          VideoSegment segment = track.getSegment();
-          Duration segmentStartTimeOffset = segment.getStartTimeOffset();
+          Duration startTimeOffset = track.getSegment().getStartTimeOffset();
           System.out.printf(
               "\n\tStart Time Offset: %s.%s\n",
-              segmentStartTimeOffset.getSeconds(), segmentStartTimeOffset.getNanos());
-          Duration segmentEndTimeOffset = segment.getEndTimeOffset();
+              startTimeOffset.getSeconds(), startTimeOffset.getNanos());
+          Duration endTimeOffset = track.getSegment().getEndTimeOffset();
           System.out.printf(
-              "\tEnd Time Offset: %s.%s\n",
-              segmentEndTimeOffset.getSeconds(), segmentEndTimeOffset.getNanos());
+              "\tEnd Time Offset: %s.%s\n", endTimeOffset.getSeconds(), endTimeOffset.getNanos());
           System.out.printf("\tConfidence: %s\n", track.getConfidence());
 
           // The object with timestamp and attributes per frame in the track.
