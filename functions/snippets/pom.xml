@@ -19,7 +19,7 @@
   </parent>
 
   <properties>
-    <powermock.version>2.0.5</powermock.version>
+    <powermock.version>2.0.6</powermock.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -136,7 +136,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
