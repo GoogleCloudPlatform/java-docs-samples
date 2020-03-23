@@ -88,15 +88,13 @@ public class LogoDetection {
         for (Track track : logoRecognitionAnnotation.getTracksList()) {
 
           // Video segment of a track.
-          VideoSegment segment = track.getSegment();
-          Duration segmentStartTimeOffset = segment.getStartTimeOffset();
+          Duration startTimeOffset = track.getSegment().getStartTimeOffset();
           System.out.printf(
               "\n\tStart Time Offset: %s.%s\n",
-              segmentStartTimeOffset.getSeconds(), segmentStartTimeOffset.getNanos());
-          Duration segmentEndTimeOffset = segment.getEndTimeOffset();
+              startTimeOffset.getSeconds(), startTimeOffset.getNanos());
+          Duration endTimeOffset = track.getSegment().getEndTimeOffset();
           System.out.printf(
-              "\tEnd Time Offset: %s.%s\n",
-              segmentEndTimeOffset.getSeconds(), segmentEndTimeOffset.getNanos());
+              "\tEnd Time Offset: %s.%s\n", endTimeOffset.getSeconds(), endTimeOffset.getNanos());
           System.out.printf("\tConfidence: %s\n", track.getConfidence());
 
           // The object with timestamp and attributes per frame in the track.
@@ -128,20 +126,13 @@ public class LogoDetection {
 
         // All video segments where the recognized logo appears. There might be multiple instances
         // of the same logo class appearing in one VideoSegment.
-        for (VideoSegment logoRecognitionAnnotationSegment :
-            logoRecognitionAnnotation.getSegmentsList()) {
-          Duration logoRecognitionAnnotationSegmentStartTimeOffset =
-              logoRecognitionAnnotationSegment.getStartTimeOffset();
+        for (VideoSegment segment : logoRecognitionAnnotation.getSegmentsList()) {
           System.out.printf(
               "\n\tStart Time Offset : %s.%s\n",
-              logoRecognitionAnnotationSegmentStartTimeOffset.getSeconds(),
-              logoRecognitionAnnotationSegmentStartTimeOffset.getNanos());
-          Duration logoRecognitionAnnotationSegmentEndTimeOffset =
-              logoRecognitionAnnotationSegment.getEndTimeOffset();
+              segment.getStartTimeOffset().getSeconds(), segment.getStartTimeOffset().getNanos());
           System.out.printf(
               "\tEnd Time Offset : %s.%s\n",
-              logoRecognitionAnnotationSegmentEndTimeOffset.getSeconds(),
-              logoRecognitionAnnotationSegmentEndTimeOffset.getNanos());
+              segment.getEndTimeOffset().getSeconds(), segment.getEndTimeOffset().getNanos());
         }
       }
     }

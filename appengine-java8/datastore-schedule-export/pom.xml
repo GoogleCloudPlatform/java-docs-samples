@@ -31,7 +31,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
       <scope>test</scope>
     </dependency>
     <dependency>

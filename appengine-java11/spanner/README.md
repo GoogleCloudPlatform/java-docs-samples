@@ -52,7 +52,7 @@ Note : by default all the spanner example operations run in order, this operatio
 
 ## Deploying
 ```
-mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+mvn clean package appengine:deploy
 ```
 
 To see the results of the deployed sample application, open
