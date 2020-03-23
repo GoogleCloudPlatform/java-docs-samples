@@ -76,21 +76,21 @@ public class LogoDetectionGcs {
         // [Google Knowledge Graph Search API](https://developers.google.com/knowledge-graph/).
         System.out.printf("Entity Id : %s\n", entity.getEntityId());
         System.out.printf("Description : %s\n", entity.getDescription());
-        // All logo tracks where the recognized logo appears. Each track corresponds
-        // to one logo instance appearing in consecutive frames.
+        // All logo tracks where the recognized logo appears. Each track corresponds to one logo
+        // instance appearing in consecutive frames.
         for (Track track : logoRecognitionAnnotation.getTracksList()) {
 
           // Video segment of a track.
           VideoSegment segment = track.getSegment();
           Duration segmentStartTimeOffset = segment.getStartTimeOffset();
           System.out.printf(
-              "\n\tStart Time Offset : %s.%s\n",
+              "\n\tStart Time Offset: %s.%s\n",
               segmentStartTimeOffset.getSeconds(), segmentStartTimeOffset.getNanos());
           Duration segmentEndTimeOffset = segment.getEndTimeOffset();
           System.out.printf(
-              "\tEnd Time Offset : %s.%s\n",
+              "\tEnd Time Offset: %s.%s\n",
               segmentEndTimeOffset.getSeconds(), segmentEndTimeOffset.getNanos());
-          System.out.printf("\tConfidence : %s\n", track.getConfidence());
+          System.out.printf("\tConfidence: %s\n", track.getConfidence());
 
           // The object with timestamp and attributes per frame in the track.
           for (TimestampedObject timestampedObject : track.getTimestampedObjectsList()) {
@@ -98,16 +98,16 @@ public class LogoDetectionGcs {
             // Normalized Bounding box in a frame, where the object is located.
             NormalizedBoundingBox normalizedBoundingBox =
                 timestampedObject.getNormalizedBoundingBox();
-            System.out.printf("\n\t\tLeft : %s\n", normalizedBoundingBox.getLeft());
-            System.out.printf("\t\tTop : %s\n", normalizedBoundingBox.getTop());
-            System.out.printf("\t\tRight : %s\n", normalizedBoundingBox.getRight());
-            System.out.printf("\t\tBottom : %s\n", normalizedBoundingBox.getBottom());
+            System.out.printf("\n\t\tLeft: %s\n", normalizedBoundingBox.getLeft());
+            System.out.printf("\t\tTop: %s\n", normalizedBoundingBox.getTop());
+            System.out.printf("\t\tRight: %s\n", normalizedBoundingBox.getRight());
+            System.out.printf("\t\tBottom: %s\n", normalizedBoundingBox.getBottom());
 
             // Optional. The attributes of the object in the bounding box.
             for (DetectedAttribute attribute : timestampedObject.getAttributesList()) {
-              System.out.printf("\n\t\t\tName : %s\n", attribute.getName());
-              System.out.printf("\t\t\tConfidence : %s\n", attribute.getConfidence());
-              System.out.printf("\t\t\tValue : %s\n", attribute.getValue());
+              System.out.printf("\n\t\t\tName: %s\n", attribute.getName());
+              System.out.printf("\t\t\tConfidence: %s\n", attribute.getConfidence());
+              System.out.printf("\t\t\tValue: %s\n", attribute.getValue());
             }
           }
 
@@ -119,8 +119,8 @@ public class LogoDetectionGcs {
           }
         }
 
-        // All video segments where the recognized logo appears.
-        // There might be multiple instances of the same logo class appearing in one VideoSegment.
+        // All video segments where the recognized logo appears. There might be multiple instances
+        // of the same logo class appearing in one VideoSegment.
         for (VideoSegment logoRecognitionAnnotationSegment :
             logoRecognitionAnnotation.getSegmentsList()) {
           Duration logoRecognitionAnnotationSegmentStartTimeOffset =
