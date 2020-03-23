@@ -103,7 +103,7 @@ public class SnippetsTests {
 
   @After
   public void afterTest() {
-    System.setOut(null);
+    System.out.flush();
     logHandler.clear();
   }
 

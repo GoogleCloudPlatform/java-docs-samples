@@ -3,7 +3,7 @@
 [![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor)
 
 Samples showing how to create and run an
-[Apache Beam](https://beam.apache.org/) on
+[Apache Beam](https://beam.apache.org/) template on
 [Google Cloud Dataflow](https://cloud.google.com/dataflow/docs/).
 
 ## Before you begin
