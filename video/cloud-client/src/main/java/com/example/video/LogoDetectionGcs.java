@@ -42,7 +42,7 @@ public class LogoDetectionGcs {
 
   public static void detectLogoGcs() throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String gcsUri = "gs://path/to/your/bucket/video.mp4";
+    String gcsUri = "gs://YOUR_BUCKET_ID/path/to/your/video.mp4";
     detectLogoGcs(gcsUri);
   }
 
