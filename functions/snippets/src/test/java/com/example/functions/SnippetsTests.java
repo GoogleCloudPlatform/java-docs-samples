@@ -17,9 +17,13 @@
 package com.example.functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
@@ -49,11 +53,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.reflect.Whitebox;
 
+@RunWith(JUnit4.class)
 public class SnippetsTests {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
+
+  @Mock private Firestore firestoreMock;
+  @Mock private DocumentReference referenceMock;
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
@@ -76,6 +89,8 @@ public class SnippetsTests {
   private static final Logger AUTH_LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
   private static final Logger ANALYTICS_LOGGER = Logger.getLogger(
       FirebaseAnalytics.class.getName());
+  private static final Logger REACTIVE_LOGGER = Logger.getLogger(
+      FirebaseFirestoreReactive.class.getName());
 
   private static final TestLogHandler logHandler = new TestLogHandler();
 
@@ -98,10 +113,13 @@ public class SnippetsTests {
     REMOTE_CONFIG_LOGGER.addHandler(logHandler);
     AUTH_LOGGER.addHandler(logHandler);
     ANALYTICS_LOGGER.addHandler(logHandler);
+    REACTIVE_LOGGER.addHandler(logHandler);
   }
 
   @Before
   public void beforeTest() throws IOException {
+    Mockito.mockitoSession().initMocks(this);
+
     request = mock(HttpRequest.class);
     response = mock(HttpResponse.class);
 
@@ -110,7 +128,13 @@ public class SnippetsTests {
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    when(response.getWriter()).thenReturn(writerOut);
+    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+
+    referenceMock = mock(DocumentReference.class, RETURNS_DEEP_STUBS);
+    when(referenceMock.set(any())).thenReturn(null);
+
+    firestoreMock = mock(Firestore.class);
+    when(firestoreMock.document(any())).thenReturn(referenceMock);
 
     // Use the same logging handler for all tests
     Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
@@ -540,5 +564,21 @@ public class SnippetsTests {
     assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by event: event_2");
     assertThat(logs.get(1).getMessage()).isEqualTo("Device Model: some_device");
     assertThat(logs.get(2).getMessage()).isEqualTo("Location: SF, US");
+  }
+
+  @Test
+  public void firebaseReactive_shouldCapitalizeOriginalValue() throws IOException {
+    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"stringValue\":\"foo\"}}}}";
+
+    MockContext context = new MockContext();
+    context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
+
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+
+    functionInstance.accept(jsonStr, context);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+        "Replacing value: foo --> FOO");
   }
 }
