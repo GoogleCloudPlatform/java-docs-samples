@@ -36,6 +36,7 @@ public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
     String bodyJson = new String(Base64.getDecoder().decode(message.data));
     JsonElement bodyElement = gsonParser.fromJson(bodyJson, JsonElement.class);
 
+    // Get the value of the "retry" JSON parameter, if one exists
     boolean retry = false;
     if (bodyElement != null && bodyElement.isJsonObject()) {
       JsonObject body = bodyElement.getAsJsonObject();
@@ -45,7 +46,9 @@ public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
       }
     }
 
+    // Retry if appropriate
     if (retry) {
+      // Throwing an exception causes the execution to be retried
       throw new RuntimeException("Retrying...");
     } else {
       LOGGER.info("Not retrying...");
