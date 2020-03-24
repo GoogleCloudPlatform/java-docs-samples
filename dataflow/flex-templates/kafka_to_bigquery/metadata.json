@@ -1,0 +1,32 @@
+{
+  "name": "Kafka to BigQuery",
+  "description": "An Apache Beam streaming pipeline that reads JSON encoded messages from Apache Kafka and writes them into a BigQuery table.",
+  "parameters": [
+    {
+      "name": "inputTopic",
+      "label": "Kafka input topic.",
+      "helpText": "Apache Kafka topic to read from.",
+      "is_optional": true,
+      "regexes": [
+        "[-_.a-zA-Z0-9]+"
+      ]
+    },
+    {
+      "name": "outputTable",
+      "label": "BigQuery output table",
+      "helpText": "BigQuery table to write to, in the form 'project:dataset.table' or 'dataset.table'.",
+      "regexes": [
+        "[^:]+:[^.]+[.].+"
+      ]
+    },
+    {
+      "name": "bootstrapServer",
+      "label": "Kafka bootstrap server",
+      "helpText": "Apache Kafka bootstrap server in the form 'hostname:port'.",
+      "is_optional": true,
+      "regexes": [
+        "[-_.:a-zA-Z0-9]+"
+      ]
+    }
+  ]
+}

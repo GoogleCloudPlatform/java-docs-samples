@@ -19,25 +19,37 @@
   </parent>
 
   <properties>
-    <powermock.version>2.0.5</powermock.version>
+    <powermock.version>2.0.6</powermock.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
-    <!-- Required to for com.example.functions.ParseContentType -->
+    <!-- Required for com.example.functions.ParseContentType -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.8.6</version>
     </dependency>
 
-    <!-- Required to for com.example.functions.RetrieveLogs -->
+    <!-- Required for com.example.functions.RetrieveLogs -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
       <version>1.100.0</version>
+    </dependency>
+
+    <!-- Required for com.example.functions.SlackSlashCommand -->
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-kgsearch</artifactId>
+      <version>v1-rev20200210-1.30.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.seratch</groupId>
+      <artifactId>jslack</artifactId>
+      <version>3.4.2</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
@@ -102,10 +114,36 @@
     </dependency>
   </dependencies>
 
-  <!-- Required for Java 8 (Alpha) functions in the inline editor -->
+  <!-- Disable tests during GCF builds -->
+  <!--   You can remove this profile to run tests -->
+  <!--   when deploying, but we recommend creating -->
+  <!--   a CI/CD pipeline via Cloud Build instead -->
+  <profiles>
+    <profile>
+      <activation>
+        <property>
+          <name>env.NEW_BUILD</name>
+        </property>
+      </activation>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+          <reportNameSuffix>sponge_log</reportNameSuffix>
+          <trimStackTrace>false</trimStackTrace>
+        </configuration>
+      </plugin>
+      <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
