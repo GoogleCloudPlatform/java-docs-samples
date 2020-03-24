@@ -47,7 +47,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -63,7 +63,6 @@ limitations under the License.
     </dependency>
   </dependencies>
   <!-- [END pom_dependencies] -->
-
   <!-- [START pom_build] -->
   <build>
     <!-- for hot reload of the web application-->
