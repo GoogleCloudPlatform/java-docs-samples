@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
-      <version>1.108.1</version>
+      <version>1.110.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -75,13 +75,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
       <scope>test</scope>
     </dependency>
 
@@ -94,13 +94,13 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.3.0</version>
+      <version>3.3.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
       <scope>test</scope>
     </dependency>
     <dependency>

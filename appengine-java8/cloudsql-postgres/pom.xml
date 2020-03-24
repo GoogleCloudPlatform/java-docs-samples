@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
     </dependency>
 
     <dependency>
@@ -66,14 +66,14 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.8</version>
+      <version>1.30.9</version>
     </dependency>
 
     <!-- [START gae_java8_postgres_dependencies] -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.10</version>
+      <version>42.2.11</version>
     </dependency>
 
     <dependency>
