@@ -26,22 +26,11 @@
   
   <!-- [START spanner_jdbc_dependencies] -->
   <dependencies>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-api</artifactId>
-      <version>1.27.2</version>
-    </dependency>
     <!-- The Spanner JDBC driver dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>1.13.1-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>io.grpc</groupId>
-          <artifactId>grpc-api</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>1.15</version>
     </dependency>
     
     <!-- Test dependencies -->
