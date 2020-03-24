@@ -21,9 +21,7 @@ import com.google.cloud.errorreporting.v1beta1.ReportErrorsServiceClient;
 import com.google.devtools.clouderrorreporting.v1beta1.ErrorContext;
 import com.google.devtools.clouderrorreporting.v1beta1.ProjectName;
 import com.google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent;
-
 import com.google.devtools.clouderrorreporting.v1beta1.SourceLocation;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,19 +55,22 @@ public class ErrorReportingExample extends HttpServlet {
   private void logCustomErrorEvent() {
     try (ReportErrorsServiceClient reportErrorsServiceClient = ReportErrorsServiceClient.create()) {
       // Custom error events require an error reporting location as well.
-      ErrorContext errorContext = ErrorContext.newBuilder()
-          .setReportLocation(SourceLocation.newBuilder()
-              .setFilePath("Test.java")
-              .setLineNumber(10)
-              .setFunctionName("myMethod")
-              .build())
-          .build();
-      //Report a custom error event
-      ReportedErrorEvent customErrorEvent = ReportedErrorEvent.getDefaultInstance()
-          .toBuilder()
-          .setMessage("custom error event")
-          .setContext(errorContext)
-          .build();
+      ErrorContext errorContext =
+          ErrorContext.newBuilder()
+              .setReportLocation(
+                  SourceLocation.newBuilder()
+                      .setFilePath("Test.java")
+                      .setLineNumber(10)
+                      .setFunctionName("myMethod")
+                      .build())
+              .build();
+      // Report a custom error event
+      ReportedErrorEvent customErrorEvent =
+          ReportedErrorEvent.getDefaultInstance()
+              .toBuilder()
+              .setMessage("custom error event")
+              .setContext(errorContext)
+              .build();
 
       // default project id
       ProjectName projectName = ProjectName.of(ServiceOptions.getDefaultProjectId());
