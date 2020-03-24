@@ -40,7 +40,7 @@ $ mvn clean jetty:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=r
 ## Deploying
 
 ```bash
-$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassword -Ddatabase=myDatabase
+$ mvn clean package appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassword -Ddatabase=myDatabase
 ```
 
 
