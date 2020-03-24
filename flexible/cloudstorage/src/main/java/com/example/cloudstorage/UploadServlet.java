@@ -21,11 +21,9 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -49,8 +47,8 @@ public class UploadServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     final Part filePart = req.getPart("file");
     final String fileName = filePart.getSubmittedFileName();
 

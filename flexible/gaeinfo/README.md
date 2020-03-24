@@ -26,7 +26,7 @@ Use either:
 
 ### Deploying
 
-    $ mvn appengine:deploy
+    $ mvn clean package appengine:deploy
 
 <!--
 ## Intelij Idea
