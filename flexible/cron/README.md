@@ -9,7 +9,7 @@ This sample demonstrates how to deploy App Engine Cron Service to ping a servlet
     $ mvn jetty:run
 
 ## Deploying app
-    $ mvn gcloud:deploy
+    $ mvn package appengine:deploy
 
 ## Deploying cron job
     $ gcloud app deploy cron.yaml
