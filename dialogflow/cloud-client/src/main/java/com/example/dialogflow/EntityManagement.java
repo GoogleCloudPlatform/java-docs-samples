@@ -31,33 +31,6 @@ import java.util.List;
  * DialogFlow API Entity sample.
  */
 public class EntityManagement {
-  // [START dialogflow_list_entities]
-
-  /**
-   * List entities
-   *
-   * @param projectId    Project/agent id.
-   * @param entityTypeId The id of the entity_type.
-   * @return List of found entities.
-   */
-  public static List<Entity> listEntities(String projectId, String entityTypeId) throws Exception {
-    // Instantiates a client
-    try (EntityTypesClient entityTypesClient = EntityTypesClient.create()) {
-      // Set the entity type name using the projectID (my-project-id) and entityTypeId (KIND_LIST)
-      EntityTypeName name = EntityTypeName.of(projectId, entityTypeId);
-
-      // Performs the get entity type request
-      EntityType entityType = entityTypesClient.getEntityType(name);
-      List<Entity> entities = entityType.getEntitiesList();
-      for (Entity entity : entities) {
-        System.out.format("Entity value: %s\n", entity.getValue());
-        System.out.format("Entity synonyms: %s\n", entity.getSynonymsList().toString());
-      }
-      return entities;
-    }
-  }
-  // [END dialogflow_list_entities]
-
   // [START dialogflow_create_entity]
 
   /**

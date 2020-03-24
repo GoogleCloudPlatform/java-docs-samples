@@ -33,37 +33,6 @@ import java.util.List;
  * DialogFlow API SessionEntityType sample.
  */
 public class SessionEntityTypeManagement {
-  // [START dialogflow_list_session_entity_types]
-
-  /**
-   * List session entity types
-   *
-   * @param projectId Project/Agent Id.
-   * @param sessionId Identifier of the DetectIntent session.
-   * @return SessionEntityTypes found.
-   */
-  public static List<SessionEntityType> listSessionEntityTypes(String projectId, String sessionId)
-      throws Exception {
-    List<SessionEntityType> sessionEntityTypes = Lists.newArrayList();
-    // Instantiates a client
-    try (SessionEntityTypesClient sessionEntityTypesClient = SessionEntityTypesClient.create()) {
-      // Set the session name using the sessionId (UUID) and projectID (my-project-id)
-      SessionName session = SessionName.of(projectId, sessionId);
-
-      System.out.format("SessionEntityTypes for session %s:\n", session.toString());
-      // Performs the list session entity types request
-      for (SessionEntityType sessionEntityType :
-          sessionEntityTypesClient.listSessionEntityTypes(session).iterateAll()) {
-        System.out.format("\tSessionEntityType name: %s\n", sessionEntityType.getName());
-        System.out.format("\tNumber of entities: %d\n", sessionEntityType.getEntitiesCount());
-
-        sessionEntityTypes.add(sessionEntityType);
-      }
-    }
-    return sessionEntityTypes;
-  }
-  // [END dialogflow_list_session_entity_types]
-
   // [START dialogflow_create_session_entity_type]
 
   /**

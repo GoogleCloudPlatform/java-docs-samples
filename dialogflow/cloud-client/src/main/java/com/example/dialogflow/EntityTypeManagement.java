@@ -32,34 +32,6 @@ import java.util.List;
  * DialogFlow API EntityType sample.
  */
 public class EntityTypeManagement {
-  // [START dialogflow_list_entity_types]
-
-  /**
-   * List entity types
-   *
-   * @param projectId Project/agent id.
-   * @return The EntityTypes found.
-   */
-  public static List<EntityType> listEntityTypes(String projectId) throws Exception {
-    List<EntityType> entityTypes = Lists.newArrayList();
-    // Instantiates a client
-    try (EntityTypesClient entityTypesClient = EntityTypesClient.create()) {
-      // Set the project agent name using the projectID (my-project-id)
-      ProjectAgentName parent = ProjectAgentName.of(projectId);
-
-      // Performs the list entity types request
-      for (EntityType entityType : entityTypesClient.listEntityTypes(parent).iterateAll()) {
-        System.out.format("Entity type name %s\n", entityType.getName());
-        System.out.format("Entity type display name: %s\n", entityType.getDisplayName());
-        System.out.format("Number of entities: %d\n", entityType.getEntitiesCount());
-
-        entityTypes.add(entityType);
-      }
-    }
-    return entityTypes;
-  }
-  // [END dialogflow_list_entity_types]
-
   // [START dialogflow_create_entity_type]
 
   /**

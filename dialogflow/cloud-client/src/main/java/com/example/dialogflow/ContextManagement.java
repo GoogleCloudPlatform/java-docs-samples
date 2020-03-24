@@ -32,40 +32,6 @@ import java.util.Map.Entry;
  * DialogFlow API Context sample.
  */
 public class ContextManagement {
-  // [START dialogflow_list_contexts]
-
-  /**
-   * Lists contexts
-   *
-   * @param sessionId Identifier of the DetectIntent session.
-   * @param projectId Project/Agent Id.
-   * @return List of Contexts found.
-   */
-  public static List<Context> listContexts(String sessionId, String projectId) throws Exception {
-    List<Context> contexts = Lists.newArrayList();
-    // Instantiates a client
-    try (ContextsClient contextsClient = ContextsClient.create()) {
-      // Set the session name using the sessionId (UUID) and projectId (my-project-id)
-      SessionName session = SessionName.of(projectId, sessionId);
-
-      // Performs the list contexts request
-      for (Context context : contextsClient.listContexts(session).iterateAll()) {
-        System.out.format("Context name: %s\n", context.getName());
-        System.out.format("Lifespan Count: %d\n", context.getLifespanCount());
-        System.out.format("Fields:\n");
-        for (Entry<String, Value> entry : context.getParameters().getFieldsMap().entrySet()) {
-          if (entry.getValue().hasStructValue()) {
-            System.out.format("\t%s: %s\n", entry.getKey(), entry.getValue());
-          }
-        }
-
-        contexts.add(context);
-      }
-    }
-    return contexts;
-  }
-  // [END dialogflow_list_contexts]
-
   // [START dialogflow_create_context]
 
   /**
