@@ -41,7 +41,6 @@ import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TypedValue;
 import com.google.protobuf.util.Timestamps;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -55,27 +54,26 @@ public class BigQueryRunner {
       "metric.type = starts_with(\"custom.googleapis.com/\")";
   private static BigQueryRunner instance;
 
-  private static final MetricDescriptor QUERY_DURATION_METRIC = MetricDescriptor
-      .newBuilder()
-      .setName("custom.googleapis.com/queryDuration")
-      .setType("custom.googleapis.com/queryDuration")
-      .setDisplayName("queryDuration")
-      .setDescription("Time it took a query to run.")
-      .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
-      .setValueType(MetricDescriptor.ValueType.INT64)
-      .build();
-  private static final MetricDescriptor ROWS_RETURNED_METRIC = MetricDescriptor
-      .newBuilder()
-      .setName("custom.googleapis.com/rowsReturned")
-      .setType("custom.googleapis.com/rowsReturned")
-      .setDisplayName("rowsReturned")
-      .setDescription("Total rows returned by the query result.")
-      .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
-      .setValueType(MetricDescriptor.ValueType.INT64)
-      .build();
-  private static final Set<MetricDescriptor> REQUIRED_METRICS = ImmutableSet.of(
-      QUERY_DURATION_METRIC, ROWS_RETURNED_METRIC
-  );
+  private static final MetricDescriptor QUERY_DURATION_METRIC =
+      MetricDescriptor.newBuilder()
+          .setName("custom.googleapis.com/queryDuration")
+          .setType("custom.googleapis.com/queryDuration")
+          .setDisplayName("queryDuration")
+          .setDescription("Time it took a query to run.")
+          .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
+          .setValueType(MetricDescriptor.ValueType.INT64)
+          .build();
+  private static final MetricDescriptor ROWS_RETURNED_METRIC =
+      MetricDescriptor.newBuilder()
+          .setName("custom.googleapis.com/rowsReturned")
+          .setType("custom.googleapis.com/rowsReturned")
+          .setDisplayName("rowsReturned")
+          .setDescription("Total rows returned by the query result.")
+          .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
+          .setValueType(MetricDescriptor.ValueType.INT64)
+          .build();
+  private static final Set<MetricDescriptor> REQUIRED_METRICS =
+      ImmutableSet.of(QUERY_DURATION_METRIC, ROWS_RETURNED_METRIC);
 
   private static TableResult mostRecentRunResult;
   private static Set<String> existingMetrics = Sets.newHashSet();
@@ -94,7 +92,8 @@ public class BigQueryRunner {
   }
 
   private BigQueryRunner() throws IOException {
-    this(MetricServiceClient.create(),
+    this(
+        MetricServiceClient.create(),
         BigQueryOptions.getDefaultInstance().getService(),
         System.out);
   }
@@ -113,12 +112,12 @@ public class BigQueryRunner {
   public void runQuery() throws InterruptedException {
     QueryJobConfiguration queryConfig =
         QueryJobConfiguration.newBuilder(
-            "SELECT "
-                + "CONCAT('https://stackoverflow.com/questions/', CAST(id as STRING)) as url, "
-                + "view_count "
-                + "FROM `bigquery-public-data.stackoverflow.posts_questions` "
-                + "WHERE tags like '%google-bigquery%' "
-                + "ORDER BY favorite_count DESC LIMIT 10")
+                "SELECT "
+                    + "CONCAT('https://stackoverflow.com/questions/', CAST(id as STRING)) as url, "
+                    + "view_count "
+                    + "FROM `bigquery-public-data.stackoverflow.posts_questions` "
+                    + "WHERE tags like '%google-bigquery%' "
+                    + "ORDER BY favorite_count DESC LIMIT 10")
             // Use standard SQL syntax for queries.
             // See: https://cloud.google.com/bigquery/sql-reference/
             .setUseLegacySql(false)
@@ -155,10 +154,11 @@ public class BigQueryRunner {
     timeSeriesList.add(prepareMetric(ROWS_RETURNED_METRIC, result.getTotalRows()));
 
     // Prepares the time series request
-    CreateTimeSeriesRequest request = CreateTimeSeriesRequest.newBuilder()
-        .setName(projectName)
-        .addAllTimeSeries(timeSeriesList)
-        .build();
+    CreateTimeSeriesRequest request =
+        CreateTimeSeriesRequest.newBuilder()
+            .setName(projectName)
+            .addAllTimeSeries(timeSeriesList)
+            .build();
 
     createMetricsIfNeeded();
     client.createTimeSeries(request);
@@ -169,56 +169,50 @@ public class BigQueryRunner {
 
   // Returns a metric time series with a single int64 data point.
   private TimeSeries prepareMetric(MetricDescriptor requiredMetric, long metricValue) {
-    TimeInterval interval = TimeInterval.newBuilder()
-        .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()))
-        .build();
-    TypedValue value = TypedValue
-        .newBuilder()
-        .setInt64Value(metricValue)
-        .build();
+    TimeInterval interval =
+        TimeInterval.newBuilder()
+            .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()))
+            .build();
+    TypedValue value = TypedValue.newBuilder().setInt64Value(metricValue).build();
 
-    Point point = Point.newBuilder()
-        .setInterval(interval)
-        .setValue(value)
-        .build();
+    Point point = Point.newBuilder().setInterval(interval).setValue(value).build();
 
     List<Point> pointList = Lists.newArrayList();
     pointList.add(point);
 
-    Metric metric = Metric.newBuilder()
-        .setType(requiredMetric.getName())
-        .build();
+    Metric metric = Metric.newBuilder().setType(requiredMetric.getName()).build();
 
-    return TimeSeries.newBuilder()
-        .setMetric(metric)
-        .addAllPoints(pointList)
-        .build();
+    return TimeSeries.newBuilder().setMetric(metric).addAllPoints(pointList).build();
   }
 
   public List<TimeSeriesSummary> getTimeSeriesValues() {
     List<TimeSeriesSummary> summaries = Lists.newArrayList();
     createMetricsIfNeeded();
     for (MetricDescriptor metric : REQUIRED_METRICS) {
-      ListTimeSeriesRequest listTimeSeriesRequest = ListTimeSeriesRequest
-          .newBuilder()
-          .setName(projectName)
-          .setFilter(String.format("metric.type = \"%s\"", metric.getType()))
-          .setInterval(TimeInterval.newBuilder()
-              .setStartTime(Timestamps.subtract(Timestamps.fromMillis(System.currentTimeMillis()),
-                  com.google.protobuf.Duration.newBuilder()
-                      .setSeconds(60L * 60L * 24L * 30L)  //  30 days ago
-                      .build()))
-              .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()))
-              .build())
-          .build();
+      ListTimeSeriesRequest listTimeSeriesRequest =
+          ListTimeSeriesRequest.newBuilder()
+              .setName(projectName)
+              .setFilter(String.format("metric.type = \"%s\"", metric.getType()))
+              .setInterval(
+                  TimeInterval.newBuilder()
+                      .setStartTime(
+                          Timestamps.subtract(
+                              Timestamps.fromMillis(System.currentTimeMillis()),
+                              com.google.protobuf.Duration.newBuilder()
+                                  .setSeconds(60L * 60L * 24L * 30L) //  30 days ago
+                                  .build()))
+                      .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()))
+                      .build())
+              .build();
       try {
-        ListTimeSeriesPagedResponse listTimeSeriesResponse = client.listTimeSeries(
-            listTimeSeriesRequest);
+        ListTimeSeriesPagedResponse listTimeSeriesResponse =
+            client.listTimeSeries(listTimeSeriesRequest);
         ArrayList<TimeSeries> timeSeries = Lists.newArrayList(listTimeSeriesResponse.iterateAll());
-        summaries.addAll(timeSeries
-            .stream()
-            .map(TimeSeriesSummary::fromTimeSeries)
-            .collect(Collectors.toList()));
+        summaries.addAll(
+            timeSeries
+                .stream()
+                .map(TimeSeriesSummary::fromTimeSeries)
+                .collect(Collectors.toList()));
       } catch (RuntimeException ex) {
         os.println("MetricDescriptors not yet synced. Please try again in a moment.");
       }
@@ -228,35 +222,37 @@ public class BigQueryRunner {
 
   private void createMetricsIfNeeded() {
     // If all required metrics already exist, no need to make service calls.
-    if (REQUIRED_METRICS.stream()
+    if (REQUIRED_METRICS
+        .stream()
         .map(MetricDescriptor::getDisplayName)
         .allMatch(existingMetrics::contains)) {
       return;
     }
-    ListMetricDescriptorsRequest listMetricsRequest = ListMetricDescriptorsRequest
-        .newBuilder()
-        .setName(projectName)
-        .setFilter(CUSTOM_METRIC_FILTER)
-        .build();
-    ListMetricDescriptorsPagedResponse listMetricsResponse = client.listMetricDescriptors(
-        listMetricsRequest);
+    ListMetricDescriptorsRequest listMetricsRequest =
+        ListMetricDescriptorsRequest.newBuilder()
+            .setName(projectName)
+            .setFilter(CUSTOM_METRIC_FILTER)
+            .build();
+    ListMetricDescriptorsPagedResponse listMetricsResponse =
+        client.listMetricDescriptors(listMetricsRequest);
 
     for (MetricDescriptor existingMetric : listMetricsResponse.iterateAll()) {
       existingMetrics.add(existingMetric.getDisplayName());
     }
 
-    REQUIRED_METRICS.stream()
+    REQUIRED_METRICS
+        .stream()
         .filter(metric -> !existingMetrics.contains(metric.getDisplayName()))
         .forEach(this::createMetric);
   }
 
   private void createMetric(MetricDescriptor newMetric) {
-    CreateMetricDescriptorRequest request = CreateMetricDescriptorRequest.newBuilder()
-        .setName(projectName)
-        .setMetricDescriptor(newMetric)
-        .build();
+    CreateMetricDescriptorRequest request =
+        CreateMetricDescriptorRequest.newBuilder()
+            .setName(projectName)
+            .setMetricDescriptor(newMetric)
+            .build();
 
     client.createMetricDescriptor(request);
   }
-
 }

@@ -22,5 +22,5 @@ To run this sample locally:
 
 ## Deploying
 
-    mvn appengine:deploy
+    mvn clean package appengine:deploy
 

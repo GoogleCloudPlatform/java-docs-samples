@@ -26,15 +26,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
-import org.eclipse.jetty.websocket.common.scopes.SimpleContainerScope;
 
 @WebServlet("/send")
 /** Servlet that sends the message sent over POST to over a websocket connection. */
@@ -111,8 +108,8 @@ public class SendServlet extends HttpServlet {
     }
     ClientUpgradeRequest request = new ClientUpgradeRequest();
     // Attempt connection
-    Future<Session> future = webSocketClient.connect(clientSocket,
-        new URI(getWebSocketAddress()), request);
+    Future<Session> future =
+        webSocketClient.connect(clientSocket, new URI(getWebSocketAddress()), request);
     // Wait for Connect
     Session session = future.get();
     // Send a message
@@ -122,8 +119,8 @@ public class SendServlet extends HttpServlet {
   }
 
   /**
-   * Returns the host:port/echo address a client needs to use to communicate with the server.
-   * On App engine Flex environments, result will be in the form wss://project-id.appspot.com/echo
+   * Returns the host:port/echo address a client needs to use to communicate with the server. On App
+   * engine Flex environments, result will be in the form wss://project-id.appspot.com/echo
    */
   public static String getWebSocketAddress() {
     // Use ws://127.0.0.1:8080/echo when testing locally

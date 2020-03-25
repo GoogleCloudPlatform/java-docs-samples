@@ -23,7 +23,7 @@ Set the target project in gcloud:
 
 Deploy the GAE app:
 
-    mvn appengine:deploy
+    mvn clean package appengine:deploy
 
 The app takes the following parameters:
 

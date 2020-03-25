@@ -38,9 +38,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-/**
- * Unit tests for {@link IndexesServlet}.
- */
+/** Unit tests for {@link IndexesServlet}. */
 @RunWith(JUnit4.class)
 public class IndexesServletTest {
 
@@ -53,10 +51,8 @@ public class IndexesServletTest {
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
-  @Mock
-  private HttpServletRequest mockRequest;
-  @Mock
-  private HttpServletResponse mockResponse;
+  @Mock private HttpServletRequest mockRequest;
+  @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private IndexesServlet servletUnderTest;
 
