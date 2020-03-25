@@ -1801,9 +1801,10 @@ public class SpannerSample {
                 + restore.getBackup().getName()
                 + "]");
         break;
-      } catch (SpannerException e) {
-        if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
-            && e.getMessage()
+      } catch (ExecutionException e) {
+        SpannerException se = (SpannerException) e.getCause();
+        if (se.getErrorCode() == ErrorCode.FAILED_PRECONDITION
+            && se.getMessage()
                 .contains("Please retry the operation once the pending restores complete")) {
           restoreAttempts++;
           if (restoreAttempts == 10) {
@@ -1818,10 +1819,9 @@ public class SpannerSample {
               backup.getId().getBackup(),
               restoreToDatabase.getDatabase()));
           Uninterruptibles.sleepUninterruptibly(60L, TimeUnit.SECONDS);
+        } else {
+          throw se;
         }
-      } catch (ExecutionException e) {
-        throw SpannerExceptionFactory.newSpannerException(ErrorCode.CANCELLED, "giving up", e);
-        // throw (SpannerException) e.getCause();
       } catch (InterruptedException e) {
         throw SpannerExceptionFactory.propagateInterrupt(e);
       }
