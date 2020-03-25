@@ -1,5 +1,6 @@
 package com.example.functions
 
+// [START functions_helloworld_background]
 import com.google.cloud.functions.{BackgroundFunction, Context, HttpRequest}
 import java.util.logging.Logger
 
@@ -15,3 +16,4 @@ class ScalaHelloBackground extends BackgroundFunction[HttpRequest] {
     LOGGER.info(String.format("Hello %s!", name))
   }
 }
+// [END functions_helloworld_background]
