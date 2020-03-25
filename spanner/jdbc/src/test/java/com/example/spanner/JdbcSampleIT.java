@@ -20,11 +20,14 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.Instance;
+import com.google.cloud.spanner.InstanceAdminClient;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
@@ -36,8 +39,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class JdbcSampleIT {
   // The instance needs to exist for tests to pass.
-  private final String instanceId = System.getProperty("spanner.test.instance");
-  private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
+  private String instanceId = System.getProperty("spanner.test.instance");
+  private final String databaseId =
+      formatForTest(System.getProperty("spanner.sample.database", "mysample"));
   DatabaseId dbId;
   DatabaseAdminClient dbClient;
 
@@ -56,6 +60,13 @@ public class JdbcSampleIT {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
+    if (instanceId == null) {
+      Iterator<Instance> iterator =
+          spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
+      if (iterator.hasNext()) {
+        instanceId = iterator.next().getId().getInstance();
+      }
+    }
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient.createDatabase(instanceId, databaseId, Collections.emptyList()).get();
