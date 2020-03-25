@@ -24,6 +24,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.version>1.2.41</kotlin.version>
+    <groovy.version>3.0.2</groovy.version>
   </properties>
 
   <dependencies>
@@ -53,12 +54,18 @@
       <version>3.4.2</version>
     </dependency>
 
+    <!-- Required for scala samples -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>2.13.1</version>
+    </dependency>
 
     <!-- Required for groovy samples -->
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>3.0.2</version>
+      <version>${groovy.version}</version>
       <type>pom</type>
     </dependency>
 
@@ -156,6 +163,46 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.7.0</version>
+        <executions>
+          <execution>
+            <id>groovy-compile</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>addSources</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <!-- any version of Groovy \>= 1.5.0 should work here -->
+            <version>${groovy.version}</version>
+            <scope>runtime</scope>
+            <type>pom</type>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>4.3.1</version>
+        <executions>
+          <execution>
+            <id>scala-compile</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>add-source</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-maven-plugin</artifactId>
         <version>${kotlin.version}</version>
@@ -168,7 +215,7 @@
             </goals>
             <configuration>
               <sourceDirs>
-                <source>src/main/java</source>
+                <source>src/main/kotlin</source>
                 <source>target/generated-sources/annotations</source>
               </sourceDirs>
             </configuration>
