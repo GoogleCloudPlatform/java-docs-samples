@@ -252,7 +252,7 @@ public class SpannerSampleIT {
     assertThat(out).contains("pending");
 
     out = runSample("listdatabaseoperations");
-    assertThat(out).contains("optimized");
+    assertThat(out).contains("optimize");
 
     out = runSample("listbackups");
     assertThat(out).contains(databaseId);

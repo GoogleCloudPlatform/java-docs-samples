@@ -1660,8 +1660,9 @@ public class SpannerSample {
   static void listDatabaseOperations(InstanceAdminClient instanceAdminClient, DatabaseAdminClient dbAdminClient, DatabaseId databaseId) {
     Instance instance = instanceAdminClient.getInstance(databaseId.getInstanceId().getInstance());
     // Get optimize restored database operations for the sample database.
-    String filter = "(metadata.@type:type.googleapis.com/"
-                  + "google.spanner.admin.database.v1.OptimizeRestoredDatabaseMetadata)";
+    String filter = String.format("(name:%s) AND (metadata.@type:type.googleapis.com/"
+                    + "google.spanner.admin.database.v1.OptimizeRestoredDatabaseMetadata)",
+                    databaseId.getDatabase());
     for (Operation op : instance.listDatabaseOperations(Options.filter(filter)).iterateAll()) {
       try {
         OptimizeRestoredDatabaseMetadata metadata =
@@ -1692,6 +1693,7 @@ public class SpannerSample {
         System.err.println(e.getMessage());
       }
     }
+    System.out.println(String.format("Listed all optimize operations for database %s", databaseId.getDatabase()));
   }
   // [END spanner_list_database_operations]
 
