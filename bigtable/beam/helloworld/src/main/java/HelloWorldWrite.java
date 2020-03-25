@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// [START bigtable_beam_helloworld_write]
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
@@ -30,17 +30,22 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 public class HelloWorldWrite {
   public static void main(String[] args) {
+    // [START bigtable_beam_helloworld_create_pipeline]
     BigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
+    // [END bigtable_beam_helloworld_create_pipeline]
 
+    // [START bigtable_beam_helloworld_write_config]
     CloudBigtableTableConfiguration bigtableTableConfig =
         new CloudBigtableTableConfiguration.Builder()
             .withProjectId(options.getBigtableProjectId())
             .withInstanceId(options.getBigtableInstanceId())
             .withTableId(options.getBigtableTableId())
             .build();
+    // [END bigtable_beam_helloworld_write_config]
 
+    // [START bigtable_beam_helloworld_write_transforms]
     p.apply(Create.of("phone#4c410523#20190501", "phone#4c410523#20190502"))
         .apply(
             ParDo.of(
@@ -59,10 +64,12 @@ public class HelloWorldWrite {
                   }
                 }))
         .apply(CloudBigtableIO.writeToTable(bigtableTableConfig));
+    // [START bigtable_beam_helloworld_write_transforms]
 
     p.run().waitUntilFinish();
   }
 
+  // [START bigtable_beam_helloworld_options]
   public interface BigtableOptions extends DataflowPipelineOptions {
     @Description("The Bigtable project ID, this can be different than your Dataflow project")
     @Default.String("bigtable-project")
@@ -82,4 +89,6 @@ public class HelloWorldWrite {
 
     void setBigtableTableId(String bigtableTableId);
   }
+  // [END bigtable_beam_helloworld_options]
 }
+// [END bigtable_beam_helloworld_write]
