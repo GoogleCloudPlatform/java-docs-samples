@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 
 public class SlackSlashCommand implements HttpFunction {
 
+  // [START functions_slack_setup]
   private Kgsearch kgClient;
   private static final String API_KEY = System.getenv("KG_API_KEY");
   private static final String SLACK_SECRET = System.getenv("SLACK_SECRET");
@@ -50,8 +51,16 @@ public class SlackSlashCommand implements HttpFunction {
 
     verifier = new SlackSignature.Verifier(new SlackSignature.Generator(SLACK_SECRET));
   }
+  // [END functions_slack_setup]
 
-  boolean isValidSlackWebhook(HttpRequest request, String requestBody) throws IOException {
+  // [START functions_verify_webhook]
+  /**
+   * Verify that the webhook request came from Slack.
+   * @param request Cloud Function request object in {@link HttpRequest} format.
+   * @param requestBody Raw body of webhook request to check signature against.
+   * @return true if the provided request came from Slack, false otherwise
+   */
+  boolean isValidSlackWebhook(HttpRequest request, String requestBody) {
 
     // Check for headers
     HashMap<String, List<String>> headers = new HashMap(request.getHeaders());
@@ -65,7 +74,12 @@ public class SlackSlashCommand implements HttpFunction {
         headers.get("X-Slack-Signature").get(0),
         1L);
   }
+  // [END functions_verify_webhook]
 
+  // [START functions_slack_format]
+  /**
+   * Helper method to copy properties between {@link JsonObject}s
+   */
   void addPropertyIfPresent(
       JsonObject target, String targetName, JsonObject source, String sourceName) {
     if (source.has(sourceName)) {
@@ -73,6 +87,12 @@ public class SlackSlashCommand implements HttpFunction {
     }
   }
 
+  /**
+   * Format the Knowledge Graph API response into a richly formatted Slack message.
+   * @param kgResponse The response from the Knowledge Graph API as a {@link JsonObject}.
+   * @param query The user's search query.
+   * @return The formatted Slack message as a JSON string.
+   */
   String formatSlackMessage(JsonObject kgResponse, String query) {
     JsonObject attachmentJson = new JsonObject();
     JsonArray attachments = new JsonArray();
@@ -119,7 +139,15 @@ public class SlackSlashCommand implements HttpFunction {
 
     return gson.toJson(responseJson);
   }
+  // [END functions_slack_format]
 
+  // [START functions_slack_request]
+  /**
+   * Send the user's search query to the Knowledge Graph API.
+   * @param query The user's search query.
+   * @return The Knowledge graph API results as a {@link JsonObject}.
+   * @throws IOException if Knowledge Graph request fails
+   */
   JsonObject searchKnowledgeGraph(String query) throws IOException {
     Kgsearch.Entities.Search kgRequest = kgClient.entities().search();
     kgRequest.setQuery(query);
@@ -127,7 +155,15 @@ public class SlackSlashCommand implements HttpFunction {
 
     return gson.fromJson(kgRequest.execute().toString(), JsonObject.class);
   }
+  // [END functions_slack_request]
 
+  // [START functions_slack_search]
+  /**
+   * Receive a Slash Command request from Slack.
+   * @param request Cloud Function request object.
+   * @param response Cloud Function response object.
+   * @throws IOException if Knowledge Graph request fails
+   */
   @Override
   public void service(HttpRequest request, HttpResponse response) throws IOException {
 
@@ -157,7 +193,9 @@ public class SlackSlashCommand implements HttpFunction {
     JsonObject kgResponse = searchKnowledgeGraph(query);
 
     // Format response to Slack
+    // See https://api.slack.com/docs/message-formatting
     BufferedWriter writer = response.getWriter();
     writer.write(formatSlackMessage(kgResponse, query));
   }
+  // [END functions_slack_search]
 }
