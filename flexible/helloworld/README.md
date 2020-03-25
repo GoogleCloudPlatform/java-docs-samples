@@ -19,7 +19,7 @@ Use either:
 
 ### Deploying
 
-    $ mvn appengine:deploy
+    $ mvn clean package appengine:deploy
 
 ## Gradle
 ### Running locally

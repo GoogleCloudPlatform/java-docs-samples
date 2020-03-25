@@ -32,6 +32,11 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -56,6 +61,9 @@ public class SnippetsTests {
   private static final Logger GCS_LOGGER = Logger.getLogger(HelloGcs.class.getName());
   private static final Logger STACKDRIVER_LOGGER = Logger.getLogger(
       StackdriverLogging.class.getName());
+  private static final Logger RETRY_LOGGER = Logger.getLogger(RetryPubSub.class.getName());
+  private static final Logger INFINITE_RETRY_LOGGER = Logger.getLogger(
+      InfiniteRetryPubSub.class.getName());
 
   private static final TestLogHandler logHandler = new TestLogHandler();
 
@@ -71,6 +79,8 @@ public class SnippetsTests {
     PUBSUB_LOGGER.addHandler(logHandler);
     GCS_LOGGER.addHandler(logHandler);
     STACKDRIVER_LOGGER.addHandler(logHandler);
+    RETRY_LOGGER.addHandler(logHandler);
+    INFINITE_RETRY_LOGGER.addHandler(logHandler);
 
     request = mock(HttpRequest.class);
     response = mock(HttpResponse.class);
@@ -86,12 +96,15 @@ public class SnippetsTests {
     Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
     Logger.getLogger(HelloPubSub.class.getName()).addHandler(logHandler);
     Logger.getLogger(HelloGcs.class.getName()).addHandler(logHandler);
+    Logger.getLogger(StackdriverLogging.class.getName()).addHandler(logHandler);
+    Logger.getLogger(RetryPubSub.class.getName()).addHandler(logHandler);
+    Logger.getLogger(InfiniteRetryPubSub.class.getName()).addHandler(logHandler);
   }
 
   @After
   public void afterTest() {
     System.out.flush();
-    logHandler.flush();
+    logHandler.clear();
   }
 
   @Test
@@ -273,6 +286,84 @@ public class SnippetsTests {
     writerOut.flush();
 
     assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void retryPubsub_handlesRetryMsg() throws IOException {
+    String data = "{\"retry\": true}";
+    String encodedData = new String(Base64.getEncoder().encode(data.getBytes()));
+
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData(encodedData);
+
+    new RetryPubSub().accept(pubsubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+  }
+
+  @Test
+  public void retryPubsub_handlesStopMsg() throws IOException {
+    String data = "{\"retry\": false}";
+    String encodedData = new String(Base64.getEncoder().encode(data.getBytes()));
+
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData(encodedData);
+
+    new RetryPubSub().accept(pubsubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Not retrying...").isEqualTo(logMessage);
+  }
+
+  @Test
+  public void retryPubsub_handlesEmptyMsg() throws IOException {
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData("");
+
+    new RetryPubSub().accept(pubsubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Not retrying...").isEqualTo(logMessage);
+  }
+
+  @Test
+  public void infiniteRetries_handlesRetryMsg() throws IOException {
+    String timestampData = String.format(
+        "{\"timestamp\":\"%s\"}", ZonedDateTime.now(ZoneOffset.UTC).toString());
+
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData(timestampData);
+
+    new InfiniteRetryPubSub().accept(pubsubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat(String.format("Processing event %s.", timestampData)).isEqualTo(logMessage);
+  }
+
+  @Test
+  public void infiniteRetries_handlesStopMsg() throws IOException {
+    String timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC).toString();
+    String timestampData = String.format("{\"timestamp\":\"%s\"}", timestamp);
+
+
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData(timestampData);
+
+    new InfiniteRetryPubSub().accept(pubsubMessage, null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat(String.format("Dropping event %s.", timestampData)).isEqualTo(logMessage);
+  }
+
+  @Test
+  public void infiniteRetries_handlesEmptyMsg() throws IOException {
+    PubSubMessage pubsubMessage = new PubSubMessage();
+    pubsubMessage.setData("");
+
+    new InfiniteRetryPubSub().accept(new PubSubMessage(), null);
+
+    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    assertThat("Processing event null.").isEqualTo(logMessage);
   }
 
   @Test
