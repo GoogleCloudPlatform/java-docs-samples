@@ -244,29 +244,29 @@ class SnippetCommands {
       handler = SubCommandHandler.class,
       usage = "The subcommand to run")
   @SubCommands({
-    @SubCommand(name = "createKeyRing", impl = CreateKeyRingCommand.class),
-    @SubCommand(name = "createCryptoKey", impl = CreateCryptoKeyCommand.class),
-    @SubCommand(name = "createCryptoKeyVersion", impl = CreateCryptoKeyVersionCommand.class),
-    @SubCommand(name = "listKeyRings", impl = ListKeyRingsCommand.class),
-    @SubCommand(name = "listCryptoKeys", impl = ListCryptoKeysCommand.class),
-    @SubCommand(name = "listCryptoKeyVersions", impl = ListCryptoKeyVersionsCommand.class),
-    @SubCommand(name = "disableCryptoKeyVersion", impl = DisableCryptoKeyVersionCommand.class),
-    @SubCommand(name = "enableCryptoKeyVersion", impl = EnableCryptoKeyVersionCommand.class),
-    @SubCommand(name = "destroyCryptoKeyVersion", impl = DestroyCryptoKeyVersionCommand.class),
-    @SubCommand(name = "restoreCryptoKeyVersion", impl = RestoreCryptoKeyVersionCommand.class),
-    @SubCommand(name = "getKeyRingPolicy", impl = GetKeyRingPolicyCommand.class),
-    @SubCommand(name = "getCryptoKeyPolicy", impl = GetCryptoKeyPolicyCommand.class),
-    @SubCommand(name = "setPrimaryVersion", impl = SetPrimaryVersionCommand.class),
-    @SubCommand(name = "addMemberToKeyRingPolicy", impl = AddMemberToKeyRingPolicyCommand.class),
-    @SubCommand(
-        name = "addMemberToCryptoKeyPolicy",
-        impl = AddMemberToCryptoKeyPolicyCommand.class),
-    @SubCommand(
-        name = "removeMemberFromKeyRingPolicy",
-        impl = RemoveMemberFromKeyRingPolicyCommand.class),
-    @SubCommand(
-        name = "removeMemberFromCryptoKeyPolicy",
-        impl = RemoveMemberFromCryptoKeyPolicyCommand.class)
+      @SubCommand(name = "createKeyRing", impl = CreateKeyRingCommand.class),
+      @SubCommand(name = "createCryptoKey", impl = CreateCryptoKeyCommand.class),
+      @SubCommand(name = "createCryptoKeyVersion", impl = CreateCryptoKeyVersionCommand.class),
+      @SubCommand(name = "listKeyRings", impl = ListKeyRingsCommand.class),
+      @SubCommand(name = "listCryptoKeys", impl = ListCryptoKeysCommand.class),
+      @SubCommand(name = "listCryptoKeyVersions", impl = ListCryptoKeyVersionsCommand.class),
+      @SubCommand(name = "disableCryptoKeyVersion", impl = DisableCryptoKeyVersionCommand.class),
+      @SubCommand(name = "enableCryptoKeyVersion", impl = EnableCryptoKeyVersionCommand.class),
+      @SubCommand(name = "destroyCryptoKeyVersion", impl = DestroyCryptoKeyVersionCommand.class),
+      @SubCommand(name = "restoreCryptoKeyVersion", impl = RestoreCryptoKeyVersionCommand.class),
+      @SubCommand(name = "getKeyRingPolicy", impl = GetKeyRingPolicyCommand.class),
+      @SubCommand(name = "getCryptoKeyPolicy", impl = GetCryptoKeyPolicyCommand.class),
+      @SubCommand(name = "setPrimaryVersion", impl = SetPrimaryVersionCommand.class),
+      @SubCommand(name = "addMemberToKeyRingPolicy", impl = AddMemberToKeyRingPolicyCommand.class),
+      @SubCommand(
+          name = "addMemberToCryptoKeyPolicy",
+          impl = AddMemberToCryptoKeyPolicyCommand.class),
+      @SubCommand(
+          name = "removeMemberFromKeyRingPolicy",
+          impl = RemoveMemberFromKeyRingPolicyCommand.class),
+      @SubCommand(
+          name = "removeMemberFromCryptoKeyPolicy",
+          impl = RemoveMemberFromCryptoKeyPolicyCommand.class)
   })
   Command command;
 }

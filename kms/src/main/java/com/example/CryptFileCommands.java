@@ -85,8 +85,8 @@ class CryptFileCommands {
       handler = SubCommandHandler.class,
       usage = "The subcommand to run")
   @SubCommands({
-    @SubCommand(name = "encrypt", impl = EncryptCommand.class),
-    @SubCommand(name = "decrypt", impl = DecryptCommand.class)
+      @SubCommand(name = "encrypt", impl = EncryptCommand.class),
+      @SubCommand(name = "decrypt", impl = DecryptCommand.class)
   })
   Command command;
 }
