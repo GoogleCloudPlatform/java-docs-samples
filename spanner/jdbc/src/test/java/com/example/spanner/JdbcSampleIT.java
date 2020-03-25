@@ -78,7 +78,7 @@ public class JdbcSampleIT {
 
     out = runSample("connectionwithqueryoptions");
     assertThat(out).contains("1 Marc Richards");
-    assertThat(out).contains("Optimizer version: LATEST");
+    assertThat(out).contains("Optimizer version: 1");
 
     out = runSample("setqueryoptions");
     assertThat(out).contains("1 Marc Richards");

@@ -157,14 +157,14 @@ public class JdbcSample {
   // [START spanner_jdbc_connection_with_query_options]
   static void connectionWithQueryOptions(String projectId, String instanceId, String databaseId)
       throws SQLException {
-    String optimizerVersion = "LATEST";
+    String optimizerVersion = "1";
     String connectionUrl =
         String.format(
             "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s?optimizerVersion=%s",
             projectId, instanceId, databaseId, optimizerVersion);
     try (Connection connection = DriverManager.getConnection(connectionUrl)) {
       try (Statement statement = connection.createStatement()) {
-        // Execute a query using the latest optimizer version.
+        // Execute a query using the optimizer version '1'.
         try (ResultSet rs =
             statement.executeQuery(
                 "SELECT SingerId, FirstName, LastName FROM Singers ORDER BY LastName")) {
