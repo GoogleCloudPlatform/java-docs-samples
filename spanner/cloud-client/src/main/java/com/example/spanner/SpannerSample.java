@@ -1662,9 +1662,8 @@ public class SpannerSample {
     // Get optimize restored database operations for the sample database.
     String filter =
         String.format(
-            //"(metadata.name:%s) AND "
-                //+
-                "(metadata.@type:type.googleapis.com/"
+            "(metadata.name:%s) AND "
+                + "(metadata.@type:type.googleapis.com/"
                 + "google.spanner.admin.database.v1.OptimizeRestoredDatabaseMetadata)",
             databaseId.getName());
     for (Operation op : instance.listDatabaseOperations(Options.filter(filter)).iterateAll()) {
