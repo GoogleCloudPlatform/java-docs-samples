@@ -66,7 +66,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
     LOGGER.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
     try {
       firestore.document(affectedDoc).set(newFields, SetOptions.merge()).get();
-    } catch (Exception e) {
+    } catch (ConcurrentException | InterruptedException e) {
       throw new RuntimeException(e);
     }
   }
