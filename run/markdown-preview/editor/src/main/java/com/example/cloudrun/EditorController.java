@@ -1,5 +1,8 @@
 package com.example.cloudrun;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -9,27 +12,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class EditorController {
 
-    private static final Logger logger = LoggerFactory.getLogger(EditorController.class);
+  private static final Logger logger = LoggerFactory.getLogger(EditorController.class);
 
-    @GetMapping("/")
-    public String getIndex(Model model) {
-        // Get default markdown
-        // add to template
-        return "index";
-    }
+  @GetMapping("/")
+  public String getIndex(Model model) {
+    String defaultContent = loadMarkdown("templates/markdown.md");
+    model.addAttribute("Default", defaultContent);
+    return "index";
+  }
 
-      
-  public void newServiceFromEnv() {
-    String url = System.getenv("EDITOR_UPSTREAM_RENDER_URL");
-    if (url == null) {
-      logger.error("No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
-      return null;
+  public String loadMarkdown(String filename) {
+    String text = "";
+    ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+    try {
+      File file = new File(classLoader.getResource(filename).getFile());
+      text = new String(Files.readAllBytes(file.toPath()));
+    } catch (IOException e) {
+      logger.error("Unable to load file " + filename);
     }
-
-    String auth = System.getenv("EDITOR_UPSTREAM_UNAUTHENTICATED");
-    if (auth == null) {
-      logger.warn("Editor: starting in unauthenticated upstream mode");
-    }
-    //create serivice
+    return text;
   }
 }

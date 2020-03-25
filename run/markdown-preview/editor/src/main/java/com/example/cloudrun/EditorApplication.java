@@ -19,7 +19,7 @@ public class EditorApplication {
     }
 		SpringApplication app = new SpringApplication(EditorApplication.class);
     app.setDefaultProperties(Collections.singletonMap("server.port", port));
-
+    
     // Start the Spring Boot application.
     app.run(args);
 		logger.info("Listening on port " + port);

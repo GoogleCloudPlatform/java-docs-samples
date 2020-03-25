@@ -51,8 +51,7 @@ limitations under the License.
         <section class="mdc-card mdc-card--outlined">
           <div class="text-field-container">
             <div class="mdc-text-field mdc-text-field--fullwidth md-text-field--no-label mdc-text-field--textarea mdc-ripple-upgraded">
-              <!-- UPDATE THIS!!!!!!!!!!!!! ---------- -->
-                <textarea id="editor" class="mdc-text-field__input" style="height: 36rem;">{{ .Default }}</textarea>
+              <textarea id="editor" class="mdc-text-field__input" style="height: 36rem;" th:text="${Default}"></textarea>
             </div>
           </div>
 

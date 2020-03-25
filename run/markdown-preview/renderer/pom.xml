@@ -57,7 +57,7 @@
 				<version>2.1.0</version>
 				<configuration>
 					<to>
-						<image>myimage</image>
+						<image>gcr.io/starter-akitsch/renderer</image>
 					</to>
 				</configuration>
 			</plugin>
