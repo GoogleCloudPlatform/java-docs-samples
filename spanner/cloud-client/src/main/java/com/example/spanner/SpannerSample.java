@@ -23,7 +23,6 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.retrying.RetryingFuture;
-import com.google.api.gax.rpc.FailedPreconditionException;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
@@ -34,6 +33,7 @@ import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.DatabaseInfo.State;
 import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.InstanceAdminClient;
@@ -172,7 +172,7 @@ public class SpannerSample {
 
   /** Get a database id to restore a backup to from the sample database id. */
   static String createRestoredSampleDbId(DatabaseId database) {
-    String restoredDbId = "restored-" + database.getDatabase();
+    String restoredDbId = database.getDatabase().replace("mysample", "restored");
     if (restoredDbId.length() > 30) {
       restoredDbId = restoredDbId.substring(0, 30);
     }
@@ -1786,24 +1786,15 @@ public class SpannerSample {
     // Try the restore operation in a retry loop, as there is a limit on the number of restore
     // operations that is allowed to execute simultaneously, and we should retry if we hit this,
     // limit.
+    OperationFuture<Database, RestoreDatabaseMetadata> op;
     int restoreAttempts = 0;
     while (true) {
-      OperationFuture<Database, RestoreDatabaseMetadata> op = backup.restore(restoreToDatabase);
       try {
-        // Wait until the database has been restored.
-        Database db = op.get();
-        // Refresh database metadata and get the restore info.
-        RestoreInfo restore = db.reload().getRestoreInfo();
-        System.out.println(
-            "Restored database ["
-                + restore.getSourceDatabase().getName()
-                + "] from ["
-                + restore.getBackup().getName()
-                + "]");
-      } catch (ExecutionException e) {
-        if (e.getCause() instanceof FailedPreconditionException
-            && e.getCause()
-                .getMessage()
+        op = backup.restore(restoreToDatabase);
+        break;
+      } catch (SpannerException e) {
+        if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
+            && e.getMessage()
                 .contains("Please retry the operation once the pending restores complete")) {
           restoreAttempts++;
           if (restoreAttempts == 10) {
@@ -1818,13 +1809,24 @@ public class SpannerSample {
               backup.getId().getBackup(),
               restoreToDatabase.getDatabase()));
           Uninterruptibles.sleepUninterruptibly(60L, TimeUnit.SECONDS);
-        } else {
-          // If the operation failed for some other reason during execution, expose the cause.
-          throw (SpannerException) e.getCause();
         }
-      } catch (InterruptedException e) {
-        throw SpannerExceptionFactory.propagateInterrupt(e);
       }
+    }
+    try {
+      // Wait until the database has been restored.
+      Database db = op.get();
+      // Refresh database metadata and get the restore info.
+      RestoreInfo restore = db.reload().getRestoreInfo();
+      System.out.println(
+          "Restored database ["
+              + restore.getSourceDatabase().getName()
+              + "] from ["
+              + restore.getBackup().getName()
+              + "]");
+    } catch (ExecutionException e) {
+      throw (SpannerException) e.getCause();
+    } catch (InterruptedException e) {
+      throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
   // [END spanner_restore_backup]
