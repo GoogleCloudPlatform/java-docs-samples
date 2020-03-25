@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -51,10 +50,7 @@ public class DiskServlet extends HttpServlet {
     }
     Path tmpFile = Paths.get("/tmp/seen.txt");
     Files.write(
-        tmpFile,
-        (userIp + "\n").getBytes(),
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        tmpFile, (userIp + "\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     StringBuffer sb = new StringBuffer();
     List<String> strings = Files.readAllLines(tmpFile, StandardCharsets.US_ASCII);
     for (String s : strings) {
