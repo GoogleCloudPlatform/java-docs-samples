@@ -216,7 +216,7 @@ public class SpannerSampleIT {
 
     out = runSample("querywithbytes");
     assertThat(out).contains("4 Venue 4");
-  
+
     out = runSample("querywithdate");
     assertThat(out).contains("4 Venue 4 2018-09-02");
     assertThat(out).contains("42 Venue 42 2018-10-01");
@@ -236,6 +236,11 @@ public class SpannerSampleIT {
     assertThat(out).contains("4 Venue 4");
     assertThat(out).contains("19 Venue 19");
     assertThat(out).contains("42 Venue 42");
+
+    out = runSample("clientwithqueryoptions");
+    assertThat(out).contains("1 1 Total Junk");
+    out = runSample("querywithqueryoptions");
+    assertThat(out).contains("1 1 Total Junk");
   }
 
   private String formatForTest(String name) {
