@@ -22,30 +22,26 @@ import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.UUID;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Unit tests for {@code Leaderboard}
- */
+/** Unit tests for {@code Leaderboard} */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AppTest {
   // The instance needs to exist for tests to pass.
   private String defaultInstanceId = "default-instance";
   private String systemInstanceId = System.getenv("SPANNER_TEST_INSTANCE");
-  private final String instanceId = 
+  private final String instanceId =
       (systemInstanceId != null) ? systemInstanceId : defaultInstanceId;
   private final String databaseId = formatForTest(System.getenv("SPANNER_TEST_DATABASE"));
   DatabaseId dbId;
@@ -56,7 +52,7 @@ public class AppTest {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    App.main(new String[]{command, instanceId, databaseId});
+    App.main(new String[] {command, instanceId, databaseId});
     System.setOut(stdOut);
     return bout.toString();
   }
@@ -66,7 +62,7 @@ public class AppTest {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    App.main(new String[]{command, instanceId, databaseId, commandOption});
+    App.main(new String[] {command, instanceId, databaseId, commandOption});
     System.setOut(stdOut);
     return bout.toString();
   }
@@ -134,8 +130,6 @@ public class AppTest {
     // Test that Top Ten Players of the Week (within past 168 hours) runs successfully.
     out = runSample("query", "168");
     assertThat(out).contains("PlayerId: ");
-
-
   }
 
   private String formatForTest(String name) {
@@ -148,7 +142,7 @@ public class AppTest {
         char c = characters.charAt(random.nextInt(26));
         name += c;
       }
-    }  
+    }
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 }

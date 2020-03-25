@@ -127,8 +127,15 @@ public class SpannerSample {
     final boolean outdoorVenue;
     final float popularityScore;
 
-    Venue(long venueId, String venueName, String venueInfo, long capacity, Value availableDates,
-        String lastContactDate, boolean outdoorVenue, float popularityScore) {
+    Venue(
+        long venueId,
+        String venueName,
+        String venueInfo,
+        long capacity,
+        Value availableDates,
+        String lastContactDate,
+        boolean outdoorVenue,
+        float popularityScore) {
       this.venueId = venueId;
       this.venueName = venueName;
       this.venueInfo = venueInfo;
@@ -167,28 +174,31 @@ public class SpannerSample {
   // [END spanner_insert_data_with_timestamp_column]
 
   // [START spanner_insert_datatypes_data]
-  static Value availableDates1 = Value.dateArray(Arrays.asList(
-      Date.parseDate("2020-12-01"),
-      Date.parseDate("2020-12-02"),
-      Date.parseDate("2020-12-03")));
-  static Value availableDates2 = Value.dateArray(Arrays.asList(
-      Date.parseDate("2020-11-01"),
-      Date.parseDate("2020-11-05"),
-      Date.parseDate("2020-11-15")));
-  static Value availableDates3 = Value.dateArray(Arrays.asList(
-      Date.parseDate("2020-10-01"),
-      Date.parseDate("2020-10-07")));
+  static Value availableDates1 =
+      Value.dateArray(
+          Arrays.asList(
+              Date.parseDate("2020-12-01"),
+              Date.parseDate("2020-12-02"),
+              Date.parseDate("2020-12-03")));
+  static Value availableDates2 =
+      Value.dateArray(
+          Arrays.asList(
+              Date.parseDate("2020-11-01"),
+              Date.parseDate("2020-11-05"),
+              Date.parseDate("2020-11-15")));
+  static Value availableDates3 =
+      Value.dateArray(Arrays.asList(Date.parseDate("2020-10-01"), Date.parseDate("2020-10-07")));
   static String exampleBytes1 = BaseEncoding.base64().encode("Hello World 1".getBytes());
   static String exampleBytes2 = BaseEncoding.base64().encode("Hello World 2".getBytes());
   static String exampleBytes3 = BaseEncoding.base64().encode("Hello World 3".getBytes());
   static final List<Venue> VENUES =
       Arrays.asList(
-        new Venue(4, "Venue 4", exampleBytes1, 1800,
-          availableDates1, "2018-09-02", false, 0.85543f),
-        new Venue(19, "Venue 19", exampleBytes2, 6300,
-          availableDates2, "2019-01-15", true, 0.98716f),
-        new Venue(42, "Venue 42", exampleBytes3, 3000,
-          availableDates3, "2018-10-01", false, 0.72598f));
+          new Venue(
+              4, "Venue 4", exampleBytes1, 1800, availableDates1, "2018-09-02", false, 0.85543f),
+          new Venue(
+              19, "Venue 19", exampleBytes2, 6300, availableDates2, "2019-01-15", true, 0.98716f),
+          new Venue(
+              42, "Venue 42", exampleBytes3, 3000, availableDates3, "2018-10-01", false, 0.72598f));
   // [END spanner_insert_datatypes_data]
 
   // [START spanner_create_database]
@@ -328,7 +338,8 @@ public class SpannerSample {
 
   // [START spanner_query_data]
   static void query(DatabaseClient dbClient) {
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse() // Execute a single read or query against Cloud Spanner.
             .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
       while (resultSet.next()) {
@@ -341,7 +352,8 @@ public class SpannerSample {
 
   // [START spanner_read_data]
   static void read(DatabaseClient dbClient) {
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .read(
                 "Albums",
@@ -461,7 +473,8 @@ public class SpannerSample {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
     // null. A try-with-resource block is used to automatically release resources held by
     // ResultSet.
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .executeQuery(Statement.of("SELECT SingerId, AlbumId, MarketingBudget FROM Albums"))) {
       while (resultSet.next()) {
@@ -533,7 +546,8 @@ public class SpannerSample {
 
   // [START spanner_read_data_with_index]
   static void readUsingIndex(DatabaseClient dbClient) {
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .readUsingIndex(
                 "Albums",
@@ -577,7 +591,8 @@ public class SpannerSample {
   // [START spanner_read_data_with_storing_index]
   static void readStoringIndex(DatabaseClient dbClient) {
     // We can read MarketingBudget also from the index since it stores a copy of MarketingBudget.
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .readUsingIndex(
                 "Albums",
@@ -623,10 +638,11 @@ public class SpannerSample {
 
   // [START spanner_read_stale_data]
   static void readStaleData(DatabaseClient dbClient) {
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse(TimestampBound.ofExactStaleness(15, TimeUnit.SECONDS))
             .read(
-              "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"))) {
+                "Albums", KeySet.all(), Arrays.asList("SingerId", "AlbumId", "MarketingBudget"))) {
       while (resultSet.next()) {
         System.out.printf(
             "%d %d %s\n",
@@ -703,7 +719,8 @@ public class SpannerSample {
     // Rows without an explicit value for MarketingBudget will have a MarketingBudget equal to
     // null. A try-with-resource block is used to automatically release resources held by
     // ResultSet.
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .executeQuery(
                 Statement.of(
@@ -724,7 +741,8 @@ public class SpannerSample {
   // [END spanner_query_data_with_timestamp_column]
 
   static void querySingersTable(DatabaseClient dbClient) {
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .executeQuery(Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"))) {
       while (resultSet.next()) {
@@ -741,7 +759,8 @@ public class SpannerSample {
     // Rows without an explicit value for Revenue will have a Revenue equal to
     // null. A try-with-resource block is used to automatically release resources held by
     // ResultSet.
-    try (ResultSet resultSet = dbClient
+    try (ResultSet resultSet =
+        dbClient
             .singleUse()
             .executeQuery(
                 Statement.of(
@@ -1011,8 +1030,7 @@ public class SpannerSample {
                   while (resultSet.next()) {
                     System.out.printf(
                         "%s %s\n",
-                        resultSet.getString("FirstName"),
-                        resultSet.getString("LastName"));
+                        resultSet.getString("FirstName"), resultSet.getString("LastName"));
                   }
                 }
                 return null;
@@ -1238,15 +1256,24 @@ public class SpannerSample {
     for (Venue venue : VENUES) {
       mutations.add(
           Mutation.newInsertBuilder("Venues")
-              .set("VenueId").to(venue.venueId)
-              .set("VenueName").to(venue.venueName)
-              .set("VenueInfo").to(venue.venueInfo)
-              .set("Capacity").to(venue.capacity)
-              .set("AvailableDates").to(venue.availableDates)
-              .set("LastContactDate").to(venue.lastContactDate)
-              .set("OutdoorVenue").to(venue.outdoorVenue)
-              .set("PopularityScore").to(venue.popularityScore)
-              .set("LastUpdateTime").to(Value.COMMIT_TIMESTAMP)
+              .set("VenueId")
+              .to(venue.venueId)
+              .set("VenueName")
+              .to(venue.venueName)
+              .set("VenueInfo")
+              .to(venue.venueInfo)
+              .set("Capacity")
+              .to(venue.capacity)
+              .set("AvailableDates")
+              .to(venue.availableDates)
+              .set("LastContactDate")
+              .to(venue.lastContactDate)
+              .set("OutdoorVenue")
+              .to(venue.outdoorVenue)
+              .set("PopularityScore")
+              .to(venue.popularityScore)
+              .set("LastUpdateTime")
+              .to(Value.COMMIT_TIMESTAMP)
               .build());
     }
     dbClient.write(mutations);
@@ -1255,9 +1282,8 @@ public class SpannerSample {
 
   // [START spanner_query_with_array_parameter]
   static void queryWithArray(DatabaseClient dbClient) {
-    Value exampleArray = Value.dateArray(Arrays.asList(
-        Date.parseDate("2020-10-01"),
-        Date.parseDate("2020-11-01")));
+    Value exampleArray =
+        Value.dateArray(Arrays.asList(Date.parseDate("2020-10-01"), Date.parseDate("2020-11-01")));
 
     Statement statement =
         Statement.newBuilder(
@@ -1303,21 +1329,18 @@ public class SpannerSample {
 
   // [START spanner_query_with_bytes_parameter]
   static void queryWithBytes(DatabaseClient dbClient) {
-    ByteArray exampleBytes = ByteArray.fromBase64(
-        BaseEncoding.base64().encode("Hello World 1".getBytes()));
+    ByteArray exampleBytes =
+        ByteArray.fromBase64(BaseEncoding.base64().encode("Hello World 1".getBytes()));
     Statement statement =
         Statement.newBuilder(
-                "SELECT VenueId, VenueName FROM Venues "
-                    + "WHERE VenueInfo = @venueInfo")
+                "SELECT VenueId, VenueName FROM Venues " + "WHERE VenueInfo = @venueInfo")
             .bind("venueInfo")
             .to(exampleBytes)
             .build();
     try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
         System.out.printf(
-            "%d %s\n",
-            resultSet.getLong("VenueId"),
-            resultSet.getString("VenueName"));
+            "%d %s\n", resultSet.getLong("VenueId"), resultSet.getString("VenueName"));
       }
     }
   }
@@ -1372,8 +1395,7 @@ public class SpannerSample {
     long exampleInt = 3000;
     Statement statement =
         Statement.newBuilder(
-                "SELECT VenueId, VenueName, Capacity FROM Venues "
-                    + "WHERE Capacity >= @capacity")
+                "SELECT VenueId, VenueName, Capacity FROM Venues " + "WHERE Capacity >= @capacity")
             .bind("capacity")
             .to(exampleInt)
             .build();
@@ -1394,17 +1416,14 @@ public class SpannerSample {
     String exampleString = "Venue 42";
     Statement statement =
         Statement.newBuilder(
-                "SELECT VenueId, VenueName FROM Venues "
-                    + "WHERE VenueName = @venueName")
+                "SELECT VenueId, VenueName FROM Venues " + "WHERE VenueName = @venueName")
             .bind("venueName")
             .to(exampleString)
             .build();
     try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
         System.out.printf(
-            "%d %s\n",
-            resultSet.getLong("VenueId"),
-            resultSet.getString("VenueName"));
+            "%d %s\n", resultSet.getLong("VenueId"), resultSet.getString("VenueName"));
       }
     }
   }
@@ -1678,7 +1697,7 @@ public class SpannerSample {
       // Use client here...
       // [END init_client]
       run(dbClient, dbAdminClient, command, db);
-    // [START init_client]
+      // [START init_client]
     } finally {
       spanner.close();
     }
