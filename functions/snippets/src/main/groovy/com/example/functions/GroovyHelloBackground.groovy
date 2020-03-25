@@ -1,6 +1,6 @@
 package com.example.functions
 
-// [START functions_helloworld_background]
+// [START functions_helloworld_background_groovy]
 import com.google.cloud.functions.BackgroundFunction
 import com.google.cloud.functions.Context
 import com.google.cloud.functions.HttpRequest
@@ -19,4 +19,4 @@ class GroovyHelloBackground implements BackgroundFunction<HttpRequest> {
         LOGGER.info(String.format("Hello %s!", name))
     }
 }
-// [END functions_helloworld_background]
+// [END functions_helloworld_background_groovy]

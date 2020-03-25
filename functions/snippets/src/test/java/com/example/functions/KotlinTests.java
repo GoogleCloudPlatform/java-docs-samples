@@ -82,7 +82,7 @@ public class KotlinTests {
   }
 
   @Test
-  public void kotlinHelloWorldTest() throws IOException {
+  public void functionsHelloworldGetKotlin_shouldPrintHelloWorld() throws IOException {
     new KotlinHelloWorld().service(request, response);
 
     writerOut.flush();
@@ -90,7 +90,7 @@ public class KotlinTests {
   }
 
   @Test
-  public void kotlinHelloBackground_printsName() throws Exception {
+  public void functionsHelloworldBackgroundKotlin_shouldPrintName() throws Exception {
     when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
 
     new KotlinHelloBackground().accept(request, new MockContext());
@@ -100,7 +100,7 @@ public class KotlinTests {
   }
 
   @Test
-  public void kotlinHelloBackground_printsHelloWorld() throws Exception {
+  public void functionsHelloworldBackgroundKotlin_shouldPrintHelloWorld() throws Exception {
     new KotlinHelloBackground().accept(request, new MockContext());
 
     String message = logHandler.getStoredLogRecords().get(0).getMessage();

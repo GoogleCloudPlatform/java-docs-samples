@@ -80,7 +80,7 @@ public class GroovyTests {
   }
 
   @Test
-  public void groovyHelloWorldTest() throws IOException {
+  public void functionsHelloworldGetGroovy_shouldPrintHelloWorld() throws IOException {
     new GroovyHelloWorld().service(request, response);
 
     writerOut.flush();
@@ -88,7 +88,7 @@ public class GroovyTests {
   }
 
   @Test
-  public void groovyHelloBackground_printsName() throws Exception {
+  public void functionsHelloworldBackgroundGroovy_shouldPrintName() throws Exception {
     when(request.getFirstQueryParameter("name")).thenReturn(Optional.of("John"));
 
     new GroovyHelloBackground().accept(request, new MockContext());
@@ -98,7 +98,7 @@ public class GroovyTests {
   }
 
   @Test
-  public void groovyHelloBackground_printsHelloWorld() throws Exception {
+  public void functionsHelloworldBackgroundGroovy_shouldPrintHelloWorld() throws Exception {
     new GroovyHelloBackground().accept(request, new MockContext());
 
     String message = logHandler.getStoredLogRecords().get(0).getMessage();
