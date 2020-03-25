@@ -33,8 +33,8 @@ import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
-import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.DatabaseInfo.State;
+import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.InstanceAdminClient;
 import com.google.cloud.spanner.Key;
@@ -1786,11 +1786,20 @@ public class SpannerSample {
     // Try the restore operation in a retry loop, as there is a limit on the number of restore
     // operations that is allowed to execute simultaneously, and we should retry if we hit this,
     // limit.
-    OperationFuture<Database, RestoreDatabaseMetadata> op;
     int restoreAttempts = 0;
     while (true) {
       try {
-        op = backup.restore(restoreToDatabase);
+        OperationFuture<Database, RestoreDatabaseMetadata> op = backup.restore(restoreToDatabase);
+        // Wait until the database has been restored.
+        Database db = op.get();
+        // Refresh database metadata and get the restore info.
+        RestoreInfo restore = db.reload().getRestoreInfo();
+        System.out.println(
+            "Restored database ["
+                + restore.getSourceDatabase().getName()
+                + "] from ["
+                + restore.getBackup().getName()
+                + "]");
         break;
       } catch (SpannerException e) {
         if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
@@ -1810,23 +1819,12 @@ public class SpannerSample {
               restoreToDatabase.getDatabase()));
           Uninterruptibles.sleepUninterruptibly(60L, TimeUnit.SECONDS);
         }
+      } catch (ExecutionException e) {
+        throw SpannerExceptionFactory.newSpannerException(ErrorCode.CANCELLED, "giving up", e);
+        // throw (SpannerException) e.getCause();
+      } catch (InterruptedException e) {
+        throw SpannerExceptionFactory.propagateInterrupt(e);
       }
-    }
-    try {
-      // Wait until the database has been restored.
-      Database db = op.get();
-      // Refresh database metadata and get the restore info.
-      RestoreInfo restore = db.reload().getRestoreInfo();
-      System.out.println(
-          "Restored database ["
-              + restore.getSourceDatabase().getName()
-              + "] from ["
-              + restore.getBackup().getName()
-              + "]");
-    } catch (ExecutionException e) {
-      throw (SpannerException) e.getCause();
-    } catch (InterruptedException e) {
-      throw SpannerExceptionFactory.propagateInterrupt(e);
     }
   }
   // [END spanner_restore_backup]
