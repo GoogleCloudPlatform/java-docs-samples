@@ -53,6 +53,16 @@
       <version>3.4.2</version>
     </dependency>
 
+
+    <!-- Required for groovy samples -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>3.0.2</version>
+      <type>pom</type>
+    </dependency>
+
+
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>junit</groupId>

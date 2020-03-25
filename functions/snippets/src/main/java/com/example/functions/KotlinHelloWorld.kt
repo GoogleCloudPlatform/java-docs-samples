@@ -28,9 +28,5 @@ class KotlinHelloWorld : HttpFunction {
     override fun service(request: HttpRequest, response: HttpResponse) {
         response.writer.write("Hello World!")
     }
-
-    companion object {
-        private val LOGGER = Logger.getLogger(KotlinHelloWorld::class.java.name)
-    }
 }
 // [END functions_helloworld_get]
