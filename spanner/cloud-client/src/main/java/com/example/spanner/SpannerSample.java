@@ -45,6 +45,7 @@ import com.google.cloud.spanner.Value;
 import com.google.common.io.BaseEncoding;
 import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
+import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -1452,6 +1453,45 @@ public class SpannerSample {
   }
   // [END spanner_query_with_timestamp_parameter]
 
+  // [START spanner_create_client_with_query_options]
+  static void clientWithQueryOptions(DatabaseId db) {
+    SpannerOptions options =
+        SpannerOptions.newBuilder()
+            .setDefaultQueryOptions(
+                db, QueryOptions.newBuilder().setOptimizerVersion("1").build())
+            .build();
+    Spanner spanner = options.getService();
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+    try (ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+      }
+    }
+  }
+  // [END spanner_create_client_with_query_options]
+
+  // [START spanner_query_with_query_options]
+  static void queryWithQueryOptions(DatabaseClient dbClient) {
+    try (ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(
+                Statement
+                    .newBuilder("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")
+                    .withQueryOptions(QueryOptions.newBuilder().setOptimizerVersion("1").build())
+                    .build())) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+      }
+    }
+  }
+  // [END spanner_query_with_query_options]
+
   static void run(
       DatabaseClient dbClient,
       DatabaseAdminClient dbAdminClient,
@@ -1608,6 +1648,12 @@ public class SpannerSample {
       case "querywithtimestampparameter":
         queryWithTimestampParameter(dbClient);
         break;
+      case "clientwithqueryoptions":
+        clientWithQueryOptions(database);
+        break;
+      case "querywithqueryoptions":
+        queryWithQueryOptions(dbClient);
+        break;
       default:
         printUsageAndExit();
     }
@@ -1668,6 +1714,8 @@ public class SpannerSample {
     System.err.println("    SpannerExample querywithint my-instance example-db");
     System.err.println("    SpannerExample querywithstring my-instance example-db");
     System.err.println("    SpannerExample querywithtimestampparameter my-instance example-db");
+    System.err.println("    SpannerExample clientwithqueryoptions my-instance example-db");
+    System.err.println("    SpannerExample querywithqueryoptions my-instance example-db");
     System.exit(1);
   }
 
