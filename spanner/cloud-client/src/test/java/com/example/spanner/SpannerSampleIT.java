@@ -266,7 +266,8 @@ public class SpannerSampleIT {
     // Drop the restored database before we try to delete the backup.
     // Otherwise the delete backup operation might fail as the backup is still in use by
     // the OptimizeRestoredDatabase operation.
-    dbClient.dropDatabase(dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
+    dbClient.dropDatabase(
+        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
 
     out = runSample("deletebackup");
     assertThat(out).contains("Deleted backup [");

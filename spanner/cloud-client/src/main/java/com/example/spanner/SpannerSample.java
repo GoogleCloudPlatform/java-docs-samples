@@ -23,6 +23,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.rpc.FailedPreconditionException;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.cloud.ByteArray;
 import com.google.cloud.Date;
@@ -55,6 +56,7 @@ import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.Type;
 import com.google.cloud.spanner.Value;
 import com.google.common.io.BaseEncoding;
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.longrunning.Operation;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.spanner.admin.database.v1.CreateBackupMetadata;
@@ -171,7 +173,7 @@ public class SpannerSample {
   /** Get a database id to restore a backup to from the sample database id. */
   static String createRestoredSampleDbId(DatabaseId database) {
     String restoredDbId = "restored-" + database.getDatabase();
-    if(restoredDbId.length() > 30) {
+    if (restoredDbId.length() > 30) {
       restoredDbId = restoredDbId.substring(0, 30);
     }
     return restoredDbId;
@@ -1533,7 +1535,7 @@ public class SpannerSample {
         TimeUnit.MICROSECONDS.convert(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     long deltaTimeInMicroseconds = TimeUnit.MICROSECONDS.convert(14L, TimeUnit.DAYS);
     Timestamp expireTime =
-        com.google.cloud.Timestamp.ofTimeMicroseconds(currentTimeInMicroSeconds + deltaTimeInMicroseconds);
+        Timestamp.ofTimeMicroseconds(currentTimeInMicroSeconds + deltaTimeInMicroseconds);
     Backup backup =
         dbAdminClient
             .newBackupBuilder(backupId)
@@ -1657,7 +1659,10 @@ public class SpannerSample {
   // [END spanner_list_backup_operations]
 
   // [START spanner_list_database_operations]
-  static void listDatabaseOperations(InstanceAdminClient instanceAdminClient, DatabaseAdminClient dbAdminClient, DatabaseId databaseId) {
+  static void listDatabaseOperations(
+      InstanceAdminClient instanceAdminClient,
+      DatabaseAdminClient dbAdminClient,
+      DatabaseId databaseId) {
     Instance instance = instanceAdminClient.getInstance(databaseId.getInstanceId().getInstance());
     // Get optimize restored database operations for the sample database.
     String filter = String.format("(name:%s) AND (metadata.@type:type.googleapis.com/"
@@ -1667,11 +1672,13 @@ public class SpannerSample {
       try {
         OptimizeRestoredDatabaseMetadata metadata =
             op.getMetadata().unpack(OptimizeRestoredDatabaseMetadata.class);
-        DatabaseId restoredDbId = DatabaseId.of(databaseId.getInstanceId(), metadata.getName().substring(metadata.getName().lastIndexOf('/') + 1));
+        DatabaseId restoredDbId = DatabaseId.of(
+            databaseId.getInstanceId(),
+            metadata.getName().substring(metadata.getName().lastIndexOf('/') + 1));
         Database restoredDb = new Database(restoredDbId, State.UNSPECIFIED, dbAdminClient);
-        if(restoredDb.exists()) {
+        if (restoredDb.exists()) {
           RestoreInfo restore = restoredDb.getRestoreInfo();
-          if(restore != null) {
+          if (restore != null) {
             System.out.println(
                 String.format(
                     "Database %s restored from backup %s is optimized.",
@@ -1679,13 +1686,15 @@ public class SpannerSample {
           } else {
             System.out.println(
                 String.format(
-                    "Database %s was restored from a backup and was optimized, but the restore information no longer exists.",
+                    "Database %s was restored from a backup and was optimized,"
+                    + "but the restore information no longer exists.",
                     metadata.getName()));
           }
         } else {
           System.out.println(
               String.format(
-                  "Database %s was restored from a backup and was optimized, but the database no longer exists.",
+                  "Database %s was restored from a backup and was optimized,"
+                  + "but the database no longer exists.",
                   metadata.getName()));
         }
       } catch (InvalidProtocolBufferException e) {
@@ -1693,7 +1702,8 @@ public class SpannerSample {
         System.err.println(e.getMessage());
       }
     }
-    System.out.println(String.format("Listed all optimize operations for database %s", databaseId.getDatabase()));
+    System.out.println(
+        String.format("Listed all optimize operations for database %s", databaseId.getDatabase()));
   }
   // [END spanner_list_database_operations]
 
@@ -1758,7 +1768,9 @@ public class SpannerSample {
 
   // [START spanner_restore_backup]
   static void restoreBackup(
-      DatabaseAdminClient dbAdminClient, DatabaseId sourceDatabaseId, DatabaseId restoreToDatabase) {
+      DatabaseAdminClient dbAdminClient,
+      DatabaseId sourceDatabaseId,
+      DatabaseId restoreToDatabase) {
     // Get the most recent sample backup of the sample database.
     String backupName =
         String.format(
@@ -1767,24 +1779,52 @@ public class SpannerSample {
     BackupId backupId = BackupId.of(sourceDatabaseId.getInstanceId(), backupName);
     Backup backup = dbAdminClient.newBackupBuilder(backupId).build();
     // Initiate the request which returns an OperationFuture.
-    System.out.println("Restoring backup [" + backup.getId() + "] to database [" + restoreToDatabase + "]...");
-    OperationFuture<Database, RestoreDatabaseMetadata> op = backup.restore(restoreToDatabase);
-    try {
-      // Wait until the database has been restored.
-      Database db = op.get();
-      // Refresh database metadata and get the restore info.
-      RestoreInfo restore = db.reload().getRestoreInfo();
-      System.out.println(
-          "Restored database ["
-              + restore.getSourceDatabase().getName()
-              + "] from ["
-              + restore.getBackup().getName()
-              + "]");
-    } catch (ExecutionException e) {
-      // If the operation failed during execution, expose the cause.
-      throw (SpannerException) e.getCause();
-    } catch (InterruptedException e) {
-      throw SpannerExceptionFactory.propagateInterrupt(e);
+    System.out.println(String.format(
+        "Restoring backup [%s] to database [%s]...",
+        backup.getId().toString(),
+        restoreToDatabase.toString()));
+    // Try the restore operation in a retry loop, as there is a limit on the number of restore
+    // operations that is allowed to execute simultaneously, and we should retry if we hit this,
+    // limit.
+    int restoreAttempts = 0;
+    while (true) {
+      OperationFuture<Database, RestoreDatabaseMetadata> op = backup.restore(restoreToDatabase);
+      try {
+        // Wait until the database has been restored.
+        Database db = op.get();
+        // Refresh database metadata and get the restore info.
+        RestoreInfo restore = db.reload().getRestoreInfo();
+        System.out.println(
+            "Restored database ["
+                + restore.getSourceDatabase().getName()
+                + "] from ["
+                + restore.getBackup().getName()
+                + "]");
+      } catch (ExecutionException e) {
+        if (e.getCause() instanceof FailedPreconditionException
+            && e.getCause()
+                .getMessage()
+                .contains("Please retry the operation once the pending restores complete")) {
+          restoreAttempts++;
+          if (restoreAttempts == 10) {
+            System.out.println(
+                "Restore operation failed 10 times because of other pending restores. "
+                + "Giving up restore.");
+            return;
+          }
+          // Wait and then retry.
+          System.out.println(String.format(
+              "Restoring backup %s to database %s must wait because of other pending restore",
+              backup.getId().getBackup(),
+              restoreToDatabase.getDatabase()));
+          Uninterruptibles.sleepUninterruptibly(60L, TimeUnit.SECONDS);
+        } else {
+          // If the operation failed for some other reason during execution, expose the cause.
+          throw (SpannerException) e.getCause();
+        }
+      } catch (InterruptedException e) {
+        throw SpannerExceptionFactory.propagateInterrupt(e);
+      }
     }
   }
   // [END spanner_restore_backup]
@@ -1806,10 +1846,13 @@ public class SpannerSample {
             TimeUnit.SECONDS.toMicros(backup.getExpireTime().getSeconds())
                 + TimeUnit.NANOSECONDS.toMicros(backup.getExpireTime().getNanos())
                 + TimeUnit.DAYS.toMicros(30L));
-    System.out.println("Updating expire time of backup [" + backupId + "] to " + LocalDateTime.ofEpochSecond(
-        expireTime.getSeconds(),
-        expireTime.getNanos(),
-        OffsetDateTime.now().getOffset()).toString() + "...");
+    System.out.println(String.format(
+        "Updating expire time of backup [%s] to %s...",
+        backupId.toString(),
+        LocalDateTime.ofEpochSecond(
+            expireTime.getSeconds(),
+            expireTime.getNanos(),
+            OffsetDateTime.now().getOffset()).toString()));
 
     // Update expire time.
     backup = backup.toBuilder().setExpireTime(expireTime).build();
@@ -1831,7 +1874,7 @@ public class SpannerSample {
     System.out.println("Deleting backup [" + backupId + "]...");
     backup.delete();
     // Verify that the backup is deleted.
-    if(backup.exists()) {
+    if (backup.exists()) {
       System.out.println("Delete backup [" + backupId + "] failed");
       throw new RuntimeException("Delete backup [" + backupId + "] failed");
     } else {
@@ -2019,7 +2062,10 @@ public class SpannerSample {
         listBackups(instanceAdminClient, database);
         break;
       case "restorebackup":
-        restoreBackup(dbAdminClient, database, DatabaseId.of(database.getInstanceId(), createRestoredSampleDbId(database)));
+        restoreBackup(
+            dbAdminClient,
+            database,
+            DatabaseId.of(database.getInstanceId(), createRestoredSampleDbId(database)));
         break;
       case "updatebackup":
         updateBackup(dbAdminClient, database);
