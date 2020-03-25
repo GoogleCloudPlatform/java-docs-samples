@@ -156,16 +156,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M4</version>
-        <configuration>
-          <skipTests>${skipTests}</skipTests>
-          <reportNameSuffix>sponge_log</reportNameSuffix>
-          <trimStackTrace>false</trimStackTrace>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-maven-plugin</artifactId>
         <version>${kotlin.version}</version>
@@ -193,6 +183,16 @@
         </executions>
         <configuration>
           <jvmTarget>1.8</jvmTarget>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+          <reportNameSuffix>sponge_log</reportNameSuffix>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
