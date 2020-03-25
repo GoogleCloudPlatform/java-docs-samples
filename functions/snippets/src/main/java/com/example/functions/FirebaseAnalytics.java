@@ -16,7 +16,7 @@
 
 package com.example.functions;
 
-// [START functions_firebase_auth]
+// [START functions_firebase_analytics]
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.gson.Gson;
@@ -56,4 +56,4 @@ public class FirebaseAnalytics implements RawBackgroundFunction {
   }
 }
 
-// [END functions_firebase_auth]
+// [END functions_firebase_analytics]

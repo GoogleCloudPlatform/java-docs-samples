@@ -16,7 +16,7 @@
 
 package com.example.functions;
 
-// [START functions_firebase_rtdb]
+// [START functions_firebase_remote_config]
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
@@ -51,4 +51,4 @@ public class FirebaseRemoteConfig implements RawBackgroundFunction {
   }
 }
 
-// [END functions_firebase_rtdb]
+// [END functions_firebase_remote_config]

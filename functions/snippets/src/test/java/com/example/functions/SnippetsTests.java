@@ -413,7 +413,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseFirestore_shouldIgnoreMissingValues() throws IOException {
+  public void functionsFirebaseFirestore_shouldIgnoreMissingValues() throws IOException {
     MockContext context = new MockContext();
     context.resource = "resource_1";
     context.eventType = "event_type_2";
@@ -427,7 +427,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseFirestore_shouldProcessPresentValues() throws IOException {
+  public void functionsFirebaseFirestore_shouldProcessPresentValues() throws IOException {
     String jsonStr = "{\"oldValue\": 999, \"value\": 777 }";
 
     MockContext context = new MockContext();
@@ -445,7 +445,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseRtdb_shouldDefaultAdminToZero() throws IOException {
+  public void functionsFirebaseRtdb_shouldDefaultAdminToZero() throws IOException {
     MockContext context = new MockContext();
     context.resource = "resource_1";
 
@@ -457,7 +457,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseRtdb_shouldDisplayAdminStatus() throws IOException {
+  public void functionsFirebaseRtdb_shouldDisplayAdminStatus() throws IOException {
     String jsonStr = "{\"auth\": { \"admin\": true }}";
 
     MockContext context = new MockContext();
@@ -472,7 +472,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseRtdb_shouldShowDelta() throws IOException {
+  public void functionsFirebaseRtdb_shouldShowDelta() throws IOException {
     String jsonStr = "{\"delta\": { \"value\": 2 }}";
 
     MockContext context = new MockContext();
@@ -489,28 +489,28 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseRemoteConfig_shouldShowUpdateType() throws IOException {
+  public void functionsFirebaseRemoteConfig_shouldShowUpdateType() throws IOException {
     new FirebaseRemoteConfig().accept("{\"updateType\": \"foo\"}", null);
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Update type: foo");
   }
 
   @Test
-  public void firebaseRemoteConfig_shouldShowOrigin() throws IOException {
+  public void functionsFirebaseRemoteConfig_shouldShowOrigin() throws IOException {
     new FirebaseRemoteConfig().accept("{\"updateOrigin\": \"foo\"}", null);
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Origin: foo");
   }
 
   @Test
-  public void firebaseRemoteConfig_shouldShowVersion() throws IOException {
+  public void functionsFirebaseRemoteConfig_shouldShowVersion() throws IOException {
     new FirebaseRemoteConfig().accept("{\"versionNumber\": 2}", null);
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Version: 2");
   }
 
   @Test
-  public void firebaseAuth_shouldShowUserId() throws IOException {
+  public void functionsFirebaseAuth_shouldShowUserId() throws IOException {
     new FirebaseAuth().accept("{\"uid\": \"foo\"}", null);
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
@@ -518,14 +518,14 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseAuth_shouldShowOrigin() throws IOException {
+  public void functionsFirebaseAuth_shouldShowOrigin() throws IOException {
     new FirebaseAuth().accept("{\"metadata\": {\"createdAt\": \"123\"}}", null);
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Created at: 123");
   }
 
   @Test
-  public void firebaseAuth_shouldShowVersion() throws IOException {
+  public void functionsFirebaseAuth_shouldShowVersion() throws IOException {
     new FirebaseAuth().accept("{\"email\": \"foo@google.com\"}", null);
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
@@ -533,7 +533,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseAnalytics_shouldShowEventData() throws IOException {
+  public void functionsFirebaseAnalytics_shouldShowEventData() throws IOException {
     String jsonStr = "{\"eventDim\": {\"name\": \"foo\", \"timestamp\": 12345}}";
     MockContext context = new MockContext();
     context.resource = "event_1";
@@ -547,7 +547,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseAnalytics_shouldShowUserData() throws IOException {
+  public void functionsFirebaseAnalytics_shouldShowUserData() throws IOException {
     // Use intermediate json objects for code clarity
     JsonObject deviceInfo = gson.fromJson("{\"deviceModel\":\"some_device\"}", JsonObject.class);
     JsonObject geoInfo = gson.fromJson("{\"city\":\"SF\",\"country\":\"US\"}", JsonObject.class);
@@ -567,7 +567,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseReactive_shouldCapitalizeOriginalValue() throws IOException {
+  public void functionsFirebaseReactive_shouldCapitalizeOriginalValue() throws IOException {
     String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"stringValue\":\"foo\"}}}}";
 
     MockContext context = new MockContext();
