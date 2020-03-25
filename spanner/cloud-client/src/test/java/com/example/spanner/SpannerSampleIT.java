@@ -241,6 +241,35 @@ public class SpannerSampleIT {
     assertThat(out).contains("1 1 Total Junk");
     out = runSample("querywithqueryoptions");
     assertThat(out).contains("1 1 Total Junk");
+
+    out = runSample("createbackup");
+    assertThat(out).contains("Created backup");
+
+    out = runSample("cancelcreatebackup");
+    assertThat(out).contains("successfully cancelled");
+
+    out = runSample("listbackupoperations");
+    assertThat(out).contains("pending");
+
+    out = runSample("listdatabaseoperations");
+    assertThat(out).contains("optimized");
+
+    out = runSample("listbackups");
+    assertThat(out).contains(databaseId);
+
+    out = runSample("restorebackup");
+    assertThat(out).contains("Restored database [");
+
+    out = runSample("updatebackup");
+    assertThat(out).contains("Updated backup [");
+
+    // Drop the restored database before we try to delete the backup.
+    // Otherwise the delete backup operation might fail as the backup is still in use by
+    // the OptimizeRestoredDatabase operation.
+    dbClient.dropDatabase(dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
+
+    out = runSample("deletebackup");
+    assertThat(out).contains("Deleted backup [");
   }
 
   private String formatForTest(String name) {
