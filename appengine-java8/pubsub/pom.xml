@@ -35,7 +35,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <jetty>9.4.27.v20200227</jetty>
   </properties>
 
   <!-- [START dependencies] -->
@@ -96,7 +95,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.version}</version>
+        <version>9.4.27.v20200227	</version>
       </plugin>
     </plugins>
   </build>
