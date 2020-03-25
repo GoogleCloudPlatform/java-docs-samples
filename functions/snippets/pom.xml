@@ -23,7 +23,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <kotlin.version>1.2.41</kotlin.version>
+    <kotlin.version>1.3.71</kotlin.version>
     <groovy.version>3.0.2</groovy.version>
   </properties>
 
@@ -165,7 +165,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.7.0</version>
+        <version>1.8.1</version>
         <executions>
           <execution>
             <id>groovy-compile</id>
