@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START bigtable_beam_helloworld_read]
+
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
@@ -47,7 +47,6 @@ public class HelloWorldRead {
             .withScan(scan)
             .build();
 
-    // [START bigtable_beam_helloworld_read_transforms]
     p.apply(Read.from(CloudBigtableIO.read(config)))
         .apply(
             ParDo.of(
@@ -57,7 +56,6 @@ public class HelloWorldRead {
                     System.out.println(Bytes.toString(row.getRow()));
                   }
                 }));
-    // [END bigtable_beam_helloworld_read_transforms]
 
     p.run().waitUntilFinish();
   }
@@ -82,5 +80,3 @@ public class HelloWorldRead {
     void setBigtableTableId(String bigtableTableId);
   }
 }
-// [END bigtable_beam_helloworld_read]
-
