@@ -28,7 +28,6 @@ import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -38,8 +37,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
@@ -53,6 +50,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
@@ -543,5 +541,36 @@ public class SnippetsTests {
 
     assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Replacing value: foo --> FOO");
+  }
+
+  @Test
+  public void functionsFirebaseReactive_shouldReportBadJson() throws IOException {
+    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"missingValue\":\"foo\"}}}}";
+
+    MockContext context = new MockContext();
+    context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
+
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+
+    RuntimeException e = Assertions.assertThrows(
+        RuntimeException.class, () -> functionInstance.accept(jsonStr, context));
+    assertThat(e).hasMessageThat().isEqualTo(
+        "Missing JSON value: value.fields.original.stringValue");
+  }
+
+  @Test
+  public void functionsFirebaseReactive_shouldReportBadDocumentPath() throws IOException {
+    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"stringValue\":\"foo\"}}}}";
+
+    MockContext context = new MockContext();
+    context.resource = "projects/_/databases/(default)/__error__/messages/ABCDE12345";
+
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+
+    RuntimeException e = Assertions.assertThrows(
+        RuntimeException.class, () -> functionInstance.accept(jsonStr, context));
+    assertThat(e).hasMessageThat().isEqualTo("Invalid Firestore doc path.");
   }
 }
