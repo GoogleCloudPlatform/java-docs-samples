@@ -21,7 +21,6 @@ import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
-
 import java.io.IOException;
 
 class SetEndpoint {
@@ -29,9 +28,8 @@ class SetEndpoint {
   // Change your endpoint
   static void setEndpoint(String projectId) throws IOException {
     // [START automl_set_endpoint]
-    AutoMlSettings settings = AutoMlSettings.newBuilder()
-            .setEndpoint("eu-automl.googleapis.com:443")
-            .build();
+    AutoMlSettings settings =
+        AutoMlSettings.newBuilder().setEndpoint("eu-automl.googleapis.com:443").build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -43,10 +41,10 @@ class SetEndpoint {
     // [END automl_set_endpoint]
 
     ListDatasetsRequest request =
-            ListDatasetsRequest.newBuilder()
-                    .setParent(projectLocation.toString())
-                    .setFilter("translation_dataset_metadata:*")
-                    .build();
+        ListDatasetsRequest.newBuilder()
+            .setParent(projectLocation.toString())
+            .setFilter("translation_dataset_metadata:*")
+            .build();
     // List all the datasets available
     System.out.println("List of datasets:");
     for (Dataset dataset : client.listDatasets(request).iterateAll()) {
