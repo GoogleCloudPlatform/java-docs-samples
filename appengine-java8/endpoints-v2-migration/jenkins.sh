@@ -54,7 +54,7 @@ sed -i'.bak' \
   src/main/java/com/example/helloendpoints/Greetings.java
 
 # Test with Maven
-mvn clean appengine:deploy \
+mvn clean package appengine:deploy \
     -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
     -Dapp.deploy.promote=false
 
