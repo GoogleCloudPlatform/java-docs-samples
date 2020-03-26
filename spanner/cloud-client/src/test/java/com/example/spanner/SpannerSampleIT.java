@@ -20,11 +20,15 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,11 +63,15 @@ public class SpannerSampleIT {
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
+    dbClient.dropDatabase(
+        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
   }
 
   @After
   public void tearDown() throws Exception {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
+    dbClient.dropDatabase(
+        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
   }
 
   @Test
@@ -252,13 +260,36 @@ public class SpannerSampleIT {
     assertThat(out).contains("pending");
 
     out = runSample("listdatabaseoperations");
-    assertThat(out).contains("optimize");
 
     out = runSample("listbackups");
     assertThat(out).contains(databaseId);
 
-    out = runSample("restorebackup");
-    assertThat(out).contains("Restored database [");
+    // Try the restore operation in a retry loop, as there is a limit on the number of restore
+    // operations that is allowed to execute simultaneously, and we should retry if we hit this
+    // limit.
+    int restoreAttempts = 0;
+    while (true) {
+      try {
+        out = runSample("restorebackup");
+        assertThat(out).contains("Restored database [");
+        break;
+      } catch (SpannerException e) {
+        if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
+            && e.getMessage()
+                .contains("Please retry the operation once the pending restores complete")) {
+          restoreAttempts++;
+          if (restoreAttempts == 10) {
+            System.out.println(
+                "Restore operation failed 10 times because of other pending restores. "
+                + "Giving up restore.");
+            break;
+          }
+          Uninterruptibles.sleepUninterruptibly(60L, TimeUnit.SECONDS);
+        } else {
+          throw e;
+        }
+      }
+    }
 
     out = runSample("updatebackup");
     assertThat(out).contains("Updated backup [");
