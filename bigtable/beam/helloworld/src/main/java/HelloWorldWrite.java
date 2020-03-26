@@ -64,7 +64,7 @@ public class HelloWorldWrite {
                   }
                 }))
         .apply(CloudBigtableIO.writeToTable(bigtableTableConfig));
-    // [START bigtable_beam_helloworld_write_transforms]
+    // [END bigtable_beam_helloworld_write_transforms]
 
     p.run().waitUntilFinish();
   }
