@@ -39,7 +39,7 @@ version unless configured to do otherwise.
 & [Maven Plugin Goals and Parameters](https://cloud.google.com/appengine/docs/flexible/java/maven-reference)
 
 ```
-mvn appengine:deploy
+mvn clean package appengine:deploy
 ```
 
 ## Run the Sample Using the Command Line
