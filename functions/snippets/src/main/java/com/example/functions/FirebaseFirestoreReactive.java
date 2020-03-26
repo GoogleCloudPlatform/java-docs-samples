@@ -17,24 +17,18 @@
 package com.example.functions;
 
 // [START functions_firebase_reactive]
-import com.google.api.client.json.Json;
-import com.google.cloud.firestore.DocumentReference;
+
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.SetOptions;
-import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
-import com.google.cloud.logging.LoggingHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.concurrent.ConcurrentException;
 
 public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
@@ -66,7 +60,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
     LOGGER.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
     try {
       firestore.document(affectedDoc).set(newFields, SetOptions.merge()).get();
-    } catch (ConcurrentException | InterruptedException e) {
+    } catch (ExecutionException | InterruptedException e) {
       throw new RuntimeException(e);
     }
   }
