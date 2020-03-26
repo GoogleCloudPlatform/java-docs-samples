@@ -19,7 +19,6 @@ package com.example.appengine.translatepubsub;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import java.io.IOException;
 import java.util.Base64;
 import java.util.stream.Collectors;

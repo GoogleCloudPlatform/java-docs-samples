@@ -90,7 +90,7 @@ process is explained [here][8] and a quickstart is provided [here][9].
 
 1. Build and Deploy your application to Google App Engine by using:
 
-    `mvn clean appengine:deploy`
+    `mvn clean package appengine:deploy`
 
 ### Gradle
 

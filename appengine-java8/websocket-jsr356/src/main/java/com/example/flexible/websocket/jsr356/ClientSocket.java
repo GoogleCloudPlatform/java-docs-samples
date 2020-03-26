@@ -17,7 +17,6 @@
 package com.example.flexible.websocket.jsr356;
 
 import com.google.common.util.concurrent.SettableFuture;
-
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -67,6 +66,7 @@ public class ClientSocket {
 
   /**
    * Handles message received from the server.
+   *
    * @param message server message in String format
    * @param session current session
    */
