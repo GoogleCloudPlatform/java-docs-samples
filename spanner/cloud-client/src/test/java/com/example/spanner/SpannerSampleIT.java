@@ -18,6 +18,7 @@ package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.spanner.BackupId;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ErrorCode;
@@ -34,6 +35,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.temporal.ChronoField;
 
 /** Unit tests for {@code SpannerSample} */
 @RunWith(JUnit4.class)
@@ -250,16 +253,25 @@ public class SpannerSampleIT {
     out = runSample("querywithqueryoptions");
     assertThat(out).contains("1 1 Total Junk");
 
+    String backupName =
+        String.format(
+            "%s_%02d",
+            dbId.getDatabase(), LocalDate.now().get(ChronoField.ALIGNED_WEEK_OF_YEAR));
+    BackupId backupId = BackupId.of(dbId.getInstanceId(), backupName);
+
     out = runSample("createbackup");
-    assertThat(out).contains("Created backup");
+    assertThat(out).contains("Created backup [" + backupId + "]");
 
     out = runSample("cancelcreatebackup");
-    assertThat(out).contains("successfully cancelled");
+    assertThat(out).contains(
+        "Backup operation for [" + backupId + "_cancel] successfully cancelled");
 
     out = runSample("listbackupoperations");
-    assertThat(out).contains("pending");
-
-    out = runSample("listdatabaseoperations");
+    assertThat(out).contains(
+        String.format(
+            "Backup %s on database %s pending:",
+            backupId.getName(),
+            dbId.getName()));
 
     out = runSample("listbackups");
     assertThat(out).contains(databaseId);
@@ -271,7 +283,12 @@ public class SpannerSampleIT {
     while (true) {
       try {
         out = runSample("restorebackup");
-        assertThat(out).contains("Restored database [");
+        assertThat(out).contains(
+            "Restored database ["
+                + dbId.getName()
+                + "] from ["
+                + backupId.getName()
+                + "]");
         break;
       } catch (SpannerException e) {
         if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
@@ -291,8 +308,18 @@ public class SpannerSampleIT {
       }
     }
 
+    out = runSample("listdatabaseoperations");
+    assertThat(out).contains(
+        String.format(
+            "Database %s restored from backup",
+            DatabaseId.of(
+                dbId.getInstanceId(),
+                SpannerSample.createRestoredSampleDbId(dbId))
+            .getName()));
+
     out = runSample("updatebackup");
-    assertThat(out).contains("Updated backup [");
+    assertThat(out).contains(
+        String.format("Updating expire time of backup [%s]", backupId.toString()));
 
     // Drop the restored database before we try to delete the backup.
     // Otherwise the delete backup operation might fail as the backup is still in use by
@@ -301,7 +328,7 @@ public class SpannerSampleIT {
         dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
 
     out = runSample("deletebackup");
-    assertThat(out).contains("Deleted backup [");
+    assertThat(out).contains("Deleted backup [" + backupId + "]");
   }
 
   private String formatForTest(String name) {

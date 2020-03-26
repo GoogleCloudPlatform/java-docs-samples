@@ -2091,7 +2091,6 @@ public class SpannerSample {
                 + clientProject);
         printUsageAndExit();
       }
-      // Get the most recent sample backup of the sample database.
       // Generate a backup id for the sample database.
       String backupName =
           String.format(
