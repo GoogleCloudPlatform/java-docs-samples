@@ -30,13 +30,10 @@ import com.google.cloud.automl.v1beta1.ModelEvaluation;
 import com.google.cloud.automl.v1beta1.ModelEvaluationName;
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
-
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.List;
-
 import java.util.concurrent.ExecutionException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -62,8 +59,12 @@ public class ModelApi {
    * @param modelName the Name of the model.
    * @param trainBudget the Budget for training the model.
    */
-  static void createModel(String projectId, String computeRegion, String dataSetId,
-      String modelName, String trainBudget) {
+  static void createModel(
+      String projectId,
+      String computeRegion,
+      String dataSetId,
+      String modelName,
+      String trainBudget) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -91,8 +92,8 @@ public class ModelApi {
           client.createModelAsync(projectLocation, myModel);
 
       System.out.println(
-          String
-              .format("Training operation name: %s", response.getInitialFuture().get().getName()));
+          String.format(
+              "Training operation name: %s", response.getInitialFuture().get().getName()));
       System.out.println("Training started...");
     } catch (IOException | ExecutionException | InterruptedException e) {
       e.printStackTrace();
@@ -340,7 +341,7 @@ public class ModelApi {
                   + '%');
           System.out.println(
               String.format(
-                  "Model Precision@1: %.2f ", confidenceMetricsEntry.getPrecisionAt1() * 100)
+                      "Model Precision@1: %.2f ", confidenceMetricsEntry.getPrecisionAt1() * 100)
                   + '%');
           System.out.println(
               String.format("Model Recall@1: %.2f ", confidenceMetricsEntry.getRecallAt1() * 100)

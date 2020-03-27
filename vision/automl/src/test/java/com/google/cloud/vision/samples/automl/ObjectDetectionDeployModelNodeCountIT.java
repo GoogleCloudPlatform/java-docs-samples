@@ -18,17 +18,10 @@ package com.google.cloud.vision.samples.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.automl.v1beta1.AutoMlClient;
-import com.google.cloud.automl.v1beta1.ModelName;
-import com.google.cloud.automl.v1beta1.OperationMetadata;
-import com.google.protobuf.Empty;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

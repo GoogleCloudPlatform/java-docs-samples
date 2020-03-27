@@ -15,7 +15,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
   </parent>
 
   <properties>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.100.0</version>
+      <version>1.101.0</version>
     </dependency>
 
     <!-- Required for com.example.functions.SlackSlashCommand -->
@@ -52,6 +52,13 @@
       <groupId>com.github.seratch</groupId>
       <artifactId>jslack</artifactId>
       <version>3.4.2</version>
+    </dependency>
+
+    <!-- Required for com.example.functions.FirebaseFirestoreReactive -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-firestore</artifactId>
+      <version>1.32.5</version>
     </dependency>
 
     <!-- Required for scala samples -->
@@ -68,7 +75,6 @@
       <version>${groovy.version}</version>
       <type>pom</type>
     </dependency>
-
 
     <!-- The following dependencies are only required for testing -->
     <dependency>

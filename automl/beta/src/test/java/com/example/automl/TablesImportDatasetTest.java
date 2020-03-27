@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,8 +40,8 @@ public class TablesImportDatasetTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName));
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -67,12 +66,12 @@ public class TablesImportDatasetTest {
   public void testTablesImportDataset() {
     try {
       ImportDataset.importDataset(
-              PROJECT_ID, "TEN0000000000000000000", "gs://cloud-ml-tables-data/bank-marketing.csv");
+          PROJECT_ID, "TEN0000000000000000000", "gs://cloud-ml-tables-data/bank-marketing.csv");
       String got = bout.toString();
       assertThat(got).contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
     } catch (IOException | ExecutionException | InterruptedException e) {
       assertThat(e.getMessage())
-              .contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
+          .contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
     }
   }
 }

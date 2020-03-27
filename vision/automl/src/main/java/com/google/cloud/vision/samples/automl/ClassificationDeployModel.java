@@ -23,7 +23,6 @@ import com.google.cloud.automl.v1beta1.DeployModelRequest;
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -31,7 +30,7 @@ class ClassificationDeployModel {
 
   // Deploy a model
   static void classificationDeployModel(String projectId, String modelId)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
 

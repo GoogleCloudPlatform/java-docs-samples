@@ -301,7 +301,7 @@ To publish state messages, run the sample as follows:
 1. Create a subscription to your topic.
 
 ```
-    gcloud beta pubsub subscriptions create \
+    gcloud pubsub subscriptions create \
         projects/your-project-id/subscriptions/my-subscription \
         --topic device-events
 ```
@@ -309,7 +309,7 @@ To publish state messages, run the sample as follows:
 2. Read messages published to the topic
 
 ```
-    gcloud beta pubsub subscriptions pull --auto-ack \
+    gcloud pubsub subscriptions pull --auto-ack \
         projects/my-iot-project/subscriptions/my-subscription
 ```
 
@@ -396,11 +396,11 @@ Send data on behalf of device:
 
 1. Create a subscription to your topic.
 
-    gcloud beta pubsub subscriptions create \
+    gcloud pubsub subscriptions create \
         projects/your-project-id/subscriptions/my-subscription \
         --topic device-events
 
 2. Read messages published to the topic
 
-    gcloud beta pubsub subscriptions pull --auto-ack \
+    gcloud pubsub subscriptions pull --auto-ack \
         projects/my-iot-project/subscriptions/my-subscription
