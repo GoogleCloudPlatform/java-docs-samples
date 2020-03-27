@@ -15,13 +15,13 @@
     * [Arrange, Act, Assert](#arrange-act-assert)
     * [Style](#style)
     * [Linting](#linting)
-    * [Command-Line Arguments](#command-line-arguments)
     * [Package Names](#package-names)
     * [Class Structure]()
     * [Function Comment]()
     * [Function Structure]()
     * [Exception Handling]()
     * [Client Initialization](#client-initialization)
+    * [Command-Line Arguments](#command-line-arguments)
   * [Modern Java](#modern-java)
     * [Lambdas](#lambdas)
     * [Streams](#streams)
@@ -281,22 +281,11 @@ mvn clean verify -DskipTests
 The `-DskipTests` is optional. It is useful if you want to verify that your code
 builds and adheres to the style guide without waiting for tests to complete.
 
-### Command-Line Arguments
-**NOTE:** Snippet should be optimized to run directly from a user's IDE. Command-Line arguments are
-strongly discouraged, and new samples should not implement them. 
-
-Simple command-line samples with only positional arguments should use the
-`args` argument to `main(String... args)` directly. A command-line sample
-which has optional parameters should use the [Apache Commons
-CLI](https://commons.apache.org/proper/commons-cli/index.html) library.
-
-**Dataflow** samples are an exception to this guideline, since Dataflow has its own 
-[method for setting options](https://cloud.google.com/dataflow/pipelines/specifying-exec-params).
-
 ### Package Names
-Samples should use either the default package or package names in the following formats: 
+Samples should use package names in the following formats: 
 `com.example.<YOUR_PRODUCT>.<FOLDER>`, such as `com.example.dlp.snippets` or 
-`com.example.functions.snippets`. Do not use `com.google.*`.
+`com.example.functions.snippets`. NEVER use `com.google.*` for samples or snippets. Use of the 
+default package is discouraged.
 
 ### Class Structure
 Each snippet should be be contained in its own file, within a class with a name descriptive of the
@@ -385,6 +374,12 @@ try (DlpServiceClient dlp = DlpServiceClient.create()) {
   // Do something
 }
 ```
+### Command-Line Arguments
+**NOTE:** Snippet should be optimized to run directly from a user's IDE. Command-Line arguments are
+considered an anti-patern, and new samples should not implement them. 
+
+**Dataflow** samples are an exception to this guideline.
+
 ## Modern Java
 Prefer using modern idioms / language features over older styles.
 
