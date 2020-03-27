@@ -32,7 +32,7 @@
 
 This doc maintains an outline for 'snippet' samples specific to Java. Currently, the java canonical
 samples in this format are located 
-[here](/tree/master/dlp/src/main/java/dlp/snippets).
+[here](../../tree/master/dlp/src/main/java/dlp/snippets).
 
 Larger sample applications should attempt to follow many of these guidelines as well, but some may
 be ignored or waived as there can be many structural differences between applications and snippets.
@@ -119,7 +119,7 @@ mind when setting up tests.
 * **Environment variables**  
   Minimize additional environment variables that need to be set to run the tests.
   If you do require additional environment variables, they should be added to
-  [run_tests.sh](/java-docs-samples/blob/master/.kokoro/tests/run_tests.sh).
+  [run_tests.sh](../../blob/master/.kokoro/tests/run_tests.sh).
 
   Existing environment variables include:
   * `GOOGLE_APPLICATION_CREDENTIALS`
