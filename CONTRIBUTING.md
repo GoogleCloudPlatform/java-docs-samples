@@ -21,6 +21,9 @@ All code should follow the [Sample Format Guidelines](blob/master/SAMPLE_FORMAT.
 
 ## Code reviews
 
+Change to samples should be reviewed by both a product stakeholder for accuracy as well as a member
+of java-samples-reviewers@ to ensure the sample format and best practices for Java are used.
+
 All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult
 [GitHub Help](https://help.github.com/articles/about-pull-requests/) for more

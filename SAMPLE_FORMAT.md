@@ -63,16 +63,25 @@ All new samples should build and run integration tests with [Maven](https://mave
 [Gradle](https://gradle.org/) support is optional as we don't yet have regular testing.
 
 ## Testing
-Snippets should have integration tests that should verify the snippet works and compiles correctly.
-Creating mocks for these tests are optional. These tests should capture output created by the
-snippet to verify that it works correctly. See the tests in the canonical for an example of how to
-do this correctly. 
+Any infrastructure required to run the test (such as a GCS bucket or a Cloud SQL instance) should
+be passed in as an environment variable. Tests should clearly indicated which environment variables
+are required for the tests to pass.
+
+Resources required outside of this infrastructure should be generated and cleaned up (even on 
+failures) as part of the test suite. Please note that tests should run successfully in parallel, 
+and UUIDs should be used to prevent conflicts.
+
+Snippets should have integration tests that should verify the snippet compiles and runs
+successfully. Tests should only verify that the sample itself is interacting with the service
+correctly - it is an explicit non goal for tests to verify that API is performing correctly.
+Because of this, mocks for external services are strongly discouraged.
 
 * Test Library: [JUnit4](https://junit.org/junit4/)
 * Test Runner: [Maven Failsafe plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/)
 and [Maven Surefire plugin](https://maven.apache.org/surefire/maven-surefire-plugin/).
 
-As an example, the following test code shows how we test a region tag called `region_tag`:
+As an example, the following test code shows how we test a region tag (region tags are tools Google
+uses to identify sections of the snippets to be highlighted in documentation) called `region_tag`:
 ```java
 package com.google.example;
 
@@ -94,7 +103,14 @@ public class SomeClassTest {
   }
 }
 ```
-You will note that the "_" in `region_tag` is removed, and "_" is used to separate regionTags from
+You will note:
+ * underscores (`_`) are used in test method names to separate blocks of `camelCase` text
+ * these blocks denote _region tags_, which serve as unique IDs for snippets in a given repository
+ * `camelCase` blocks beginning with `should` or `does` are **not** region tags - instead, they
+ simply describe the test being run
+
+
+that the "_" in `region_tag` is removed, and "_" is used to separate regionTags from
 test descriptions.
 
 It is also possible to use annotations to provide info for `region_tag` if you need to do this,
@@ -168,12 +184,17 @@ test {
 ## Format Guidelines
 ### Project Location
 Samples should be in a project folder under the name of the technology the snippet represents. 
-Additional sub folders should be used to differentiate groups of samples. Execution technologies,
-like Compute, CloudRun, Dataproc, Dataflow, functions may have subfolders for other technologies to
+Additional subfolder's should be used to differentiate groups of samples. Execution technologies,
+like Compute, Cloud Run, Dataproc, Dataflow, Functions may have subfolder's for other technologies to
 show using the two technologies together.
 
 Folder and package paths should try to avoid containing unnecessary folders to allow users to more
-easily navigate to the snippets themselves. 
+easily navigate to the snippets themselves. However, it is encouraged to use common names like
+"snippets" and "quickstart" to allow users to more easily discover the project contents.
+
+For example, the the `java-docs-samples/compute` folder may have the following projects:
+- `compute/snippets`
+- `compute/quickstart`
   
 ### Project Dependencies
 A Maven project should have a `pom.xml` that is formatted and easily human readable that declares
@@ -234,7 +255,7 @@ Samples should generally follow the "Arrange, Act, Assert" outline to:
   as complex, nested builders can be hard to read.
 * _Act_ - Send the request and receive the response.
 * _Assert_ - Verify the call was successful or that the response is correct. This is often done by
-  print contents of the response to `stdout`.
+  print the contents of the response to `stdout`.
 
 ## Style
 Samples in this repository follow the [Google Java Style Guide][java-style].
@@ -251,7 +272,7 @@ tool or IntelliJ plugin.
 [google-java-format]: https://github.com/google/google-java-format
 
 ### Linting
-To run the checkstyle & ErrorProne plugins on an existing sample, run
+To run the Checkstyle, ErrorProne and SpotBugs plugins on an existing sample, run
 
 ```shell
 mvn clean verify -DskipTests
@@ -261,6 +282,9 @@ The `-DskipTests` is optional. It is useful if you want to verify that your code
 builds and adheres to the style guide without waiting for tests to complete.
 
 ### Command-Line Arguments
+**NOTE:** Snippet should be optimized to run directly from a user's IDE. Command-Line arguments are
+strongly discouraged, and new samples should not implement them. 
+
 Simple command-line samples with only positional arguments should use the
 `args` argument to `main(String... args)` directly. A command-line sample
 which has optional parameters should use the [Apache Commons
@@ -270,15 +294,15 @@ CLI](https://commons.apache.org/proper/commons-cli/index.html) library.
 [method for setting options](https://cloud.google.com/dataflow/pipelines/specifying-exec-params).
 
 ### Package Names
-It is not necessary to use a package for snippets.  If you choose to use one, please DO NOT use 
-`com.google.` as a prefix.  `com.example` or something related to the technology such as
-`package dlp.snippets`.
+Samples should use either the default package or package names in the following formats: 
+`com.example.<YOUR_PRODUCT>.<FOLDER>`, such as `com.example.dlp.snippets` or 
+`com.example.functions.snippets`. Do not use `com.google.*`.
 
 ### Class Structure
 Each snippet should be be contained in its own file, within a class with a name descriptive of the
 snippet and a similarly named function. Region tags should start below the `package` (if there is 
-one), but should include the class and any imports in full. Additional functions can be used if it improves
-readability of the sample.
+one), but should include the class and any imports in full. Additional functions can be used if it
+improves readability of the sample.
 
 ```java
 // [START product_example]
@@ -301,10 +325,9 @@ public static void exampleSnippet(String projectId, String filePath) {
 ```
 ### Function Structure
 Function parameters should be limited to what is absolutely required for testing (ideally having at
-most 4 parameters). In more cases,
-this is project specific information or the path to an external file. For example, project specific
-information (such as `projectId`) or a `filePath` for an external file is acceptable, while a
-parameter for the type of a file or a specific action is not.
+most 4 parameters). In most cases, this is project specific information or the path to an external
+file. For example, project specific information (such as `projectId`) or a `filePath` for an
+external file is acceptable, while a parameter for the type of a file or a specific action is not.
  
 Any declared function parameters should include a no-arg, overloaded function with examples for how
 the user can initialize the function parameters and call the entrypoint for the snippet. If the
@@ -328,16 +351,18 @@ public static void exampleSnippet(String projectId, String filePath) {
 }
 ```
 ### Exception Handling
-Snippets should follow the
-[Google Java style guide](https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
-and catch the most specific type of `Exception`, instead of a more general one. Additionally, 
-exceptions of any try/catch blocks should be limited to where an error can actually (within reason)
-occur. Ideally, we will provide either code or comments suggesting how the developer can mitigate
-the exception in the catch block, or why it's safe to ignore.
+Samples should include examples and details of how to catch and handle common `Exceptions` that are
+the result of improper interactions with the client or service. Lower level exceptions that are 
+the result of environment or hardware errors (such as `IOException`, `InteruptedException`, or 
+`FileNotFoundException`) should be allowed to bubble up to the next level.
 
-If their is no solution (or if the solution is too verbose to resolve inside the snippet) then include `throws`
-and a list of exceptions in the method definition and don't catch the exception.  Though it would be
-helpful to users if you mentioned that it might occur.
+If there is no solution (or if the solution is too verbose to resolve in a sample) to resolving the
+exception programmatically (such as a missing resource), it is acceptable to either log or leave a
+comment clearly explaining what actions the user should take to correct the situation.
+
+In general, follow the 
+[Google Java style guide](https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+and catch the most specific type of `Exception`, instead of a more general one.
 
 Example:
 ```java
@@ -386,5 +411,5 @@ idiomatic.
 Use the `java.time` package when dealing with units of time in some manner. 
 
 ### Logging
-Use `java.util.logging` for consistent logging in web applications. Unless you are demonstrating how
-to use Stackdriver Logging.
+Use [slf4j](http://www.slf4j.org/) as shown [here](https://cloud.google.com/logging/docs/setup/java#example) for consistent logging. Unless you are demonstrating how
+to use raw Stackdriver API's.
