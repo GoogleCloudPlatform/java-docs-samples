@@ -29,11 +29,9 @@ import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.OutputConfig;
 import com.google.cloud.automl.v1beta1.TextClassificationDatasetMetadata;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
-
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -208,7 +206,7 @@ public class DatasetApi {
 
       // Get multiple training data files to be imported
       GcsSource gcsSource =
-              GcsSource.newBuilder().addAllInputUris(Arrays.asList(path.split(","))).build();
+          GcsSource.newBuilder().addAllInputUris(Arrays.asList(path.split(","))).build();
 
       // Import data from the input URI
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();

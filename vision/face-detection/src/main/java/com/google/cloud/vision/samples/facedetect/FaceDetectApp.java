@@ -44,11 +44,10 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import javax.imageio.ImageIO;
+
 // [END vision_face_detection_tutorial_imports]
 
-/**
- * A sample application that uses the Vision API to detect faces in an image.
- */
+/** A sample application that uses the Vision API to detect faces in an image. */
 @SuppressWarnings("serial")
 public class FaceDetectApp {
   /**
@@ -60,15 +59,12 @@ public class FaceDetectApp {
   private static final int MAX_RESULTS = 4;
 
   // [START vision_face_detection_tutorial_run_application]
-  /**
-   * Annotates an image using the Vision API.
-   */
+  /** Annotates an image using the Vision API. */
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     if (args.length != 2) {
       System.err.println("Usage:");
       System.err.printf(
-          "\tjava %s inputImagePath outputImagePath\n",
-          FaceDetectApp.class.getCanonicalName());
+          "\tjava %s inputImagePath outputImagePath\n", FaceDetectApp.class.getCanonicalName());
       System.exit(1);
     }
     Path inputPath = Paths.get(args[0]);
@@ -87,44 +83,38 @@ public class FaceDetectApp {
   // [END vision_face_detection_tutorial_run_application]
 
   // [START vision_face_detection_tutorial_client]
-  /**
-   * Connects to the Vision API using Application Default Credentials.
-   */
+  /** Connects to the Vision API using Application Default Credentials. */
   public static Vision getVisionService() throws IOException, GeneralSecurityException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(VisionScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     return new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, credential)
-            .setApplicationName(APPLICATION_NAME)
-            .build();
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
   // [END vision_face_detection_tutorial_client]
 
   private final Vision vision;
 
-  /**
-   * Constructs a {@link FaceDetectApp} which connects to the Vision API.
-   */
+  /** Constructs a {@link FaceDetectApp} which connects to the Vision API. */
   public FaceDetectApp(Vision vision) {
     this.vision = vision;
   }
 
   // [START vision_face_detection_tutorial_send_request]
-  /**
-   * Gets up to {@code maxResults} faces for an image stored at {@code path}.
-   */
+  /** Gets up to {@code maxResults} faces for an image stored at {@code path}. */
   public List<FaceAnnotation> detectFaces(Path path, int maxResults) throws IOException {
     byte[] data = Files.readAllBytes(path);
 
     AnnotateImageRequest request =
         new AnnotateImageRequest()
             .setImage(new Image().encodeContent(data))
-            .setFeatures(ImmutableList.of(
-                new Feature()
-                    .setType("FACE_DETECTION")
-                    .setMaxResults(maxResults)));
+            .setFeatures(
+                ImmutableList.of(
+                    new Feature().setType("FACE_DETECTION").setMaxResults(maxResults)));
     Vision.Images.Annotate annotate =
-        vision.images()
+        vision
+            .images()
             .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
     // Due to a bug: requests to Vision API containing large images fail when GZipped.
     annotate.setDisableGZipContent(true);
@@ -143,9 +133,7 @@ public class FaceDetectApp {
   // [END vision_face_detection_tutorial_send_request]
 
   // [START vision_face_detection_tutorial_process_response]
-  /**
-   * Reads image {@code inputPath} and writes {@code outputPath} with {@code faces} outlined.
-   */
+  /** Reads image {@code inputPath} and writes {@code outputPath} with {@code faces} outlined. */
   private static void writeWithFaces(Path inputPath, Path outputPath, List<FaceAnnotation> faces)
       throws IOException {
     BufferedImage img = ImageIO.read(inputPath.toFile());
@@ -153,18 +141,14 @@ public class FaceDetectApp {
     ImageIO.write(img, "jpg", outputPath.toFile());
   }
 
-  /**
-   * Annotates an image {@code img} with a polygon around each face in {@code faces}.
-   */
+  /** Annotates an image {@code img} with a polygon around each face in {@code faces}. */
   public static void annotateWithFaces(BufferedImage img, List<FaceAnnotation> faces) {
     for (FaceAnnotation face : faces) {
       annotateWithFace(img, face);
     }
   }
 
-  /**
-   * Annotates an image {@code img} with a polygon defined by {@code face}.
-   */
+  /** Annotates an image {@code img} with a polygon defined by {@code face}. */
   private static void annotateWithFace(BufferedImage img, FaceAnnotation face) {
     Graphics2D gfx = img.createGraphics();
     Polygon poly = new Polygon();

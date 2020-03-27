@@ -20,7 +20,6 @@ package com.example.automl;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 

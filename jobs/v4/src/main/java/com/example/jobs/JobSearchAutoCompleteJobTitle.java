@@ -23,7 +23,6 @@ import com.google.cloud.talent.v4beta1.CompleteQueryResponse;
 import com.google.cloud.talent.v4beta1.CompletionClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 
 public class JobSearchAutoCompleteJobTitle {

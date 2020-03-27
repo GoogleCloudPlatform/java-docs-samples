@@ -16,29 +16,22 @@
 
 package com.google.cloud.language.samples;
 
-import com.google.cloud.language.v1beta2.AnalyzeEntitySentimentRequest;
-import com.google.cloud.language.v1beta2.AnalyzeEntitySentimentResponse;
 import com.google.cloud.language.v1beta2.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1beta2.ClassificationCategory;
 import com.google.cloud.language.v1beta2.ClassifyTextRequest;
 import com.google.cloud.language.v1beta2.ClassifyTextResponse;
 import com.google.cloud.language.v1beta2.Document;
 import com.google.cloud.language.v1beta2.Document.Type;
-import com.google.cloud.language.v1beta2.EncodingType;
-import com.google.cloud.language.v1beta2.Entity;
-import com.google.cloud.language.v1beta2.EntityMention;
 import com.google.cloud.language.v1beta2.LanguageServiceClient;
 import com.google.cloud.language.v1beta2.Sentiment;
 
 /**
- * A sample application that uses the Natural Language API to perform
- * entity, sentiment and syntax analysis.
+ * A sample application that uses the Natural Language API to perform entity, sentiment and syntax
+ * analysis.
  */
 public class AnalyzeBeta {
 
-  /**
-   * Detects entities,sentiment and syntax in a document using the Natural Language API.
-   */
+  /** Detects entities,sentiment and syntax in a document using the Natural Language API. */
   public static void main(String[] args) throws Exception {
     if (args.length < 2 || args.length > 4) {
       System.err.println("Usage:");
@@ -53,7 +46,7 @@ public class AnalyzeBeta {
     if (args.length > 2) {
       lang = args[2];
     }
-    
+
     if (command.equals("classify")) {
       if (text.startsWith("gs://")) {
         classifyFile(text);
@@ -65,9 +58,7 @@ public class AnalyzeBeta {
     }
   }
 
-  /**
-   * Detects sentiments from the string {@code text}.
-   */
+  /** Detects sentiments from the string {@code text}. */
   public static Sentiment analyzeSentimentText(String text, String lang) throws Exception {
     // [START beta_sentiment_text]
     // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
@@ -75,14 +66,14 @@ public class AnalyzeBeta {
       // NL auto-detects the language, if not provided
       Document doc;
       if (lang != null) {
-        doc = Document.newBuilder()
-            .setLanguage(lang)
-            .setContent(text).setType(Type.PLAIN_TEXT)
-            .build();
+        doc =
+            Document.newBuilder()
+                .setLanguage(lang)
+                .setContent(text)
+                .setType(Type.PLAIN_TEXT)
+                .build();
       } else {
-        doc = Document.newBuilder()
-            .setContent(text).setType(Type.PLAIN_TEXT)
-            .build();
+        doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
       }
       AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
       Sentiment sentiment = response.getDocumentSentiment();
@@ -98,53 +89,41 @@ public class AnalyzeBeta {
     // [END beta_sentiment_text]
   }
 
-
-  /**
-   * Detects categories in text using the Language Beta API.
-   */
+  /** Detects categories in text using the Language Beta API. */
   public static void classifyText(String text) throws Exception {
     // [START classify_text]
     // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set content to the text string
-      Document doc = Document.newBuilder()
-          .setContent(text)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
-          .setDocument(doc)
-          .build();
+      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder().setDocument(doc).build();
       // detect categories in the given text
       ClassifyTextResponse response = language.classifyText(request);
 
       for (ClassificationCategory category : response.getCategoriesList()) {
-        System.out.printf("Category name : %s, Confidence : %.3f\n",
+        System.out.printf(
+            "Category name : %s, Confidence : %.3f\n",
             category.getName(), category.getConfidence());
       }
     }
     // [END classify_text]
   }
 
-  /**
-   * Detects categories in a GCS hosted file using the Language Beta API.
-   */
+  /** Detects categories in a GCS hosted file using the Language Beta API. */
   public static void classifyFile(String gcsUri) throws Exception {
     // [START classify_file]
     // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS content URI path
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
-          .setDocument(doc)
-          .build();
+      Document doc =
+          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder().setDocument(doc).build();
       // detect categories in the given file
       ClassifyTextResponse response = language.classifyText(request);
 
       for (ClassificationCategory category : response.getCategoriesList()) {
-        System.out.printf("Category name : %s, Confidence : %.3f\n",
+        System.out.printf(
+            "Category name : %s, Confidence : %.3f\n",
             category.getName(), category.getConfidence());
       }
     }

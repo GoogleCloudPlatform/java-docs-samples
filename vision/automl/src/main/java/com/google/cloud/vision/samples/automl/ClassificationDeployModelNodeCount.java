@@ -24,7 +24,6 @@ import com.google.cloud.automl.v1beta1.ImageClassificationModelDeploymentMetadat
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -32,7 +31,7 @@ class ClassificationDeployModelNodeCount {
 
   // Deploy a model with a specified node count
   static void classificationDeployModelNodeCount(String projectId, String modelId)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
 
@@ -45,9 +44,10 @@ class ClassificationDeployModelNodeCount {
 
       // Set how many nodes the model is deployed on
       ImageClassificationModelDeploymentMetadata deploymentMetadata =
-              ImageClassificationModelDeploymentMetadata.newBuilder().setNodeCount(2).build();
+          ImageClassificationModelDeploymentMetadata.newBuilder().setNodeCount(2).build();
 
-      DeployModelRequest request = DeployModelRequest.newBuilder()
+      DeployModelRequest request =
+          DeployModelRequest.newBuilder()
               .setName(modelFullId.toString())
               .setImageClassificationModelDeploymentMetadata(deploymentMetadata)
               .build();

@@ -132,9 +132,9 @@ repository.
     Removing or replacing it should not affect the execution of the samples in anyway.
   -->
 <parent>
-  <groupId>com.google.cloud</groupId>
-  <artifactId>doc-samples</artifactId>
-  <version>1.0.11</version>
+  <groupId>com.google.cloud.samples</groupId>
+  <artifactId>shared-configuration</artifactId>
+  <version>1.0.13</version>
 </parent>
 ```
 
