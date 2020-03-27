@@ -21,7 +21,6 @@ package com.example.jobs;
 import com.google.cloud.talent.v4beta1.DeleteTenantRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
-
 import java.io.IOException;
 
 public class JobSearchDeleteTenant {

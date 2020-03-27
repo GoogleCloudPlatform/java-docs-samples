@@ -17,9 +17,13 @@
 package com.example.functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
@@ -33,23 +37,34 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.junit.jupiter.api.Assertions;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.reflect.Whitebox;
 
+@RunWith(JUnit4.class)
 public class SnippetsTests {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
+
+  @Mock private Firestore firestoreMock;
+  @Mock private DocumentReference referenceMock;
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
@@ -64,6 +79,14 @@ public class SnippetsTests {
   private static final Logger RETRY_LOGGER = Logger.getLogger(RetryPubSub.class.getName());
   private static final Logger INFINITE_RETRY_LOGGER = Logger.getLogger(
       InfiniteRetryPubSub.class.getName());
+  private static final Logger FIRESTORE_LOGGER = Logger.getLogger(
+      FirebaseFirestore.class.getName());
+  private static final Logger RTDB_LOGGER = Logger.getLogger(FirebaseRtdb.class.getName());
+  private static final Logger REMOTE_CONFIG_LOGGER = Logger.getLogger(
+      FirebaseRemoteConfig.class.getName());
+  private static final Logger AUTH_LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
+  private static final Logger REACTIVE_LOGGER = Logger.getLogger(
+      FirebaseFirestoreReactive.class.getName());
 
   private static final TestLogHandler logHandler = new TestLogHandler();
 
@@ -73,14 +96,24 @@ public class SnippetsTests {
   @Rule
   public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
-  @Before
-  public void beforeTest() throws IOException {
+  @BeforeClass
+  public static void beforeClass() {
     BACKGROUND_LOGGER.addHandler(logHandler);
     PUBSUB_LOGGER.addHandler(logHandler);
     GCS_LOGGER.addHandler(logHandler);
     STACKDRIVER_LOGGER.addHandler(logHandler);
     RETRY_LOGGER.addHandler(logHandler);
     INFINITE_RETRY_LOGGER.addHandler(logHandler);
+    FIRESTORE_LOGGER.addHandler(logHandler);
+    RTDB_LOGGER.addHandler(logHandler);
+    REMOTE_CONFIG_LOGGER.addHandler(logHandler);
+    AUTH_LOGGER.addHandler(logHandler);
+    REACTIVE_LOGGER.addHandler(logHandler);
+  }
+
+  @Before
+  public void beforeTest() throws IOException {
+    Mockito.mockitoSession().initMocks(this);
 
     request = mock(HttpRequest.class);
     response = mock(HttpResponse.class);
@@ -90,7 +123,13 @@ public class SnippetsTests {
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    when(response.getWriter()).thenReturn(writerOut);
+    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+
+    referenceMock = mock(DocumentReference.class, RETURNS_DEEP_STUBS);
+    when(referenceMock.set(any())).thenReturn(null);
+
+    firestoreMock = mock(Firestore.class);
+    when(firestoreMock.document(any())).thenReturn(referenceMock);
 
     // Use the same logging handler for all tests
     Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
@@ -99,6 +138,8 @@ public class SnippetsTests {
     Logger.getLogger(StackdriverLogging.class.getName()).addHandler(logHandler);
     Logger.getLogger(RetryPubSub.class.getName()).addHandler(logHandler);
     Logger.getLogger(InfiniteRetryPubSub.class.getName()).addHandler(logHandler);
+
+    logHandler.clear();
   }
 
   @After
@@ -367,7 +408,154 @@ public class SnippetsTests {
   }
 
   @Test
-  public void firebaseAuth() throws IOException {
-    new FirebaseAuth().accept("{\"foo\": \"bar\"}", null);
+  public void functionsFirebaseFirestore_shouldIgnoreMissingValues() throws IOException {
+    MockContext context = new MockContext();
+    context.resource = "resource_1";
+    context.eventType = "event_type_2";
+
+    new FirebaseFirestore().accept("", context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.size()).isEqualTo(2);
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by event on: resource_1");
+    assertThat(logs.get(1).getMessage()).isEqualTo("Event type: event_type_2");
+  }
+
+  @Test
+  public void functionsFirebaseFirestore_shouldProcessPresentValues() throws IOException {
+    String jsonStr = "{\"oldValue\": 999, \"value\": 777 }";
+
+    MockContext context = new MockContext();
+    context.resource = "resource_1";
+    context.eventType = "event_type_2";
+
+    new FirebaseFirestore().accept(jsonStr, context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.size()).isEqualTo(6);
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by event on: resource_1");
+    assertThat(logs.get(1).getMessage()).isEqualTo("Event type: event_type_2");
+    assertThat(logs.get(2).getMessage()).isEqualTo("Old value:");
+    assertThat(logs.get(4).getMessage()).isEqualTo("New value:");
+  }
+
+  @Test
+  public void functionsFirebaseRtdb_shouldDefaultAdminToZero() throws IOException {
+    MockContext context = new MockContext();
+    context.resource = "resource_1";
+
+    new FirebaseRtdb().accept("", context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by change to: resource_1");
+    assertThat(logs.get(1).getMessage()).isEqualTo("Admin?: false");
+  }
+
+  @Test
+  public void functionsFirebaseRtdb_shouldDisplayAdminStatus() throws IOException {
+    String jsonStr = "{\"auth\": { \"admin\": true }}";
+
+    MockContext context = new MockContext();
+    context.resource = "resource_1";
+    context.eventType = "event_type_2";
+
+    new FirebaseRtdb().accept(jsonStr, context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by change to: resource_1");
+    assertThat(logs.get(1).getMessage()).isEqualTo("Admin?: true");
+  }
+
+  @Test
+  public void functionsFirebaseRtdb_shouldShowDelta() throws IOException {
+    String jsonStr = "{\"delta\": { \"value\": 2 }}";
+
+    MockContext context = new MockContext();
+    context.resource = "resource_1";
+    context.eventType = "event_type_2";
+
+    new FirebaseRtdb().accept(jsonStr, context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.size()).isEqualTo(4);
+    assertThat(logs.get(0).getMessage()).isEqualTo("Function triggered by change to: resource_1");
+    assertThat(logs.get(2).getMessage()).isEqualTo("Delta:");
+    assertThat(logs.get(3).getMessage()).isEqualTo("{\"value\":2}");
+  }
+
+  @Test
+  public void functionsFirebaseRemoteConfig_shouldShowUpdateType() throws IOException {
+    new FirebaseRemoteConfig().accept("{\"updateType\": \"foo\"}", null);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Update type: foo");
+  }
+
+  @Test
+  public void functionsFirebaseRemoteConfig_shouldShowOrigin() throws IOException {
+    new FirebaseRemoteConfig().accept("{\"updateOrigin\": \"foo\"}", null);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Origin: foo");
+  }
+
+  @Test
+  public void functionsFirebaseRemoteConfig_shouldShowVersion() throws IOException {
+    new FirebaseRemoteConfig().accept("{\"versionNumber\": 2}", null);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Version: 2");
+  }
+
+  @Test
+  public void functionsFirebaseAuth_shouldShowUserId() throws IOException {
+    new FirebaseAuth().accept("{\"uid\": \"foo\"}", null);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+        "Function triggered by change to user: foo");
+  }
+
+  @Test
+  public void functionsFirebaseAuth_shouldShowOrigin() throws IOException {
+    new FirebaseAuth().accept("{\"metadata\": {\"createdAt\": \"123\"}}", null);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Created at: 123");
+  }
+
+  @Test
+  public void functionsFirebaseAuth_shouldShowVersion() throws IOException {
+    new FirebaseAuth().accept("{\"email\": \"foo@google.com\"}", null);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+        "Email: foo@google.com");
+  }
+
+  @Test
+  public void functionsFirebaseReactive_shouldCapitalizeOriginalValue() throws IOException {
+    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"stringValue\":\"foo\"}}}}";
+
+    MockContext context = new MockContext();
+    context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
+
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+
+    functionInstance.accept(jsonStr, context);
+
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+        "Replacing value: foo --> FOO");
+  }
+
+  @Test
+  public void functionsFirebaseReactive_shouldReportBadJson() throws IOException {
+    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"missingValue\":\"foo\"}}}}";
+
+    MockContext context = new MockContext();
+    context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
+
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+
+    IllegalArgumentException e = Assertions.assertThrows(
+        IllegalArgumentException.class, () -> functionInstance.accept(jsonStr, context));
+    assertThat(e).hasMessageThat().isEqualTo(
+        "Malformed JSON");
   }
 }

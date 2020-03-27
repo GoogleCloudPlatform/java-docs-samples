@@ -22,7 +22,6 @@ import com.google.cloud.talent.v4beta1.DeleteJobRequest;
 import com.google.cloud.talent.v4beta1.JobName;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.JobWithTenantName;
-
 import java.io.IOException;
 
 public class JobSearchDeleteJob {
