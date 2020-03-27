@@ -109,10 +109,6 @@ You will note:
  * `camelCase` blocks beginning with `should` or `does` are **not** region tags - instead, they
  simply describe the test being run
 
-
-that the "_" in `region_tag` is removed, and "_" is used to separate regionTags from
-test descriptions.
-
 It is also possible to use annotations to provide info for `region_tag` if you need to do this,
 please contact one of the repo admins.
 
@@ -141,8 +137,12 @@ mind when setting up tests.
 
 * **Cloud resources**  
   Most Java samples create the Cloud resources that they need to run. If this
-  is resource intensive or not possible, add instructions to the directory's CONTRIBUTING.md file
-  to add the resource to the testing project.
+  is resource intensive or not possible, add instructions to the directory's README.md file
+  to add the resource to the testing project. Tests that create cloud resources should also delete
+  those resources when they are done testing, particularly in a way that will ensure the deletion
+  of the resource even if the test fails, such as with with a `finally` block or in an `@After`
+  or `@AfterClass` function.  Also, resources should not used fixed names, but prefer UUID's as
+  we have many tests that run at the same time.
 
 * **Keys and Secrets**
   Add a note in the pull request, in order for a Java maintainer to assist you
@@ -323,7 +323,7 @@ the user can initialize the function parameters and call the entrypoint for the 
 values for these variables need to be replaced by the user, attempt to make it explicitly clear that
 they are example values only.
 
-Snippet functions should specific a return type of `void` and avoid returning any value wherever
+Snippet functions should specify a return type of `void` and avoid returning any value wherever
 possible. Instead, show the user how to interact with a returned object programmatically by printing
 some example attributes to the console. 
 ```java
@@ -394,7 +394,7 @@ Streams can be extremely compact, efficient, and easy to use - consider using th
 * Checked Exceptions can be problematic inside streams.
   
 ### Parallel Streams
-Parallel Streams make make sense in a few situations. There are many situations where there use is a
+Parallel Streams make sense in a few situations. There are many situations where there use is a
 net loss.  Really think through your usage and consider what they might mean if you are already
 doing concurrent operations.
 
