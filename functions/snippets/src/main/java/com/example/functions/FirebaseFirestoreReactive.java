@@ -41,42 +41,25 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
   @Override
   public void accept(String json, Context context) throws RuntimeException {
     // Get the recently-written value
-    JsonObject bodyJson = gsonParser.fromJson(json, JsonObject.class);
-    String currentValue = null;
-
-    if (bodyJson.has("value")) {
-      JsonObject valueJson = bodyJson.getAsJsonObject("value");
-      if (valueJson.has("fields")) {
-        JsonObject fields = valueJson.getAsJsonObject("fields");
-        if (fields.has("original")) {
-          JsonObject originalValue = fields.getAsJsonObject("original");
-          if (originalValue.has("stringValue")) {
-            currentValue = originalValue.get("stringValue").getAsString();
-          }
-        }
-      }
-    }
-
-    if (currentValue == null) {
-      throw new RuntimeException("Missing JSON value: value.fields.original.stringValue");
+    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    JsonObject fields = body.getAsJsonObject("value").getAsJsonObject("fields");
+    if (!fields.has("original")) {
+      return;
     }
 
     // Convert recently-written value to ALL CAPS
+    String currentValue = fields.getAsJsonObject("original").get("stringValue").getAsString();
     String newValue = currentValue.toUpperCase();
 
     // Update Firestore DB with ALL CAPS value
     Map<String, String> newFields = new HashMap<>();
     newFields.put("original", newValue);
 
-    String[] pathComponents = context.resource().split("/documents/");
-    if (pathComponents.length < 2) {
-      throw new RuntimeException("Invalid Firestore doc path.");
-    }
-    String docPath = pathComponents[1].replace("\"", "");
+    String affectedDoc = context.resource().split("/documents/")[1].replace("\"", "");
 
     LOGGER.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
     try {
-      firestore.document(docPath).set(newFields, SetOptions.merge()).get();
+      firestore.document(affectedDoc).set(newFields, SetOptions.merge()).get();
     } catch (ExecutionException | InterruptedException e) {
       throw new RuntimeException(e);
     }
