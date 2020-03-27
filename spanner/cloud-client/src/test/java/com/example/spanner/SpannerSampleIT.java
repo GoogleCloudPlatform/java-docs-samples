@@ -25,11 +25,14 @@ import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.common.base.CharMatcher;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -274,7 +277,20 @@ public class SpannerSampleIT {
             dbId.getName()));
 
     out = runSample("listbackups");
-    assertThat(out).contains(databaseId);
+    assertThat(out).contains("All backups:");
+    assertThat(out).contains(
+        String.format("All backups with backup name containing \"%s\":", backupId.getBackup()));
+    assertThat(out).contains(String.format(
+        "All backups for databases with a name containing \"%s\":",
+        dbId.getDatabase()));
+    assertThat(out).contains(
+        String.format("All backups that expire before"));
+    assertThat(out).contains("All backups with size greater than 100 bytes:");
+    assertThat(out).containsMatch(
+        Pattern.compile("All databases created after (.+) and that are ready:"));
+    assertThat(out).contains("All backups, listed using pagination:");
+    // All the above tests should include the created backup exactly once, i.e. exactly 7 times.
+    assertThat(countOccurrences(out, backupId.getName())).isEqualTo(7);
 
     // Try the restore operation in a retry loop, as there is a limit on the number of restore
     // operations that is allowed to execute simultaneously, and we should retry if we hit this
@@ -319,7 +335,7 @@ public class SpannerSampleIT {
 
     out = runSample("updatebackup");
     assertThat(out).contains(
-        String.format("Updating expire time of backup [%s]", backupId.toString()));
+        String.format("Updated backup [" + backupId + "]"));
 
     // Drop the restored database before we try to delete the backup.
     // Otherwise the delete backup operation might fail as the backup is still in use by
@@ -329,6 +345,10 @@ public class SpannerSampleIT {
 
     out = runSample("deletebackup");
     assertThat(out).contains("Deleted backup [" + backupId + "]");
+  }
+
+  private static int countOccurrences(String input, String search) {
+    return input.split(search).length - 1;
   }
 
   private String formatForTest(String name) {

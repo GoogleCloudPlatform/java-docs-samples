@@ -1719,6 +1719,7 @@ public class SpannerSample {
     }
 
     // List backups using pagination.
+    System.out.println("All backups, listed using pagination:");
     Page<Backup> page = instance.listBackups(Options.pageSize(10));
     while (true) {
       for (Backup backup : page.getValues()) {
