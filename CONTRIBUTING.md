@@ -17,7 +17,7 @@ again.
 
 ## Style
 
-All code should follow the [Sample Format Guidelines](blob/master/SAMPLE_FORMAT.md)
+All code should follow the [Sample Format Guidelines](/java-docs-samples/blob/master/SAMPLE_FORMAT.md)
 
 ## Code reviews
 

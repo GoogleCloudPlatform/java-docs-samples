@@ -119,7 +119,7 @@ mind when setting up tests.
 * **Environment variables**  
   Minimize additional environment variables that need to be set to run the tests.
   If you do require additional environment variables, they should be added to
-  `run_tests.sh`.
+  [run_tests.sh](/java-docs-samples/blob/master/.kokoro/tests/run_tests.sh).
 
   Existing environment variables include:
   * `GOOGLE_APPLICATION_CREDENTIALS`
