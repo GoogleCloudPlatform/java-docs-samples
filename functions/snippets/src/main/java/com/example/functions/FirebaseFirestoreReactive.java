@@ -42,13 +42,24 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
   public void accept(String json, Context context) throws RuntimeException {
     // Get the recently-written value
     JsonObject body = gsonParser.fromJson(json, JsonObject.class);
-    JsonObject fields = body.getAsJsonObject("value").getAsJsonObject("fields");
-    if (!fields.has("original")) {
-      return;
+    JsonObject tempJson = body.getAsJsonObject("value");
+
+    // Verify that value.fields.original.stringValue exists
+    String currentValue = null;
+    if (tempJson != null) {
+      tempJson = tempJson.getAsJsonObject("fields");
+    };
+    if (tempJson != null) {
+      tempJson = tempJson.getAsJsonObject("original");
+    };
+    if (tempJson != null && tempJson.has("stringValue")) {
+     currentValue = tempJson.get("stringValue").getAsString();
+    };
+    if (currentValue == null) {
+      throw new IllegalArgumentException("Malformed JSON");
     }
 
     // Convert recently-written value to ALL CAPS
-    String currentValue = fields.getAsJsonObject("original").get("stringValue").getAsString();
     String newValue = currentValue.toUpperCase();
 
     // Update Firestore DB with ALL CAPS value
