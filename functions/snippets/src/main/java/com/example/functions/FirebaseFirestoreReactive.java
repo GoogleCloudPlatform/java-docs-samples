@@ -48,13 +48,13 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
     String currentValue = null;
     if (tempJson != null) {
       tempJson = tempJson.getAsJsonObject("fields");
-    };
+    }
     if (tempJson != null) {
       tempJson = tempJson.getAsJsonObject("original");
-    };
+    }
     if (tempJson != null && tempJson.has("stringValue")) {
-     currentValue = tempJson.get("stringValue").getAsString();
-    };
+      currentValue = tempJson.get("stringValue").getAsString();
+    }
     if (currentValue == null) {
       throw new IllegalArgumentException("Malformed JSON");
     }
