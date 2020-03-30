@@ -30,7 +30,11 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 public class ImageMagickTests {
+  // Use a preconfigured (read-only) public bucket as a "source" bucket
   private static String BUCKET_NAME = "nodejs-docs-samples-tests";
+
+  // Move the resulting blurred images to another "destination "bucket
+  // TODO<developer>: specify this value in your test environment
   private static String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
 
   // Loggers + handlers for various tested classes
