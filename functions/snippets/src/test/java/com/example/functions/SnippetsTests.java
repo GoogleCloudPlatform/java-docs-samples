@@ -40,6 +40,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.LogRecord;
@@ -74,6 +75,8 @@ public class SnippetsTests {
   private static final Logger BACKGROUND_LOGGER = Logger.getLogger(HelloBackground.class.getName());
   private static final Logger PUBSUB_LOGGER = Logger.getLogger(HelloPubSub.class.getName());
   private static final Logger GCS_LOGGER = Logger.getLogger(HelloGcs.class.getName());
+  private static final Logger GCS_GENERIC_LOGGER = Logger.getLogger(
+      HelloGcsGeneric.class.getName());
   private static final Logger STACKDRIVER_LOGGER = Logger.getLogger(
       StackdriverLogging.class.getName());
   private static final Logger RETRY_LOGGER = Logger.getLogger(RetryPubSub.class.getName());
@@ -109,6 +112,7 @@ public class SnippetsTests {
     REMOTE_CONFIG_LOGGER.addHandler(logHandler);
     AUTH_LOGGER.addHandler(logHandler);
     REACTIVE_LOGGER.addHandler(logHandler);
+    GCS_GENERIC_LOGGER.addHandler(logHandler);
   }
 
   @Before
@@ -131,14 +135,6 @@ public class SnippetsTests {
     firestoreMock = mock(Firestore.class);
     when(firestoreMock.document(any())).thenReturn(referenceMock);
 
-    // Use the same logging handler for all tests
-    Logger.getLogger(HelloBackground.class.getName()).addHandler(logHandler);
-    Logger.getLogger(HelloPubSub.class.getName()).addHandler(logHandler);
-    Logger.getLogger(HelloGcs.class.getName()).addHandler(logHandler);
-    Logger.getLogger(StackdriverLogging.class.getName()).addHandler(logHandler);
-    Logger.getLogger(RetryPubSub.class.getName()).addHandler(logHandler);
-    Logger.getLogger(InfiniteRetryPubSub.class.getName()).addHandler(logHandler);
-
     logHandler.clear();
   }
 
@@ -154,6 +150,26 @@ public class SnippetsTests {
 
     writerOut.flush();
     assertThat(responseOut.toString()).contains("Hello World!");
+  }
+
+  @Test
+  public void helloGcsGenericTest() throws IOException {
+    GcsEvent event = new GcsEvent();
+    event.bucket = "some-bucket";
+    event.name = "some-file.txt";
+    event.timeCreated = new Date();
+    event.updated = new Date();
+
+    MockContext context = new MockContext();
+    context.eventType = "google.storage.object.metadataUpdate";
+
+    new HelloGcsGeneric().accept(event, context);
+
+    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    assertThat(logs.get(1).getMessage()).isEqualTo(
+        "Event Type: google.storage.object.metadataUpdate");
+    assertThat(logs.get(2).getMessage()).isEqualTo("Bucket: some-bucket");
+    assertThat(logs.get(3).getMessage()).isEqualTo("File: some-file.txt");
   }
 
   @Test
