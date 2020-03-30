@@ -15,7 +15,7 @@
 */
 package com.example.functions
 
-// [START functions_helloworld_background_kotlin]
+// [START functions_helloworld_background]
 import com.google.cloud.functions.BackgroundFunction
 import com.google.cloud.functions.Context
 import com.google.cloud.functions.HttpRequest
@@ -34,4 +34,4 @@ class KotlinHelloBackground : BackgroundFunction<HttpRequest> {
         private val LOGGER = Logger.getLogger(KotlinHelloBackground::class.java.name)
     }
 }
-// [END functions_helloworld_background_kotlin]
+// [END functions_helloworld_background]
