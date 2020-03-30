@@ -19,6 +19,8 @@ package com.example.functions;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -35,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -153,7 +156,7 @@ public class SnippetsTests {
   }
 
   @Test
-  public void helloGcsGenericTest() throws IOException {
+  public void functionsHelloworldStorageGeneric_shouldPrintEvent() throws IOException {
     GcsEvent event = new GcsEvent();
     event.bucket = "some-bucket";
     event.name = "some-file.txt";
@@ -343,6 +346,39 @@ public class SnippetsTests {
     writerOut.flush();
 
     assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
+  }
+
+  @Test
+  public void functionsHelloworldMethod_shouldAcceptGet() throws IOException {
+    when(request.getMethod()).thenReturn("GET");
+
+    new HelloMethod().service(request, response);
+
+    writerOut.flush();
+    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_OK);
+    assertThat(responseOut.toString()).isEqualTo("Hello world!");
+  }
+
+  @Test
+  public void functionsHelloworldMethod_shouldForbidPut() throws IOException {
+    when(request.getMethod()).thenReturn("PUT");
+
+    new HelloMethod().service(request, response);
+
+    writerOut.flush();
+    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_FORBIDDEN);
+    assertThat(responseOut.toString()).isEqualTo("Forbidden!");
+  }
+
+  @Test
+  public void functionsHelloworldMethod_shouldErrorOnPost() throws IOException {
+    when(request.getMethod()).thenReturn("POST");
+
+    new HelloMethod().service(request, response);
+
+    writerOut.flush();
+    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
+    assertThat(responseOut.toString()).isEqualTo("Something blew up!");
   }
 
   @Test(expected = RuntimeException.class)
