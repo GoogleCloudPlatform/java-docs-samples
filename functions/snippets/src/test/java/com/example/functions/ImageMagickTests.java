@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 public class ImageMagickTests {
-  private static String BUCKET_NAME = System.getenv("FUNCTIONS_BUCKET");
+  private static String BUCKET_NAME = "nodejs-docs-samples-tests";
   private static String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
 
   // Loggers + handlers for various tested classes
