@@ -15,7 +15,7 @@
  */
 package com.example.functions
 
-// [START functions_helloworld_get_kotlin]
+// [START functions_helloworld_get]
 import com.google.cloud.functions.HttpFunction
 import com.google.cloud.functions.HttpRequest
 import com.google.cloud.functions.HttpResponse
@@ -29,4 +29,4 @@ class KotlinHelloWorld : HttpFunction {
         response.writer.write("Hello World!")
     }
 }
-// [END functions_helloworld_get_kotlin]
+// [END functions_helloworld_get]
