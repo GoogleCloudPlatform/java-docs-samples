@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.functions;
 
 // [START functions_imagemagick_setup]
@@ -8,13 +24,6 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
@@ -24,6 +33,13 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.SafeSearchAnnotation;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
@@ -40,7 +56,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
     // Construct URI to GCS bucket and file.
     String gcsPath = String.format("gs://%s/%s", gcsEvent.getBucket(), gcsEvent.getName());
-    System.out.println(String.format("Analyzing %s", gcsEvent.getName()));
+    LOGGER.info(String.format("Analyzing %s", gcsEvent.getName()));
 
     // Construct request.
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -57,20 +73,20 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          System.out.println(String.format("Error: %s\n", res.getError().getMessage()));
+          LOGGER.info(String.format("Error: %s\n", res.getError().getMessage()));
           return;
         }
         // Get Safe Search Annotations
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
         if (annotation.getAdultValue() == 5 || annotation.getViolenceValue() == 5) {
-          System.out.println(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
+          LOGGER.info(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
           blur(blobInfo);
         } else {
-          System.out.println(String.format("Detected %s as OK.", gcsEvent.getName()));
+          LOGGER.info(String.format("Detected %s as OK.", gcsEvent.getName()));
         }
       }
     } catch (Exception e) {
-      System.out.println(String.format("Error with Vision API: %s", e.getMessage()));
+      LOGGER.info(String.format("Error with Vision API: %s", e.getMessage()));
     }
   }
   // [END functions_imagemagick_analyze]
@@ -99,7 +115,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       Process process = pb.start();
       process.waitFor();
     } catch (Exception e) {
-      System.out.println(String.format("Error: %s", e.getMessage()));
+      LOGGER.info(String.format("Error: %s", e.getMessage()));
     }
 
     // Upload image to blurred bucket.
@@ -109,10 +125,10 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
     try {
       byte[] blurredFile = Files.readAllBytes(upload);
       Blob blurredBlob = storage.create(blurredBlobInfo, blurredFile);
-      System.out.println(
+      LOGGER.info(
           String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
     } catch (Exception e) {
-      System.out.println(String.format("Error in upload: %s", e.getMessage()));
+      LOGGER.info(String.format("Error in upload: %s", e.getMessage()));
     }
 
     // Remove images from fileSystem
