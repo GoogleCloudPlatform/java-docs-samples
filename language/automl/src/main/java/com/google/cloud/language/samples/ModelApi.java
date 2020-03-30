@@ -29,11 +29,9 @@ import com.google.cloud.automl.v1beta1.ModelEvaluation;
 import com.google.cloud.automl.v1beta1.ModelEvaluationName;
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
-
 import com.google.cloud.automl.v1beta1.TextClassificationModelMetadata;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;

@@ -18,17 +18,14 @@ package com.example.trace;
 
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
-
 import io.opencensus.common.Scope;
 import io.opencensus.exporter.trace.stackdriver.StackdriverTraceConfiguration;
 import io.opencensus.exporter.trace.stackdriver.StackdriverTraceExporter;
 import io.opencensus.trace.Tracer;
 import io.opencensus.trace.Tracing;
 import io.opencensus.trace.samplers.Samplers;
-
 import java.io.IOException;
 import java.util.Date;
-
 import org.joda.time.DateTime;
 
 public class TraceSample {
@@ -60,10 +57,11 @@ public class TraceSample {
 
   // [START trace_setup_java_full_sampling]
   public static void doWorkFullSampled() {
-    try (
-        Scope ss = tracer.spanBuilder("MyChildWorkSpan")
-                     .setSampler(Samplers.alwaysSample())
-                     .startScopedSpan()) {
+    try (Scope ss =
+        tracer
+            .spanBuilder("MyChildWorkSpan")
+            .setSampler(Samplers.alwaysSample())
+            .startScopedSpan()) {
       doInitialWork();
       tracer.getCurrentSpan().addAnnotation("Finished initial work");
       doFinalWork();
@@ -73,8 +71,7 @@ public class TraceSample {
 
   // [START trace_setup_java_create_and_register]
   public static void createAndRegister() throws IOException {
-    StackdriverTraceExporter.createAndRegister(
-        StackdriverTraceConfiguration.builder().build());
+    StackdriverTraceExporter.createAndRegister(StackdriverTraceConfiguration.builder().build());
   }
   // [END trace_setup_java_create_and_register]
 
@@ -95,9 +92,7 @@ public class TraceSample {
   // [START trace_setup_java_register_exporter]
   public static void createAndRegisterGoogleCloudPlatform(String projectId) throws IOException {
     StackdriverTraceExporter.createAndRegister(
-        StackdriverTraceConfiguration.builder()
-            .setProjectId(projectId)
-            .build());
+        StackdriverTraceConfiguration.builder().setProjectId(projectId).build());
   }
   // [END trace_setup_java_register_exporter]
 }

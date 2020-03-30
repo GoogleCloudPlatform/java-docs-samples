@@ -15,7 +15,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
   </parent>
 
   <properties>
@@ -23,7 +23,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <kotlin.version>1.2.41</kotlin.version>
+    <kotlin.version>1.3.71</kotlin.version>
     <groovy.version>3.0.2</groovy.version>
   </properties>
 
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>1.100.0</version>
+      <version>1.101.0</version>
     </dependency>
 
     <!-- Required for com.example.functions.SlackSlashCommand -->
@@ -75,6 +75,13 @@
       <groupId>com.github.seratch</groupId>
       <artifactId>jslack</artifactId>
       <version>3.4.2</version>
+    </dependency>
+
+    <!-- Required for com.example.functions.FirebaseFirestoreReactive -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-firestore</artifactId>
+      <version>1.32.5</version>
     </dependency>
 
     <!-- Required for scala samples -->
@@ -91,7 +98,6 @@
       <version>${groovy.version}</version>
       <type>pom</type>
     </dependency>
-
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -188,7 +194,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.7.0</version>
+        <version>1.8.1</version>
         <executions>
           <execution>
             <id>groovy-compile</id>

@@ -30,7 +30,6 @@ import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 import com.google.protobuf.Duration;
 import com.google.type.LatLng;
-
 import java.io.IOException;
 
 public class CommuteSearchJobs {

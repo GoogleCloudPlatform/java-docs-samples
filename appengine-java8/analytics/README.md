@@ -21,4 +21,4 @@ To run this sample locally:
 
 ## Deploying
 
-    $ mvn clean package appengine:deploy -Dapp.deploy.projectId=<your-project-id>
+    $ mvn clean package appengine:deploy

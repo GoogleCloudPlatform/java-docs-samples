@@ -24,13 +24,10 @@ import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Storage for Message objects using Cloud Datastore.
- */
+/** Storage for Message objects using Cloud Datastore. */
 public class MessageRepositoryImpl implements MessageRepository {
 
   private static MessageRepositoryImpl instance;
@@ -38,8 +35,7 @@ public class MessageRepositoryImpl implements MessageRepository {
   private String messagesKind = "messages";
   private KeyFactory keyFactory = getDatastoreInstance().newKeyFactory().setKind(messagesKind);
 
-  private MessageRepositoryImpl() {
-  }
+  private MessageRepositoryImpl() {}
 
   // retrieve a singleton instance
   public static synchronized MessageRepositoryImpl getInstance() {
@@ -55,8 +51,8 @@ public class MessageRepositoryImpl implements MessageRepository {
     Datastore datastore = getDatastoreInstance();
     Key key = datastore.allocateId(keyFactory.newKey());
 
-    Entity.Builder messageEntityBuilder = Entity.newBuilder(key)
-        .set("messageId", message.getMessageId());
+    Entity.Builder messageEntityBuilder =
+        Entity.newBuilder(key).set("messageId", message.getMessageId());
 
     String translated = message.getTranslated();
     if (translated != null) {

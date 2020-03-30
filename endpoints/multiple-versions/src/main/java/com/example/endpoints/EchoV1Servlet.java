@@ -18,7 +18,6 @@ package com.example.endpoints;
 
 import com.example.endpoints.message.MessageTranslator;
 import com.example.endpoints.message.MessageV1Translator;
-
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

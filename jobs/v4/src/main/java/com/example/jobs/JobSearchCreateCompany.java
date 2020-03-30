@@ -23,7 +23,6 @@ import com.google.cloud.talent.v4beta1.CompanyServiceClient;
 import com.google.cloud.talent.v4beta1.CreateCompanyRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 
 public class JobSearchCreateCompany {

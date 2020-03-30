@@ -26,16 +26,13 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TimestampBound;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Sample showing how to run a query using the Batch API.
- */
+/** Sample showing how to run a query using the Batch API. */
 public class BatchSample {
 
   /**
@@ -72,30 +69,33 @@ public class BatchSample {
     AtomicInteger totalRecords = new AtomicInteger(0);
 
     try {
-      BatchClient batchClient = spanner.getBatchClient(
-          DatabaseId.of(options.getProjectId(), instanceId, databaseId));
+      BatchClient batchClient =
+          spanner.getBatchClient(DatabaseId.of(options.getProjectId(), instanceId, databaseId));
 
       final BatchReadOnlyTransaction txn =
           batchClient.batchReadOnlyTransaction(TimestampBound.strong());
 
       // A Partition object is serializable and can be used from a different process.
-      List<Partition> partitions = txn.partitionQuery(PartitionOptions.getDefaultInstance(),
-          Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"));
+      List<Partition> partitions =
+          txn.partitionQuery(
+              PartitionOptions.getDefaultInstance(),
+              Statement.of("SELECT SingerId, FirstName, LastName FROM Singers"));
 
       totalPartitions = partitions.size();
 
       for (final Partition p : partitions) {
-        executor.execute(() -> {
-          try (ResultSet results = txn.execute(p)) {
-            while (results.next()) {
-              long singerId = results.getLong(0);
-              String firstName = results.getString(1);
-              String lastName = results.getString(2);
-              System.out.println("[" + singerId + "] " + firstName + " " + lastName);
-              totalRecords.getAndIncrement();
-            }
-          }
-        });
+        executor.execute(
+            () -> {
+              try (ResultSet results = txn.execute(p)) {
+                while (results.next()) {
+                  long singerId = results.getLong(0);
+                  String firstName = results.getString(1);
+                  String lastName = results.getString(2);
+                  System.out.println("[" + singerId + "] " + firstName + " " + lastName);
+                  totalRecords.getAndIncrement();
+                }
+              }
+            });
       }
     } finally {
       executor.shutdown();

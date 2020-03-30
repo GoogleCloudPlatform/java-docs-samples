@@ -21,7 +21,6 @@ import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.ListModelEvaluationsRequest;
 import com.google.cloud.automl.v1beta1.ModelEvaluation;
 import com.google.cloud.automl.v1beta1.ModelName;
-
 import java.io.IOException;
 
 class ListModelEvaluations {
