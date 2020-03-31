@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,7 +39,9 @@ class RednerControllerTests {
 
   @Test
   public void postRender() throws Exception {
-    String mock = "{\"data\":\"test\"}";
+	String mock = "{\"data\":\"test\"}";
+	MockEnvironment env = new MockEnvironment();
+	env.setProperty("EDITOR_UPSTREAM_RENDER_URL", "http://localhost:8080");
     this.mockMvc
         .perform(post("/render").contentType(MediaType.APPLICATION_JSON).content(mock))
         .andExpect(status().isOk());
