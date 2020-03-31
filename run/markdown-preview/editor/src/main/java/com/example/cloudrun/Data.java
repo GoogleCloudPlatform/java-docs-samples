@@ -18,9 +18,9 @@ package com.example.cloudrun;
 
 // Class used for automatic deserialization of @RequestBody
 class Data {
-    private String data;
+  private String data;
 
-    public String getData() {
-        return data;
-    }
+  public String getData() {
+    return data;
+  }
 }
