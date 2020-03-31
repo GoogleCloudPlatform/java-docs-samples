@@ -27,9 +27,9 @@ public class ServicesDelete {
   public static void deleteService() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String locationId = "my-region";
-    String namespaceId = "my-namespace";
-    String serviceId = "my-service";
+    String locationId = "your-region";
+    String namespaceId = "your-namespace";
+    String serviceId = "your-service";
     deleteService(projectId, locationId, namespaceId, serviceId);
   }
 

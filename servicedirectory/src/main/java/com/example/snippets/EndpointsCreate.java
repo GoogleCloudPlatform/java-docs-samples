@@ -28,10 +28,10 @@ public class EndpointsCreate {
   public static void createEndpoint() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String locationId = "my-region";
-    String namespaceId = "my-namespace";
-    String serviceId = "my-service";
-    String endpointId = "my-endpoint";
+    String locationId = "your-region";
+    String namespaceId = "your-namespace";
+    String serviceId = "your-service";
+    String endpointId = "your-endpoint";
     String address = "10.0.0.1";
     int port = 443;
     createEndpoint(projectId, locationId, namespaceId, serviceId, endpointId, address, port);

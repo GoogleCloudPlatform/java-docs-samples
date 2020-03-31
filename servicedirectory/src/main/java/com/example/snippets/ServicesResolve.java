@@ -30,9 +30,9 @@ public class ServicesResolve {
   public static void resolveService() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String locationId = "my-region";
-    String namespaceId = "my-namespace";
-    String serviceId = "my-service";
+    String locationId = "your-region";
+    String namespaceId = "your-namespace";
+    String serviceId = "your-service";
     resolveService(projectId, locationId, namespaceId, serviceId);
   }
 

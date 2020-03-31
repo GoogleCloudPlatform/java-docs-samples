@@ -39,15 +39,6 @@ Build your project with:
 
     mvn clean compile assembly:single
 
-You can run the quickstart with:
-
-    java -cp target/servicedirectory-samples-1.0-jar-with-dependencies.jar \
-        com.example.Quickstart [your-project-id] [your-location]
-
-You can run the quickstart test with:
-
-    mvn -Dtest='QuickstartTests' test
-
 You can run all tests with:
 
     mvn clean verify

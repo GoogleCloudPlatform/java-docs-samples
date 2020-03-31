@@ -27,8 +27,8 @@ public class NamespacesDelete {
   public static void deleteNamespace() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String locationId = "my-region";
-    String namespaceId = "my-namespace";
+    String locationId = "your-region";
+    String namespaceId = "your-namespace";
     deleteNamespace(projectId, locationId, namespaceId);
   }
 

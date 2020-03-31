@@ -28,8 +28,8 @@ public class NamespacesCreate {
   public static void createNamespace() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String locationId = "my-region";
-    String namespaceId = "my-namespace";
+    String locationId = "your-region";
+    String namespaceId = "your-namespace";
     createNamespace(projectId, locationId, namespaceId);
   }
 
