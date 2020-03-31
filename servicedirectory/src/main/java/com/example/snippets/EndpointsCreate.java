@@ -1,0 +1,71 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example.servicedirectory.snippets;
+
+// [START servicedirectory_create_endpoint]
+
+import com.google.cloud.servicedirectory.v1beta1.Endpoint;
+import com.google.cloud.servicedirectory.v1beta1.RegistrationServiceClient;
+import com.google.cloud.servicedirectory.v1beta1.ServiceName;
+import java.io.IOException;
+
+public class EndpointsCreate {
+
+  public static void createEndpoint() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String locationId = "my-region";
+    String namespaceId = "my-namespace";
+    String serviceId = "my-service";
+    String endpointId = "my-endpoint";
+    String address = "10.0.0.1";
+    int port = 443;
+    createEndpoint(projectId, locationId, namespaceId, serviceId, endpointId, address, port);
+  }
+
+  // Create a new endpoint.
+  public static void createEndpoint(
+      String projectId,
+      String locationId,
+      String namespaceId,
+      String serviceId,
+      String endpointId,
+      String address,
+      int port)
+      throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (RegistrationServiceClient client = RegistrationServiceClient.create()) {
+
+      // The service to create the endpoint in.
+      ServiceName parent = ServiceName.of(projectId, locationId, namespaceId, serviceId);
+
+      // The endpoint to create, with fields filled in.
+      Endpoint endpoint = Endpoint.newBuilder().setAddress(address).setPort(port).build();
+
+      // Send the request to create the endpoint.
+      Endpoint createdEndpoint = client.createEndpoint(parent, endpoint, endpointId);
+
+      // Process the response.
+      System.out.println("Created Endpoint: " + createdEndpoint.getName());
+      System.out.println("IP Address: " + createdEndpoint.getAddress());
+      System.out.println("Port: " + createdEndpoint.getPort());
+    }
+  }
+}
+// [END servicedirectory_create_endpoint]

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "google.com:mkaholok-sd-test",
+  "private_key_id": "fe517883bfebb452bd761d64ed5a39b760665957",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCvfebdDzWeUGJZ\niVzGOaa3wfqLeRSb2vT7B3AvUe+OaHoVUtI17y9tZq/Uee8AFN0PflM9pS40haeh\nggedWoJeCSu+AM9S7HmsnvZHPXQ8rjkQOv+SlgMlSJoNkY5ndhnn0eMnVOBiZTGu\noAwDNfS3ZD4I9+X9FM12lto8YV/zCD26QkpTko0DOcXmS5buWy3V0PiqodbCb1Ug\nSxONKafOVeI2N98AXBv72jXf5B9luhYRfwD/6iwXzrt/PdXoTYMsIPlrcAEkVjMA\nCoiuhwyj7iZXmOBf2oa5+s3wsbllKLd/T+0Q6sR1ru1FjyBDw/YbFuUEfXJfdvbb\nwMLOo9w1AgMBAAECggEAFvTUR2Se8fe39dh3L2MJQQ559NbA8GZjF5dwgHAqcymN\nls5/uxhvztLY+2V78znHdShkQTMjaTF2rTTyRA478YsnkrJObJ2MiR0+QDF0zB9K\nTao6FnXTMYReypmY1EXpu56EJXf/5j8wkZRUHfNn8LmHN+sdxc571iCDqdRfFc5t\nSaoxcW5+sTi6he778gUwpScbycQSZlCTvSGAcbhMTcR3yKL2Ij0+ogLRFQuBHjI6\nHuia+kMG5E4rtATM5VHzqxSHIYZKwGt19tkfTujROznHbVGIM6/JGmKRUAcN2wAc\nXWNzN3gtx0QxJYe72O1Kn09Ar9rltgE65tRtPdjHYQKBgQDwKCBTVjuSHvhoL5wz\nSkx+sGTv0usFhZKHq4OD7IBtoL6aPIy3nVy2LNlyqDlqd4/2++pMzg/XIq4hyg7h\nHid9tJ9oih0iFsyEmv7mqiDWzDobXVZ3kTTf7tZe8AZ6POmjnGNG++0LGqP3JQ1J\n2X15gy6IvfUyiiDGituDxJr0LQKBgQC7Ea9xpAbb2C3I5UDgZplW9LImf6C3EVr+\njoNAVuleTuSa7TG3GkY7dTJrQCFANj05HoR+Hr3W9pazgI2PG9LMblU3PD0I1lkV\n6gtrT38UmxWzCJBr0RDy9t5ysAhjI2juonWp6BkRyoue+G/hNIVjSHNk7pp6Rk2m\ntr4BqpFlKQKBgQCjoONthKqwA5QDALVvqOb3xt3vHYluSLUu5SiFgWV7zHMxiaHj\nFT/vDB3YZlBAf1hC0x+v1xKp5YI5mX+L2MzVdHTMeJYi/N+6VhTpOu+HCr1oma7p\nZrFdBlFffDEdplUWWd62pb27vBoNsVwdfidk3IGfP7ZKCh0Myd2JKTLevQKBgAXw\npNKF89XNQn7rkKjPeTUCphmE2fSWL35/xfkoCVb+SFIHEBoRUoOW0BgJvESOtFj4\n+BoNHdgSkmx2u4f8yS/GnRwY5JNAQynn+Z7Zsl5UIldCAVv7En+0iRG5Nzr2p+FT\n9UqE3S7scIyGtP7ArS+e4FMnJG6XhuWxTc09vkopAoGALQZRdQlr34sE341+5Zpl\nQbtfeYEd8e6rr03SlhHRngEzTLoH4o6bkCQlFudrIbx/QlDU91uAqplLwcrAqPib\nmz+jzaqauc26CnUSrJGpPhiaY/3Zw2Xaqlx62GRcemycbGdpw5hEO8d2CaTF+Lwh\nr2VEJIq4rjXy5ZfU61UYP+A=\n-----END PRIVATE KEY-----\n",
+  "client_email": "java-samples-acct@mkaholok-sd-test.google.com.iam.gserviceaccount.com",
+  "client_id": "109119811390383463303",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/java-samples-acct%40mkaholok-sd-test.google.com.iam.gserviceaccount.com"
+}
