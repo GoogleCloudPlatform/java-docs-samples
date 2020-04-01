@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc.
+// Copyright 2020 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,43 +14,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-apply plugin: 'java'
-apply plugin: 'com.google.protobuf'
 
-buildscript {
+// Fake Gradle.build file to convince RenovateBot this repo uses gradle.
+subprojects {
+  apply plugin: 'java'
+
   repositories {
     mavenCentral()
-  }
-  dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
-
-  }
-}
-
-def grpcVersion = '1.0.3'
-
-dependencies {
-  repositories {
-    mavenCentral()
-  }
-  compile "io.grpc:grpc-netty:${grpcVersion}"
-  compile "io.grpc:grpc-protobuf:${grpcVersion}"
-  compile "io.grpc:grpc-stub:${grpcVersion}"
-}
-
-protobuf {
-  protoc {
-    artifact = 'com.google.protobuf:protoc:3.0.2'
-  }
-
-  plugins {
-    grpc {
-      artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
-    }
-  }
-  generateProtoTasks {
-    all()*.plugins {
-      grpc {}
-    }
   }
 }
