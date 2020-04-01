@@ -54,9 +54,9 @@ public class OcrTranslateApiMessage {
     OcrTranslateApiMessage ocrMessage = gson.fromJson(jsonStr, OcrTranslateApiMessage.class);
 
     // Get + verify parameters
-    String text = ocrMessage.getText();
-    String filename = ocrMessage.getFilename();
-    String targetLang = ocrMessage.getLang();
+    String text = ocrMessage.text;
+    String filename = ocrMessage.filename;
+    String targetLang = ocrMessage.lang;
     if (text == null) {
       throw new IllegalArgumentException("Missing text parameter");
     }

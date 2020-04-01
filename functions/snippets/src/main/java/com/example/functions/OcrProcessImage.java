@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
+// [END functions_ocr_process]
+
 public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
   // TODO<developer> set these environment variables
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
@@ -57,6 +59,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
         ProjectTopicName.of(PROJECT_ID, TRANSLATE_TOPIC_NAME)).build();
   }
 
+  // [START functions_ocr_process]
   @Override
   public void accept(GcsEvent gcsEvent, Context context) throws RuntimeException {
 
@@ -94,8 +97,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       visionResponse = client.batchAnnotateImages(visionRequests).getResponses(0);
       if (visionResponse.hasError()) {
-        LOGGER.severe("Error detecting text: " + visionResponse.getError().getMessage());
-        return;
+        throw new RuntimeException("Error detecting text: " + visionResponse.getError().getMessage());
       }
     } catch (IOException e) {
       // Cast to RuntimeException
@@ -103,6 +105,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     }
 
     if (visionResponse == null || !visionResponse.hasFullTextAnnotation()) {
+      LOGGER.info(String.format("Image %s contains no text", filename));
       return;
     }
 
@@ -125,6 +128,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     }
 
     if (languageResponse == null || languageResponse.getLanguagesCount() == 0) {
+      LOGGER.info("No languages were detected for text: " + text);
       return;
     }
 
