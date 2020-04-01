@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
 
-  <groupId>com.google.cloud.servicedirectory.samples</groupId>
+  <groupId>com.example</groupId>
   <artifactId>servicedirectory-samples</artifactId>
   <version>1.0</version>
 
