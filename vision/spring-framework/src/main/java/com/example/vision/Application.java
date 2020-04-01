@@ -19,9 +19,7 @@ package com.example.vision;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Entry point to running the Spring Boot application.
- */
+/** Entry point to running the Spring Boot application. */
 @SpringBootApplication
 public class Application {
 

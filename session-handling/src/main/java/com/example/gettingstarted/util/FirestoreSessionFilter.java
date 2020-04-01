@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -127,9 +126,7 @@ public class FirestoreSessionFilter implements Filter {
       sessionMap.put(attrName, session.getAttribute(attrName));
     }
 
-
-    logger.info(
-        "Saving data to " + sessionId + " with views: " + session.getAttribute("views"));
+    logger.info("Saving data to " + sessionId + " with views: " + session.getAttribute("views"));
     firestore.runTransaction((ob) -> sessions.document(sessionId).set(sessionMap));
   }
   // [END sessions_handling_filter]

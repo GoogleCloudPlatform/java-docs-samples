@@ -23,7 +23,6 @@ import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
-
 import java.io.IOException;
 
 class ListDatasets {
@@ -70,8 +69,8 @@ class ListDatasets {
 
         // [START automl_video_object_tracking_list_datasets_beta]
         System.out.format(
-                "Video object tracking dataset metadata: %s\n",
-                dataset.getVideoObjectTrackingDatasetMetadata());
+            "Video object tracking dataset metadata: %s\n",
+            dataset.getVideoObjectTrackingDatasetMetadata());
         // [END automl_video_object_tracking_list_datasets_beta]
 
         // [START automl_tables_list_datasets_beta]

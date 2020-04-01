@@ -21,7 +21,6 @@ package com.example.automl;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.ModelEvaluation;
 import com.google.cloud.automl.v1beta1.ModelEvaluationName;
-
 import java.io.IOException;
 
 class GetModelEvaluation {
@@ -64,8 +63,8 @@ class GetModelEvaluation {
 
       // [START automl_video_object_tracking_get_model_evaluation_beta]
       System.out.format(
-              "Video Object Tracking Evaluation Metrics: %s\n",
-              modelEvaluation.getVideoObjectTrackingEvaluationMetrics());
+          "Video Object Tracking Evaluation Metrics: %s\n",
+          modelEvaluation.getVideoObjectTrackingEvaluationMetrics());
       // [START automl_video_classification_get_model_evaluation_beta]
     }
   }

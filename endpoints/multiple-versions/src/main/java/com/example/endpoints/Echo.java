@@ -18,12 +18,10 @@ package com.example.endpoints;
 
 import com.example.endpoints.message.Message;
 import com.example.endpoints.message.MessageTranslator;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
-
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;

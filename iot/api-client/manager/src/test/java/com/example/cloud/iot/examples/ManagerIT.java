@@ -27,12 +27,9 @@ import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import java.util.List;
-
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.junit.After;
 import org.junit.Assert;

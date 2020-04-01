@@ -19,7 +19,6 @@ package com.google.cloud.language.samples;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.language.v1beta2.Sentiment;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Before;
@@ -27,9 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Integration (system) tests for {@link Analyze}.
- */
+/** Integration (system) tests for {@link Analyze}. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AnalyzeBetaIT {
@@ -48,17 +45,18 @@ public class AnalyzeBetaIT {
 
   @Test
   public void analyzeSentiment_returnPositiveGerman() throws Exception {
-    Sentiment sentiment = AnalyzeBeta.analyzeSentimentText(
-        "Ich hatte die schönste Erfahrung mit euch allen.", "DE");
+    Sentiment sentiment =
+        AnalyzeBeta.analyzeSentimentText("Ich hatte die schönste Erfahrung mit euch allen.", "DE");
     assertThat(sentiment.getMagnitude()).isGreaterThan(0.0F);
     assertThat(sentiment.getScore()).isGreaterThan(0.0F);
   }
 
   @Test
   public void analyzeCategoriesInTextReturnsExpectedResult() throws Exception {
-    AnalyzeBeta.classifyText("Android is a mobile operating system developed by Google, "
-        + "based on the Linux kernel and designed primarily for touchscreen "
-        + "mobile devices such as smartphones and tablets.");
+    AnalyzeBeta.classifyText(
+        "Android is a mobile operating system developed by Google, "
+            + "based on the Linux kernel and designed primarily for touchscreen "
+            + "mobile devices such as smartphones and tablets.");
     String got = bout.toString();
     assertThat(got).contains("Computers & Electronics");
   }
