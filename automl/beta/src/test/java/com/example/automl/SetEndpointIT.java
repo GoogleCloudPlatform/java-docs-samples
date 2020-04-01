@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,6 @@ public class SetEndpointIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
@@ -49,7 +47,6 @@ public class SetEndpointIT {
   public void tearDown() {
     System.setOut(null);
   }
-
 
   @Test
   public void testSetEndpoint() throws IOException {

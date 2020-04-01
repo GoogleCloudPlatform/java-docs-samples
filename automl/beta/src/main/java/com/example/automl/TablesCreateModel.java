@@ -25,7 +25,6 @@ import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.Model;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.cloud.automl.v1beta1.TablesModelMetadata;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 

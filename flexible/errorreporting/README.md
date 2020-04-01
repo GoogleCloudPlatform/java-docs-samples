@@ -43,7 +43,7 @@ Confirm that you see the custom error reported using the error reporting API.
 ## Deploy
 Run:
 ```
-   mvn appengine:deploy
+   mvn clean package appengine:deploy
 ```
 Access [https://YOUR_PROJECT_ID.appspot.com/error] endpoint.
 

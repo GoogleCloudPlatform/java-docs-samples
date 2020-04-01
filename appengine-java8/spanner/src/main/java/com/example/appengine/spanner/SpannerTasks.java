@@ -16,20 +16,16 @@
 
 package com.example.appengine.spanner;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Operation;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.common.base.Stopwatch;
-import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,9 +53,7 @@ class SpannerTasks {
     readOnlyTransaction
   }
 
-  /**
-   * Class to contain singer sample data.
-   */
+  /** Class to contain singer sample data. */
   static class Singer {
 
     final long singerId;
@@ -73,9 +67,7 @@ class SpannerTasks {
     }
   }
 
-  /**
-   * Class to contain album sample data.
-   */
+  /** Class to contain album sample data. */
   static class Album {
 
     final long singerId;
@@ -107,8 +99,8 @@ class SpannerTasks {
 
   private static DatabaseClient databaseClient = null;
 
-  private static void createDatabase(PrintWriter pw) throws InterruptedException,
-      ExecutionException {
+  private static void createDatabase(PrintWriter pw)
+      throws InterruptedException, ExecutionException {
     Iterable<String> statements =
         Arrays.asList(
             "CREATE TABLE Singers (\n"
@@ -184,8 +176,8 @@ class SpannerTasks {
     }
   }
 
-  private static void addMarketingBudgetColumnToAlbums(PrintWriter pw) throws ExecutionException,
-      InterruptedException {
+  private static void addMarketingBudgetColumnToAlbums(PrintWriter pw)
+      throws ExecutionException, InterruptedException {
     SpannerClient.getDatabaseAdminClient()
         .updateDatabaseDdl(
             SpannerClient.getInstanceId(),
@@ -368,7 +360,7 @@ class SpannerTasks {
     // ReadOnlyTransaction must be closed by calling close() on it to release resources held by it.
     // We use a try-with-resource block to automatically do so.
     try (ReadOnlyTransaction transaction =
-             SpannerClient.getDatabaseClient().readOnlyTransaction()) {
+        SpannerClient.getDatabaseClient().readOnlyTransaction()) {
       ResultSet queryResultSet =
           transaction.executeQuery(
               Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"));

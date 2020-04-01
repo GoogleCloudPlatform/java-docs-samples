@@ -30,14 +30,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
-
 import com.google.api.client.util.Charsets;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.common.io.CharStreams;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

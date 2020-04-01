@@ -15,7 +15,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
   </parent>
 
   <properties>
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v3-rev20200109-1.30.8</version>
+      <version>v3-rev20200219-1.30.9</version>
     </dependency>
     <!-- [END dependencies] -->
 

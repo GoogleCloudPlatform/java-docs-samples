@@ -24,14 +24,12 @@ import com.google.cloud.automl.v1.DeployModelRequest;
 import com.google.cloud.automl.v1.Model;
 import com.google.cloud.automl.v1.ModelName;
 import com.google.protobuf.Value;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,8 +47,8 @@ public class TablesPredictTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            "Environment variable '%s' is required to perform these tests.".format(varName));
+        System.getenv(varName),
+        "Environment variable '%s' is required to perform these tests.".format(varName));
   }
 
   @BeforeClass
@@ -68,7 +66,7 @@ public class TablesPredictTest {
       if (model.getDeploymentState() == Model.DeploymentState.UNDEPLOYED) {
         // Deploy the model if not deployed
         DeployModelRequest request =
-                DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
+            DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
         client.deployModelAsync(request).get();
       }
     }

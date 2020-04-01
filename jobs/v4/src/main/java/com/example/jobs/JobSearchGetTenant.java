@@ -22,7 +22,6 @@ import com.google.cloud.talent.v4beta1.GetTenantRequest;
 import com.google.cloud.talent.v4beta1.Tenant;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantServiceClient;
-
 import java.io.IOException;
 
 public class JobSearchGetTenant {

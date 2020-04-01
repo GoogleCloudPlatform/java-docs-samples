@@ -18,18 +18,28 @@ package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.spanner.BackupId;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.common.base.CharMatcher;
+import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.temporal.ChronoField;
 
 /** Unit tests for {@code SpannerSample} */
 @RunWith(JUnit4.class)
@@ -59,11 +69,15 @@ public class SpannerSampleIT {
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
+    dbClient.dropDatabase(
+        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
   }
 
   @After
   public void tearDown() throws Exception {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
+    dbClient.dropDatabase(
+        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
   }
 
   @Test
@@ -216,7 +230,7 @@ public class SpannerSampleIT {
 
     out = runSample("querywithbytes");
     assertThat(out).contains("4 Venue 4");
-  
+
     out = runSample("querywithdate");
     assertThat(out).contains("4 Venue 4 2018-09-02");
     assertThat(out).contains("42 Venue 42 2018-10-01");
@@ -236,6 +250,105 @@ public class SpannerSampleIT {
     assertThat(out).contains("4 Venue 4");
     assertThat(out).contains("19 Venue 19");
     assertThat(out).contains("42 Venue 42");
+
+    out = runSample("clientwithqueryoptions");
+    assertThat(out).contains("1 1 Total Junk");
+    out = runSample("querywithqueryoptions");
+    assertThat(out).contains("1 1 Total Junk");
+
+    String backupName =
+        String.format(
+            "%s_%02d",
+            dbId.getDatabase(), LocalDate.now().get(ChronoField.ALIGNED_WEEK_OF_YEAR));
+    BackupId backupId = BackupId.of(dbId.getInstanceId(), backupName);
+
+    out = runSample("createbackup");
+    assertThat(out).contains("Created backup [" + backupId + "]");
+
+    out = runSample("cancelcreatebackup");
+    assertThat(out).contains(
+        "Backup operation for [" + backupId + "_cancel] successfully cancelled");
+
+    out = runSample("listbackupoperations");
+    assertThat(out).contains(
+        String.format(
+            "Backup %s on database %s pending:",
+            backupId.getName(),
+            dbId.getName()));
+
+    out = runSample("listbackups");
+    assertThat(out).contains("All backups:");
+    assertThat(out).contains(
+        String.format("All backups with backup name containing \"%s\":", backupId.getBackup()));
+    assertThat(out).contains(String.format(
+        "All backups for databases with a name containing \"%s\":",
+        dbId.getDatabase()));
+    assertThat(out).contains(
+        String.format("All backups that expire before"));
+    assertThat(out).contains("All backups with size greater than 100 bytes:");
+    assertThat(out).containsMatch(
+        Pattern.compile("All databases created after (.+) and that are ready:"));
+    assertThat(out).contains("All backups, listed using pagination:");
+    // All the above tests should include the created backup exactly once, i.e. exactly 7 times.
+    assertThat(countOccurrences(out, backupId.getName())).isEqualTo(7);
+
+    // Try the restore operation in a retry loop, as there is a limit on the number of restore
+    // operations that is allowed to execute simultaneously, and we should retry if we hit this
+    // limit.
+    int restoreAttempts = 0;
+    while (true) {
+      try {
+        out = runSample("restorebackup");
+        assertThat(out).contains(
+            "Restored database ["
+                + dbId.getName()
+                + "] from ["
+                + backupId.getName()
+                + "]");
+        break;
+      } catch (SpannerException e) {
+        if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
+            && e.getMessage()
+                .contains("Please retry the operation once the pending restores complete")) {
+          restoreAttempts++;
+          if (restoreAttempts == 10) {
+            System.out.println(
+                "Restore operation failed 10 times because of other pending restores. "
+                + "Giving up restore.");
+            break;
+          }
+          Uninterruptibles.sleepUninterruptibly(60L, TimeUnit.SECONDS);
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    out = runSample("listdatabaseoperations");
+    assertThat(out).contains(
+        String.format(
+            "Database %s restored from backup",
+            DatabaseId.of(
+                dbId.getInstanceId(),
+                SpannerSample.createRestoredSampleDbId(dbId))
+            .getName()));
+
+    out = runSample("updatebackup");
+    assertThat(out).contains(
+        String.format("Updated backup [" + backupId + "]"));
+
+    // Drop the restored database before we try to delete the backup.
+    // Otherwise the delete backup operation might fail as the backup is still in use by
+    // the OptimizeRestoredDatabase operation.
+    dbClient.dropDatabase(
+        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
+
+    out = runSample("deletebackup");
+    assertThat(out).contains("Deleted backup [" + backupId + "]");
+  }
+
+  private static int countOccurrences(String input, String search) {
+    return input.split(search).length - 1;
   }
 
   private String formatForTest(String name) {

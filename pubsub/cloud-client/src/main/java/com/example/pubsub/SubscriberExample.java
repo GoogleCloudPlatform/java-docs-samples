@@ -44,13 +44,12 @@ public class SubscriberExample {
   public static void main(String... args) throws Exception {
     // set subscriber id, eg. my-sub
     String subscriptionId = args[0];
-    ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
-        PROJECT_ID, subscriptionId);
+    ProjectSubscriptionName subscriptionName =
+        ProjectSubscriptionName.of(PROJECT_ID, subscriptionId);
     Subscriber subscriber = null;
     try {
       // create a subscriber bound to the asynchronous message receiver
-      subscriber =
-          Subscriber.newBuilder(subscriptionName, new MessageReceiverExample()).build();
+      subscriber = Subscriber.newBuilder(subscriptionName, new MessageReceiverExample()).build();
       subscriber.startAsync().awaitRunning();
       // Allow the subscriber to run indefinitely unless an unrecoverable error occurs.
       subscriber.awaitTerminated();

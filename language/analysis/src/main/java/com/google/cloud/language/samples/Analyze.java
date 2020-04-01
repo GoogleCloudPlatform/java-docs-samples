@@ -34,7 +34,6 @@ import com.google.cloud.language.v1.EntityMention;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Token;
-
 import java.util.List;
 import java.util.Map;
 
@@ -44,15 +43,12 @@ import java.util.Map;
  */
 public class Analyze {
 
-  /**
-   * Detects entities,sentiment and syntax in a document using the Natural Language API.
-   */
+  /** Detects entities,sentiment and syntax in a document using the Natural Language API. */
   public static void main(String[] args) throws Exception {
     if (args.length != 2) {
       System.err.println("Usage:");
       System.err.printf(
-          "\tjava %s \"command\" \"text to analyze\"\n",
-          Analyze.class.getCanonicalName());
+          "\tjava %s \"command\" \"text to analyze\"\n", Analyze.class.getCanonicalName());
       System.exit(1);
     }
     String command = args[0];
@@ -91,21 +87,17 @@ public class Analyze {
     }
   }
 
-  /**
-   * Identifies entities in the string {@code text}.
-   */
+  /** Identifies entities in the string {@code text}. */
   public static void analyzeEntitiesText(String text) throws Exception {
     // [START language_entities_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setContent(text)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16)
-          .build();
+      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+      AnalyzeEntitiesRequest request =
+          AnalyzeEntitiesRequest.newBuilder()
+              .setDocument(doc)
+              .setEncodingType(EncodingType.UTF16)
+              .build();
 
       AnalyzeEntitiesResponse response = language.analyzeEntities(request);
 
@@ -127,22 +119,19 @@ public class Analyze {
     // [END language_entities_text]
   }
 
-  /**
-   * Identifies entities in the contents of the object at the given GCS {@code path}.
-   */
+  /** Identifies entities in the contents of the object at the given GCS {@code path}. */
   public static void analyzeEntitiesFile(String gcsUri) throws Exception {
     // [START language_entities_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS Content URI path to the file to be analyzed
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16)
-          .build();
+      Document doc =
+          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+      AnalyzeEntitiesRequest request =
+          AnalyzeEntitiesRequest.newBuilder()
+              .setDocument(doc)
+              .setEncodingType(EncodingType.UTF16)
+              .build();
 
       AnalyzeEntitiesResponse response = language.analyzeEntities(request);
 
@@ -164,17 +153,12 @@ public class Analyze {
     // [END language_entities_gcs]
   }
 
-  /**
-   * Identifies the sentiment in the string {@code text}.
-   */
+  /** Identifies the sentiment in the string {@code text}. */
   public static Sentiment analyzeSentimentText(String text) throws Exception {
     // [START language_sentiment_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setContent(text)
-          .setType(Type.PLAIN_TEXT)
-          .build();
+      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
       AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
       Sentiment sentiment = response.getDocumentSentiment();
       if (sentiment == null) {
@@ -188,17 +172,13 @@ public class Analyze {
     // [END language_sentiment_text]
   }
 
-  /**
-   * Gets {@link Sentiment} from the contents of the GCS hosted file.
-   */
+  /** Gets {@link Sentiment} from the contents of the GCS hosted file. */
   public static Sentiment analyzeSentimentFile(String gcsUri) throws Exception {
     // [START language_sentiment_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
+      Document doc =
+          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
       AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
       Sentiment sentiment = response.getDocumentSentiment();
       if (sentiment == null) {
@@ -212,21 +192,17 @@ public class Analyze {
     // [END language_sentiment_gcs]
   }
 
-  /**
-   * from the string {@code text}.
-   */
+  /** from the string {@code text}. */
   public static List<Token> analyzeSyntaxText(String text) throws Exception {
     // [START language_syntax_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setContent(text)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16)
-          .build();
+      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+      AnalyzeSyntaxRequest request =
+          AnalyzeSyntaxRequest.newBuilder()
+              .setDocument(doc)
+              .setEncodingType(EncodingType.UTF16)
+              .build();
       // analyze the syntax in the given text
       AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
       // print the response
@@ -255,21 +231,18 @@ public class Analyze {
     // [END language_syntax_text]
   }
 
-  /**
-   * Get the syntax of the GCS hosted file.
-   */
+  /** Get the syntax of the GCS hosted file. */
   public static List<Token> analyzeSyntaxFile(String gcsUri) throws Exception {
     // [START language_syntax_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      AnalyzeSyntaxRequest request = AnalyzeSyntaxRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16)
-          .build();
+      Document doc =
+          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+      AnalyzeSyntaxRequest request =
+          AnalyzeSyntaxRequest.newBuilder()
+              .setDocument(doc)
+              .setEncodingType(EncodingType.UTF16)
+              .build();
       // analyze the syntax in the given text
       AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
       // print the response
@@ -299,70 +272,58 @@ public class Analyze {
     // [END language_syntax_gcs]
   }
 
-  /**
-   * Detects categories in text using the Language Beta API.
-   */
+  /** Detects categories in text using the Language Beta API. */
   public static void classifyText(String text) throws Exception {
     // [START language_classify_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set content to the text string
-      Document doc = Document.newBuilder()
-          .setContent(text)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
-          .setDocument(doc)
-          .build();
+      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder().setDocument(doc).build();
       // detect categories in the given text
       ClassifyTextResponse response = language.classifyText(request);
 
       for (ClassificationCategory category : response.getCategoriesList()) {
-        System.out.printf("Category name : %s, Confidence : %.3f\n",
+        System.out.printf(
+            "Category name : %s, Confidence : %.3f\n",
             category.getName(), category.getConfidence());
       }
     }
     // [END language_classify_text]
   }
 
-  /**
-   * Detects categories in a GCS hosted file using the Language Beta API.
-   */
+  /** Detects categories in a GCS hosted file using the Language Beta API. */
   public static void classifyFile(String gcsUri) throws Exception {
     // [START language_classify_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS content URI path
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
-          .setDocument(doc)
-          .build();
+      Document doc =
+          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder().setDocument(doc).build();
       // detect categories in the given file
       ClassifyTextResponse response = language.classifyText(request);
 
       for (ClassificationCategory category : response.getCategoriesList()) {
-        System.out.printf("Category name : %s, Confidence : %.3f\n",
+        System.out.printf(
+            "Category name : %s, Confidence : %.3f\n",
             category.getName(), category.getConfidence());
       }
     }
     // [END language_classify_gcs]
   }
 
-  /**
-   * Detects the entity sentiments in the string {@code text} using the Language Beta API.
-   */
+  /** Detects the entity sentiments in the string {@code text} using the Language Beta API. */
   public static void entitySentimentText(String text) throws Exception {
     // [START language_entity_sentiment_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setContent(text).setType(Type.PLAIN_TEXT).build();
-      AnalyzeEntitySentimentRequest request = AnalyzeEntitySentimentRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16).build();
+      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+      AnalyzeEntitySentimentRequest request =
+          AnalyzeEntitySentimentRequest.newBuilder()
+              .setDocument(doc)
+              .setEncodingType(EncodingType.UTF16)
+              .build();
       // detect entity sentiments in the given string
       AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
       // Print the response
@@ -382,21 +343,18 @@ public class Analyze {
     // [END language_entity_sentiment_text]
   }
 
-  /**
-   * Identifies the entity sentiments in the the GCS hosted file using the Language Beta API.
-   */
+  /** Identifies the entity sentiments in the the GCS hosted file using the Language Beta API. */
   public static void entitySentimentFile(String gcsUri) throws Exception {
     // [START language_entity_sentiment_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder()
-          .setGcsContentUri(gcsUri)
-          .setType(Type.PLAIN_TEXT)
-          .build();
-      AnalyzeEntitySentimentRequest request = AnalyzeEntitySentimentRequest.newBuilder()
-          .setDocument(doc)
-          .setEncodingType(EncodingType.UTF16)
-          .build();
+      Document doc =
+          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+      AnalyzeEntitySentimentRequest request =
+          AnalyzeEntitySentimentRequest.newBuilder()
+              .setDocument(doc)
+              .setEncodingType(EncodingType.UTF16)
+              .build();
       // Detect entity sentiments in the given file
       AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
       // Print the response

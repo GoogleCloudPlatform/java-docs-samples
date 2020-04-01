@@ -23,7 +23,6 @@ import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;

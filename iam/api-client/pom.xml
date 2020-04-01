@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
   </parent>
 
   <properties>
@@ -40,13 +40,13 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20200221-1.30.8</version>
+      <version>v1-rev20200221-1.30.9</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20200210-1.30.8</version>
+      <version>v1-rev20200311-1.30.9</version>
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>

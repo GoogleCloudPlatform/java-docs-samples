@@ -40,5 +40,5 @@ Second, [Using Maven and the App Engine Plugin](https://cloud.google.com/appengi
 deploy to Google App Engine:
 
 ```
-mvn appengine:deploy
+mvn clean package appengine:deploy
 ```

@@ -19,10 +19,8 @@ package com.example.appengine.memcache;
 import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
-
 import java.io.IOException;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,13 +30,12 @@ import javax.servlet.http.HttpServletResponse;
 // [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "memcache", description = "Memcache: Best Practices",
-    urlPatterns = "/memcache")
+@WebServlet(name = "memcache", description = "Memcache: Best Practices", urlPatterns = "/memcache")
 public class MemcacheBestPracticeServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
       return; // ignore the request for favicon.ico

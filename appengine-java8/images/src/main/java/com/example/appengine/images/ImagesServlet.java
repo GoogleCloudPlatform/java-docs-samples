@@ -29,14 +29,12 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,24 +43,27 @@ import javax.servlet.http.HttpServletResponse;
 // [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "images",
+@WebServlet(
+    name = "images",
     description = "Images: Write an image to a bucket and display it in various sizes",
     urlPatterns = "/images")
 public class ImagesServlet extends HttpServlet {
   final String bucket = "YOUR-BUCKETNAME-HERE";
 
   // [START gcs]
-  private final GcsService gcsService = GcsServiceFactory.createGcsService(new RetryParams.Builder()
-      .initialRetryDelayMillis(10)
-      .retryMaxAttempts(10)
-      .totalRetryPeriodMillis(15000)
-      .build());
+  private final GcsService gcsService =
+      GcsServiceFactory.createGcsService(
+          new RetryParams.Builder()
+              .initialRetryDelayMillis(10)
+              .retryMaxAttempts(10)
+              .totalRetryPeriodMillis(15000)
+              .build());
   // [END gcs]
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-    //[START original_image]
+    // [START original_image]
     // Read the image.jpg resource into a ByteBuffer.
     FileInputStream fileInputStream = new FileInputStream(new File("WEB-INF/image.jpg"));
     FileChannel fileChannel = fileInputStream.getChannel();
@@ -76,9 +77,9 @@ public class ImagesServlet extends HttpServlet {
         new GcsFilename(bucket, "image.jpeg"),
         new GcsFileOptions.Builder().mimeType("image/jpeg").build(),
         ByteBuffer.wrap(imageBytes));
-    //[END original_image]
+    // [END original_image]
 
-    //[START resize]
+    // [START resize]
     // Get an instance of the imagesService we can use to transform images.
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
@@ -92,9 +93,9 @@ public class ImagesServlet extends HttpServlet {
         new GcsFilename(bucket, "resizedImage.jpeg"),
         new GcsFileOptions.Builder().mimeType("image/jpeg").build(),
         ByteBuffer.wrap(resizedImage.getImageData()));
-    //[END resize]
+    // [END resize]
 
-    //[START rotate]
+    // [START rotate]
     // Make an image from a Cloud Storage object, and transform it.
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/" + bucket + "/image.jpeg");
@@ -107,12 +108,12 @@ public class ImagesServlet extends HttpServlet {
         new GcsFilename(bucket, "rotatedImage.jpeg"),
         new GcsFileOptions.Builder().mimeType("image/jpeg").build(),
         ByteBuffer.wrap(rotatedImage.getImageData()));
-    //[END rotate]
+    // [END rotate]
 
     // [START servingUrl]
     // Create a fixed dedicated URL that points to the GCS hosted file
-    ServingUrlOptions options = ServingUrlOptions.Builder
-            .withGoogleStorageFileName("/gs/" + bucket + "/image.jpeg")
+    ServingUrlOptions options =
+        ServingUrlOptions.Builder.withGoogleStorageFileName("/gs/" + bucket + "/image.jpeg")
             .imageSize(150)
             .crop(true)
             .secureUrl(true);
@@ -123,12 +124,16 @@ public class ImagesServlet extends HttpServlet {
     // in the browser.
     PrintWriter out = resp.getWriter();
     out.println("<html><body>\n");
-    out.println("<img src='//storage.cloud.google.com/" + bucket
-        + "/image.jpeg' alt='AppEngine logo' />");
-    out.println("<img src='//storage.cloud.google.com/" + bucket
-        + "/resizedImage.jpeg' alt='AppEngine logo resized' />");
-    out.println("<img src='//storage.cloud.google.com/" + bucket
-        + "/rotatedImage.jpeg' alt='AppEngine logo rotated' />");
+    out.println(
+        "<img src='//storage.cloud.google.com/" + bucket + "/image.jpeg' alt='AppEngine logo' />");
+    out.println(
+        "<img src='//storage.cloud.google.com/"
+            + bucket
+            + "/resizedImage.jpeg' alt='AppEngine logo resized' />");
+    out.println(
+        "<img src='//storage.cloud.google.com/"
+            + bucket
+            + "/rotatedImage.jpeg' alt='AppEngine logo rotated' />");
     out.println("<img src='" + url + "' alt='Hosted logo' />");
     out.println("</body></html>\n");
   }
