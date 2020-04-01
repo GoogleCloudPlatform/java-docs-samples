@@ -116,9 +116,10 @@ public final class FeaturedJobsSearchSample {
     String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
 
     // Wait several seconds for post processing
-    Thread.sleep(10000);
+    Thread.sleep(5000);
     searchFeaturedJobs(companyName);
 
+    Thread.sleep(5000);
     BasicJobSample.deleteJob(jobName);
     BasicCompanySample.deleteCompany(companyName);
   }
