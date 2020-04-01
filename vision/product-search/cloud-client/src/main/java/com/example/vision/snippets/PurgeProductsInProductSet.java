@@ -24,15 +24,13 @@ import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.cloud.vision.v1.ProductSetPurgeConfig;
 import com.google.cloud.vision.v1.PurgeProductsRequest;
 import com.google.protobuf.Empty;
-
 import java.util.concurrent.TimeUnit;
 
 public class PurgeProductsInProductSet {
 
   // Delete all products in a product set.
   public static void purgeProductsInProductSet(
-          String projectId, String location, String productSetId)
-          throws Exception {
+      String projectId, String location, String productSetId) throws Exception {
 
     // String projectId = "YOUR_PROJECT_ID";
     // String location = "us-central1";
@@ -42,13 +40,11 @@ public class PurgeProductsInProductSet {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       String parent = LocationName.format(projectId, location);
-      ProductSetPurgeConfig productSetPurgeConfig = ProductSetPurgeConfig
-              .newBuilder()
-              .setProductSetId(productSetId)
-              .build();
+      ProductSetPurgeConfig productSetPurgeConfig =
+          ProductSetPurgeConfig.newBuilder().setProductSetId(productSetId).build();
 
-      PurgeProductsRequest request = PurgeProductsRequest
-              .newBuilder()
+      PurgeProductsRequest request =
+          PurgeProductsRequest.newBuilder()
               .setParent(parent)
               .setProductSetPurgeConfig(productSetPurgeConfig)
               // The operation is irreversible and removes multiple products.
@@ -59,7 +55,7 @@ public class PurgeProductsInProductSet {
               .build();
 
       OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(request);
-      response.getPollingFuture().get(90, TimeUnit.SECONDS);
+      response.getPollingFuture().get(180, TimeUnit.SECONDS);
 
       System.out.println("Products removed from product set.");
     }

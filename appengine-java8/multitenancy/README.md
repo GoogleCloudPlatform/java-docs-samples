@@ -20,4 +20,4 @@ How do I, as a developer, start working on the project?
 
 ## Deploying
 
-1. `mvn clean appengine:deploy
+1. `mvn clean package appengine:deploy

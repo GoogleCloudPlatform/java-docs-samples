@@ -18,9 +18,14 @@ package com.google.cloud.vision.samples.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.DeployModelRequest;
+import com.google.cloud.automl.v1beta1.Model;
+import com.google.cloud.automl.v1beta1.ModelName;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +45,19 @@ public class PredictionApiIT {
   private PrintStream out;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException, ExecutionException, InterruptedException {
+    // Verify that the model is deployed for prediction
+    try (AutoMlClient client = AutoMlClient.create()) {
+      ModelName modelFullId = ModelName.of(PROJECT_ID, "us-central1", modelId);
+      Model model = client.getModel(modelFullId);
+      if (model.getDeploymentState() == Model.DeploymentState.UNDEPLOYED) {
+        // Deploy the model if not deployed
+        DeployModelRequest request =
+            DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
+        client.deployModelAsync(request).get();
+      }
+    }
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -53,10 +70,7 @@ public class PredictionApiIT {
 
   @Test
   public void testPredict() {
-    // Act
     PredictionApi.predict(PROJECT_ID, COMPUTE_REGION, modelId, filePath, scoreThreshold);
-
-    // Assert
     String got = bout.toString();
     assertThat(got).contains("dandelion");
   }

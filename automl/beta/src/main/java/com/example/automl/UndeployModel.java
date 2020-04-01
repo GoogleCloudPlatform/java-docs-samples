@@ -23,7 +23,6 @@ import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.cloud.automl.v1beta1.UndeployModelRequest;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 

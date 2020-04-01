@@ -48,7 +48,7 @@ public class JobSearchCreateJobTest {
 
   @Test
   public void testCreateJob() throws IOException {
-    // retrieve a tenant.
+    // create a job.
     JobSearchCreateJob.createJob(
         PROJECT_ID, TENANT_ID, COMPANY_ID, POST_UNIQUE_ID, "http://www.jobUrl.com");
     String got = bout.toString();

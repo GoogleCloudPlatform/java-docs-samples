@@ -21,7 +21,6 @@ import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.VideoObjectTrackingDatasetMetadata;
-
 import java.io.IOException;
 
 class VideoObjectTrackingCreateDataset {

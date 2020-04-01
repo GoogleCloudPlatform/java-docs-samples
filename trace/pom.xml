@@ -28,7 +28,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
     <relativePath></relativePath>
   </parent>
 
@@ -43,17 +43,17 @@
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-api</artifactId>
-      <version>0.25.0</version>
+      <version>0.26.0</version>
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-exporter-trace-stackdriver</artifactId>
-      <version>0.25.0</version>
+      <version>0.26.0</version>
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-impl</artifactId>
-      <version>0.25.0</version>
+      <version>0.26.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>

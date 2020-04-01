@@ -29,9 +29,7 @@ import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.OutputConfig;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
-
 import java.util.concurrent.ExecutionException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
@@ -195,8 +193,7 @@ public class DatasetApi {
    * @param datasetId the Id of the dataset to which the training data will be imported.
    * @param path the Google Cloud Storage URIs. Target files must be in AutoML vision CSV format.
    */
-  static void importData(
-      String projectId, String computeRegion, String datasetId, String path) {
+  static void importData(String projectId, String computeRegion, String datasetId, String path) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -231,8 +228,7 @@ public class DatasetApi {
    * @param datasetId the Id of the dataset.
    * @param gcsUri the Destination URI (Google Cloud Storage)
    */
-  static void exportData(
-      String projectId, String computeRegion, String datasetId, String gcsUri) {
+  static void exportData(String projectId, String computeRegion, String datasetId, String gcsUri) {
     // Instantiates a client
     try (AutoMlClient client = AutoMlClient.create()) {
 
@@ -240,12 +236,12 @@ public class DatasetApi {
       DatasetName datasetFullId = DatasetName.of(projectId, computeRegion, datasetId);
 
       // Set the output URI
-      GcsDestination gcsDestination = GcsDestination.newBuilder().setOutputUriPrefix(gcsUri)
-          .build();
+      GcsDestination gcsDestination =
+          GcsDestination.newBuilder().setOutputUriPrefix(gcsUri).build();
 
       // Export the dataset to the output URI.
-      OutputConfig outputConfig = OutputConfig.newBuilder().setGcsDestination(gcsDestination)
-          .build();
+      OutputConfig outputConfig =
+          OutputConfig.newBuilder().setGcsDestination(gcsDestination).build();
       System.out.println("Processing export...");
 
       Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();

@@ -44,7 +44,7 @@ Deploying
 ---------
 
 If you've enabled billing (step 1 in [Setup](#Setup)), you can deploy the
-application to the web by running `mvn appengine:deploy` from your command line
+application to the web by running `mvn clean package appengine:deploy` from your command line
 (from the `sparkjava` directory).
 
 How does it work?

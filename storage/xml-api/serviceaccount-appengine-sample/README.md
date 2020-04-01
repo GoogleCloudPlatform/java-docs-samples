@@ -33,7 +33,7 @@ Running and Deploying Your Application from the Command Line
 
 To run your application locally on a development server:
 
-    mvn appengine:devserver
+    mvn appengine:run
 
 To deploy your application to appspot.com:
 

@@ -49,7 +49,7 @@ To deploy the sample API:
 
 0. Deploy the API implementation code by invoking:
 
-         mvn appengine:deploy
+         mvn clean package appengine:deploy
 
     The first time you upload a sample app, you may be prompted to authorize the
     deployment. Follow the prompts: when you are presented with a browser window

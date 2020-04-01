@@ -22,14 +22,12 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.util.Preconditions;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;

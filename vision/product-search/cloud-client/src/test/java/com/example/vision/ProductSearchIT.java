@@ -27,9 +27,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Integration (system) tests for {@link ProductSearch}.Tests rely on pre-created product set
- * that has been indexed.
- **/
+ * Integration (system) tests for {@link ProductSearch}.Tests rely on pre-created product set that
+ * has been indexed.
+ */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ProductSearchIT {

@@ -26,7 +26,6 @@ import com.google.cloud.automl.v1beta1.PredictionServiceClient;
 import com.google.cloud.automl.v1beta1.Row;
 import com.google.cloud.automl.v1beta1.TablesAnnotation;
 import com.google.protobuf.Value;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

@@ -41,7 +41,6 @@ import io.grafeas.v1.Version;
 import io.grafeas.v1.VulnerabilityNote;
 import io.grafeas.v1.VulnerabilityOccurrence;
 import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
-
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -249,7 +248,7 @@ public class SamplesTest {
     }
   }
 
-  @Test 
+  @Test
   public void testPollDiscoveryOccurrenceFinished() throws Exception {
     try {
       // expect fail on first try
@@ -291,7 +290,7 @@ public class SamplesTest {
     DeleteNote.deleteNote(discNoteId, PROJECT_ID);
   }
 
-  @Test 
+  @Test
   public void testFindVulnerabilitiesForImage() throws Exception {
     List<Occurrence> result = VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
         imageUrl, PROJECT_ID);
@@ -312,7 +311,7 @@ public class SamplesTest {
     DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
   }
 
-  @Test 
+  @Test
   public void testFindHighSeverityVulnerabilitiesForImage() throws Exception {
     // check before creation
     List<Occurrence> result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(

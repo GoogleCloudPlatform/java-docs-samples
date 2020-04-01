@@ -17,7 +17,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
   </parent>
 
   <groupId>com.example.spanner</groupId>
@@ -37,14 +37,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>1.13.0</version>
+      <version>1.15.0</version>
     </dependency>
 
     <!-- Hibernate core dependency -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.4.12.Final</version>
+      <version>5.4.13.Final</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->

@@ -54,16 +54,51 @@ class QueryDataSnippets {
     // [START fs_query_create_examples]
     CollectionReference cities = db.collection("cities");
     List<ApiFuture<WriteResult>> futures = new ArrayList<>();
-    futures.add(cities.document("SF").set(new City("San Francisco", "CA", "USA", false, 860000L,
-        Arrays.asList("west_coast", "norcal"))));
-    futures.add(cities.document("LA").set(new City("Los Angeles", "CA", "USA", false, 3900000L,
-        Arrays.asList("west_coast", "socal"))));
-    futures.add(cities.document("DC").set(new City("Washington D.C.", null, "USA", true, 680000L,
-        Arrays.asList("east_coast"))));
-    futures.add(cities.document("TOK").set(new City("Tokyo", null, "Japan", true, 9000000L,
-        Arrays.asList("kanto", "honshu"))));
-    futures.add(cities.document("BJ").set(new City("Beijing", null, "China", true, 21500000L,
-        Arrays.asList("jingjinji", "hebei"))));
+    futures.add(
+        cities
+            .document("SF")
+            .set(
+                new City(
+                    "San Francisco",
+                    "CA",
+                    "USA",
+                    false,
+                    860000L,
+                    Arrays.asList("west_coast", "norcal"))));
+    futures.add(
+        cities
+            .document("LA")
+            .set(
+                new City(
+                    "Los Angeles",
+                    "CA",
+                    "USA",
+                    false,
+                    3900000L,
+                    Arrays.asList("west_coast", "socal"))));
+    futures.add(
+        cities
+            .document("DC")
+            .set(
+                new City(
+                    "Washington D.C.", null, "USA", true, 680000L, Arrays.asList("east_coast"))));
+    futures.add(
+        cities
+            .document("TOK")
+            .set(
+                new City(
+                    "Tokyo", null, "Japan", true, 9000000L, Arrays.asList("kanto", "honshu"))));
+    futures.add(
+        cities
+            .document("BJ")
+            .set(
+                new City(
+                    "Beijing",
+                    null,
+                    "China",
+                    true,
+                    21500000L,
+                    Arrays.asList("jingjinji", "hebei"))));
     // (optional) block on documents successfully added
     ApiFutures.allAsList(futures).get();
     // [END fs_query_create_examples]
@@ -156,23 +191,21 @@ class QueryDataSnippets {
   Query createChainedQuery() {
     CollectionReference cities = db.collection("cities");
     // [START fs_chained_query]
-    Query chainedQuery1 = cities.whereEqualTo("state", "CO")
-        .whereEqualTo("name", "Denver");
+    Query chainedQuery1 = cities.whereEqualTo("state", "CO").whereEqualTo("name", "Denver");
     // [END fs_chained_query]
     return chainedQuery1;
   }
 
   /**
-   * An instance of a currently unsupported chained query: equality with inequality.
-   * NOTE : Requires support for creation of composite indices.
+   * An instance of a currently unsupported chained query: equality with inequality. NOTE : Requires
+   * support for creation of composite indices.
    *
    * @return query
    */
   Query createCompositeIndexChainedQuery() {
     CollectionReference cities = db.collection("cities");
     // [START fs_composite_index_chained_query]
-    Query chainedQuery2 = cities.whereEqualTo("state", "CA")
-        .whereLessThan("population", 1000000L);
+    Query chainedQuery2 = cities.whereEqualTo("state", "CA").whereLessThan("population", 1000000L);
     // [END fs_composite_index_chained_query]
     return chainedQuery2;
   }
@@ -185,10 +218,9 @@ class QueryDataSnippets {
   Query createRangeQuery() {
     CollectionReference cities = db.collection("cities");
     // [START fs_range_query]
-    Query validQuery1 = cities.whereGreaterThanOrEqualTo("state", "CA")
-        .whereLessThanOrEqualTo("state", "IN");
-    Query validQuery2 = cities.whereEqualTo("state", "CA")
-        .whereGreaterThan("population", 1000000);
+    Query validQuery1 =
+        cities.whereGreaterThanOrEqualTo("state", "CA").whereLessThanOrEqualTo("state", "IN");
+    Query validQuery2 = cities.whereEqualTo("state", "CA").whereGreaterThan("population", 1000000);
     // [END fs_range_query]
     return validQuery1;
   }
@@ -202,8 +234,8 @@ class QueryDataSnippets {
     CollectionReference cities = db.collection("cities");
     // Violates constraint : range operators are limited to a single field
     // [START fs_invalid_range_query]
-    Query invalidRangeQuery = cities.whereGreaterThanOrEqualTo("state", "CA")
-        .whereGreaterThan("population", 100000);
+    Query invalidRangeQuery =
+        cities.whereGreaterThanOrEqualTo("state", "CA").whereGreaterThan("population", 100000);
     // [END fs_invalid_range_query]
     return invalidRangeQuery;
   }
@@ -319,16 +351,11 @@ class QueryDataSnippets {
   void createMultipleCursorConditionsQuery() {
     // [START fs_multiple_cursor_conditions]
     // Will return all Springfields
-    Query query1 = db.collection("cities")
-        .orderBy("name")
-        .orderBy("state")
-        .startAt("Springfield");
+    Query query1 = db.collection("cities").orderBy("name").orderBy("state").startAt("Springfield");
 
     // Will return "Springfield, Missouri" and "Springfield, Wisconsin"
-    Query query2 = db.collection("cities")
-        .orderBy("name")
-        .orderBy("state")
-        .startAt("Springfield", "Missouri");
+    Query query2 =
+        db.collection("cities").orderBy("name").orderBy("state").startAt("Springfield", "Missouri");
     // [END fs_multiple_cursor_conditions]
   }
 
@@ -345,23 +372,17 @@ class QueryDataSnippets {
     DocumentSnapshot snapshot = future.get(30, TimeUnit.SECONDS);
 
     // Construct the query
-    Query query = db.collection("cities")
-        .orderBy("population")
-        .startAt(snapshot);
+    Query query = db.collection("cities").orderBy("population").startAt(snapshot);
     // [END fs_document_snapshot_cursor]
     return query;
   }
 
-  /**
-   * Example of a paginated query.
-   */
+  /** Example of a paginated query. */
   List<Query> paginateCursor() throws InterruptedException, ExecutionException, TimeoutException {
     // [START fs_paginate_cursor]
     // Construct query for first 25 cities, ordered by population.
     CollectionReference cities = db.collection("cities");
-    Query firstPage = cities
-        .orderBy("population")
-        .limit(25);
+    Query firstPage = cities.orderBy("population").limit(25);
 
     // Wait for the results of the API call, waiting for a maximum of 30 seconds for a result.
     ApiFuture<QuerySnapshot> future = firstPage.get();
@@ -369,10 +390,7 @@ class QueryDataSnippets {
 
     // Construct query for the next 25 cities.
     QueryDocumentSnapshot lastDoc = docs.get(docs.size() - 1);
-    Query secondPage = cities
-        .orderBy("population")
-        .startAfter(lastDoc)
-        .limit(25);
+    Query secondPage = cities.orderBy("population").startAfter(lastDoc).limit(25);
 
     future = secondPage.get();
     docs = future.get(30, TimeUnit.SECONDS).getDocuments();
@@ -381,53 +399,123 @@ class QueryDataSnippets {
   }
 
   void collectionGroupQuery() throws ExecutionException, InterruptedException {
-    //CHECKSTYLE OFF: Indentation
-    //CHECKSTYLE OFF: RightCurlyAlone
+    // CHECKSTYLE OFF: Indentation
+    // CHECKSTYLE OFF: RightCurlyAlone
     // [START fs_collection_group_query_data_setup]
     CollectionReference cities = db.collection("cities");
 
-    final List<ApiFuture<WriteResult>> futures = Arrays.asList(
-      cities.document("SF").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Golden Gate Bridge");
-        put("type", "bridge");
-      }}),
-      cities.document("SF").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Legion of Honor");
-        put("type", "museum");
-      }}),
-      cities.document("LA").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Griffith Park");
-        put("type", "park");
-      }}),
-      cities.document("LA").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "The Getty");
-        put("type", "museum");
-      }}),
-      cities.document("DC").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Lincoln Memorial");
-        put("type", "memorial");
-      }}),
-      cities.document("DC").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "National Air and Space Museum");
-        put("type", "museum");
-      }}),
-      cities.document("TOK").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Ueno Park");
-        put("type", "park");
-      }}),
-      cities.document("TOK").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "National Museum of Nature and Science");
-        put("type", "museum");
-      }}),
-      cities.document("BJ").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Jingshan Park");
-        put("type", "park");
-      }}),
-      cities.document("BJ").collection("landmarks").document().set(new HashMap<String, String>() {{
-        put("name", "Beijing Ancient Observatory");
-        put("type", "museum");
-      }})
-    );
+    final List<ApiFuture<WriteResult>> futures =
+        Arrays.asList(
+            cities
+                .document("SF")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Golden Gate Bridge");
+                        put("type", "bridge");
+                      }
+                    }),
+            cities
+                .document("SF")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Legion of Honor");
+                        put("type", "museum");
+                      }
+                    }),
+            cities
+                .document("LA")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Griffith Park");
+                        put("type", "park");
+                      }
+                    }),
+            cities
+                .document("LA")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "The Getty");
+                        put("type", "museum");
+                      }
+                    }),
+            cities
+                .document("DC")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Lincoln Memorial");
+                        put("type", "memorial");
+                      }
+                    }),
+            cities
+                .document("DC")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "National Air and Space Museum");
+                        put("type", "museum");
+                      }
+                    }),
+            cities
+                .document("TOK")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Ueno Park");
+                        put("type", "park");
+                      }
+                    }),
+            cities
+                .document("TOK")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "National Museum of Nature and Science");
+                        put("type", "museum");
+                      }
+                    }),
+            cities
+                .document("BJ")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Jingshan Park");
+                        put("type", "park");
+                      }
+                    }),
+            cities
+                .document("BJ")
+                .collection("landmarks")
+                .document()
+                .set(
+                    new HashMap<String, String>() {
+                      {
+                        put("name", "Beijing Ancient Observatory");
+                        put("type", "museum");
+                      }
+                    }));
     final List<WriteResult> landmarks = ApiFutures.allAsList(futures).get();
     // [END fs_collection_group_query_data_setup]
 
@@ -438,16 +526,16 @@ class QueryDataSnippets {
       System.out.println(document.getId());
     }
     // [END fs_collection_group_query]
-    //CHECKSTYLE ON: RightCurlyAlone
-    //CHECKSTYLE ON: Indentation
+    // CHECKSTYLE ON: RightCurlyAlone
+    // CHECKSTYLE ON: Indentation
   }
 
   public Query arrayContainsAnyQueries() {
     // [START fs_query_filter_array_contains_any]
     CollectionReference citiesRef = db.collection("cities");
 
-    Query query = citiesRef
-        .whereArrayContainsAny("regions", Arrays.asList("west_coast", "east_coast"));
+    Query query =
+        citiesRef.whereArrayContainsAny("regions", Arrays.asList("west_coast", "east_coast"));
     // [END fs_query_filter_array_contains_any]
     return query;
   }
@@ -465,13 +553,10 @@ class QueryDataSnippets {
     // [START fs_query_filter_in_with_array]
     CollectionReference citiesRef = db.collection("cities");
 
-    Query query = citiesRef
-        .whereIn("regions", Arrays.asList(
-            Arrays.asList("west_coast"),
-            Arrays.asList("east_coast")
-        ));
+    Query query =
+        citiesRef.whereIn(
+            "regions", Arrays.asList(Arrays.asList("west_coast"), Arrays.asList("east_coast")));
     // [END fs_query_filter_in_with_array]
     return query;
   }
-
 }
