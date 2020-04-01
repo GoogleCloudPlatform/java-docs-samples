@@ -62,7 +62,7 @@ environment variables into the runtime.
 
 Next, the following command will deploy the application to your Google Cloud project:
 ```bash
-mvn appengine:deploy
+mvn clean package appengine:deploy
 ```
 
 ### Deploy to Cloud Run

@@ -10,7 +10,7 @@ using the [Remote API](https://cloud.google.com/appengine/docs/java/tools/remote
 1. `gcloud init`
 1. Navigate to the remote-server directory
 1. Deploy the app
-   `mvn appengine:deploy`
+   `mvn clean package appengine:deploy`
 1. Alternatively, run the app locally with
    `mvn appengine:run`
 ## Set up the client component of Remote API

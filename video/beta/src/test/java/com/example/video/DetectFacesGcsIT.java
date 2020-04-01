@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +44,6 @@ public class DetectFacesGcsIT {
   public void testDetectFacesGcs() throws Exception {
     DetectFacesGcs.detectFacesGcs("gs://cloud-samples-data/video/googlework_short.mp4");
     String got = bout.toString();
-    assertThat(got).contains("glasses");
+    assertThat(got).contains("Attribute");
   }
 }

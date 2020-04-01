@@ -19,7 +19,6 @@ package com.example.functions;
 // [START functions_helloworld_storage]
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-
 import java.util.logging.Logger;
 
 public class HelloGcs implements BackgroundFunction<GcsEvent> {

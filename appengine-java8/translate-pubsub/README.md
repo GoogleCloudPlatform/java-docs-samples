@@ -88,7 +88,7 @@ Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` 
 [`appengine-web.xml`](src/main/webapp/WEB-INF/appengine-web.xml), then:
 
 ```
-   mvn appengine:deploy
+   mvn clean package appengine:deploy
 ```
 
 Direct your browser to `https://<your-project-id>.appspot.com`.

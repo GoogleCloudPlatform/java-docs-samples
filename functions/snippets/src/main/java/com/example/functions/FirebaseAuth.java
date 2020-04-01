@@ -33,7 +33,19 @@ public class FirebaseAuth implements RawBackgroundFunction {
   @Override
   public void accept(String json, Context context) {
     JsonObject body = gsonParser.fromJson(json, JsonObject.class);
-    LOGGER.info("Function triggered by event: " + json);
+
+    if (body != null && body.has("uid")) {
+      LOGGER.info("Function triggered by change to user: " + body.get("uid").getAsString());
+    }
+
+    if (body != null && body.has("metadata")) {
+      JsonObject metadata = body.get("metadata").getAsJsonObject();
+      LOGGER.info("Created at: " + metadata.get("createdAt").getAsString());
+    }
+
+    if (body != null && body.has("email")) {
+      LOGGER.info("Email: " + body.get("email").getAsString());
+    }
   }
 }
 

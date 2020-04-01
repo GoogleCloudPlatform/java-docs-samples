@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -73,11 +72,9 @@ public class BatchPredictTest {
       String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
       BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
       String got = bout.toString();
-      assertThat(got)
-          .contains("The model is either not found or not supported for prediction yet.");
+      assertThat(got).contains("does not exist");
     } catch (IOException | ExecutionException | InterruptedException e) {
-      assertThat(e.getMessage())
-          .contains("The model is either not found or not supported for prediction yet.");
+      assertThat(e.getMessage()).contains("does not exist");
     }
   }
 }

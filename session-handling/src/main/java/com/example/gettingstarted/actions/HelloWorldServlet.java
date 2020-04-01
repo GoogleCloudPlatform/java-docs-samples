@@ -20,7 +20,6 @@ package com.example.gettingstarted.actions;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Logger;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

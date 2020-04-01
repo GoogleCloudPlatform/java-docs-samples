@@ -24,17 +24,16 @@ import com.google.cloud.automl.v1beta1.ImageObjectDetectionModelDeploymentMetada
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 class ObjectDetectionDeployModelNodeCount {
 
   static void objectDetectionDeployModelNodeCount(String projectId, String modelId)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
-    
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -44,9 +43,10 @@ class ObjectDetectionDeployModelNodeCount {
 
       // Set how many nodes the model is deployed on
       ImageObjectDetectionModelDeploymentMetadata deploymentMetadata =
-              ImageObjectDetectionModelDeploymentMetadata.newBuilder().setNodeCount(2).build();
+          ImageObjectDetectionModelDeploymentMetadata.newBuilder().setNodeCount(2).build();
 
-      DeployModelRequest request = DeployModelRequest.newBuilder()
+      DeployModelRequest request =
+          DeployModelRequest.newBuilder()
               .setName(modelFullId.toString())
               .setImageObjectDetectionModelDeploymentMetadata(deploymentMetadata)
               .build();

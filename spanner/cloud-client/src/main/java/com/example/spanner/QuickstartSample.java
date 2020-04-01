@@ -45,8 +45,8 @@ public class QuickstartSample {
     String databaseId = args[1];
     try {
       // Creates a database client
-      DatabaseClient dbClient = spanner.getDatabaseClient(DatabaseId.of(
-          options.getProjectId(), instanceId, databaseId));
+      DatabaseClient dbClient =
+          spanner.getDatabaseClient(DatabaseId.of(options.getProjectId(), instanceId, databaseId));
       // Queries the database
       ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of("SELECT 1"));
 

@@ -58,7 +58,7 @@ few moments and try again.
 
 - Deploy to AppEngine standard environment using the following Maven command.
 ```
-   mvn appengine:deploy
+   mvn clean package appengine:deploy
 ```
 - Direct your browser to `https://<your-project-id>.appspot.com`.
 - View more in-depth metrics data on the [StackDriver Monitoring Dashboard][dashboard]

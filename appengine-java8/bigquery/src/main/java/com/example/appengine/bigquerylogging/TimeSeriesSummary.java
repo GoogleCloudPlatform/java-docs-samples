@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import com.google.monitoring.v3.Point;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.protobuf.Timestamp;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -49,8 +48,10 @@ public abstract class TimeSeriesSummary<T> {
   }
 
   Point getMostRecentPoint(TimeSeries timeSeries) {
-    Point max = Collections.max(timeSeries.getPointsList(),
-        Comparator.comparingLong(p -> p.getInterval().getEndTime().getSeconds()));
+    Point max =
+        Collections.max(
+            timeSeries.getPointsList(),
+            Comparator.comparingLong(p -> p.getInterval().getEndTime().getSeconds()));
     mostRecentRunTime = max.getInterval().getEndTime();
     return max;
   }
@@ -80,11 +81,11 @@ public abstract class TimeSeriesSummary<T> {
       if (max == null) {
         return;
       }
-      mostRecentValue = max
-          .getValue()
-          .getStringValue();
-      values = Lists.newArrayList(Collections2.transform(timeSeries.getPointsList(),
-          point -> point.getValue().getStringValue()));
+      mostRecentValue = max.getValue().getStringValue();
+      values =
+          Lists.newArrayList(
+              Collections2.transform(
+                  timeSeries.getPointsList(), point -> point.getValue().getStringValue()));
     }
 
     @Override
@@ -100,11 +101,11 @@ public abstract class TimeSeriesSummary<T> {
       if (max == null) {
         return;
       }
-      mostRecentValue = max
-          .getValue()
-          .getInt64Value();
-      values = Lists.newArrayList(Collections2.transform(timeSeries.getPointsList(),
-          point -> point.getValue().getInt64Value()));
+      mostRecentValue = max.getValue().getInt64Value();
+      values =
+          Lists.newArrayList(
+              Collections2.transform(
+                  timeSeries.getPointsList(), point -> point.getValue().getInt64Value()));
     }
 
     @Override

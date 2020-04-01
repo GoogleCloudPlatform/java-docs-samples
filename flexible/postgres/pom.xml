@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.13</version>
   </parent>
 
 <!-- [START gae_flex_postgres_properties] -->
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.8</version>
+      <version>1.30.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.10</version>
+      <version>42.2.12</version>
     </dependency>
 
     <dependency>
@@ -106,6 +106,10 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
+        <configuration>
+          <projectId>GCLOUD_CONFIG</projectId>
+          <version>GCLOUD_CONFIG</version>
+        </configuration>
       </plugin>
 
       <plugin>
