@@ -122,8 +122,6 @@ public class SampleTests {
     assertThat(bout.toString())
         .containsMatch(
             ".*Job created:.*jobWithACustomAttribute.*\n"
-                + ".*matchingJobs.*jobWithACustomAttribute.*\n"
-                + ".*matchingJobs.*jobWithACustomAttribute.*\n"
                 + ".*matchingJobs.*jobWithACustomAttribute.*\n");
     bout.reset();
   }
