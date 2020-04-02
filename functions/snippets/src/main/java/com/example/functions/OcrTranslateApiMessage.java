@@ -17,11 +17,11 @@
 package com.example.functions;
 
 // [START functions_ocr_translate_pojo]
+
 import com.google.gson.Gson;
-import com.google.protobuf.ByteString;
-import com.google.pubsub.v1.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 
 // Object for storing OCR translation requests
 public class OcrTranslateApiMessage {
@@ -61,9 +61,10 @@ public class OcrTranslateApiMessage {
 
   public static OcrTranslateApiMessage fromPubsubData(byte[] data) {
     String jsonStr = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
-    OcrTranslateApiMessage ocrMessage = gson.fromJson(jsonStr, OcrTranslateApiMessage.class);
+    Map<String, String> jsonMap = gson.fromJson(jsonStr, Map.class);
 
-    return ocrMessage;
+    return new OcrTranslateApiMessage(
+        jsonMap.get("text"), jsonMap.get("filename"), jsonMap.get("lang"));
   }
 
   public byte[] toPubsubData() {
