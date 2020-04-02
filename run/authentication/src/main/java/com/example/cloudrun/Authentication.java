@@ -16,44 +16,46 @@
 
 package com.example.cloudrun;
 
+// [START run_service_to_service_auth]
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Authentication {
 
-    private static final Logger logger = LoggerFactory.getLogger(Authentication.class);
+  // Instantiate OkHttpClient
+  private static final OkHttpClient ok =
+      new OkHttpClient.Builder()
+          .readTimeout(500, TimeUnit.MILLISECONDS)
+          .writeTimeout(500, TimeUnit.MILLISECONDS)
+          .build();
 
-    // Instantiate OkHttpClient
-    private static final OkHttpClient ok = new OkHttpClient.Builder().readTimeout(500, TimeUnit.MILLISECONDS)
-            .writeTimeout(500, TimeUnit.MILLISECONDS).build();
+  // makeGetRequest makes a GET request to the specified Cloud Run endpoint,
+  // serviceUrl (must be a complete URL), by authenticating with the Id token
+  // obtained from the Metadata API.
+  public static Response makeGetRequest(String serviceUrl) throws IOException {
+    Request.Builder serviceRequest = new Request.Builder().url(serviceUrl);
 
-    // makeGetRequest makes a GET request to the specified Cloud Run endpoint,
-    // serviceUrl (must be a complete URL), by authenticating with the Id token
-    // obtained from the Metadata API.
-    public Response makeGetRequest(String serviceUrl) throws IOException {
-        Request.Builder serviceRequest = new Request.Builder().url(serviceUrl);
-
-        // Set up metadata server request
-        // https://cloud.google.com/compute/docs/instances/verifying-instance-identity#request_signature
-        String tokenUrl = String.format(
-                "http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=%s",
-                serviceUrl);
-        Request tokenRequest = new Request.Builder().url(tokenUrl).addHeader("Metadata-Flavor", "Google").get().build();
-        try {
-            // Fetch the token
-            Response tokenResponse = ok.newCall(tokenRequest).execute();
-            String token = tokenResponse.body().string();
-            // Provide the token in the request to the receiving service
-            serviceRequest.addHeader("Authorization", "Bearer " + token);
-        } catch (IOException e) {
-            logger.error("Id token query failed: ", e);
-        }
-
-        return ok.newCall(serviceRequest.get().build()).execute();
+    // Set up metadata server request
+    // https://cloud.google.com/compute/docs/instances/verifying-instance-identity#request_signature
+    String tokenUrl =
+        String.format(
+            "http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=%s",
+            serviceUrl);
+    Request tokenRequest =
+        new Request.Builder().url(tokenUrl).addHeader("Metadata-Flavor", "Google").get().build();
+    // Fetch the token
+    try (Response tokenResponse = ok.newCall(tokenRequest).execute()) {
+      String token = tokenResponse.body().string();
+      // Provide the token in the request to the receiving service
+      serviceRequest.addHeader("Authorization", "Bearer " + token);
+    } catch (IOException e) {
+      System.out.println("Id token query failed: " + e);
     }
+
+    return ok.newCall(serviceRequest.get().build()).execute();
+  }
 }
+// [END run_service_to_service_auth]
