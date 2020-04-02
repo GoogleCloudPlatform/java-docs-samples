@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eo pipefail
-
 JIB=$(grep -o '<artifactId>jib-maven-plugin</artifactId>' pom.xml)
 if [ -n "$JIB" ]; then
+  set -eo pipefail
+
   # Register post-test cleanup.
   # Only needed if deploy completed.
   function cleanup {
@@ -66,7 +66,8 @@ if [ -n "$JIB" ]; then
   echo
   echo '---'
   echo
-fi
 
-# Do not use exec to preserve trap behavior.
-"$@"
+  # Do not use exec to preserve trap behavior.
+  "$@"
+
+fi
