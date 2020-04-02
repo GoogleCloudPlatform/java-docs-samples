@@ -47,7 +47,7 @@ public class AuthenticationTest {
     String url = "http://example.com/";
     String expectedResp;
     if (System.getenv("GOOGLE_CLOUD_PROJECT") != null) {
-      expectedResp = "Successful";
+      expectedResp = "Id token query succeeded";
     } else {
       expectedResp = "Id token query failed";
     }
