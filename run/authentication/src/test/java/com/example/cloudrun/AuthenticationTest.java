@@ -46,8 +46,8 @@ public class AuthenticationTest {
   public void canMakeGetRequest() throws IOException {
     String url = "http://example.com/";
     String expectedResp;
-    if (System.getenv("GCE_METADATA_HOST") != null) {
-      expectedResp = "Example";
+    if (System.getenv("GCLOUD_PROJECT") != null) {
+      expectedResp = "Successful";
     } else {
       expectedResp = "Id token query failed";
     }

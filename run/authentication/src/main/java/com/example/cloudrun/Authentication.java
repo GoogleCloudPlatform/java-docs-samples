@@ -51,6 +51,7 @@ public class Authentication {
       String token = tokenResponse.body().string();
       // Provide the token in the request to the receiving service
       serviceRequest.addHeader("Authorization", "Bearer " + token);
+      System.out.println("Successful Token");
     } catch (IOException e) {
       System.out.println("Id token query failed: " + e);
     }
