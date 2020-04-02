@@ -32,6 +32,16 @@ public class OcrTranslateApiMessage {
   private static final Gson gson = new Gson();
 
   public OcrTranslateApiMessage(String text, String filename, String lang) {
+    if (text == null) {
+      throw new IllegalArgumentException("Missing text parameter");
+    }
+    if (filename == null) {
+      throw new IllegalArgumentException("Missing filename parameter");
+    }
+    if (lang == null) {
+      throw new IllegalArgumentException("Missing lang parameter");
+    }
+
     this.text = text;
     this.filename = filename;
     this.lang = lang;
@@ -49,24 +59,9 @@ public class OcrTranslateApiMessage {
     return lang;
   }
 
-  public static OcrTranslateApiMessage fromPubsubData(byte[] data)
-      throws IllegalArgumentException {
+  public static OcrTranslateApiMessage fromPubsubData(byte[] data) {
     String jsonStr = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
     OcrTranslateApiMessage ocrMessage = gson.fromJson(jsonStr, OcrTranslateApiMessage.class);
-
-    // Get + verify parameters
-    String text = ocrMessage.text;
-    String filename = ocrMessage.filename;
-    String targetLang = ocrMessage.lang;
-    if (text == null) {
-      throw new IllegalArgumentException("Missing text parameter");
-    }
-    if (filename == null) {
-      throw new IllegalArgumentException("Missing filename parameter");
-    }
-    if (targetLang == null) {
-      throw new IllegalArgumentException("Missing lang parameter");
-    }
 
     return ocrMessage;
   }

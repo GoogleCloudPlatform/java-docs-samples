@@ -61,7 +61,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
 
   // [START functions_ocr_process]
   @Override
-  public void accept(GcsEvent gcsEvent, Context context) throws RuntimeException {
+  public void accept(GcsEvent gcsEvent, Context context) {
 
     // Validate parameters
     String bucket = gcsEvent.getBucket();
@@ -78,7 +78,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
   // [END functions_ocr_process]
 
   // [START functions_ocr_detect]
-  private void detectText(String bucket, String filename) throws RuntimeException {
+  private void detectText(String bucket, String filename) {
     LOGGER.info("Looking for text in image " + filename);
 
     List<AnnotateImageRequest> visionRequests = new ArrayList<>();
@@ -123,12 +123,14 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     DetectLanguageResponse languageResponse;
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
       languageResponse = client.detectLanguage(languageRequest);
-    } catch (IOException e1) {
-      // Cast to RuntimeException
-      throw new RuntimeException(e1);
+    } catch (IOException e) {
+      // Log error
+      LOGGER.severe("Error detecting language: " + e.getMessage());
+      e.printStackTrace();
+      return;
     }
 
-    if (languageResponse == null || languageResponse.getLanguagesCount() == 0) {
+    if (languageResponse.getLanguagesCount() == 0) {
       LOGGER.info("No languages were detected for text: " + text);
       return;
     }
@@ -144,9 +146,11 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
       PubsubMessage pubsubApiMessage = PubsubMessage.newBuilder().setData(byteStr).build();
       try {
         publisher.publish(pubsubApiMessage).get();
-      } catch (InterruptedException | ExecutionException e2) {
-        // Cast to RuntimeException
-        throw new RuntimeException(e2);
+      } catch (InterruptedException | ExecutionException e) {
+        // Log error
+        LOGGER.severe("Error publishing translation request: " + e.getMessage());
+        e.printStackTrace();
+        return;
       }
     }
   }

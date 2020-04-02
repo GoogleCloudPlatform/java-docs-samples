@@ -40,20 +40,17 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
         pubSubMessage.data.getBytes(StandardCharsets.UTF_8));
 
-    String text = ocrMessage.getText();
-    String filename = ocrMessage.getFilename();
-    String lang = ocrMessage.getLang();
-
-    LOGGER.info("Received request to save file " +  filename);
+    LOGGER.info("Received request to save file " +  ocrMessage.getFilename());
 
     // [START functions_ocr_rename]
-    String newFileName = String.format("%s_to_%s.txt", filename, lang);
+    String newFileName = String.format(
+        "%s_to_%s.txt", ocrMessage.getFilename(), ocrMessage.getLang());
     // [END functions_ocr_rename]
 
     // Save file to RESULT_BUCKET with name newFileNaem
     LOGGER.info(String.format("Saving result to %s in bucket %s", newFileName, RESULT_BUCKET));
     BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(RESULT_BUCKET, newFileName)).build();
-    storage.create(blobInfo, text.getBytes(StandardCharsets.UTF_8));
+    storage.create(blobInfo, ocrMessage.getText().getBytes(StandardCharsets.UTF_8));
     LOGGER.info("File saved");
   }
 }

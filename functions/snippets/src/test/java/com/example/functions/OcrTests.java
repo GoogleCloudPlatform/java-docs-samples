@@ -17,6 +17,7 @@
 package com.example.functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -25,11 +26,14 @@ import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,9 +52,10 @@ public class OcrTests {
   private static final Gson gson = new Gson();
 
   private static final Storage storage = StorageOptions.getDefaultInstance().getService();
+  private static final String randomString = UUID.randomUUID().toString();
 
   @BeforeClass
-  public static void beforeClass() {
+  public static void setUpClass() {
     PROCESS_IMAGE_LOGGER.addHandler(LOG_HANDLER);
     SAVE_RESULT_LOGGER.addHandler(LOG_HANDLER);
     TRANSLATE_TEXT_LOGGER.addHandler(LOG_HANDLER);
@@ -61,6 +66,12 @@ public class OcrTests {
     LOG_HANDLER.clear();
   }
 
+  @AfterClass
+  public static void tearDownClass() {
+    String deletedFilename = String.format("test-%s.jpg_to_es.txt", randomString);
+    storage.delete(RESULT_BUCKET, deletedFilename);
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void functionsOcrProcess_shouldValidateParams() throws IOException {
     new OcrProcessImage().accept(new GcsEvent(), null);
@@ -69,8 +80,8 @@ public class OcrTests {
   @Test
   public void functionsOcrProcess_shouldDetectText() throws IOException {
     GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.bucket = FUNCTIONS_BUCKET;
-    gcsEvent.name = "wakeupcat.jpg";
+    gcsEvent.setBucket(FUNCTIONS_BUCKET);
+    gcsEvent.setName("wakeupcat.jpg");
 
     new OcrProcessImage().accept(gcsEvent, null);
 
@@ -82,7 +93,7 @@ public class OcrTests {
   @Test(expected = IllegalArgumentException.class)
   public void functionsOcrTranslate_shouldValidateParams() throws IOException {
     PubSubMessage message = new PubSubMessage();
-    message.data = new String(Base64.getEncoder().encode("{}".getBytes()));
+    message.setData(new String(Base64.getEncoder().encode("{}".getBytes())));
 
     new OcrTranslateText().accept(message, null);
   }
@@ -99,7 +110,7 @@ public class OcrTests {
     dataJson.addProperty("lang", lang);
 
     PubSubMessage message = new PubSubMessage();
-    message.data = new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes()));
+    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
 
     new OcrTranslateText().accept(message, null);
 
@@ -111,7 +122,7 @@ public class OcrTests {
   @Test(expected = IllegalArgumentException.class)
   public void functionsOcrSave_shouldValidateParams() throws IOException {
     PubSubMessage message = new PubSubMessage();
-    message.data = new String(Base64.getEncoder().encode("{}".getBytes()));
+    message.setData(new String(Base64.getEncoder().encode("{}".getBytes())));
 
     new OcrSaveResult().accept(message, null);
   }
@@ -119,7 +130,7 @@ public class OcrTests {
   @Test
   public void functionsOcrSave_shouldPublishTranslatedText() throws IOException {
     String text = "Wake up human!";
-    String filename = "wakeupcat.jpg";
+    String filename = String.format("test-%s.jpg", randomString);
     String lang = "es";
 
     JsonObject dataJson = new JsonObject();
@@ -128,11 +139,11 @@ public class OcrTests {
     dataJson.addProperty("lang", lang);
 
     PubSubMessage message = new PubSubMessage();
-    message.data = new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes()));
+    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
 
     new OcrSaveResult().accept(message, null);
 
-    String resultFilename = "wakeupcat.jpg_to_es.txt";
+    String resultFilename = filename + "_to_es.txt";
 
     // Check log messages
     List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
@@ -140,11 +151,8 @@ public class OcrTests {
         "Saving result to %s in bucket %s", resultFilename, RESULT_BUCKET);
     assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage()).isEqualTo(expectedMessage);
 
-    // Check for (recently) written file
-    // (Using timestamps instead of exists() saves us a deletion step)
+    // Check that file was written
     BlobInfo resultBlob = storage.get(RESULT_BUCKET, resultFilename);
-    Long fiveMinutesAgo = System.currentTimeMillis() - 60000 * 5;
     assertThat(resultBlob).isNotNull();
-    assertThat(resultBlob.getCreateTime()).isAtLeast(fiveMinutesAgo);
   }
 }

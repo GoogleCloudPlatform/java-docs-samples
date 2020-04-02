@@ -30,6 +30,7 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
   @Override
   public void accept(PubSubMessage pubSubMessage, Context context) {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
-        pubSubMessage.getData().getBytes());
+        pubSubMessage.getData().getBytes(StandardCharsets.UTF_8));
 
     String targetLang = ocrMessage.getLang();
     LOGGER.info("Translating text into " + targetLang);
@@ -73,7 +74,7 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
       // Cast to RuntimeException
       throw new RuntimeException(e);
     }
-    if (response == null || response.getTranslationsCount() == 0) {
+    if (response.getTranslationsCount() == 0) {
       return;
     }
 
