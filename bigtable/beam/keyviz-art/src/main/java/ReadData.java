@@ -8,6 +8,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
@@ -20,9 +22,7 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.values.PCollection;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -38,13 +38,12 @@ import org.joda.time.Duration;
 public class ReadData {
 
   static final long KEY_VIZ_WINDOW_MINUTES = 15;
-  static final long MAX_INPUT = 8000;
   static final String COLUMN_FAMILY = "cf1";
+  static final long START_TIME = getStartTime();
 
   public static void main(String[] args) {
-    System.out.println("running main");
-    BigtableOptions options =
-        PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
+    ReadDataOptions options =
+        PipelineOptionsFactory.fromArgs(args).withValidation().as(ReadDataOptions.class);
     Pipeline p = Pipeline.create(options);
     CloudBigtableTableConfiguration bigtableTableConfig =
         new CloudBigtableTableConfiguration.Builder()
@@ -53,122 +52,176 @@ public class ReadData {
             .withTableId(options.getBigtableTableId())
             .build();
 
-    PCollection<Void> sequence =
-        p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
-            .apply(
-                ParDo.of(
-                    new DoFn<Long, Integer>() {
-                      @ProcessElement
-                      public void processElement(
-                          @Element Long rowkey, OutputReceiver<Integer> out) {
-                        Put row = new Put(Bytes.toBytes("" + rowkey));
-                        long timestamp = System.currentTimeMillis();
-                        long minutes = (timestamp / 1000) / 60;
-                        out.output(Math.toIntExact(minutes / KEY_VIZ_WINDOW_MINUTES));
-                      }
-                    }))
-            .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
+    p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
+        .apply(
+            ParDo.of(
+                new DoFn<Long, Integer>() {
+                  @ProcessElement
+                  public void processElement(OutputReceiver<Integer> out) {
+                    long timestampDiff = System.currentTimeMillis() - START_TIME;
+                    long minutes = (timestampDiff / 1000) / 60;
+                    out.output(Math.toIntExact(minutes / KEY_VIZ_WINDOW_MINUTES));
+                  }
+                }))
+        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
     p.run().waitUntilFinish();
+  }
+
+  private static long getMaxInput(ReadDataOptions options) {
+    return options.getGigabytesWritten() * 1000 / options.getMegabytesPerRow();
   }
 
   static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Integer, Void> {
 
-    List<List<Float>> rows = new ArrayList<List<Float>>();
-    String[] keys = new String[Math.toIntExact(MAX_INPUT + 1)];
+    List<List<Float>> imageData = new ArrayList<>();
+    String[] keys;
 
-    public ReadFromTableFn(CloudBigtableConfiguration config) {
+    public ReadFromTableFn(CloudBigtableConfiguration config, ReadDataOptions readDataOptions) {
       super(config);
+      keys = new String[Math.toIntExact(getMaxInput(readDataOptions) + 1)];
+      downloadImageData(readDataOptions.getFilePath());
+      generateRowkeys(getMaxInput(readDataOptions));
+
+    }
+
+    @ProcessElement
+    public void processElement(@Element Integer timeOffsetIndex, PipelineOptions po) {
+      ReadDataOptions options = po.as(ReadDataOptions.class);
+      long count = 0;
+
+      List<RowRange> ranges = getRangesForTimeIndex(timeOffsetIndex, getMaxInput(options));
+      if (ranges.size() == 0) {
+        return;
+      }
+
+      try {
+        // Scan with a filter that will only return the first key from each row. This filter is used
+        // to more efficiently perform row count operations.
+        Filter rangeFilters = new MultiRowRangeFilter(ranges);
+        FilterList firstKeyFilterWithRanges = new FilterList(new FirstKeyOnlyFilter(),
+            rangeFilters);
+        Scan scan =
+            new Scan()
+                .addFamily(Bytes.toBytes(COLUMN_FAMILY))
+                .setFilter(firstKeyFilterWithRanges);
+
+        Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
+        ResultScanner imageData = table.getScanner(scan);
+
+        for (Result row : imageData) {
+          count++;
+        }
+      } catch (Exception e) {
+        System.out.println("Error reading.");
+        e.printStackTrace();
+      }
+      System.out.printf("got %d rows\n", count);
+    }
+
+    /**
+     * Download the image data as a grid of weights and store them in a 2D array.
+     */
+    private void downloadImageData(String artUrl) {
       try {
         ReadableByteChannel chan =
             FileSystems.open(
-                FileSystems.matchNewResource(
-                    "gs://public-examples-testing-bucket/mona2.txt", false /* is_directory */));
+                FileSystems.matchNewResource(artUrl, false /* is_directory */));
         InputStream is = Channels.newInputStream(chan);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-        String line = null;
-
+        String line;
         while ((line = br.readLine()) != null) {
-          //          System.out.println("Line entered : " + line.split(","));
-          rows.add(
-              Arrays.asList(line.split(",")).stream()
-                  .map(x -> Float.valueOf(x))
+          imageData.add(
+              Arrays.stream(line.split(","))
+                  .map(Float::valueOf)
                   .collect(Collectors.toList()));
         }
-
-        int maxLength = ("" + MAX_INPUT).length();
-        for (int i = 0; i < MAX_INPUT + 1; i++) {
-          String paddedRowkey = String.format("%0" + maxLength + "d", i);
-          String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-          keys[i] = "" + reversedRowkey;
-        }
-        Arrays.sort(keys);
-        System.out.println(keys.length);
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
 
-    @ProcessElement
-    public void processElement(
-        @Element Integer timeOffsetIndex, OutputReceiver<Void> out, PipelineOptions po) {
-      //      System.out.println("timeOffsetIndex is " + timeOffsetIndex);
-      BigtableOptions options = po.as(BigtableOptions.class);
-      long count = 0;
+    /**
+     * Generates an array with the rowkeys that were loaded into the specified Bigtable. This is
+     * used to create the correct intervals for scanning equal sections of rowkeys. Since Bigtable
+     * sorts keys lexicographically if we just used standard intervals, each section would have
+     * different sizes.
+     */
+    private void generateRowkeys(long maxInput) {
+      int maxLength = ("" + maxInput).length();
+      for (int i = 0; i < maxInput + 1; i++) {
+        // Make each number the same length by padding with 0s.
+        String paddedRowkey = String.format("%0" + maxLength + "d", i);
+        String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+        keys[i] = "" + reversedRowkey;
+      }
+      Arrays.sort(keys);
+    }
 
+
+    /**
+     * Get the ranges to scan for the given time index.
+     */
+    private List<RowRange> getRangesForTimeIndex(@Element Integer timeOffsetIndex, long maxInput) {
       List<RowRange> ranges = new ArrayList<>();
 
-      int numRows = rows.size();
-      int numCols = rows.get(0).size();
-
-      long rowHeight = MAX_INPUT / numRows;
+      int numRows = imageData.size();
+      int numCols = imageData.get(0).size();
+      int rowHeight = (int) (maxInput / numRows);
       int columnIndex = timeOffsetIndex % numCols;
-      for (int i = 0; i < rows.size(); i++) {
-        System.out.println("rows.get(i) = " + rows.get(i));
-        if (Math.random() <= rows.get(i).get(columnIndex)) {
-          long startKeyI = MAX_INPUT - (i + 1) * rowHeight;
-          long endKeyI = MAX_INPUT - i * rowHeight;
+
+      for (int i = 0; i < imageData.size(); i++) {
+        // To generate shading, only scan each pixel with a probability based on it's weight.
+        if (Math.random() <= imageData.get(i).get(columnIndex)) {
+          // Get the indexes of the rowkeys for the interval.
+          long startKeyI = maxInput - (i + 1) * rowHeight;
+          long endKeyI = startKeyI + rowHeight;
 
           String startKey = keys[Math.toIntExact(startKeyI)];
           String endKey = keys[Math.toIntExact(endKeyI)];
-          System.out.println("startKeyI = " + startKeyI);
-          System.out.println("endKeyI = " + endKeyI);
-          System.out.println("startKey = " + startKey);
-          System.out.println("endKey = " + endKey);
           ranges.add(
               new RowRange(
                   Bytes.toBytes("" + startKey), true,
                   Bytes.toBytes("" + endKey), false));
         }
       }
-
-      if (ranges.size() == 0) {
-        return;
-      }
-
-      try {
-        Filter rangeFilters = new MultiRowRangeFilter(ranges);
-
-        Scan scan =
-            new Scan()
-                .addFamily(Bytes.toBytes(COLUMN_FAMILY))
-                .setFilter(new FilterList(new FirstKeyOnlyFilter(), rangeFilters));
-
-        Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
-        ResultScanner rows = table.getScanner(scan);
-
-        for (Result row : rows) {
-          count++;
-          //          System.out.printf(
-          //              "Reading data for %s%n",
-          // Bytes.toString(row.rawCells()[0].getRowArray()));
-        }
-      } catch (Exception e) {
-        System.out.println("error reading");
-        e.printStackTrace();
-      }
-      System.out.printf("got %d rows\n", count);
+      return ranges;
     }
+  }
+
+  /**
+   * Get the start time floored to 15 a minute interval
+   */
+  private static long getStartTime() {
+    Date date = new Date();
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+
+    int remainder = calendar.get(Calendar.MINUTE) % 15;
+    calendar.add(Calendar.MINUTE, -remainder);
+    return calendar.getTime().getTime();
+  }
+
+
+  public interface ReadDataOptions extends BigtableOptions {
+
+    @Description("The number of gigabytes written using the load data script.")
+    @Default.Long(40)
+    long getGigabytesWritten();
+
+    void setGigabytesWritten(long gigabytesWritten);
+
+    @Description("The number of megabytes per row written using the load data script.")
+    @Default.Long(5)
+    long getMegabytesPerRow();
+
+    void setMegabytesPerRow(long megabytesPerRow);
+
+    @Description("The file containing the pixels to draw.")
+    @Default.String("gs://public-examples-testing-bucket/mona2.txt")
+    String getFilePath();
+
+    void setFilePath(String filePath);
   }
 
   public interface BigtableOptions extends DataflowPipelineOptions {

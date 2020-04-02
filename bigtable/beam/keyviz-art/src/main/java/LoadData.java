@@ -42,6 +42,7 @@ public class LoadData {
                   @ProcessElement
                   public void processElement(@Element Long rowkey, OutputReceiver<Mutation> out) {
                     int maxLength = ("" + max).length();
+                    // Make each number the same length by padding with 0s.
                     String paddedRowkey = String.format("%0" + maxLength + "d", rowkey);
                     String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
                     System.out.println("reversedRowkey = " + reversedRowkey);
