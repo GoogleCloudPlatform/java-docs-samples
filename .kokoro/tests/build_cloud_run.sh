@@ -16,26 +16,26 @@
 
 set -eo pipefail
 
-# Register post-test cleanup.
-# Only needed if deploy completed.
-function cleanup {
-  set -x
-  gcloud container images delete "${CONTAINER_IMAGE}" --quiet --no-user-output-enabled || true
-  gcloud run services delete ${SERVICE_NAME} \
-    --platform=managed \
-    --region="${REGION:-us-central1}" \
-    --quiet --no-user-output-enabled
-  mvn clean
-}
-trap cleanup EXIT
-
-requireEnv() {
-  test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
-}
-requireEnv SAMPLE_NAME
-
 JIB=$(grep -o '<artifactId>jib-maven-plugin</artifactId>' pom.xml)
 if [ -n "$JIB" ]; then
+  # Register post-test cleanup.
+  # Only needed if deploy completed.
+  function cleanup {
+    set -x
+    gcloud container images delete "${CONTAINER_IMAGE}" --quiet --no-user-output-enabled || true
+    gcloud run services delete ${SERVICE_NAME} \
+      --platform=managed \
+      --region="${REGION:-us-central1}" \
+      --quiet --no-user-output-enabled
+    mvn clean
+  }
+  trap cleanup EXIT
+
+  requireEnv() {
+    test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
+  }
+  requireEnv SAMPLE_NAME
+
   # Version is in the format <PR#>-<GIT COMMIT SHA>.
   # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
   # to run them concurrently.
