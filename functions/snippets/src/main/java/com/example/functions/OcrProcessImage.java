@@ -51,7 +51,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
 
   private static final Logger LOGGER = Logger.getLogger(OcrProcessImage.class.getName());
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
-  private static Publisher publisher;
+  private Publisher publisher;
   private static final Gson gson = new Gson();
 
   public OcrProcessImage() throws IOException {
@@ -96,17 +96,18 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     AnnotateImageResponse visionResponse;
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       visionResponse = client.batchAnnotateImages(visionRequests).getResponses(0);
+      if (visionResponse == null || !visionResponse.hasFullTextAnnotation()) {
+        LOGGER.info(String.format("Image %s contains no text", filename));
+        return;
+      }
+
       if (visionResponse.hasError()) {
-        throw new RuntimeException("Error detecting text: " + visionResponse.getError().getMessage());
+        throw new RuntimeException(
+            "Error detecting text: " + visionResponse.getError().getMessage());
       }
     } catch (IOException e) {
       // Cast to RuntimeException
       throw new RuntimeException(e);
-    }
-
-    if (visionResponse == null || !visionResponse.hasFullTextAnnotation()) {
-      LOGGER.info(String.format("Image %s contains no text", filename));
-      return;
     }
 
     String text = visionResponse.getFullTextAnnotation().getText();
@@ -122,9 +123,9 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     DetectLanguageResponse languageResponse;
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
       languageResponse = client.detectLanguage(languageRequest);
-    } catch (IOException e) {
+    } catch (IOException e1) {
       // Cast to RuntimeException
-      throw new RuntimeException(e);
+      throw new RuntimeException(e1);
     }
 
     if (languageResponse == null || languageResponse.getLanguagesCount() == 0) {
@@ -143,9 +144,9 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
       PubsubMessage pubsubApiMessage = PubsubMessage.newBuilder().setData(byteStr).build();
       try {
         publisher.publish(pubsubApiMessage).get();
-      } catch (InterruptedException | ExecutionException e) {
+      } catch (InterruptedException | ExecutionException e2) {
         // Cast to RuntimeException
-        throw new RuntimeException(e);
+        throw new RuntimeException(e2);
       }
     }
   }

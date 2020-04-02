@@ -20,6 +20,7 @@ package com.example.functions;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 // Object for storing OCR translation requests
@@ -50,7 +51,7 @@ public class OcrTranslateApiMessage {
 
   public static OcrTranslateApiMessage fromPubsubData(byte[] data)
       throws IllegalArgumentException {
-    String jsonStr = new String(Base64.getDecoder().decode(data));
+    String jsonStr = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
     OcrTranslateApiMessage ocrMessage = gson.fromJson(jsonStr, OcrTranslateApiMessage.class);
 
     // Get + verify parameters
@@ -71,7 +72,7 @@ public class OcrTranslateApiMessage {
   }
 
   public byte[] toPubsubData() {
-    return gson.toJson(this).getBytes();
+    return gson.toJson(this).getBytes(StandardCharsets.UTF_8);
   }
 }
 // [END functions_ocr_translate_pojo]

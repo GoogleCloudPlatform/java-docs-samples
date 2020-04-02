@@ -24,6 +24,8 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
@@ -36,7 +38,7 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
   @Override
   public void accept(PubSubMessage pubSubMessage, Context context) {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
-        pubSubMessage.data.getBytes());
+        pubSubMessage.data.getBytes(StandardCharsets.UTF_8));
 
     String text = ocrMessage.getText();
     String filename = ocrMessage.getFilename();
@@ -51,7 +53,7 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
     // Save file to RESULT_BUCKET with name newFileNaem
     LOGGER.info(String.format("Saving result to %s in bucket %s", newFileName, RESULT_BUCKET));
     BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(RESULT_BUCKET, newFileName)).build();
-    storage.create(blobInfo, text.getBytes());
+    storage.create(blobInfo, text.getBytes(StandardCharsets.UTF_8));
     LOGGER.info("File saved");
   }
 }
