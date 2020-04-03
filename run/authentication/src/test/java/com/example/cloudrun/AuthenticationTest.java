@@ -29,12 +29,23 @@ import org.junit.Test;
 public class AuthenticationTest {
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  String expectedResp;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
+    
+    // This test uses the existence of env var "GOOGLE_CLOUD_PROJECT"
+    // to determine local vs GCP environment only for testing purposes.
+    if (System.getenv("GOOGLE_CLOUD_PROJECT") != null) {
+      expectedResp = "Id token query succeeded";
+      System.out.println("Running on GCP...");
+    } else {
+      expectedResp = "Id token query failed";
+      System.out.println("Running locally...");
+    }
   }
 
   @After
@@ -45,12 +56,14 @@ public class AuthenticationTest {
   @Test
   public void canMakeGetRequest() throws IOException {
     String url = "http://example.com/";
-    String expectedResp;
-    if (System.getenv("GOOGLE_CLOUD_PROJECT") != null) {
-      expectedResp = "Id token query succeeded";
-    } else {
-      expectedResp = "Id token query failed";
-    }
+    Authentication.makeGetRequest(url);
+    String got = bout.toString();
+    assertThat(got, containsString(expectedResp));
+  }
+
+  @Test
+  public void canMakeGetRequestWithoutProtocol() throws IOException {
+    String url = "example.com/";
     Authentication.makeGetRequest(url);
     String got = bout.toString();
     assertThat(got, containsString(expectedResp));
