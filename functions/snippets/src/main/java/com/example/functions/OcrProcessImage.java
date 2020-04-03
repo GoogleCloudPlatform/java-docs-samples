@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // [END functions_ocr_process]
@@ -102,12 +103,13 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
       }
 
       if (visionResponse.hasError()) {
-        throw new RuntimeException(
-            "Error detecting text: " + visionResponse.getError().getMessage());
+        // Throw IOException; to be handled by catch block below
+        throw new IOException(visionResponse.getError().getMessage());
       }
     } catch (IOException e) {
-      // Cast to RuntimeException
-      throw new RuntimeException(e);
+      // Log error (since IOException cannot be thrown by a function)
+      LOGGER.log(Level.SEVERE, "Error detecting text: " + e.getMessage(), e);
+      return;
     }
 
     String text = visionResponse.getFullTextAnnotation().getText();
@@ -124,9 +126,8 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
       languageResponse = client.detectLanguage(languageRequest);
     } catch (IOException e) {
-      // Log error
-      LOGGER.severe("Error detecting language: " + e.getMessage());
-      e.printStackTrace();
+      // Log error (since IOException cannot be thrown by a function)
+      LOGGER.log(Level.SEVERE, "Error detecting language: " + e.getMessage(), e);
       return;
     }
 
@@ -148,8 +149,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
         publisher.publish(pubsubApiMessage).get();
       } catch (InterruptedException | ExecutionException e) {
         // Log error
-        LOGGER.severe("Error publishing translation request: " + e.getMessage());
-        e.printStackTrace();
+        LOGGER.log(Level.SEVERE, "Error publishing translation request: " + e.getMessage(), e);
         return;
       }
     }

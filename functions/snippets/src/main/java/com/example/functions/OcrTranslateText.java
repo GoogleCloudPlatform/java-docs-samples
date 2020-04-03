@@ -32,6 +32,7 @@ import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
@@ -71,8 +72,9 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
       response = client.translateText(request);
     } catch (IOException e) {
-      // Cast to RuntimeException
-      throw new RuntimeException(e);
+      // Log error (since IOException cannot be thrown by a function)
+      LOGGER.log(Level.SEVERE, "Error translating text: " + e.getMessage(), e);
+      return;
     }
     if (response.getTranslationsCount() == 0) {
       return;
@@ -92,8 +94,8 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
       publisher.publish(pubsubApiMessage).get();
       LOGGER.info("Text translated to " + targetLang);
     } catch (InterruptedException | ExecutionException e) {
-      // Cast to RuntimeException
-      throw new RuntimeException(e);
+      // Log error (since these exception types cannot be thrown by a function)
+      LOGGER.log(Level.SEVERE, "Error publishing translation save request: " + e.getMessage(), e);
     }
   }
 }
