@@ -17,7 +17,6 @@
 package com.example.cloudsql;
 
 import com.google.common.base.Stopwatch;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Inet4Address;
@@ -32,7 +31,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,14 +44,15 @@ public class CloudSqlServlet extends HttpServlet {
   Connection conn;
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
-    final String createTableSql = "CREATE TABLE IF NOT EXISTS visits ( visit_id INT NOT NULL "
-        + "AUTO_INCREMENT, user_ip VARCHAR(46) NOT NULL, timestamp DATETIME NOT NULL, "
-        + "PRIMARY KEY (visit_id) )";
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    final String createTableSql =
+        "CREATE TABLE IF NOT EXISTS visits ( visit_id INT NOT NULL "
+            + "AUTO_INCREMENT, user_ip VARCHAR(46) NOT NULL, timestamp DATETIME NOT NULL, "
+            + "PRIMARY KEY (visit_id) )";
     final String createVisitSql = "INSERT INTO visits (user_ip, timestamp) VALUES (?, ?)";
-    final String selectSql = "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC "
-        + "LIMIT 10";
+    final String selectSql =
+        "SELECT user_ip, timestamp FROM visits ORDER BY timestamp DESC " + "LIMIT 10";
 
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
@@ -107,7 +106,7 @@ public class CloudSqlServlet extends HttpServlet {
             getServletContext().getResourceAsStream("/WEB-INF/classes/config.properties"));
         url = properties.getProperty("sqlUrl");
       } catch (IOException e) {
-        log("no property", e);  // Servlet Init should never fail.
+        log("no property", e); // Servlet Init should never fail.
         return;
       }
 
