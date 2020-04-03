@@ -113,6 +113,9 @@ public class JdbcSampleIT {
     out = runSample("singleusereadonly");
     assertThat(out).contains("1 Marc Richards");
     assertThat(out).contains("2 Catalina Smith");
+    // Sleep for 1 second as the following test will do a read with a 1 second max staleness,
+    // and it could otherwise theoretically be that the data were inserted less than 1 second ago.
+    Thread.sleep(1000L);
     out = runSample("singleusereadonlytimestampbound");
     assertThat(out).contains("1 Marc Richards");
     assertThat(out).contains("2 Catalina Smith");
