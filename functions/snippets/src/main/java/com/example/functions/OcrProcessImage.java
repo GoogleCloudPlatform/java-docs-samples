@@ -103,11 +103,13 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
       }
 
       if (visionResponse.hasError()) {
-        // Throw IOException; to be handled by catch block below
-        throw new IOException(visionResponse.getError().getMessage());
+        // Log error
+        LOGGER.log(
+            Level.SEVERE, "Error in vision API call: " +visionResponse.getError().getMessage());
+        return;
       }
     } catch (IOException e) {
-      // Log error (since IOException cannot be thrown by a function)
+      // Log error (since IOException cannot be thrown by a Cloud Function)
       LOGGER.log(Level.SEVERE, "Error detecting text: " + e.getMessage(), e);
       return;
     }
