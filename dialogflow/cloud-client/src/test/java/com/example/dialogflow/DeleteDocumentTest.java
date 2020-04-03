@@ -106,6 +106,12 @@ public class DeleteDocumentTest {
 
   @After
   public void tearDown() {
+    // Delete the created knowledge base
+    try (KnowledgeBasesClient client = KnowledgeBasesClient.create()) {
+      DeleteKnowledgeBaseRequest request =
+          DeleteKnowledgeBaseRequest.newBuilder().setName(knowledgeBaseName).setForce(true).build();
+      client.deleteKnowledgeBase(request);
+    }
     System.setOut(null);
   }
 
