@@ -115,7 +115,7 @@ public class JdbcSample {
       String credentialsFile)
       throws SQLException {
     switch (command) {
-        // Connection samples.
+      // Connection samples.
       case "baseurl":
         JdbcConnectSamples.baseUrl(projectId, instanceId, databaseId);
         break;
@@ -138,7 +138,7 @@ public class JdbcSample {
         JdbcConnectSamples.customHost(projectId, instanceId, databaseId, 9010);
         break;
 
-        // Initialization samples.
+      // Initialization samples.
       case "createtable":
         createTable(projectId, instanceId, databaseId);
         break;
@@ -146,7 +146,7 @@ public class JdbcSample {
         insertData(projectId, instanceId, databaseId);
         break;
 
-        // Autocommit samples.
+      // Autocommit samples.
       case "singleusereadonly":
         JdbcAutoCommitSamples.singleUseReadOnly(projectId, instanceId, databaseId);
         break;
@@ -160,7 +160,7 @@ public class JdbcSample {
         JdbcAutoCommitSamples.partitionedDml(projectId, instanceId, databaseId);
         break;
 
-        // Transaction samples.
+      // Transaction samples.
       case "readonlytransaction":
         JdbcTransactionSamples.readOnlyTransaction(projectId, instanceId, databaseId);
         break;
@@ -168,7 +168,7 @@ public class JdbcSample {
         JdbcTransactionSamples.readWriteTransaction(projectId, instanceId, databaseId);
         break;
 
-        // Batch samples.
+      // Batch samples.
       case "batchdml":
         JdbcBatchSamples.batchDml(projectId, instanceId, databaseId);
         break;
@@ -185,7 +185,7 @@ public class JdbcSample {
         JdbcBatchSamples.abortBatch(projectId, instanceId, databaseId);
         break;
 
-        // Variables samples.
+      // Variables samples.
       case "committimestamp":
         JdbcVariablesExamples.getCommitTimestamp(projectId, instanceId, databaseId);
         break;
@@ -193,7 +193,7 @@ public class JdbcSample {
         JdbcVariablesExamples.getReadTimestamp(projectId, instanceId, databaseId);
         break;
 
-        // QueryOptions samples.
+      // QueryOptions samples.
       case "connectionwithqueryoptions":
         connectionWithQueryOptions(projectId, instanceId, databaseId);
         break;
@@ -201,7 +201,7 @@ public class JdbcSample {
         setQueryOptions(projectId, instanceId, databaseId);
         break;
 
-        // Custom methods samples.
+      // Custom methods samples.
       case "bufferedwrite":
         CustomMethodsSamples.bufferedWrite(projectId, instanceId, databaseId);
         break;
@@ -382,9 +382,11 @@ public class JdbcSample {
     /**
      * The formal definition of the JDBC connection URL for Google Cloud Śpanner is:
      *
-     * <pre>
-     * jdbc:cloudspanner:[//host[:port]]/projects/project-id[/instances/instance-id[/databases/database-name]][\?property-name=property-value[;property-name=property-value]*]?
-     * </pre>
+     * <code>
+     * jdbc:cloudspanner:[//host[:port]]/projects/project-id
+     *                   [/instances/instance-id[/databases/database-name]]
+     *                   [\?property-name=property-value[;property-name=property-value]*]?
+     * </code>
      *
      * The base JDBC connection URL for Cloud Spanner consists of the following components: Prefix:
      * jdbc:cloudspanner: Project: /projects/[project-id] Instance: /instances/[instance-id]
@@ -566,9 +568,13 @@ public class JdbcSample {
      * Execute a query in single-use read-only mode with a custom timestamp bound. The timestamp
      * bound can be specified using the following statement:
      *
-     * <pre>
-     * SET READ_ONLY_STALENESS = 'STRONG' | 'MIN_READ_TIMESTAMP <timestamp>' | 'READ_TIMESTAMP <timestamp>' | 'MAX_STALENESS <int64>s|ms|us|ns' | 'EXACT_STALENESS (<int64>s|ms|us|ns)'
-     * </pre>
+     * <code>
+     * SET READ_ONLY_STALENESS = 'STRONG'
+     *                         | 'MIN_READ_TIMESTAMP <timestamp>'
+     *                         | 'READ_TIMESTAMP <timestamp>'
+     *                         | 'MAX_STALENESS <int64>s|ms|us|ns'
+     *                         | 'EXACT_STALENESS (<int64>s|ms|us|ns)'
+     * </code>
      */
     static void singleUseReadOnlyTimestampBound(
         String projectId, String instanceId, String databaseId) throws SQLException {
@@ -613,7 +619,8 @@ public class JdbcSample {
             connection
                 .createStatement()
                 .executeUpdate(
-                    "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (9999, 'Lloyd', 'Pineda')");
+                    "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+                    + "VALUES (9999, 'Lloyd', 'Pineda')");
         System.out.printf("Inserted %d row(s)\n", updateCount);
       }
     }
@@ -641,7 +648,8 @@ public class JdbcSample {
         statement.execute("SET AUTOCOMMIT_DML_MODE = 'PARTITIONED_NON_ATOMIC'");
         int updateCount =
             statement.executeUpdate(
-                "UPDATE Singers SET SingerInfo = SHA512(LastName) WHERE SingerId >= 1 AND SingerId <= 5");
+                "UPDATE Singers SET SingerInfo = SHA512(LastName)\n"
+                + "WHERE SingerId >= 1 AND SingerId <= 5");
         System.out.printf("Updated %d row(s)\n", updateCount);
       }
     }
@@ -662,11 +670,14 @@ public class JdbcSample {
       try (Connection connection = DriverManager.getConnection(connectionUrl)) {
         try (Statement statement = connection.createStatement()) {
           statement.addBatch(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (10, 'Marc', 'Richards')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (10, 'Marc', 'Richards')");
           statement.addBatch(
-              "INSERT INTO Singers (SingerId, FirstName, LastName)  VALUES (11, 'Amirah', 'Finney')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (11, 'Amirah', 'Finney')");
           statement.addBatch(
-              "INSERT INTO Singers (SingerId, FirstName, LastName)  VALUES (12, 'Reece', 'Dunn')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (12, 'Reece', 'Dunn')");
           int[] updateCounts = statement.executeBatch();
           System.out.printf("Batch insert counts: %s\n", Arrays.toString(updateCounts));
         }
@@ -687,11 +698,14 @@ public class JdbcSample {
         try (Statement statement = connection.createStatement()) {
           statement.execute("START BATCH DML");
           statement.execute(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (14, 'Aayat', 'Curran')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (14, 'Aayat', 'Curran')");
           statement.execute(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (15, 'Tudor', 'Mccarthy')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (15, 'Tudor', 'Mccarthy')");
           statement.execute(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (16, 'Cobie', 'Webb')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (16, 'Cobie', 'Webb')");
           statement.execute("RUN BATCH");
           // The 'RUN BATCH' statement returns the update counts as a result set.
           try (ResultSet rs = statement.getResultSet()) {
@@ -767,7 +781,8 @@ public class JdbcSample {
                   + "  BeginTime    TIMESTAMP,\n"
                   + "  EndTime      TIMESTAMP,\n"
                   + "  TicketPrices ARRAY<INT64>,\n"
-                  + "  CONSTRAINT Fk_Concerts_Singer FOREIGN KEY (SingerId) REFERENCES Singers (SingerId)\n"
+                  + "  CONSTRAINT Fk_Concerts_Singer FOREIGN KEY (SingerId)\n"
+                  + "                                REFERENCES Singers (SingerId)\n"
                   + ") PRIMARY KEY(VenueId, SingerId, ConcertDate)");
           // Update count for a DDL statement will always be JdbcConstants#STATEMENT_NO_RESULT.
           System.out.printf(
@@ -796,11 +811,14 @@ public class JdbcSample {
         try (Statement statement = connection.createStatement()) {
           statement.execute("START BATCH DML");
           statement.execute(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (14, 'Aayat', 'Curran')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (14, 'Aayat', 'Curran')");
           statement.execute(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (15, 'Tudor', 'Mccarthy')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (15, 'Tudor', 'Mccarthy')");
           statement.execute(
-              "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (16, 'Cobie', 'Webb')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+              + "VALUES (16, 'Cobie', 'Webb')");
           statement.execute("ABORT BATCH");
           System.out.println("Aborted DML batch");
         }
@@ -868,7 +886,8 @@ public class JdbcSample {
       // Create a connection that has automatic retry for aborted transactions disabled.
       String connectionUrl =
           String.format(
-              "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s;retryAbortsInternally=false",
+              "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s"
+              + ";retryAbortsInternally=false",
               projectId, instanceId, databaseId);
       long singerId = 31;
       long albumId = 11;
@@ -925,7 +944,8 @@ public class JdbcSample {
       // Create a connection that has automatic retry for aborted transactions disabled.
       String connectionUrl =
           String.format(
-              "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s;retryAbortsInternally=false",
+              "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s"
+              + ";retryAbortsInternally=false",
               projectId, instanceId, databaseId);
       long singerId = 32;
       try (Connection connection = DriverManager.getConnection(connectionUrl)) {
@@ -1045,7 +1065,8 @@ public class JdbcSample {
         connection
             .createStatement()
             .executeUpdate(
-                "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (20, 'Tasneem', 'Rodgers')");
+                "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+                + "VALUES (20, 'Tasneem', 'Rodgers')");
         connection.commit();
         try (ResultSet rs =
             connection.createStatement().executeQuery("SHOW VARIABLE COMMIT_TIMESTAMP")) {
