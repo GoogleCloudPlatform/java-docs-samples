@@ -29,7 +29,7 @@ public class KnowledgeBaseManagement {
   /**
    * Create a Knowledge base
    *
-   * @param projectId   Project/agent id.
+   * @param projectId Project/agent id.
    * @param displayName Name of the knowledge base.
    * @return The created KnowledgeBase.
    */
@@ -48,3 +48,4 @@ public class KnowledgeBaseManagement {
     }
   }
   // [END dialogflow_create_knowledge_base]
+}
