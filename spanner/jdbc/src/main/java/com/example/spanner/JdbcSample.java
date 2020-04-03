@@ -382,11 +382,11 @@ public class JdbcSample {
     /**
      * The formal definition of the JDBC connection URL for Google Cloud Śpanner is:
      *
-     * <code>
+     * <pre>
      * jdbc:cloudspanner:[//host[:port]]/projects/project-id
      *                   [/instances/instance-id[/databases/database-name]]
      *                   [\?property-name=property-value[;property-name=property-value]*]?
-     * </code>
+     * </pre>
      *
      * The base JDBC connection URL for Cloud Spanner consists of the following components: Prefix:
      * jdbc:cloudspanner: Project: /projects/[project-id] Instance: /instances/[instance-id]
@@ -568,13 +568,13 @@ public class JdbcSample {
      * Execute a query in single-use read-only mode with a custom timestamp bound. The timestamp
      * bound can be specified using the following statement:
      *
-     * <code>
+     * <pre>
      * SET READ_ONLY_STALENESS = 'STRONG'
      *                         | 'MIN_READ_TIMESTAMP <timestamp>'
      *                         | 'READ_TIMESTAMP <timestamp>'
      *                         | 'MAX_STALENESS <int64>s|ms|us|ns'
      *                         | 'EXACT_STALENESS (<int64>s|ms|us|ns)'
-     * </code>
+     * </pre>
      */
     static void singleUseReadOnlyTimestampBound(
         String projectId, String instanceId, String databaseId) throws SQLException {
