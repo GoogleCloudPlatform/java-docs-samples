@@ -23,6 +23,7 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spanner.jdbc.SpannerPool;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
@@ -49,8 +50,12 @@ public class JdbcSampleIT {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    JdbcSample.main(new String[] {command, instanceId, databaseId});
+    JdbcSample.main(
+        new String[] {
+          command, instanceId, databaseId, System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        });
     System.setOut(stdOut);
+    System.out.printf("Finished running sample [%s]\n", command);
     return bout.toString();
   }
 
@@ -73,6 +78,7 @@ public class JdbcSampleIT {
 
   @After
   public void tearDown() throws Exception {
+    SpannerPool.closeSpannerPool();
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
   }
 
@@ -86,13 +92,73 @@ public class JdbcSampleIT {
     out = runSample("insertdata");
     assertThat(out).contains("Insert counts: [1, 1, 1, 1, 1]");
 
+    out = runSample("baseurl");
+    assertThat(out).contains("Connected to Cloud Spanner at [");
+    if (System.getenv("GOOGLE_APPLICATION_CREDENTIALS") != null) {
+      out = runSample("customcredentials");
+      assertThat(out).contains("Connected to Cloud Spanner at [");
+    }
+    out = runSample("defaultprojectid");
+    assertThat(out).contains("Connected to Cloud Spanner at [");
+    out = runSample("connectionurlproperties");
+    assertThat(out).contains("Readonly: true");
+    assertThat(out).contains("Autocommit: false");
+    out = runSample("connectionproperties");
+    assertThat(out).contains("Readonly: true");
+    assertThat(out).contains("Autocommit: false");
+    out = runSample("datasource");
+    assertThat(out).contains("Readonly: true");
+    assertThat(out).contains("Autocommit: false");
+
+    out = runSample("singleusereadonly");
+    assertThat(out).contains("1 Marc Richards");
+    assertThat(out).contains("2 Catalina Smith");
+    out = runSample("singleusereadonlytimestampbound");
+    assertThat(out).contains("1 Marc Richards");
+    assertThat(out).contains("2 Catalina Smith");
+    out = runSample("update");
+    assertThat(out).contains("Inserted 1 row(s)");
+    out = runSample("partitioneddml");
+    assertThat(out).contains("Updated 5 row(s)");
+
+    out = runSample("readonlytransaction");
+    assertThat(out).contains("1 Marc Richards");
+    assertThat(out).contains("2 Catalina Smith");
+    assertThat(out).contains("Read-only transaction used read timestamp [");
+    out = runSample("readwritetransaction");
+    assertThat(out).contains("Transaction committed with commit timestamp [");
+
+    out = runSample("batchdml");
+    assertThat(out).contains("Batch insert counts: [1, 1, 1]");
+    out = runSample("batchdmlusingsql");
+    assertThat(out).contains("Batch insert counts: [1, 1, 1]");
+    out = runSample("batchddl");
+    assertThat(out).contains("DDL update counts: [-2, -2]");
+    out = runSample("batchddlusingsql");
+    assertThat(out).contains("Update count for CREATE TABLE Concerts: -2");
+    assertThat(out).contains("Update count for CREATE INDEX SingersByFirstLastName: -2");
+    assertThat(out).contains("Executed DDL batch");
+    out = runSample("abortbatch");
+    assertThat(out).contains("Aborted DML batch");
+
+    out = runSample("committimestamp");
+    assertThat(out).contains("Commit timestamp: [");
+    out = runSample("readtimestamp");
+    assertThat(out).contains("Read timestamp: [");
+
     out = runSample("connectionwithqueryoptions");
     assertThat(out).contains("1 Marc Richards");
     assertThat(out).contains("Optimizer version: 1");
-
     out = runSample("setqueryoptions");
     assertThat(out).contains("1 Marc Richards");
     assertThat(out).contains("Optimizer version: 1");
+
+    out = runSample("bufferedwrite");
+    assertThat(out).contains("Transaction committed at [");
+    out = runSample("transactionwithretryloop");
+    assertThat(out).contains("Transaction committed at [");
+    out = runSample("jdbctransactionwithretryloop");
+    assertThat(out).contains("Transaction committed at [");
   }
 
   static String formatForTest(String name) {
