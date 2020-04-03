@@ -28,13 +28,12 @@ public class Authentication {
   // Instantiate OkHttpClient
   private static final OkHttpClient ok =
       new OkHttpClient.Builder()
-          .readTimeout(500, TimeUnit.MILLISECONDS)
-          .writeTimeout(500, TimeUnit.MILLISECONDS)
+          .readTimeout(10, TimeUnit.SECONDS)
+          .writeTimeout(10, TimeUnit.SECONDS)
           .build();
 
   // makeGetRequest makes a GET request to the specified Cloud Run endpoint,
-  // serviceUrl (must be a complete URL), by authenticating with the Id token
-  // obtained from the Metadata API.
+  // serviceUrl, by authenticating with the Id token obtained from the Metadata API.
   public static Response makeGetRequest(String serviceUrl) throws IOException {
     Request.Builder serviceRequest = new Request.Builder().url(serviceUrl);
 
