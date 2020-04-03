@@ -36,7 +36,7 @@ public class AuthenticationTest {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    
+
     // This test uses the existence of env var "GOOGLE_CLOUD_PROJECT"
     // to determine local vs GCP environment only for testing purposes.
     if (System.getenv("GOOGLE_CLOUD_PROJECT") != null) {
@@ -62,11 +62,13 @@ public class AuthenticationTest {
   }
 
   @Test
-  public void canMakeGetRequestWithoutProtocol() throws IOException {
+  public void failsMakeGetRequestWithoutProtocol() throws IOException {
     String url = "example.com/";
-    Authentication.makeGetRequest(url);
-    String got = bout.toString();
-    assertThat(got, containsString(expectedResp));
+    try {
+      Authentication.makeGetRequest(url);
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage(), containsString("Expected URL scheme 'http' or 'https'"));
+    }
   }
 }
 

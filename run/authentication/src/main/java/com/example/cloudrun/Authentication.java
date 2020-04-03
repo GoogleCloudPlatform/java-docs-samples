@@ -33,7 +33,8 @@ public class Authentication {
           .build();
 
   // makeGetRequest makes a GET request to the specified Cloud Run endpoint,
-  // serviceUrl, by authenticating with the Id token obtained from the Metadata API.
+  // serviceUrl (must be a complete URL), by authenticating with the Id token
+  // obtained from the Metadata API.
   public static Response makeGetRequest(String serviceUrl) throws IOException {
     Request.Builder serviceRequest = new Request.Builder().url(serviceUrl);
 
