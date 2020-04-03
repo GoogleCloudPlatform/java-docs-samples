@@ -105,7 +105,7 @@ public class DeleteDocumentTest {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException {
     // Delete the created knowledge base
     try (KnowledgeBasesClient client = KnowledgeBasesClient.create()) {
       DeleteKnowledgeBaseRequest request =
