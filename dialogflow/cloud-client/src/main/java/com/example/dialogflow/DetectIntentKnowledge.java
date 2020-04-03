@@ -28,7 +28,6 @@ import com.google.cloud.dialogflow.v2beta1.QueryResult;
 import com.google.cloud.dialogflow.v2beta1.SessionName;
 import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
-import com.google.cloud.dialogflow.v2beta1.TextInput.Builder;
 import com.google.common.collect.Maps;
 
 import java.util.List;
@@ -68,7 +67,8 @@ public class DetectIntentKnowledge {
       // Detect intents for each text input
       for (String text : texts) {
         // Set the text and language code (en-US) for the query
-        Builder textInput = TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
+        TextInput.Builder textInput =
+            TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
         // Build the query with the TextInput
         QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
 
