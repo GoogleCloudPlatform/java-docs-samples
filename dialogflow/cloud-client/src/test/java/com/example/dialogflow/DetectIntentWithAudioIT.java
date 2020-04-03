@@ -35,12 +35,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Integration (system) tests for {@link DetectIntentWithModelSelection}.
- */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentWithAudioAndModelSelectionIT {
+public class DetectIntentWithAudioIT {
   protected static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   protected static String SESSION_ID = UUID.randomUUID().toString();
   protected static String LANGUAGE_CODE = "en-US";
@@ -81,26 +78,6 @@ public class DetectIntentWithAudioAndModelSelectionIT {
       assertEquals("room.reservation", result.getAction());
       assertThat(QUESTIONS).contains(fulfillmentText);
       result = DetectIntentAudio.detectIntentAudio(
-          PROJECT_ID, ANSWERS.get(fulfillmentText), SESSION_ID, LANGUAGE_CODE);
-      fulfillmentText = result.getFulfillmentText();
-    }
-    assertTrue(result.getAllRequiredParamsPresent());
-    assertEquals("Choose a room please.", fulfillmentText);
-  }
-
-  @Test
-  public void testDetectIntentWithModelSelection() throws Exception {
-    List<String> askedQuestions = Lists.newArrayList();
-    QueryResult result = DetectIntentWithModelSelection.detectIntentWithModelSelection(
-        PROJECT_ID, "resources/book_a_room.wav", SESSION_ID, LANGUAGE_CODE);
-    String fulfillmentText = result.getFulfillmentText();
-    while (!result.getAllRequiredParamsPresent()
-        && ANSWERS.containsKey(fulfillmentText)
-        && !askedQuestions.contains(fulfillmentText)) {
-      askedQuestions.add(result.getFulfillmentText());
-      assertEquals("room.reservation", result.getAction());
-      assertThat(QUESTIONS).contains(fulfillmentText);
-      result = DetectIntentWithModelSelection.detectIntentWithModelSelection(
           PROJECT_ID, ANSWERS.get(fulfillmentText), SESSION_ID, LANGUAGE_CODE);
       fulfillmentText = result.getFulfillmentText();
     }

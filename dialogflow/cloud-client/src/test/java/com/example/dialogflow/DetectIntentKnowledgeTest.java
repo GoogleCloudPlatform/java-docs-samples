@@ -42,7 +42,7 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class KnowledgeBaseManagementIT {
+public class DetectIntentKnowledgeTest {
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String TEST_KNOWLEDGE_BASE_ID = "MTA4MzE0ODY5NTczMTQzNzU2ODA";
@@ -65,65 +65,6 @@ public class KnowledgeBaseManagementIT {
   @After
   public void tearDown() {
     System.setOut(null);
-  }
-
-  @Test
-  public void testKnowledgeBase() throws Exception {
-    // Create a Knowledge Base
-    KnowledgeBase knowledgeBase =
-            KnowledgeBaseManagement.createKnowledgeBase(PROJECT_ID, KNOWLEDGE_BASE_NAME);
-    assertThat(knowledgeBase.getDisplayName()).contains(KNOWLEDGE_BASE_NAME);
-
-    // Get KnowledgeBase
-    knowledgeBase = KnowledgeBaseManagement.getKnowledgeBase(knowledgeBase.getName());
-    assertThat(knowledgeBase.getDisplayName()).contains(KNOWLEDGE_BASE_NAME);
-
-    // List Knowledge Bases
-    List<KnowledgeBase> knowledgeBases = KnowledgeBaseManagement.listKnowledgeBases(PROJECT_ID);
-    assertThat(knowledgeBases.size()).isAtLeast(2);
-
-    int found = 0;
-    for (KnowledgeBase knowledgeBase1 : knowledgeBases) {
-      if (knowledgeBase1.getDisplayName().equals(KNOWLEDGE_BASE_NAME)) {
-        found += 1;
-      }
-    }
-    assertThat(found).isEqualTo(1);
-
-    // Delete the Knowledge Base
-    KnowledgeBaseManagement.deleteKnowledgeBase(knowledgeBase.getName());
-  }
-
-  @Test
-  public void testDocumentManagement() throws Exception {
-    // Create a Knowledge Base
-    KnowledgeBase knowledgeBase =
-            KnowledgeBaseManagement.createKnowledgeBase(PROJECT_ID, KNOWLEDGE_BASE_NAME);
-    String knowledgeBaseName = knowledgeBase.getName();
-
-    // Create a Document
-    Document document = DocumentManagement.createDocument(
-            knowledgeBaseName,
-            DOCUMENT_BASE_NAME,
-            "text/html",
-            "FAQ",
-            "https://cloud.google.com/storage/docs/faq");
-    assertThat(document.getDisplayName()).contains(DOCUMENT_BASE_NAME);
-
-    // List the Documents
-    List<Document> documents = DocumentManagement.listDocuments(knowledgeBaseName);
-    assertThat(documents.size()).isEqualTo(1);
-    assertThat(documents.get(0).getDisplayName()).contains(DOCUMENT_BASE_NAME);
-
-    // Get the Document
-    document = DocumentManagement.getDocument(document.getName());
-    assertThat(document.getDisplayName()).contains(DOCUMENT_BASE_NAME);
-
-    // Delete the Document
-    DocumentManagement.deleteDocument(document.getName());
-
-    // Delete the Knowledge Base
-    KnowledgeBaseManagement.deleteKnowledgeBase(knowledgeBase.getName());
   }
 
   @Test

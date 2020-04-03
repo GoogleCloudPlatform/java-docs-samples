@@ -138,4 +138,6 @@ public class DocumentManagement {
       System.out.format("The document has been deleted.");
     }
   }
+
+  // [END dialogflow_delete_document]
 }
