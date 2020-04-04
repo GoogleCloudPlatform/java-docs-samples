@@ -17,21 +17,18 @@
 package com.example.functions;
 
 // [START functions_firebase_rtdb]
-import com.google.cloud.functions.BackgroundFunction;
+
 import com.google.cloud.functions.Context;
 import com.google.cloud.functions.RawBackgroundFunction;
-import com.google.cloud.logging.LoggingHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class FirebaseRtdb implements RawBackgroundFunction {
+  private static final Logger LOGGER = Logger.getLogger(FirebaseRtdb.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
-
-  private static final Logger LOGGER = Logger.getLogger(FirebaseRtdb.class.getName());
 
   @Override
   public void accept(String json, Context context) {

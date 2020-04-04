@@ -73,7 +73,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          LOGGER.info(String.format("Error: %s\n", res.getError().getMessage()));
+          LOGGER.info(String.format("Error: %s%n", res.getError().getMessage()));
           return;
         }
         // Get Safe Search Annotations
@@ -85,7 +85,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
           LOGGER.info(String.format("Detected %s as OK.", gcsEvent.getName()));
         }
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       LOGGER.info(String.format("Error with Vision API: %s", e.getMessage()));
     }
   }
@@ -94,7 +94,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
   // [START functions_imagemagick_blur]
   // Blurs the file described by blobInfo using ImageMagick,
   // and uploads it to the blurred bucket.
-  public static void blur(BlobInfo blobInfo) throws IOException {
+  private static void blur(BlobInfo blobInfo) throws IOException {
     String bucketName = blobInfo.getBucket();
     String fileName = blobInfo.getName();
     // Download image
@@ -124,7 +124,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
         BlobInfo.newBuilder(blurredBlobId).setContentType(blob.getContentType()).build();
     try {
       byte[] blurredFile = Files.readAllBytes(upload);
-      Blob blurredBlob = storage.create(blurredBlobInfo, blurredFile);
+      storage.create(blurredBlobInfo, blurredFile);
       LOGGER.info(
           String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
     } catch (Exception e) {

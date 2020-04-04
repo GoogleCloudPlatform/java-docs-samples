@@ -37,12 +37,8 @@ public class HelloHttp implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    String name = "world";
-
     // Check URL parameters for "name" field
-    if (request.getFirstQueryParameter("name").isPresent()) {
-      name = request.getFirstQueryParameter("name").get();
-    }
+    String name = request.getFirstQueryParameter("name").orElse("world");
 
     // Parse JSON request and check for "name" field
     try {

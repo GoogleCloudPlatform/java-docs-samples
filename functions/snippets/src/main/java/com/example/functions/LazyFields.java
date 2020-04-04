@@ -38,12 +38,13 @@ public class LazyFields implements HttpFunction {
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // This value is initialized only if (and when) the function is called
-    if (lazyGlobal == null) {
-      lazyGlobal = functionSpecificComputation();
+    if (LazyFields.lazyGlobal == null) {
+      LazyFields.lazyGlobal = functionSpecificComputation();
     }
 
     BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Lazy global: %s; non-lazy global: %s", lazyGlobal, nonLazyGlobal));
+    writer.write(String.format(
+        "Lazy global: %s; non-lazy global: %s", LazyFields.lazyGlobal, LazyFields.nonLazyGlobal));
   }
 
   private static int functionSpecificComputation() {

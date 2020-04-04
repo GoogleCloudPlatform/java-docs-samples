@@ -33,7 +33,7 @@ public class CorsEnabled implements HttpFunction {
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // Set CORS headers for preflight requests
-    if (request.getMethod().equals("OPTIONS")) {
+    if ("OPTIONS".equals(request.getMethod())) {
       response.appendHeader("Access-Control-Allow-Origin", "*");
       response.appendHeader("Access-Control-Allow-Methods", "POST");
       response.appendHeader("Access-Control-Allow-Headers", "Content-Type");

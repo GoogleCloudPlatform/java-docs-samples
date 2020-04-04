@@ -12,10 +12,7 @@ class GroovyHelloBackground implements BackgroundFunction<HttpRequest> {
 
     @Override
     void accept(HttpRequest request, Context context) {
-        String name = "world"
-        if (request.getFirstQueryParameter("name").isPresent()) {
-            name = request.getFirstQueryParameter("name").get()
-        }
+        String name = request.getFirstQueryParameter("name").orElse("world");
         LOGGER.info(String.format("Hello %s!", name))
     }
 }

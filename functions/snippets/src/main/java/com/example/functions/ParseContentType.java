@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class ParseContentType implements HttpFunction {
@@ -40,7 +41,7 @@ public class ParseContentType implements HttpFunction {
       throws IOException {
     String name = null;
     String contentType = request.getContentType().get();
-    if (contentType.equals("application/json")) {
+    if ("application/json".equals(contentType)) {
       // '{"name":"John"}'
       JsonObject body = gsonParser.fromJson(request.getReader(), JsonObject.class);
       if (body.has("name")) {
@@ -50,13 +51,15 @@ public class ParseContentType implements HttpFunction {
         response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
         return;
       }
-    } else if (contentType.equals("application/octet-stream")) {
+    } else if ("application/octet-stream".equals(contentType)) {
       // 'John', stored in a Buffer
-      name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()));
-    } else if (contentType.equals("text/plain")) {
+      name = new String(
+          Base64.getDecoder().decode(request.getInputStream().readAllBytes()),
+          StandardCharsets.UTF_8);
+    } else if ("text/plain".equals(contentType)) {
       // 'John'
       name = request.getReader().readLine();
-    } else if (contentType.equals("application/x-www-form-urlencoded")
+    } else if ("application/x-www-form-urlencoded".equals(contentType)
         && request.getFirstQueryParameter("name").isPresent()) {
       // 'name=John' in the body of a POST request (not the URL)
       name = request.getFirstQueryParameter("name").get();

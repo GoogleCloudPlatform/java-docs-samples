@@ -26,17 +26,18 @@ import com.google.cloud.functions.RawBackgroundFunction;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FirebaseFirestoreReactive implements RawBackgroundFunction {
+  private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
+  private static final Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
-
-  private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
-  private static final Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
 
   @Override
   public void accept(String json, Context context) throws RuntimeException {
@@ -60,7 +61,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
     }
 
     // Convert recently-written value to ALL CAPS
-    String newValue = currentValue.toUpperCase();
+    String newValue = currentValue.toUpperCase(Locale.getDefault());
 
     // Update Firestore DB with ALL CAPS value
     Map<String, String> newFields = new HashMap<>();
@@ -72,7 +73,8 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
     try {
       firestore.document(affectedDoc).set(newFields, SetOptions.merge()).get();
     } catch (ExecutionException | InterruptedException e) {
-      throw new RuntimeException(e);
+      // Log exception (as functions cannot throw these exception types)
+      LOGGER.log(Level.SEVERE, "Error updating Firestore document: " + e.getMessage(), e);
     }
   }
 }
