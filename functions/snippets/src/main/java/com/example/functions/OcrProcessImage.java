@@ -105,7 +105,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
       if (visionResponse.hasError()) {
         // Log error
         LOGGER.log(
-            Level.SEVERE, "Error in vision API call: " +visionResponse.getError().getMessage());
+            Level.SEVERE, "Error in vision API call: " + visionResponse.getError().getMessage());
         return;
       }
     } catch (IOException e) {
