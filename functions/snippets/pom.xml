@@ -13,8 +13,8 @@
    Removing or replacing it should not affect the execution of the samples in anyway.
  -->
   <parent>
-    <groupId>com.google.cloud.samples</groupId> 
-    <artifactId>shared-configuration</artifactId> 
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
     <version>1.0.15</version>
   </parent>
 
@@ -200,7 +200,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.8.1</version>
+        <version>1.9.0</version>
         <executions>
           <execution>
             <id>groovy-compile</id>
