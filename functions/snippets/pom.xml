@@ -27,21 +27,19 @@
     <groovy.version>3.0.2</groovy.version>
   </properties>
 
-  <!-- Required for com.example.functions.ImageMagick -->
   <dependencyManagement>
-   <dependencies>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>libraries-bom</artifactId>
-      <version>4.4.0</version>
-      <type>pom</type>
-      <scope>import</scope>
-     </dependency>
-   </dependencies>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>4.4.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
 
   <dependencies>
-    <!-- Required for com.example.functions.ImageMagick -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
@@ -49,6 +47,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-translate</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
     </dependency>
 
     <!-- Required for com.example.functions.ParseContentType -->
