@@ -25,6 +25,9 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Collections;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -33,10 +36,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Collections;
 
 public class FhirResourceListHistory {
   private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";

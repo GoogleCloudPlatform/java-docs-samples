@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

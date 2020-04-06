@@ -21,12 +21,11 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -96,7 +95,7 @@ public class DatasetTests {
     }
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, "new-dataset");
 
-    String output = bout.toString();
+    String output = bout.toString(StandardCharsets.UTF_8);
     assertThat(output, containsString("Dataset created."));
   }
 
