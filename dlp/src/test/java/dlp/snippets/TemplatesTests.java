@@ -21,10 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
+import com.google.cloud.dlp.v2.DlpServiceClient.ListInspectTemplatesPagedResponse;
 import com.google.privacy.dlp.v2.CreateInspectTemplateRequest;
+import com.google.privacy.dlp.v2.DeleteInspectTemplateRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectTemplate;
+import com.google.privacy.dlp.v2.ListInspectTemplatesRequest;
 import com.google.privacy.dlp.v2.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +38,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,6 +92,24 @@ public class TemplatesTests {
     System.setOut(new PrintStream(bout));
   }
 
+  @AfterClass
+  public static void cleanupTemplates() throws IOException {
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      ListInspectTemplatesRequest listInspectTemplatesRequest =
+          ListInspectTemplatesRequest.newBuilder()
+              .setParent(ProjectName.of(PROJECT_ID).toString())
+              .setPageSize(1)
+              .build();
+      ListInspectTemplatesPagedResponse response = dlpServiceClient
+          .listInspectTemplates(listInspectTemplatesRequest);
+      for (InspectTemplate template : response.getPage().getResponse().getInspectTemplatesList()) {
+        DeleteInspectTemplateRequest deleteInspectTemplateRequest =
+            DeleteInspectTemplateRequest.newBuilder().setName(template.getName()).build();
+        dlpServiceClient.deleteInspectTemplate(deleteInspectTemplateRequest);
+      }
+    }
+  }
+
   @After
   public void tearDown() {
     System.setOut(null);
@@ -102,7 +124,7 @@ public class TemplatesTests {
   }
 
   @Test
-  public void testListInspectemplate() throws Exception {
+  public void testListInspectTemplate() throws Exception {
     TemplatesList.listInspectTemplates(PROJECT_ID);
     String output = bout.toString();
     assertThat(output, containsString("Templates found:"));
