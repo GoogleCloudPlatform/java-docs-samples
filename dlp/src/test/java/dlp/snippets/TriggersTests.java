@@ -107,26 +107,6 @@ public class TriggersTests {
     System.setOut(new PrintStream(bout));
   }
 
-  @AfterClass()
-  public static void cleanupTriggers() throws IOException {
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-      // List all job triggers
-      ListJobTriggersRequest listJobTriggersRequest =
-          ListJobTriggersRequest.newBuilder()
-              .setParent(ProjectName.of(PROJECT_ID).toString())
-              .build();
-      DlpServiceClient.ListJobTriggersPagedResponse response =
-          dlpServiceClient.listJobTriggers(listJobTriggersRequest);
-
-      // Loop through the response and delete each trigger
-      for (JobTrigger trigger : response.getPage().getValues()) {
-        DeleteJobTriggerRequest deleteJobTriggerRequest =
-            DeleteJobTriggerRequest.newBuilder().setName(trigger.getName()).build();
-        dlpServiceClient.deleteJobTrigger(deleteJobTriggerRequest);
-      }
-    }
-  }
-
 
   @After
   public void tearDown() {
@@ -140,6 +120,14 @@ public class TriggersTests {
     TriggersCreate.createTrigger(PROJECT_ID, GCS_PATH);
     String output = bout.toString();
     assertThat(output, CoreMatchers.containsString("Created Trigger:"));
+
+    // Delete the created trigger
+    String triggerId = output.split("Created Trigger: ")[1].split("\n")[0];
+    DeleteJobTriggerRequest deleteJobTriggerRequest =
+        DeleteJobTriggerRequest.newBuilder().setName(triggerId).build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteJobTrigger(deleteJobTriggerRequest);
+    }
   }
 
   @Test

@@ -92,23 +92,6 @@ public class TemplatesTests {
     System.setOut(new PrintStream(bout));
   }
 
-  @AfterClass
-  public static void cleanupTemplates() throws IOException {
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-      ListInspectTemplatesRequest listInspectTemplatesRequest =
-          ListInspectTemplatesRequest.newBuilder()
-              .setParent(ProjectName.of(PROJECT_ID).toString())
-              .setPageSize(1)
-              .build();
-      ListInspectTemplatesPagedResponse response = dlpServiceClient
-          .listInspectTemplates(listInspectTemplatesRequest);
-      for (InspectTemplate template : response.getPage().getResponse().getInspectTemplatesList()) {
-        DeleteInspectTemplateRequest deleteInspectTemplateRequest =
-            DeleteInspectTemplateRequest.newBuilder().setName(template.getName()).build();
-        dlpServiceClient.deleteInspectTemplate(deleteInspectTemplateRequest);
-      }
-    }
-  }
 
   @After
   public void tearDown() {
@@ -121,6 +104,15 @@ public class TemplatesTests {
     TemplatesCreate.createInspectTemplate(PROJECT_ID);
     String output = bout.toString();
     assertThat(output, containsString("Template created: "));
+
+
+    // Delete the created template
+    String templateId = output.split("Template created: ")[1].split("\n")[0];
+    DeleteInspectTemplateRequest deleteInspectTemplateRequest =
+        DeleteInspectTemplateRequest.newBuilder().setName(templateId).build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteInspectTemplate(deleteInspectTemplateRequest);
+    }
   }
 
   @Test
