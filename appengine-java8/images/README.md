@@ -24,7 +24,7 @@ Using the [Google Cloud SDK](https://cloud.google.com/sdk/) create a bucket
  [App Engine maven plugin](https://cloud.google.com/appengine/docs/java/tools/maven).
  To run this sample locally:
 
-     $ mvn appengine:devserver
+     $ mvn appengine:run
 
  To see the results of the sample application, open
  [localhost:8080](http://localhost:8080) in a web browser.

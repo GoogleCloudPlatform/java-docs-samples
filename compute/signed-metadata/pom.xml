@@ -28,7 +28,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.15</version>
   </parent>
 
   <properties>
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>3.10.0</version>
+      <version>3.10.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>

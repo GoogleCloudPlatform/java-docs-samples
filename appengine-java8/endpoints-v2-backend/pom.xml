@@ -28,12 +28,8 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.15</version>
   </parent>
-
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -64,7 +60,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.78</version>
+      <version>1.9.79</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -105,6 +101,8 @@
         <version>2.2.0</version>
         <configuration>
           <!-- deploy configuration -->
+          <projectId>GCLOUD_CONFIG</projectId>
+          <version>GCLOUD_CONFIG</version>
         </configuration>
       </plugin>
       <!-- [START endpoints_plugin] -->

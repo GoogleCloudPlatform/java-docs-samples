@@ -20,7 +20,6 @@ package com.example.automl;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Model;
 import com.google.cloud.automl.v1beta1.ModelName;
-
 import java.io.IOException;
 
 class GetModel {

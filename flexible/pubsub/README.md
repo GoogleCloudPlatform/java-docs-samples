@@ -19,13 +19,13 @@ Make sure [`gcloud`](https://cloud.google.com/sdk/docs/) is installed and authen
 
 Create a topic
 ```
-gcloud beta pubsub topics create <your-topic-name>
+gcloud pubsub topics create <your-topic-name>
 ```
 
 Create a push subscription, to send messages to a Google Cloud Project URL
  such as https://<your-project-id>.appspot.com/push.
 ```
-gcloud beta pubsub subscriptions create <your-subscription-name> \
+gcloud pubsub subscriptions create <your-subscription-name> \
   --topic <your-topic-name> \
   --push-endpoint \
   https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
@@ -56,7 +56,7 @@ Update the environment variables `PUBSUB_TOPIC` and `PUBSUB_VERIFICATION_TOKEN` 
 then:
 
 ```
-mvn appengine:deploy
+mvn clean package appengine:deploy
 ```
 
 The home page of this application provides a form to publish messages and also provides a view of the most recent messages

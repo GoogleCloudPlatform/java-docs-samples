@@ -43,14 +43,12 @@ import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
 import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayResponse;
-
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
 import com.google.iam.v1.Binding;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -59,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-
 import org.apache.commons.cli.HelpFormatter;
 /**
  * Example of using Cloud IoT device manager API to administer devices, registries and projects.

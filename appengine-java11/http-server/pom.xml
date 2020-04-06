@@ -11,7 +11,7 @@
  <parent>
    <groupId>com.google.cloud.samples</groupId>
    <artifactId>shared-configuration</artifactId>
-   <version>1.0.11</version>
+   <version>1.0.15</version>
  </parent>
 
 
@@ -34,12 +34,13 @@
           </archive>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <projectId>GCLOUD_CONFIG</projectId>
           <version>http-server</version>
         </configuration>
       </plugin>

@@ -29,7 +29,7 @@ limitations under the License.
   <parent>
       <groupId>com.google.cloud.samples</groupId>
       <artifactId>shared-configuration</artifactId>
-      <version>1.0.11</version>
+      <version>1.0.15</version>
   </parent>
 
   <properties>
@@ -41,17 +41,17 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>3.8.5</version>
+      <version>3.9.0</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
-      <version>3.8.5</version>
+      <version>3.9.0</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
-      <version>3.8.5</version>
+      <version>3.9.0</version>
     </dependency>
 
     <dependency>
@@ -68,7 +68,7 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
-      <version>3.8.5</version>
+      <version>3.9.0</version>
     </dependency>
   </dependencies>
   <build>
@@ -99,8 +99,9 @@ limitations under the License.
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <projectId>GCLOUD_CONFIG</projectId>
           <artifact>${project.build.directory}/vertx-hello-j11-1.0-jar-with-dependencies.jar</artifact>
-	         <version>vertx-hello-java11</version>
+          <version>vertx-hello-java11</version>
         </configuration>
       </plugin>
     </plugins>

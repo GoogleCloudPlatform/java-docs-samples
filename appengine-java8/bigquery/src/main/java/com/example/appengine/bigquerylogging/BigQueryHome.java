@@ -18,7 +18,6 @@ package com.example.appengine.bigquerylogging;
 
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.TableResult;
-
 import java.io.IOException;
 import java.util.List;
 

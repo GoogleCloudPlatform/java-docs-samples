@@ -24,7 +24,6 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,9 @@ public class PublisherExample {
   // use the default project id
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
-  /** Publish messages to a topic.
+  /**
+   * Publish messages to a topic.
+   *
    * @param args topic name, number of messages
    */
   public static void main(String... args) throws Exception {
@@ -53,9 +54,7 @@ public class PublisherExample {
 
         // convert message to bytes
         ByteString data = ByteString.copyFromUtf8(message);
-        PubsubMessage pubsubMessage = PubsubMessage.newBuilder()
-            .setData(data)
-            .build();
+        PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
 
         // Schedule a message to be published. Messages are automatically batched.
         ApiFuture<String> future = publisher.publish(pubsubMessage);
