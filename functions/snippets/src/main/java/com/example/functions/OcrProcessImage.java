@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 // [END functions_ocr_process]
 
+// [START functions_ocr_setup]
 public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
   // TODO<developer> set these environment variables
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
@@ -59,6 +60,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     publisher = Publisher.newBuilder(
         ProjectTopicName.of(PROJECT_ID, TRANSLATE_TOPIC_NAME)).build();
   }
+  // [END functions_ocr_setup]
 
   // [START functions_ocr_process]
   @Override
@@ -159,5 +161,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
   // [END functions_ocr_detect]
 
   // [START functions_ocr_process]
+  // [START functions_ocr_setup]
 }
+// [END functions_ocr_setup]
 // [END functions_ocr_process]
