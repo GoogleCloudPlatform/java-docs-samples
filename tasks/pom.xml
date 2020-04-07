@@ -29,7 +29,7 @@ Copyright 2018 Google LLC
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.15</version>
   </parent>
 
   <properties>
@@ -43,7 +43,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>1.28.2</version>
+      <version>1.29.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -60,7 +60,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

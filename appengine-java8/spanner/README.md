@@ -49,7 +49,7 @@ Note : by default all the spanner example operations run in order, this operatio
 
 ## Deploying
 
-    $ mvn clean appengine:deploy
+    $ mvn clean package appengine:deploy
 
 To see the results of the deployed sample application, open
 `https://spanner-dot-PROJECTID.appspot.com/spanner` in a web browser.

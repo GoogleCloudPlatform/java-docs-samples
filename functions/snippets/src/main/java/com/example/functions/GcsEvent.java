@@ -16,6 +16,8 @@
 
 package com.example.functions;
 
+import java.util.Date;
+
 // [START functions_helloworld_gcs_event]
 class GcsEvent {
   // Cloud Functions uses GSON to populate this object.
@@ -24,6 +26,8 @@ class GcsEvent {
   String bucket;
   String name;
   String metageneration;
+  Date timeCreated;
+  Date updated;
 
   public String getBucket() {
     return bucket;
@@ -47,6 +51,22 @@ class GcsEvent {
 
   public void setMetageneration(String metageneration) {
     this.metageneration = metageneration;
+  }
+
+  public Date getTimeCreated() {
+    return timeCreated;
+  }
+
+  public void setTimeCreated(Date timeCreated) {
+    this.timeCreated = timeCreated;
+  }
+
+  public Date getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(Date updated) {
+    this.updated = updated;
   }
 }
 // [END functions_helloworld_gcs_event]

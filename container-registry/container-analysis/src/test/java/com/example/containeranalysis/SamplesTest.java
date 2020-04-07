@@ -18,6 +18,7 @@ package com.example.containeranalysis;
 
 import static java.lang.Thread.sleep;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.api.gax.rpc.NotFoundException;
@@ -41,7 +42,6 @@ import io.grafeas.v1.Version;
 import io.grafeas.v1.VulnerabilityNote;
 import io.grafeas.v1.VulnerabilityOccurrence;
 import io.grafeas.v1.VulnerabilityOccurrence.PackageIssue;
-
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -202,8 +202,6 @@ public class SamplesTest {
 
   @Test
   public void testPubSub() throws Exception {
-    int newCount;
-    int tries;
     // create new topic and subscription if needed
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       String topicId = "container-analysis-occurrences-v1";
@@ -227,29 +225,30 @@ public class SamplesTest {
     sleep(SLEEP_TIME * 3);
     // set the initial state of our counter
     int startVal = receiver.messageCount + 1;
-    // now, we can test adding 3 more occurrences
-    int endVal = startVal + 3;
-    for (int i = startVal; i <= endVal; i++) {
+    // add 3 new occurrences
+    for (int i = 0; i < 3; i++) {
       Occurrence o = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
       System.out.println("CREATED: " + o.getName());
-      tries = 0;
-      do {
-        newCount = receiver.messageCount;
-        sleep(SLEEP_TIME);
-        tries += 1;
-      } while (newCount != i && tries < TRY_LIMIT);
-      System.out.println(receiver.messageCount + " : " + i);
-      assertEquals(i, receiver.messageCount);
       String[] nameArr = o.getName().split("/");
       String occId = nameArr[nameArr.length - 1];
       DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
     }
+    // verify the pubsub channel has new entries
+    int newCount;
+    int tries = 0;
+    do {
+      newCount = receiver.messageCount;
+      sleep(SLEEP_TIME);
+      tries += 1;
+    } while (newCount <= startVal && tries < TRY_LIMIT);
+    assertTrue(receiver.messageCount > startVal);
+
     if (subscriber != null) {
       subscriber.stopAsync();
     }
   }
 
-  @Test 
+  @Test
   public void testPollDiscoveryOccurrenceFinished() throws Exception {
     try {
       // expect fail on first try
@@ -291,7 +290,7 @@ public class SamplesTest {
     DeleteNote.deleteNote(discNoteId, PROJECT_ID);
   }
 
-  @Test 
+  @Test
   public void testFindVulnerabilitiesForImage() throws Exception {
     List<Occurrence> result = VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
         imageUrl, PROJECT_ID);
@@ -312,7 +311,7 @@ public class SamplesTest {
     DeleteOccurrence.deleteOccurrence(occId, PROJECT_ID);
   }
 
-  @Test 
+  @Test
   public void testFindHighSeverityVulnerabilitiesForImage() throws Exception {
     // check before creation
     List<Occurrence> result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(

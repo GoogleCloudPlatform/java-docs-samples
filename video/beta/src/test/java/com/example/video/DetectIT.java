@@ -39,12 +39,22 @@ public class DetectIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  static final String FILE_LOCATION =
-      "gs://java-docs-samples-testing/video/googlework_short.mp4";
+  static final String FILE_LOCATION = "gs://java-docs-samples-testing/video/googlework_short.mp4";
 
-  private static final List<String> POSSIBLE_TEXTS = Arrays.asList(
-      "Google", "SUR", "SUR", "ROTO", "Vice President", "58oo9", "LONDRES", "OMAR", "PARIS",
-      "METRO", "RUE", "CARLO");
+  private static final List<String> POSSIBLE_TEXTS =
+      Arrays.asList(
+          "Google",
+          "SUR",
+          "SUR",
+          "ROTO",
+          "Vice President",
+          "58oo9",
+          "LONDRES",
+          "OMAR",
+          "PARIS",
+          "METRO",
+          "RUE",
+          "CARLO");
 
   @Before
   public void setUp() {
@@ -69,23 +79,17 @@ public class DetectIT {
 
   @Test
   public void testTrackObjects() throws Exception {
-    VideoAnnotationResults result = TrackObjects.trackObjects("resources/cat.mp4");
+    TrackObjects.trackObjects("resources/googlework_short.mp4");
 
-    boolean textExists = false;
-    for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
-      if (objectTrackingAnnotation.getEntity().getDescription().toUpperCase().contains("CAT")) {
-        textExists = true;
-        break;
-      }
-    }
+    String got = bout.toString();
 
-    assertThat(textExists).isTrue();
+    assertThat(got).contains("Entity id");
   }
 
   @Test
   public void testTrackObjectsGcs() throws Exception {
-    VideoAnnotationResults result = TrackObjects.trackObjectsGcs(
-            "gs://cloud-samples-data/video/cat.mp4");
+    VideoAnnotationResults result =
+        TrackObjects.trackObjectsGcs("gs://cloud-samples-data/video/cat.mp4");
 
     boolean textExists = false;
     for (ObjectTrackingAnnotation objectTrackingAnnotation : result.getObjectAnnotationsList()) {
