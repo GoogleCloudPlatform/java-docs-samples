@@ -76,7 +76,7 @@
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-cloud-video-intelligence-v1p3beta1</artifactId>
-      <version>0.84.0</version>
+      <version>0.84.1</version>
     </dependency>
     <!-- [START video_java_dependencies_beta] -->
   </dependencies>
