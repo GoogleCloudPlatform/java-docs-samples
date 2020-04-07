@@ -50,13 +50,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-recommender</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.1</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-cloud-recommender-v1beta1</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.1</version>
     </dependency>
     <!-- [END recommender_java_dependencies] -->
 
