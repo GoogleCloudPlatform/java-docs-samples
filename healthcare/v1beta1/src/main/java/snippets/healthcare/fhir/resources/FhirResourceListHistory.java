@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package snippets.healthcare.fhir.resources;
 
-// [START healthcare_get_resource]
+// [START healthcare_list_resource_history]
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -36,41 +37,44 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 
-public class FhirResourceGet {
-  private static final String FHIR_NAME =
-      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+public class FhirResourceListHistory {
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceGet(String resourceName) throws IOException, URISyntaxException {
+  public static void fhirResourceListHistory(String resourceName)
+      throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
+
     HttpClient httpClient = HttpClients.createDefault();
     String uri = String.format(
-        "%sv1beta1/%s", client.getRootUrl(), resourceName);
+        "%sv1beta1/%s/_history", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
 
     HttpUriRequest request = RequestBuilder
         .get()
         .setUri(uriBuilder.build())
+        .addHeader("Content-Type", "application/fhir+json")
+        .addHeader("Accept-Charset", "utf-8")
+        .addHeader("Accept", "application/fhir+json; charset=utf-8")
         .build();
 
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      String errorMessage = String.format(
-          "Exception retrieving FHIR resource: %s\n", response.getStatusLine().toString());
-      System.err.print(errorMessage);
+      System.err.print(String.format(
+          "Exception retrieving FHIR history: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
-      throw new RuntimeException(errorMessage);
+      throw new RuntimeException();
     }
-    System.out.println("FHIR resource retrieved: ");
+    System.out.println("FHIR resource history retrieved: ");
     responseEntity.writeTo(System.out);
   }
 
@@ -85,8 +89,8 @@ public class FhirResourceGet {
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setConnectTimeout(60000); // 1 minute connect timeout
-          request.setReadTimeout(60000); // 1 minute read timeout
+          request.setConnectTimeout(1 * 60 * 1000); // 1 minute connect timeout
+          request.setReadTimeout(1 * 60 * 1000); // 1 minute read timeout
         };
 
     // Build the client for interacting with the service.
@@ -103,4 +107,4 @@ public class FhirResourceGet {
     return credential.getAccessToken();
   }
 }
-// [END healthcare_get_resource]
+// [END healthcare_list_resource_history]

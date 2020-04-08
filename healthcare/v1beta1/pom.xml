@@ -6,6 +6,18 @@
   <groupId>com.google.samples</groupId>
   <artifactId>healthcare-samples</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <packaging>jar</packaging>
 
   <!--
@@ -20,8 +32,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
   <prerequisites>
@@ -47,7 +59,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-healthcare</artifactId>
-      <version>v1beta1-rev20200229-1.30.9</version>
+      <version>v1beta1-rev20200301-1.30.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>

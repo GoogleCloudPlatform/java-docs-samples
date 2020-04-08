@@ -18,7 +18,6 @@ package snippets.healthcare.hl7v2.messages;
 
 // [START healthcare_list_hl7v2_messages]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -27,8 +26,10 @@ import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores.Messages;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1beta1.model.ListMessagesResponse;
+import com.google.api.services.healthcare.v1beta1.model.Message;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class HL7v2MessageList {
 
     // Results are paginated, so multiple queries may be required.
     String pageToken = null;
-    List<String> messages = new ArrayList<>();
+    List<Message> messages = new ArrayList<>();
 
     do {
       // Create request and configure any parameters.
@@ -64,7 +65,10 @@ public class HL7v2MessageList {
 
       // Execute response and collect results.
       ListMessagesResponse response = request.execute();
-      messages.addAll(response.getMessages());
+      Collection<Message> responseMessages = response.getHl7V2Messages();
+      if (responseMessages != null) {
+        messages.addAll(responseMessages);
+      }
 
       // Update the page token for the next request.
       pageToken = response.getNextPageToken();
@@ -72,8 +76,8 @@ public class HL7v2MessageList {
 
     // Print results.
     System.out.printf("Retrieved %s HL7v2 messages: \n", messages.size());
-    for (String data : messages) {
-      System.out.println("\t" + data);
+    for (Message data : messages) {
+      System.out.println("\t" + data.getData());
     }
   }
 
