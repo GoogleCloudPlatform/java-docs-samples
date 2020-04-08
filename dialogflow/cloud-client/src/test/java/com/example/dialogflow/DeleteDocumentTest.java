@@ -21,6 +21,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dialogflow.v2beta1.CreateDocumentRequest;
+import com.google.cloud.dialogflow.v2beta1.DeleteKnowledgeBaseRequest;
 import com.google.cloud.dialogflow.v2beta1.Document;
 import com.google.cloud.dialogflow.v2beta1.Document.KnowledgeType;
 import com.google.cloud.dialogflow.v2beta1.DocumentsClient;
