@@ -33,7 +33,6 @@
 
     <projectId>java-docs-samples-testing</projectId> <!-- TODO SET PROJECT_ID -->
     <sessionId>SESSION_ID</sessionId> <!-- TODO SET SESSION_ID -->
-    <contextId>CONTEXT_ID</contextId> <!-- TODO SET CONTEXT_ID -->
   </properties>
 
   <dependencies>
