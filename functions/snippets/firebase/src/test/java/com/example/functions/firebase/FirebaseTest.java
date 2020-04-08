@@ -98,7 +98,7 @@ public class FirebaseTest {
   }
 
   @Test
-  public void functionsFirebaseFirestore_shouldIgnoreMissingValues() {
+  public void functionsFirebaseFirestore_shouldIgnoreMissingValuesTest() {
     MockContext context = new MockContext();
     context.resource = "resource_1";
     context.eventType = "event_type_2";
