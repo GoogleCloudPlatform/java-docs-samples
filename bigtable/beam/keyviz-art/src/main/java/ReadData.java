@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
 import com.google.cloud.bigtable.beam.CloudBigtableConfiguration;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
@@ -38,7 +54,10 @@ import org.joda.time.Duration;
 public class ReadData {
 
   static final long KEY_VIZ_WINDOW_MINUTES = 15;
-  static final String COLUMN_FAMILY = "cf1";
+  static final long ONE_MB = 1000 * 1000;
+  static final long ONE_GB = 1000 * ONE_MB;
+  static final String COLUMN_FAMILY = "cf";
+
   static final long START_TIME = getStartTime();
 
   public static void main(String[] args) {
@@ -52,12 +71,14 @@ public class ReadData {
             .withTableId(options.getBigtableTableId())
             .build();
 
+    // Initiates a new pipeline every second
     p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
         .apply(
             ParDo.of(
                 new DoFn<Long, Integer>() {
                   @ProcessElement
                   public void processElement(OutputReceiver<Integer> out) {
+                    // Determine which column will be drawn based on runtime of job.
                     long timestampDiff = System.currentTimeMillis() - START_TIME;
                     long minutes = (timestampDiff / 1000) / 60;
                     out.output(Math.toIntExact(minutes / KEY_VIZ_WINDOW_MINUTES));
@@ -67,10 +88,6 @@ public class ReadData {
     p.run().waitUntilFinish();
   }
 
-  private static long getMaxInput(ReadDataOptions options) {
-    return options.getGigabytesWritten() * 1000 / options.getMegabytesPerRow();
-  }
-
   static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Integer, Void> {
 
     List<List<Float>> imageData = new ArrayList<>();
@@ -78,9 +95,9 @@ public class ReadData {
 
     public ReadFromTableFn(CloudBigtableConfiguration config, ReadDataOptions readDataOptions) {
       super(config);
-      keys = new String[Math.toIntExact(getMaxInput(readDataOptions) + 1)];
+      keys = new String[Math.toIntExact(getNumRows(readDataOptions))];
       downloadImageData(readDataOptions.getFilePath());
-      generateRowkeys(getMaxInput(readDataOptions));
+      generateRowkeys(getNumRows(readDataOptions));
 
     }
 
@@ -89,7 +106,7 @@ public class ReadData {
       ReadDataOptions options = po.as(ReadDataOptions.class);
       long count = 0;
 
-      List<RowRange> ranges = getRangesForTimeIndex(timeOffsetIndex, getMaxInput(options));
+      List<RowRange> ranges = getRangesForTimeIndex(timeOffsetIndex, getNumRows(options));
       if (ranges.size() == 0) {
         return;
       }
@@ -202,6 +219,11 @@ public class ReadData {
     return calendar.getTime().getTime();
   }
 
+  private static long getNumRows(ReadDataOptions options) {
+    long rowSize = options.getMegabytesPerRow() * ONE_MB;
+    return (options.getGigabytesWritten() * ONE_GB) / rowSize;
+  }
+
 
   public interface ReadDataOptions extends BigtableOptions {
 
@@ -218,7 +240,7 @@ public class ReadData {
     void setMegabytesPerRow(long megabytesPerRow);
 
     @Description("The file containing the pixels to draw.")
-    @Default.String("gs://public-examples-testing-bucket/mona2.txt")
+    @Default.String("gs://public-examples-testing-bucket/pearl_earring8h.txt")
     String getFilePath();
 
     void setFilePath(String filePath);

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import java.util.Random;
@@ -13,12 +29,19 @@ import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
+/**
+ * A Beam job that loads random data into Cloud Bigtable.
+ */
 public class LoadData {
+
+  static final long ONE_MB = 1000 * 1000;
+  static final long ONE_GB = 1000 * ONE_MB;
+  static final String COLUMN_FAMILY = "cf";
 
   public static void main(String[] args) {
 
-    BigtableOptions options =
-        PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
+    WriteDataOptions options =
+        PipelineOptionsFactory.fromArgs(args).withValidation().as(WriteDataOptions.class);
     Pipeline p = Pipeline.create(options);
     CloudBigtableTableConfiguration bigtableTableConfig =
         new CloudBigtableTableConfiguration.Builder()
@@ -27,42 +50,51 @@ public class LoadData {
             .withTableId(options.getBigtableTableId())
             .build();
 
-    // final int max = 1000000;
-    final long ONE_MB = 1000 * 1000;
-    final long ONE_GB = 1000 * ONE_MB;
-    final long FORTY_GIGS = 40 * ONE_GB;
-    final long ROW_SIZE = 5 * ONE_MB;
-    final long max = FORTY_GIGS / ROW_SIZE;
-    // final int max = 30 * 1000;
+    long rowSize = options.getMegabytesPerRow() * ONE_MB;
+    final long max =
+        (options.getGigabytesWritten() * ONE_GB) / rowSize;
+
     p.apply(GenerateSequence.from(0).to(max))
-        // p.apply(GenerateSequence.from(0).to(10))
         .apply(
             ParDo.of(
                 new DoFn<Long, Mutation>() {
                   @ProcessElement
                   public void processElement(@Element Long rowkey, OutputReceiver<Mutation> out) {
+                    // Make each number the same length by padding with 0s
                     int maxLength = ("" + max).length();
-                    // Make each number the same length by padding with 0s.
                     String paddedRowkey = String.format("%0" + maxLength + "d", rowkey);
-                    String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-                    System.out.println("reversedRowkey = " + reversedRowkey);
 
+                    // Reverse the rowkey for more efficient writing
+                    String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
                     Put row = new Put(Bytes.toBytes(reversedRowkey));
 
-                    // Generate 5 random bytes
-                    // byte[] b = new byte[(int) ROW_SIZE];
-                    byte[] b = new byte[1];
+                    // Generate random bytes
+                    byte[] b = new byte[(int) rowSize];
                     new Random().nextBytes(b);
 
                     long timestamp = System.currentTimeMillis();
-
-                    row.addColumn(Bytes.toBytes("cf1"), Bytes.toBytes("C"), timestamp, b);
+                    row.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes("C"), timestamp, b);
                     out.output(row);
                   }
                 }))
         .apply(CloudBigtableIO.writeToTable(bigtableTableConfig));
 
     p.run().waitUntilFinish();
+  }
+
+  public interface WriteDataOptions extends BigtableOptions {
+
+    @Description("The number of gigabytes to write")
+    @Default.Long(40)
+    long getGigabytesWritten();
+
+    void setGigabytesWritten(long gigabytesWritten);
+
+    @Description("The number of megabytes per row to write")
+    @Default.Long(5)
+    long getMegabytesPerRow();
+
+    void setMegabytesPerRow(long megabytesPerRow);
   }
 
   public interface BigtableOptions extends DataflowPipelineOptions {
