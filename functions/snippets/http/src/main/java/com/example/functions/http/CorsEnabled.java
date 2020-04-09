@@ -32,20 +32,18 @@ public class CorsEnabled implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    // Set CORS headers
-    //   Allows GETs from any origin with the Content-Type
-    //   header and caches preflight response for 3600s
-    response.appendHeader("Access-Control-Allow-Origin", "*");
-
-    if ("OPTIONS".equals(request.getMethod())) {
-      response.appendHeader("Access-Control-Allow-Methods", "GET");
+    // Set CORS headers for preflight requests
+    if (request.getMethod().equals("OPTIONS")) {
+      response.appendHeader("Access-Control-Allow-Origin", "*");
+      response.appendHeader("Access-Control-Allow-Methods", "POST");
       response.appendHeader("Access-Control-Allow-Headers", "Content-Type");
       response.appendHeader("Access-Control-Max-Age", "3600");
       response.setStatusCode(HttpURLConnection.HTTP_NO_CONTENT);
       return;
     }
 
-    // Handle the main request.
+    // Set CORS headers for the main request.
+    response.appendHeader("Access-Control-Allow-Origin", "*");
     BufferedWriter writer = response.getWriter();
     writer.write("CORS headers set successfully!");
   }
