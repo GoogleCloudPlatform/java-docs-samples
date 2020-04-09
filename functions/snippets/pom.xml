@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>1.32.5</version>
+      <version>1.33.0</version>
     </dependency>
 
     <!-- Required for scala samples -->
