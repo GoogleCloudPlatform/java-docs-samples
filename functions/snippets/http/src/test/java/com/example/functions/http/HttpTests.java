@@ -91,6 +91,16 @@ public class HttpTests {
   }
 
   @Test
+  public void corsEnabledAuthTest() throws IOException {
+    when(request.getMethod()).thenReturn("GET");
+
+    new CorsEnabledAuth().service(request, response);
+
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("CORS headers set successfully!");
+  }
+
+  @Test
   public void parseContentTypeTest_json() throws IOException {
     // Send a request with JSON data
     BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
