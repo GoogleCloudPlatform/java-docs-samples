@@ -23,14 +23,24 @@
   <groupId>com.example.spanner</groupId>
   <artifactId>cloud-spanner-jdbc</artifactId>
   <name>Cloud Spanner with JDBC Code Sample</name>
-  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>4.4.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <!-- [START spanner_jdbc_dependencies] -->
   <dependencies>
     <!-- The Spanner JDBC driver dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>1.15.0</version>
     </dependency>
     
     <!-- Test dependencies -->
@@ -63,7 +73,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>com.example.spanner.JdbcSample</mainClass>
+          <mainClass>com.example.spanner.jdbc.JdbcSample</mainClass>
           <cleanupDaemonThreads>false</cleanupDaemonThreads>
         </configuration>
       </plugin>
