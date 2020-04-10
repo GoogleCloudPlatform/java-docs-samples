@@ -31,16 +31,22 @@ public class LazyFields implements HttpFunction {
   // Warning: Class variables used in Servlet classes must be thread-safe,
   // or else might introduce race conditions in your code.
   private static final int NON_LAZY_GLOBAL = fileWideComputation();
+
   // Declared at cold-start, but only initialized if/when the function executes
-  private static Integer LAZY_GLOBAL = null;
+  // Uses the "initialization-on-demand holder" idiom
+  // More information: https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+  private static class LazyGlobalHolder {
+    // This value is initialized only if (and when) the getLazyGlobal() function below is called
+    static final Integer LAZY_GLOBAL = functionSpecificComputation();
+  }
+  private static Integer getLazyGlobal() {
+    return LazyGlobalHolder.LAZY_GLOBAL;
+  }
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    // This value is initialized only if (and when) the function is called
-    if (LAZY_GLOBAL == null) {
-      LAZY_GLOBAL = functionSpecificComputation();
-    }
+    Integer LAZY_GLOBAL = getLazyGlobal();
 
     BufferedWriter writer = response.getWriter();
     writer.write(String.format("Lazy global: %s; non-lazy global: %s", LAZY_GLOBAL, NON_LAZY_GLOBAL));
