@@ -1,0 +1,9 @@
+# [START functions_ci_cd_cloud_build]
+steps:
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['clean', 'verify']
+  dir: 'functions/autodeploy'
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['functions', 'deploy', '[YOUR_DEPLOYED_FUNCTION_NAME]', '[YOUR_FUNCTION_TRIGGER]', '--runtime', '[YOUR_RUNTIME]', '--entry-point', '[YOUR_FUNCTION_NAME_IN_CODE]']
+  dir: 'functions/autodeploy'
+# [END functions_ci_cd_cloud_build]
