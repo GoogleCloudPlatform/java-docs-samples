@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
-      <version>9.4.27.v20200227</version>
+      <version>9.4.28.v20200408</version>
       <type>jar</type>
     </dependency>
     <!-- extra explicit dependency needed because there is a JSP in the sample-->
