@@ -52,7 +52,7 @@ public class LoadData {
 
     long rowSize = options.getMegabytesPerRow() * ONE_MB;
     final long max =
-        (options.getGigabytesWritten() * ONE_GB) / rowSize;
+        (Math.round((options.getGigabytesWritten() * ONE_GB)) / rowSize);
 
     p.apply(GenerateSequence.from(0).to(max))
         .apply(
@@ -85,10 +85,10 @@ public class LoadData {
   public interface WriteDataOptions extends BigtableOptions {
 
     @Description("The number of gigabytes to write")
-    @Default.Long(40)
-    long getGigabytesWritten();
+    @Default.Double(40)
+    double getGigabytesWritten();
 
-    void setGigabytesWritten(long gigabytesWritten);
+    void setGigabytesWritten(double gigabytesWritten);
 
     @Description("The number of megabytes per row to write")
     @Default.Long(5)

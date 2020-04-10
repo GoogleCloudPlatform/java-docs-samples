@@ -73,22 +73,11 @@ public class ReadData {
 
     // Initiates a new pipeline every second
     p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
-        .apply(
-            ParDo.of(
-                new DoFn<Long, Integer>() {
-                  @ProcessElement
-                  public void processElement(OutputReceiver<Integer> out) {
-                    // Determine which column will be drawn based on runtime of job.
-                    long timestampDiff = System.currentTimeMillis() - START_TIME;
-                    long minutes = (timestampDiff / 1000) / 60;
-                    out.output(Math.toIntExact(minutes / KEY_VIZ_WINDOW_MINUTES));
-                  }
-                }))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
     p.run().waitUntilFinish();
   }
 
-  static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Integer, Void> {
+  static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
 
     List<List<Float>> imageData = new ArrayList<>();
     String[] keys;
@@ -102,7 +91,12 @@ public class ReadData {
     }
 
     @ProcessElement
-    public void processElement(@Element Integer timeOffsetIndex, PipelineOptions po) {
+    public void processElement(PipelineOptions po) {
+      // Determine which column will be drawn based on runtime of job.
+      long timestampDiff = System.currentTimeMillis() - START_TIME;
+      long minutes = (timestampDiff / 1000) / 60;
+      int timeOffsetIndex = Math.toIntExact(minutes / KEY_VIZ_WINDOW_MINUTES);
+
       ReadDataOptions options = po.as(ReadDataOptions.class);
       long count = 0;
 
@@ -166,7 +160,7 @@ public class ReadData {
      */
     private void generateRowkeys(long maxInput) {
       int maxLength = ("" + maxInput).length();
-      for (int i = 0; i < maxInput + 1; i++) {
+      for (int i = 0; i < maxInput; i++) {
         // Make each number the same length by padding with 0s.
         String paddedRowkey = String.format("%0" + maxLength + "d", i);
         String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
@@ -195,7 +189,7 @@ public class ReadData {
           long endKeyI = startKeyI + rowHeight;
 
           String startKey = keys[Math.toIntExact(startKeyI)];
-          String endKey = keys[Math.toIntExact(endKeyI)];
+          String endKey = keys[Math.toIntExact(endKeyI) - 1];
           ranges.add(
               new RowRange(
                   Bytes.toBytes("" + startKey), true,
@@ -221,17 +215,17 @@ public class ReadData {
 
   private static long getNumRows(ReadDataOptions options) {
     long rowSize = options.getMegabytesPerRow() * ONE_MB;
-    return (options.getGigabytesWritten() * ONE_GB) / rowSize;
+    return Math.round((options.getGigabytesWritten() * ONE_GB)) / rowSize;
   }
 
 
   public interface ReadDataOptions extends BigtableOptions {
 
     @Description("The number of gigabytes written using the load data script.")
-    @Default.Long(40)
-    long getGigabytesWritten();
+    @Default.Double(40)
+    double getGigabytesWritten();
 
-    void setGigabytesWritten(long gigabytesWritten);
+    void setGigabytesWritten(double gigabytesWritten);
 
     @Description("The number of megabytes per row written using the load data script.")
     @Default.Long(5)
