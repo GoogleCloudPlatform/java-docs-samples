@@ -94,7 +94,6 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
-      <type>jar</type>
     </dependency>
   </dependencies>
 
