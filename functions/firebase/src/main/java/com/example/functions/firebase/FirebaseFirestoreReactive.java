@@ -33,15 +33,15 @@ import java.util.logging.Logger;
 public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private Gson GSON_PARSER = new Gson();
 
   private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
-  private static final Firestore firestore = FirestoreOptions.getDefaultInstance().getService();
+  private static final Firestore FIRESTORE = FirestoreOptions.getDefaultInstance().getService();
 
   @Override
   public void accept(String json, Context context) throws RuntimeException {
     // Get the recently-written value
-    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    JsonObject body = GSON_PARSER.fromJson(json, JsonObject.class);
     JsonObject tempJson = body.getAsJsonObject("value");
 
     // Verify that value.fields.original.stringValue exists
@@ -70,7 +70,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
     LOGGER.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
     try {
-      firestore.document(affectedDoc).set(newFields, SetOptions.merge()).get();
+      FIRESTORE.document(affectedDoc).set(newFields, SetOptions.merge()).get();
     } catch (ExecutionException | InterruptedException e) {
       throw new RuntimeException(e);
     }

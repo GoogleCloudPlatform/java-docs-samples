@@ -47,14 +47,14 @@ public class GroovyTest {
 
   private static final Logger BACKGROUND_LOGGER = Logger.getLogger(
       GroovyHelloBackground.class.getName());
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
 
   @BeforeClass
   public static void beforeClass() {
-    BACKGROUND_LOGGER.addHandler(logHandler);
+    BACKGROUND_LOGGER.addHandler(LOG_HANDLER);
   }
 
   @Before
@@ -71,13 +71,13 @@ public class GroovyTest {
     writerOut = new BufferedWriter(responseOut);
     PowerMockito.when(response.getWriter()).thenReturn(writerOut);
 
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @After
   public void afterTest() {
     System.out.flush();
-    logHandler.flush();
+    LOG_HANDLER.flush();
   }
 
   @Test
@@ -94,7 +94,7 @@ public class GroovyTest {
 
     new GroovyHelloBackground().accept(request, new MockContext());
 
-    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello John!").isEqualTo(message);
   }
 
@@ -102,7 +102,7 @@ public class GroovyTest {
   public void functionsHelloworldBackgroundGroovy_shouldPrintHelloWorld() throws Exception {
     new GroovyHelloBackground().accept(request, new MockContext());
 
-    String message = logHandler.getStoredLogRecords().get(0).getMessage();
+    String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(message);
   }
 }

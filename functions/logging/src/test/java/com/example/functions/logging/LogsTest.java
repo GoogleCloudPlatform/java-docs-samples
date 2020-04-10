@@ -53,10 +53,10 @@ public class LogsTest {
 
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger STACKDRIVER_LOGGER = Logger.getLogger(
+  private static final Logger LOGGER = Logger.getLogger(
       StackdriverLogging.class.getName());
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
@@ -66,7 +66,7 @@ public class LogsTest {
 
   @BeforeClass
   public static void beforeClass() {
-    STACKDRIVER_LOGGER.addHandler(logHandler);
+    LOGGER.addHandler(LOG_HANDLER);
   }
 
   @Before
@@ -83,13 +83,13 @@ public class LogsTest {
     writerOut = new BufferedWriter(responseOut);
     PowerMockito.when(response.getWriter()).thenReturn(writerOut);
 
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @After
   public void afterTest() {
     System.out.flush();
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -106,7 +106,7 @@ public class LogsTest {
         "{\"data\":\"ZGF0YQ==\",\"messageId\":\"id\"}", PubSubMessage.class);
     new StackdriverLogging().accept(pubsubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello, data").isEqualTo(logMessage);
   }
 }

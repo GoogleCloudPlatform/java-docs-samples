@@ -61,7 +61,7 @@ public class ConceptsTests {
   private static final Logger INFINITE_RETRY_LOGGER = Logger.getLogger(
       InfiniteRetryPubSub.class.getName());
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
@@ -71,8 +71,8 @@ public class ConceptsTests {
 
   @BeforeClass
   public static void beforeClass() {
-    RETRY_LOGGER.addHandler(logHandler);
-    INFINITE_RETRY_LOGGER.addHandler(logHandler);
+    RETRY_LOGGER.addHandler(LOG_HANDLER);
+    INFINITE_RETRY_LOGGER.addHandler(LOG_HANDLER);
   }
 
   @Before
@@ -89,13 +89,13 @@ public class ConceptsTests {
     writerOut = new BufferedWriter(responseOut);
     PowerMockito.when(response.getWriter()).thenReturn(writerOut);
 
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @After
   public void afterTest() {
     System.out.flush();
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -149,7 +149,7 @@ public class ConceptsTests {
 
     new RetryPubSub().accept(pubsubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
   }
 
   @Test
@@ -162,7 +162,7 @@ public class ConceptsTests {
 
     new RetryPubSub().accept(pubsubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Not retrying...").isEqualTo(logMessage);
   }
 
@@ -173,7 +173,7 @@ public class ConceptsTests {
 
     new RetryPubSub().accept(pubsubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Not retrying...").isEqualTo(logMessage);
   }
 
@@ -187,7 +187,7 @@ public class ConceptsTests {
 
     new InfiniteRetryPubSub().accept(pubsubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat(String.format("Processing event %s.", timestampData)).isEqualTo(logMessage);
   }
 
@@ -202,7 +202,7 @@ public class ConceptsTests {
 
     new InfiniteRetryPubSub().accept(pubsubMessage, null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat(String.format("Dropping event %s.", timestampData)).isEqualTo(logMessage);
   }
 
@@ -213,7 +213,7 @@ public class ConceptsTests {
 
     new InfiniteRetryPubSub().accept(new PubSubMessage(), null);
 
-    String logMessage = logHandler.getStoredLogRecords().get(0).getMessage();
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Processing event null.").isEqualTo(logMessage);
   }
 }

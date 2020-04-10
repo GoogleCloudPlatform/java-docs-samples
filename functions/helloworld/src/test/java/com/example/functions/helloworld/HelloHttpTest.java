@@ -45,7 +45,7 @@ public class HelloHttpTest {
   private BufferedWriter writerOut;
   private StringWriter responseOut;
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
   public void beforeTest() throws IOException {
@@ -61,7 +61,7 @@ public class HelloHttpTest {
     writerOut = new BufferedWriter(responseOut);
     when(response.getWriter()).thenReturn(writerOut);
 
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test

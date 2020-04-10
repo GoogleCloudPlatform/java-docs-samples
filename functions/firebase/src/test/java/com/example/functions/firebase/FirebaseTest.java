@@ -61,7 +61,7 @@ public class FirebaseTest {
   private static final Logger REACTIVE_LOGGER = Logger.getLogger(
       FirebaseFirestoreReactive.class.getName());
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
@@ -71,11 +71,11 @@ public class FirebaseTest {
 
   @BeforeClass
   public static void beforeClass() {
-    FIRESTORE_LOGGER.addHandler(logHandler);
-    RTDB_LOGGER.addHandler(logHandler);
-    REMOTE_CONFIG_LOGGER.addHandler(logHandler);
-    AUTH_LOGGER.addHandler(logHandler);
-    REACTIVE_LOGGER.addHandler(logHandler);
+    FIRESTORE_LOGGER.addHandler(LOG_HANDLER);
+    RTDB_LOGGER.addHandler(LOG_HANDLER);
+    REMOTE_CONFIG_LOGGER.addHandler(LOG_HANDLER);
+    AUTH_LOGGER.addHandler(LOG_HANDLER);
+    REACTIVE_LOGGER.addHandler(LOG_HANDLER);
   }
 
   @Before
@@ -88,13 +88,13 @@ public class FirebaseTest {
     firestoreMock = PowerMockito.mock(Firestore.class);
     when(firestoreMock.document(ArgumentMatchers.any())).thenReturn(referenceMock);
 
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @After
   public void afterTest() {
     System.out.flush();
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -105,7 +105,7 @@ public class FirebaseTest {
 
     new FirebaseFirestore().accept("", context);
 
-    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
     Truth.assertThat(logs.size()).isEqualTo(2);
     Truth.assertThat(logs.get(0).getMessage()).isEqualTo(
         "Function triggered by event on: resource_1");
@@ -122,7 +122,7 @@ public class FirebaseTest {
 
     new FirebaseFirestore().accept(jsonStr, context);
 
-    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
     Truth.assertThat(logs.size()).isEqualTo(6);
     Truth.assertThat(logs.get(0).getMessage()).isEqualTo(
         "Function triggered by event on: resource_1");
@@ -138,7 +138,7 @@ public class FirebaseTest {
 
     new FirebaseRtdb().accept("", context);
 
-    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
     Truth.assertThat(logs.get(0).getMessage()).isEqualTo(
         "Function triggered by change to: resource_1");
     Truth.assertThat(logs.get(1).getMessage()).isEqualTo("Admin?: false");
@@ -154,7 +154,7 @@ public class FirebaseTest {
 
     new FirebaseRtdb().accept(jsonStr, context);
 
-    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
     Truth.assertThat(logs.get(0).getMessage()).isEqualTo(
         "Function triggered by change to: resource_1");
     Truth.assertThat(logs.get(1).getMessage()).isEqualTo("Admin?: true");
@@ -170,7 +170,7 @@ public class FirebaseTest {
 
     new FirebaseRtdb().accept(jsonStr, context);
 
-    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
     Truth.assertThat(logs.size()).isEqualTo(4);
     Truth.assertThat(logs.get(0).getMessage()).isEqualTo(
         "Function triggered by change to: resource_1");
@@ -182,7 +182,7 @@ public class FirebaseTest {
   public void functionsFirebaseRemoteConfig_shouldShowUpdateType() {
     new FirebaseRemoteConfig().accept("{\"updateType\": \"foo\"}", null);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Update type: foo");
   }
 
@@ -190,7 +190,7 @@ public class FirebaseTest {
   public void functionsFirebaseRemoteConfig_shouldShowOrigin() {
     new FirebaseRemoteConfig().accept("{\"updateOrigin\": \"foo\"}", null);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Origin: foo");
   }
 
@@ -198,14 +198,14 @@ public class FirebaseTest {
   public void functionsFirebaseRemoteConfig_shouldShowVersion() {
     new FirebaseRemoteConfig().accept("{\"versionNumber\": 2}", null);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo("Version: 2");
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo("Version: 2");
   }
 
   @Test
   public void functionsFirebaseAuth_shouldShowUserId() {
     new FirebaseAuth().accept("{\"uid\": \"foo\"}", null);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Function triggered by change to user: foo");
   }
 
@@ -213,7 +213,7 @@ public class FirebaseTest {
   public void functionsFirebaseAuth_shouldShowOrigin() {
     new FirebaseAuth().accept("{\"metadata\": {\"createdAt\": \"123\"}}", null);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Created at: 123");
   }
 
@@ -221,7 +221,7 @@ public class FirebaseTest {
   public void functionsFirebaseAuth_shouldShowVersion()  {
     new FirebaseAuth().accept("{\"email\": \"foo@google.com\"}", null);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Email: foo@google.com");
   }
 
@@ -237,7 +237,7 @@ public class FirebaseTest {
 
     functionInstance.accept(jsonStr, context);
 
-    Truth.assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Replacing value: foo --> FOO");
   }
 

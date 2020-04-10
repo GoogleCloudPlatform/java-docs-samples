@@ -63,7 +63,7 @@ public class HelloWorldSnippetsTest {
   private static final Logger GCS_GENERIC_LOGGER = Logger.getLogger(
       HelloGcsGeneric.class.getName());
 
-  private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gson = new Gson();
@@ -73,10 +73,10 @@ public class HelloWorldSnippetsTest {
 
   @BeforeClass
   public static void beforeClass() {
-    BACKGROUND_LOGGER.addHandler(logHandler);
-    PUBSUB_LOGGER.addHandler(logHandler);
-    GCS_LOGGER.addHandler(logHandler);
-    GCS_GENERIC_LOGGER.addHandler(logHandler);
+    BACKGROUND_LOGGER.addHandler(LOG_HANDLER);
+    PUBSUB_LOGGER.addHandler(LOG_HANDLER);
+    GCS_LOGGER.addHandler(LOG_HANDLER);
+    GCS_GENERIC_LOGGER.addHandler(LOG_HANDLER);
   }
 
   @Before
@@ -93,13 +93,13 @@ public class HelloWorldSnippetsTest {
     writerOut = new BufferedWriter(responseOut);
     when(response.getWriter()).thenReturn(writerOut);
 
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @After
   public void afterTest() {
     System.out.flush();
-    logHandler.clear();
+    LOG_HANDLER.clear();
   }
 
   @Test
@@ -123,7 +123,7 @@ public class HelloWorldSnippetsTest {
 
     new HelloGcsGeneric().accept(event, context);
 
-    List<LogRecord> logs = logHandler.getStoredLogRecords();
+    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
     assertThat(logs.get(1).getMessage()).isEqualTo(
         "Event Type: google.storage.object.metadataUpdate");
     assertThat(logs.get(2).getMessage()).isEqualTo("Bucket: some-bucket");

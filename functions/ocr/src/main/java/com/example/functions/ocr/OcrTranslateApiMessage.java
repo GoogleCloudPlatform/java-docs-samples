@@ -29,7 +29,7 @@ public class OcrTranslateApiMessage {
   private String filename;
   private String lang;
 
-  private static final Gson gson = new Gson();
+  private static final Gson GSON = new Gson();
 
   public OcrTranslateApiMessage(String text, String filename, String lang) {
     if (text == null) {
@@ -61,14 +61,14 @@ public class OcrTranslateApiMessage {
 
   public static OcrTranslateApiMessage fromPubsubData(byte[] data) {
     String jsonStr = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
-    Map<String, String> jsonMap = gson.fromJson(jsonStr, Map.class);
+    Map<String, String> jsonMap = GSON.fromJson(jsonStr, Map.class);
 
     return new OcrTranslateApiMessage(
         jsonMap.get("text"), jsonMap.get("filename"), jsonMap.get("lang"));
   }
 
   public byte[] toPubsubData() {
-    return gson.toJson(this).getBytes(StandardCharsets.UTF_8);
+    return GSON.toJson(this).getBytes(StandardCharsets.UTF_8);
   }
 }
 // [END functions_ocr_translate_pojo]

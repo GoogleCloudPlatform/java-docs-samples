@@ -39,10 +39,10 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
   // TODO<developer> set these environment variables
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
   private static final String RESULTS_TOPIC_NAME = System.getenv("RESULT_TOPIC");
-
   private static final Logger LOGGER = Logger.getLogger(OcrTranslateText.class.getName());
-  private Publisher publisher;
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
+
+  private Publisher publisher;
 
   public OcrTranslateText() throws IOException {
     publisher = Publisher.newBuilder(

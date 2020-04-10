@@ -50,10 +50,10 @@ public class OcrTests {
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
-  private static final Gson gson = new Gson();
+  private static final Gson GSON = new Gson();
 
-  private static final Storage storage = StorageOptions.getDefaultInstance().getService();
-  private static final String randomString = UUID.randomUUID().toString();
+  private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();
+  private static final String RANDOM_STRING = UUID.randomUUID().toString();
 
   @BeforeClass
   public static void setUpClass() {
@@ -69,8 +69,8 @@ public class OcrTests {
 
   @AfterClass
   public static void tearDownClass() {
-    String deletedFilename = String.format("test-%s.jpg_to_es.txt", randomString);
-    storage.delete(RESULT_BUCKET, deletedFilename);
+    String deletedFilename = String.format("test-%s.jpg_to_es.txt", RANDOM_STRING);
+    STORAGE.delete(RESULT_BUCKET, deletedFilename);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -113,7 +113,7 @@ public class OcrTests {
     dataJson.addProperty("lang", lang);
 
     PubSubMessage message = new PubSubMessage();
-    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
+    message.setData(new String(Base64.getEncoder().encode(GSON.toJson(dataJson).getBytes())));
 
     new OcrTranslateText().accept(message, null);
 
@@ -133,7 +133,7 @@ public class OcrTests {
   @Test
   public void functionsOcrSave_shouldPublishTranslatedText() throws IOException {
     String text = "Wake up human!";
-    String filename = String.format("test-%s.jpg", randomString);
+    String filename = String.format("test-%s.jpg", RANDOM_STRING);
     String lang = "es";
 
     JsonObject dataJson = new JsonObject();
@@ -142,7 +142,7 @@ public class OcrTests {
     dataJson.addProperty("lang", lang);
 
     PubSubMessage message = new PubSubMessage();
-    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
+    message.setData(new String(Base64.getEncoder().encode(GSON.toJson(dataJson).getBytes())));
 
     new OcrSaveResult().accept(message, null);
 
@@ -156,7 +156,7 @@ public class OcrTests {
         expectedMessage);
 
     // Check that file was written
-    BlobInfo resultBlob = storage.get(RESULT_BUCKET, resultFilename);
+    BlobInfo resultBlob = STORAGE.get(RESULT_BUCKET, resultFilename);
     assertThat(resultBlob).isNotNull();
   }
 }

@@ -32,7 +32,7 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
   // TODO<developer> set this environment variable
   private static final String RESULT_BUCKET = System.getenv("RESULT_BUCKET");
 
-  private static final Storage storage = StorageOptions.getDefaultInstance().getService();
+  private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();
   private static final Logger LOGGER = Logger.getLogger(OcrSaveResult.class.getName());
 
   @Override
@@ -50,7 +50,7 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
     // Save file to RESULT_BUCKET with name newFileNaem
     LOGGER.info(String.format("Saving result to %s in bucket %s", newFileName, RESULT_BUCKET));
     BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(RESULT_BUCKET, newFileName)).build();
-    storage.create(blobInfo, ocrMessage.getText().getBytes(StandardCharsets.UTF_8));
+    STORAGE.create(blobInfo, ocrMessage.getText().getBytes(StandardCharsets.UTF_8));
     LOGGER.info("File saved");
   }
 }
