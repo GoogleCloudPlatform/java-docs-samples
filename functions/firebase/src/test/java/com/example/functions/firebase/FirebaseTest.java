@@ -233,7 +233,7 @@ public class FirebaseTest {
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
 
     FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
-    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "FIRESTORE", firestoreMock);
 
     functionInstance.accept(jsonStr, context);
 
@@ -249,7 +249,7 @@ public class FirebaseTest {
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
 
     FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
-    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "firestore", firestoreMock);
+    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "FIRESTORE", firestoreMock);
 
     IllegalArgumentException e = Assertions.assertThrows(
         IllegalArgumentException.class, () -> functionInstance.accept(jsonStr, context));
