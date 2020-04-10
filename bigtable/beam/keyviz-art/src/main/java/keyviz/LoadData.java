@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package keyviz;
+
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import java.util.Random;

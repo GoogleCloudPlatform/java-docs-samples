@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package keyviz;
+
 import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
 import com.google.cloud.bigtable.beam.CloudBigtableConfiguration;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
@@ -77,7 +79,7 @@ public class ReadData {
     p.run().waitUntilFinish();
   }
 
-  static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
+  public static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
 
     List<List<Float>> imageData = new ArrayList<>();
     String[] keys;
@@ -193,7 +195,7 @@ public class ReadData {
           ranges.add(
               new RowRange(
                   Bytes.toBytes("" + startKey), true,
-                  Bytes.toBytes("" + endKey), false));
+                  Bytes.toBytes("" + endKey), true));
         }
       }
       return ranges;

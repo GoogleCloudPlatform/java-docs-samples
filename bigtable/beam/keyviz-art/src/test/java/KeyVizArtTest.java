@@ -18,12 +18,19 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import keyviz.ReadData.ReadDataOptions;
+import keyviz.ReadData.ReadFromTableFn;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
-import org.apache.beam.sdk.io.GenerateSequence;
+import keyviz.LoadData;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
@@ -38,8 +45,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 public class KeyVizArtTest {
 
@@ -95,7 +100,7 @@ public class KeyVizArtTest {
   }
 
   @Test
-  public void testWrite() {
+  public void testWriteAndRead() {
     LoadData.main(
         new String[]{
             "--bigtableProjectId=" + projectId,
@@ -120,29 +125,47 @@ public class KeyVizArtTest {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
 
-    assertEquals(count, 100);
-  }
+    assertEquals(10, count);
 
-  @Test
-  public void testReadFull() {
-    GenerateSequence mock = Mockito.mock(GenerateSequence.class);
-    Mockito.when(mock.from(1)).thenReturn(GenerateSequence.from(0).to(1));
-    // Mockito.doCallRealMethod()
-    //     .when(cls)
-    //     .defaultImpl();
-
-    ReadData.main(
-        new String[]{
-            "--bigtableProjectId=" + projectId,
+    ReadDataOptions options =
+        PipelineOptionsFactory.fromArgs("--bigtableProjectId=" + projectId,
             "--bigtableInstanceId=" + instanceId,
             "--bigtableTableId=" + TABLE_ID,
             "--gigabytesWritten=" + GIGABYTES_WRITTEN,
             "--megabytesPerRow=" + MEGABYTES_PER_ROW,
-            "--filePath=gs://keyviz-art/maxgrid.txt"
-        });
+            "--filePath=gs://keyviz-art/maxgrid.txt").withValidation().as(ReadDataOptions.class);
+    Pipeline p = Pipeline.create(options);
+    CloudBigtableTableConfiguration bigtableTableConfig =
+        new CloudBigtableTableConfiguration.Builder()
+            .withProjectId(options.getBigtableProjectId())
+            .withInstanceId(options.getBigtableInstanceId())
+            .withTableId(options.getBigtableTableId())
+            .build();
+
+    // Initiates a new pipeline every second
+    p.apply(Create.of(1l))
+        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
+    p.run().waitUntilFinish();
 
     String output = bout.toString();
-    assertThat(output).contains("got 100 rows");
+    assertThat(output).contains("got 10 rows");
+
+    options =
+        PipelineOptionsFactory.fromArgs("--bigtableProjectId=" + projectId,
+            "--bigtableInstanceId=" + instanceId,
+            "--bigtableTableId=" + TABLE_ID,
+            "--gigabytesWritten=" + GIGABYTES_WRITTEN,
+            "--megabytesPerRow=" + MEGABYTES_PER_ROW,
+            "--filePath=gs://keyviz-art/halfgrid.txt").withValidation().as(ReadDataOptions.class);
+    p = Pipeline.create(options);
+
+    // Initiates a new pipeline every second
+    p.apply(Create.of(1l))
+        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
+    p.run().waitUntilFinish();
+
+    output = bout.toString();
+    assertThat(output).contains("got 5 rows");
   }
 
   // @Test
