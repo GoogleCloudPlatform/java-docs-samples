@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -78,11 +77,6 @@ public class PubsubTest {
     PowerMockito.when(response.getWriter()).thenReturn(writerOut);
 
     logHandler.clear();
-  }
-
-  @After
-  public void afterTest() {
-    //logHandler.flush();
   }
 
   @Test
