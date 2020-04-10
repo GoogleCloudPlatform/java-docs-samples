@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.functions.helloworld;
+package com.example.functions.http;
 
-// [START functions_helloworld_method]
+// [START functions_http_method]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -25,7 +25,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class HelloMethod implements HttpFunction {
+public class HttpMethod implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
@@ -48,4 +48,4 @@ public class HelloMethod implements HttpFunction {
     }
   }
 }
-// [END functions_helloworld_method]
+// [END functions_http_method]

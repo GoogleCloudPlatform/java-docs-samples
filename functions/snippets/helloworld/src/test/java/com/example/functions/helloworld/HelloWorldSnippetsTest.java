@@ -17,8 +17,6 @@
 package com.example.functions.helloworld;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -33,7 +31,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -161,38 +158,5 @@ public class HelloWorldSnippetsTest {
     writerOut.flush();
 
     assertThat(responseOut.toString()).isEqualTo("Hello Jane!");
-  }
-
-  @Test
-  public void functionsHelloworldMethod_shouldAcceptGet() throws IOException {
-    when(request.getMethod()).thenReturn("GET");
-
-    new HelloMethod().service(request, response);
-
-    writerOut.flush();
-    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_OK);
-    assertThat(responseOut.toString()).isEqualTo("Hello world!");
-  }
-
-  @Test
-  public void functionsHelloworldMethod_shouldForbidPut() throws IOException {
-    when(request.getMethod()).thenReturn("PUT");
-
-    new HelloMethod().service(request, response);
-
-    writerOut.flush();
-    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_FORBIDDEN);
-    assertThat(responseOut.toString()).isEqualTo("Forbidden!");
-  }
-
-  @Test
-  public void functionsHelloworldMethod_shouldErrorOnPost() throws IOException {
-    when(request.getMethod()).thenReturn("POST");
-
-    new HelloMethod().service(request, response);
-
-    writerOut.flush();
-    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
-    assertThat(responseOut.toString()).isEqualTo("Something blew up!");
   }
 }
