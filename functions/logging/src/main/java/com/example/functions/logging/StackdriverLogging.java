@@ -34,7 +34,7 @@ public class StackdriverLogging implements BackgroundFunction<PubSubMessage> {
 
     if (!message.getData().isEmpty()) {
       name = new String(Base64.getDecoder().decode(
-          message.getData().getBytes(StandardCharsets.UTF_8)));
+          message.getData().getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
     String res = String.format("Hello, %s", name);
     LOGGER.info(res);

@@ -50,9 +50,9 @@ public class RetrieveLogs implements HttpFunction {
 
     BufferedWriter writer = response.getWriter();
     for (LogEntry entry : entriesResponse.getPage().getValues()) {
-      writer.write(String.format("%s: %s\n", entry.getLogName(), entry.getTextPayload()));
+      writer.write(String.format("%s: %s%n", entry.getLogName(), entry.getTextPayload()));
     }
-    writer.write("\n\nLogs retrieved successfully.\n");
+    writer.write("%n%nLogs retrieved successfully.%n");
   }
 
   // Returns a client for interacting with the Logging API. The client is stored in the global scope
