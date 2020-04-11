@@ -37,8 +37,9 @@ public class LazyFields implements HttpFunction {
   // More information: https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
   private static class LazyGlobalHolder {
     // This value is initialized only if (and when) the getLazyGlobal() function below is called
-    static final Integer LAZY_GLOBAL = functionSpecificComputation();
+    private static final Integer LAZY_GLOBAL = functionSpecificComputation();
   }
+
   private static Integer getLazyGlobal() {
     return LazyGlobalHolder.LAZY_GLOBAL;
   }
@@ -46,10 +47,11 @@ public class LazyFields implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    Integer LAZY_GLOBAL = getLazyGlobal();
+    Integer lazyGlobal = getLazyGlobal();
 
     BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Lazy global: %s; non-lazy global: %s", LAZY_GLOBAL, NON_LAZY_GLOBAL));
+    writer.write(String.format("Lazy global: %s; non-lazy global: %s",
+        lazyGlobal, NON_LAZY_GLOBAL));
   }
 
   private static int functionSpecificComputation() {

@@ -67,6 +67,7 @@
       <artifactId>google-cloud-pubsub</artifactId>
     </dependency>
 
+    <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>

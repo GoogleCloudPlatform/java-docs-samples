@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson GSON_PARSER = new Gson();
+  private static final Gson GSON_PARSER = new Gson();
 
   private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
   private static final Firestore FIRESTORE = FirestoreOptions.getDefaultInstance().getService();
