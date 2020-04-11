@@ -121,7 +121,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     // Detect language using the Cloud Translation API
     DetectLanguageRequest languageRequest =
         DetectLanguageRequest.newBuilder()
-            .setParent(LOCATION_NAME.toString())
+            .setParent(LOCATION_NAME)
             .setMimeType("text/plain")
             .setContent(text)
             .build();

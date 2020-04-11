@@ -61,7 +61,7 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     String text = ocrMessage.getText();
     TranslateTextRequest request =
         TranslateTextRequest.newBuilder()
-            .setParent(LOCATION_NAME.toString())
+            .setParent(LOCATION_NAME)
             .setMimeType("text/plain")
             .setTargetLanguageCode(targetLang)
             .addContents(text)

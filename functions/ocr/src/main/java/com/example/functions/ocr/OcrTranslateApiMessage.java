@@ -25,11 +25,11 @@ import java.util.Map;
 
 // Object for storing OCR translation requests
 public class OcrTranslateApiMessage {
+  private static final Gson GSON = new Gson();
+
   private String text;
   private String filename;
   private String lang;
-
-  private static final Gson GSON = new Gson();
 
   public OcrTranslateApiMessage(String text, String filename, String lang) {
     if (text == null) {
