@@ -27,6 +27,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Base64;
+import java.util.Optional;
 
 public class ParseContentType implements HttpFunction {
 
@@ -40,27 +41,32 @@ public class ParseContentType implements HttpFunction {
       throws IOException {
     String name = null;
     String contentType = request.getContentType().get();
-    if (contentType.equals("application/json")) {
-      // '{"name":"John"}'
-      JsonObject body = gsonParser.fromJson(request.getReader(), JsonObject.class);
-      if (body.has("name")) {
-        name = body.get("name").getAsString();
-      } else {
-        // No "name" parameter specified
-        response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
-        return;
-      }
-    } else if (contentType.equals("application/octet-stream")) {
-      // 'John', stored in a Buffer
-      name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()));
-    } else if (contentType.equals("text/plain")) {
-      // 'John'
-      name = request.getReader().readLine();
-    } else if (contentType.equals("application/x-www-form-urlencoded")
-        && request.getFirstQueryParameter("name").isPresent()) {
-      // 'name=John' in the body of a POST request (not the URL)
-      name = request.getFirstQueryParameter("name").get();
-    } else {
+    switch (contentType) {
+      case "application/json":
+        // '{"name":"John"}'
+        JsonObject body = gsonParser.fromJson(request.getReader(), JsonObject.class);
+        if (body.has("name")) {
+          name = body.get("name").getAsString();
+          break;
+        }
+        // else: No "name" parameter specified; fall through to default case
+      case "application/octet-stream":
+        // 'John', stored in a Buffer
+        name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()));
+        break;
+      case "text/plain":
+        // 'John'
+        name = request.getReader().readLine();
+        break;
+      case "application/x-www-form-urlencoded":
+        // 'name=John' in the body of a POST request (not the URL)
+        Optional<String> nameParam = request.getFirstQueryParameter("name");
+        if (nameParam.isPresent()) {
+          name = nameParam.get();
+          break;
+        }
+        // else: No "name" parameter specified; fall through to default case
+    default:
       // Invalid or missing header "Content-Type"
       response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
       return;
