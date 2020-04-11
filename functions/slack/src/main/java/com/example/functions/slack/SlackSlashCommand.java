@@ -38,9 +38,10 @@ import java.util.stream.Collectors;
 public class SlackSlashCommand implements HttpFunction {
 
   // [START functions_slack_setup]
-  private Kgsearch kgClient;
   private static final String API_KEY = System.getenv("KG_API_KEY");
   private static final String SLACK_SECRET = System.getenv("SLACK_SECRET");
+
+  private Kgsearch kgClient;
   private SlackSignature.Verifier verifier;
   private Gson gson = new Gson();
 
@@ -94,7 +95,6 @@ public class SlackSlashCommand implements HttpFunction {
    */
   String formatSlackMessage(JsonObject kgResponse, String query) {
     JsonObject attachmentJson = new JsonObject();
-    JsonArray attachments = new JsonArray();
 
     JsonObject responseJson = new JsonObject();
     responseJson.addProperty("response_type", "in_channel");
@@ -105,8 +105,6 @@ public class SlackSlashCommand implements HttpFunction {
     // Extract the first entity from the result list, if any
     if (entityList.size() == 0) {
       attachmentJson.addProperty("text","No results match your query...");
-
-      attachments.add(attachmentJson);
       responseJson.add("attachments", attachmentJson);
 
       return gson.toJson(responseJson);
@@ -132,8 +130,6 @@ public class SlackSlashCommand implements HttpFunction {
       addPropertyIfPresent(attachmentJson, "image_url", imageJson, "contentUrl");
     }
 
-    // Construct top level response
-    attachments.add(attachmentJson);
     responseJson.add("attachments", attachmentJson);
 
     return gson.toJson(responseJson);
@@ -167,7 +163,7 @@ public class SlackSlashCommand implements HttpFunction {
   public void service(HttpRequest request, HttpResponse response) throws IOException {
 
     // Validate request
-    if (request.getMethod() != "POST") {
+    if (!"POST".equals(request.getMethod())) {
       response.setStatusCode(HttpURLConnection.HTTP_BAD_METHOD);
       return;
     }
