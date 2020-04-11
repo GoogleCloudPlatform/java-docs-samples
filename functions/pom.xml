@@ -25,12 +25,6 @@
   <artifactId>functions-snippets</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <parent>
-    <groupId>com.google.cloud.samples</groupId>
-    <artifactId>shared-configuration</artifactId>
-    <version>1.0.15</version>
-  </parent>
-
   <!--
     List subfolders as separate modules, to enable top-level test runs
     This POM should *not* be inherited by the per-function POMs
