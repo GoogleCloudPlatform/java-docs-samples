@@ -41,27 +41,28 @@ public class PublishMessage implements HttpFunction {
 
   @Override
   public void service(HttpRequest request, HttpResponse response) throws IOException {
-    Optional<String> topicName = request.getFirstQueryParameter("topic");
-    Optional<String> message = request.getFirstQueryParameter("message");
+    Optional<String> maybeTopicName = request.getFirstQueryParameter("topic");
+    Optional<String> maybeMessage = request.getFirstQueryParameter("message");
 
     BufferedWriter responseWriter = response.getWriter();
 
-    if (topicName.isEmpty() || message.isEmpty()) {
+    if (maybeTopicName.isEmpty() || maybeMessage.isEmpty()) {
       response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
 
       responseWriter.write("Missing 'topic' and/or 'subscription' parameter(s).");
       return;
     }
 
-    LOGGER.info("Publishing message to topic: " + topicName.get());
+    String topicName = maybeTopicName.get();
+    LOGGER.info("Publishing message to topic: " + topicName);
 
     // Create the PubsubMessage object
     // (This is different than the PubSubMessage POJO used in Pub/Sub-triggered functions)
-    ByteString byteStr = ByteString.copyFrom(message.get(), StandardCharsets.UTF_8);
+    ByteString byteStr = ByteString.copyFrom(maybeMessage.get(), StandardCharsets.UTF_8);
     PubsubMessage pubsubApiMessage = PubsubMessage.newBuilder().setData(byteStr).build();
 
     Publisher publisher = Publisher.newBuilder(
-        ProjectTopicName.of(PROJECT_ID, topicName.get())).build();
+        ProjectTopicName.of(PROJECT_ID, topicName)).build();
 
     // Attempt to publish the message
     String responseMessage;
