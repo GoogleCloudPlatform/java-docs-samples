@@ -27,11 +27,11 @@ public class FirebaseFirestore implements RawBackgroundFunction {
   private static final Logger LOGGER = Logger.getLogger(FirebaseFirestore.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void accept(String json, Context context) {
-    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    JsonObject body = gson.fromJson(json, JsonObject.class);
     LOGGER.info("Function triggered by event on: " + context.resource());
     LOGGER.info("Event type: " + context.eventType());
 

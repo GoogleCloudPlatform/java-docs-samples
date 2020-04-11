@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
@@ -42,15 +41,11 @@ public class HelloBackgroundTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
-  private EnvironmentVariables environmentVariables;
-
   private static final Logger LOGGER = Logger.getLogger(HelloBackground.class.getName());
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
   public void beforeTest() throws Exception {
-    environmentVariables = new EnvironmentVariables();
-
     LOGGER.addHandler(LOG_HANDLER);
 
     // Use a new mock for each test

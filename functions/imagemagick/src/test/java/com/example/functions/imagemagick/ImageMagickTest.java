@@ -21,15 +21,12 @@ import static com.google.common.truth.Truth.assertThat;
 import com.example.functions.imagemagick.eventpojos.GcsEvent;
 import com.example.functions.imagemagick.eventpojos.MockContext;
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 public class ImageMagickTest {
   // Use a preconfigured (read-only) public bucket as a "source" bucket
@@ -44,12 +41,6 @@ public class ImageMagickTest {
   private static final Logger LOGGER = Logger.getLogger(ImageMagick.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
-
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gson = new Gson();
-
-  @Rule
-  public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @BeforeClass
   public static void setUp() {

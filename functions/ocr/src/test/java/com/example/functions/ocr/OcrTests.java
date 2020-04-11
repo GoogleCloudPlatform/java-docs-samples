@@ -50,7 +50,7 @@ public class OcrTests {
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
-  private static final Gson GSON = new Gson();
+  private static final Gson gson = new Gson();
 
   private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();
   private static final String RANDOM_STRING = UUID.randomUUID().toString();
@@ -113,7 +113,7 @@ public class OcrTests {
     dataJson.addProperty("lang", lang);
 
     PubSubMessage message = new PubSubMessage();
-    message.setData(new String(Base64.getEncoder().encode(GSON.toJson(dataJson).getBytes())));
+    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
 
     new OcrTranslateText().accept(message, null);
 
@@ -142,7 +142,7 @@ public class OcrTests {
     dataJson.addProperty("lang", lang);
 
     PubSubMessage message = new PubSubMessage();
-    message.setData(new String(Base64.getEncoder().encode(GSON.toJson(dataJson).getBytes())));
+    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
 
     new OcrSaveResult().accept(message, null);
 

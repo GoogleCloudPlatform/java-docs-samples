@@ -24,7 +24,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -37,9 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
@@ -53,12 +50,6 @@ public class HttpTests {
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
-
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gson = new Gson();
-
-  @Rule
-  public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @Before
   public void beforeTest() throws IOException {

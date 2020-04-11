@@ -26,7 +26,6 @@ import com.example.functions.helloworld.eventpojos.MockContext;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.StringReader;
@@ -35,7 +34,6 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
@@ -47,19 +45,11 @@ public class HelloGcsTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gson = new Gson();
-
-  private EnvironmentVariables environmentVariables;
-
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
-
   private static final Logger LOGGER = Logger.getLogger(HelloGcs.class.getName());
 
   @Before
   public void beforeTest() throws Exception {
-    environmentVariables = new EnvironmentVariables();
-
     LOGGER.addHandler(LOG_HANDLER);
 
     // Use a new mock for each test
@@ -75,8 +65,6 @@ public class HelloGcsTest {
 
   @After
   public void afterTest() {
-    request = null;
-    response = null;
     LOG_HANDLER.clear();
   }
 

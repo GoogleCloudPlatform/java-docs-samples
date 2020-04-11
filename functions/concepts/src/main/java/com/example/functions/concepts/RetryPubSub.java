@@ -31,13 +31,13 @@ public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
   private static final Logger LOGGER = Logger.getLogger(RetryPubSub.class.getName());
 
   // Use Gson (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void accept(PubSubMessage message, Context context) {
     String bodyJson = new String(
         Base64.getDecoder().decode(message.getData()), StandardCharsets.UTF_8);
-    JsonElement bodyElement = gsonParser.fromJson(bodyJson, JsonElement.class);
+    JsonElement bodyElement = gson.fromJson(bodyJson, JsonElement.class);
 
     // Get the value of the "retry" JSON parameter, if one exists
     boolean retry = false;

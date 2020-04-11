@@ -32,19 +32,19 @@ import java.util.Optional;
 public class ParseContentType implements HttpFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   // Responds to an HTTP request using data from the request body parsed according to the
   // "content-type" header.
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    String name = null;
+    String name;
     String contentType = request.getContentType().get();
     switch (contentType) {
       case "application/json":
         // '{"name":"John"}'
-        JsonObject body = gsonParser.fromJson(request.getReader(), JsonObject.class);
+        JsonObject body = gson.fromJson(request.getReader(), JsonObject.class);
         if (body.has("name")) {
           name = body.get("name").getAsString();
           break;

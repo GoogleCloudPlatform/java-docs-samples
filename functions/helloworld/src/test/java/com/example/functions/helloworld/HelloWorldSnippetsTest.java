@@ -25,7 +25,6 @@ import com.example.functions.helloworld.eventpojos.MockContext;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -41,7 +40,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
@@ -64,12 +62,6 @@ public class HelloWorldSnippetsTest {
       HelloGcsGeneric.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
-
-  // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gson = new Gson();
-
-  @Rule
-  public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @BeforeClass
   public static void beforeClass() {

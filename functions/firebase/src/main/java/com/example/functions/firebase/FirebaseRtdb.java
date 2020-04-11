@@ -27,13 +27,13 @@ public class FirebaseRtdb implements RawBackgroundFunction {
   private static final Logger LOGGER = Logger.getLogger(FirebaseRtdb.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void accept(String json, Context context) {
     LOGGER.info("Function triggered by change to: " + context.resource());
 
-    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    JsonObject body = gson.fromJson(json, JsonObject.class);
 
     boolean isAdmin = false;
     if (body != null && body.has("auth")) {

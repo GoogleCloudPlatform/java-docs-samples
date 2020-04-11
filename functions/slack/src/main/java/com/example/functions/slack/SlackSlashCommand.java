@@ -32,7 +32,6 @@ import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class SlackSlashCommand implements HttpFunction {
@@ -40,10 +39,10 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_slack_setup]
   private static final String API_KEY = System.getenv("KG_API_KEY");
   private static final String SLACK_SECRET = System.getenv("SLACK_SECRET");
+  private static final Gson gson = new Gson();
 
   private Kgsearch kgClient;
   private SlackSignature.Verifier verifier;
-  private Gson gson = new Gson();
 
   public SlackSlashCommand() throws IOException, GeneralSecurityException {
     kgClient = new Kgsearch.Builder(
@@ -170,7 +169,7 @@ public class SlackSlashCommand implements HttpFunction {
 
     // reader can only be read once per request, so we preserve its contents
     String bodyString = request.getReader().lines().collect(Collectors.joining());
-    JsonObject body = (new Gson()).fromJson(bodyString, JsonObject.class);
+    JsonObject body = gson.fromJson(bodyString, JsonObject.class);
 
     if (body == null || !body.has("text")) {
       response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);

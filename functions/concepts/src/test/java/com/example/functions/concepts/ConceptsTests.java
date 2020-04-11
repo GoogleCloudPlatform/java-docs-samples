@@ -64,7 +64,7 @@ public class ConceptsTests {
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gson = new Gson();
+  private static final Gson gson = new Gson();
 
   @Rule
   public EnvironmentVariables environmentVariables = new EnvironmentVariables();

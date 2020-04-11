@@ -27,11 +27,11 @@ public class FirebaseAuth implements RawBackgroundFunction {
   private static final Logger LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void accept(String json, Context context) {
-    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    JsonObject body = gson.fromJson(json, JsonObject.class);
 
     if (body != null && body.has("uid")) {
       LOGGER.info("Function triggered by change to user: " + body.get("uid").getAsString());

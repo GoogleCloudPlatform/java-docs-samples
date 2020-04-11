@@ -33,7 +33,7 @@ public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
   private static final long MAX_EVENT_AGE = 10_000;
 
   // Use Gson (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   /**
    * Background Cloud Function that only executes within
@@ -45,7 +45,7 @@ public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
     ZonedDateTime timestamp = utcNow;
 
     String data = message.getData();
-    JsonObject body = gsonParser.fromJson(data, JsonObject.class);
+    JsonObject body = gson.fromJson(data, JsonObject.class);
     if (body != null && body.has("timestamp")) {
       String tz = body.get("timestamp").getAsString();
       timestamp = ZonedDateTime.parse(tz);

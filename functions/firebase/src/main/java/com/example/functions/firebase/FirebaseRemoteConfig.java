@@ -27,11 +27,11 @@ public class FirebaseRemoteConfig implements RawBackgroundFunction {
   private static final Logger LOGGER = Logger.getLogger(FirebaseRemoteConfig.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void accept(String json, Context context) {
-    JsonObject body = gsonParser.fromJson(json, JsonObject.class);
+    JsonObject body = gson.fromJson(json, JsonObject.class);
 
     if (body != null) {
       if (body.has("updateType")) {

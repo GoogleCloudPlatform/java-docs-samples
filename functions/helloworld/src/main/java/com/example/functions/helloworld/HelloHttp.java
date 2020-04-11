@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 public class HelloHttp implements HttpFunction {
   private static final Logger LOGGER = Logger.getLogger(HelloHttp.class.getName());
 
-  private Gson gsonParser = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
@@ -43,7 +43,7 @@ public class HelloHttp implements HttpFunction {
 
     // Parse JSON request and check for "name" field
     try {
-      JsonElement requestParsed = gsonParser.fromJson(request.getReader(), JsonElement.class);
+      JsonElement requestParsed = gson.fromJson(request.getReader(), JsonElement.class);
       JsonObject requestJson = null;
 
       if (requestParsed.isJsonObject()) {

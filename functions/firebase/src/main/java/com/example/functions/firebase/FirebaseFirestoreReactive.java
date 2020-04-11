@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
-  private static final Gson GSON_PARSER = new Gson();
+  private static final Gson gson = new Gson();
 
   private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
   private static final Firestore FIRESTORE = FirestoreOptions.getDefaultInstance().getService();
@@ -43,7 +43,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
   @Override
   public void accept(String json, Context context) {
     // Get the recently-written value
-    JsonObject body = GSON_PARSER.fromJson(json, JsonObject.class);
+    JsonObject body = gson.fromJson(json, JsonObject.class);
     JsonObject tempJson = body.getAsJsonObject("value");
 
     // Verify that value.fields.original.stringValue exists
