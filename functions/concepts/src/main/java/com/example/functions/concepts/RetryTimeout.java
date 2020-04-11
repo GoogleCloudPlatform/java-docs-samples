@@ -28,8 +28,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.logging.Logger;
 
-public class InfiniteRetryPubSub implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(InfiniteRetryPubSub.class.getName());
+public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
+  private static final Logger LOGGER = Logger.getLogger(RetryTimeout.class.getName());
   private static final long MAX_EVENT_AGE = 10_000;
 
   // Use Gson (https://github.com/google/gson) to parse JSON content.

@@ -59,7 +59,7 @@ public class ConceptsTests {
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
   private static final Logger RETRY_LOGGER = Logger.getLogger(RetryPubSub.class.getName());
   private static final Logger INFINITE_RETRY_LOGGER = Logger.getLogger(
-      InfiniteRetryPubSub.class.getName());
+      RetryTimeout.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -185,7 +185,7 @@ public class ConceptsTests {
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData(timestampData);
 
-    new InfiniteRetryPubSub().accept(pubsubMessage, null);
+    new RetryTimeout().accept(pubsubMessage, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat(String.format("Processing event %s.", timestampData)).isEqualTo(logMessage);
@@ -200,7 +200,7 @@ public class ConceptsTests {
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData(timestampData);
 
-    new InfiniteRetryPubSub().accept(pubsubMessage, null);
+    new RetryTimeout().accept(pubsubMessage, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat(String.format("Dropping event %s.", timestampData)).isEqualTo(logMessage);
@@ -211,7 +211,7 @@ public class ConceptsTests {
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData("");
 
-    new InfiniteRetryPubSub().accept(new PubSubMessage(), null);
+    new RetryTimeout().accept(new PubSubMessage(), null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Processing event null.").isEqualTo(logMessage);

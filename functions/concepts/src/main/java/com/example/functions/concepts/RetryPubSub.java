@@ -23,6 +23,7 @@ import com.google.cloud.functions.Context;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
@@ -34,7 +35,8 @@ public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
 
   @Override
   public void accept(PubSubMessage message, Context context) {
-    String bodyJson = new String(Base64.getDecoder().decode(message.getData()));
+    String bodyJson = new String(
+        Base64.getDecoder().decode(message.getData()), StandardCharsets.UTF_8);
     JsonElement bodyElement = gsonParser.fromJson(bodyJson, JsonElement.class);
 
     // Get the value of the "retry" JSON parameter, if one exists

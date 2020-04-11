@@ -34,9 +34,9 @@ public class FileSystem implements HttpFunction {
     File currentDirectory = new File(".");
     File[] files = currentDirectory.listFiles();
     BufferedWriter writer = response.getWriter();
-    writer.write("Files: \n");
+    writer.write("Files: %n");
     for (File f : files) {
-      writer.write(String.format("\t%s\n", f.getName()));
+      writer.write(String.format("\t%s%n", f.getName()));
     }
   }
 }
