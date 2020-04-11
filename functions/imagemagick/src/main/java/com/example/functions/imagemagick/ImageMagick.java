@@ -125,6 +125,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
         BlobInfo.newBuilder(blurredBlobId).setContentType(blob.getContentType()).build();
     try {
       byte[] blurredFile = Files.readAllBytes(upload);
+      storage.create(blurredBlobInfo, blurredFile);
       LOGGER.info(
           String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
     } catch (Exception e) {
