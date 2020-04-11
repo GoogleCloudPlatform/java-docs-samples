@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -52,7 +53,8 @@ public class ParseContentType implements HttpFunction {
         // else: No "name" parameter specified; fall through to default case
       case "application/octet-stream":
         // 'John', stored in a Buffer
-        name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()));
+        name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()),
+            StandardCharsets.UTF_8);
         break;
       case "text/plain":
         // 'John'
@@ -66,10 +68,10 @@ public class ParseContentType implements HttpFunction {
           break;
         }
         // else: No "name" parameter specified; fall through to default case
-    default:
-      // Invalid or missing header "Content-Type"
-      response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
-      return;
+      default:
+        // Invalid or missing header "Content-Type"
+        response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
+        return;
     }
 
     // Respond with a name, if one was detected
