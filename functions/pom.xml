@@ -25,6 +25,12 @@
   <artifactId>functions-snippets</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
+  <properties>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <kokoro.skipTests>true</kokoro.skipTests> <!-- test children POMs instead -->
+  </properties>
+
   <!--
     List subfolders as separate modules, to enable top-level test runs
     This POM should *not* be inherited by the per-function POMs
