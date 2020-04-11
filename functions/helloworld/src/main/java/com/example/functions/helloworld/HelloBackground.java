@@ -28,10 +28,8 @@ public class HelloBackground implements BackgroundFunction<HttpRequest> {
 
   @Override
   public void accept(HttpRequest request, Context context) {
-    String name = "world";
-    if (request.getFirstQueryParameter("name").isPresent()) {
-      name = request.getFirstQueryParameter("name").get();
-    }
+    // name's default value is "world"
+    String name = request.getFirstQueryParameter("name").orElse("world");
     LOGGER.info(String.format("Hello %s!", name));
   }
 }

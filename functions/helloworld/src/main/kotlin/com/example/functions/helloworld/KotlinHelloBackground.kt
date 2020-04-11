@@ -23,10 +23,8 @@ import java.util.logging.Logger
 
 class KotlinHelloBackground : BackgroundFunction<HttpRequest> {
     override fun accept(request: HttpRequest, context: Context) {
-        var name = "world"
-        if (request.getFirstQueryParameter("name").isPresent) {
-            name = request.getFirstQueryParameter("name").get()
-        }
+        // name's default value is "world"
+        var name = request.getFirstQueryParameter("name").orElse("world")
         LOGGER.info(String.format("Hello %s!", name))
     }
 

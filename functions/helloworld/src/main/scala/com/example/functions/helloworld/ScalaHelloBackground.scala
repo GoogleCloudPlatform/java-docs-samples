@@ -10,10 +10,8 @@ class ScalaHelloBackground extends BackgroundFunction[HttpRequest] {
   val LOGGER = Logger.getLogger(this.getClass.getName)
 
   override def accept(t: HttpRequest, context: Context): Unit = {
-    var name = "world"
-    if (t.getFirstQueryParameter("name").isPresent) {
-      name = t.getFirstQueryParameter("name").get()
-    }
+    // name's default value is "world"
+    var name = t.getFirstQueryParameter("name").orElse("world")
     LOGGER.info(String.format("Hello %s!", name))
   }
 }
