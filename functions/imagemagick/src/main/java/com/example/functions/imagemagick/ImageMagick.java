@@ -53,6 +53,12 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
   @Override
   // Blurs uploaded images that are flagged as Adult or Violence.
   public void accept(GcsEvent gcsEvent, Context context) {
+    // Validate parameters
+    if (gcsEvent.getBucket() == null || gcsEvent.getName() == null) {
+      LOGGER.severe("Error: Malformed GCS event.");
+      return;
+    }
+
     BlobInfo blobInfo = BlobInfo.newBuilder(gcsEvent.getBucket(), gcsEvent.getName()).build();
 
     // Construct URI to GCS bucket and file.
@@ -74,7 +80,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          LOGGER.info(String.format("Error: %s\n", res.getError().getMessage()));
+          LOGGER.info(String.format("Error: %s%n", res.getError().getMessage()));
           return;
         }
         // Get Safe Search Annotations
@@ -86,7 +92,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
           LOGGER.info(String.format("Detected %s as OK.", gcsEvent.getName()));
         }
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       LOGGER.info(String.format("Error with Vision API: %s", e.getMessage()));
     }
   }
@@ -95,9 +101,10 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
   // [START functions_imagemagick_blur]
   // Blurs the file described by blobInfo using ImageMagick,
   // and uploads it to the blurred bucket.
-  public static void blur(BlobInfo blobInfo) throws IOException {
+  private static void blur(BlobInfo blobInfo) throws IOException {
     String bucketName = blobInfo.getBucket();
     String fileName = blobInfo.getName();
+
     // Download image
     Blob blob = storage.get(BlobId.of(bucketName, fileName));
     Path download = Paths.get("/tmp/", fileName);
@@ -123,14 +130,11 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
     BlobId blurredBlobId = BlobId.of(BLURRED_BUCKET_NAME, fileName);
     BlobInfo blurredBlobInfo =
         BlobInfo.newBuilder(blurredBlobId).setContentType(blob.getContentType()).build();
-    try {
-      byte[] blurredFile = Files.readAllBytes(upload);
-      storage.create(blurredBlobInfo, blurredFile);
-      LOGGER.info(
-          String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
-    } catch (Exception e) {
-      LOGGER.info(String.format("Error in upload: %s", e.getMessage()));
-    }
+
+    byte[] blurredFile = Files.readAllBytes(upload);
+    storage.create(blurredBlobInfo, blurredFile);
+    LOGGER.info(
+        String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
 
     // Remove images from fileSystem
     Files.delete(download);
