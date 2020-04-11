@@ -23,10 +23,10 @@ public class PubSubMessage {
   // Cloud Functions uses GSON to populate this object.
   // Field types/names are specified by Cloud Functions
   // Changing them may break your code!
-  String data;
-  Map<String, String> attributes;
-  String messageId;
-  String publishTime;
+  private String data;
+  private Map<String, String> attributes;
+  private String messageId;
+  private String publishTime;
 
   public String getData() {
     return data;

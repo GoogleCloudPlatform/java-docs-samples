@@ -23,11 +23,11 @@ public class GcsEvent {
   // Cloud Functions uses GSON to populate this object.
   // Field types/names are specified by Cloud Functions
   // Changing them may break your code!
-  String bucket;
-  String name;
-  String metageneration;
-  Date timeCreated;
-  Date updated;
+  private String bucket;
+  private String name;
+  private String metageneration;
+  private Date timeCreated;
+  private Date updated;
 
   public String getBucket() {
     return bucket;
