@@ -253,7 +253,6 @@ public class FirebaseTest {
 
     IllegalArgumentException e = Assertions.assertThrows(
         IllegalArgumentException.class, () -> functionInstance.accept(jsonStr, context));
-    Truth.assertThat(e).hasMessageThat().isEqualTo(
-        "Malformed JSON");
+    Truth.assertThat(e).hasMessageThat().startsWith("Malformed JSON");
   }
 }

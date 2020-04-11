@@ -24,11 +24,10 @@ import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
 public class FirebaseRemoteConfig implements RawBackgroundFunction {
+  private static final Logger LOGGER = Logger.getLogger(FirebaseRemoteConfig.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private Gson gsonParser = new Gson();
-
-  private static final Logger LOGGER = Logger.getLogger(FirebaseRemoteConfig.class.getName());
 
   @Override
   public void accept(String json, Context context) {
