@@ -41,7 +41,10 @@ public class ParseContentType implements HttpFunction {
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     String name;
-    String contentType = request.getContentType().get();
+
+    // Default values avoid null issues (with switch/case) and exceptions from get() (optionals)
+    String contentType = request.getContentType().orElse("");
+
     switch (contentType) {
       case "application/json":
         // '{"name":"John"}'

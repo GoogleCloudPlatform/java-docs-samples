@@ -81,7 +81,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          LOGGER.info(String.format("Error: %s%n", res.getError().getMessage()));
+          LOGGER.info(String.format("Error: %s", res.getError().getMessage()));
           return;
         }
         // Get Safe Search Annotations
