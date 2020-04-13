@@ -282,10 +282,12 @@ The `-DskipTests` is optional. It is useful if you want to verify that your code
 builds and adheres to the style guide without waiting for tests to complete.
 
 ### Package Names
-Samples should use package names in the following formats: 
-`com.example.<YOUR_PRODUCT>.<FOLDER>`, such as `com.example.dlp.snippets` or 
-`com.example.functions.snippets`. NEVER use `com.google.*` for samples or snippets. Use of the 
-default package is discouraged.
+Samples should use package names in the following formats:
+
+  `<PRODUCT>`, `<PRODUCT1>.<PRODUCT2>`, `<PRODUCT>.<IDEA>` is preferred, fewer levels is prefered.
+Legacy samples that use `com.example.<YOUR_PRODUCT>.<FOLDER>`, such as `com.example.dlp.snippets` or 
+`com.example.functions.snippets` are still accepted and do not need to migrate to the perfered system (above).
+  **NEVER** use `com.google.*` for samples or snippets. Use of the default package is **strongly** discouraged.
 
 ### Class Structure
 Each snippet should be be contained in its own file, within a class with a name descriptive of the
