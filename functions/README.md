@@ -12,9 +12,22 @@ environment.
 ## Samples
 
 * [Hello World](helloworld/)
-* [Background](background/)
-* [Callbacks](messages/)
+* [Concepts](concepts/)
+* [Firebase](firebase/)
 * [Cloud Pub/Sub](pubsub/)
 * [HTTP](http/)
-* [Logging & Monitoring](log/)
+* [Logging & Monitoring](logging/)
 * [Slack](slack/)
+* [OCR tutorial](ocr/)
+* [ImageMagick](imagemagick/)
+* [CI/CD setup](ci_cd/)
+
+## Running Functions Locally
+The [Java Functions Framework](https://github.com/GoogleCloudPlatform/functions-framework-java)
+Maven plugin (`com.google.cloud.functions:function-maven-plugin`) allows you to run Java Cloud
+Functions code on your local machine for local development and testing purposes. Use the following
+Maven command to run a function locally:
+
+```
+mvn function:run -Drun.functionTarget=your.package.yourFunction
+```
