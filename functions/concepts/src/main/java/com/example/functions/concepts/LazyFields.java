@@ -36,18 +36,21 @@ public class LazyFields implements HttpFunction {
   // Uses the "initialization-on-demand holder" idiom
   // More information: https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
   private static class LazyGlobalHolder {
-    // This value is initialized only if (and when) the getLazyGlobal() function below is called
-    private static final Integer LAZY_GLOBAL = functionSpecificComputation();
-  }
+    // Making the default constructor private prohibits instantiation of this class
+    private LazyGlobalHolder() {}
 
-  private static Integer getLazyGlobal() {
-    return LazyGlobalHolder.LAZY_GLOBAL;
+    // This value is initialized only if (and when) the getLazyGlobal() function below is called
+    private static final Integer INSTANCE = functionSpecificComputation();
+
+    private static Integer getInstance() {
+      return LazyGlobalHolder.INSTANCE;
+    }
   }
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    Integer lazyGlobal = getLazyGlobal();
+    Integer lazyGlobal = LazyGlobalHolder.getInstance();
 
     BufferedWriter writer = response.getWriter();
     writer.write(String.format("Lazy global: %s; non-lazy global: %s",
