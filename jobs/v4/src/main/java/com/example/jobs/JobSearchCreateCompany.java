@@ -22,7 +22,6 @@ import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
 import com.google.cloud.talent.v4beta1.CreateCompanyRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 import java.io.IOException;
 
 public class JobSearchCreateCompany {
@@ -40,7 +39,7 @@ public class JobSearchCreateCompany {
   public static void createCompany(
       String projectId, String tenantId, String displayName, String externalId) throws IOException {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
       Company company =
           Company.newBuilder().setDisplayName(displayName).setExternalId(externalId).build();
 
