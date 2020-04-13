@@ -88,7 +88,6 @@ public class ReadData {
       keys = new String[Math.toIntExact(getNumRows(readDataOptions))];
       downloadImageData(readDataOptions.getFilePath());
       generateRowkeys(getNumRows(readDataOptions));
-
     }
 
     @ProcessElement
