@@ -40,6 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ImageMagick implements BackgroundFunction<GcsEvent> {
@@ -93,7 +94,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
         }
       }
     } catch (IOException e) {
-      LOGGER.info(String.format("Error with Vision API: %s", e.getMessage()));
+      LOGGER.log(Level.SEVERE, "Error with Vision API: " + e.getMessage(), e);
     }
   }
   // [END functions_imagemagick_analyze]
