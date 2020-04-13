@@ -39,6 +39,9 @@ class CreateConnectionWithCustomHostExample {
   // Creates a JDBC connection to a Cloud Spanner database on a custom host.
   static void createConnectionWithCustomHost(
       String projectId, String instanceId, String databaseId, int port) throws SQLException {
+    // usePlainText=true in the connection URL will create an unsecured (i.e. no SSL) connection
+    // to the specified host. This option must be specified when connecting to local mock servers
+    // or emulators that do not use SSL.
     try (Connection connection =
         DriverManager.getConnection(
             String.format(
