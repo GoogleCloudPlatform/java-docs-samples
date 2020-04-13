@@ -22,7 +22,6 @@ import com.google.cloud.talent.v4beta1.GetJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobName;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
-import com.google.cloud.talent.v4beta1.JobWithTenantName;
 import java.io.IOException;
 
 public class JobSearchGetJob {
@@ -38,7 +37,7 @@ public class JobSearchGetJob {
   // Get Job.
   public static void getJob(String projectId, String tenantId, String jobId) throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      JobName name = JobWithTenantName.of(projectId, tenantId, jobId);
+      JobName name = JobName.ofProjectTenantJobName(projectId, tenantId, jobId);
 
       GetJobRequest request = GetJobRequest.newBuilder().setName(name.toString()).build();
 

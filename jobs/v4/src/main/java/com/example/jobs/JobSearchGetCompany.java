@@ -21,7 +21,6 @@ package com.example.jobs;
 import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyName;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
-import com.google.cloud.talent.v4beta1.CompanyWithTenantName;
 import com.google.cloud.talent.v4beta1.GetCompanyRequest;
 import java.io.IOException;
 
@@ -39,7 +38,7 @@ public class JobSearchGetCompany {
   public static void getCompany(String projectId, String tenantId, String companyId)
       throws IOException {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
-      CompanyName name = CompanyWithTenantName.of(projectId, tenantId, companyId);
+      CompanyName name = CompanyName.ofProjectTenantCompanyName(projectId, tenantId, companyId);
 
       GetCompanyRequest request = GetCompanyRequest.newBuilder().setName(name.toString()).build();
 
