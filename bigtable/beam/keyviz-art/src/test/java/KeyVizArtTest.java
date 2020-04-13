@@ -167,20 +167,4 @@ public class KeyVizArtTest {
     output = bout.toString();
     assertThat(output).contains("got 5 rows");
   }
-
-  // @Test
-  // public void testReadHalf() {
-  //   ReadData.main(
-  //       new String[]{
-  //           "--bigtableProjectId=" + projectId,
-  //           "--bigtableInstanceId=" + instanceId,
-  //           "--bigtableTableId=" + TABLE_ID,
-  //           "--gigabytesWritten=" + GIGABYTES_WRITTEN,
-  //           "--megabytesPerRow=" + MEGABYTES_PER_ROW,
-  //           "--filePath=gs://keyviz-art/halfgrid.txt"
-  //       });
-  //
-  //   String output = bout.toString();
-  //   assertThat(output).contains("got 50 rows");
-  // }
 }
