@@ -120,6 +120,7 @@ public class ReadData {
         Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
         ResultScanner imageData = table.getScanner(scan);
 
+        // Iterate over stream of rows to count them.
         for (Result row : imageData) {
           count++;
         }
@@ -161,9 +162,11 @@ public class ReadData {
      */
     private void generateRowkeys(long maxInput) {
       int maxLength = ("" + maxInput).length();
+      // Make each number the same length by padding with 0s
+      String numberFormat = "%0" + maxLength + "d";
+
       for (int i = 0; i < maxInput; i++) {
-        // Make each number the same length by padding with 0s.
-        String paddedRowkey = String.format("%0" + maxLength + "d", i);
+        String paddedRowkey = String.format(numberFormat, i);
         String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
         keys[i] = "" + reversedRowkey;
       }

@@ -55,6 +55,9 @@ public class LoadData {
     long rowSize = options.getMegabytesPerRow() * ONE_MB;
     final long max =
         (Math.round((options.getGigabytesWritten() * ONE_GB)) / rowSize);
+    // Make each number the same length by padding with 0s
+    int maxLength = ("" + max).length();
+    String numberFormat = "%0" + maxLength + "d";
 
     p.apply(GenerateSequence.from(0).to(max))
         .apply(
@@ -62,9 +65,7 @@ public class LoadData {
                 new DoFn<Long, Mutation>() {
                   @ProcessElement
                   public void processElement(@Element Long rowkey, OutputReceiver<Mutation> out) {
-                    // Make each number the same length by padding with 0s
-                    int maxLength = ("" + max).length();
-                    String paddedRowkey = String.format("%0" + maxLength + "d", rowkey);
+                    String paddedRowkey = String.format(numberFormat, rowkey);
 
                     // Reverse the rowkey for more efficient writing
                     String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
