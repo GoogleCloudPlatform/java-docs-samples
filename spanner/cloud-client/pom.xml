@@ -43,7 +43,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>google-cloud-bom</artifactId>
-        <version>0.122.4-alpha</version>
+        <version>0.124.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
