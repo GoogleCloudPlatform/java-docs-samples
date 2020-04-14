@@ -30,7 +30,6 @@ import com.google.pubsub.v1.Topic;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
-import javax.nio.character.StandardEncoding;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.junit.After;
 import org.junit.Assert;
