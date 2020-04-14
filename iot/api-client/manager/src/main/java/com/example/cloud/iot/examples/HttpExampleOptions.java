@@ -16,12 +16,15 @@
 
 package com.example.cloud.iot.examples;
 
+import javax.annotation.Nullable;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
 
 /** Command line options for the HTTP example. */
 public class HttpExampleOptions {
@@ -38,11 +41,13 @@ public class HttpExampleOptions {
   String messageType = "event";
 
   /** Construct an HttpExampleOptions class from command line flags. */
-  public static HttpExampleOptions fromFlags(String[] args) {
+  public static @Nullable HttpExampleOptions fromFlags(String ... args) {
     Options options = new Options();
+    Builder builder= Option.builder();
+
     // Required arguments
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("project_id")
             .hasArg()
@@ -50,7 +55,7 @@ public class HttpExampleOptions {
             .required()
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("registry_id")
             .hasArg()
@@ -58,7 +63,7 @@ public class HttpExampleOptions {
             .required()
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("device_id")
             .hasArg()
@@ -66,7 +71,7 @@ public class HttpExampleOptions {
             .required()
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("private_key_file")
             .hasArg()
@@ -74,7 +79,7 @@ public class HttpExampleOptions {
             .required()
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("algorithm")
             .hasArg()
@@ -84,42 +89,42 @@ public class HttpExampleOptions {
 
     // Optional arguments.
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("cloud_region")
             .hasArg()
             .desc("GCP cloud region.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(Number.class)
             .longOpt("num_messages")
             .hasArg()
             .desc("Number of messages to publish.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(Number.class)
             .longOpt("token_exp_minutes")
             .hasArg()
             .desc("Minutes to JWT token refresh (token expiration time).")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("http_bridge_address")
             .hasArg()
             .desc("HTTP bridge address.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("api_version")
             .hasArg()
             .desc("The version to use of the API.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("message_type")
             .hasArg()

@@ -22,6 +22,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
@@ -220,7 +221,7 @@ public class MqttExample {
       return;
     }
     final String dataTopic = String.format("/devices/%s/%s", deviceId, messageType);
-    MqttMessage message = new MqttMessage(data.getBytes());
+    MqttMessage message = new MqttMessage(data.getBytes(StandardCharsets.UTF_8));
     message.setQos(1);
     client.publish(dataTopic, message);
     System.out.println("Data sent");
@@ -295,7 +296,7 @@ public class MqttExample {
     final String attachTopic = String.format("/devices/%s/attach", deviceId);
     System.out.println(String.format("Attaching: %s", attachTopic));
     String attachPayload = "{}";
-    MqttMessage message = new MqttMessage(attachPayload.getBytes());
+    MqttMessage message = new MqttMessage(attachPayload.getBytes(StandardCharsets.UTF_8));
     message.setQos(1);
     client.publish(attachTopic, message);
     // [END iot_attach_device]
@@ -308,7 +309,7 @@ public class MqttExample {
     final String detachTopic = String.format("/devices/%s/detach", deviceId);
     System.out.println(String.format("Detaching: %s", detachTopic));
     String attachPayload = "{}";
-    MqttMessage message = new MqttMessage(attachPayload.getBytes());
+    MqttMessage message = new MqttMessage(attachPayload.getBytes(StandardCharsets.UTF_8));
     message.setQos(1);
     client.publish(detachTopic, message);
     // [END iot_detach_device]
@@ -437,7 +438,7 @@ public class MqttExample {
 
       // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
       // also supports qos=0 for at most once delivery.
-      MqttMessage message = new MqttMessage(payload.getBytes());
+      MqttMessage message = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8));
       message.setQos(1);
       client.publish(mqttTopic, message);
 
@@ -510,7 +511,7 @@ public class MqttExample {
       System.exit(1);
     }
 
-    if (options.command == "listen-for-config-messages") {
+    if ("listen-for-config-messages".equals(options.command)) {
       System.out.println(
           String.format("Listening for configuration messages for %s:", options.deviceId));
       listenForConfigMessages(
@@ -523,7 +524,7 @@ public class MqttExample {
           options.privateKeyFile,
           options.algorithm,
           options.deviceId);
-    } else if (options.command == "send-data-from-bound-device") {
+    } else if ("send-data-from-bound-device".equals(options.command)) {
       System.out.println("Sending data on behalf of device:");
       sendDataFromBoundDevice(
           options.mqttBridgeHostname,

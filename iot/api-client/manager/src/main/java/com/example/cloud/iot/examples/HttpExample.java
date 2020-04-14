@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ProtocolException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
@@ -110,7 +111,7 @@ public class HttpExample {
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
   public static void getConfig(String urlPath, String token, String projectId,
       String cloudRegion, String registryId, String deviceId, String version)
-      throws UnsupportedEncodingException, IOException, JSONException, ProtocolException {
+      throws UnsupportedEncodingException, IOException, ProtocolException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
         String.format(
@@ -166,7 +167,7 @@ public class HttpExample {
     // Data sent through the wire has to be base64 encoded.
     Base64.Encoder encoder = Base64.getEncoder();
 
-    String encPayload = encoder.encodeToString(payload.getBytes("UTF-8"));
+    String encPayload = encoder.encodeToString(payload.getBytes(StandardCharsets.UTF_8));
 
     urlPath = urlPath + devicePath + ":" + urlSuffix;
 
@@ -195,7 +196,7 @@ public class HttpExample {
     }
 
     ByteArrayContent content = new ByteArrayContent(
-        "application/json", data.toString().getBytes("UTF-8"));
+        "application/json", data.toString().getBytes(StandardCharsets.UTF_8));
 
     final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
     req.setHeaders(heads);
@@ -229,9 +230,9 @@ public class HttpExample {
     // Create the corresponding JWT depending on the selected algorithm.
     String token;
     DateTime iat = new DateTime();
-    if (options.algorithm.equals("RS256")) {
+    if ("RSA256".equals(options.algorithm)) {
       token = createJwtRsa(options.projectId, options.privateKeyFile);
-    } else if (options.algorithm.equals("ES256")) {
+    } else if ("ES256".equals(options.algorithm)) {
       token = createJwtEs(options.projectId, options.privateKeyFile);
     } else {
       throw new IllegalArgumentException(
@@ -239,7 +240,7 @@ public class HttpExample {
     }
 
     String urlPath = String.format("%s/%s/", options.httpBridgeAddress, options.apiVersion);
-    System.out.format("Using URL: '%s'\n", urlPath);
+    System.out.format("Using URL: '%s'%n", urlPath);
 
     // Show the latest configuration
     getConfig(urlPath, token, options.projectId, options.cloudRegion, options.registryId,
@@ -249,13 +250,13 @@ public class HttpExample {
     for (int i = 1; i <= options.numMessages; ++i) {
       String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
       System.out.format(
-          "Publishing %s message %d/%d: '%s'\n",
+          "Publishing %s message %d/%d: '%s'%n",
           options.messageType, i, options.numMessages, payload);
 
       // Refresh the authentication token if the token has expired.
       long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
       if (secsSinceRefresh > (options.tokenExpMins * 60)) {
-        System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+        System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
 
         if (options.algorithm.equals("RS256")) {
