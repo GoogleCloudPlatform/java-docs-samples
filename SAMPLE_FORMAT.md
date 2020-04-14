@@ -154,6 +154,15 @@ Run tests locally with commands:
 * Maven: `mvn verify`
 * Gradle: `gradle build test`
 
+To run the `functions` tests (or other tests without a parent `pom.xml`), use the following command:
+
+```
+cd functions
+find */pom.xml | xargs -I {} echo $(pwd)/{} | xargs -I {} dirname {} | xargs -I {} sh -c "cd {} && mvn clean verify"
+
+```
+
+
 ### Gradle Specifics
 #### NEEDS WORK
 Your `build.gradle` should have the following section:
