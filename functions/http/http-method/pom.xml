@@ -72,6 +72,8 @@
       <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-core</artifactId>

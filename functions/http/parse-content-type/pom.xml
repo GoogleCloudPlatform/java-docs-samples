@@ -66,6 +66,8 @@
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
     </dependency>
+
+    <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
