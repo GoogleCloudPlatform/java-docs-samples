@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.slack;
+package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-import com.example.functions.slack.SlackSlashCommand;
 import com.github.seratch.jslack.app_backend.SlackSignature;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.cloud.functions.HttpRequest;

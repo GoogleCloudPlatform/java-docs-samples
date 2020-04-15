@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-snippets-slack</artifactId>
+  <artifactId>functions-slack</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -66,13 +66,6 @@
       <version>3.4.2</version>
     </dependency>
 
-    <!-- Required for com.example.functions.firebase.FirebaseFirestoreReactive -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-firestore</artifactId>
-      <version>1.33.0</version>
-    </dependency>
-
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -88,13 +81,6 @@
     </dependency>
 
     <!-- Required for mocking env vars -->
-    <dependency>
-      <groupId>com.github.stefanbirkner</groupId>
-      <artifactId>system-rules</artifactId>
-      <version>1.19.0</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
@@ -167,6 +153,9 @@
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
         <version>0.9.1</version>
+        <configuration>
+          <functionTarget>functions.SlackSlashCommand</functionTarget>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
