@@ -69,7 +69,7 @@ public class BatchPredictTest {
     // As batch prediction can take a long time. Try to batch predict on a model and confirm that
     // the model was not found, but other elements of the request were valid.
     try {
-      String inputUri = String.format("gs://%s/entity-extraction/input.csv", BUCKET_ID);
+      String inputUri = String.format("gs://%s/entity-extraction/input.jsonl", BUCKET_ID);
       String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
       BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
       String got = bout.toString();
