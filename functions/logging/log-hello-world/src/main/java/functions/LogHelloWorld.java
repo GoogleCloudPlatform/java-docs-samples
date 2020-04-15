@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.logging;
+package functions;
 
 // [START functions_log_helloworld]
 
