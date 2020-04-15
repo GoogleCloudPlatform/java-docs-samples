@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.functions.logging;
+package functions;
 
 // [START functions_log_stackdriver]
 
-import com.example.functions.logging.eventpojos.PubSubMessage;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import functions.eventpojos.PubSubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
