@@ -96,7 +96,7 @@ public class AlertIT {
   @Test
   public void testDisableEnablePolicies() throws IOException {
     AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
-
+    
     // check the current state of policy to make sure
     // not to enable the policy that is already enabled.
     boolean isEnabled = bout.toString().contains("already");
