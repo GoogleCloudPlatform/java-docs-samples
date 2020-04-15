@@ -20,8 +20,8 @@ package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import functions.eventpojos.PubSubMessage;
 import com.google.common.testing.TestLogHandler;
+import functions.eventpojos.PubSubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
