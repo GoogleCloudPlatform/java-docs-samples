@@ -83,12 +83,6 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-testlib</artifactId>
-      <version>29.0-jre</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <!-- Disable tests during GCF builds (from parent POM) -->

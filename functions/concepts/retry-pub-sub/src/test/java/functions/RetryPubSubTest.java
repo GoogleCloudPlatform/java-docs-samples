@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.common.testing.TestLogHandler;
 import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -43,21 +44,16 @@ public class RetryPubSubTest {
     LOGGER.addHandler(LOG_HANDLER);
   }
 
-  @Before
-  public void beforeTest() {
-    LOG_HANDLER.clear();
-  }
-
   @After
   public void afterTest() {
-    System.out.flush();
     LOG_HANDLER.clear();
   }
 
   @Test(expected = RuntimeException.class)
   public void retryPubsub_handlesRetryMsg() throws IOException {
     String data = "{\"retry\": true}";
-    String encodedData = new String(Base64.getEncoder().encode(data.getBytes()));
+    String encodedData = new String(
+        Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData(encodedData);
@@ -68,7 +64,8 @@ public class RetryPubSubTest {
   @Test
   public void retryPubsub_handlesStopMsg() throws IOException {
     String data = "{\"retry\": false}";
-    String encodedData = new String(Base64.getEncoder().encode(data.getBytes()));
+    String encodedData = new String(
+        Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData(encodedData);
