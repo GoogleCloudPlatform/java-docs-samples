@@ -16,12 +16,14 @@
 
 package com.example.cloud.iot.examples;
 
+import javax.annotation.Nullable;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
 
 /** Command line options for the MQTT example. */
 public class MqttExampleOptions {
@@ -43,7 +45,7 @@ public class MqttExampleOptions {
   int waitTime = 120;
 
   /** Construct an MqttExampleOptions class from command line flags. */
-  public static MqttExampleOptions fromFlags(String[] args) {
+  public static @Nullable MqttExampleOptions fromFlags(String[] args) {
     Options options = new Options();
     // Required arguments
     options.addOption(

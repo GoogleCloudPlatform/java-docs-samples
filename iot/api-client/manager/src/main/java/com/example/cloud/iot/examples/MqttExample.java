@@ -152,7 +152,6 @@ public class MqttExample {
     // to authorize the device.
     connectOptions.setUserName("unused");
 
-    DateTime iat = new DateTime();
     if (algorithm.equals("RS256")) {
       connectOptions.setPassword(createJwtRsa(projectId, privateKeyFile).toCharArray());
     } else if (algorithm.equals("ES256")) {
@@ -411,14 +410,14 @@ public class MqttExample {
     for (int i = 1; i <= options.numMessages; ++i) {
       String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
       System.out.format(
-          "Publishing %s message %d/%d: '%s'\n",
+          "Publishing %s message %d/%d: '%s'%n",
           options.messageType, i, options.numMessages, payload);
 
       // Refresh the connection credentials before the JWT expires.
       // [START iot_mqtt_jwt_refresh]
       long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
       if (secsSinceRefresh > (options.tokenExpMins * 60)) {
-        System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+        System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
         if (options.algorithm.equals("RS256")) {
           connectOptions.setPassword(
@@ -478,8 +477,8 @@ public class MqttExample {
           }
 
           @Override
-          public void messageArrived(String topic, MqttMessage message) throws Exception {
-            String payload = new String(message.getPayload());
+          public void messageArrived(String topic, MqttMessage message) {
+            String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
             System.out.println("Payload : " + payload);
             // TODO: Insert your parsing / handling of the configuration message here.
           }

@@ -111,7 +111,7 @@ public class HttpExample {
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
   public static void getConfig(String urlPath, String token, String projectId,
       String cloudRegion, String registryId, String deviceId, String version)
-      throws UnsupportedEncodingException, IOException, ProtocolException {
+      throws IOException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
         String.format(
@@ -156,7 +156,7 @@ public class HttpExample {
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
   public static void publishMessage(String payload, String urlPath, String messageType,
       String token, String projectId, String cloudRegion, String registryId, String deviceId)
-      throws UnsupportedEncodingException, IOException, JSONException, ProtocolException {
+      throws IOException, JSONException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
         String.format(
