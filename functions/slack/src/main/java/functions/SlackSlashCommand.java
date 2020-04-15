@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.slack;
+package functions;
 
 import com.github.seratch.jslack.app_backend.SlackSignature;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
