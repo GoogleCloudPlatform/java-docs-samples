@@ -1,4 +1,4 @@
-package com.example.functions.helloworld
+package functions
 
 // [START functions_helloworld_background]
 import com.google.cloud.functions.BackgroundFunction

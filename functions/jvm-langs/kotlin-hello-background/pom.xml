@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-snippets-helloworld</artifactId>
+  <artifactId>functions-kotlin-hello-background</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -36,17 +36,9 @@
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.version>1.3.72</kotlin.version>
-    <groovy.version>3.0.3</groovy.version>
   </properties>
 
   <dependencies>
-    <!-- Required for com.example.functions.http.ParseContentType -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.6</version>
-    </dependency>
-
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -58,6 +50,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <version>2.0.7</version>
       <scope>test</scope>
     </dependency>
 
@@ -110,21 +108,6 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- Required for scala samples -->
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>2.13.1</version>
-    </dependency>
-
-    <!-- Required for groovy samples -->
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
-      <version>${groovy.version}</version>
-      <type>pom</type>
-    </dependency>
   </dependencies>
 
   <!-- Disable tests during GCF builds (from parent POM) -->
@@ -160,46 +143,9 @@
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
         <version>0.9.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.9.0</version>
-        <executions>
-          <execution>
-            <id>groovy-compile</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>addSources</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <!-- any version of Groovy \>= 1.5.0 should work here -->
-            <version>${groovy.version}</version>
-            <scope>runtime</scope>
-            <type>pom</type>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>scala-maven-plugin</artifactId>
-        <version>4.3.1</version>
-        <executions>
-          <execution>
-            <id>scala-compile</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>add-source</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
+        <configuration>
+          <functionTarget>functions.KotlinHelloBackground</functionTarget>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jetbrains.kotlin</groupId>

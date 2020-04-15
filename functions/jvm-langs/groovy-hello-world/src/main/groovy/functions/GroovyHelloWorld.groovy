@@ -1,4 +1,4 @@
-package com.example.functions.helloworld
+package functions
 
 // [START functions_helloworld_get_groovy]
 import com.google.cloud.functions.HttpFunction

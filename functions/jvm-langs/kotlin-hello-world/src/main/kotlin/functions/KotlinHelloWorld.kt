@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.functions.helloworld
+package functions
 
 // [START functions_helloworld_get]
 import com.google.cloud.functions.HttpFunction

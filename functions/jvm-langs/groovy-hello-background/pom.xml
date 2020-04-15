@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-snippets-helloworld</artifactId>
+  <artifactId>functions-groovy-hello-background</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -35,18 +35,10 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <kotlin.version>1.3.72</kotlin.version>
     <groovy.version>3.0.3</groovy.version>
   </properties>
 
   <dependencies>
-    <!-- Required for com.example.functions.http.ParseContentType -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.6</version>
-    </dependency>
-
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -99,24 +91,6 @@
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
-      <version>${kotlin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-test</artifactId>
-      <version>${kotlin.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Required for scala samples -->
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>2.13.1</version>
-    </dependency>
 
     <!-- Required for groovy samples -->
     <dependency>
@@ -160,6 +134,9 @@
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
         <version>0.9.1</version>
+        <configuration>
+          <functionTarget>functions.GroovyHelloBackground</functionTarget>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
@@ -185,51 +162,6 @@
             <type>pom</type>
           </dependency>
         </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>scala-maven-plugin</artifactId>
-        <version>4.3.1</version>
-        <executions>
-          <execution>
-            <id>scala-compile</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>add-source</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <version>${kotlin.version}</version>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <sourceDirs>
-                <source>src/main/kotlin</source>
-                <source>target/generated-sources/annotations</source>
-              </sourceDirs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>test-compile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <jvmTarget>1.8</jvmTarget>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -102,6 +102,7 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
+  </dependencies>
 
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
@@ -137,7 +138,7 @@
         <artifactId>function-maven-plugin</artifactId>
         <version>0.9.1</version>
         <configuration>
-          <functionTarget>functions.KotlinHelloBackground</functionTarget>
+          <functionTarget>functions.KotlinHelloWorld</functionTarget>
         </configuration>
       </plugin>
       <plugin>

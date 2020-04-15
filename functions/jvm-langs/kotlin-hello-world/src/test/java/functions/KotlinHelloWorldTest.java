@@ -32,7 +32,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
 @RunWith(JUnit4.class)
-public class KotlinTest {
+public class KotlinHelloWorldTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 

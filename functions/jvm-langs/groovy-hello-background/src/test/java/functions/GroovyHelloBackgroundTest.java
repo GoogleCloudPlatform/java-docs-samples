@@ -19,10 +19,10 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
-import functions.eventpojos.MockContext;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
+import functions.eventpojos.MockContext;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
 @RunWith(JUnit4.class)
-public class GroovyTest {
+public class GroovyHelloBackgroundTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 

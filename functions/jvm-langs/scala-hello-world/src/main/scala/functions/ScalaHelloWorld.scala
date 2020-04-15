@@ -1,4 +1,4 @@
-package com.example.functions.helloworld
+package functions
 
 import com.google.cloud.functions.{HttpFunction, HttpRequest, HttpResponse}
 
