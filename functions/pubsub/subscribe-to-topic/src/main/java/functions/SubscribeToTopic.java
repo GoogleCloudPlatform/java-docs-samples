@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.functions.pubsub;
+package functions;
 
 // [START functions_pubsub_subscribe]
-import com.example.functions.pubsub.eventpojos.PubSubMessage;
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import functions.eventpojos.PubSubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
