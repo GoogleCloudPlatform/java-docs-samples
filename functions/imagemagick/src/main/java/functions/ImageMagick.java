@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.functions.imagemagick;
+package functions;
 
 // [START functions_imagemagick_setup]
-import com.example.functions.imagemagick.eventpojos.GcsEvent;
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.storage.Blob;
@@ -34,6 +34,7 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.SafeSearchAnnotation;
+import functions.eventpojos.GcsEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
