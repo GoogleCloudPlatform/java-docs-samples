@@ -26,9 +26,7 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -39,9 +37,6 @@ public class RetryPubSubTest {
   private static final Logger LOGGER = Logger.getLogger(RetryPubSub.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
-
-  @Rule
-  public EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @BeforeClass
   public static void beforeClass() {

@@ -38,6 +38,13 @@
   </properties>
 
   <dependencies>
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -83,19 +90,6 @@
       <artifactId>powermock-api-mockito2</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-testlib</artifactId>
-      <version>29.0-jre</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Required for Function primitives -->
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.1</version>
     </dependency>
   </dependencies>
 
