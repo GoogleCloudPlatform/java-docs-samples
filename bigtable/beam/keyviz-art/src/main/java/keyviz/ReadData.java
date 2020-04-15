@@ -47,6 +47,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
+import org.apache.hadoop.hbase.filter.KeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.MultiRowRangeFilter;
 import org.apache.hadoop.hbase.filter.MultiRowRangeFilter.RowRange;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -109,8 +110,10 @@ public class ReadData {
         // Scan with a filter that will only return the first key from each row. This filter is used
         // to more efficiently perform row count operations.
         Filter rangeFilters = new MultiRowRangeFilter(ranges);
-        FilterList firstKeyFilterWithRanges = new FilterList(new FirstKeyOnlyFilter(),
-            rangeFilters);
+        FilterList firstKeyFilterWithRanges = new FilterList(
+            rangeFilters,
+            new FirstKeyOnlyFilter(),
+            new KeyOnlyFilter());
         Scan scan =
             new Scan()
                 .addFamily(Bytes.toBytes(COLUMN_FAMILY))
