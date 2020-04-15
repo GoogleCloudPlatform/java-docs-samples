@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.functions.imagemagick;
+package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.functions.imagemagick.eventpojos.GcsEvent;
-import com.example.functions.imagemagick.eventpojos.MockContext;
 import com.google.common.testing.TestLogHandler;
+import functions.eventpojos.GcsEvent;
+import functions.eventpojos.MockContext;
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
