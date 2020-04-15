@@ -37,6 +37,12 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.6</version>
+    </dependency>
+
     <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
