@@ -164,7 +164,6 @@ public class FhirResourceTests {
   }
 
   @Test
-  @Ignore("b/135536409")
   public void test_FhirResourcePatch() throws Exception {
     JsonObject json = new JsonObject();
     json.add("op", new JsonPrimitive("add"));
@@ -178,9 +177,7 @@ public class FhirResourceTests {
     assertThat(output, containsString("FHIR resource patched:"));
   }
 
-  // TODO(b/139283693): Add conditions to conditional FHIR methods.
   @Test
-  @Ignore
   public void test_FhirResourceConditionalPatch() throws Exception {
     JsonObject json = new JsonObject();
     json.add("op", new JsonPrimitive("add"));

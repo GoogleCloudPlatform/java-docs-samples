@@ -78,10 +78,11 @@ public class FhirResourceConditionalPatch {
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      System.err.print(String.format(
-          "Exception patching FHIR resource: %s\n", response.getStatusLine().toString()));
+      String errorMsg = String.format(
+          "Exception patching FHIR resource: %s\n", response.getStatusLine().toString());
+      System.err.print(errorMsg);
       responseEntity.writeTo(System.err);
-      throw new RuntimeException();
+      throw new RuntimeException(errorMsg);
     }
     System.out.println("FHIR resource conditionally patched: ");
     responseEntity.writeTo(System.out);
