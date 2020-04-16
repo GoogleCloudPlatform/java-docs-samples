@@ -70,7 +70,7 @@ public class ManagerIT {
     }
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout, StandardCharsets.UTF_8);
+    out = new PrintStream(bout, false, StandardCharsets.UTF_8);
     System.setOut(out);
   }
 
@@ -130,7 +130,7 @@ public class ManagerIT {
       DeviceRegistryExample.patchRsa256ForAuth(
           deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-      String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+      String got = bout.toString(StandardCharsets.UTF_8);
       Assert.assertTrue(got.contains("Created device: {"));
     } finally {
       DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
@@ -154,7 +154,7 @@ public class ManagerIT {
       DeviceRegistryExample.patchEs256ForAuth(
           deviceName, ES_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-      String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+      String got = bout.toString(StandardCharsets.UTF_8);
       Assert.assertTrue(got.contains("Created device: {"));
     } finally {
       DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
@@ -174,7 +174,7 @@ public class ManagerIT {
     DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
     DeviceRegistryExample.createDeviceWithNoAuth(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Created device: {"));
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
@@ -193,7 +193,7 @@ public class ManagerIT {
         deviceName, ES_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.getDeviceStates(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Created device: {"));
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
@@ -212,7 +212,7 @@ public class ManagerIT {
         deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.getDeviceStates(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Created device: {"));
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
@@ -231,7 +231,7 @@ public class ManagerIT {
         deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.getDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Created device: {"));
     Assert.assertTrue(got.contains("Retrieving device"));
 
@@ -252,7 +252,7 @@ public class ManagerIT {
     DeviceRegistryExample.setDeviceConfiguration(
         deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID, "some-test-data", 0L);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Updated: 2"));
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
@@ -271,7 +271,7 @@ public class ManagerIT {
         deviceName, RSA_PATH, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.listDevices(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), Charsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Created device: {"));
     Assert.assertTrue(got.contains("Found"));
 
@@ -288,7 +288,7 @@ public class ManagerIT {
     DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
     DeviceRegistryExample.getRegistry(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertFalse(got.contains("eventNotificationConfigs"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
@@ -303,7 +303,7 @@ public class ManagerIT {
     DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
     DeviceRegistryExample.getIamPermissions(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("ETAG"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
@@ -319,7 +319,7 @@ public class ManagerIT {
     DeviceRegistryExample.setIamPermissions(PROJECT_ID, CLOUD_REGION, REGISTRY_ID, MEMBER, ROLE);
     DeviceRegistryExample.getIamPermissions(PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("ETAG"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
@@ -353,7 +353,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("200"));
     Assert.assertTrue(got.contains("OK"));
 
@@ -388,7 +388,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("200"));
     Assert.assertTrue(got.contains("OK"));
 
@@ -423,7 +423,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("200"));
     Assert.assertTrue(got.contains("OK"));
     Assert.assertTrue(got.contains("\"binaryData\": \"\""));
@@ -460,7 +460,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     System.out.println(got);
     Assert.assertTrue(got.contains("Payload :"));
 
@@ -512,7 +512,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     System.out.println(got);
     Assert.assertTrue(got.contains("Finished loop successfully."));
     Assert.assertTrue(got.contains("me want cookie"));
@@ -549,7 +549,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     //
     // Finished loop successfully. Goodbye!
 
@@ -586,7 +586,7 @@ public class ManagerIT {
     // End device test.
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("Publishing state message 1"));
     Assert.assertTrue(got.contains("Finished loop successfully. Goodbye!"));
 
@@ -635,7 +635,7 @@ public class ManagerIT {
     deviceThread.join();
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     System.out.println(got);
     Assert.assertTrue(got.contains("Payload"));
 
@@ -686,7 +686,7 @@ public class ManagerIT {
     deviceThread.start();
     Thread.sleep(4000);
 
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString(StandardCharsets.UTF_8);
     Assert.assertTrue(got.contains("error_type"));
 
     // Clean up
@@ -736,7 +736,7 @@ public class ManagerIT {
     deviceThread.join();
 
     // Assertions
-    String got = new String(bout.getBytes(), StandardCharsets.UTF_8);
+    String got = bout.toString("UTF-8");
     System.out.println(got);
     Assert.assertTrue(got.contains("Data sent"));
 
