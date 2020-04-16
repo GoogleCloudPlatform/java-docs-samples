@@ -38,16 +38,6 @@ class RenderControllerTests {
   @Autowired private MockMvc mockMvc;
 
   @Test
-  public void postRender() throws Exception {
-	String mock = "{\"data\":\"test\"}";
-	MockEnvironment env = new MockEnvironment();
-	env.setProperty("EDITOR_UPSTREAM_RENDER_URL", "http://localhost:8080");
-    this.mockMvc
-        .perform(post("/render").contentType(MediaType.APPLICATION_JSON).content(mock))
-        .andExpect(status().isOk());
-  }
-
-  @Test
   public void failsRenderWithInvalidMedia() throws Exception {
     this.mockMvc.perform(post("/render")).andExpect(status().isUnsupportedMediaType());
   }
