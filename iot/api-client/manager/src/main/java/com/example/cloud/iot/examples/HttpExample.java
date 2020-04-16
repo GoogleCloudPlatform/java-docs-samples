@@ -66,6 +66,7 @@ import org.json.JSONObject;
 public class HttpExample {
   static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  static final long MINUTES_PER_HOUR = 60;
 
   // [START iot_http_jwt]
   /** Create a RSA-based JWT for the given project id, signed with the given private key. */
@@ -255,7 +256,7 @@ public class HttpExample {
 
       // Refresh the authentication token if the token has expired.
       long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
-      if (secsSinceRefresh > (options.tokenExpMins * 60)) {
+      if (secsSinceRefresh > (options.tokenExpMins * MINUTES_PER_HOUR)) {
         System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
 

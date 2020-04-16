@@ -68,6 +68,7 @@ public class MqttExample {
   // [START iot_mqtt_jwt]
   // [START iot_mqtt_configcallback]
   static MqttCallback mCallback;
+  static long MINUTES_PER_HOUR = 60;
 
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile)
@@ -176,7 +177,7 @@ public class MqttExample {
     long retryIntervalMs = initialConnectIntervalMillis;
     long totalRetryTimeMs = 0;
 
-    while (!client.isConnected() && totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) {
+    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected())  {
       try {
         client.connect(connectOptions);
       } catch (MqttException e) {
@@ -416,7 +417,7 @@ public class MqttExample {
       // Refresh the connection credentials before the JWT expires.
       // [START iot_mqtt_jwt_refresh]
       long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
-      if (secsSinceRefresh > (options.tokenExpMins * 60)) {
+      if (secsSinceRefresh > (options.tokenExpMins * MINUTES_PER_HOUR)) {
         System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
         if (options.algorithm.equals("RS256")) {
@@ -452,7 +453,7 @@ public class MqttExample {
 
     // Wait for commands to arrive for about two minutes.
     for (int i = 1; i <= options.waitTime; ++i) {
-      System.out.print(".");
+      System.out.print('.');
       Thread.sleep(1000);
     }
     System.out.println("");

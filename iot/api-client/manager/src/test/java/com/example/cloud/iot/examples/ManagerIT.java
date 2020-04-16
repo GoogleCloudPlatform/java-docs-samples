@@ -70,7 +70,8 @@ public class ManagerIT {
     }
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout, false, StandardCharsets.UTF_8);
+    Writer w = new OutputStreamWriter(bout, StandardCharsets.UTF_8);
+    out = new PrintStream(w, false, StandardCharsets.UTF_8);
     System.setOut(out);
   }
 
@@ -122,7 +123,6 @@ public class ManagerIT {
   @Test
   public void testPatchRsa() throws Exception {
     final String deviceName = "patchme-device-rsa";
-    topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
     try {
       DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
       DeviceRegistryExample.createDeviceWithNoAuth(
