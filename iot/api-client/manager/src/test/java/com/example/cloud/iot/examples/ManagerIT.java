@@ -72,9 +72,7 @@ public class ManagerIT {
     }
 
     bout = new ByteArrayOutputStream();
-    Writer w = new OutputStreamWriter(bout, StandardCharsets.UTF_8);
-    out = new PrintStream(w, false, StandardCharsets.UTF_8);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout, true, StandardCharsets.UTF_8));
   }
 
   @After
