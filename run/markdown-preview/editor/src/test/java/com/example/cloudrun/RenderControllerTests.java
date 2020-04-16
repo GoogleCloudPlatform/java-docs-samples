@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = EditorApplication.class)
 @WebMvcTest(RenderController.class)
-class RednerControllerTests {
+class RenderControllerTests {
 
   @Autowired private MockMvc mockMvc;
 
