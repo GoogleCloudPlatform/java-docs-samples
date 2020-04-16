@@ -162,7 +162,7 @@ public class MqttExample {
           "Invalid algorithm " + algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
 
-    System.out.println(String.format(mqttClientId));
+    System.out.println(String.format("%s", mqttClientId));
 
     // Create a client, and connect to the Google MQTT bridge.
     MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
@@ -373,7 +373,7 @@ public class MqttExample {
     long retryIntervalMs = initialConnectIntervalMillis;
     long totalRetryTimeMs = 0;
 
-    while (!client.isConnected() && totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) {
+    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected()) {
       try {
         client.connect(connectOptions);
       } catch (MqttException e) {
@@ -400,7 +400,7 @@ public class MqttExample {
     attachCallback(client, options.deviceId);
 
     // Publish to the events or state topic based on the flag.
-    String subTopic = options.messageType.equals("event") ? "events" : options.messageType;
+    String subTopic = "event".equals(options.messageType) ? "events" : options.messageType;
 
     // The MQTT topic that this device will publish telemetry data to. The MQTT topic name is
     // required to be in the format below. Note that this is not the same as the device registry's
@@ -420,10 +420,10 @@ public class MqttExample {
       if (secsSinceRefresh > (options.tokenExpMins * MINUTES_PER_HOUR)) {
         System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
-        if (options.algorithm.equals("RS256")) {
+        if ("RS256".equals(options.algorithm)) {
           connectOptions.setPassword(
               createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
-        } else if (options.algorithm.equals("ES256")) {
+        } else if ("ES256".equals(options.algorithm)) {
           connectOptions.setPassword(
               createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
         } else {
@@ -442,7 +442,7 @@ public class MqttExample {
       message.setQos(1);
       client.publish(mqttTopic, message);
 
-      if (options.messageType.equals("event")) {
+      if ("event".equals(options.messageType)) {
         // Send telemetry events every second
         Thread.sleep(1000);
       } else {
