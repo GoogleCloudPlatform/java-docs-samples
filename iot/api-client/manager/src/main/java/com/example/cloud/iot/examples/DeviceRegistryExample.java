@@ -206,9 +206,9 @@ public class DeviceRegistryExample {
         String.format(
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
-    CloudIot.Projects.Locations.Registries regAlias = 
+    CloudIot.Projects.Locations.Registries regAlias =
         service.projects().locations().registries();
-    CloudIot.Projects.Locations.Registries.Devices devAlias = 
+    CloudIot.Projects.Locations.Registries.Devices devAlias =
         regAlias.devices();
 
     ListDevicesResponse listGatewaysRes =
@@ -321,7 +321,7 @@ public class DeviceRegistryExample {
 
   // [START iot_create_es_device]
   /** Create a device that is authenticated using ES256. */
-  public static void createDeviceWithEs256(
+  protected static void createDeviceWithEs256(
       String deviceId,
       String publicKeyFilePath,
       String projectId,
@@ -369,7 +369,7 @@ public class DeviceRegistryExample {
 
   // [START iot_create_rsa_device]
   /** Create a device that is authenticated using RS256. */
-  public static void createDeviceWithRs256(
+  protected static void createDeviceWithRs256(
       String deviceId,
       String certificateFilePath,
       String projectId,
@@ -421,7 +421,7 @@ public class DeviceRegistryExample {
    * <p>This is a valid way to construct a device, however until it is patched with a credential the
    * device will not be able to connect to Cloud IoT.
    */
-  public static void createDeviceWithNoAuth(
+  protected static void createDeviceWithNoAuth(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -455,7 +455,7 @@ public class DeviceRegistryExample {
 
   // [START iot_delete_device]
   /** Delete the given device from the registry. */
-  public static void deleteDevice(
+  protected static void deleteDevice(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -479,7 +479,7 @@ public class DeviceRegistryExample {
 
   // [START iot_get_device]
   /** Retrieves device metadata from a registry. * */
-  public static Device getDevice(
+  protected static Device getDevice(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -503,7 +503,7 @@ public class DeviceRegistryExample {
 
   // [START iot_get_device_state]
   /** Retrieves device metadata from a registry. * */
-  public static List<DeviceState> getDeviceStates(
+  protected static List<DeviceState> getDeviceStates(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -531,7 +531,7 @@ public class DeviceRegistryExample {
 
   // [START iot_get_registry]
   /** Retrieves registry metadata from a project. * */
-  public static DeviceRegistry getRegistry(
+  protected static DeviceRegistry getRegistry(
       String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -553,7 +553,7 @@ public class DeviceRegistryExample {
 
   // [START iot_get_device_configs]
   /** List all of the configs for the given device. */
-  public static void listDeviceConfigs(
+  protected static void listDeviceConfigs(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -632,7 +632,7 @@ public class DeviceRegistryExample {
 
   // [START iot_patch_es]
   /** Patch the device to add an ES256 key for authentication. */
-  public static void patchEs256ForAuth(
+  protected static void patchEs256ForAuth(
       String deviceId,
       String publicKeyFilePath,
       String projectId,
@@ -680,7 +680,7 @@ public class DeviceRegistryExample {
 
   // [START iot_patch_rsa]
   /** Patch the device to add an RSA256 key for authentication. */
-  public static void patchRsa256ForAuth(
+  protected static void patchRsa256ForAuth(
       String deviceId,
       String publicKeyFilePath,
       String projectId,
@@ -728,7 +728,7 @@ public class DeviceRegistryExample {
 
   // [START iot_set_device_config]
   /** Set a device configuration to the specified data (string, JSON) and version (0 for latest). */
-  public static void setDeviceConfiguration(
+  protected static void setDeviceConfiguration(
       String deviceId,
       String projectId,
       String cloudRegion,
@@ -773,7 +773,7 @@ public class DeviceRegistryExample {
 
   // [START iot_get_iam_policy]
   /** Retrieves IAM permissions for the given registry. */
-  public static void getIamPermissions(String projectId, String cloudRegion, String registryName)
+  protected static void getIamPermissions(String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
@@ -814,7 +814,7 @@ public class DeviceRegistryExample {
 
   // [START iot_set_iam_policy]
   /** Sets IAM permissions for the given registry. */
-  public static void setIamPermissions(
+  protected static void setIamPermissions(
       String projectId, String cloudRegion, String registryName, String member, String role)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -883,7 +883,7 @@ public class DeviceRegistryExample {
 
   /** Send a command to a device. * */
   // [START iot_send_command]
-  public static void sendCommand(
+  protected static void sendCommand(
       String deviceId, String projectId, String cloudRegion, String registryName, String data)
       throws GeneralSecurityException, IOException {
     GoogleCredential credential =
@@ -920,7 +920,7 @@ public class DeviceRegistryExample {
   }
   // [END iot_send_command]
 
-  public static void bindDeviceToGateway(
+  protected static void bindDeviceToGateway(
       String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
       throws GeneralSecurityException, IOException {
     // [START iot_bind_device_to_gateway]
@@ -955,7 +955,7 @@ public class DeviceRegistryExample {
     // [END iot_bind_device_to_gateway]
   }
 
-  public static void unbindDeviceFromGateway(
+  protected static void unbindDeviceFromGateway(
       String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
       throws GeneralSecurityException, IOException {
     // [START iot_unbind_device_from_gateway]
@@ -989,7 +989,7 @@ public class DeviceRegistryExample {
   }
 
   /** Create a device to bind to a gateway. */
-  public static void createDevice(
+  protected static void createDevice(
       String projectId, String cloudRegion, String registryName, String deviceId)
       throws GeneralSecurityException, IOException {
     // [START iot_create_device]
@@ -1051,7 +1051,7 @@ public class DeviceRegistryExample {
   }
 
   /** Create a gateway to bind devices to. */
-  public static void createGateway(
+  protected static void createGateway(
       String projectId,
       String cloudRegion,
       String registryName,

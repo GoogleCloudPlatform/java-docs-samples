@@ -112,7 +112,7 @@ public class MqttExample {
   }
 
   /** Connects the gateway to the MQTT bridge. */
-  public static MqttClient startMqtt(
+  protected static MqttClient startMqtt(
       String mqttBridgeHostname,
       int mqttBridgePort,
       String projectId,
@@ -153,9 +153,9 @@ public class MqttExample {
     // to authorize the device.
     connectOptions.setUserName("unused");
 
-    if (algorithm.equals("RS256")) {
+    if ("RS256".equals(algorithm)) {
       connectOptions.setPassword(createJwtRsa(projectId, privateKeyFile).toCharArray());
-    } else if (algorithm.equals("ES256")) {
+    } else if ("ES256".equals(algorithm)) {
       connectOptions.setPassword(createJwtEs(projectId, privateKeyFile).toCharArray());
     } else {
       throw new IllegalArgumentException(
@@ -213,10 +213,10 @@ public class MqttExample {
     // [END iot_gateway_start_mqtt]
   }
 
-  public static void sendDataFromDevice(
+  protected static void sendDataFromDevice(
       MqttClient client, String deviceId, String messageType, String data) throws MqttException {
     // [START send_data_from_bound_device]
-    if (!messageType.equals("events") && !messageType.equals("state")) {
+    if (!"events".equals(messageType) && !"state".equals(messageType)) {
       System.err.println("Invalid message type, must ether be 'state' or events'");
       return;
     }
@@ -229,7 +229,7 @@ public class MqttExample {
   }
 
   /** Sends data on behalf of a bound device using the Gateway. */
-  public static void sendDataFromBoundDevice(
+  protected static void sendDataFromBoundDevice(
       String mqttBridgeHostname,
       short mqttBridgePort,
       String projectId,
@@ -260,7 +260,7 @@ public class MqttExample {
     // [END send_data_from_bound_device]
   }
 
-  public static void listenForConfigMessages(
+  protected static void listenForConfigMessages(
       String mqttBridgeHostname,
       short mqttBridgePort,
       String projectId,
@@ -290,7 +290,7 @@ public class MqttExample {
     detachDeviceFromGateway(client, deviceId);
   }
 
-  public static void attachDeviceToGateway(MqttClient client, String deviceId)
+  protected static void attachDeviceToGateway(MqttClient client, String deviceId)
       throws MqttException {
     // [START iot_attach_device]
     final String attachTopic = String.format("/devices/%s/attach", deviceId);
@@ -303,7 +303,7 @@ public class MqttExample {
   }
 
   /** Detaches a bound device from the Gateway. */
-  public static void detachDeviceFromGateway(MqttClient client, String deviceId)
+  protected static void detachDeviceFromGateway(MqttClient client, String deviceId)
       throws MqttException {
     // [START iot_detach_device]
     final String detachTopic = String.format("/devices/%s/detach", deviceId);
@@ -315,7 +315,7 @@ public class MqttExample {
     // [END iot_detach_device]
   }
 
-  public static void mqttDeviceDemo(MqttExampleOptions options)
+  protected static void mqttDeviceDemo(MqttExampleOptions options)
       throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, MqttException,
           InterruptedException {
     // Build the connection string for Google's Cloud IoT Core MQTT server. Only SSL
@@ -347,10 +347,10 @@ public class MqttExample {
     connectOptions.setUserName("unused");
 
     DateTime iat = new DateTime();
-    if (options.algorithm.equals("RS256")) {
+    if ("RS256".equals(options.algorithm)) {
       connectOptions.setPassword(
           createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
-    } else if (options.algorithm.equals("ES256")) {
+    } else if ("ES256".equals(options.algorithm)) {
       connectOptions.setPassword(
           createJwtEs(options.projectId, options.privateKeyFile).toCharArray());
     } else {
@@ -469,7 +469,7 @@ public class MqttExample {
   }
 
   /** Attaches the callback used when configuration changes occur. */
-  public static void attachCallback(MqttClient client, String deviceId) throws MqttException {
+  protected static void attachCallback(MqttClient client, String deviceId) throws MqttException {
     mCallback =
         new MqttCallback() {
           @Override

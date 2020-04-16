@@ -110,7 +110,7 @@ public class HttpExample {
 
   // [START iot_http_getconfig]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
-  public static void getConfig(String urlPath, String token, String projectId,
+  protected static void getConfig(String urlPath, String token, String projectId,
       String cloudRegion, String registryId, String deviceId, String version)
       throws IOException {
     // Build the resource path of the device that is going to be authenticated.
@@ -155,7 +155,7 @@ public class HttpExample {
 
   // [START iot_http_publish]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
-  public static void publishMessage(String payload, String urlPath, String messageType,
+  protected static void publishMessage(String payload, String urlPath, String messageType,
       String token, String projectId, String cloudRegion, String registryId, String deviceId)
       throws IOException, JSONException {
     // Build the resource path of the device that is going to be authenticated.
@@ -163,7 +163,7 @@ public class HttpExample {
         String.format(
             "projects/%s/locations/%s/registries/%s/devices/%s",
             projectId, cloudRegion, registryId, deviceId);
-    String urlSuffix = messageType.equals("event") ? "publishEvent" : "setState";
+    String urlSuffix = "event".equals(messageType) ? "publishEvent" : "setState";
 
     // Data sent through the wire has to be base64 encoded.
     Base64.Encoder encoder = Base64.getEncoder();
@@ -188,7 +188,7 @@ public class HttpExample {
 
     // Add post data. The data sent depends on whether we're updating state or publishing events.
     JSONObject data = new JSONObject();
-    if (messageType.equals("event")) {
+    if ("event".equals(messageType)) {
       data.put("binary_data", encPayload);
     } else {
       JSONObject state = new JSONObject();
@@ -220,7 +220,7 @@ public class HttpExample {
 
   // [START iot_http_run]
   /** Parse arguments and publish messages. */
-  public static void main(String[] args) throws Exception {
+  protected static void main(String[] args) throws Exception {
     HttpExampleOptions options = HttpExampleOptions.fromFlags(args);
 
     if (options == null) {
@@ -260,9 +260,9 @@ public class HttpExample {
         System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
 
-        if (options.algorithm.equals("RS256")) {
+        if ("RS256".equals(options.algorithm)) {
           token = createJwtRsa(options.projectId, options.privateKeyFile);
-        } else if (options.algorithm.equals("ES256")) {
+        } else if ("ES256".equals(options.algorithm)) {
           token = createJwtEs(options.projectId, options.privateKeyFile);
         }
       }
@@ -270,7 +270,7 @@ public class HttpExample {
       publishMessage(payload, urlPath, options.messageType, token, options.projectId,
               options.cloudRegion, options.registryId, options.deviceId);
 
-      if (options.messageType.equals("event")) {
+      if ("event".equals(options.messageType)) {
         // Frequently send event payloads (every second)
         Thread.sleep(1000);
       } else {
