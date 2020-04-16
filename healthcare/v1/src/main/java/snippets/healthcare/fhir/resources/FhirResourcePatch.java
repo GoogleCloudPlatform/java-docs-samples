@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class FhirResourcePatch {
 
     HttpClient httpClient = HttpClients.createDefault();
     String uri = String.format(
-        "%sv1beta1/%s", client.getRootUrl(), resourceName);
+        "%sv1/%s", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
     StringEntity requestEntity = new StringEntity(data);

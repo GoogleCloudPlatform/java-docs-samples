@@ -53,7 +53,7 @@ public class FhirResourceListHistory {
 
     HttpClient httpClient = HttpClients.createDefault();
     String uri = String.format(
-        "%sv1beta1/%s/_history", client.getRootUrl(), resourceName);
+        "%sv1/%s/_history", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
 

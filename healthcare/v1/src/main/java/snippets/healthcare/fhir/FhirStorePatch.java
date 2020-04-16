@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class FhirStorePatch {
     FhirStore store = getRequest.execute();
 
     // Update the FhirStore fields as needed as needed. For a full list of FhirStore fields, see:
-    // https://cloud.google.com/healthcare/docs/reference/rest/v1beta1/projects.locations.datasets.fhirStores#FhirStore
+    // https://cloud.google.com/healthcare/docs/reference/rest/v1/projects.locations.datasets.fhirStores#FhirStore
     store.setNotificationConfig(new NotificationConfig().setPubsubTopic(pubsubTopic));
 
     // Create request and configure any parameters.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class FhirStoreExecuteBundle {
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
     HttpClient httpClient = HttpClients.createDefault();
-    String baseUri = String.format("%sv1beta1/%s/fhir", client.getRootUrl(), fhirStoreName);
+    String baseUri = String.format("%sv1/%s/fhir", client.getRootUrl(), fhirStoreName);
     URIBuilder uriBuilder = new URIBuilder(baseUri)
         .setParameter("access_token", getAccessToken());
     StringEntity requestEntity = new StringEntity(data);
