@@ -29,6 +29,8 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.StringBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
