@@ -284,7 +284,7 @@ tool or IntelliJ plugin.
 To run the Checkstyle, ErrorProne and SpotBugs plugins on an existing sample, run
 
 ```shell
-mvn clean verify -DskipTests
+mvn clean verify -DskipTests -P lint
 ```
 
 The `-DskipTests` is optional. It is useful if you want to verify that your code
