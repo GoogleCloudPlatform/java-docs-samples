@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 
+<!-- [START functions_example_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -24,12 +25,14 @@
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-firebase-firestore</artifactId>
 
+  <!-- [END functions_example_pom] -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.15</version>
   </parent>
-
+  
+  <!-- [START functions_example_pom] -->
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
@@ -49,6 +52,8 @@
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
     </dependency>
+    
+    <!-- [END functions_example_pom] -->
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -71,6 +76,8 @@
     </dependency>
   </dependencies>
 
+  <!-- [START functions_example_pom] -->
+  
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
   <!--   when deploying, but we recommend creating -->
@@ -151,3 +158,4 @@
     </plugins>
   </build>
 </project>
+<!-- [END functions_example_pom] -->
