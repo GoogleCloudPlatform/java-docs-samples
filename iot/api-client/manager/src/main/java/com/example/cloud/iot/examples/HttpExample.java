@@ -149,7 +149,7 @@ public class HttpExample {
     System.out.println(res.getStatusMessage());
     InputStream in = res.getContent();
 
-    System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)));
+    System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8.name())));
   }
   // [END iot_http_getconfig]
 
@@ -168,7 +168,7 @@ public class HttpExample {
     // Data sent through the wire has to be base64 encoded.
     Base64.Encoder encoder = Base64.getEncoder();
 
-    String encPayload = encoder.encodeToString(payload.getBytes(StandardCharsets.UTF_8));
+    String encPayload = encoder.encodeToString(payload.getBytes(StandardCharsets.UTF_8.name()));
 
     urlPath = urlPath + devicePath + ":" + urlSuffix;
 
@@ -197,7 +197,7 @@ public class HttpExample {
     }
 
     ByteArrayContent content = new ByteArrayContent(
-        "application/json", data.toString().getBytes(StandardCharsets.UTF_8));
+        "application/json", data.toString().getBytes(StandardCharsets.UTF_8.name()));
 
     final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
     req.setHeaders(heads);

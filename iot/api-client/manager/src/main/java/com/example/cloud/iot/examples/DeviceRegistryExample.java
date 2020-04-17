@@ -755,7 +755,7 @@ public class DeviceRegistryExample {
 
     // Data sent through the wire has to be base64 encoded.
     Base64.Encoder encoder = Base64.getEncoder();
-    String encPayload = encoder.encodeToString(data.getBytes(StandardCharsets.UTF_8));
+    String encPayload = encoder.encodeToString(data.getBytes(StandardCharsets.UTF_8.name()));
     req.setBinaryData(encPayload);
 
     DeviceConfig config =
@@ -904,7 +904,7 @@ public class DeviceRegistryExample {
 
     // Data sent through the wire has to be base64 encoded.
     Base64.Encoder encoder = Base64.getEncoder();
-    String encPayload = encoder.encodeToString(data.getBytes(StandardCharsets.UTF_8));
+    String encPayload = encoder.encodeToString(data.getBytes(StandardCharsets.UTF_8.name()));
     req.setBinaryData(encPayload);
     System.out.printf("Sending command to %s%n", devicePath);
 

@@ -22,6 +22,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -214,14 +215,14 @@ public class MqttExample {
   }
 
   protected static void sendDataFromDevice(
-      MqttClient client, String deviceId, String messageType, String data) throws MqttException {
+      MqttClient client, String deviceId, String messageType, String data) throws MqttException, UnsupportedEncodingException {
     // [START send_data_from_bound_device]
     if (!"events".equals(messageType) && !"state".equals(messageType)) {
       System.err.println("Invalid message type, must ether be 'state' or events'");
       return;
     }
     final String dataTopic = String.format("/devices/%s/%s", deviceId, messageType);
-    MqttMessage message = new MqttMessage(data.getBytes(StandardCharsets.UTF_8));
+    MqttMessage message = new MqttMessage(data.getBytes(StandardCharsets.UTF_8.name()));
     message.setQos(1);
     client.publish(dataTopic, message);
     System.out.println("Data sent");
@@ -291,12 +292,12 @@ public class MqttExample {
   }
 
   protected static void attachDeviceToGateway(MqttClient client, String deviceId)
-      throws MqttException {
+      throws MqttException, UnsupportedEncodingException {
     // [START iot_attach_device]
     final String attachTopic = String.format("/devices/%s/attach", deviceId);
     System.out.println(String.format("Attaching: %s", attachTopic));
     String attachPayload = "{}";
-    MqttMessage message = new MqttMessage(attachPayload.getBytes(StandardCharsets.UTF_8));
+    MqttMessage message = new MqttMessage(attachPayload.getBytes(StandardCharsets.UTF_8.name()));
     message.setQos(1);
     client.publish(attachTopic, message);
     // [END iot_attach_device]
@@ -304,12 +305,12 @@ public class MqttExample {
 
   /** Detaches a bound device from the Gateway. */
   protected static void detachDeviceFromGateway(MqttClient client, String deviceId)
-      throws MqttException {
+      throws MqttException, UnsupportedEncodingException {
     // [START iot_detach_device]
     final String detachTopic = String.format("/devices/%s/detach", deviceId);
     System.out.println(String.format("Detaching: %s", detachTopic));
     String attachPayload = "{}";
-    MqttMessage message = new MqttMessage(attachPayload.getBytes(StandardCharsets.UTF_8));
+    MqttMessage message = new MqttMessage(attachPayload.getBytes(StandardCharsets.UTF_8.name()));
     message.setQos(1);
     client.publish(detachTopic, message);
     // [END iot_detach_device]
@@ -438,7 +439,7 @@ public class MqttExample {
 
       // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. Cloud IoT Core
       // also supports qos=0 for at most once delivery.
-      MqttMessage message = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8));
+      MqttMessage message = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8.name()));
       message.setQos(1);
       client.publish(mqttTopic, message);
 
@@ -469,7 +470,8 @@ public class MqttExample {
   }
 
   /** Attaches the callback used when configuration changes occur. */
-  protected static void attachCallback(MqttClient client, String deviceId) throws MqttException {
+  protected static void attachCallback(MqttClient client, String deviceId)
+      throws MqttException, UnsupportedEncodingException {
     mCallback =
         new MqttCallback() {
           @Override
@@ -479,9 +481,14 @@ public class MqttExample {
 
           @Override
           public void messageArrived(String topic, MqttMessage message) {
-            String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
-            System.out.println("Payload : " + payload);
-            // TODO: Insert your parsing / handling of the configuration message here.
+            try {
+              String payload = new String(message.getPayload(), StandardCharsets.UTF_8.name());
+              System.out.println("Payload : " + payload);
+              // TODO: Insert your parsing / handling of the configuration message here.
+              //
+            } catch (UnsupportedEncodingException uee) {
+              System.err.println(uee);
+            }
           }
 
           @Override
