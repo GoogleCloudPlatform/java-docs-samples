@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RenderController {
 
   private static final Logger logger = LoggerFactory.getLogger(RenderController.class);
+
   // [START run_secure_request_do]
   // '/render' expects a JSON body payload with a 'data' property holding plain text
   // for rendering.
