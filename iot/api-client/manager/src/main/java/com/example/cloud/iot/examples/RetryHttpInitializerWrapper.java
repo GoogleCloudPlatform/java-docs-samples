@@ -90,7 +90,7 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
               return true;
             } else if (backoffHandler.handleResponse(request, response, supportsRetry)) {
               // Otherwise, we defer to the judgment of our internal backoff handler.
-              LOG.info("Retrying " + request.getUrl().toString());
+              LOG.info(request.getUrl().toString().replaceAll("[\r\n]",""));
               return true;
             } else {
               return false;
@@ -99,5 +99,9 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
         });
     request.setIOExceptionHandler(
         new HttpBackOffIOExceptionHandler(new ExponentialBackOff()).setSleeper(sleeper));
+  }
+
+  public String toString() {
+    return "";
   }
 }

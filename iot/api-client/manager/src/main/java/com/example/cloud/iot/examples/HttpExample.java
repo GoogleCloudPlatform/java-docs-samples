@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ProtocolException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
@@ -65,6 +66,7 @@ import org.json.JSONObject;
 public class HttpExample {
   static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
   static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  static final long MINUTES_PER_HOUR = 60;
 
   // [START iot_http_jwt]
   /** Create a RSA-based JWT for the given project id, signed with the given private key. */
@@ -108,9 +110,9 @@ public class HttpExample {
 
   // [START iot_http_getconfig]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
-  public static void getConfig(String urlPath, String token, String projectId,
+  protected static void getConfig(String urlPath, String token, String projectId,
       String cloudRegion, String registryId, String deviceId, String version)
-      throws UnsupportedEncodingException, IOException, JSONException, ProtocolException {
+      throws IOException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
         String.format(
@@ -147,26 +149,26 @@ public class HttpExample {
     System.out.println(res.getStatusMessage());
     InputStream in = res.getContent();
 
-    System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)));
+    System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8.name())));
   }
   // [END iot_http_getconfig]
 
   // [START iot_http_publish]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
-  public static void publishMessage(String payload, String urlPath, String messageType,
+  protected static void publishMessage(String payload, String urlPath, String messageType,
       String token, String projectId, String cloudRegion, String registryId, String deviceId)
-      throws UnsupportedEncodingException, IOException, JSONException, ProtocolException {
+      throws IOException, JSONException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
         String.format(
             "projects/%s/locations/%s/registries/%s/devices/%s",
             projectId, cloudRegion, registryId, deviceId);
-    String urlSuffix = messageType.equals("event") ? "publishEvent" : "setState";
+    String urlSuffix = "event".equals(messageType) ? "publishEvent" : "setState";
 
     // Data sent through the wire has to be base64 encoded.
     Base64.Encoder encoder = Base64.getEncoder();
 
-    String encPayload = encoder.encodeToString(payload.getBytes("UTF-8"));
+    String encPayload = encoder.encodeToString(payload.getBytes(StandardCharsets.UTF_8.name()));
 
     urlPath = urlPath + devicePath + ":" + urlSuffix;
 
@@ -186,7 +188,7 @@ public class HttpExample {
 
     // Add post data. The data sent depends on whether we're updating state or publishing events.
     JSONObject data = new JSONObject();
-    if (messageType.equals("event")) {
+    if ("event".equals(messageType)) {
       data.put("binary_data", encPayload);
     } else {
       JSONObject state = new JSONObject();
@@ -195,7 +197,7 @@ public class HttpExample {
     }
 
     ByteArrayContent content = new ByteArrayContent(
-        "application/json", data.toString().getBytes("UTF-8"));
+        "application/json", data.toString().getBytes(StandardCharsets.UTF_8.name()));
 
     final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
     req.setHeaders(heads);
@@ -218,7 +220,7 @@ public class HttpExample {
 
   // [START iot_http_run]
   /** Parse arguments and publish messages. */
-  public static void main(String[] args) throws Exception {
+  protected static void main(String[] args) throws Exception {
     HttpExampleOptions options = HttpExampleOptions.fromFlags(args);
 
     if (options == null) {
@@ -229,9 +231,9 @@ public class HttpExample {
     // Create the corresponding JWT depending on the selected algorithm.
     String token;
     DateTime iat = new DateTime();
-    if (options.algorithm.equals("RS256")) {
+    if ("RSA256".equals(options.algorithm)) {
       token = createJwtRsa(options.projectId, options.privateKeyFile);
-    } else if (options.algorithm.equals("ES256")) {
+    } else if ("ES256".equals(options.algorithm)) {
       token = createJwtEs(options.projectId, options.privateKeyFile);
     } else {
       throw new IllegalArgumentException(
@@ -239,7 +241,7 @@ public class HttpExample {
     }
 
     String urlPath = String.format("%s/%s/", options.httpBridgeAddress, options.apiVersion);
-    System.out.format("Using URL: '%s'\n", urlPath);
+    System.out.format("Using URL: '%s'%n", urlPath);
 
     // Show the latest configuration
     getConfig(urlPath, token, options.projectId, options.cloudRegion, options.registryId,
@@ -249,18 +251,18 @@ public class HttpExample {
     for (int i = 1; i <= options.numMessages; ++i) {
       String payload = String.format("%s/%s-payload-%d", options.registryId, options.deviceId, i);
       System.out.format(
-          "Publishing %s message %d/%d: '%s'\n",
+          "Publishing %s message %d/%d: '%s'%n",
           options.messageType, i, options.numMessages, payload);
 
       // Refresh the authentication token if the token has expired.
       long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
-      if (secsSinceRefresh > (options.tokenExpMins * 60)) {
-        System.out.format("\tRefreshing token after: %d seconds\n", secsSinceRefresh);
+      if (secsSinceRefresh > (options.tokenExpMins * MINUTES_PER_HOUR)) {
+        System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
         iat = new DateTime();
 
-        if (options.algorithm.equals("RS256")) {
+        if ("RS256".equals(options.algorithm)) {
           token = createJwtRsa(options.projectId, options.privateKeyFile);
-        } else if (options.algorithm.equals("ES256")) {
+        } else if ("ES256".equals(options.algorithm)) {
           token = createJwtEs(options.projectId, options.privateKeyFile);
         }
       }
@@ -268,7 +270,7 @@ public class HttpExample {
       publishMessage(payload, urlPath, options.messageType, token, options.projectId,
               options.cloudRegion, options.registryId, options.deviceId);
 
-      if (options.messageType.equals("event")) {
+      if ("event".equals(options.messageType)) {
         // Frequently send event payloads (every second)
         Thread.sleep(1000);
       } else {

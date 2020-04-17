@@ -17,16 +17,19 @@
 package com.example.cloud.iot.examples;
 
 import java.util.Arrays;
+import javax.annotation.Nullable;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /** Command line options for the Device Manager example. */
 public class DeviceRegistryExampleOptions {
+  static final String helpMessage = "Showing help";
   static final Options options = new Options();
   String projectId;
   String ecPublicKeyFile = null;
@@ -44,10 +47,12 @@ public class DeviceRegistryExampleOptions {
   long version = 0;
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
-  public static DeviceRegistryExampleOptions fromFlags(String[] args) {
+  public static @Nullable DeviceRegistryExampleOptions fromFlags(String ... args) {
     // Required arguments
+    Builder builder= Option.builder();
+
     options.addOption(
-        Option.builder()
+            builder
             .type(String.class)
             .longOpt("command")
             .hasArg()
@@ -82,91 +87,91 @@ public class DeviceRegistryExampleOptions {
 
     // Optional arguments.
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("pubsub_topic")
             .hasArg()
             .desc("Pub/Sub topic to create registry in.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("ec_public_key_file")
             .hasArg()
             .desc("Path to ES256 public key file.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("rsa_certificate_file")
             .hasArg()
             .desc("Path to RS256 certificate file.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("cloud_region")
             .hasArg()
             .desc("GCP cloud region.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("project_id")
             .hasArg()
             .desc("GCP cloud project name.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("registry_name")
             .hasArg()
             .desc("Name for your Device Registry.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("device_id")
             .hasArg()
             .desc("Name for your Device.")
             .build());
     options.addOption(
-            Option.builder()
+        builder
             .type(String.class)
             .longOpt("gateway_id")
             .hasArg()
             .desc("Name for your Device.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("data")
             .hasArg()
             .desc("The command data (string or JSON) to send to the specified device.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("configuration")
             .hasArg()
             .desc("The configuration (string or JSON) to set the specified device to.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("version")
             .hasArg()
             .desc("The configuration version to send on the device (0 is latest).")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("member")
             .hasArg()
             .desc("The member used for setting IAM permissions.")
             .build());
     options.addOption(
-        Option.builder()
+        builder
             .type(String.class)
             .longOpt("role")
             .hasArg()
@@ -181,8 +186,8 @@ public class DeviceRegistryExampleOptions {
       DeviceRegistryExampleOptions res = new DeviceRegistryExampleOptions();
 
       res.command = commandLine.getOptionValue("command");
-      if (res.command.equals("help") || res.command.equals("")) {
-        throw new ParseException("Invalid command, showing help.");
+      if ("help".equals(res.command) || "".equals(res.command)) {
+        throw new ParseException(String.format("%s, you entered %s", helpMessage, res.command));
       }
 
       if (commandLine.hasOption("cloud_region")) {
@@ -237,7 +242,7 @@ public class DeviceRegistryExampleOptions {
         res.configuration = commandLine.getOptionValue("configuration");
       }
       if (commandLine.hasOption("version")) {
-        res.version = new Long(commandLine.getOptionValue("version")).longValue();
+        res.version = Long.parseLong(commandLine.getOptionValue("version"));
       }
       if (commandLine.hasOption("member")) {
         res.member = commandLine.getOptionValue("member");
@@ -258,5 +263,9 @@ public class DeviceRegistryExampleOptions {
       System.err.println(e.getMessage());
       return null;
     }
+  }
+
+  public String toString() {
+    return options.toString();
   }
 }
