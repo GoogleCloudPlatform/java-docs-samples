@@ -17,7 +17,6 @@
 package com.example.firestore.snippets;
 
 import com.example.firestore.snippets.model.City;
-
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.firestore.CollectionReference;
@@ -27,7 +26,6 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

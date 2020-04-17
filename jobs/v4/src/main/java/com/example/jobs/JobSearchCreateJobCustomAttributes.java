@@ -23,12 +23,7 @@ import com.google.cloud.talent.v4beta1.CustomAttribute;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class JobSearchCreateJobCustomAttributes {
 
@@ -49,7 +44,7 @@ public class JobSearchCreateJobCustomAttributes {
           String requisitionId)
           throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
 
       // Custom attribute can be string or numeric value, and can be filtered in search queries.
       // https://cloud.google.com/talent-solution/job-search/docs/custom-attributes

@@ -25,8 +25,6 @@ import com.google.cloud.talent.v4beta1.RequestMetadata;
 import com.google.cloud.talent.v4beta1.SearchJobsRequest;
 import com.google.cloud.talent.v4beta1.SearchJobsResponse;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 
 public class HistogramSearchJobs {
@@ -43,7 +41,7 @@ public class HistogramSearchJobs {
   public static void searchJobs(String projectId, String tenantId, String query)
       throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
 
       String domain = "http://www.jobUrl.com";
       String sessionId = "Hashed session identifier";

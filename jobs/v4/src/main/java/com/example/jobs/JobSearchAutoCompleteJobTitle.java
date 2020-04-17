@@ -22,8 +22,6 @@ import com.google.cloud.talent.v4beta1.CompleteQueryRequest;
 import com.google.cloud.talent.v4beta1.CompleteQueryResponse;
 import com.google.cloud.talent.v4beta1.CompletionClient;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 
 public class JobSearchAutoCompleteJobTitle {
@@ -40,7 +38,7 @@ public class JobSearchAutoCompleteJobTitle {
   public static void completeQuery(String projectId, String tenantId, String query)
       throws IOException {
     try (CompletionClient completionClient = CompletionClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
       CompleteQueryRequest request =
           CompleteQueryRequest.newBuilder()
               .setParent(parent.toString())

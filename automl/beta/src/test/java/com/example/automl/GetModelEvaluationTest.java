@@ -23,11 +23,9 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ListModelEvaluationsRequest;
 import com.google.cloud.automl.v1.ModelEvaluation;
 import com.google.cloud.automl.v1.ModelName;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

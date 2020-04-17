@@ -17,7 +17,6 @@
 package com.example.endpoints.message;
 
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
 
 /** Translates between v1 external and internal representations of a message. */

@@ -28,7 +28,7 @@ function runtests () {
 # Jenkins provides values for GOOGLE_PROJECT_ID and GOOGLE_VERSION_ID
 
 # Test with Maven
-mvn clean appengine:deploy \
+mvn clean package appengine:deploy \
     -Dapp.deploy.version="${GOOGLE_VERSION_ID}" \
     -Dapp.deploy.promote=false
 

@@ -19,8 +19,13 @@ package snippets.healthcare;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,7 +33,6 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,6 +53,7 @@ import snippets.healthcare.fhir.resources.FhirResourceGet;
 import snippets.healthcare.fhir.resources.FhirResourceGetHistory;
 import snippets.healthcare.fhir.resources.FhirResourceGetMetadata;
 import snippets.healthcare.fhir.resources.FhirResourceGetPatientEverything;
+import snippets.healthcare.fhir.resources.FhirResourceListHistory;
 import snippets.healthcare.fhir.resources.FhirResourcePatch;
 import snippets.healthcare.fhir.resources.FhirResourceSearch;
 import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
@@ -57,6 +62,7 @@ import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
 public class FhirResourceTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
+  private static final Gson gson = new Gson();
 
   private static String fhirStoreName;
   private static String datasetName;
@@ -158,25 +164,32 @@ public class FhirResourceTests {
   }
 
   @Test
-  @Ignore("b/135536409")
   public void test_FhirResourcePatch() throws Exception {
-    FhirResourcePatch.fhirResourcePatch(
-        fhirResourceName,
-        "[{\"op\": \"add\", \"path\": \"/active\", \"value\": false}]");
+    JsonObject json = new JsonObject();
+    json.add("op", new JsonPrimitive("add"));
+    json.add("path", new JsonPrimitive("/active"));
+    json.add("value", new JsonPrimitive(false));
+    JsonArray jarray = new JsonArray();
+    jarray.add(json);
+    FhirResourcePatch.fhirResourcePatch(fhirResourceName, jarray.toString());
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource patched:"));
   }
 
-  // TODO(b/139283693): Add conditions to conditional FHIR methods.
   @Test
-  @Ignore
   public void test_FhirResourceConditionalPatch() throws Exception {
+    JsonObject json = new JsonObject();
+    json.add("op", new JsonPrimitive("add"));
+    json.add("path", new JsonPrimitive("/active"));
+    json.add("value", new JsonPrimitive(true));
+    JsonArray jarray = new JsonArray();
+    jarray.add(json);
     FhirResourceConditionalPatch.fhirResourceConditionalPatch(
         fhirStoreName,
         patientType,
         fhirResourceId,
-        "[{\"op\": \"add\", \"path\": \"/active\", \"value\": true}]");
+        jarray.toString());
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource conditionally patched:"));
@@ -186,16 +199,19 @@ public class FhirResourceTests {
   @Test
   @Ignore
   public void test_FhirResourceConditionalUpdate() throws Exception {
+    JsonObject json = new JsonObject();
+    json.add("resourceType", new JsonPrimitive(patientType));
+    json.add("id", new JsonPrimitive(fhirResourceId));
+    json.add("active", new JsonPrimitive(true));
+    JsonArray jarray = new JsonArray();
+    jarray.add(json);
     FhirResourceConditionalUpdate.fhirResourceConditionalUpdate(
         fhirStoreName,
         patientType,
-        String.format(
-            "{\"resourceType\": \"%s\", \"active\": true, \"id\": \"%s\"}",
-            patientType,
-            fhirResourceId));
+        jarray.toString());
 
     String output = bout.toString();
-    assertThat(output, containsString(String.format("FHIR resource conditionally replaced:")));
+    assertThat(output, containsString("FHIR resource conditionally replaced:"));
   }
 
   @Test
@@ -232,20 +248,48 @@ public class FhirResourceTests {
 
   @Test
   public void test_FhirResourceGetHistory() throws Exception {
-    FhirResourcePatch.fhirResourcePatch(
-        fhirResourceName,
-        "[{\"op\": \"add\", \"path\": \"/active\", \"value\": false}]");
-    FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName);
+    JsonObject json = new JsonObject();
+    json.add("op", new JsonPrimitive("add"));
+    json.add("path", new JsonPrimitive("/active"));
+    json.add("value", new JsonPrimitive(false));
+    JsonArray jarray = new JsonArray();
+    jarray.add(json);
+    FhirResourcePatch.fhirResourcePatch(fhirResourceName, jarray.toString());
+    // Get versionId from results of fhirResourcePatch.
+    String versionId;
+    Matcher idMatcher = Pattern.compile("\"versionId\": \"(.*)\"").matcher(bout.toString());
+    assertTrue(idMatcher.find());
+    versionId = idMatcher.group(1);
+    FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName, versionId);
 
     String output = bout.toString();
+    assertThat(output, containsString("FHIR resource history list retrieved:"));
+  }
+
+  @Test
+  public void test_FhirResourceListHistory() throws Exception {
+    JsonObject json = new JsonObject();
+    json.add("op", new JsonPrimitive("add"));
+    json.add("path", new JsonPrimitive("/active"));
+    json.add("value", new JsonPrimitive(false));
+    JsonArray jarray = new JsonArray();
+    jarray.add(json);
+    FhirResourcePatch.fhirResourcePatch(fhirResourceName, jarray.toString());
+    FhirResourceListHistory.fhirResourceListHistory(fhirResourceName);
+    String output = bout.toString();
+
     assertThat(output, containsString("FHIR resource history retrieved:"));
   }
 
   @Test
   public void test_DeletePurgeFhirResource() throws Exception {
-    FhirResourcePatch.fhirResourcePatch(
-        fhirResourceName,
-        "[{\"op\": \"add\", \"path\": \"/active\", \"value\": false}]");
+    JsonObject json = new JsonObject();
+    json.add("op", new JsonPrimitive("add"));
+    json.add("path", new JsonPrimitive("/active"));
+    json.add("value", new JsonPrimitive(false));
+    JsonArray jarray = new JsonArray();
+    jarray.add(json);
+    FhirResourcePatch.fhirResourcePatch(fhirResourceName, jarray.toString());
     FhirResourceDelete.fhirResourceDelete(fhirResourceName);
     FhirResourceDeletePurge.fhirResourceDeletePurge(fhirResourceName);
 

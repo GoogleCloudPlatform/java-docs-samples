@@ -22,8 +22,6 @@ import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +47,7 @@ public class JobSearchCreateJob {
       String jobApplicationUrl)
       throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
       Job.ApplicationInfo applicationInfo =
           Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
 

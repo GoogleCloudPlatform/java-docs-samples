@@ -17,11 +17,8 @@
 package com.example.trace;
 
 import com.google.common.base.Strings;
-
 import io.opencensus.exporter.trace.stackdriver.StackdriverTraceExporter;
-
 import java.io.IOException;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,9 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for stackdriver tracing sample.
- */
+/** Tests for stackdriver tracing sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TraceSampleIT {

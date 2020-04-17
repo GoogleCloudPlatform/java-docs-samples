@@ -20,9 +20,7 @@ package com.example.jobs;
 
 import com.google.cloud.talent.v4beta1.CompanyName;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
-import com.google.cloud.talent.v4beta1.CompanyWithTenantName;
 import com.google.cloud.talent.v4beta1.DeleteCompanyRequest;
-
 import java.io.IOException;
 
 public class JobSearchDeleteCompany {
@@ -39,7 +37,7 @@ public class JobSearchDeleteCompany {
   public static void deleteCompany(String projectId, String tenantId, String companyId)
       throws IOException {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
-      CompanyName name = CompanyWithTenantName.of(projectId, tenantId, companyId);
+      CompanyName name = CompanyName.ofProjectTenantCompanyName(projectId, tenantId, companyId);
 
       DeleteCompanyRequest request =
           DeleteCompanyRequest.newBuilder().setName(name.toString()).build();

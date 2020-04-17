@@ -23,9 +23,7 @@ import com.google.cloud.talent.v4beta1.CreateClientEventRequest;
 import com.google.cloud.talent.v4beta1.EventServiceClient;
 import com.google.cloud.talent.v4beta1.JobEvent;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +43,7 @@ public class JobSearchCreateClientEvent {
   public static void createClientEvent(
       String projectId, String tenantId, String requestId, String eventId) throws IOException {
     try (EventServiceClient eventServiceClient = EventServiceClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
 
       // The timestamp of the event as seconds of UTC time since Unix epoch
       // For more information on how to create google.protobuf.Timestamps

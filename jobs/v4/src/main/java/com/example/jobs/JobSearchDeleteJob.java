@@ -21,8 +21,6 @@ package com.example.jobs;
 import com.google.cloud.talent.v4beta1.DeleteJobRequest;
 import com.google.cloud.talent.v4beta1.JobName;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
-import com.google.cloud.talent.v4beta1.JobWithTenantName;
-
 import java.io.IOException;
 
 public class JobSearchDeleteJob {
@@ -38,7 +36,7 @@ public class JobSearchDeleteJob {
   // Delete Job.
   public static void deleteJob(String projectId, String tenantId, String jobId) throws IOException {
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      JobName name = JobWithTenantName.of(projectId, tenantId, jobId);
+      JobName name = JobName.ofProjectTenantJobName(projectId, tenantId, jobId);
 
       DeleteJobRequest request = DeleteJobRequest.newBuilder().setName(name.toString()).build();
 

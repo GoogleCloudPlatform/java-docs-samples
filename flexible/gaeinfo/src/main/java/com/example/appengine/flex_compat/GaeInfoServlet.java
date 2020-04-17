@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-//CHECKSTYLE OFF: PackageName
+// CHECKSTYLE OFF: PackageName
 
-package com.example.appengine.flex_compat;
+package com.example.appengine.flexcompat;
 
-//CHECKSTYLE ON: PackageName
+// CHECKSTYLE ON: PackageName
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import java.io.IOException;
-import java.lang.Exception;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
@@ -46,55 +45,56 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-
 @SuppressWarnings({"serial"})
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "GAEInfo", description = "GAEInfo: Write info about GAE Standard",
+@WebServlet(
+    name = "GAEInfo",
+    description = "GAEInfo: Write info about GAE Standard",
     urlPatterns = "/gaeinfo")
 public class GaeInfoServlet extends HttpServlet {
 
   private final String[] metaPath = {
-      "/computeMetadata/v1/project/numeric-project-id", //  (pending)
-      "/computeMetadata/v1/project/project-id",
-      "/computeMetadata/v1/instance/zone",
-      "/computeMetadata/v1/instance/service-accounts/default/aliases",
-      "/computeMetadata/v1/instance/service-accounts/default/",
-      "/computeMetadata/v1/instance/service-accounts/default/scopes",
-      // Tokens work - but are a security risk to display
-      //      "/computeMetadata/v1/instance/service-accounts/default/token"
+    "/computeMetadata/v1/project/numeric-project-id", //  (pending)
+    "/computeMetadata/v1/project/project-id",
+    "/computeMetadata/v1/instance/zone",
+    "/computeMetadata/v1/instance/service-accounts/default/aliases",
+    "/computeMetadata/v1/instance/service-accounts/default/",
+    "/computeMetadata/v1/instance/service-accounts/default/scopes",
+    // Tokens work - but are a security risk to display
+    //      "/computeMetadata/v1/instance/service-accounts/default/token"
   };
 
   final String[] metaServiceAcct = {
-      "/computeMetadata/v1/instance/service-accounts/{account}/aliases",
-      "/computeMetadata/v1/instance/service-accounts/{account}/email",
-      "/computeMetadata/v1/instance/service-accounts/{account}/scopes",
-      // Tokens work - but are a security risk to display
-      //     "/computeMetadata/v1/instance/service-accounts/{account}/token"
+    "/computeMetadata/v1/instance/service-accounts/{account}/aliases",
+    "/computeMetadata/v1/instance/service-accounts/{account}/email",
+    "/computeMetadata/v1/instance/service-accounts/{account}/scopes",
+    // Tokens work - but are a security risk to display
+    //     "/computeMetadata/v1/instance/service-accounts/{account}/token"
   };
 
   private final String metadata = "http://metadata.google.internal";
   private TemplateEngine templateEngine;
 
   // Use OkHttp from Square as it's quite easy to use for simple fetches.
-  private final OkHttpClient ok = new OkHttpClient.Builder()
-      .readTimeout(500, TimeUnit.MILLISECONDS)  // Don't dawdle
-      .writeTimeout(500, TimeUnit.MILLISECONDS)
-      .build();
+  private final OkHttpClient ok =
+      new OkHttpClient.Builder()
+          .readTimeout(500, TimeUnit.MILLISECONDS) // Don't dawdle
+          .writeTimeout(500, TimeUnit.MILLISECONDS)
+          .build();
 
   // Setup to pretty print returned json
-  private final Gson gson = new GsonBuilder()
-      .setPrettyPrinting()
-      .create();
+  private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
   private final JsonParser jp = new JsonParser();
 
   // Fetch Metadata
   String fetchMetadata(String key) throws IOException {
     try {
-      Request request = new Request.Builder()
-          .url(metadata + key)
-          .addHeader("Metadata-Flavor", "Google")
-          .get()
-          .build();
+      Request request =
+          new Request.Builder()
+              .url(metadata + key)
+              .addHeader("Metadata-Flavor", "Google")
+              .get()
+              .build();
 
       Response response = ok.newCall(request).execute();
       return response.body().string();
@@ -107,11 +107,12 @@ public class GaeInfoServlet extends HttpServlet {
   String fetchJsonMetadata(String prefix) throws IOException {
     String json = "";
     try {
-      Request request = new Request.Builder()
-          .url(metadata + prefix)
-          .addHeader("Metadata-Flavor", "Google")
-          .get()
-          .build();
+      Request request =
+          new Request.Builder()
+              .url(metadata + prefix)
+              .addHeader("Metadata-Flavor", "Google")
+              .get()
+              .build();
 
       Response response = ok.newCall(request).execute();
       // Convert json to prety json
@@ -140,7 +141,6 @@ public class GaeInfoServlet extends HttpServlet {
     templateEngine = new TemplateEngine();
     templateEngine.setTemplateResolver(templateResolver);
   }
-
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -223,7 +223,8 @@ public class GaeInfoServlet extends HttpServlet {
       ctx.setVariable("sam", m.descendingMap());
 
       // Recursivly get all info about service accounts -- Note tokens are leftout by default.
-      ctx.setVariable("rsa",
+      ctx.setVariable(
+          "rsa",
           fetchJsonMetadata("/computeMetadata/v1/instance/service-accounts/?recursive=true"));
       // Recursivly get all data on Metadata server.
       ctx.setVariable("ram", fetchJsonMetadata("/?recursive=true"));

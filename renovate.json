@@ -18,6 +18,10 @@
     {
       "packagePatterns": [ "^io.opencensus:" ],
       "groupName": "OpenCensus packages"
+    },
+    {
+      "packagePatterns": [ "^org.eclipse.jetty:" ],
+      "groupName": "Jetty packages"
     }
   ],
   "labels": [

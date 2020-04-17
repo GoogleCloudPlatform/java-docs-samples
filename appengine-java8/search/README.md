@@ -18,7 +18,7 @@ detailed instructions.
     $ mvn appengine:run
 
 ## Deploying
-    $ mvn appengine:deploy
+    $ mvn clean package appengine:deploy
     
 ## URI's
 

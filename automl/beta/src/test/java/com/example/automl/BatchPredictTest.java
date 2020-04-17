@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -69,15 +68,13 @@ public class BatchPredictTest {
     // As batch prediction can take a long time. Try to batch predict on a model and confirm that
     // the model was not found, but other elements of the request were valid.
     try {
-      String inputUri = String.format("gs://%s/entity-extraction/input.jsonl", BUCKET_ID);
+      String inputUri = String.format("gs://%s/entity-extraction/input.csv", BUCKET_ID);
       String outputUri = String.format("gs://%s/TEST_BATCH_PREDICT/", BUCKET_ID);
       BatchPredict.batchPredict(PROJECT_ID, MODEL_ID, inputUri, outputUri);
       String got = bout.toString();
-      assertThat(got)
-          .contains("does not exist");
+      assertThat(got).contains("does not exist");
     } catch (IOException | ExecutionException | InterruptedException e) {
-      assertThat(e.getMessage())
-          .contains("does not exist");
+      assertThat(e.getMessage()).contains("does not exist");
     }
   }
 }

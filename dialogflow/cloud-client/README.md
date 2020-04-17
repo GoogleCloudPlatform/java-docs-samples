@@ -37,7 +37,6 @@ To get started, [download][maven-download] and [install][maven-install] it.
     ```
 * Set PROJECT_ID in pom.xml to your Google Cloud Project Id.
 * Set SESSION_ID in pom.xml to a session name of your choice. (Defaults to SESSION_ID)
-* Set CONTEXT_ID in pom.xml to a context name of your choice. (Defaults to CONTEXT_ID)
 
 [cloud-console]: https://console.cloud.google.com
 [dialogflow-api]: https://console.cloud.google.com/apis/library/dialogflow.googleapis.com
