@@ -48,6 +48,7 @@ class EditorControllerTests {
             content()
                 .string(
                     containsString(
-                        "This UI allows a user to write Markdown text and preview the rendered HTML.")));
+                        "This UI allows a user to write Markdown text and "
+                        + "preview the rendered HTML.")));
   }
 }

@@ -14,6 +14,29 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 * **Thymeleaf** Java template engine.
 * **Jib**: Container build tool.
 
+## Build the Container Image
+
+1. Update `PROJECT_ID` in both `pom.xml` files with your GCP Project Id:
+
+  ```
+  <plugin>
+    <groupId>com.google.cloud.tools</groupId>
+    <artifactId>jib-maven-plugin</artifactId>
+    <version>2.1.0</version>
+    <configuration>
+      <to>
+        <image>gcr.io/PROJECT_ID/renderer</image>
+      </to>
+    </configuration>
+  </plugin>
+  ```
+1. Use the `Jib Maven Plugin` to build and push your image to the Google
+  Container Registry:
+
+  ```
+  mvn compile jib:build
+  ```
+
 ## Environment Variables
 
 Cloud Run services can be [configured with Environment Variables](https://cloud.google.com/run/docs/configuring/environment-variables).

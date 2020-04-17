@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = RendererApplication.class)
 @WebMvcTest(MarkdownController.class)
-class RenderControllerTests {
+class RendererApplicationTests {
 
   @Autowired private MockMvc mockMvc;
 

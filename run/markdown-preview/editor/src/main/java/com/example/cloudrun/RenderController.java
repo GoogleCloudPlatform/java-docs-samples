@@ -42,7 +42,8 @@ public class RenderController {
     String url = System.getenv("EDITOR_UPSTREAM_RENDER_URL");
     if (url == null) {
       logger.error(
-          "No configuration for upstream render service: add EDITOR_UPSTREAM_RENDER_URL environment variable");
+          "No configuration for upstream render service: "
+          + "add EDITOR_UPSTREAM_RENDER_URL environment variable");
       throw new IllegalStateException();
     }
 

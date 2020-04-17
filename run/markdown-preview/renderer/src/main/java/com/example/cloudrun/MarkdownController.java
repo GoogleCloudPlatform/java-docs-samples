@@ -53,8 +53,8 @@ public class MarkdownController {
             .and(Sanitizers.LINKS)
             .and(Sanitizers.IMAGES)
             .and(Sanitizers.TABLES);
-    String safeHTML = policy.sanitize(converted);
+    String safeHtml = policy.sanitize(converted);
 
-    return safeHTML;
+    return safeHtml;
   }
 }
