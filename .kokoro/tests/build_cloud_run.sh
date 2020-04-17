@@ -41,6 +41,8 @@ export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
 SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
 export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
+# Remove "/" from the Cloud Run service name
+export SERVICE_NAME="${SERVICE_NAME//\//$'-'}"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 export SPECIAL_BASE_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/imagemagick"
 BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
