@@ -16,4 +16,4 @@ send emails from a verified sender you own.
 
 ## Deploying
 1. Edit the environment variables in the app.yaml with the appropriate Mailjet values.
-    $ mvn clean appengine:deploy
+    $ mvn clean package appengine:deploy

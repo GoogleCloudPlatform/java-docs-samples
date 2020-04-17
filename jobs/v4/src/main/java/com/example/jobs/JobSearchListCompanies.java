@@ -22,8 +22,6 @@ import com.google.cloud.talent.v4beta1.Company;
 import com.google.cloud.talent.v4beta1.CompanyServiceClient;
 import com.google.cloud.talent.v4beta1.ListCompaniesRequest;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantOrProjectName;
-
 import java.io.IOException;
 
 public class JobSearchListCompanies {
@@ -38,7 +36,7 @@ public class JobSearchListCompanies {
   // List Companies.
   public static void listCompanies(String projectId, String tenantId) throws IOException {
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
-      TenantOrProjectName parent = TenantName.of(projectId, tenantId);
+      TenantName parent = TenantName.of(projectId, tenantId);
 
       ListCompaniesRequest request =
           ListCompaniesRequest.newBuilder().setParent(parent.toString()).build();

@@ -32,13 +32,11 @@ import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.PredictResponse;
 import com.google.cloud.automl.v1beta1.PredictionServiceClient;
 import com.google.protobuf.ByteString;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;

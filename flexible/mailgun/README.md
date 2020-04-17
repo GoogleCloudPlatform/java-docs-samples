@@ -23,4 +23,4 @@ will need to set environment variables before starting your application:
 ## Deployment
 update values above in your `src/main/appengine/app.yaml`
 
-    $ mvn clean appengine:deploy
+    $ mvn clean package appengine:deploy

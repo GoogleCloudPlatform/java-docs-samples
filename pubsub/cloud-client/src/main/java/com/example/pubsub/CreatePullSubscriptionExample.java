@@ -48,8 +48,8 @@ public class CreatePullSubscriptionExample {
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
 
     // Create a new subscription
-    ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
-        projectId, subscriptionId);
+    ProjectSubscriptionName subscriptionName =
+        ProjectSubscriptionName.of(projectId, subscriptionId);
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       // create a pull subscription with default acknowledgement deadline (= 10 seconds)
       Subscription subscription =
@@ -63,7 +63,6 @@ public class CreatePullSubscriptionExample {
       System.out.print(e.getStatusCode().getCode());
       System.out.print(e.isRetryable());
     }
-
   }
 }
 // [END pubsub_quickstart_create_subscription]

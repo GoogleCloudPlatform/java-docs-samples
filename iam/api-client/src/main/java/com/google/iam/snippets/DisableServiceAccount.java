@@ -22,7 +22,6 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.DisableServiceAccountRequest;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -32,8 +31,8 @@ public class DisableServiceAccount {
   // Disables a service account.
   public static void disableServiceAccount(String projectId) {
     // String projectId = "my-project-id";
-    
-    Iam service = null; 
+
+    Iam service = null;
     try {
       service = initService();
     } catch (IOException | GeneralSecurityException e) {
@@ -42,7 +41,7 @@ public class DisableServiceAccount {
     }
 
     try {
-      DisableServiceAccountRequest request = new DisableServiceAccountRequest(); 
+      DisableServiceAccountRequest request = new DisableServiceAccountRequest();
       service
           .projects()
           .serviceAccounts()

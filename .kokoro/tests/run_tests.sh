@@ -158,8 +158,15 @@ for file in **/pom.xml; do
         continue
     fi
 
+    # Skip tests with the kokoro.skipTests property defined in pom.xml
+    SKIP_TESTS=$(mvn -q -DforceStdout help:evaluate -Dexpression=kokoro.skipTests || grep -i true)
+    if [[ -z $? ]]; then
+        echo -e "\n Skipping tests: kokoro.skipTests set to 'true' in pom.xml\n"
+        continue
+    fi
+
     # Use maven to execute the tests for the project.
-    mvn -q --batch-mode --fail-at-end clean verify \
+    mvn -P lint -q --batch-mode --fail-at-end clean verify \
        -Dfile.encoding="UTF-8" \
        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
        -Dmaven.test.redirectTestOutputToFile=true \

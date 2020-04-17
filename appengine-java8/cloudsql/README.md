@@ -1,51 +1,10 @@
-# Cloud SQL sample for Google App Engine
+# Cloud SQL sample for Google App Engine (Java 8)
 
-<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java8/cloudsql/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+For instructions on using Google App Engine and Cloud SQL, please see 
+[Connecting to Cloud SQL from App Engine][0].
 
+For a complete example of a web application connecting to Cloud SQL,
+check out the sample applications listed under the [Cloud SQL samples][1].
 
-This sample demonstrates how to use [Cloud SQL](https://cloud.google.com/cloudsql/) on Google App
-Engine standard Java 8
-
-## Setup
-
-* If you haven't already, Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
-
-    `gcloud init`
-
-* If you haven't already, Create an App Engine app within the current Google Cloud Project
-
-    `gcloud app create`
-
-* If you haven't already, Setup
-[Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
-
-    `gcloud auth application-default login`
-
-
-* [Create an instance](https://cloud.google.com/sql/docs/mysql/create-instance)
-
-* [Create a Database](https://cloud.google.com/sql/docs/mysql/create-manage-databases)
-
-* [Create a user](https://cloud.google.com/sql/docs/mysql/create-manage-users)
-
-* Note the **Instance connection name** under Overview > properties
-
-## Running locally
-
-```bash
-$ mvn clean appengine:run -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root -Dpassword=myPassword -Ddatabase=myDatabase
-```
-
-## Deploying
-
-```bash
-$ mvn clean appengine:deploy -DINSTANCE_CONNECTION_NAME=instanceConnectionName -Duser=root
--Dpassword=myPassword -Ddatabase=myDatabase
-```
-
-
-## Cleaning up
-
-* [Delete your Instance](https://cloud.google.com/sql/docs/mysql/delete-instance)
-
+[0]: https://cloud.google.com/sql/docs/mysql/connect-app-engine#java
+[1]: ../../cloud-sql/

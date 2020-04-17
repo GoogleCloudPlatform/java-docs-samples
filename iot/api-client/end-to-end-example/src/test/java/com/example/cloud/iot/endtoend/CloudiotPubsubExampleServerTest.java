@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.GeneralSecurityException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;

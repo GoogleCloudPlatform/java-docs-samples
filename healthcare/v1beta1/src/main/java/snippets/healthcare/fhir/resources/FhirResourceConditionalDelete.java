@@ -18,7 +18,6 @@ package snippets.healthcare.fhir.resources;
 
 // [START healthcare_conditional_delete_resource]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;

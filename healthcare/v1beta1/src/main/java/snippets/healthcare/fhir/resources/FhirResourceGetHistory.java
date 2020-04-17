@@ -18,18 +18,15 @@ package snippets.healthcare.fhir.resources;
 
 // [START healthcare_get_resource_history]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcare;
 import com.google.api.services.healthcare.v1beta1.CloudHealthcareScopes;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -44,18 +41,19 @@ public class FhirResourceGetHistory {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceGetHistory(String resourceName)
+  public static void fhirResourceGetHistory(String resourceName, String versionId)
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
+    // String versionId = "version-uuid"
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     HttpClient httpClient = HttpClients.createDefault();
     String uri = String.format(
-        "%sv1beta1/%s/_history", client.getRootUrl(), resourceName);
+        "%sv1beta1/%s/_history/%s", client.getRootUrl(), resourceName, versionId);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
 
@@ -76,7 +74,7 @@ public class FhirResourceGetHistory {
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.println("FHIR resource history retrieved: ");
+    System.out.println("FHIR resource history list retrieved: ");
     responseEntity.writeTo(System.out);
   }
 
@@ -91,8 +89,8 @@ public class FhirResourceGetHistory {
     HttpRequestInitializer requestInitializer =
         request -> {
           credential.initialize(request);
-          request.setConnectTimeout(60000); // 1 minute connect timeout
-          request.setReadTimeout(60000); // 1 minute read timeout
+          request.setConnectTimeout(1 * 60 * 1000); // 1 minute connect timeout
+          request.setReadTimeout(1 * 60 * 1000); // 1 minute read timeout
         };
 
     // Build the client for interacting with the service.

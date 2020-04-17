@@ -19,13 +19,11 @@ package com.example.appengine.memcache;
 import com.google.appengine.api.memcache.AsyncMemcacheService;
 import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,13 +32,15 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "MemcacheAsync", description = "Memcache: Async Access",
+@WebServlet(
+    name = "MemcacheAsync",
+    description = "Memcache: Async Access",
     urlPatterns = "/memcache/async")
 public class MemcacheAsyncCacheServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
       return; // ignore the request for favicon.ico

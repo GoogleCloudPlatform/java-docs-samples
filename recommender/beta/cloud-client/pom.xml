@@ -23,7 +23,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.15</version>
   </parent>
 
   <properties>
@@ -39,7 +39,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>3.4.0</version>
+        <version>4.4.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -50,13 +50,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-recommender</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.1</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-cloud-recommender-v1beta1</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.1</version>
     </dependency>
     <!-- [END recommender_java_dependencies] -->
 
@@ -70,7 +70,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
     <!-- [START recommender_java_dependencies] -->

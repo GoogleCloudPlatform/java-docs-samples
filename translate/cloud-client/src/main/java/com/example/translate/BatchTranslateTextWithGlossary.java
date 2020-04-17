@@ -29,7 +29,6 @@ import com.google.cloud.translate.v3.LocationName;
 import com.google.cloud.translate.v3.OutputConfig;
 import com.google.cloud.translate.v3.TranslateTextGlossaryConfig;
 import com.google.cloud.translate.v3.TranslationServiceClient;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -104,7 +103,7 @@ public class BatchTranslateTextWithGlossary {
           client.batchTranslateTextAsync(request);
 
       System.out.println("Waiting for operation to complete...");
-      BatchTranslateResponse response = future.get(120, TimeUnit.SECONDS);
+      BatchTranslateResponse response = future.get(180, TimeUnit.SECONDS);
       // Display the translation for each input text provided
       System.out.printf("Total Characters: %s\n", response.getTotalCharacters());
       System.out.printf("Translated Characters: %s\n", response.getTranslatedCharacters());

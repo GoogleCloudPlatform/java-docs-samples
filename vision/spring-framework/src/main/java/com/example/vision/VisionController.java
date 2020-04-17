@@ -31,24 +31,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Code sample demonstrating Cloud Vision usage within the context of Spring Framework using
- * Spring Cloud GCP libraries. The sample is written as a Spring Boot application to demonstrate
- * a practical application of this usage.
+ * Code sample demonstrating Cloud Vision usage within the context of Spring Framework using Spring
+ * Cloud GCP libraries. The sample is written as a Spring Boot application to demonstrate a
+ * practical application of this usage.
  */
 @RestController
 public class VisionController {
 
-  @Autowired
-  private ResourceLoader resourceLoader;
+  @Autowired private ResourceLoader resourceLoader;
 
   // [START spring_vision_autowire]
-  @Autowired
-  private CloudVisionTemplate cloudVisionTemplate;
+  @Autowired private CloudVisionTemplate cloudVisionTemplate;
   // [END spring_vision_autowire]
 
   /**
-   * This method downloads an image from a URL and sends its contents
-   * to the Vision API for label detection.
+   * This method downloads an image from a URL and sends its contents to the Vision API for label
+   * detection.
    *
    * @param imageUrl the URL of the image
    * @param map the model map to use
@@ -56,12 +54,14 @@ public class VisionController {
    */
   @GetMapping("/extractLabels")
   public ModelAndView extractLabels(String imageUrl, ModelMap map) {
-    //[START spring_vision_image_labelling]
-    AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
-        this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
+    // [START spring_vision_image_labelling]
+    AnnotateImageResponse response =
+        this.cloudVisionTemplate.analyzeImage(
+            this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
 
     Map<String, Float> imageLabels =
-        response.getLabelAnnotationsList()
+        response
+            .getLabelAnnotationsList()
             .stream()
             .collect(
                 Collectors.toMap(
@@ -71,7 +71,7 @@ public class VisionController {
                       throw new IllegalStateException(String.format("Duplicate key %s", u));
                     },
                     LinkedHashMap::new));
-    //[END spring_vision_image_labelling]
+    // [END spring_vision_image_labelling]
 
     map.addAttribute("annotations", imageLabels);
     map.addAttribute("imageUrl", imageUrl);
@@ -81,10 +81,10 @@ public class VisionController {
 
   @GetMapping("/extractText")
   public String extractText(String imageUrl) {
-    //[START spring_vision_text_extraction]
-    String textFromImage = this.cloudVisionTemplate.extractTextFromImage(
-        this.resourceLoader.getResource(imageUrl));
+    // [START spring_vision_text_extraction]
+    String textFromImage =
+        this.cloudVisionTemplate.extractTextFromImage(this.resourceLoader.getResource(imageUrl));
     return "Text from image: " + textFromImage;
-    //[END spring_vision_text_extraction]
+    // [END spring_vision_text_extraction]
   }
 }

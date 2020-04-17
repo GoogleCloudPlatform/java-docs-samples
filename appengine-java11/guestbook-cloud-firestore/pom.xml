@@ -26,7 +26,7 @@
   <parent>
       <groupId>com.google.cloud.samples</groupId>
       <artifactId>shared-configuration</artifactId>
-      <version>1.0.12</version>
+      <version>1.0.15</version>
   </parent>
 
   <properties>
@@ -45,7 +45,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>3.4.0</version>
+        <version>4.4.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>28.2-jre</version>
+      <version>29.0-jre</version>
     </dependency>
 
     <dependency>
@@ -104,7 +104,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.27.v20200227</version>
+        <version>9.4.28.v20200408</version>
       </plugin>
 
       <plugin>

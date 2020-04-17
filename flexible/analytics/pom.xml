@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.11</version>
+    <version>1.0.15</version>
   </parent>
 
   <properties>
@@ -35,7 +35,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
 
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
-    <jetty>9.4.27.v20200227</jetty>
+    <jetty>9.4.28.v20200408</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
 
@@ -62,6 +62,8 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${appengine.maven.plugin}</version>
         <configuration>
+          <projectId>GCLOUD_CONFIG</projectId>
+          <version>GCLOUD_CONFIG</version>
         </configuration>
       </plugin>
 

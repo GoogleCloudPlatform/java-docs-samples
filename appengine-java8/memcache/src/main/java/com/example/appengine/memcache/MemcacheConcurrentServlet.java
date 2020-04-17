@@ -19,10 +19,8 @@ package com.example.appengine.memcache;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
-
 import java.io.IOException;
 import java.math.BigInteger;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,13 +30,15 @@ import javax.servlet.http.HttpServletResponse;
 // [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
-@WebServlet(name = "MemcacheConcurrent", description = "Memcache: Concurrent",
+@WebServlet(
+    name = "MemcacheConcurrent",
+    description = "Memcache: Concurrent",
     urlPatterns = "/memcache/concurrent")
 public class MemcacheConcurrentServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     String path = req.getRequestURI();
     if (path.startsWith("/favicon.ico")) {
       return; // ignore the request for favicon.ico
@@ -51,8 +51,9 @@ public class MemcacheConcurrentServlet extends HttpServlet {
     // Write this value to cache using getIdentifiable and putIfUntouched.
     for (long delayMs = 1; delayMs < 1000; delayMs *= 2) {
       IdentifiableValue oldValue = syncCache.getIdentifiable(key);
-      byte[] newValue = oldValue == null
-          ? BigInteger.valueOf(0).toByteArray()
+      byte[] newValue =
+          oldValue == null
+              ? BigInteger.valueOf(0).toByteArray()
               : increment((byte[]) oldValue.getValue()); // newValue depends on old value
       resp.setContentType("text/plain");
       resp.getWriter().print("Value is " + new BigInteger(newValue).intValue() + "\n");
@@ -77,8 +78,9 @@ public class MemcacheConcurrentServlet extends HttpServlet {
 
   /**
    * Increments an integer stored as a byte array by one.
+   *
    * @param oldValue a byte array with the old value
-   * @return         a byte array as the old value increased by one
+   * @return a byte array as the old value increased by one
    */
   private byte[] increment(byte[] oldValue) {
     long val = new BigInteger(oldValue).intValue();

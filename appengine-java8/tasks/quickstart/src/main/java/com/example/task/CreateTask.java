@@ -24,11 +24,9 @@ import com.google.cloud.tasks.v2.Task;
 import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
-
 import java.nio.charset.Charset;
 import java.time.Clock;
 import java.time.Instant;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -40,47 +38,52 @@ import org.apache.commons.cli.ParseException;
 public class CreateTask {
   private static String GOOGLE_CLOUD_PROJECT_KEY = "GOOGLE_CLOUD_PROJECT";
 
-  private static Option PROJECT_ID_OPTION = Option.builder("pid")
-      .longOpt("project-id")
-      .desc("The Google Cloud Project, if not set as GOOGLE_CLOUD_PROJECT env var.")
-      .hasArg()
-      .argName("project-id")
-      .type(String.class)
-      .build();
+  private static Option PROJECT_ID_OPTION =
+      Option.builder("pid")
+          .longOpt("project-id")
+          .desc("The Google Cloud Project, if not set as GOOGLE_CLOUD_PROJECT env var.")
+          .hasArg()
+          .argName("project-id")
+          .type(String.class)
+          .build();
 
-  private static Option QUEUE_OPTION = Option.builder("q")
-      .required()
-      .longOpt("queue")
-      .desc("The Cloud Tasks queue.")
-      .hasArg()
-      .argName("queue")
-      .type(String.class)
-      .build();
+  private static Option QUEUE_OPTION =
+      Option.builder("q")
+          .required()
+          .longOpt("queue")
+          .desc("The Cloud Tasks queue.")
+          .hasArg()
+          .argName("queue")
+          .type(String.class)
+          .build();
 
-  private static Option LOCATION_OPTION = Option.builder("l")
-      .required()
-      .longOpt("location")
-      .desc("The region in which your queue is running.")
-      .hasArg()
-      .argName("location")
-      .type(String.class)
-      .build();
+  private static Option LOCATION_OPTION =
+      Option.builder("l")
+          .required()
+          .longOpt("location")
+          .desc("The region in which your queue is running.")
+          .hasArg()
+          .argName("location")
+          .type(String.class)
+          .build();
 
-  private static Option PAYLOAD_OPTION = Option.builder("p")
-      .longOpt("payload")
-      .desc("The payload string for the task.")
-      .hasArg()
-      .argName("payload")
-      .type(String.class)
-      .build();
+  private static Option PAYLOAD_OPTION =
+      Option.builder("p")
+          .longOpt("payload")
+          .desc("The payload string for the task.")
+          .hasArg()
+          .argName("payload")
+          .type(String.class)
+          .build();
 
-  private static Option IN_SECONDS_OPTION = Option.builder("s")
-      .longOpt("in-seconds")
-      .desc("Schedule time for the task to create.")
-      .hasArg()
-      .argName("in-seconds")
-      .type(int.class)
-      .build();
+  private static Option IN_SECONDS_OPTION =
+      Option.builder("s")
+          .longOpt("in-seconds")
+          .desc("Schedule time for the task to create.")
+          .hasArg()
+          .argName("in-seconds")
+          .type(int.class)
+          .build();
 
   public static void main(String... args) throws Exception {
     Options options = new Options();
@@ -134,20 +137,21 @@ public class CreateTask {
       String queuePath = QueueName.of(projectId, location, queueName).toString();
 
       // Construct the task body.
-      Task.Builder taskBuilder = Task
-          .newBuilder()
-          .setAppEngineHttpRequest(AppEngineHttpRequest.newBuilder()
-              .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
-              .setRelativeUri("/tasks/create")
-              .setHttpMethod(HttpMethod.POST)
-              .build());
+      Task.Builder taskBuilder =
+          Task.newBuilder()
+              .setAppEngineHttpRequest(
+                  AppEngineHttpRequest.newBuilder()
+                      .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
+                      .setRelativeUri("/tasks/create")
+                      .setHttpMethod(HttpMethod.POST)
+                      .build());
 
       if (params.hasOption(IN_SECONDS_OPTION.getOpt())) {
         // Add the scheduled time to the request.
         int seconds = Integer.parseInt(params.getOptionValue(IN_SECONDS_OPTION.getOpt()));
-        taskBuilder.setScheduleTime(Timestamp
-            .newBuilder()
-            .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));
+        taskBuilder.setScheduleTime(
+            Timestamp.newBuilder()
+                .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));
       }
 
       // Send create task request.
@@ -163,8 +167,9 @@ public class CreateTask {
         "client",
         "A simple Cloud Tasks command line client that creates a task with an "
             + "App Engine endpoint.",
-        options, "", true);
+        options,
+        "",
+        true);
     throw new RuntimeException();
   }
-
 }

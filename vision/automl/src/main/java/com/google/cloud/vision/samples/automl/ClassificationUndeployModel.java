@@ -23,7 +23,6 @@ import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.cloud.automl.v1beta1.UndeployModelRequest;
 import com.google.protobuf.Empty;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -31,7 +30,7 @@ class ClassificationUndeployModel {
 
   // Deploy a model
   static void classificationUndeployModel(String projectId, String modelId)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
 
@@ -45,11 +44,11 @@ class ClassificationUndeployModel {
 
       // Build deploy model request.
       UndeployModelRequest undeployModelRequest =
-              UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
+          UndeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
 
       // Deploy a model with the deploy model request.
       OperationFuture<Empty, OperationMetadata> future =
-              client.undeployModelAsync(undeployModelRequest);
+          client.undeployModelAsync(undeployModelRequest);
 
       future.get();
 

@@ -8,7 +8,7 @@ View the app at [localhost:8080](http://localhost:8080).
 
 To deploy the app to App Engine, run
 
-    mvn clean appengine:deploy
+    mvn clean package appengine:deploy
 
 After the deploy finishes (can take up to 10 minutes), you can view your application at
 `https://YOUR_PROJECT.appspot.com`, where `YOUR_PROJECT` is your Google Cloud project ID. You can

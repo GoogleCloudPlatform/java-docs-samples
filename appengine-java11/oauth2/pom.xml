@@ -30,7 +30,7 @@
     <parent>
       <groupId>com.google.cloud.samples</groupId>
       <artifactId>shared-configuration</artifactId>
-      <version>1.0.12</version>
+      <version>1.0.15</version>
     </parent>
 
     <properties>
@@ -109,7 +109,7 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.27.v20200227</version>
+          <version>9.4.28.v20200408</version>
         </plugin>
 
         <plugin>
