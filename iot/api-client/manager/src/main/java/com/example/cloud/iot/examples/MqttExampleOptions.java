@@ -28,6 +28,7 @@ import org.apache.commons.cli.ParseException;
 
 /** Command line options for the MQTT example. */
 public class MqttExampleOptions {
+  static final Options options = new Options();
   String projectId;
   String registryId;
   String command = "mqtt-demo";
@@ -47,7 +48,6 @@ public class MqttExampleOptions {
 
   /** Construct an MqttExampleOptions class from command line flags. */
   public static @Nullable MqttExampleOptions fromFlags(String ... args) {
-    Options options = new Options();
     Builder builder = Option.builder();
 
     // Required arguments
@@ -216,5 +216,9 @@ public class MqttExampleOptions {
       System.err.println(e.getMessage());
       return null;
     }
+  }
+
+  public String toString() {
+    return options.toString();
   }
 }

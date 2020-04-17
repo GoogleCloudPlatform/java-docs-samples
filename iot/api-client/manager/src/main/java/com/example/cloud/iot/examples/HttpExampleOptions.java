@@ -28,6 +28,7 @@ import org.apache.commons.cli.ParseException;
 
 /** Command line options for the HTTP example. */
 public class HttpExampleOptions {
+  static final Options options = new Options();
   String projectId;
   String registryId;
   String deviceId;
@@ -42,7 +43,6 @@ public class HttpExampleOptions {
 
   /** Construct an HttpExampleOptions class from command line flags. */
   public static @Nullable HttpExampleOptions fromFlags(String ... args) {
-    Options options = new Options();
     Builder builder= Option.builder();
 
     // Required arguments
@@ -166,5 +166,9 @@ public class HttpExampleOptions {
       System.err.println(e.getMessage());
       return null;
     }
+  }
+
+  public String toString() {
+    return options.toString();
   }
 }
