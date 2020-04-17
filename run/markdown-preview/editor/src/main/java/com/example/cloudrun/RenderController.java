@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RenderController {
 
   private static final Logger logger = LoggerFactory.getLogger(RenderController.class);
-
+  // [START run_secure_request_do]
   // '/render' expects a JSON body payload with a 'data' property holding plain text
   // for rendering.
   @PostMapping(value = "/render", consumes = "application/json")
@@ -50,6 +50,7 @@ public class RenderController {
     String html = makeAuthenticatedRequest(url, markdown);
     return html;
   }
+  // [END run_secure_request_do]
 
   // Instantiate OkHttpClient
   private static final OkHttpClient ok =
@@ -58,6 +59,7 @@ public class RenderController {
           .writeTimeout(500, TimeUnit.MILLISECONDS)
           .build();
 
+  // [START run_secure_request]
   public String makeAuthenticatedRequest(String url, String markdown) {
     Request.Builder serviceRequest = new Request.Builder().url(url);
 
@@ -95,4 +97,5 @@ public class RenderController {
 
     return response;
   }
+  // [END run_secure_request]
 }
