@@ -17,6 +17,7 @@
 package com.example.cloudsql;
 
 import java.sql.Timestamp;
+import java.util.Locale;
 
 public class Vote {
 
@@ -24,8 +25,8 @@ public class Vote {
   private Timestamp timeCast;
 
   public Vote(String candidate, Timestamp timeCast) {
-    this.candidate = candidate.toUpperCase();
-    this.timeCast = timeCast;
+    this.candidate = candidate.toUpperCase(Locale.ENGLISH);
+    this.timeCast = new Timestamp(timeCast.getTime());
   }
 
   public String getCandidate() {
@@ -33,15 +34,18 @@ public class Vote {
   }
 
   public void setCandidate(String candidate) {
-    this.candidate = candidate.toUpperCase();
+    this.candidate = candidate.toUpperCase(Locale.ENGLISH);
   }
 
   public Timestamp getTimeCast() {
-    return timeCast;
+    return new Timestamp(timeCast.getTime());
   }
 
   public void setTimeCast(Timestamp timeCast) {
-    this.timeCast = timeCast;
+    this.timeCast = new Timestamp(timeCast.getTime());
   }
 
+  public String toString() {
+    return String.format("Vote(candidate=%s,timeCast=%s)", this.candidate, this.timeCast);
+  }
 }
