@@ -80,9 +80,6 @@ limitations under the License.
                     <c:when test='${vote.getCandidate().equals("SPACES")}'>
                         <i class="material-icons circle blue">space_bar</i>
                     </c:when>
-                    <c:otherwise>
-                        <c:out value='Other: "${vote.getCandidate()}"'/>!!
-                    </c:otherwise>
                 </c:choose>
                 <span class="title">
                     A vote for <b><c:out value="${vote.getCandidate()}"/></b>

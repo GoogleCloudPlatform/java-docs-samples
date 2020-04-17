@@ -59,7 +59,6 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.mysql.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
-    config.addDataSourceProperty("useSSL", "false");
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
