@@ -28,8 +28,8 @@ import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.Writer;
 import java.lang.StringBuilder;
 import java.nio.charset.StandardCharsets;
@@ -475,7 +475,8 @@ public class ManagerIT {
     }
   }
 
-  @Ignore @Test
+  @Ignore
+  @Test
   public void testMqttDeviceCommand() throws Exception {
     final String deviceName = "rsa-device-mqtt-commands";
     topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
@@ -601,7 +602,8 @@ public class ManagerIT {
     }
   }
 
-  @Ignore @Test
+  @Ignore
+  @Test
   public void testGatewayListenForDevice() throws Exception {
     final String gatewayName = "rsa-listen-gateway";
     final String deviceName = "rsa-listen-device";
@@ -653,7 +655,8 @@ public class ManagerIT {
     }
   }
 
-  @Ignore @Test
+  @Ignore
+  @Test
   public void testErrorTopic() throws Exception {
     final String gatewayName = "rsa-listen-gateway-test";
     topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
@@ -700,7 +703,8 @@ public class ManagerIT {
     }
   }
 
-  @Ignore @Test
+  @Ignore
+  @Test
   public void testSendDataForBoundDevice() throws Exception {
     final String gatewayName = "rsa-send-gateway";
     final String deviceName = "rsa-send-device";
