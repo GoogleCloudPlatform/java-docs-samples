@@ -231,7 +231,7 @@ public class HttpExample {
     // Create the corresponding JWT depending on the selected algorithm.
     String token;
     DateTime iat = new DateTime();
-    if ("RSA256".equals(options.algorithm)) {
+    if ("RS256".equals(options.algorithm)) {
       token = createJwtRsa(options.projectId, options.privateKeyFile);
     } else if ("ES256".equals(options.algorithm)) {
       token = createJwtEs(options.projectId, options.privateKeyFile);
