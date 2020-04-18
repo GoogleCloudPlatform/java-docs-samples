@@ -47,7 +47,7 @@ public class DeviceRegistryExampleOptions {
   long version = 0;
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
-  public static @Nullable DeviceRegistryExampleOptions fromFlags(String ... args) {
+  public static @Nullable DeviceRegistryExampleOptions fromFlags(String...args) {
     // Required arguments
     options.addOption(
             Option.builder()

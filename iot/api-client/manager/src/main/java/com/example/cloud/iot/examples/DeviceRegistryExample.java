@@ -51,13 +51,13 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.cli.HelpFormatter;
 /**
@@ -1193,31 +1193,31 @@ public class DeviceRegistryExample {
   }
 
   /** Entry poit for CLI. */
-  protected static void mainCreate(DeviceRegistryExampleOptions options) throws Exception{
+  protected static void mainCreate(DeviceRegistryExampleOptions options) throws Exception {
     if ("create-iot-topic".equals(options.command)) {
-        System.out.println("Create IoT Topic:");
-        createIotTopic(options.projectId, options.pubsubTopic);
+      System.out.println("Create IoT Topic:");
+      createIotTopic(options.projectId, options.pubsubTopic);
     } else if ("create-es".equals(options.command)) {
-        System.out.println("Create ES Device:");
-        createDeviceWithEs256(
-              options.deviceId, options.ecPublicKeyFile, options.projectId, options.cloudRegion,
-              options.registryName);
-    } else if ("create-rsa".equals(options.command)) {
-        System.out.println("Create RSA Device:");
-        createDeviceWithRs256(
-            options.deviceId,
-            options.rsaCertificateFile,
-            options.projectId,
-            options.cloudRegion,
+      System.out.println("Create ES Device:");
+      createDeviceWithEs256(
+            options.deviceId, options.ecPublicKeyFile, options.projectId, options.cloudRegion,
             options.registryName);
+    } else if ("create-rsa".equals(options.command)) {
+      System.out.println("Create RSA Device:");
+      createDeviceWithRs256(
+          options.deviceId,
+          options.rsaCertificateFile,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName);
     } else if ("create-unauth".equals(options.command)) {
-        System.out.println("Create Unauth Device");
-        createDeviceWithNoAuth(
-              options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+      System.out.println("Create Unauth Device");
+      createDeviceWithNoAuth(
+            options.deviceId, options.projectId, options.cloudRegion, options.registryName);
     } else if ("create-registry".equals(options.command)) {
-        System.out.println("Create registry");
-        createRegistry(
-            options.cloudRegion, options.projectId, options.registryName, options.pubsubTopic);
+      System.out.println("Create registry");
+      createRegistry(
+          options.cloudRegion, options.projectId, options.registryName, options.pubsubTopic);
     } else if ("create-gateway".equals(options.command)) {
       System.out.println("Bind device to gateway:");
       String algorithm = "ES256";
@@ -1267,11 +1267,11 @@ public class DeviceRegistryExample {
     }
 
     if (options.command.startsWith("create")) {
-        mainCreate(options);
+      mainCreate(options);
     }
 
     if (options.command.startsWith("get")) {
-        mainGet(options);
+      mainGet(options);
     }
 
     if ("clear-registry".equals(options.command)) {

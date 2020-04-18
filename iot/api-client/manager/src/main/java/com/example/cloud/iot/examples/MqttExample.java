@@ -215,7 +215,8 @@ public class MqttExample {
   }
 
   protected static void sendDataFromDevice(
-      MqttClient client, String deviceId, String messageType, String data) throws MqttException, UnsupportedEncodingException {
+      MqttClient client, String deviceId, String messageType, String data)
+      throws MqttException, UnsupportedEncodingException {
     // [START send_data_from_bound_device]
     if (!"events".equals(messageType) && !"state".equals(messageType)) {
       System.err.println("Invalid message type, must ether be 'state' or events'");

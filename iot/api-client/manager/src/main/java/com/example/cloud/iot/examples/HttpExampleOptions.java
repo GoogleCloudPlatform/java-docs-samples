@@ -42,7 +42,7 @@ public class HttpExampleOptions {
   String messageType = "event";
 
   /** Construct an HttpExampleOptions class from command line flags. */
-  public static @Nullable HttpExampleOptions fromFlags(String ... args) {
+  public static @Nullable HttpExampleOptions fromFlags(String...args) {
     // Required arguments
     options.addOption(
         Option.builder()

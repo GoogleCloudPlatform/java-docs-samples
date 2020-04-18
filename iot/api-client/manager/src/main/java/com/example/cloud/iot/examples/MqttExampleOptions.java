@@ -47,7 +47,7 @@ public class MqttExampleOptions {
   int waitTime = 120;
 
   /** Construct an MqttExampleOptions class from command line flags. */
-  public static @Nullable MqttExampleOptions fromFlags(String ... args) {
+  public static @Nullable MqttExampleOptions fromFlags(String...args) {
     // Required arguments
     options.addOption(
         Option.builder()
