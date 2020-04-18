@@ -28,6 +28,7 @@ import com.google.monitoring.v3.ProjectName;
 import com.google.monitoring.v3.UpdateUptimeCheckConfigRequest;
 import com.google.monitoring.v3.UptimeCheckConfig;
 import com.google.monitoring.v3.UptimeCheckConfig.HttpCheck;
+import com.google.monitoring.v3.UptimeCheckConfig.HttpCheck.RequestMethod.GET;
 import com.google.monitoring.v3.UptimeCheckConfigName;
 import com.google.monitoring.v3.UptimeCheckIp;
 import com.google.protobuf.Duration;
@@ -154,7 +155,7 @@ public class UptimeSample {
                         MonitoredResource.newBuilder()
                             .setType("uptime_url")
                             .putLabels("host", hostName))
-                    .setHttpCheck(HttpCheck.newBuilder().setPath(pathName).setPort(80))
+                    .setHttpCheck(HttpCheck.newBuilder().setRequestMethod(GET).setPath(pathName).setPort(80))
                     .setTimeout(Duration.newBuilder().setSeconds(10))
                     .setPeriod(Duration.newBuilder().setSeconds(300)))
             .build();
