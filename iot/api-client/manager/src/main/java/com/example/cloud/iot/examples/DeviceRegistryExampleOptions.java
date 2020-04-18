@@ -49,10 +49,8 @@ public class DeviceRegistryExampleOptions {
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
   public static @Nullable DeviceRegistryExampleOptions fromFlags(String ... args) {
     // Required arguments
-    Builder builder= Option.builder();
-
     options.addOption(
-            builder
+            Option.builder()
             .type(String.class)
             .longOpt("command")
             .hasArg()
@@ -87,91 +85,91 @@ public class DeviceRegistryExampleOptions {
 
     // Optional arguments.
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("pubsub_topic")
             .hasArg()
             .desc("Pub/Sub topic to create registry in.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("ec_public_key_file")
             .hasArg()
             .desc("Path to ES256 public key file.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("rsa_certificate_file")
             .hasArg()
             .desc("Path to RS256 certificate file.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("cloud_region")
             .hasArg()
             .desc("GCP cloud region.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("project_id")
             .hasArg()
             .desc("GCP cloud project name.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("registry_name")
             .hasArg()
             .desc("Name for your Device Registry.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("device_id")
             .hasArg()
             .desc("Name for your Device.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("gateway_id")
             .hasArg()
             .desc("Name for your Device.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("data")
             .hasArg()
             .desc("The command data (string or JSON) to send to the specified device.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("configuration")
             .hasArg()
             .desc("The configuration (string or JSON) to set the specified device to.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("version")
             .hasArg()
             .desc("The configuration version to send on the device (0 is latest).")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("member")
             .hasArg()
             .desc("The member used for setting IAM permissions.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("role")
             .hasArg()

@@ -48,11 +48,9 @@ public class MqttExampleOptions {
 
   /** Construct an MqttExampleOptions class from command line flags. */
   public static @Nullable MqttExampleOptions fromFlags(String ... args) {
-    Builder builder = Option.builder();
-
     // Required arguments
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("project_id")
             .hasArg()
@@ -60,7 +58,7 @@ public class MqttExampleOptions {
             .required()
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("registry_id")
             .hasArg()
@@ -68,7 +66,7 @@ public class MqttExampleOptions {
             .required()
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("device_id")
             .hasArg()
@@ -76,14 +74,14 @@ public class MqttExampleOptions {
             .required()
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("gateway_id")
             .hasArg()
             .desc("The identifier for the Gateway.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("private_key_file")
             .hasArg()
@@ -91,7 +89,7 @@ public class MqttExampleOptions {
             .required()
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("algorithm")
             .hasArg()
@@ -101,7 +99,7 @@ public class MqttExampleOptions {
 
     // Optional arguments.
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("command")
             .hasArg()
@@ -111,7 +109,7 @@ public class MqttExampleOptions {
                     + "\n\tsend-data-from-bound-device")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("telemetry_data")
             .hasArg()
@@ -119,49 +117,49 @@ public class MqttExampleOptions {
             .build());
 
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("cloud_region")
             .hasArg()
             .desc("GCP cloud region.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(Number.class)
             .longOpt("num_messages")
             .hasArg()
             .desc("Number of messages to publish.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("mqtt_bridge_hostname")
             .hasArg()
             .desc("MQTT bridge hostname.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(Number.class)
             .longOpt("token_exp_minutes")
             .hasArg()
             .desc("Minutes to JWT token refresh (token expiration time).")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(Number.class)
             .longOpt("mqtt_bridge_port")
             .hasArg()
             .desc("MQTT bridge port.")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(String.class)
             .longOpt("message_type")
             .hasArg()
             .desc("Indicates whether the message is a telemetry event or a device state message")
             .build());
     options.addOption(
-        builder
+        Option.builder()
             .type(Number.class)
             .longOpt("wait_time")
             .hasArg()

@@ -38,6 +38,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -472,7 +473,7 @@ public class ManagerIT {
     }
   }
 
-  @Test
+  @Ignore @Test
   public void testMqttDeviceCommand() throws Exception {
     final String deviceName = "rsa-device-mqtt-commands";
     topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
@@ -650,7 +651,7 @@ public class ManagerIT {
     }
   }
 
-  @Test
+  @Ignore @Test
   public void testErrorTopic() throws Exception {
     final String gatewayName = "rsa-listen-gateway-test";
     topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
@@ -697,7 +698,7 @@ public class ManagerIT {
     }
   }
 
-  @Test
+  @Ignore @Test
   public void testSendDataForBoundDevice() throws Exception {
     final String gatewayName = "rsa-send-gateway";
     final String deviceName = "rsa-send-device";

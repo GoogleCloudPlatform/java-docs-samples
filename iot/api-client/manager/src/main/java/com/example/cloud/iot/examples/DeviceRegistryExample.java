@@ -1258,7 +1258,7 @@ public class DeviceRegistryExample {
     }
   }
 
-  protected static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
     DeviceRegistryExampleOptions options = DeviceRegistryExampleOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
