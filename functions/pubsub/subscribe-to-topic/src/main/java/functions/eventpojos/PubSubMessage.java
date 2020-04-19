@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.pubsub.eventpojos;
+package functions.eventpojos;
 
 // [START functions_helloworld_pubsub_message]
 import java.util.Map;

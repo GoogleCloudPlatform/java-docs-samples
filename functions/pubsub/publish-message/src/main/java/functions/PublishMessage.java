@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.pubsub;
+package functions;
 
 // [START functions_pubsub_publish]
 import com.google.cloud.functions.HttpFunction;
