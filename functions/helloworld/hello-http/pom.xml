@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.15</version>
+    <version>1.0.17</version>
   </parent>
 
   <properties>
@@ -82,6 +82,29 @@
       <version>29.0-jre</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- Used for retry logic in ExampleIntegrationTest -->
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-core</artifactId>
+      <version>1.4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-retry</artifactId>
+      <version>1.4.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Pre-install the Functions Framework plugin -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>function-maven-plugin</artifactId>
+      <version>0.9.2</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <!-- Disable tests during GCF builds (from parent POM) -->
@@ -116,7 +139,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.1</version>
+        <version>0.9.2</version>
         <configuration>
           <functionTarget>functions.HelloHttp</functionTarget>
         </configuration>

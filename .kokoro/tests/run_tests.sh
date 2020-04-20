@@ -159,8 +159,8 @@ for file in **/pom.xml; do
     fi
 
     # Skip tests with the kokoro.skipTests property defined in pom.xml
-    SKIP_TESTS=$(mvn -q -DforceStdout help:evaluate -Dexpression=kokoro.skipTests || grep -i true)
-    if [[ -z $? ]]; then
+    SKIP_TESTS=$(mvn -q -DforceStdout help:evaluate -Dexpression=kokoro.skipTests | grep -i true)
+    if [[ $? -eq 0 ]]; then
         echo -e "\n Skipping tests: kokoro.skipTests set to 'true' in pom.xml\n"
         continue
     fi
