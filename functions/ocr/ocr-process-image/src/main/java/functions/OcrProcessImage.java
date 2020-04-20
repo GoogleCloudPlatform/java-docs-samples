@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.functions.ocr;
+package functions;
 
 // [START functions_ocr_process]
 
-import com.example.functions.ocr.eventpojos.GcsEvent;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.pubsub.v1.Publisher;
@@ -35,6 +34,7 @@ import com.google.cloud.vision.v1.ImageSource;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import functions.eventpojos.GcsEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

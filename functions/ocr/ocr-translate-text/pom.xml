@@ -22,12 +22,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-snippets-ocr</artifactId>
+  <artifactId>functions-ocr-translate-text</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.15</version>
+    <version>1.0.17</version>
   </parent>
 
   <properties>
@@ -54,14 +54,6 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-storage</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-vision</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -126,6 +118,11 @@
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
         <version>0.9.1</version>
+        <configuration>
+          <functionTarget>
+            functions.OcrTranslateText
+          </functionTarget>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

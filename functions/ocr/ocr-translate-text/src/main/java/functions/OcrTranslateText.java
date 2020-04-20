@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.functions.ocr;
+package functions;
 
 // [START functions_ocr_translate]
 
-import com.example.functions.ocr.eventpojos.PubSubMessage;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.pubsub.v1.Publisher;
@@ -29,6 +28,7 @@ import com.google.cloud.translate.v3.TranslationServiceClient;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;

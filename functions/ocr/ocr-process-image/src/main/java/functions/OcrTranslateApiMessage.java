@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.ocr;
+package functions;
 
 // [START functions_ocr_translate_pojo]
 
