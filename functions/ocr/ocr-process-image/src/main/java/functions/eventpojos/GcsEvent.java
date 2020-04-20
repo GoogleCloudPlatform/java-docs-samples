@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.functions.ocr.eventpojos;
+package functions.eventpojos;
 
 import java.util.Date;
 

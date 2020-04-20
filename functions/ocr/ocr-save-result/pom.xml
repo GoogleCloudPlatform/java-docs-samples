@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-snippets-ocr</artifactId>
+  <artifactId>functions-ocr-save-result</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -57,19 +57,15 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-storage</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-vision</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
@@ -126,6 +122,11 @@
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
         <version>0.9.1</version>
+        <configuration>
+          <functionTarget>
+            functions.OcrSaveResult
+          </functionTarget>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

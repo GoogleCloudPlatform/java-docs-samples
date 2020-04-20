@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.functions.ocr;
+package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.functions.ocr.eventpojos.GcsEvent;
-import com.example.functions.ocr.eventpojos.PubSubMessage;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
@@ -27,6 +25,7 @@ import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -38,15 +37,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class OcrTests {
-  private static String FUNCTIONS_BUCKET = "nodejs-docs-samples-tests";
+public class OcrSaveResultTest {
   private static String RESULT_BUCKET = System.getenv("RESULT_BUCKET");
 
-  private static final Logger PROCESS_IMAGE_LOGGER = Logger.getLogger(
-      OcrProcessImage.class.getName());
-  private static final Logger SAVE_RESULT_LOGGER = Logger.getLogger(OcrSaveResult.class.getName());
-  private static final Logger TRANSLATE_TEXT_LOGGER = Logger.getLogger(
-      OcrTranslateText.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(OcrSaveResult.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -57,9 +51,7 @@ public class OcrTests {
 
   @BeforeClass
   public static void setUpClass() {
-    PROCESS_IMAGE_LOGGER.addHandler(LOG_HANDLER);
-    SAVE_RESULT_LOGGER.addHandler(LOG_HANDLER);
-    TRANSLATE_TEXT_LOGGER.addHandler(LOG_HANDLER);
+    LOGGER.addHandler(LOG_HANDLER);
   }
 
   @After
@@ -71,55 +63,6 @@ public class OcrTests {
   public static void tearDownClass() {
     String deletedFilename = String.format("test-%s.jpg_to_es.txt", RANDOM_STRING);
     STORAGE.delete(RESULT_BUCKET, deletedFilename);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void functionsOcrProcess_shouldValidateParams() throws IOException {
-    new OcrProcessImage().accept(new GcsEvent(), null);
-  }
-
-  @Test
-  public void functionsOcrProcess_shouldDetectText() throws IOException {
-    GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.setBucket(FUNCTIONS_BUCKET);
-    gcsEvent.setName("wakeupcat.jpg");
-
-    new OcrProcessImage().accept(gcsEvent, null);
-
-    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
-    Truth.assertThat(logs.get(1).getMessage()).contains(
-        "Extracted text from image: Wake up human!");
-    Truth.assertThat(logs.get(2).getMessage()).contains(
-        "Detected language en for file wakeupcat.jpg");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void functionsOcrTranslate_shouldValidateParams() throws IOException {
-    PubSubMessage message = new PubSubMessage();
-    message.setData(new String(Base64.getEncoder().encode("{}".getBytes())));
-
-    new OcrTranslateText().accept(message, null);
-  }
-
-  @Test
-  public void functionsOcrTranslate_shouldTranslateText() throws IOException {
-    String text = "Wake up human!";
-    String filename = "wakeupcat.jpg";
-    String lang = "es";
-
-    JsonObject dataJson = new JsonObject();
-    dataJson.addProperty("text", text);
-    dataJson.addProperty("filename", filename);
-    dataJson.addProperty("lang", lang);
-
-    PubSubMessage message = new PubSubMessage();
-    message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
-
-    new OcrTranslateText().accept(message, null);
-
-    List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
-    Truth.assertThat(logs.get(1).getMessage()).contains("¡Despierta humano!");
-    Truth.assertThat(logs.get(2).getMessage()).isEqualTo("Text translated to es");
   }
 
   @Test(expected = IllegalArgumentException.class)

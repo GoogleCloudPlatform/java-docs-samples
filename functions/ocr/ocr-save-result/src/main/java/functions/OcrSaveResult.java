@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.functions.ocr;
+package functions;
 
 // [START functions_ocr_save]
 
-import com.example.functions.ocr.eventpojos.PubSubMessage;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import functions.eventpojos.PubSubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
