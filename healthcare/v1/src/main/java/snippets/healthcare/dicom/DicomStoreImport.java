@@ -61,8 +61,6 @@ public class DicomStoreImport {
             .healthcareImport(dicomStoreName, importRequest);
 
     // Execute the request, wait for the operation to complete, and process the results.
-
-    // Execute the request, wait for the operation to complete, and process the results.
     try {
       Operation operation = request.execute();
       while (operation.getDone() == null || !operation.getDone()) {
