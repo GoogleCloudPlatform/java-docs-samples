@@ -34,4 +34,6 @@ information on using pull requests.
 This project follows 
 [Google's Open Source Community Guidelines](https://opensource.google/conduct/).
 
+## Abandoned PR's
 
+PR's with no activity for over a month will be considered abandoned and will be closed.
