@@ -33,18 +33,29 @@ import com.google.cloud.kms.v1.KeyRing;
 import com.google.cloud.kms.v1.KeyRingName;
 import com.google.cloud.kms.v1.ListCryptoKeyVersionsRequest;
 import com.google.cloud.kms.v1.LocationName;
+import com.google.cloud.kms.v1.PublicKey;
 import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
+import java.security.spec.MGF1ParameterSpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import javax.crypto.Cipher;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -125,20 +136,20 @@ public class SnippetsIT {
     }
   }
 
-  public static LocationName getLocationName() {
+  private static LocationName getLocationName() {
     return LocationName.of(PROJECT_ID, LOCATION_ID);
   }
 
-  public static KeyRingName getKeyRingName() {
+  private static KeyRingName getKeyRingName() {
     return KeyRingName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
   }
 
-  public static String getRandomId() {
+  private static String getRandomId() {
     UUID uuid = UUID.randomUUID();
     return uuid.toString();
   }
 
-  public static KeyRing createKeyRing(String keyRingId) throws IOException {
+  private static KeyRing createKeyRing(String keyRingId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       KeyRing keyRing = KeyRing.newBuilder().build();
       KeyRing createdKeyRing = client.createKeyRing(getLocationName(), keyRingId, keyRing);
@@ -146,7 +157,7 @@ public class SnippetsIT {
     }
   }
 
-  public static CryptoKey createAsymmetricDecryptKey(String keyId) throws IOException {
+  private static CryptoKey createAsymmetricDecryptKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       CryptoKey key =
           CryptoKey.newBuilder()
@@ -163,7 +174,7 @@ public class SnippetsIT {
     }
   }
 
-  public static CryptoKey createAsymmetricSignEcKey(String keyId) throws IOException {
+  private static CryptoKey createAsymmetricSignEcKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       CryptoKey key =
           CryptoKey.newBuilder()
@@ -180,7 +191,7 @@ public class SnippetsIT {
     }
   }
 
-  public static CryptoKey createAsymmetricSignRsaKey(String keyId) throws IOException {
+  private static CryptoKey createAsymmetricSignRsaKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       CryptoKey key =
           CryptoKey.newBuilder()
@@ -197,7 +208,7 @@ public class SnippetsIT {
     }
   }
 
-  public static CryptoKey createSymmetricKey(String keyId) throws IOException {
+  private static CryptoKey createSymmetricKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       CryptoKey key =
           CryptoKey.newBuilder()
@@ -214,7 +225,8 @@ public class SnippetsIT {
     }
   }
 
-  public static CryptoKeyVersion createKeyVersion(String keyId) throws Exception {
+  private static CryptoKeyVersion createKeyVersion(String keyId)
+      throws IOException, InterruptedException, TimeoutException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       CryptoKeyName keyName = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, keyId);
       CryptoKeyVersion keyVersion = CryptoKeyVersion.newBuilder().build();
@@ -231,6 +243,16 @@ public class SnippetsIT {
 
       throw new TimeoutException("key version not ready in timeout");
     }
+  }
+
+  private static byte[] convertPemToDer(String pem) {
+    BufferedReader bufferedReader = new BufferedReader(new StringReader(pem));
+    String encoded =
+        bufferedReader
+            .lines()
+            .filter(line -> !line.startsWith("-----BEGIN") && !line.startsWith("-----END"))
+            .collect(Collectors.joining());
+    return Base64.getDecoder().decode(encoded);
   }
 
   @Test
@@ -291,13 +313,34 @@ public class SnippetsIT {
     assertThat(stdOut.toString()).contains("Created key version");
   }
 
-  // @Test
-  // public void testDecryptAsymmetric() throws IOException {
-  //   new DecryptAsymmetric()
-  //       .decryptAsymmetric(
-  //           PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1", ciphertext);
-  //   assertThat(stdOut.toString()).contains("Created key version");
-  // }
+  @Test
+  public void testDecryptAsymmetric() throws IOException, GeneralSecurityException {
+    String plaintext = "my message";
+    byte[] ciphertext;
+
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyVersionName keyVersionName =
+          CryptoKeyVersionName.of(
+              PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
+      PublicKey publicKey = client.getPublicKey(keyVersionName);
+
+      byte[] derKey = convertPemToDer(publicKey.getPem());
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derKey);
+      java.security.PublicKey rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
+
+      Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+      OAEPParameterSpec oaepParams =
+          new OAEPParameterSpec(
+              "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
+      cipher.init(Cipher.ENCRYPT_MODE, rsaKey, oaepParams);
+      ciphertext = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+    }
+
+    new DecryptAsymmetric()
+        .decryptAsymmetric(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1", ciphertext);
+    assertThat(stdOut.toString()).contains("my message");
+  }
 
   @Test
   public void testDecryptSymmetric() throws IOException {
@@ -317,7 +360,8 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDestroyRestoreKeyVersion() throws Exception {
+  public void testDestroyRestoreKeyVersion()
+      throws IOException, InterruptedException, TimeoutException {
     CryptoKeyVersion keyVersion = createKeyVersion(ASYMMETRIC_DECRYPT_KEY_ID);
     String name = keyVersion.getName();
     String keyVersionId = name.substring(name.lastIndexOf('/') + 1);

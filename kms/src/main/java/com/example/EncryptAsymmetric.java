@@ -43,7 +43,7 @@ public class EncryptAsymmetric {
     String keyRingId = "my-key-ring";
     String keyId = "my-key";
     String keyVersionId = "123";
-    String plaintext = "";
+    String plaintext = "Plaintext to encrypt";
     encryptAsymmetric(projectId, locationId, keyRingId, keyId, keyVersionId, plaintext);
   }
 

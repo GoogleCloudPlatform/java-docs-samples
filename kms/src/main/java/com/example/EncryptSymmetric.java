@@ -31,7 +31,7 @@ public class EncryptSymmetric {
     String locationId = "us-east1";
     String keyRingId = "my-key-ring";
     String keyId = "my-key";
-    String plaintext = null;
+    String plaintext = "Plaintext to encrypt";
     encryptSymmetric(projectId, locationId, keyRingId, keyId, plaintext);
   }
 

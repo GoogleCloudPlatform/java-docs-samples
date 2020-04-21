@@ -48,11 +48,7 @@ public class GetKeyLabels {
       CryptoKey key = client.getCryptoKey(keyName);
 
       // Print out each label.
-      key.getLabelsMap()
-          .forEach(
-              (k, v) -> {
-                System.out.printf("%s=%s%n", k, v);
-              });
+      key.getLabelsMap().forEach((k, v) -> System.out.printf("%s=%s%n", k, v));
     }
   }
 }

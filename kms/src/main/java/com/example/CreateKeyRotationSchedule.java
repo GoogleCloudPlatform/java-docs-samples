@@ -26,7 +26,7 @@ import com.google.cloud.kms.v1.KeyRingName;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.time.temporal.ChronoUnit;
 
 public class CreateKeyRotationSchedule {
 
@@ -51,7 +51,7 @@ public class CreateKeyRotationSchedule {
       KeyRingName keyRingName = KeyRingName.of(projectId, locationId, keyRingId);
 
       // Calculate the date 24 hours from now (this is used below).
-      long tomorrow = (System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)) / 1000;
+      long tomorrow = java.time.Instant.now().plus(24, ChronoUnit.HOURS).getEpochSecond();
 
       // Build the key to create with a rotation schedule.
       CryptoKey key =
@@ -62,7 +62,8 @@ public class CreateKeyRotationSchedule {
                       .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION))
 
               // Rotate every 30 days.
-              .setRotationPeriod(Duration.newBuilder().setSeconds(TimeUnit.HOURS.toSeconds(24)))
+              .setRotationPeriod(
+                  Duration.newBuilder().setSeconds(java.time.Duration.ofHours(24).getSeconds()))
 
               // Start the first rotation in 24 hours.
               .setNextRotationTime(Timestamp.newBuilder().setSeconds(tomorrow))
