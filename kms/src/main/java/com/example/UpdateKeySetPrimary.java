@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,40 @@
 
 package com.example;
 
-// [START kms_quickstart]
+// [START kms_update_key_set_primary]
+import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
-import com.google.cloud.kms.v1.KeyManagementServiceClient.ListKeyRingsPagedResponse;
-import com.google.cloud.kms.v1.KeyRing;
-import com.google.cloud.kms.v1.LocationName;
 import java.io.IOException;
 
-public class Quickstart {
+public class UpdateKeySetPrimary {
 
-  public void quickstart() throws IOException {
+  public void updateKeySetPrimary() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "us-east1";
-    quickstart(projectId, locationId);
+    String keyRingId = "my-key-ring";
+    String keyId = "my-key";
+    String keyVersionId = "123";
+    updateKeySetPrimary(projectId, locationId, keyRingId, keyId, keyVersionId);
   }
 
-  public void quickstart(String projectId, String locationId) throws IOException {
+  // Update a key's primary version.
+  public void updateKeySetPrimary(
+      String projectId, String locationId, String keyRingId, String keyId, String keyVersionId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      // Build the parent from the project and location.
-      LocationName parent = LocationName.of(projectId, locationId);
+      // Build the name from the project, location, key ring, and keyId.
+      CryptoKeyName cryptoKeyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
-      // Call the API.
-      ListKeyRingsPagedResponse response = client.listKeyRings(parent);
-
-      // Iterate over each key ring and print its name.
-      System.out.println("key rings:");
-      for (KeyRing keyRing : response.iterateAll()) {
-        System.out.printf("%s%n", keyRing.getName());
-      }
+      // Create the key.
+      CryptoKey createdKey = client.updateCryptoKeyPrimaryVersion(cryptoKeyName, keyVersionId);
+      System.out.printf("Updated key primary version %s%n", createdKey.getName());
     }
   }
 }
-// [END kms_quickstart]
+// [END kms_update_key_set_primary]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,44 @@
 
 package com.example;
 
-// [START kms_quickstart]
+// [START kms_get_key_labels]
+import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
-import com.google.cloud.kms.v1.KeyManagementServiceClient.ListKeyRingsPagedResponse;
-import com.google.cloud.kms.v1.KeyRing;
-import com.google.cloud.kms.v1.LocationName;
 import java.io.IOException;
 
-public class Quickstart {
+public class GetKeyLabels {
 
-  public void quickstart() throws IOException {
+  public void getKeyLabels() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "us-east1";
-    quickstart(projectId, locationId);
+    String keyRingId = "my-key-ring";
+    String keyId = "my-key";
+    getKeyLabels(projectId, locationId, keyRingId, keyId);
   }
 
-  public void quickstart(String projectId, String locationId) throws IOException {
+  // Get the labels associated with a key.
+  public void getKeyLabels(String projectId, String locationId, String keyRingId, String keyId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      // Build the parent from the project and location.
-      LocationName parent = LocationName.of(projectId, locationId);
+      // Build the name from the project, location, key ring, and keyId.
+      CryptoKeyName keyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
-      // Call the API.
-      ListKeyRingsPagedResponse response = client.listKeyRings(parent);
+      // Get the key.
+      CryptoKey key = client.getCryptoKey(keyName);
 
-      // Iterate over each key ring and print its name.
-      System.out.println("key rings:");
-      for (KeyRing keyRing : response.iterateAll()) {
-        System.out.printf("%s%n", keyRing.getName());
-      }
+      // Print out each label.
+      key.getLabelsMap()
+          .forEach(
+              (k, v) -> {
+                System.out.printf("%s=%s%n", k, v);
+              });
     }
   }
 }
-// [END kms_quickstart]
+// [END kms_get_key_labels]

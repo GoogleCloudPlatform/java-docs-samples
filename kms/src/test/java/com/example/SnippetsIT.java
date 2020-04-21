@@ -17,269 +17,480 @@
 package com.example;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose;
+import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.CryptoKeyVersion;
+import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm;
+import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState;
+import com.google.cloud.kms.v1.CryptoKeyVersionName;
+import com.google.cloud.kms.v1.CryptoKeyVersionTemplate;
+import com.google.cloud.kms.v1.Digest;
+import com.google.cloud.kms.v1.EncryptResponse;
+import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.KeyRing;
-import com.google.iam.v1.Binding;
-import com.google.iam.v1.Policy;
-import java.util.List;
+import com.google.cloud.kms.v1.KeyRingName;
+import com.google.cloud.kms.v1.ListCryptoKeyVersionsRequest;
+import com.google.cloud.kms.v1.LocationName;
+import com.google.common.base.Strings;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.util.FieldMaskUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.TimeoutException;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SnippetsIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = "global";
-  private static final String KEY_RING_ID = "test-key-ring-" + UUID.randomUUID().toString();
-  private static final String CRYPTO_KEY_ID = UUID.randomUUID().toString();
-  private static final String TEST_USER =
-      "serviceAccount:" + "131304031188-compute@developer.gserviceaccount.com";
-  private static final String TEST_ROLE = "roles/viewer";
+  private static final String LOCATION_ID = "us-east1";
 
-  /** Creates a CryptoKey for use during this test run. */
+  private static String KEY_RING_ID;
+  private static String ASYMMETRIC_DECRYPT_KEY_ID;
+  private static String ASYMMETRIC_SIGN_EC_KEY_ID;
+  private static String ASYMMETRIC_SIGN_RSA_KEY_ID;
+  private static String SYMMETRIC_KEY_ID;
+
+  private ByteArrayOutputStream stdOut;
+
   @BeforeClass
-  public static void setUpClass() throws Exception {
-    KeyRing keyRing = Snippets.createKeyRing(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
-    assertThat(keyRing.getName()).contains("keyRings/" + KEY_RING_ID);
+  public static void beforeAll() throws IOException {
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
-    CryptoKey cryptoKey =
-        Snippets.createCryptoKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-    assertThat(cryptoKey.getName())
-        .contains(String.format("keyRings/%s/cryptoKeys/%s", KEY_RING_ID, CRYPTO_KEY_ID));
+    KEY_RING_ID = getRandomId();
+    createKeyRing(KEY_RING_ID);
+
+    ASYMMETRIC_DECRYPT_KEY_ID = getRandomId();
+    createAsymmetricDecryptKey(ASYMMETRIC_DECRYPT_KEY_ID);
+
+    ASYMMETRIC_SIGN_EC_KEY_ID = getRandomId();
+    createAsymmetricSignEcKey(ASYMMETRIC_SIGN_EC_KEY_ID);
+
+    ASYMMETRIC_SIGN_RSA_KEY_ID = getRandomId();
+    createAsymmetricSignRsaKey(ASYMMETRIC_SIGN_RSA_KEY_ID);
+
+    SYMMETRIC_KEY_ID = getRandomId();
+    createSymmetricKey(SYMMETRIC_KEY_ID);
   }
 
-  /** Destroys all the key versions created during this test run. */
+  @Before
+  public void beforeEach() {
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+  }
+
+  @After
+  public void afterEach() {
+    stdOut = null;
+    System.setOut(null);
+  }
+
   @AfterClass
-  public static void tearDownClass() throws Exception {
-    List<CryptoKeyVersion> versions =
-        Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
+  public static void afterAll() throws IOException {
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
-    for (CryptoKeyVersion version : versions) {
-      if (!version.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED)) {
-        Snippets.destroyCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, parseVersionId(version.getName()));
-      }
-    }
-  }
-
-  @Test
-  public void listKeyRings_retrievesKeyRing() throws Exception {
-    List<KeyRing> keyRings = Snippets.listKeyRings(PROJECT_ID, LOCATION_ID);
-    assertThat(keyRings).isNotEmpty();
-    assertThat(keyRings.get(0).getName()).contains(String.format("projects/%s", PROJECT_ID));
-  }
-
-  @Test
-  public void listCryptoKeys_retrievesCryptoKeys() throws Exception {
-    List<CryptoKey> keys = Snippets.listCryptoKeys(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
-    assertThat(keys).isNotEmpty();
-    assertThat(keys.get(0).getName())
-        .contains(String.format("keyRings/%s/cryptoKeys/%s", KEY_RING_ID, CRYPTO_KEY_ID));
-  }
-
-  @Test
-  public void listCryptoKeyVersions_retrievesVersions() throws Exception {
-    List<CryptoKeyVersion> versions =
-        Snippets.listCryptoKeyVersions(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-
-    for (CryptoKeyVersion version : versions) {
-      assertThat(version.getName())
-          .contains(
-              String.format(
-                  "keyRings/%s/cryptoKeys/%s/cryptoKeyVersions/", KEY_RING_ID, CRYPTO_KEY_ID));
-
-      if (version.getState().equals(CryptoKeyVersion.CryptoKeyVersionState.ENABLED)) {
-        return;
-      }
-    }
-
-    // at least one version should be enabled, so we should never make it here
-    assertTrue("no versions are enabled", false);
-  }
-
-  @Test
-  public void disableCryptoKeyVersion_disables() throws Exception {
-    CryptoKeyVersion version =
-        Snippets.createCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-
-    String versionId = parseVersionId(version.getName());
-
-    CryptoKeyVersion disabled =
-        Snippets.disableCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(disabled.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DISABLED);
-  }
-
-  @Test
-  public void enableCryptoKeyVersion_enables() throws Exception {
-    CryptoKeyVersion version =
-        Snippets.createCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-
-    String versionId = parseVersionId(version.getName());
-
-    // Disable the new key version
-    CryptoKeyVersion disabled =
-        Snippets.disableCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(disabled.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DISABLED);
-
-    // Enable the now-disabled key version
-    CryptoKeyVersion enabled =
-        Snippets.enableCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(enabled.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.ENABLED);
-  }
-
-  @Test
-  public void destroyCryptoKeyVersion_destroys() throws Exception {
-    CryptoKeyVersion version =
-        Snippets.createCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-
-    String versionId = parseVersionId(version.getName());
-
-    // Destroy the new key version
-    CryptoKeyVersion destroyScheduled =
-        Snippets.destroyCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(destroyScheduled.getState())
-        .isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED);
-  }
-
-  @Test
-  public void restoreCryptoKeyVersion_restores() throws Exception {
-    CryptoKeyVersion version =
-        Snippets.createCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-
-    String versionId = parseVersionId(version.getName());
-
-    // Only key versions scheduled for destruction are restorable, so schedule this key
-    // version for destruction.
-    CryptoKeyVersion destroyScheduled =
-        Snippets.destroyCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(destroyScheduled.getState())
-        .isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DESTROY_SCHEDULED);
-
-    // Now restore the key version.
-    CryptoKeyVersion restored =
-        Snippets.restoreCryptoKeyVersion(
-            PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(restored.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.DISABLED);
-  }
-
-  @Test
-  public void setPrimaryVersion_createKeyAndSetPrimaryVersion() throws Exception {
-    // We can't test that setPrimaryVersion actually took effect via a list call because of
-    // caching. So we test that the call was successful.
-    CryptoKeyVersion version =
-        Snippets.createCryptoKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-    assertThat(version.getState()).isEqualTo(CryptoKeyVersion.CryptoKeyVersionState.ENABLED);
-
-    String versionId = parseVersionId(version.getName());
-
-    CryptoKey key =
-        Snippets.setPrimaryVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, versionId);
-    assertThat(key.getPrimary().getName()).isEqualTo(version.getName());
-  }
-
-  @Test
-  public void addAndRemoveMemberToCryptoKeyPolicy_addsDisplaysAndRemoves() throws Exception {
-    // Retrieve the current policy
-    Policy policy =
-        Snippets.getCryptoKeyPolicy(PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID);
-
-    // Make sure the policy doesn't already have our test user
-    for (Binding binding : policy.getBindingsList()) {
-      for (String m : binding.getMembersList()) {
-        assertThat(TEST_USER).isNotEqualTo(m);
-      }
-    }
-
-    try {
-      // Add the test user, and make sure the policy has it
-      Policy added =
-          Snippets.addMemberToCryptoKeyPolicy(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, TEST_USER, TEST_ROLE);
-
-      for (Binding binding : added.getBindingsList()) {
-        for (String m : binding.getMembersList()) {
-          if (TEST_USER.equals(m)) {
-            return;
-          }
+    // Iterate over each key ring's key's crypto key versions and destroy.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      for (CryptoKey key : client.listCryptoKeys(getKeyRingName()).iterateAll()) {
+        if (key.hasRotationPeriod() || key.hasNextRotationTime()) {
+          CryptoKey keyWithoutRotation = CryptoKey.newBuilder().setName(key.getName()).build();
+          FieldMask fieldMask = FieldMaskUtil.fromString("rotation_period,next_rotation_time");
+          client.updateCryptoKey(keyWithoutRotation, fieldMask);
         }
-      }
 
-      // We should've returned in the previous loop; fail if we didn't.
-      assertTrue("No policy binding containing TEST_USER exists", false);
-    } finally {
-      // Now remove the test user, and make sure the policy no longer has it
-      Policy removed =
-          Snippets.removeMemberFromCryptoKeyPolicy(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, CRYPTO_KEY_ID, TEST_USER, TEST_ROLE);
-      for (Binding binding : removed.getBindingsList()) {
-        for (String m : binding.getMembersList()) {
-          assertThat(TEST_USER).isNotEqualTo(m);
+        ListCryptoKeyVersionsRequest listVersionsRequest =
+            ListCryptoKeyVersionsRequest.newBuilder()
+                .setParent(key.getName())
+                .setFilter("state != DESTROYED AND state != DESTROY_SCHEDULED")
+                .build();
+        for (CryptoKeyVersion version :
+            client.listCryptoKeyVersions(listVersionsRequest).iterateAll()) {
+          client.destroyCryptoKeyVersion(version.getName());
         }
       }
     }
   }
 
-  @Test
-  public void addAndRemoveMemberToKeyRingPolicy_addsDisplaysAndRemoves() throws Exception {
-    // Retrieve the current policy
-    Policy policy = Snippets.getKeyRingPolicy(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
+  public static LocationName getLocationName() {
+    return LocationName.of(PROJECT_ID, LOCATION_ID);
+  }
 
-    // Make sure the policy doesn't already have our test user
-    for (Binding binding : policy.getBindingsList()) {
-      for (String m : binding.getMembersList()) {
-        assertThat(TEST_USER).isNotEqualTo(m);
-      }
-    }
+  public static KeyRingName getKeyRingName() {
+    return KeyRingName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
+  }
 
-    try {
-      // Add the test user, and make sure the policy has it
-      Policy added =
-          Snippets.addMemberToKeyRingPolicy(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, TEST_USER, TEST_ROLE);
+  public static String getRandomId() {
+    UUID uuid = UUID.randomUUID();
+    return uuid.toString();
+  }
 
-      for (Binding binding : added.getBindingsList()) {
-        for (String m : binding.getMembersList()) {
-          if (TEST_USER.equals(m)) {
-            return;
-          }
-        }
-      }
-
-      // We should've returned in the previous loop; fail if we didn't.
-      assertTrue("No policy binding containing TEST_USER exists", false);
-    } finally {
-      // Now remove the test user, and make sure the policy no longer has it
-      Policy removed =
-          Snippets.removeMemberFromKeyRingPolicy(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, TEST_USER, TEST_ROLE);
-      for (Binding binding : removed.getBindingsList()) {
-        for (String m : binding.getMembersList()) {
-          assertThat(TEST_USER).isNotEqualTo(m);
-        }
-      }
+  public static KeyRing createKeyRing(String keyRingId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      KeyRing keyRing = KeyRing.newBuilder().build();
+      KeyRing createdKeyRing = client.createKeyRing(getLocationName(), keyRingId, keyRing);
+      return createdKeyRing;
     }
   }
 
-  public static String parseVersionId(String versionName) {
-    Pattern versionIdPattern = Pattern.compile(".*/cryptoKeyVersions/(\\d+)");
-    Matcher matcher = versionIdPattern.matcher(versionName);
-    assertThat(matcher.find()).isTrue();
-    return matcher.group(1);
+  public static CryptoKey createAsymmetricDecryptKey(String keyId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKey key =
+          CryptoKey.newBuilder()
+              .setPurpose(CryptoKeyPurpose.ASYMMETRIC_DECRYPT)
+              .setVersionTemplate(
+                  CryptoKeyVersionTemplate.newBuilder()
+                      .setAlgorithm(CryptoKeyVersionAlgorithm.RSA_DECRYPT_OAEP_2048_SHA256)
+                      .build())
+              .putLabels("foo", "bar")
+              .putLabels("zip", "zap")
+              .build();
+      CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
+      return createdKey;
+    }
+  }
+
+  public static CryptoKey createAsymmetricSignEcKey(String keyId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKey key =
+          CryptoKey.newBuilder()
+              .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
+              .setVersionTemplate(
+                  CryptoKeyVersionTemplate.newBuilder()
+                      .setAlgorithm(CryptoKeyVersionAlgorithm.EC_SIGN_P256_SHA256)
+                      .build())
+              .putLabels("foo", "bar")
+              .putLabels("zip", "zap")
+              .build();
+      CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
+      return createdKey;
+    }
+  }
+
+  public static CryptoKey createAsymmetricSignRsaKey(String keyId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKey key =
+          CryptoKey.newBuilder()
+              .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
+              .setVersionTemplate(
+                  CryptoKeyVersionTemplate.newBuilder()
+                      .setAlgorithm(CryptoKeyVersionAlgorithm.RSA_SIGN_PSS_2048_SHA256)
+                      .build())
+              .putLabels("foo", "bar")
+              .putLabels("zip", "zap")
+              .build();
+      CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
+      return createdKey;
+    }
+  }
+
+  public static CryptoKey createSymmetricKey(String keyId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKey key =
+          CryptoKey.newBuilder()
+              .setPurpose(CryptoKeyPurpose.ENCRYPT_DECRYPT)
+              .setVersionTemplate(
+                  CryptoKeyVersionTemplate.newBuilder()
+                      .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
+                      .build())
+              .putLabels("foo", "bar")
+              .putLabels("zip", "zap")
+              .build();
+      CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
+      return createdKey;
+    }
+  }
+
+  public static CryptoKeyVersion createKeyVersion(String keyId) throws Exception {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyName keyName = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, keyId);
+      CryptoKeyVersion keyVersion = CryptoKeyVersion.newBuilder().build();
+      CryptoKeyVersion createdVersion = client.createCryptoKeyVersion(keyName, keyVersion);
+
+      for (int i = 1; i <= 5; i++) {
+        CryptoKeyVersion gotVersion = client.getCryptoKeyVersion(createdVersion.getName());
+        if (gotVersion.getState() == CryptoKeyVersionState.ENABLED) {
+          return gotVersion;
+        }
+
+        Thread.sleep(500 * i);
+      }
+
+      throw new TimeoutException("key version not ready in timeout");
+    }
+  }
+
+  @Test
+  public void testQuickstart() throws IOException {
+    new Quickstart().quickstart(PROJECT_ID, LOCATION_ID);
+    assertThat(stdOut.toString()).contains("key rings");
+  }
+
+  @Test
+  public void testCreateKeyAsymmetricDecrypt() throws IOException {
+    new CreateKeyAsymmetricDecrypt()
+        .createKeyAsymmetricDecrypt(PROJECT_ID, LOCATION_ID, KEY_RING_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created asymmetric key");
+  }
+
+  @Test
+  public void testCreateKeyAsymmetricSign() throws IOException {
+    new CreateKeyAsymmetricSign()
+        .createKeyAsymmetricSign(PROJECT_ID, LOCATION_ID, KEY_RING_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created asymmetric key");
+  }
+
+  @Test
+  public void testCreateKeyHsm() throws IOException {
+    new CreateKeyHsm().createKeyHsm(PROJECT_ID, LOCATION_ID, KEY_RING_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created hsm key");
+  }
+
+  @Test
+  public void testCreateKeyLabels() throws IOException {
+    new CreateKeyLabels().createKeyLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created key with labels");
+  }
+
+  @Test
+  public void testCreateKeyRing() throws IOException {
+    new CreateKeyRing().createKeyRing(PROJECT_ID, LOCATION_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created key ring");
+  }
+
+  @Test
+  public void testCreateKeyRotationSchedule() throws IOException {
+    new CreateKeyRotationSchedule()
+        .createKeyRotationSchedule(PROJECT_ID, LOCATION_ID, KEY_RING_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created key with rotation");
+  }
+
+  @Test
+  public void testCreateKeySymmetricEncryptDecrypt() throws IOException {
+    new CreateKeySymmetricEncryptDecrypt()
+        .createKeySymmetricEncryptDecrypt(PROJECT_ID, LOCATION_ID, KEY_RING_ID, getRandomId());
+    assertThat(stdOut.toString()).contains("Created symmetric key");
+  }
+
+  @Test
+  public void testCreateKeyVersion() throws IOException {
+    new CreateKeyVersion().createKeyVersion(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    assertThat(stdOut.toString()).contains("Created key version");
+  }
+
+  // @Test
+  // public void testDecryptAsymmetric() throws IOException {
+  //   new DecryptAsymmetric()
+  //       .decryptAsymmetric(
+  //           PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1", ciphertext);
+  //   assertThat(stdOut.toString()).contains("Created key version");
+  // }
+
+  @Test
+  public void testDecryptSymmetric() throws IOException {
+    String plaintext = "my plaintext";
+    byte[] ciphertext;
+
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyName keyName =
+          CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+      EncryptResponse result = client.encrypt(keyName, ByteString.copyFromUtf8(plaintext));
+      ciphertext = result.getCiphertext().toByteArray();
+    }
+
+    new DecryptSymmetric()
+        .decryptSymmetric(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID, ciphertext);
+    assertThat(stdOut.toString()).contains(plaintext);
+  }
+
+  @Test
+  public void testDestroyRestoreKeyVersion() throws Exception {
+    CryptoKeyVersion keyVersion = createKeyVersion(ASYMMETRIC_DECRYPT_KEY_ID);
+    String name = keyVersion.getName();
+    String keyVersionId = name.substring(name.lastIndexOf('/') + 1);
+
+    new DestroyKeyVersion()
+        .destroyKeyVersion(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, keyVersionId);
+    assertThat(stdOut.toString()).contains("Destroyed key version");
+
+    new RestoreKeyVersion()
+        .restoreKeyVersion(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, keyVersionId);
+    assertThat(stdOut.toString()).contains("Restored key version");
+  }
+
+  @Test
+  public void testDisableEnableKeyVersion() throws Exception {
+    CryptoKeyVersion keyVersion = createKeyVersion(ASYMMETRIC_DECRYPT_KEY_ID);
+    String name = keyVersion.getName();
+    String keyVersionId = name.substring(name.lastIndexOf('/') + 1);
+
+    new DisableKeyVersion()
+        .disableKeyVersion(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, keyVersionId);
+    assertThat(stdOut.toString()).contains("Disabled key version");
+
+    new EnableKeyVersion()
+        .enableKeyVersion(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, keyVersionId);
+    assertThat(stdOut.toString()).contains("Enabled key version");
+  }
+
+  @Test
+  public void testEncryptAsymmetric() throws IOException, GeneralSecurityException {
+    new EncryptAsymmetric()
+        .encryptAsymmetric(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1", "my message");
+    assertThat(stdOut.toString()).contains("Ciphertext");
+  }
+
+  @Test
+  public void testEncryptSymmetric() throws IOException {
+    new EncryptSymmetric()
+        .encryptSymmetric(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID, "my message");
+    assertThat(stdOut.toString()).contains("Ciphertext");
+  }
+
+  @Test
+  public void testGetKeyLabels() throws IOException {
+    new GetKeyLabels().getKeyLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    assertThat(stdOut.toString()).contains("foo=bar");
+  }
+
+  @Test
+  public void testGetPublicKey() throws IOException, GeneralSecurityException {
+    new GetPublicKey()
+        .getPublicKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
+    assertThat(stdOut.toString()).contains("Public key");
+  }
+
+  @Test
+  public void testIamAddMember() throws IOException {
+    new IamAddMember()
+        .iamAddMember(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID, "group:test@google.com");
+    assertThat(stdOut.toString()).contains("Updated IAM policy");
+  }
+
+  @Test
+  public void testIamGetPolicy() throws IOException {
+    new IamGetPolicy().iamGetPolicy(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    assertThat(stdOut.toString()).contains("IAM policy");
+  }
+
+  @Test
+  public void testIamRemoveMember() throws IOException {
+    new IamRemoveMember()
+        .iamRemoveMember(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID, "group:test@google.com");
+    assertThat(stdOut.toString()).contains("Updated IAM policy");
+  }
+
+  @Test
+  public void testSignAsymmetric() throws IOException, GeneralSecurityException {
+    new SignAsymmetric()
+        .signAsymmetric(
+            PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_RSA_KEY_ID, "1", "my message");
+    assertThat(stdOut.toString()).contains("Signature");
+  }
+
+  @Test
+  public void testUpdateKeyAddRotation() throws IOException {
+    new UpdateKeyAddRotation()
+        .updateKeyAddRotation(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    assertThat(stdOut.toString()).contains("Updated key");
+  }
+
+  @Test
+  public void testUpdateKeyRemoveLabels() throws IOException {
+    new UpdateKeyRemoveLabels()
+        .updateKeyRemoveLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    assertThat(stdOut.toString()).contains("Updated key");
+  }
+
+  @Test
+  public void testUpdateKeySetPrimary() throws IOException {
+    new UpdateKeySetPrimary()
+        .updateKeySetPrimary(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID, "1");
+    assertThat(stdOut.toString()).contains("Updated key");
+  }
+
+  @Test
+  public void testUpdateKeyUpdateLabels() throws IOException {
+    new UpdateKeyUpdateLabels()
+        .updateKeyUpdateLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    assertThat(stdOut.toString()).contains("Updated key");
+  }
+
+  @Test
+  public void testVerifyAsymmetricEc() throws IOException, GeneralSecurityException {
+    String message = "my message";
+    byte[] signature;
+
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyVersionName versionName =
+          CryptoKeyVersionName.of(
+              PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_EC_KEY_ID, "1");
+
+      MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+      byte[] hash = sha256.digest(message.getBytes(StandardCharsets.UTF_8));
+      Digest digest = Digest.newBuilder().setSha256(ByteString.copyFrom(hash)).build();
+
+      signature = client.asymmetricSign(versionName, digest).getSignature().toByteArray();
+    }
+
+    new VerifyAsymmetricEc()
+        .verifyAsymmetricEc(
+            PROJECT_ID,
+            LOCATION_ID,
+            KEY_RING_ID,
+            ASYMMETRIC_SIGN_EC_KEY_ID,
+            "1",
+            message,
+            signature);
+    assertThat(stdOut.toString()).contains("Signature");
+  }
+
+  @Test
+  public void testVerifyAsymmetricRsa() throws IOException, GeneralSecurityException {
+    String message = "my message";
+    byte[] signature;
+
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyVersionName versionName =
+          CryptoKeyVersionName.of(
+              PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_RSA_KEY_ID, "1");
+
+      MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+      byte[] hash = sha256.digest(message.getBytes(StandardCharsets.UTF_8));
+      Digest digest = Digest.newBuilder().setSha256(ByteString.copyFrom(hash)).build();
+
+      signature = client.asymmetricSign(versionName, digest).getSignature().toByteArray();
+    }
+
+    new VerifyAsymmetricRsa()
+        .verifyAsymmetricRsa(
+            PROJECT_ID,
+            LOCATION_ID,
+            KEY_RING_ID,
+            ASYMMETRIC_SIGN_RSA_KEY_ID,
+            "1",
+            message,
+            signature);
+    assertThat(stdOut.toString()).contains("Signature");
   }
 }
