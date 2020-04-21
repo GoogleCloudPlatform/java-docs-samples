@@ -110,6 +110,8 @@ public class QuickStartIT {
 
   @Test
   public void testBatchGetAssetsHistory() throws Exception {
+    // Wait 10 seconds to let bucket creation event go to CAI
+    Thread.sleep(10000);
     String bucketAssetName = String.format("//storage.googleapis.com/%s", bucketName);
     BatchGetAssetsHistoryExample.main(bucketAssetName);
     String got = bout.toString();
