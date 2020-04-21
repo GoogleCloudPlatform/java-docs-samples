@@ -28,8 +28,8 @@ import org.junit.Test;
 
 public class JobSearchCreateJobTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String TENANT_ID = "50c14f00-dc38-4812-989b-d9b59c7fdf07";
-  private static final String COMPANY_ID = "bdad284d-9aca-4cb9-af09-ce65afcc5d6a";
+  private static final String TENANT_ID = System.getenv("CTS_TENANT_ID");
+  private static final String COMPANY_ID = System.getenv("CTS_COMPANY_ID");
   private static final String POST_UNIQUE_ID =
       String.format(
           "TEST_POST_ID_%s",
