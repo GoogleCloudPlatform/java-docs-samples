@@ -90,7 +90,8 @@ public final class CustomAttributeSample {
   /**
    * CustomAttributeFilter on String value CustomAttribute
    */
-  public static void filtersOnStringValueCustomAttribute() throws IOException {
+  public static void filtersOnStringValueCustomAttribute()
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -117,6 +118,7 @@ public final class CustomAttributeSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END custom_attribute_filter_string_value]
@@ -126,7 +128,7 @@ public final class CustomAttributeSample {
   /**
    * CustomAttributeFilter on Long value CustomAttribute
    */
-  public static void filtersOnLongValueCustomAttribute() throws IOException {
+  public static void filtersOnLongValueCustomAttribute() throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -153,6 +155,7 @@ public final class CustomAttributeSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END custom_attribute_filter_long_value]
@@ -162,7 +165,7 @@ public final class CustomAttributeSample {
   /**
    * CustomAttributeFilter on multiple CustomAttributes
    */
-  public static void filtersOnMultiCustomAttributes() throws IOException {
+  public static void filtersOnMultiCustomAttributes() throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -190,6 +193,7 @@ public final class CustomAttributeSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END custom_attribute_filter_multi_attributes]

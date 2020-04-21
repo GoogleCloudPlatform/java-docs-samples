@@ -54,7 +54,7 @@ public final class LocationSearchSample {
    * Basic location Search
    */
   public static void basicLocationSearch(String companyName, String location, double distance)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -79,6 +79,7 @@ public final class LocationSearchSample {
             .setSearchMode("JOB_SEARCH");
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END basic_location_search]
@@ -90,7 +91,7 @@ public final class LocationSearchSample {
    */
   public static void keywordLocationSearch(String companyName, String location, double distance,
       String keyword)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -117,6 +118,7 @@ public final class LocationSearchSample {
             .setSearchMode("JOB_SEARCH");
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END keyword_location_search]
@@ -126,7 +128,8 @@ public final class LocationSearchSample {
   /**
    * City location Search
    */
-  public static void cityLocationSearch(String companyName, String location) throws IOException {
+  public static void cityLocationSearch(String companyName, String location)
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -150,6 +153,7 @@ public final class LocationSearchSample {
             .setSearchMode("JOB_SEARCH");
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END city_location_search]
@@ -161,7 +165,7 @@ public final class LocationSearchSample {
    */
   public static void multiLocationsSearch(String companyName, String location1, double distance1,
       String location2)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -187,6 +191,7 @@ public final class LocationSearchSample {
             .setSearchMode("JOB_SEARCH");
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END multi_locations_search]
@@ -197,7 +202,7 @@ public final class LocationSearchSample {
    * Broadening location Search
    */
   public static void broadeningLocationsSearch(String companyName, String location)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -222,6 +227,7 @@ public final class LocationSearchSample {
             .setSearchMode("JOB_SEARCH");
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END broadening_location_search]

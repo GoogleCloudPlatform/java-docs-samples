@@ -63,7 +63,8 @@ public final class GeneralSearchSample {
   /**
    * Simple search jobs with keyword.
    */
-  public static void basicSearcJobs(String companyName, String query) throws IOException {
+  public static void basicSearcJobs(String companyName, String query)
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -92,6 +93,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
@@ -103,7 +105,7 @@ public final class GeneralSearchSample {
    * Search on category filter.
    */
   public static void categoryFilterSearch(String companyName, List<String> categories)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -131,6 +133,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
@@ -142,7 +145,7 @@ public final class GeneralSearchSample {
    * Search on employment types.
    */
   public static void employmentTypesSearch(String companyName, List<String> employmentTypes)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -170,6 +173,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
@@ -183,7 +187,7 @@ public final class GeneralSearchSample {
    * "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z" e.g. "2017-01-15T01:30:15.01Z"
    */
   public static void dateRangeSearch(String companyName, String startTime, String endTime)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -216,6 +220,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
@@ -227,7 +232,7 @@ public final class GeneralSearchSample {
    * Search on language codes.
    */
   public static void languageCodeSearch(String companyName, List<String> languageCodes)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -255,6 +260,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
@@ -266,7 +272,7 @@ public final class GeneralSearchSample {
    * Search on company display name.
    */
   public static void companyDisplayNameSearch(String companyName, List<String> companyDisplayNames)
-      throws IOException {
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -294,6 +300,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
@@ -304,7 +311,8 @@ public final class GeneralSearchSample {
   /**
    * Search on compensation.
    */
-  public static void compensationSearch(String companyName) throws IOException {
+  public static void compensationSearch(String companyName)
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -347,6 +355,7 @@ public final class GeneralSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
