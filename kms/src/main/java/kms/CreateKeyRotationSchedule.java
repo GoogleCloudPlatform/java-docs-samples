@@ -63,7 +63,7 @@ public class CreateKeyRotationSchedule {
 
               // Rotate every 30 days.
               .setRotationPeriod(
-                  Duration.newBuilder().setSeconds(java.time.Duration.ofHours(24).getSeconds()))
+                  Duration.newBuilder().setSeconds(java.time.Duration.ofDays(30).getSeconds()))
 
               // Start the first rotation in 24 hours.
               .setNextRotationTime(Timestamp.newBuilder().setSeconds(tomorrow))
