@@ -15,19 +15,27 @@
  */
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import keyviz.ReadData.ReadDataOptions;
+import keyviz.ReadData.ReadFromTableFn;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import keyviz.LoadData;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -38,11 +46,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class HelloWorldTest {
+public class KeyVizArtTest {
+
   private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID =
-      "mobile-time-series-" + UUID.randomUUID().toString().substring(0, 20);
-  private static final String COLUMN_FAMILY_NAME = "stats_summary";
+      "key-viz-" + UUID.randomUUID().toString().substring(0, 20);
+  private static final String COLUMN_FAMILY_NAME = "cf";
+  private static final double GIGABYTES_WRITTEN = .01;
+  private static final int MEGABYTES_PER_ROW = 1;
 
   private static String projectId;
   private static String instanceId;
@@ -65,16 +76,6 @@ public class HelloWorldTest {
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_ID));
       descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
       admin.createTable(descriptor);
-
-      Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(TABLE_ID)));
-
-      String rowKey = "phone#4c410523#20190401";
-      Put put = new Put(Bytes.toBytes(rowKey));
-
-      put.addColumn(
-          Bytes.toBytes(COLUMN_FAMILY_NAME), Bytes.toBytes("os_name"), Bytes.toBytes("android"));
-      table.put(put);
-
     } catch (Exception e) {
       System.out.println("Error during beforeClass: \n" + e.toString());
     }
@@ -99,12 +100,14 @@ public class HelloWorldTest {
   }
 
   @Test
-  public void testWrite() {
-    HelloWorldWrite.main(
-        new String[] {
-          "--bigtableProjectId=" + projectId,
-          "--bigtableInstanceId=" + instanceId,
-          "--bigtableTableId=" + TABLE_ID
+  public void testWriteAndRead() {
+    LoadData.main(
+        new String[]{
+            "--bigtableProjectId=" + projectId,
+            "--bigtableInstanceId=" + instanceId,
+            "--bigtableTableId=" + TABLE_ID,
+            "--gigabytesWritten=" + GIGABYTES_WRITTEN,
+            "--megabytesPerRow=" + MEGABYTES_PER_ROW
         });
 
     long count = 0;
@@ -121,19 +124,47 @@ public class HelloWorldTest {
       System.out.println(
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
-    assertThat(count).isGreaterThan(0);
-  }
 
-  @Test
-  public void testRead() {
-    HelloWorldRead.main(
-        new String[] {
-          "--bigtableProjectId=" + projectId,
-          "--bigtableInstanceId=" + instanceId,
-          "--bigtableTableId=" + TABLE_ID
-        });
+    assertEquals(10, count);
+
+    ReadDataOptions options =
+        PipelineOptionsFactory.fromArgs("--bigtableProjectId=" + projectId,
+            "--bigtableInstanceId=" + instanceId,
+            "--bigtableTableId=" + TABLE_ID,
+            "--gigabytesWritten=" + GIGABYTES_WRITTEN,
+            "--megabytesPerRow=" + MEGABYTES_PER_ROW,
+            "--filePath=gs://keyviz-art/maxgrid.txt").withValidation().as(ReadDataOptions.class);
+    Pipeline p = Pipeline.create(options);
+    CloudBigtableTableConfiguration bigtableTableConfig =
+        new CloudBigtableTableConfiguration.Builder()
+            .withProjectId(options.getBigtableProjectId())
+            .withInstanceId(options.getBigtableInstanceId())
+            .withTableId(options.getBigtableTableId())
+            .build();
+
+    // Initiates a new pipeline every second
+    p.apply(Create.of(1l))
+        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
+    p.run().waitUntilFinish();
 
     String output = bout.toString();
-    assertThat(output).contains("phone#");
+    assertThat(output).contains("got 10 rows");
+
+    options =
+        PipelineOptionsFactory.fromArgs("--bigtableProjectId=" + projectId,
+            "--bigtableInstanceId=" + instanceId,
+            "--bigtableTableId=" + TABLE_ID,
+            "--gigabytesWritten=" + GIGABYTES_WRITTEN,
+            "--megabytesPerRow=" + MEGABYTES_PER_ROW,
+            "--filePath=gs://keyviz-art/halfgrid.txt").withValidation().as(ReadDataOptions.class);
+    p = Pipeline.create(options);
+
+    // Initiates a new pipeline every second
+    p.apply(Create.of(1l))
+        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
+    p.run().waitUntilFinish();
+
+    output = bout.toString();
+    assertThat(output).contains("got 5 rows");
   }
 }
