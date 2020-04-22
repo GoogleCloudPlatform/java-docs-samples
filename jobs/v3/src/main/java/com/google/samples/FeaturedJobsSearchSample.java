@@ -69,7 +69,8 @@ public final class FeaturedJobsSearchSample {
   // [START search_featured_job]
 
   /** Searches featured jobs. */
-  public static void searchFeaturedJobs(String companyName) throws IOException {
+  public static void searchFeaturedJobs(String companyName)
+      throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -98,6 +99,7 @@ public final class FeaturedJobsSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END search_featured_job]

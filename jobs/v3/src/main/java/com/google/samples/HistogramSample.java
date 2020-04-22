@@ -44,7 +44,7 @@ public final class HistogramSample {
   /**
    * Histogram search
    */
-  public static void histogramSearch(String companyName) throws IOException {
+  public static void histogramSearch(String companyName) throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -81,6 +81,7 @@ public final class HistogramSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
 
     System.out.println(searchJobsResponse);
   }
