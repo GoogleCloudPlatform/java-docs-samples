@@ -41,7 +41,7 @@ public final class EmailAlertSearchSample {
   /**
    * Search jobs for alert.
    */
-  public static void searchForAlerts(String companyName) throws IOException {
+  public static void searchForAlerts(String companyName) throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -66,6 +66,7 @@ public final class EmailAlertSearchSample {
             .jobs()
             .searchForAlert(DEFAULT_PROJECT_ID, request)
             .execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END search_for_alerts]
