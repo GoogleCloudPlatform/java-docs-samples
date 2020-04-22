@@ -73,7 +73,7 @@ class ImportDataset {
     } catch (TimeoutException e) {
       System.out.println("The operation's polling period was not long enough.");
       System.out.println("You can use the Operation's name to get the current status.");
-      System.out.println("The import job will still complete as expected.");
+      System.out.println("The import job is still running and will complete as expected.");
       throw e;
     }
   }
