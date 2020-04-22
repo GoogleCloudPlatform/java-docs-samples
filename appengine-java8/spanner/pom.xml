@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>1.52.0</version>
+      <version>1.53.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
