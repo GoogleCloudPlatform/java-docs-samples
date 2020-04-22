@@ -68,7 +68,7 @@ class ImportDataset {
       // If you want to wait for the operation to finish, adjust the timeout appropriately. The
       // operation will still run if you choose not to wait for it to complete. You can check the
       // status of your operation using the operation's name.
-      Empty response = operation.get(30, TimeUnit.MINUTES);
+      Empty response = operation.get(45, TimeUnit.MINUTES);
       System.out.format("Dataset imported. %s%n", response);
     } catch (TimeoutException e) {
       System.out.println("The operation's polling period was not long enough.");
