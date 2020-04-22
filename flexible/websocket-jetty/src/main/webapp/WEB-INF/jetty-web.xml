@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Copyright 2019 Google LLC
 
@@ -13,7 +14,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
   <Set name="parentLoaderPriority">true</Set>
