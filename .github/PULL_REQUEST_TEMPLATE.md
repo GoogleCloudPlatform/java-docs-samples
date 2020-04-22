@@ -8,4 +8,4 @@ Fixes #issue
 - [ ] Environment Variables need to be set (ask us to set them)
 - [ ] Tests pass (`mvn -P lint clean verify`)
   * (Note- `Checkstyle` passing is required; `Spotbugs`, `ErrorProne`, `PMD`, etc. `ERROR`'s are advisory only)
-- [ ] Please **Merge** after approval.
+- [ ] Please **merge** this PR for me once it is approved.
