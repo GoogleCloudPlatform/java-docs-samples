@@ -10,6 +10,7 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.CheckedRunnable;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -35,8 +36,14 @@ public class ExampleIntegrationTest {
 
   @BeforeClass
   public static void setUp() throws IOException {
+    // Get the sample's base directory (the one containing a pom.xml file)
+    String baseDir = System.getProperty("basedir");
+
     // Emulate the function locally by running the Functions Framework Maven plugin
-    emulatorProcess = (new ProcessBuilder()).command("mvn", "function:run").start();
+    emulatorProcess = new ProcessBuilder()
+        .command("mvn", "function:run")
+        .directory(new File(baseDir))
+        .start();
   }
 
   @AfterClass
