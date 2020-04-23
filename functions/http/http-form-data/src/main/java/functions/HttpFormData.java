@@ -28,11 +28,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
-import javax.servlet.annotation.MultipartConfig;
 
-@MultipartConfig
 public class HttpFormData implements HttpFunction {
-  private static final Logger LOGGER = Logger.getLogger(HttpFormData.class.getName());
+  private static final Logger logger = Logger.getLogger(HttpFormData.class.getName());
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
@@ -51,7 +49,7 @@ public class HttpFormData implements HttpFunction {
         continue;
       }
 
-      LOGGER.info("Processed file: " + filename);
+      logger.info("Processed file: " + filename);
 
       // Note: GCF's temp directory is an in-memory file system
       // Thus, any files in it must fit in the instance's memory.
@@ -66,13 +64,14 @@ public class HttpFormData implements HttpFunction {
     }
 
     // This code will process other form fields.
-    for (String fieldName : request.getQueryParameters().keySet()) {
-      String firstFieldValue = request.getFirstQueryParameter(fieldName).get();
+    request.getQueryParameters().forEach(
+        (fieldName, fieldValues) -> {
+          String firstFieldValue = fieldValues.get(0);
 
-      // TODO(developer): process field values here
-      LOGGER.info(String.format(
-          "Processed field: %s (value: %s)", fieldName, firstFieldValue));
-    }
+          // TODO(developer): process field values here
+          logger.info(String.format(
+              "Processed field: %s (value: %s)", fieldName, firstFieldValue));
+        });
   }
 }
 // [END functions_http_form_data]

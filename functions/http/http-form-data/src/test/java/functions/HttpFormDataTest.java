@@ -23,6 +23,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import com.google.cloud.functions.HttpRequest;
+import com.google.cloud.functions.HttpRequest.HttpPart;
 import com.google.cloud.functions.HttpResponse;
 import com.google.common.testing.TestLogHandler;
 import java.io.BufferedWriter;
@@ -32,10 +33,8 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -91,17 +90,13 @@ public class HttpFormDataTest {
   public void functionsHttpFormData_shouldSaveFiles() throws IOException {
     when(request.getMethod()).thenReturn("POST");
 
-    ArrayList<HttpRequest.HttpPart> partsList = new ArrayList<>();
-
     InputStream stream = new ByteArrayInputStream("foo text%n".getBytes(StandardCharsets.UTF_8));
 
     MockHttpPart mockHttpPart = new MockHttpPart();
     mockHttpPart.setFileName("foo.txt");
     mockHttpPart.setInputStream(stream);
-    partsList.add(mockHttpPart);
 
-    HashMap<String, HttpRequest.HttpPart> httpParts = new HashMap<>();
-    httpParts.put("mock", mockHttpPart);
+    Map<String, HttpPart> httpParts = Map.of("mock", mockHttpPart);
     when(request.getParts()).thenReturn(httpParts);
 
     new HttpFormData().service(request, response);
@@ -113,10 +108,9 @@ public class HttpFormDataTest {
   @Test
   public void functionsHttpFormData_shouldProcessFields() throws IOException {
     when(request.getMethod()).thenReturn("POST");
-    when(request.getParts()).thenReturn(new HashMap<>());
+    when(request.getParts()).thenReturn(Map.of());
 
-    HashMap<String, List<String>> queryParams = new HashMap<>();
-    queryParams.put("foo", Arrays.asList(new String[]{"bar"}));
+    Map<String, List<String>> queryParams = Map.of("foo", List.of("bar"));
 
     when(request.getQueryParameters()).thenReturn(queryParams);
     when(request.getFirstQueryParameter("foo")).thenReturn(Optional.of("bar"));

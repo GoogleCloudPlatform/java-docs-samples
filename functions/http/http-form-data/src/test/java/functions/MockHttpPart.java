@@ -18,7 +18,6 @@ package functions;
 
 import com.google.cloud.functions.HttpRequest;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class MockHttpPart implements HttpRequest.HttpPart {
   }
 
   @Override
-  public InputStream getInputStream() throws IOException {
+  public InputStream getInputStream() {
     return inputStream;
   }
 
@@ -63,7 +62,7 @@ public class MockHttpPart implements HttpRequest.HttpPart {
   }
 
   @Override
-  public BufferedReader getReader() throws IOException {
+  public BufferedReader getReader() {
     return null;
   }
 
