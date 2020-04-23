@@ -40,7 +40,7 @@ public class HighVulnerabilitiesForImage {
     GrafeasClient client = ContainerAnalysisClient.create().getGrafeasClient();
     LinkedList<Occurrence> vulnerabilitylist = new LinkedList<Occurrence>();
     for (Occurrence o : client.listOccurrences(projectName, filterStr).iterateAll()) {
-      Severity severity = o.getVulnerability().getSeverity();
+      Severity severity = o.getVulnerability().getEffectiveSeverity();
       if (severity == Severity.HIGH || severity == Severity.CRITICAL) {
         vulnerabilitylist.add(o);
       }
