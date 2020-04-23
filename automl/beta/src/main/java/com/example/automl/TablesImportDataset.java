@@ -67,7 +67,7 @@ class TablesImportDataset {
       System.out.println("Processing import...");
 
       Empty response = client.importDataAsync(datasetFullId, inputConfigBuilder.build()).get();
-      System.out.format("Dataset imported. %s\n", response);
+      System.out.format("Dataset imported. %s%n", response);
     }
   }
 }

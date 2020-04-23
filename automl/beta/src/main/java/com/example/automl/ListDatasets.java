@@ -48,33 +48,33 @@ class ListDatasets {
       System.out.println("List of datasets:");
       for (Dataset dataset : client.listDatasets(request).iterateAll()) {
         // Display the dataset information
-        System.out.format("\nDataset name: %s\n", dataset.getName());
+        System.out.format("%nDataset name: %s%n", dataset.getName());
         // To get the dataset id, you have to parse it out of the `name` field. As dataset Ids are
         // required for other methods.
         // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
         String[] names = dataset.getName().split("/");
         String retrievedDatasetId = names[names.length - 1];
-        System.out.format("Dataset id: %s\n", retrievedDatasetId);
-        System.out.format("Dataset display name: %s\n", dataset.getDisplayName());
+        System.out.format("Dataset id: %s%n", retrievedDatasetId);
+        System.out.format("Dataset display name: %s%n", dataset.getDisplayName());
         System.out.println("Dataset create time:");
-        System.out.format("\tseconds: %s\n", dataset.getCreateTime().getSeconds());
-        System.out.format("\tnanos: %s\n", dataset.getCreateTime().getNanos());
+        System.out.format("\tseconds: %s%n", dataset.getCreateTime().getSeconds());
+        System.out.format("\tnanos: %s%n", dataset.getCreateTime().getNanos());
 
         // [END automl_video_object_tracking_list_datasets_beta]
         // [END automl_tables_list_datasets_beta]
         System.out.format(
-            "Video classification dataset metadata: %s\n",
+            "Video classification dataset metadata: %s%n",
             dataset.getVideoClassificationDatasetMetadata());
         // [END automl_video_classification_list_datasets_beta]
 
         // [START automl_video_object_tracking_list_datasets_beta]
         System.out.format(
-            "Video object tracking dataset metadata: %s\n",
+            "Video object tracking dataset metadata: %s%n",
             dataset.getVideoObjectTrackingDatasetMetadata());
         // [END automl_video_object_tracking_list_datasets_beta]
 
         // [START automl_tables_list_datasets_beta]
-        System.out.format("Tables dataset metadata: %s\n", dataset.getTablesDatasetMetadata());
+        System.out.format("Tables dataset metadata: %s%n", dataset.getTablesDatasetMetadata());
 
         // [START automl_video_classification_list_datasets_beta]
         // [START automl_video_object_tracking_list_datasets_beta]

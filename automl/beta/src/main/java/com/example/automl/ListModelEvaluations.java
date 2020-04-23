@@ -48,16 +48,16 @@ class ListModelEvaluations {
       for (ModelEvaluation modelEvaluation :
           client.listModelEvaluations(modelEvaluationsrequest).iterateAll()) {
 
-        System.out.format("Model Evaluation Name: %s\n", modelEvaluation.getName());
+        System.out.format("Model Evaluation Name: %s%n", modelEvaluation.getName());
         System.out.format("Model Annotation Spec Id: %s", modelEvaluation.getAnnotationSpecId());
         System.out.println("Create Time:");
-        System.out.format("\tseconds: %s\n", modelEvaluation.getCreateTime().getSeconds());
+        System.out.format("\tseconds: %s%n", modelEvaluation.getCreateTime().getSeconds());
         System.out.format("\tnanos: %s", modelEvaluation.getCreateTime().getNanos() / 1e9);
         System.out.format(
-            "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
+            "Evalution Example Count: %d%n", modelEvaluation.getEvaluatedExampleCount());
 
         System.out.format(
-            "Tables Model Evaluation Metrics: %s\n",
+            "Tables Model Evaluation Metrics: %s%n",
             modelEvaluation.getClassificationEvaluationMetrics());
       }
     }
