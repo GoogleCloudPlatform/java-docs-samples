@@ -4,6 +4,7 @@ package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.gson.Gson;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -33,6 +35,7 @@ public class ExampleIntegrationTest {
 
   private static Process emulatorProcess = null;
   private static HttpClient client = HttpClientBuilder.create().build();
+  private static final Gson gson = new Gson();
 
   @BeforeClass
   public static void setUp() throws IOException {
@@ -63,7 +66,7 @@ public class ExampleIntegrationTest {
     String nameBase64 = Base64.getEncoder().encodeToString(name.getBytes(StandardCharsets.UTF_8));
 
     String expected = String.format("Hello %s!", name);
-    String jsonStr = String.format("{'data': {'data': '%s'}}", nameBase64);
+    String jsonStr = gson.toJson(Map.of("data", Map.of("data", nameBase64)));
 
     HttpPost postRequest =  new HttpPost(URI.create(functionUrl));
     postRequest.setEntity(new StringEntity(jsonStr));
