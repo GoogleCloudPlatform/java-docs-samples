@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class ExampleSystemTest {
 
-  // TODO<developer>: set these values (as environment variables, or hard-coded into your test)
+  // TODO<developer>: set these values (as environment variables)
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
   private static final String TOPIC_NAME = System.getenv("FUNCTIONS_SYSTEM_TEST_TOPIC");
   private static final String FUNCTION_DEPLOYED_NAME = "HelloPubSub";
@@ -48,10 +48,10 @@ public class ExampleSystemTest {
   private static String getLogEntriesAsString(String startTimestamp) {
     // Construct Stackdriver logging filter
     // See this page for more info: https://cloud.google.com/logging/docs/view/advanced-queries
-    String filter = "resource.type=\"cloud_function\"";
-    filter += " AND severity=INFO";
-    filter += " AND resource.labels.function_name=" + FUNCTION_DEPLOYED_NAME;
-    filter += String.format(" AND timestamp>=\"%s\"", startTimestamp);
+    String filter = "resource.type=\"cloud_function\""
+        + " AND severity=INFO"
+        + " AND resource.labels.function_name=" + FUNCTION_DEPLOYED_NAME
+        + String.format(" AND timestamp>=\"%s\"", startTimestamp);
 
     // Get Stackdriver logging entries
     Page<LogEntry> logEntries =
