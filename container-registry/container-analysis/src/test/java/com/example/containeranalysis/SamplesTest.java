@@ -347,6 +347,7 @@ public class SamplesTest {
         .setNoteName(NoteName.of(PROJECT_ID, vulnNoteId).toString())
         .setResourceUri(imageUrl)
         .setVulnerability(VulnerabilityOccurrence.newBuilder()
+            .setEffectiveSeverity(Severity.CRITICAL)
             .addPackageIssue(PackageIssue.newBuilder()
                 .setAffectedCpeUri("your-uri-here")
                 .setAffectedPackage("your-package-here")
