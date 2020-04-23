@@ -17,7 +17,6 @@
 package functions;
 
 // [START functions_storage_unit_test]
-
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
