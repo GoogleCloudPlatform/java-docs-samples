@@ -1,5 +1,6 @@
 package functions;
 
+// [START functions_pubsub_system_test]
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.paging.Page;
@@ -97,3 +98,4 @@ public class ExampleSystemTest {
     assertThat(logEntry).contains(name);
   }
 }
+// [END functions_pubsub_integration_test]
