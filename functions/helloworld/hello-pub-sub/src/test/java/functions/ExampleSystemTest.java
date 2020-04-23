@@ -84,7 +84,7 @@ public class ExampleSystemTest {
     // Keep retrying until the logs contain the desired invocation's log entry
     // (If the invocation failed, the retry process will eventually time out)
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(12)
+        .maxAttempts(8)
         .intervalFunction(IntervalFunction.ofExponentialBackoff(1000, 2))
         .retryOnResult(s -> !s.toString().contains(name))
         .build());
