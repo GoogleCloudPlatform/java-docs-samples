@@ -23,6 +23,7 @@ import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.TextExtractionDatasetMetadata;
+import com.sun.applet2.preloader.CancelException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -95,8 +96,16 @@ public class ImportDatasetTest {
   @Test
   public void testImportDataset()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
-    String got = bout.toString();
-    assertThat(got).contains("Dataset imported.");
+    try {
+      ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
+      String got = bout.toString();
+      assertThat(got).contains("Dataset imported.");
+    } catch(CancelException e) {
+      System.out.println(e);
+      System.out.println(e.getMessage());
+      System.out.println(e.getCause().getMessage());
+      System.out.println(e.getCause().toString());
+      throw e;
+    }
   }
 }
