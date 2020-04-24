@@ -95,17 +95,17 @@ public class ImportDatasetTest {
 
   @Test
   public void testImportDataset()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+      throws Exception {
     try {
       ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
       String got = bout.toString();
       assertThat(got).contains("Dataset imported.");
-    } catch(CancellationException e) {
+    } catch (CancellationException e) {
       System.err.println(e);
       System.err.println(e.getMessage());
       System.err.println(e.getCause().getMessage());
       System.err.println(e.getCause().toString());
-      throw e;
+      throw new Exception(e);
     }
   }
 }
