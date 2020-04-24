@@ -70,15 +70,15 @@ class TablesPredict {
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
         TablesAnnotation tablesAnnotation = annotationPayload.getTables();
         System.out.format(
-            "Classification label: %s\n", tablesAnnotation.getValue().getStringValue());
-        System.out.format("Classification score: %.3f\n", tablesAnnotation.getScore());
+            "Classification label: %s%n", tablesAnnotation.getValue().getStringValue());
+        System.out.format("Classification score: %.3f%n", tablesAnnotation.getScore());
         // Get features of top importance
         tablesAnnotation
             .getTablesModelColumnInfoList()
             .forEach(
                 info ->
                     System.out.format(
-                        "\tColumn: %s - Importance: %.2f\n",
+                        "\tColumn: %s - Importance: %.2f%n",
                         info.getColumnDisplayName(), info.getFeatureImportance()));
       }
     }

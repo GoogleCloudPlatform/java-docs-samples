@@ -50,13 +50,13 @@ class TablesCreateDataset {
       Dataset createdDataset = client.createDataset(projectLocation, dataset);
 
       // Display the dataset information.
-      System.out.format("Dataset name: %s\n", createdDataset.getName());
+      System.out.format("Dataset name: %s%n", createdDataset.getName());
       // To get the dataset id, you have to parse it out of the `name` field. As dataset Ids are
       // required for other methods.
       // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
       String[] names = createdDataset.getName().split("/");
       String datasetId = names[names.length - 1];
-      System.out.format("Dataset id: %s\n", datasetId);
+      System.out.format("Dataset id: %s%n", datasetId);
     }
   }
 }
