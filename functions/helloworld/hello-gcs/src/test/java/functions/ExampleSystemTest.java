@@ -66,7 +66,7 @@ public class ExampleSystemTest {
   }
 
   @Test
-  public void helloGcs_shouldRunOnGcf() throws Exception {
+  public void helloGcs_shouldRunOnGcf() {
     String filename = String.format("test-%s.txt", UUID.randomUUID());
     String expected = String.format("File %s uploaded.", filename);
 
