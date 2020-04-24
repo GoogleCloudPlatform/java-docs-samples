@@ -44,10 +44,10 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging.
-    gcloud components install beta --quiet
-    gcloud components update --quiet
+    #gcloud components install beta --quiet
+    #gcloud components update --quiet
     echo "********** GCLOUD INFO ***********"
-    gcloud -v
+    #gcloud -v
     echo "********** MAVEN INFO  ***********"
     mvn -v
     echo "********** GRADLE INFO ***********"
@@ -76,9 +76,9 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # spellcheck source=src/cts_v4_secrets.txt
     source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
     # Activate service account
-    gcloud auth activate-service-account \
-        --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
-        --project="$GOOGLE_CLOUD_PROJECT"
+    #gcloud auth activate-service-account \
+    #    --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
+    #    --project="$GOOGLE_CLOUD_PROJECT"
 
     cd github/java-docs-samples
 fi
