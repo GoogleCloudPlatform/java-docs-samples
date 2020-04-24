@@ -17,7 +17,9 @@
 package com.example.automl;
 
 // [START automl_import_dataset_beta]
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.DatasetName;
 import com.google.cloud.automl.v1beta1.GcsSource;
 import com.google.cloud.automl.v1beta1.InputConfig;
@@ -27,6 +29,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.threeten.bp.Duration;
 
 class ImportDataset {
 
@@ -42,10 +45,16 @@ class ImportDataset {
   // Import a dataset
   static void importDataset(String projectId, String datasetId, String path)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Duration totalTimeout = Duration.ofMinutes(45);
+    RetrySettings retrySettings = RetrySettings.newBuilder().setTotalTimeout(totalTimeout).build();
+    AutoMlSettings.Builder builder = AutoMlSettings.newBuilder();
+    builder.importDataSettings().setRetrySettings(retrySettings).build();
+    AutoMlSettings settings = builder.build();
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AutoMlClient client = AutoMlClient.create()) {
+    try (AutoMlClient client = AutoMlClient.create(settings)) {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
 
