@@ -24,7 +24,11 @@ class CancelOperation {
 
   static void cancelOperation() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String operationFullId = "projects/[projectId]/locations/us-central1/operations/[operationId]";
+    String projectId = "YOUR_PROJECT_ID";
+    String location = "us-central1";
+    String operationId = "YOUR_OPERATION_ID";
+    String operationFullId =
+        String.format("projects/%s/locations/%s/operations/%s", projectId, location, operationId);
     cancelOperation(operationFullId);
   }
 
