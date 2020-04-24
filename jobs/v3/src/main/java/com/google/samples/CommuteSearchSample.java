@@ -44,7 +44,7 @@ public final class CommuteSearchSample {
 
   // [START commute_search]
 
-  public static void commuteSearch(String companyName) throws IOException {
+  public static void commuteSearch(String companyName) throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
         new RequestMetadata()
@@ -77,6 +77,7 @@ public final class CommuteSearchSample {
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+    Thread.sleep(1000);
     System.out.println(response);
   }
   // [END commute_search]

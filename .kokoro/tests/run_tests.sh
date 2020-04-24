@@ -73,6 +73,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
     # shellcheck source=src/functions_secrets.txt
     source "${KOKORO_GFILE_DIR}/functions_secrets.txt"
+    # spellcheck source=src/cts_v4_secrets.txt
+    source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
@@ -155,13 +157,6 @@ for file in **/pom.xml; do
     # shellcheck disable=SC2076
     if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
         echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
-        continue
-    fi
-
-    # Skip tests with the kokoro.skipTests property defined in pom.xml
-    SKIP_TESTS=$(mvn -q -DforceStdout help:evaluate -Dexpression=kokoro.skipTests || grep -i true)
-    if [[ -z $? ]]; then
-        echo -e "\n Skipping tests: kokoro.skipTests set to 'true' in pom.xml\n"
         continue
     fi
 

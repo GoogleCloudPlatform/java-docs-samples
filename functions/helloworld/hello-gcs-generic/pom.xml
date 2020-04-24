@@ -91,7 +91,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.1</version>
+        <version>0.9.2</version>
         <configuration>
           <functionTarget>functions.HelloGcsGeneric</functionTarget>
         </configuration>
@@ -101,7 +101,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>

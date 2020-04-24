@@ -47,23 +47,23 @@ class GetModelEvaluation {
       // Get complete detail of the model evaluation.
       ModelEvaluation modelEvaluation = client.getModelEvaluation(modelEvaluationFullId);
 
-      System.out.format("Model Evaluation Name: %s\n", modelEvaluation.getName());
+      System.out.format("Model Evaluation Name: %s%n", modelEvaluation.getName());
       System.out.format("Model Annotation Spec Id: %s", modelEvaluation.getAnnotationSpecId());
       System.out.println("Create Time:");
-      System.out.format("\tseconds: %s\n", modelEvaluation.getCreateTime().getSeconds());
+      System.out.format("\tseconds: %s%n", modelEvaluation.getCreateTime().getSeconds());
       System.out.format("\tnanos: %s", modelEvaluation.getCreateTime().getNanos() / 1e9);
       System.out.format(
-          "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
+          "Evalution Example Count: %d%n", modelEvaluation.getEvaluatedExampleCount());
 
       // [END automl_video_object_tracking_get_model_evaluation_beta]
       System.out.format(
-          "Classification Model Evaluation Metrics: %s\n",
+          "Classification Model Evaluation Metrics: %s%n",
           modelEvaluation.getClassificationEvaluationMetrics());
       // [END automl_video_classification_get_model_evaluation_beta]
 
       // [START automl_video_object_tracking_get_model_evaluation_beta]
       System.out.format(
-          "Video Object Tracking Evaluation Metrics: %s\n",
+          "Video Object Tracking Evaluation Metrics: %s%n",
           modelEvaluation.getVideoObjectTrackingEvaluationMetrics());
       // [START automl_video_classification_get_model_evaluation_beta]
     }

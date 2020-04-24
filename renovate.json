@@ -1,7 +1,15 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    ":separateMajorReleases",
+    ":combinePatchMinorReleases",
+    ":ignoreUnstable",
+    ":prImmediately",
+    ":updateNotScheduled",
+    ":automergeDisabled",
+    ":autodetectPinVersions"
   ],
+
   "packageRules": [
     {
       "packagePatterns": [ "^com.google.appengine:" ],
@@ -28,5 +36,6 @@
     "automerge"
   ],
   "rebaseWhen": "never",
-  "masterIssue": true
+  "masterIssue": true,
+  "semanticCommits": true
 }

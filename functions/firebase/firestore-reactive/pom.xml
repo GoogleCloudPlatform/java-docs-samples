@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 
+<!-- [START functions_java_example_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -23,6 +24,8 @@
 
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-firebase-firestore-reactive</artifactId>
+  
+  <!-- [END functions_java_example_pom] -->
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -30,6 +33,7 @@
     <version>1.0.17</version>
   </parent>
 
+  <!-- [START functions_java_example_pom] -->
   <properties>
     <powermock.version>2.0.7</powermock.version>
     <maven.compiler.target>11</maven.compiler.target>
@@ -89,6 +93,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <!-- [END functions_java_example_pom] -->
 
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
@@ -108,6 +113,8 @@
     </profile>
   </profiles>
 
+  <!-- [START functions_java_example_pom] -->
+  
   <build>
     <plugins>
       <plugin>
@@ -122,7 +129,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.1</version>
+        <version>0.9.2</version>
         <configuration>
           <functionTarget>functions.FirebaseFirestoreReactive</functionTarget>
         </configuration>
@@ -132,7 +139,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M4</version>  
+        <!-- [END functions_java_example_pom] -->
         <configuration>
           <includes>
             <include>**/*Test.java</include>
@@ -141,6 +149,7 @@
           <reportNameSuffix>sponge_log</reportNameSuffix>
           <trimStackTrace>false</trimStackTrace>
         </configuration>
+        <!-- [START functions_java_example_pom] -->
       </plugin>
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
@@ -170,3 +179,4 @@
     </plugins>
   </build>
 </project>
+<!-- [END functions_java_example_pom] -->

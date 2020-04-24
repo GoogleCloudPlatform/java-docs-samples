@@ -27,18 +27,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <apache_beam.version>2.19.0</apache_beam.version>
+    <apache_beam.version>2.20.0</apache_beam.version>
   </properties>
 
   <dependencies>
-    <!-- [START bigtable_beam_connector_dependency] -->
-    <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-beam</artifactId>
-      <version>1.14.0</version>
-    </dependency>
-    <!-- [END bigtable_beam_connector_dependency] -->
-
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-direct-java</artifactId>
@@ -54,6 +46,14 @@
       <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
+
+    <!-- [START bigtable_beam_connector_dependency] -->
+    <dependency>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase-beam</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <!-- [END bigtable_beam_connector_dependency] -->
 
     <dependency>
       <groupId>junit</groupId>

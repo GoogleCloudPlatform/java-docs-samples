@@ -42,7 +42,7 @@ class DeleteDataset {
       // Get the full path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
       Empty response = client.deleteDatasetAsync(datasetFullId).get();
-      System.out.format("Dataset deleted. %s\n", response);
+      System.out.format("Dataset deleted. %s%n", response);
     }
   }
 }

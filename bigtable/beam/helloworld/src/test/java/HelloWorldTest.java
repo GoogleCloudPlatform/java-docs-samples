@@ -104,8 +104,7 @@ public class HelloWorldTest {
         new String[] {
           "--bigtableProjectId=" + projectId,
           "--bigtableInstanceId=" + instanceId,
-          "--bigtableTableId=" + TABLE_ID,
-          "--runner=DirectRunner"
+          "--bigtableTableId=" + TABLE_ID
         });
 
     long count = 0;
@@ -131,8 +130,7 @@ public class HelloWorldTest {
         new String[] {
           "--bigtableProjectId=" + projectId,
           "--bigtableInstanceId=" + instanceId,
-          "--bigtableTableId=" + TABLE_ID,
-          "--runner=DirectRunner"
+          "--bigtableTableId=" + TABLE_ID
         });
 
     String output = bout.toString();

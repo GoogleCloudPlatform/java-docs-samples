@@ -17,6 +17,7 @@
 package functions;
 
 // [START functions_concepts_requests]
+// [START functions_tips_connection_pooling]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -31,6 +32,7 @@ import java.time.Duration;
 public class SendHttpRequest implements HttpFunction {
 
   // Create a client with some reasonable defaults. This client can be reused for multiple requests.
+  // (java.net.httpClient also pools connections automatically by default.)
   private static HttpClient client =
       HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
@@ -52,3 +54,4 @@ public class SendHttpRequest implements HttpFunction {
   }
 }
 // [END functions_concepts_requests]
+// [END functions_tips_connection_pooling]
