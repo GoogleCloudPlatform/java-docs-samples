@@ -27,10 +27,8 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.Statement;
 import com.google.common.testing.TestLogHandler;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Logger;
 import org.junit.AfterClass;
@@ -76,9 +74,6 @@ public class HelloSpannerTest {
     request = PowerMockito.mock(HttpRequest.class);
     response = PowerMockito.mock(HttpResponse.class);
     client = PowerMockito.mock(DatabaseClient.class);
-
-    BufferedReader reader = new BufferedReader(new StringReader("{}"));
-    PowerMockito.when(request.getReader()).thenReturn(reader);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);

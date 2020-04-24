@@ -53,7 +53,9 @@ public class HelloSpanner implements HttpFunction {
     private SpannerHolder() {}
 
     // Initialize the {@link Spanner} instance in a method and not as a static variable, as it
-    // might throw an error, and we want to catch and log that specific error.
+    // might throw an error, and we want to catch and log that specific error. An administrator must
+    // take action to mitigate the reason for the initialization failure, for example ensuring that
+    // the service account being used to access Cloud Spanner has permission to do so.
     DatabaseClient get() throws Throwable {
       if (!initialized) {
         synchronized (lock) {
@@ -95,27 +97,27 @@ public class HelloSpanner implements HttpFunction {
 
   @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
-    BufferedWriter w = response.getWriter();
+    BufferedWriter writer = response.getWriter();
     try {
       DatabaseClient client = getClient();
       try (ResultSet rs =
           client
               .singleUse()
               .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
-        w.write("Albums:\n");
+        writer.write("Albums:\n");
         while (rs.next()) {
-          w.write(
+          writer.write(
               String.format(
                   "%d %d %s\n",
                   rs.getLong("SingerId"), rs.getLong("AlbumId"), rs.getString("AlbumTitle")));
         }
       } catch (SpannerException e) {
-        w.write(String.format("Error querying database: %s\n", e.getMessage()));
+        writer.write(String.format("Error querying database: %s\n", e.getMessage()));
         response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, e.getMessage());
       }
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE, "Spanner example failed", t);
-      w.write(String.format("Error setting up Spanner: %s\n", t.getMessage()));
+      writer.write(String.format("Error setting up Spanner: %s\n", t.getMessage()));
       response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, t.getMessage());
     }
   }
