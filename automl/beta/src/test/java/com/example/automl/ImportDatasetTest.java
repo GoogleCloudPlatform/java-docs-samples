@@ -19,6 +19,7 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.api.gax.rpc.CancelledException;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.LocationName;
@@ -100,7 +101,7 @@ public class ImportDatasetTest {
       ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
       String got = bout.toString();
       assertThat(got).contains("Dataset imported.");
-    } catch(CancelException e) {
+    } catch(CancelledException e) {
       System.out.println(e);
       System.out.println(e.getMessage());
       System.out.println(e.getCause().getMessage());
