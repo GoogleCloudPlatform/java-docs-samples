@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package functions;
 
 // [START functions_storage_system_test]
@@ -54,7 +70,8 @@ public class ExampleSystemTest {
     Page<LogEntry> logEntries =
         loggingClient.listLogEntries(
             Logging.EntryListOption.filter(filter),
-            Logging.EntryListOption.sortOrder(Logging.SortingField.TIMESTAMP, Logging.SortingOrder.DESCENDING)
+            Logging.EntryListOption.sortOrder(
+                Logging.SortingField.TIMESTAMP, Logging.SortingOrder.DESCENDING)
         );
 
     // Serialize Stackdriver logging entries + collect them into a single string
@@ -68,7 +85,6 @@ public class ExampleSystemTest {
   @Test
   public void helloGcs_shouldRunOnGcf() {
     String filename = String.format("test-%s.txt", UUID.randomUUID());
-    String expected = String.format("File %s uploaded.", filename);
 
     // Subtract time to work-around local-GCF clock difference
     Instant startInstant = Instant.now().minus(Duration.ofMinutes(4));
@@ -80,10 +96,11 @@ public class ExampleSystemTest {
 
     // Keep retrying until the logs contain the desired invocation's log entry
     // (If the invocation failed, the retry process will eventually time out)
+    String expected = String.format("File %s uploaded.", filename);
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
         .maxAttempts(8)
         .intervalFunction(IntervalFunction.ofExponentialBackoff(1000, 2))
-        .retryOnResult(s -> !s.toString().contains(filename))
+        .retryOnResult(s -> !s.toString().contains(expected))
         .build());
     Retry retry = registry.retry(filename);
     String logEntry = Retry
