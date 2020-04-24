@@ -85,8 +85,6 @@ public class ExampleIntegrationTest {
             "eventType", "google.storage.object.finalize")
     ));
 
-    String expected = String.format("File %s uploaded.", name);
-
     HttpPost postRequest =  new HttpPost(URI.create(functionUrl));
     postRequest.setEntity(new StringEntity(jsonStr));
 
@@ -110,7 +108,8 @@ public class ExampleIntegrationTest {
     stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
 
     // Verify desired name value is present
-    assertThat(stdoutBytes.toString(StandardCharsets.UTF_8)).contains(expected);
+    assertThat(stdoutBytes.toString(StandardCharsets.UTF_8)).contains(
+        String.format("File %s uploaded.", name));
   }
 }
 // [END functions_storage_integration_test]
