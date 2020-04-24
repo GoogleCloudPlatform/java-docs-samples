@@ -65,7 +65,7 @@ public class TablesImportDatasetTest {
   @Test
   public void testTablesImportDataset() {
     try {
-      ImportDataset.importDataset(
+      TablesImportDataset.importDataset(
           PROJECT_ID, "TEN0000000000000000000", "gs://cloud-ml-tables-data/bank-marketing.csv");
       String got = bout.toString();
       assertThat(got).contains("The Dataset doesn't exist or is inaccessible for use with AutoMl.");
