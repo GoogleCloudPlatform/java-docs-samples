@@ -25,11 +25,13 @@ import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class ImportDataset {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String datasetId = "YOUR_DATASET_ID";
@@ -39,7 +41,7 @@ class ImportDataset {
 
   // Import a dataset
   static void importDataset(String projectId, String datasetId, String path)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -55,7 +57,7 @@ class ImportDataset {
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
       System.out.println("Processing import...");
 
-      Empty response = client.importDataAsync(datasetFullId, inputConfig).get();
+      Empty response = client.importDataAsync(datasetFullId, inputConfig).get(45, TimeUnit.MINUTES);
       System.out.format("Dataset imported. %s\n", response);
     }
   }

@@ -35,7 +35,7 @@ class TablesImportDataset {
     String projectId = "YOUR_PROJECT_ID";
     String datasetId = "YOUR_DATASET_ID";
     String path = "gs://BUCKET_ID/path/to//data.csv or bq://project_id.dataset_id.table_id";
-    importDataset(projectId, datasetId, path);
+//    importDataset(projectId, datasetId, path);
   }
 
   // Import a dataset via BigQuery or Google Cloud Storage
