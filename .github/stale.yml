@@ -6,6 +6,14 @@ daysUntilClose: 7
 exemptLabels:
   - pinned
   - security
+  - type: bug
+  - type: cleanup
+  - type: process
+  - type: feature request
+  - type: docs
+  - buildcop: issue
+  - buildcop: flaky
+  - :rotating_light:
 
 # Label to use when marking an issue as stale
 staleLabel: stale-wontfix
