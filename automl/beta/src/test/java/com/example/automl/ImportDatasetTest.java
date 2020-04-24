@@ -101,10 +101,10 @@ public class ImportDatasetTest {
       String got = bout.toString();
       assertThat(got).contains("Dataset imported.");
     } catch(CancellationException e) {
-      System.out.println(e);
-      System.out.println(e.getMessage());
-      System.out.println(e.getCause().getMessage());
-      System.out.println(e.getCause().toString());
+      System.err.println(e);
+      System.err.println(e.getMessage());
+      System.err.println(e.getCause().getMessage());
+      System.err.println(e.getCause().toString());
       throw e;
     }
   }
