@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
@@ -101,7 +102,7 @@ public class ImportDatasetTest {
       ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
       String got = bout.toString();
       assertThat(got).contains("Dataset imported.");
-    } catch(CancelledException e) {
+    } catch(CancellationException e) {
       System.out.println(e);
       System.out.println(e.getMessage());
       System.out.println(e.getCause().getMessage());
