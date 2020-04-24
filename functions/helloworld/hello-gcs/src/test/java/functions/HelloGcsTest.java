@@ -17,7 +17,6 @@
 package functions;
 
 // [START functions_storage_unit_test]
-
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
@@ -70,7 +69,8 @@ public class HelloGcsTest {
     new HelloGcs().accept(event, context);
 
     String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
-    assertThat("Unsupported event type: google.storage.object.metadataUpdate").isEqualTo(message);
+    assertThat("Unsupported event type: google.storage.object.metadataUpdate").isEqualTo(
+        message);
   }
 }
 // [END functions_storage_unit_test]
