@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 
+<!-- [START functions_groovy_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -23,15 +24,19 @@
 
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-groovy-hello-world</artifactId>
-
+  
+  <!-- [END functions_groovy_pom] -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.17</version>
   </parent>
-
+  
+  <!-- [START functions_groovy_pom] -->
   <properties>
+    <!-- [END functions_groovy_pom] -->
     <powermock.version>2.0.7</powermock.version>
+    <!-- [START functions_groovy_pom] -->
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +44,7 @@
   </properties>
 
   <dependencies>
+    <!-- [END functions_groovy_pom] -->
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -85,6 +91,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- [START functions_groovy_pom] -->
     <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
@@ -100,6 +107,8 @@
       <type>pom</type>
     </dependency>
   </dependencies>
+  
+  <!-- [END functions_groovy_pom] -->
 
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
@@ -119,6 +128,7 @@
     </profile>
   </profiles>
 
+  <!-- [START functions_groovy_pom] -->
   <build>
     <plugins>
       <plugin>
@@ -163,6 +173,7 @@
           </dependency>
         </dependencies>
       </plugin>
+      <!-- [END functions_groovy_pom] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -173,6 +184,7 @@
           <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
+      <!-- [START functions_groovy_pom] -->
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -201,3 +213,4 @@
     </plugins>
   </build>
 </project>
+<!-- [END functions_groovy_pom] -->
