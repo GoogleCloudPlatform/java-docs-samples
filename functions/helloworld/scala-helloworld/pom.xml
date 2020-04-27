@@ -48,7 +48,7 @@
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>2.13.2</version>
-    </dependency>=
+    </dependency>
     <!-- [END functions_scala_pom] -->
     <!-- The following dependencies are only required for testing -->
     <dependency>
