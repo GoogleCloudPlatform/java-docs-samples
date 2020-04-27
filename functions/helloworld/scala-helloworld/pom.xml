@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 
+<!-- [START functions_scala_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -24,14 +25,18 @@
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-scala-hello-world</artifactId>
 
+  <!-- [END functions_scala_pom] -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
     <version>1.0.17</version>
   </parent>
-
+  
+  <!-- [START functions_scala_pom] -->
   <properties>
+    <!-- [END functions_scala_pom] -->
     <powermock.version>2.0.7</powermock.version>
+    <!-- [START functions_scala_pom] -->
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,7 +49,7 @@
       <artifactId>scala-library</artifactId>
       <version>2.13.2</version>
     </dependency>
-
+    <!-- [END functions_scala_pom] -->
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -90,7 +95,8 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <!-- [START functions_scala_pom] -->
+    
     <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
@@ -99,6 +105,7 @@
     </dependency>
   </dependencies>
 
+  <!-- [END functions_scala_pom] -->
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
   <!--   when deploying, but we recommend creating -->
@@ -116,7 +123,8 @@
       </properties>
     </profile>
   </profiles>
-
+  
+  <!-- [START functions_scala_pom] -->
   <build>
     <plugins>
       <plugin>
@@ -151,6 +159,7 @@
           </execution>
         </executions>
       </plugin>
+      <!-- [END functions_scala_pom] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -161,6 +170,7 @@
           <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
+      <!-- [START functions_scala_pom] -->
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -189,3 +199,4 @@
     </plugins>
   </build>
 </project>
+<!-- [END functions_scala_pom] -->
