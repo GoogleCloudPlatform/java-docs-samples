@@ -37,7 +37,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
 
-  private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
   private static final Firestore FIRESTORE = FirestoreOptions.getDefaultInstance().getService();
 
   @Override
@@ -70,11 +70,11 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
     String affectedDoc = context.resource().split("/documents/")[1].replace("\"", "");
 
-    LOGGER.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
+    logger.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
     try {
       FIRESTORE.document(affectedDoc).set(newFields, SetOptions.merge()).get();
     } catch (ExecutionException | InterruptedException e) {
-      LOGGER.log(Level.SEVERE, "Error updating Firestore document: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error updating Firestore document: " + e.getMessage(), e);
     }
   }
 }

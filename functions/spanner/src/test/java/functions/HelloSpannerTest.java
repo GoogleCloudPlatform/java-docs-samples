@@ -47,7 +47,7 @@ public class HelloSpannerTest {
   @Mock private HttpResponse response;
   @Mock private DatabaseClient client;
 
-  private static final Logger LOGGER = Logger.getLogger(HelloSpanner.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloSpanner.class.getName());
   private static final TestLogHandler logHandler = new TestLogHandler();
   private static boolean originalUseParentHandlers;
 
@@ -56,15 +56,15 @@ public class HelloSpannerTest {
 
   @BeforeClass
   public static void setupTestLogging() {
-    LOGGER.addHandler(logHandler);
-    originalUseParentHandlers = LOGGER.getUseParentHandlers();
-    LOGGER.setUseParentHandlers(false);
+    logger.addHandler(logHandler);
+    originalUseParentHandlers = logger.getUseParentHandlers();
+    logger.setUseParentHandlers(false);
   }
 
   @AfterClass
   public static void restoreLogging() {
-    LOGGER.removeHandler(logHandler);
-    LOGGER.setUseParentHandlers(originalUseParentHandlers);
+    logger.removeHandler(logHandler);
+    logger.setUseParentHandlers(originalUseParentHandlers);
   }
 
   @Before

@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 // HelloSpanner is an example of querying Spanner from a Cloud Function.
 public class HelloSpanner implements HttpFunction {
-  private static final Logger LOGGER = Logger.getLogger(HelloSpanner.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloSpanner.class.getName());
 
   @VisibleForTesting
   static Spanner createSpanner() {
@@ -116,7 +116,7 @@ public class HelloSpanner implements HttpFunction {
         response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, e.getMessage());
       }
     } catch (Throwable t) {
-      LOGGER.log(Level.SEVERE, "Spanner example failed", t);
+      logger.log(Level.SEVERE, "Spanner example failed", t);
       writer.write(String.format("Error setting up Spanner: %s\n", t.getMessage()));
       response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, t.getMessage());
     }

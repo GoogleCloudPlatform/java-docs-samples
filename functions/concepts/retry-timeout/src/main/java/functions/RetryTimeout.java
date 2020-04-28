@@ -29,7 +29,7 @@ import java.time.ZonedDateTime;
 import java.util.logging.Logger;
 
 public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(RetryTimeout.class.getName());
+  private static final Logger logger = Logger.getLogger(RetryTimeout.class.getName());
   private static final long MAX_EVENT_AGE = 10_000;
 
   // Use Gson (https://github.com/google/gson) to parse JSON content.
@@ -54,12 +54,12 @@ public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
 
     // Ignore events that are too old
     if (eventAge > MAX_EVENT_AGE) {
-      LOGGER.info(String.format("Dropping event %s.", data));
+      logger.info(String.format("Dropping event %s.", data));
       return;
     }
 
     // Process events that are recent enough
-    LOGGER.info(String.format("Processing event %s.", data));
+    logger.info(String.format("Processing event %s.", data));
   }
 }
 // [END functions_tips_infinite_retries]

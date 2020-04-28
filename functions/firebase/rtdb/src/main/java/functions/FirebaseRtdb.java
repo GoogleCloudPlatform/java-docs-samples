@@ -24,14 +24,14 @@ import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
 public class FirebaseRtdb implements RawBackgroundFunction {
-  private static final Logger LOGGER = Logger.getLogger(FirebaseRtdb.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseRtdb.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
 
   @Override
   public void accept(String json, Context context) {
-    LOGGER.info("Function triggered by change to: " + context.resource());
+    logger.info("Function triggered by change to: " + context.resource());
 
     JsonObject body = gson.fromJson(json, JsonObject.class);
 
@@ -41,11 +41,11 @@ public class FirebaseRtdb implements RawBackgroundFunction {
       isAdmin = authObj.has("admin") && authObj.get("admin").getAsBoolean();
     }
 
-    LOGGER.info("Admin?: " + isAdmin);
+    logger.info("Admin?: " + isAdmin);
 
     if (body != null && body.has("delta")) {
-      LOGGER.info("Delta:");
-      LOGGER.info(body.get("delta").toString());
+      logger.info("Delta:");
+      logger.info(body.get("delta").toString());
     }
   }
 }

@@ -40,7 +40,7 @@ import org.junit.Test;
 public class OcrSaveResultTest {
   private static String RESULT_BUCKET = System.getenv("RESULT_BUCKET");
 
-  private static final Logger LOGGER = Logger.getLogger(OcrSaveResult.class.getName());
+  private static final Logger logger = Logger.getLogger(OcrSaveResult.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -51,7 +51,7 @@ public class OcrSaveResultTest {
 
   @BeforeClass
   public static void setUpClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @After
