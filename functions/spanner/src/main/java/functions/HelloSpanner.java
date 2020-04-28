@@ -104,19 +104,19 @@ public class HelloSpanner implements HttpFunction {
           client
               .singleUse()
               .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
-        writer.printf("Albums:\n");
+        writer.printf("Albums:%n");
         while (rs.next()) {
           writer.printf(
-              "%d %d %s\n",
+              "%d %d %s%n",
               rs.getLong("SingerId"), rs.getLong("AlbumId"), rs.getString("AlbumTitle"));
         }
       } catch (SpannerException e) {
-        writer.printf("Error querying database: %s\n", e.getMessage());
+        writer.printf("Error querying database: %s%n", e.getMessage());
         response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, e.getMessage());
       }
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE, "Spanner example failed", t);
-      writer.printf("Error setting up Spanner: %s\n", t.getMessage());
+      writer.printf("Error setting up Spanner: %s%n", t.getMessage());
       response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, t.getMessage());
     }
   }
