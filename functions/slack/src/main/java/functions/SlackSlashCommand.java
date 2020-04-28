@@ -32,13 +32,15 @@ import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class SlackSlashCommand implements HttpFunction {
 
   // [START functions_slack_setup]
-  private static final String API_KEY = System.getenv("KG_API_KEY");
-  private static final String SLACK_SECRET = System.getenv("SLACK_SECRET");
+  private static final Logger logger = Logger.getLogger("functions.SlackSlashCommand");
+  private static final String API_KEY = getenv("KG_API_KEY");
+  private static final String SLACK_SECRET = getenv("SLACK_SECRET");
   private static final Gson gson = new Gson();
 
   private Kgsearch kgClient;
@@ -49,6 +51,15 @@ public class SlackSlashCommand implements HttpFunction {
         GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null).build();
 
     verifier = new SlackSignature.Verifier(new SlackSignature.Generator(SLACK_SECRET));
+  }
+
+  private static String getenv(String name) {
+    String value = System.getenv(name);
+    if (value == null) {
+      logger.warning("Environment variable " + name + " is undefined");
+      value = "MISSING";
+    }
+    return value;
   }
   // [END functions_slack_setup]
 
