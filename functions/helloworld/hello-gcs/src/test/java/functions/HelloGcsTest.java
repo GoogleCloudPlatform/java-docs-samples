@@ -32,11 +32,11 @@ import org.junit.Test;
  */
 public class HelloGcsTest {
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
-  private static final Logger LOGGER = Logger.getLogger(HelloGcs.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloGcs.class.getName());
 
   @Before
   public void beforeTest() throws Exception {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @After

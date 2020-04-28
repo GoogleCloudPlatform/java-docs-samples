@@ -48,7 +48,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
   private static Storage storage = StorageOptions.getDefaultInstance().getService();
   private static final String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
-  private static final Logger LOGGER = Logger.getLogger(ImageMagick.class.getName());
+  private static final Logger logger = Logger.getLogger(ImageMagick.class.getName());
   // [END functions_imagemagick_setup]
 
   // [START functions_imagemagick_analyze]
@@ -57,7 +57,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
   public void accept(GcsEvent gcsEvent, Context context) {
     // Validate parameters
     if (gcsEvent.getBucket() == null || gcsEvent.getName() == null) {
-      LOGGER.severe("Error: Malformed GCS event.");
+      logger.severe("Error: Malformed GCS event.");
       return;
     }
 
@@ -65,7 +65,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
     // Construct URI to GCS bucket and file.
     String gcsPath = String.format("gs://%s/%s", gcsEvent.getBucket(), gcsEvent.getName());
-    LOGGER.info(String.format("Analyzing %s", gcsEvent.getName()));
+    logger.info(String.format("Analyzing %s", gcsEvent.getName()));
 
     // Construct request.
     List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -82,20 +82,20 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          LOGGER.info(String.format("Error: %s", res.getError().getMessage()));
+          logger.info(String.format("Error: %s", res.getError().getMessage()));
           return;
         }
         // Get Safe Search Annotations
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
         if (annotation.getAdultValue() == 5 || annotation.getViolenceValue() == 5) {
-          LOGGER.info(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
+          logger.info(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
           blur(blobInfo);
         } else {
-          LOGGER.info(String.format("Detected %s as OK.", gcsEvent.getName()));
+          logger.info(String.format("Detected %s as OK.", gcsEvent.getName()));
         }
       }
     } catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Error with Vision API: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error with Vision API: " + e.getMessage(), e);
     }
   }
   // [END functions_imagemagick_analyze]
@@ -125,7 +125,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       Process process = pb.start();
       process.waitFor();
     } catch (Exception e) {
-      LOGGER.info(String.format("Error: %s", e.getMessage()));
+      logger.info(String.format("Error: %s", e.getMessage()));
     }
 
     // Upload image to blurred bucket.
@@ -135,7 +135,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
     byte[] blurredFile = Files.readAllBytes(upload);
     storage.create(blurredBlobInfo, blurredFile);
-    LOGGER.info(
+    logger.info(
         String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
 
     // Remove images from fileSystem

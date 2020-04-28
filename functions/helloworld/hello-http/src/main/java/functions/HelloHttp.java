@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 public class HelloHttp implements HttpFunction {
-  private static final Logger LOGGER = Logger.getLogger(HelloHttp.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloHttp.class.getName());
 
   private static final Gson gson = new Gson();
 
@@ -54,7 +54,7 @@ public class HelloHttp implements HttpFunction {
         name = requestJson.get("name").getAsString();
       }
     } catch (JsonParseException e) {
-      LOGGER.severe("Error parsing JSON: " + e.getMessage());
+      logger.severe("Error parsing JSON: " + e.getMessage());
     }
 
     var writer = new PrintWriter(response.getWriter());

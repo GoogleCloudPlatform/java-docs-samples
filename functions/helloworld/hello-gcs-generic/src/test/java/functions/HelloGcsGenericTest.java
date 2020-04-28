@@ -34,13 +34,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class HelloGcsGenericTest {
   // Must be declared at class-level, or LoggingHandler won't detect log records!
-  private static final Logger LOGGER = Logger.getLogger(HelloGcsGeneric.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloGcsGeneric.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Test

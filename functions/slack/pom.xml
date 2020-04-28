@@ -50,6 +50,14 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
@@ -111,13 +119,6 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- Required for Function primitives -->
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.1</version>
-    </dependency>
   </dependencies>
 
   <!-- Disable tests during GCF builds (from parent POM) -->
@@ -165,31 +166,6 @@
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
           <trimStackTrace>false</trimStackTrace>
-        </configuration>
-      </plugin>
-      <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>.google/</exclude>
-          </excludes>
         </configuration>
       </plugin>
     </plugins>

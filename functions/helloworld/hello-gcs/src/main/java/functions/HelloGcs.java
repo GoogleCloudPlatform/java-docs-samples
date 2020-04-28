@@ -24,15 +24,15 @@ import functions.eventpojos.GcsEvent;
 import java.util.logging.Logger;
 
 public class HelloGcs implements BackgroundFunction<GcsEvent> {
-  private static final Logger LOGGER = Logger.getLogger(HelloGcs.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloGcs.class.getName());
 
   @Override
   public void accept(GcsEvent event, Context context) {
     if ("google.storage.object.finalize".equals(context.eventType())) {
       // Default event type for GCS-triggered functions
-      LOGGER.info(String.format("File %s uploaded.", event.getName()));
+      logger.info(String.format("File %s uploaded.", event.getName()));
     } else {
-      LOGGER.warning(String.format("Unsupported event type: %s", context.eventType()));
+      logger.warning(String.format("Unsupported event type: %s", context.eventType()));
     }
   }
 }

@@ -39,14 +39,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class HelloPubSubTest {
 
   private HelloPubSub sampleUnderTest;
-  private static final Logger LOGGER = Logger.getLogger(HelloPubSub.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloPubSub.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
   public void setUp() throws Exception {
     sampleUnderTest = new HelloPubSub();
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
     LOG_HANDLER.clear();
   }
 

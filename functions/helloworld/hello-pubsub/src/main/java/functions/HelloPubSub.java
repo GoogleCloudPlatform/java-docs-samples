@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(HelloPubSub.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloPubSub.class.getName());
 
   @Override
   public void accept(PubSubMessage message, Context context) {
@@ -38,7 +38,7 @@ public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
           Base64.getDecoder().decode(message.getData().getBytes(StandardCharsets.UTF_8)),
           StandardCharsets.UTF_8);
     }
-    LOGGER.info(String.format("Hello %s!", name));
+    logger.info(String.format("Hello %s!", name));
   }
 }
 // [END functions_background_helloworld]

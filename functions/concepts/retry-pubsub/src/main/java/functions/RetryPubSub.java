@@ -29,7 +29,7 @@ import java.util.Base64;
 import java.util.logging.Logger;
 
 public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(RetryPubSub.class.getName());
+  private static final Logger logger = Logger.getLogger(RetryPubSub.class.getName());
 
   // Use Gson (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
@@ -55,7 +55,7 @@ public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
       // Throwing an exception causes the execution to be retried
       throw new RuntimeException("Retrying...");
     } else {
-      LOGGER.info("Not retrying...");
+      logger.info("Not retrying...");
     }
   }
 }
