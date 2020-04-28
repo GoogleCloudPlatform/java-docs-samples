@@ -41,7 +41,6 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
   // TODO<developer> set these environment variables
   private static final String PROJECT_ID = getenv("GCP_PROJECT");
   private static final String RESULTS_TOPIC_NAME = getenv("RESULT_TOPIC");
-  private static final Logger logger = Logger.getLogger(OcrTranslateText.class.getName());
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
 
   private Publisher publisher;
@@ -106,6 +105,15 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     String value = System.getenv(name);
     if (value == null) {
       logger.warning("Environment variable " + name + " was not set");
+      value = "MISSING";
+    }
+    return value;
+  }
+
+  private static String getenv(String name) {
+    String value = System.getenv(name);
+    if (value == null) {
+      logger.warning("Environment variable " + name + " is undefined");
       value = "MISSING";
     }
     return value;
