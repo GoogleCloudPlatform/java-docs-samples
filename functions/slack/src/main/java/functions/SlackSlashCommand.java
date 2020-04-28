@@ -56,7 +56,7 @@ public class SlackSlashCommand implements HttpFunction {
   private static String getenv(String name) {
     String value = System.getenv(name);
     if (value == null) {
-      logger.warning("Environment variable " + name + " is undefined");
+      logger.warning("Environment variable " + name + " was not set");
       value = "MISSING";
     }
     return value;
