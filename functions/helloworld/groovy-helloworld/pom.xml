@@ -44,6 +44,21 @@
   </properties>
 
   <dependencies>
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Required for groovy samples -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+      <type>pom</type>
+    </dependency>
     <!-- [END functions_groovy_pom] -->
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -64,7 +79,6 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>1.0.1</version>
-      <scope>provided</scope>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -91,22 +105,7 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
-
     <!-- [START functions_groovy_pom] -->
-    <!-- Required for Function primitives -->
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
-    <!-- Required for groovy samples -->
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
-      <version>${groovy.version}</version>
-      <type>pom</type>
-    </dependency>
   </dependencies>
   
   <!-- [END functions_groovy_pom] -->
