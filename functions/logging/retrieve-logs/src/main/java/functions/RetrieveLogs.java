@@ -25,8 +25,8 @@ import com.google.cloud.logging.v2.LoggingClient;
 import com.google.cloud.logging.v2.LoggingClient.ListLogEntriesPagedResponse;
 import com.google.logging.v2.ListLogEntriesRequest;
 import com.google.logging.v2.LogEntry;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class RetrieveLogs implements HttpFunction {
 
@@ -48,11 +48,11 @@ public class RetrieveLogs implements HttpFunction {
 
     ListLogEntriesPagedResponse entriesResponse = client.listLogEntries(entriesRequest);
 
-    BufferedWriter writer = response.getWriter();
+    var writer = new PrintWriter(response.getWriter());
     for (LogEntry entry : entriesResponse.getPage().getValues()) {
-      writer.write(String.format("%s: %s%n", entry.getLogName(), entry.getTextPayload()));
+      writer.printf("%s: %s%n", entry.getLogName(), entry.getTextPayload());
     }
-    writer.write("%n%nLogs retrieved successfully.%n");
+    writer.printf("%n%nLogs retrieved successfully.%n");
   }
 
   // Returns a client for interacting with the Logging API. The client is stored in the global scope

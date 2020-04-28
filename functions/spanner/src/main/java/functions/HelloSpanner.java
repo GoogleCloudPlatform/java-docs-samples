@@ -30,7 +30,7 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import java.io.BufferedWriter;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,27 +97,26 @@ public class HelloSpanner implements HttpFunction {
 
   @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
-    BufferedWriter writer = response.getWriter();
+    var writer = new PrintWriter(response.getWriter());
     try {
       DatabaseClient client = getClient();
       try (ResultSet rs =
           client
               .singleUse()
               .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
-        writer.write("Albums:\n");
+        writer.printf("Albums:\n");
         while (rs.next()) {
-          writer.write(
-              String.format(
-                  "%d %d %s\n",
-                  rs.getLong("SingerId"), rs.getLong("AlbumId"), rs.getString("AlbumTitle")));
+          writer.printf(
+              "%d %d %s\n",
+              rs.getLong("SingerId"), rs.getLong("AlbumId"), rs.getString("AlbumTitle"));
         }
       } catch (SpannerException e) {
-        writer.write(String.format("Error querying database: %s\n", e.getMessage()));
+        writer.printf("Error querying database: %s\n", e.getMessage());
         response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, e.getMessage());
       }
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE, "Spanner example failed", t);
-      writer.write(String.format("Error setting up Spanner: %s\n", t.getMessage()));
+      writer.printf("Error setting up Spanner: %s\n", t.getMessage());
       response.setStatusCode(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, t.getMessage());
     }
   }

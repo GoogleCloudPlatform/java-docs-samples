@@ -22,8 +22,8 @@ package functions;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class Scopes implements HttpFunction {
@@ -40,8 +40,8 @@ public class Scopes implements HttpFunction {
     // This computation runs every time this function is called
     int functionVar = lightComputation();
 
-    BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Instance: %s; function: %s", InstanceVar, functionVar));
+    var writer = new PrintWriter(response.getWriter());
+    writer.printf("Instance: %s; function: %s", InstanceVar, functionVar);
   }
 
   private static int lightComputation() {

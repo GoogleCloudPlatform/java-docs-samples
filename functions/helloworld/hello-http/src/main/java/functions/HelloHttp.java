@@ -25,8 +25,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 public class HelloHttp implements HttpFunction {
@@ -57,8 +57,8 @@ public class HelloHttp implements HttpFunction {
       LOGGER.severe("Error parsing JSON: " + e.getMessage());
     }
 
-    BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Hello %s!", name));
+    var writer = new PrintWriter(response.getWriter());
+    writer.printf("Hello %s!", name);
   }
 }
 // [END functions_helloworld_http]
