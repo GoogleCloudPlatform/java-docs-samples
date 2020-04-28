@@ -53,6 +53,8 @@ public class SlackSlashCommand implements HttpFunction {
     verifier = new SlackSignature.Verifier(new SlackSignature.Generator(SLACK_SECRET));
   }
 
+  // Avoid ungraceful deployment failures due to unset environment variables.
+  // If you get this warning you should redeploy with the variable set.
   private static String getenv(String name) {
     String value = System.getenv(name);
     if (value == null) {

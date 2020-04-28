@@ -36,6 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
+  private static final Logger logger = Logger.getLogger(OcrTranslateText.class.getName());
+
   // TODO<developer> set these environment variables
   private static final String PROJECT_ID = getenv("GCP_PROJECT");
   private static final String RESULTS_TOPIC_NAME = getenv("RESULT_TOPIC");
@@ -98,6 +100,8 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     }
   }
 
+  // Avoid ungraceful deployment failures due to unset environment variables.
+  // If you get this warning you should redeploy with the variable set.
   private static String getenv(String name) {
     String value = System.getenv(name);
     if (value == null) {
