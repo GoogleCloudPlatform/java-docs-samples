@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
 public class FirebaseAuth implements RawBackgroundFunction {
-  private static final Logger LOGGER = Logger.getLogger(FirebaseAuth.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseAuth.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
@@ -34,16 +34,16 @@ public class FirebaseAuth implements RawBackgroundFunction {
     JsonObject body = gson.fromJson(json, JsonObject.class);
 
     if (body != null && body.has("uid")) {
-      LOGGER.info("Function triggered by change to user: " + body.get("uid").getAsString());
+      logger.info("Function triggered by change to user: " + body.get("uid").getAsString());
     }
 
     if (body != null && body.has("metadata")) {
       JsonObject metadata = body.get("metadata").getAsJsonObject();
-      LOGGER.info("Created at: " + metadata.get("createdAt").getAsString());
+      logger.info("Created at: " + metadata.get("createdAt").getAsString());
     }
 
     if (body != null && body.has("email")) {
-      LOGGER.info("Email: " + body.get("email").getAsString());
+      logger.info("Email: " + body.get("email").getAsString());
     }
   }
 }

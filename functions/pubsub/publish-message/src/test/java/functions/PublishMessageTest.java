@@ -45,7 +45,7 @@ public class PublishMessageTest {
 
   private static final String FUNCTIONS_TOPIC = System.getenv("FUNCTIONS_TOPIC");
 
-  private static final Logger LOGGER = Logger.getLogger(PublishMessage.class.getName());
+  private static final Logger logger = Logger.getLogger(PublishMessage.class.getName());
   private static final TestLogHandler logHandler = new TestLogHandler();
 
   private BufferedWriter writerOut;
@@ -53,7 +53,7 @@ public class PublishMessageTest {
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(logHandler);
+    logger.addHandler(logHandler);
   }
 
   @Before

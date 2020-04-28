@@ -45,7 +45,7 @@ public class ScalaHelloBackgroundTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
-  private static final Logger LOGGER = Logger.getLogger(ScalaHelloBackground.class.getName());
+  private static final Logger logger = Logger.getLogger(ScalaHelloBackground.class.getName());
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   private BufferedWriter writerOut;
@@ -53,7 +53,7 @@ public class ScalaHelloBackgroundTest {
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Before
