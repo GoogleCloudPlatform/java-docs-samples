@@ -37,8 +37,8 @@ import java.util.logging.Logger;
 
 public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
   // TODO<developer> set these environment variables
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
-  private static final String RESULTS_TOPIC_NAME = System.getenv("RESULT_TOPIC");
+  private static final String PROJECT_ID = getenv("GCP_PROJECT");
+  private static final String RESULTS_TOPIC_NAME = getenv("RESULT_TOPIC");
   private static final Logger logger = Logger.getLogger(OcrTranslateText.class.getName());
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
 
@@ -96,6 +96,15 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
       // Log error (since these exception types cannot be thrown by a function)
       logger.log(Level.SEVERE, "Error publishing translation save request: " + e.getMessage(), e);
     }
+  }
+
+  private static String getenv(String name) {
+    String value = System.getenv(name);
+    if (value == null) {
+      logger.warning("Environment variable " + name + " is undefined");
+      value = "MISSING";
+    }
+    return value;
   }
 }
 // [END functions_ocr_translate]
