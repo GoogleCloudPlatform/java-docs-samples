@@ -51,8 +51,8 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
+      <scope>provided</scope>
     </dependency>
-    
     <!-- [END functions_example_pom] -->
 
     <!-- The following dependencies are only required for testing -->
