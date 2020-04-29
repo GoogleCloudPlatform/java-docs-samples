@@ -7,7 +7,7 @@ This code allows you to create various works of art in Cloud Bigtable's [key vis
 
 ## Setup
 
-1. Create a Bigtable instance
+1. [Create a Bigtable instance](https://cloud.google.com/bigtable/docs/creating-instance)
 
 1. Set your variables
 ```
