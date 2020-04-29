@@ -22,8 +22,8 @@ package functions;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -41,16 +41,14 @@ public class SendHttpRequest implements HttpFunction {
       throws IOException, InterruptedException {
     // Create a GET sendHttpRequest to "http://example.com"
     String url = "http://example.com";
-    java.net.http.HttpRequest getRequest =
-        java.net.http.HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+    var getRequest = java.net.http.HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
 
     // Send the sendHttpRequest using the client
-    java.net.http.HttpResponse<String> getResponse =
-        client.send(getRequest, BodyHandlers.ofString());
+    var getResponse = client.send(getRequest, BodyHandlers.ofString());
 
     // Write the results to the output:
-    BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Received code '%s' from url '%s'.", getResponse.statusCode(), url));
+    var writer = new PrintWriter(response.getWriter());
+    writer.printf("Received code '%s' from url '%s'.", getResponse.statusCode(), url);
   }
 }
 // [END functions_concepts_requests]

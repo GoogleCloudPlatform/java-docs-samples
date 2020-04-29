@@ -22,8 +22,8 @@ package functions;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class LazyFields implements HttpFunction {
@@ -52,9 +52,8 @@ public class LazyFields implements HttpFunction {
       throws IOException {
     Integer lazyGlobal = LazyGlobalHolder.getInstance();
 
-    BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Lazy global: %s; non-lazy global: %s",
-        lazyGlobal, NON_LAZY_GLOBAL));
+    var writer = new PrintWriter(response.getWriter());
+    writer.printf("Lazy global: %s; non-lazy global: %s%n", lazyGlobal, NON_LAZY_GLOBAL);
   }
 
   private static int functionSpecificComputation() {

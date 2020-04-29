@@ -23,8 +23,8 @@ import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -79,8 +79,8 @@ public class ParseContentType implements HttpFunction {
 
     // Respond with a name, if one was detected
     if (name != null) {
-      BufferedWriter writer = response.getWriter();
-      writer.write(String.format("Hello %s!", name));
+      var writer = new PrintWriter(response.getWriter());
+      writer.printf("Hello %s!", name);
     }
   }
 }
