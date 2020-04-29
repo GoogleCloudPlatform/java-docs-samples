@@ -45,7 +45,7 @@ public class KotlinHelloBackgroundTest {
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
 
-  private static final Logger LOGGER = Logger.getLogger(
+  private static final Logger logger = Logger.getLogger(
       KotlinHelloBackground.class.getName());
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -54,7 +54,7 @@ public class KotlinHelloBackgroundTest {
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Before

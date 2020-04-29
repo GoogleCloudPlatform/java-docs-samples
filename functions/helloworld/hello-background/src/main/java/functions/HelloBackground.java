@@ -24,13 +24,13 @@ import com.google.cloud.functions.HttpRequest;
 import java.util.logging.Logger;
 
 public class HelloBackground implements BackgroundFunction<HttpRequest> {
-  private static final Logger LOGGER = Logger.getLogger(HelloBackground.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloBackground.class.getName());
 
   @Override
   public void accept(HttpRequest request, Context context) {
     // name's default value is "world"
     String name = request.getFirstQueryParameter("name").orElse("world");
-    LOGGER.info(String.format("Hello %s!", name));
+    logger.info(String.format("Hello %s!", name));
   }
 }
 // [END functions_helloworld_background]

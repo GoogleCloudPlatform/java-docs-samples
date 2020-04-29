@@ -54,12 +54,12 @@ public class HttpFormDataTest {
   private BufferedWriter writerOut;
   private StringWriter responseOut;
 
-  private static final Logger LOGGER = Logger.getLogger(HttpFormData.class.getName());
+  private static final Logger logger = Logger.getLogger(HttpFormData.class.getName());
   private static final TestLogHandler logHandler = new TestLogHandler();
 
   @BeforeClass
   public static void setUp() {
-    LOGGER.addHandler(logHandler);
+    logger.addHandler(logHandler);
   }
 
   @Before

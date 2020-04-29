@@ -39,6 +39,22 @@
   </properties>
 
   <dependencies>
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <scope>provided</scope>
+      <version>1.0.1</version>
+    </dependency>
+
+    <!-- Required for groovy samples -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+      <type>pom</type>
+    </dependency>
+
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -83,21 +99,6 @@
       <artifactId>powermock-api-mockito2</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
-    </dependency>
-
-    <!-- Required for Function primitives -->
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
-    <!-- Required for groovy samples -->
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
-      <version>${groovy.version}</version>
-      <type>pom</type>
     </dependency>
   </dependencies>
 
@@ -171,31 +172,6 @@
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
           <trimStackTrace>false</trimStackTrace>
-        </configuration>
-      </plugin>
-      <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>.google/</exclude>
-          </excludes>
         </configuration>
       </plugin>
     </plugins>

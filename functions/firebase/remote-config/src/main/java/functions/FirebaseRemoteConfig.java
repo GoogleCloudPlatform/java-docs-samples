@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
 public class FirebaseRemoteConfig implements RawBackgroundFunction {
-  private static final Logger LOGGER = Logger.getLogger(FirebaseRemoteConfig.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseRemoteConfig.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
@@ -35,13 +35,13 @@ public class FirebaseRemoteConfig implements RawBackgroundFunction {
 
     if (body != null) {
       if (body.has("updateType")) {
-        LOGGER.info("Update type: " + body.get("updateType").getAsString());
+        logger.info("Update type: " + body.get("updateType").getAsString());
       }
       if (body.has("updateOrigin")) {
-        LOGGER.info("Origin: " + body.get("updateOrigin").getAsString());
+        logger.info("Origin: " + body.get("updateOrigin").getAsString());
       }
       if (body.has("versionNumber")) {
-        LOGGER.info("Version: " + body.get("versionNumber").getAsString());
+        logger.info("Version: " + body.get("versionNumber").getAsString());
       }
     }
   }

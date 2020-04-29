@@ -49,6 +49,14 @@
       <artifactId>scala-library</artifactId>
       <version>2.13.2</version>
     </dependency>
+
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.1</version>
+      <scope>provided</scope>
+    </dependency>
     <!-- [END functions_scala_pom] -->
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -96,13 +104,6 @@
       <scope>test</scope>
     </dependency>
     <!-- [START functions_scala_pom] -->
-    
-    <!-- Required for Function primitives -->
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.1</version>
-    </dependency>
   </dependencies>
 
   <!-- [END functions_scala_pom] -->
@@ -171,31 +172,6 @@
         </configuration>
       </plugin>
       <!-- [START functions_scala_pom] -->
-      <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>.google/</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>

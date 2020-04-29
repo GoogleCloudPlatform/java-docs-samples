@@ -24,17 +24,17 @@ import functions.eventpojos.GcsEvent;
 import java.util.logging.Logger;
 
 public class HelloGcsGeneric implements BackgroundFunction<GcsEvent> {
-  private static final Logger LOGGER = Logger.getLogger(HelloGcsGeneric.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloGcsGeneric.class.getName());
 
   @Override
   public void accept(GcsEvent event, Context context) {
-    LOGGER.info("Event: " + context.eventId());
-    LOGGER.info("Event Type: " + context.eventType());
-    LOGGER.info("Bucket: " + event.getBucket());
-    LOGGER.info("File: " + event.getName());
-    LOGGER.info("Metageneration: " + event.getMetageneration());
-    LOGGER.info("Created: " + event.getTimeCreated());
-    LOGGER.info("Updated: " + event.getUpdated());
+    logger.info("Event: " + context.eventId());
+    logger.info("Event Type: " + context.eventType());
+    logger.info("Bucket: " + event.getBucket());
+    logger.info("File: " + event.getName());
+    logger.info("Metageneration: " + event.getMetageneration());
+    logger.info("Created: " + event.getTimeCreated());
+    logger.info("Updated: " + event.getUpdated());
   }
 }
 // [END functions_helloworld_storage_generic]

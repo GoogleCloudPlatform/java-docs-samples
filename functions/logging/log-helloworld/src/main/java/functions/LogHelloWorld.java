@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 public class LogHelloWorld implements HttpFunction {
 
-  private static final Logger LOGGER = Logger.getLogger(LogHelloWorld.class.getName());
+  private static final Logger logger = Logger.getLogger(LogHelloWorld.class.getName());
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
@@ -36,8 +36,8 @@ public class LogHelloWorld implements HttpFunction {
     System.err.println("I am a log to stderr!");
 
     // Stackdriver does not detect severity from Cloud Functions log output
-    LOGGER.info("I am an info log!");
-    LOGGER.warning("I am a warning log!");
+    logger.info("I am an info log!");
+    logger.warning("I am a warning log!");
 
     BufferedWriter writer = response.getWriter();
     writer.write("Messages successfully logged!");

@@ -45,13 +45,13 @@ public class RetrieveLogsTest {
 
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger LOGGER = Logger.getLogger(RetrieveLogs.class.getName());
+  private static final Logger logger = Logger.getLogger(RetrieveLogs.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Before

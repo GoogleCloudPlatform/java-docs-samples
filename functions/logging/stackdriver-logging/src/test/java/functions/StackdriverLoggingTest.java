@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
 public class StackdriverLoggingTest {
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger LOGGER = Logger.getLogger(StackdriverLogging.class.getName());
+  private static final Logger logger = Logger.getLogger(StackdriverLogging.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -41,7 +41,7 @@ public class StackdriverLoggingTest {
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Test

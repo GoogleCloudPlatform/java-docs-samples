@@ -39,13 +39,13 @@ public class HelloBackgroundTest {
   @Mock private HttpResponse response;
 
   // Must be declared at class-level, or LoggingHandler won't detect log records!
-  private static final Logger LOGGER = Logger.getLogger(HelloBackground.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloBackground.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
   public void beforeTest() throws Exception {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
 
     // Use a new mock for each test
     request = mock(HttpRequest.class);
