@@ -39,6 +39,7 @@ public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
           StandardCharsets.UTF_8);
     }
     logger.info(String.format("Hello %s!", name));
+    return;
   }
 }
 // [END functions_background_helloworld]
