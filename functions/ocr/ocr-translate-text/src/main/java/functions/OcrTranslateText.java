@@ -96,7 +96,6 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     } catch (InterruptedException | ExecutionException e) {
       // Log error (since these exception types cannot be thrown by a function)
       logger.log(Level.SEVERE, "Error publishing translation save request: " + e.getMessage(), e);
-<<<<<<< HEAD
     }
   }
 
@@ -105,8 +104,6 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     if (value == null) {
       logger.warning("Environment variable " + name + " was not set");
       value = "MISSING";
-=======
->>>>>>> master
     }
     return value;
   }
