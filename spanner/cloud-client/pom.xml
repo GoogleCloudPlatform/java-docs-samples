@@ -140,7 +140,7 @@ limitations under the License.
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <configuration>
           <descriptors>
             <descriptor>assembly-descriptor.xml</descriptor>
