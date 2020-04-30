@@ -11,7 +11,7 @@ This code allows you to create various works of art in Cloud Bigtable's [key vis
 
 1. Set your variables
 ```
-BIGTBALE_PROJECT=YOUR-PROJECT-ID OR $GOOGLE_CLOUD_PROJECT
+BIGTABLE_PROJECT=YOUR-PROJECT-ID OR $GOOGLE_CLOUD_PROJECT
 INSTANCE_ID=YOUR-INSTANCE-ID
 TABLE_ID=YOUR-TABLE-ID
 ```
@@ -33,7 +33,9 @@ cbt createfamily $TABLE_ID cf
 Load 40GB of data with 5MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$
+
+\
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
 --bigtableTableId=$TABLE_ID"
 ```
@@ -41,7 +43,7 @@ mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
 Load 50GB of data with 1MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
 --bigtableTableId=$TABLE_ID \
 --gigabytesWritten=50 \
@@ -54,7 +56,7 @@ mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
 Generate Mona Lisa with 40GB total and 5MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
 --bigtableTableId=$TABLE_ID"
 ```
@@ -62,7 +64,7 @@ mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
 Generate American Gothic  with 50GB total and 1MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
 --bigtableTableId=$TABLE_ID \
 --gigabytesWritten=50 \
