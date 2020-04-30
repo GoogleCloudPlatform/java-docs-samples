@@ -1,0 +1,19 @@
+$ pwd
+<some path>/tutorial
+$ find .
+.
+./manage.py
+./tutorial
+./tutorial/__init__.py
+./tutorial/quickstart
+./tutorial/quickstart/__init__.py
+./tutorial/quickstart/admin.py
+./tutorial/quickstart/apps.py
+./tutorial/quickstart/migrations
+./tutorial/quickstart/migrations/__init__.py
+./tutorial/quickstart/models.py
+./tutorial/quickstart/tests.py
+./tutorial/quickstart/views.py
+./tutorial/settings.py
+./tutorial/urls.py
+./tutorial/wsgi.py
