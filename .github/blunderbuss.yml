@@ -3,7 +3,6 @@ assign_issues:
   - dzlier-gcp
   - gguuss
   - kurtisvg
-  - nnegrey
   - stephaniewang526
 assign_prs:
   - averikitsch
@@ -11,5 +10,4 @@ assign_prs:
   - gguuss
   - kurtisvg
   - lesv
-  - nnegrey
   - stephaniewang526
