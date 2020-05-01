@@ -39,7 +39,7 @@
     <appengine.maven.plugin>2.2.0</appengine.maven.plugin>
     <jetty>9.4.28.v20200408</jetty>
 
-    <mailjet-version>4.2.1</mailjet-version>
+    <mailjet-version>4.5.0</mailjet-version>
   </properties>
 
   <dependencies>
