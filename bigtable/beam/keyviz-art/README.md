@@ -28,16 +28,19 @@ cbt createtable $TABLE_ID
 cbt createfamily $TABLE_ID cf
 ```
 
+1. Make sure your Dataflow API is enabled
+
+```
+gcloud services enable dataflow.googleapis.com
+```
 
 ## Load data
 Load 40GB of data with 5MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
-"-Dexec.args=--bigtableProjectId=$
-
-\
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID"
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT"
 ```
 
 Load 50GB of data with 1MB rows:
@@ -45,7 +48,7 @@ Load 50GB of data with 1MB rows:
 mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
 "-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID \
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT \
 --gigabytesWritten=50 \
 --megabytesPerRow=1"
 ```
@@ -58,7 +61,7 @@ Generate Mona Lisa with 40GB total and 5MB rows:
 mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
 "-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID"
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT"
 ```
 
 Generate American Gothic  with 50GB total and 1MB rows:
@@ -66,7 +69,7 @@ Generate American Gothic  with 50GB total and 1MB rows:
 mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
 "-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID \
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT \
 --gigabytesWritten=50 \
 --megabytesPerRow=1 \
 --filePath=gs://keyviz-art/american_gothic_4h.txt"
