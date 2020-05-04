@@ -123,7 +123,7 @@ public class QuickstartV2Tests {
 
     // Tests testPermissions()
     List<String> grantedPermissions =
-        QuickstartV2.testPermissions(crmService, PROJECT_ID, member, rolePermissions);
+        QuickstartV2.testPermissions(crmService, PROJECT_ID, rolePermissions);
 
     for (String p : rolePermissions) {
       assertTrue(grantedPermissions.contains(p));

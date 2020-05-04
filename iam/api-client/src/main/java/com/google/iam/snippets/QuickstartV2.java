@@ -34,8 +34,9 @@ public class QuickstartV2 {
   public static void main(String[] args) {
     // TODO: Replace with your project ID.
     String projectId = "your-project";
-    // TODO: Replace with a member ID in the form `user:member@example.com`.
-    String member = "your-member";
+    // TODO: Replace with the ID of the service account used in this quickstart in
+    // the form "serviceAccount:[service-account-id]@[project-id].iam.gserviceaccount.com"
+    String member = "your-service-account";
     // The role to be granted.
     String role = "roles/logging.logWriter";
     // All permissions contained in the role to be granted.
@@ -54,7 +55,7 @@ public class QuickstartV2 {
 
     // Tests if the member has the permissions granted by the role.
     List<String> grantedPermissions =
-        testPermissions(crmService, projectId, member, rolePermissions);
+        testPermissions(crmService, projectId, rolePermissions);
     // Prints the role permissions held by the member.
     for (String p : grantedPermissions) {
       System.out.println(p);
@@ -127,7 +128,6 @@ public class QuickstartV2 {
   public static List<String> testPermissions(
       CloudResourceManager crmService,
       String projectId,
-      String member,
       List<String> rolePermissions) {
 
     // Tests the member's permissions by calling the
