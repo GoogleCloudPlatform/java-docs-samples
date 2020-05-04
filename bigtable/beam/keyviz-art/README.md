@@ -11,7 +11,7 @@ This code allows you to create various works of art in Cloud Bigtable's [key vis
 
 1. Set your variables
 ```
-BIGTBALE_PROJECT=YOUR-PROJECT-ID OR $GOOGLE_CLOUD_PROJECT
+BIGTABLE_PROJECT=YOUR-PROJECT-ID OR $GOOGLE_CLOUD_PROJECT
 INSTANCE_ID=YOUR-INSTANCE-ID
 TABLE_ID=YOUR-TABLE-ID
 ```
@@ -28,22 +28,27 @@ cbt createtable $TABLE_ID
 cbt createfamily $TABLE_ID cf
 ```
 
+1. Make sure your Dataflow API is enabled
+
+```
+gcloud services enable dataflow.googleapis.com
+```
 
 ## Load data
 Load 40GB of data with 5MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID"
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT"
 ```
 
 Load 50GB of data with 1MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID \
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT \
 --gigabytesWritten=50 \
 --megabytesPerRow=1"
 ```
@@ -54,17 +59,17 @@ mvn compile exec:java -Dexec.mainClass=keyviz.LoadData \
 Generate Mona Lisa with 40GB total and 5MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID"
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT"
 ```
 
 Generate American Gothic  with 50GB total and 1MB rows:
 ```
 mvn compile exec:java -Dexec.mainClass=keyviz.ReadData \
-"-Dexec.args=--bigtableProjectId=$BIGTBALE_PROJECT \
+"-Dexec.args=--bigtableProjectId=$BIGTABLE_PROJECT \
 --bigtableInstanceId=$INSTANCE_ID --runner=dataflow \
---bigtableTableId=$TABLE_ID \
+--bigtableTableId=$TABLE_ID --project=$GOOGLE_CLOUD_PROJECT \
 --gigabytesWritten=50 \
 --megabytesPerRow=1 \
 --filePath=gs://keyviz-art/american_gothic_4h.txt"
