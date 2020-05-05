@@ -34,9 +34,8 @@ public class QuickstartV2 {
   public static void main(String[] args) {
     // TODO: Replace with your project ID.
     String projectId = "your-project";
-    // TODO: Replace with the ID of the service account used in this quickstart in
-    // the form "serviceAccount:[service-account-id]@[project-id].iam.gserviceaccount.com"
-    String member = "your-service-account";
+    // TODO: Replace with the ID of your member in the form "member:user@example.com"
+    String member = "your-member";
     // The role to be granted.
     String role = "roles/logging.logWriter";
 
@@ -61,7 +60,7 @@ public class QuickstartV2 {
       }
     }
     System.out.println("Role: " + binding.getRole());
-    System.out.print("Members: " );
+    System.out.print("Members: ");
     for (String m : binding.getMembers()) {
       System.out.print("[" + m + "] ");
     }
@@ -147,16 +146,16 @@ public class QuickstartV2 {
 
     // Removes the member from the role.
     List<Binding> bindings = policy.getBindings();
-
+    Binding binding = null;
     for (Binding b : bindings) {
-      if (b.getRole() == role) {
-        if (b.getMembers().contains(member)) {
-          b.getMembers().remove(member);
-          System.out.println("Member " + member + " removed from " + role);
-        }
-        if (b.getMembers().size() == 0) {
-          policy.getBindings().remove(b);
-        }
+      if (b.getRole().equals(role)) {
+        binding = b;
+      }
+    }
+    if (binding.getMembers().contains(member)) {
+      binding.getMembers().remove(member);
+      if (binding.getMembers().size() == 0) {
+        policy.getBindings().remove(binding);
       }
     }
 

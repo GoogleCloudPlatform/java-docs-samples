@@ -30,18 +30,19 @@ public class RemoveMember {
     String member = "user:member-to-remove@example.com";
 
     List<Binding> bindings = policy.getBindings();
-
+    Binding binding = null;
     for (Binding b : bindings) {
-      if (b.getRole() == role) {
-        if (b.getMembers().contains(member)) {
-          b.getMembers().remove(member);
-          System.out.println("Member " + member + " removed from " + role);
-        }
-        if (b.getMembers().size() == 0) {
-          policy.getBindings().remove(b);
-        }
-        return;
+      if (b.getRole().equals(role)) {
+        binding = b;
       }
+    }
+    if (binding.getMembers().contains(member)) {
+      binding.getMembers().remove(member);
+      System.out.println("Member " + member + " removed from " + role);
+      if (binding.getMembers().size() == 0) {
+        policy.getBindings().remove(binding);
+      }
+      return;
     }
 
     System.out.println("Role not found in policy; member not removed");

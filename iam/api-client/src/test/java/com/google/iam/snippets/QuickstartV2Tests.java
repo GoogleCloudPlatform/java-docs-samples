@@ -15,6 +15,7 @@
 
 package com.google.iam.snippets;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -134,5 +135,17 @@ public class QuickstartV2Tests {
 
     // Tests removeMember()
     QuickstartV2.removeMember(crmService, PROJECT_ID, member, role);
+    // Confirm that the member has been removed
+    policy = QuickstartV2.getPolicy(crmService, PROJECT_ID);
+    binding = null;
+    bindings = policy.getBindings();
+    for (Binding b : bindings) {
+      if (b.getRole().equals(role)) {
+        binding = b;
+      }
+    }
+    if (binding != null) {
+      assertFalse(binding.getMembers().contains(member));
+    }
   }
 }
