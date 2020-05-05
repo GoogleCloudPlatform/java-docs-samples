@@ -32,7 +32,7 @@ public class AddMember {
     List<Binding> bindings = policy.getBindings();
 
     for (Binding b : bindings) {
-      if (b.getRole() == role) {
+      if (b.getRole().equals(role)) {
         b.getMembers().add(member);
         System.out.println("Member " + member + " added to role " + role);
         return;

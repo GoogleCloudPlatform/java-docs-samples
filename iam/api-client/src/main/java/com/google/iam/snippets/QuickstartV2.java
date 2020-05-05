@@ -39,8 +39,6 @@ public class QuickstartV2 {
     String member = "your-service-account";
     // The role to be granted.
     String role = "roles/logging.logWriter";
-    // All permissions contained in the role to be granted.
-    List<String> rolePermissions = Arrays.asList("logging.logEntries.create");
 
     // Initializes the Cloud Resource Manager service.
     CloudResourceManager crmService = null;
@@ -53,13 +51,21 @@ public class QuickstartV2 {
     // Grants your member the "Log writer" role for your project.
     addBinding(crmService, projectId, member, role);
 
-    // Tests if the member has the permissions granted by the role.
-    List<String> grantedPermissions =
-        testPermissions(crmService, projectId, rolePermissions);
-    // Prints the role permissions held by the member.
-    for (String p : grantedPermissions) {
-      System.out.println(p);
+    // Get the project's policy and print all members with the "Log Writer" role
+    Policy policy = getPolicy(crmService, projectId);
+    Binding binding = null;
+    List<Binding> bindings = policy.getBindings();
+    for (Binding b : bindings) {
+      if (b.getRole().equals(role)) {
+        binding = b;
+      }
     }
+    System.out.println("Role: " + binding.getRole());
+    System.out.print("Members: " );
+    for (String m : binding.getMembers()) {
+      System.out.print("[" + m + "] ");
+    }
+    System.out.println();
 
     // Removes member from the "Log writer" role.
     removeMember(crmService, projectId, member, role);
@@ -84,10 +90,7 @@ public class QuickstartV2 {
     return service;
   }
 
-  // Adds a member to a role.
-  public static void addBinding(
-      CloudResourceManager crmService, String projectId, String member, String role) {
-
+  public static Policy getPolicy(CloudResourceManager crmService, String projectId) {
     // Gets the project's policy by calling the
     // Cloud Resource Manager Projects API.
     Policy policy = null;
@@ -97,22 +100,10 @@ public class QuickstartV2 {
     } catch (IOException e) {
       System.out.println("Unable to get policy: \n" + e.toString());
     }
+    return policy;
+  }
 
-    // If binding already exists, adds member to binding.
-    List<Binding> bindings = policy.getBindings();
-    for (Binding b : bindings) {
-      if (b.getRole() == role) {
-        b.getMembers().add(member);
-        return;
-      }
-    }
-
-    // If binding does not exist, adds binding to policy.
-    Binding binding = new Binding();
-    binding.setRole(role);
-    binding.setMembers(Arrays.asList(member));
-    policy.getBindings().add(binding);
-
+  private static void setPolicy(CloudResourceManager crmService, String projectId, Policy policy) {
     // Sets the project's policy by calling the
     // Cloud Resource Manager Projects API.
     try {
@@ -124,39 +115,35 @@ public class QuickstartV2 {
     }
   }
 
-  // Tests if the caller has the listed permissions.
-  public static List<String> testPermissions(
-      CloudResourceManager crmService,
-      String projectId,
-      List<String> rolePermissions) {
+  public static void addBinding(
+      CloudResourceManager crmService, String projectId, String member, String role) {
 
-    // Tests the member's permissions by calling the
-    // Cloud Resource Manager Projects API.
-    TestIamPermissionsRequest requestBody =
-        new TestIamPermissionsRequest().setPermissions(rolePermissions);
-    try {
-      TestIamPermissionsResponse testIamPermissionsResponse =
-          crmService.projects().testIamPermissions(projectId, requestBody).execute();
+    // Gets the project's policy.
+    Policy policy = getPolicy(crmService, projectId);
 
-      return testIamPermissionsResponse.getPermissions();
-    } catch (IOException e) {
-      System.out.println("Unable to test permissions: \n" + e.toString());
-      return null;
+    // If binding already exists, adds member to binding.
+    List<Binding> bindings = policy.getBindings();
+    for (Binding b : bindings) {
+      if (b.getRole().equals(role)) {
+        b.getMembers().add(member);
+        break;
+      }
     }
+
+    // If binding does not exist, adds binding to policy.
+    Binding binding = new Binding();
+    binding.setRole(role);
+    binding.setMembers(Arrays.asList(member));
+    policy.getBindings().add(binding);
+
+    // Set the updated policy
+    setPolicy(crmService, projectId, policy);
   }
 
-  // Removes a member from a role.
   public static void removeMember(
       CloudResourceManager crmService, String projectId, String member, String role) {
-    // Gets the project's policy by calling the
-    // Cloud Resource Manager Projects API.
-    Policy policy = null;
-    try {
-      GetIamPolicyRequest request = new GetIamPolicyRequest();
-      policy = crmService.projects().getIamPolicy(projectId, request).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to get policy: \n" + e.toString());
-    }
+    // Gets the project's policy.
+    Policy policy = getPolicy(crmService, projectId);
 
     // Removes the member from the role.
     List<Binding> bindings = policy.getBindings();
@@ -173,15 +160,8 @@ public class QuickstartV2 {
       }
     }
 
-    // Sets the project's policy by calling the
-    // Cloud Resource Manager Projects API.
-    try {
-      SetIamPolicyRequest request = new SetIamPolicyRequest();
-      request.setPolicy(policy);
-      crmService.projects().setIamPolicy(projectId, request).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to set policy: \n" + e.toString());
-    }
+    // Sets the updated policy.
+    setPolicy(crmService, projectId, policy);
   }
 }
 // [END iam_quickstart_v2]

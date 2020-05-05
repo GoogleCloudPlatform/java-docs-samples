@@ -22,13 +22,14 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.Binding;
+import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
 import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +114,6 @@ public class QuickstartV2Tests {
   public void testQuickstart() throws Exception {
     String member = "serviceAccount:" + serviceAccount.getEmail();
     String role = "roles/logging.logWriter";
-    List<String> rolePermissions = Arrays.asList("logging.logEntries.create");
 
     // Tests initializeService()
     CloudResourceManager crmService = QuickstartV2.initializeService();
@@ -121,13 +121,16 @@ public class QuickstartV2Tests {
     // Tests addBinding()
     QuickstartV2.addBinding(crmService, PROJECT_ID, member, role);
 
-    // Tests testPermissions()
-    List<String> grantedPermissions =
-        QuickstartV2.testPermissions(crmService, PROJECT_ID, rolePermissions);
-
-    for (String p : rolePermissions) {
-      assertTrue(grantedPermissions.contains(p));
+    // Get the project's polcy and confirm that the member is in the policy
+    Policy policy = QuickstartV2.getPolicy(crmService, PROJECT_ID);
+    Binding binding = null;
+    List<Binding> bindings = policy.getBindings();
+    for (Binding b : bindings) {
+      if (b.getRole().equals(role)) {
+        binding = b;
+      }
     }
+    assertTrue(binding.getMembers().contains(member));
 
     // Tests removeMember()
     QuickstartV2.removeMember(crmService, PROJECT_ID, member, role);
