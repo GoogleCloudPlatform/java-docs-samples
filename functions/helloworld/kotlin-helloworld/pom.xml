@@ -162,12 +162,14 @@
             <goals>
               <goal>compile</goal>
             </goals>
+            <!-- [END functions_kotlin_pom] -->
             <configuration>
               <sourceDirs>
                 <source>src/main/kotlin</source>
                 <source>target/generated-sources/annotations</source>
               </sourceDirs>
             </configuration>
+            <!-- [START functions_kotlin_pom] -->
           </execution>
           <execution>
             <id>test-compile</id>
