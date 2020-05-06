@@ -4,3 +4,5 @@
 # The java-samples-reviewers team is the default owner for anything not
 # explicitly taken by someone else.
 *                         @GoogleCloudPlatform/java-samples-reviewers
+
+/firestore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
