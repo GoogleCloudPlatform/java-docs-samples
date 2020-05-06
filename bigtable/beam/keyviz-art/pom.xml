@@ -28,16 +28,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <apache_beam.version>2.19.0</apache_beam.version>
+    <apache_beam.version>2.20.0</apache_beam.version>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-beam</artifactId>
-      <version>1.14.1</version>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-direct-java</artifactId>
@@ -48,11 +42,11 @@
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
-      </artifactId>
-      <version>${apache_beam.version}</version>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase-beam</artifactId>
+      <version>1.14.1</version>
     </dependency>
 
     <dependency>
@@ -66,6 +60,12 @@
       <artifactId>truth</artifactId>
       <version>1.0.1</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
