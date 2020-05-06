@@ -40,12 +40,14 @@
   </properties>
 
   <dependencies>
+    <!-- [END functions_example_pom] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
       <version>1.33.0</version>
     </dependency>
 
+    <!-- [START functions_example_pom] -->
     <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
@@ -75,8 +77,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <!-- [START functions_example_pom] -->
   
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
@@ -96,6 +96,7 @@
     </profile>
   </profiles>
 
+  <!-- [START functions_example_pom] -->
   <build>
     <plugins>
       <plugin>
@@ -115,6 +116,7 @@
           <functionTarget>functions.FirebaseFirestore</functionTarget>
         </configuration>
       </plugin>
+      <!-- [END functions_example_pom] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -155,6 +157,7 @@
           </excludes>
         </configuration>
       </plugin>
+      <!-- [START functions_example_pom] -->
     </plugins>
   </build>
 </project>
