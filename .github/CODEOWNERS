@@ -5,6 +5,4 @@
 # explicitly taken by someone else.
 *                         @GoogleCloudPlatform/java-samples-reviewers
 
-/bigtable/                      @GoogleCloudPlatform/bigtable-dpe @GoogleCloudPlatform/java-samples-reviewers
-/cloud-sql/                     @GoogleCloudPlatform/sql-dpe @GoogleCloudPlatform/java-samples-reviewers
 /firestore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
