@@ -42,12 +42,6 @@
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
-      </artifactId>
-      <version>${apache_beam.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
