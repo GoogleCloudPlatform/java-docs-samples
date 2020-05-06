@@ -5,4 +5,5 @@
 # explicitly taken by someone else.
 *                         @GoogleCloudPlatform/java-samples-reviewers
 
+/datastore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
 /firestore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
