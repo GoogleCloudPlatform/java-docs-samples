@@ -115,6 +115,16 @@ public class ManagerIT {
             DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, registryId);
           }
         }
+        // Also remove the current test registry
+        try {
+          DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+        } catch (com.google.api.client.googleapis.json.GoogleJsonResponseException gjre) {
+          if (gjre.getStatusCode() == 404) {
+            // Expected, the registry resource is available for creation.
+          } else {
+            throw gjre;
+          }
+        }
       }
     } else {
       System.out.println("Project has no registries.");
