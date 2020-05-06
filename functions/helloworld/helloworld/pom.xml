@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 
+<!-- [START functions_example_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -23,6 +24,7 @@
 
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-hello-world</artifactId>
+  <!-- [END functions_example_pom] -->
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -30,8 +32,11 @@
     <version>1.0.17</version>
   </parent>
 
+  <!-- [START functions_example_pom] -->
   <properties>
+    <!-- [END functions_example_pom] -->
     <powermock.version>2.0.7</powermock.version>
+    <!-- [START functions_example_pom] -->
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,6 +50,7 @@
       <version>1.0.1</version>
       <scope>provided</scope>
     </dependency>
+    <!-- [END functions_example_pom] -->
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -97,6 +103,7 @@
     </profile>
   </profiles>
 
+  <!-- [START functions_example_pom] -->
   <build>
     <plugins>
       <plugin>
@@ -116,6 +123,7 @@
           <functionTarget>functions.HelloWorld</functionTarget>
         </configuration>
       </plugin>
+      <!-- [END functions_example_pom] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -131,6 +139,8 @@
           <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
+    <!-- [START functions_example_pom] -->
     </plugins>
   </build>
 </project>
+<!-- [END functions_example_pom] -->
