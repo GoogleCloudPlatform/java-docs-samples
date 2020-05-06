@@ -13,19 +13,20 @@
  * limitations under the License.
  */
 
-// [START iam_quickstart_v2]
-
 package com.google.iam.snippets;
+// [START iam_quickstart_v2]
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.*;
+import com.google.api.services.cloudresourcemanager.model.Binding;
+import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import com.google.api.services.iam.v1.IamScopes;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class QuickstartV2 {
     for (Binding b : bindings) {
       if (b.getRole().equals(role)) {
         binding = b;
+        break;
       }
     }
     System.out.println("Role: " + binding.getRole());
@@ -89,6 +91,56 @@ public class QuickstartV2 {
     return service;
   }
 
+  public static void addBinding(
+      CloudResourceManager crmService, String projectId, String member, String role) {
+
+    // Gets the project's policy.
+    Policy policy = getPolicy(crmService, projectId);
+
+    // If binding already exists, adds member to binding.
+    List<Binding> bindings = policy.getBindings();
+    for (Binding b : bindings) {
+      if (b.getRole().equals(role)) {
+        b.getMembers().add(member);
+        break;
+      }
+    }
+
+    // If binding does not exist, adds binding to policy.
+    Binding binding = new Binding();
+    binding.setRole(role);
+    binding.setMembers(Collections.singletonList(member));
+    policy.getBindings().add(binding);
+
+    // Set the updated policy
+    setPolicy(crmService, projectId, policy);
+  }
+
+  public static void removeMember(
+      CloudResourceManager crmService, String projectId, String member, String role) {
+    // Gets the project's policy.
+    Policy policy = getPolicy(crmService, projectId);
+
+    // Removes the member from the role.
+    List<Binding> bindings = policy.getBindings();
+    Binding binding = null;
+    for (Binding b : bindings) {
+      if (b.getRole().equals(role)) {
+        binding = b;
+        break;
+      }
+    }
+    if (binding.getMembers().contains(member)) {
+      binding.getMembers().remove(member);
+      if (binding.getMembers().isEmpty()) {
+        policy.getBindings().remove(binding);
+      }
+    }
+
+    // Sets the updated policy.
+    setPolicy(crmService, projectId, policy);
+  }
+
   public static Policy getPolicy(CloudResourceManager crmService, String projectId) {
     // Gets the project's policy by calling the
     // Cloud Resource Manager Projects API.
@@ -112,55 +164,6 @@ public class QuickstartV2 {
     } catch (IOException e) {
       System.out.println("Unable to set policy: \n" + e.toString());
     }
-  }
-
-  public static void addBinding(
-      CloudResourceManager crmService, String projectId, String member, String role) {
-
-    // Gets the project's policy.
-    Policy policy = getPolicy(crmService, projectId);
-
-    // If binding already exists, adds member to binding.
-    List<Binding> bindings = policy.getBindings();
-    for (Binding b : bindings) {
-      if (b.getRole().equals(role)) {
-        b.getMembers().add(member);
-        break;
-      }
-    }
-
-    // If binding does not exist, adds binding to policy.
-    Binding binding = new Binding();
-    binding.setRole(role);
-    binding.setMembers(Arrays.asList(member));
-    policy.getBindings().add(binding);
-
-    // Set the updated policy
-    setPolicy(crmService, projectId, policy);
-  }
-
-  public static void removeMember(
-      CloudResourceManager crmService, String projectId, String member, String role) {
-    // Gets the project's policy.
-    Policy policy = getPolicy(crmService, projectId);
-
-    // Removes the member from the role.
-    List<Binding> bindings = policy.getBindings();
-    Binding binding = null;
-    for (Binding b : bindings) {
-      if (b.getRole().equals(role)) {
-        binding = b;
-      }
-    }
-    if (binding.getMembers().contains(member)) {
-      binding.getMembers().remove(member);
-      if (binding.getMembers().size() == 0) {
-        policy.getBindings().remove(binding);
-      }
-    }
-
-    // Sets the updated policy.
-    setPolicy(crmService, projectId, policy);
   }
 }
 // [END iam_quickstart_v2]

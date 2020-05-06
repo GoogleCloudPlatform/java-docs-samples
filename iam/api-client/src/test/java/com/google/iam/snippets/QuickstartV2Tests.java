@@ -129,6 +129,7 @@ public class QuickstartV2Tests {
     for (Binding b : bindings) {
       if (b.getRole().equals(role)) {
         binding = b;
+        break;
       }
     }
     assertTrue(binding.getMembers().contains(member));
@@ -142,6 +143,7 @@ public class QuickstartV2Tests {
     for (Binding b : bindings) {
       if (b.getRole().equals(role)) {
         binding = b;
+        break;
       }
     }
     if (binding != null) {
