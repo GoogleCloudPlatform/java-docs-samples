@@ -17,6 +17,7 @@
 package functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
@@ -39,7 +40,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class HelloSpannerTest {
@@ -69,31 +70,25 @@ public class HelloSpannerTest {
 
   @Before
   public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
-
-    request = PowerMockito.mock(HttpRequest.class);
-    response = PowerMockito.mock(HttpResponse.class);
-    client = PowerMockito.mock(DatabaseClient.class);
+    MockitoAnnotations.initMocks(this);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+    when(response.getWriter()).thenReturn(writerOut);
 
     logHandler.clear();
   }
 
   private void setupSuccessfulMockQuery() {
-    ReadContext readContext = PowerMockito.mock(ReadContext.class);
-    ResultSet resultSet = PowerMockito.mock(ResultSet.class);
-    PowerMockito.when(resultSet.next()).thenReturn(true, true, false);
-    PowerMockito.when(resultSet.getLong("SingerId")).thenReturn(1L, 2L, 0L);
-    PowerMockito.when(resultSet.getLong("AlbumId")).thenReturn(1L, 1L, 0L);
-    PowerMockito.when(resultSet.getString("AlbumTitle")).thenReturn("Album 1", "Album 2", null);
-    PowerMockito.when(
-            readContext.executeQuery(
-                Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")))
+    ReadContext readContext = Mockito.mock(ReadContext.class);
+    ResultSet resultSet = Mockito.mock(ResultSet.class);
+    when(resultSet.next()).thenReturn(true, true, false);
+    when(resultSet.getLong("SingerId")).thenReturn(1L, 2L, 0L);
+    when(resultSet.getLong("AlbumId")).thenReturn(1L, 1L, 0L);
+    when(resultSet.getString("AlbumTitle")).thenReturn("Album 1", "Album 2", null);
+    when(readContext.executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")))
         .thenReturn(resultSet);
-    PowerMockito.when(client.singleUse()).thenReturn(readContext);
+    when(client.singleUse()).thenReturn(readContext);
   }
 
   @Test
@@ -110,14 +105,12 @@ public class HelloSpannerTest {
   }
 
   private void setupFailedMockQuery() {
-    ReadContext readContext = PowerMockito.mock(ReadContext.class);
-    PowerMockito.when(
-            readContext.executeQuery(
-                Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")))
+    ReadContext readContext = Mockito.mock(ReadContext.class);
+    when(readContext.executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")))
         .thenThrow(
             SpannerExceptionFactory.newSpannerException(
                 ErrorCode.NOT_FOUND, "Table `Albums` not found"));
-    PowerMockito.when(client.singleUse()).thenReturn(readContext);
+    when(client.singleUse()).thenReturn(readContext);
   }
 
   @Test
