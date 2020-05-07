@@ -36,7 +36,7 @@ public class FhirStorePatch {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStorePatch(String dicomStoreName, String pubsubTopic) throws IOException {
+  public static void fhirStorePatch(String fhirStoreName, String pubsubTopic) throws IOException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
@@ -47,7 +47,7 @@ public class FhirStorePatch {
 
     // Fetch the initial state of the FHIR store.
     FhirStores.Get getRequest =
-        client.projects().locations().datasets().fhirStores().get(dicomStoreName);
+        client.projects().locations().datasets().fhirStores().get(fhirStoreName);
     FhirStore store = getRequest.execute();
 
     // Update the FhirStore fields as needed as needed. For a full list of FhirStore fields, see:
@@ -61,7 +61,7 @@ public class FhirStorePatch {
             .locations()
             .datasets()
             .fhirStores()
-            .patch(dicomStoreName, store)
+            .patch(fhirStoreName, store)
             .setUpdateMask("notificationConfig");
 
     // Execute the request and process the results.
