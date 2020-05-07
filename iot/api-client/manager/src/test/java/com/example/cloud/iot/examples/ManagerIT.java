@@ -55,7 +55,7 @@ public class ManagerIT {
   private static final String CLOUD_REGION = "us-central1";
   private static final String ES_PATH = "resources/ec_public.pem";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGISTRY_ID = "java-reg" + (System.currentTimeMillis() / 100L);
+  private static final String REGISTRY_ID = "java-reg-" + (System.currentTimeMillis() / 100L);
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID = "java-pst-" + (System.currentTimeMillis() / 100L);
