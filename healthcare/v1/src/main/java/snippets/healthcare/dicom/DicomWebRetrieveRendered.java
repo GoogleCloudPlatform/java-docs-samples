@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 public class DicomWebRetrieveRendered {
   private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
-  private static final String DICOMWEB_PATH = "studies/%s/series/%s/instances/%s";
+  private static final String DICOMWEB_PATH = "studies/%s/series/%s/instances/%s/rendered";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
