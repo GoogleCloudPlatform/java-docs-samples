@@ -34,9 +34,6 @@
   
   <!-- [START functions_groovy_pom] -->
   <properties>
-    <!-- [END functions_groovy_pom] -->
-    <powermock.version>2.0.7</powermock.version>
-    <!-- [START functions_groovy_pom] -->
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -74,7 +71,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Required for mocking env vars -->
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
@@ -85,24 +81,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
       <version>29.0-jre</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-core</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito2</artifactId>
-      <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
     <!-- [START functions_groovy_pom] -->

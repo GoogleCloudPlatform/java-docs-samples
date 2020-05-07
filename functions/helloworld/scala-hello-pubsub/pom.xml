@@ -60,7 +60,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Required for mocking env vars -->
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>

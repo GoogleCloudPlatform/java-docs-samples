@@ -29,7 +29,10 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class OcrTranslateTextTest {
   private static final Logger logger = Logger.getLogger(
       OcrTranslateText.class.getName());
