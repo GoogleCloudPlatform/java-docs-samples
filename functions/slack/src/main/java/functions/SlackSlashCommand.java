@@ -32,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SlackSlashCommand implements HttpFunction {
@@ -41,14 +42,24 @@ public class SlackSlashCommand implements HttpFunction {
   private static final String SLACK_SECRET = System.getenv("SLACK_SECRET");
   private static final Gson gson = new Gson();
 
-  private Kgsearch kgClient;
-  private SlackSignature.Verifier verifier;
+  private final String apiKey;
+  private final Kgsearch kgClient;
+  private final SlackSignature.Verifier verifier;
 
   public SlackSlashCommand() throws IOException, GeneralSecurityException {
-    kgClient = new Kgsearch.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null).build();
+    this(new SlackSignature.Verifier(new SlackSignature.Generator(SLACK_SECRET)));
+  }
 
-    verifier = new SlackSignature.Verifier(new SlackSignature.Generator(SLACK_SECRET));
+  SlackSlashCommand(SlackSignature.Verifier verifier) throws IOException, GeneralSecurityException {
+    this(verifier, API_KEY);
+  }
+
+  SlackSlashCommand(SlackSignature.Verifier verifier, String apiKey)
+      throws IOException, GeneralSecurityException {
+    this.verifier = verifier;
+    this.apiKey = apiKey;
+    this.kgClient = new Kgsearch.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null).build();
   }
   // [END functions_slack_setup]
 
@@ -60,18 +71,13 @@ public class SlackSlashCommand implements HttpFunction {
    * @return true if the provided request came from Slack, false otherwise
    */
   boolean isValidSlackWebhook(HttpRequest request, String requestBody) {
-
     // Check for headers
-    HashMap<String, List<String>> headers = new HashMap(request.getHeaders());
-    if (!headers.containsKey("X-Slack-Request-Timestamp")
-        || !headers.containsKey("X-Slack-Signature")) {
+    Optional<String> maybeTimestamp = request.getFirstHeader("X-Slack-Request-Timestamp");
+    Optional<String> maybeSignature = request.getFirstHeader("X-Slack-Signature");
+    if (!maybeTimestamp.isPresent() || !maybeSignature.isPresent()) {
       return false;
     }
-    return verifier.isValid(
-        headers.get("X-Slack-Request-Timestamp").get(0),
-        requestBody,
-        headers.get("X-Slack-Signature").get(0),
-        1L);
+    return verifier.isValid(maybeTimestamp.get(), requestBody, maybeSignature.get(), 1L);
   }
   // [END functions_verify_webhook]
 
@@ -145,7 +151,7 @@ public class SlackSlashCommand implements HttpFunction {
   JsonObject searchKnowledgeGraph(String query) throws IOException {
     Kgsearch.Entities.Search kgRequest = kgClient.entities().search();
     kgRequest.setQuery(query);
-    kgRequest.setKey(API_KEY);
+    kgRequest.setKey(apiKey);
 
     return gson.fromJson(kgRequest.execute().toString(), JsonObject.class);
   }
