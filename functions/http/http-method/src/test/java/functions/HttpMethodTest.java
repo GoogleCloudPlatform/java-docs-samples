@@ -19,29 +19,20 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class HttpMethodTest {
@@ -53,14 +44,11 @@ public class HttpMethodTest {
 
   @Before
   public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
-
-    request = mock(HttpRequest.class);
-    response = mock(HttpResponse.class);
+    MockitoAnnotations.initMocks(this);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+    when(response.getWriter()).thenReturn(writerOut);
   }
 
   @Test
