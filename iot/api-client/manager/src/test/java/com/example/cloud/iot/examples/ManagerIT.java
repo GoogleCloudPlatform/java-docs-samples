@@ -55,7 +55,7 @@ public class ManagerIT {
   private static final String CLOUD_REGION = "us-central1";
   private static final String ES_PATH = "resources/ec_public.pem";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGISTRY_ID = "java-reg" + (System.currentTimeMillis() / 100L);
+  private static final String REGISTRY_ID = "java-reg-" + (System.currentTimeMillis() / 100L);
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID = "java-pst-" + (System.currentTimeMillis() / 100L);
@@ -113,6 +113,16 @@ public class ManagerIT {
           if (diffSecs > (60 * 60 * 24 * 7 * 10)) { // tests from last week or older
             System.out.println("Remove Id: " + r.getId());
             DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, registryId);
+          }
+        }
+        // Also remove the current test registry
+        try {
+          DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+        } catch (com.google.api.client.googleapis.json.GoogleJsonResponseException gjre) {
+          if (gjre.getStatusCode() == 404) {
+            // Expected, the registry resource is available for creation.
+          } else {
+            throw gjre;
           }
         }
       }
