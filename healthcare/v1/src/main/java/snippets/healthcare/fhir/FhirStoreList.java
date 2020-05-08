@@ -34,14 +34,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class FhirStoreList {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreList(String fhirStoreName) throws IOException {
-    // String fhirStoreName =
-    //    String.format(
-    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
+  public static void fhirStoreList(String datasetName) throws IOException {
+    // String datasetName =
+    //    String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -57,7 +56,7 @@ public class FhirStoreList {
               .locations()
               .datasets()
               .fhirStores()
-              .list(fhirStoreName)
+              .list(datasetName)
               .setPageSize(100) // Specify pageSize up to 1000
               .setPageToken(pageToken);
 
