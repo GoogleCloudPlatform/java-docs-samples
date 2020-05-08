@@ -13,25 +13,26 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_enable_service_account]
+// [START iam_create_key]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.EnableServiceAccountRequest;
+import com.google.api.services.iam.v1.model.CreateServiceAccountKeyRequest;
+import com.google.api.services.iam.v1.model.ServiceAccountKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
-public class EnableServiceAccount {
+public class CreateServiceAccountKey {
 
-  // Enables a service account.
-  public static void enableServiceAccount(String projectId) {
+  // Creates a key for a service account.
+  public static void createKey(String projectId) {
     // String projectId = "my-project-id";
-
+    
     Iam service = null;
     try {
       service = initService();
@@ -41,25 +42,21 @@ public class EnableServiceAccount {
     }
 
     try {
-      EnableServiceAccountRequest request = new EnableServiceAccountRequest();
-      service
-          .projects()
-          .serviceAccounts()
-          .enable(
-              "projects/-/serviceAccounts/"
-                  + "your-service-account-name@"
-                  + projectId
-                  + ".iam.gserviceaccount.com",
-              request)
-          .execute();
+      ServiceAccountKey key =
+          service
+              .projects()
+              .serviceAccounts()
+              .keys()
+              .create(
+                  "projects/-/serviceAccounts/your-service-account-name@"
+                      + projectId
+                      + ".iam.gserviceaccount.com",
+                  new CreateServiceAccountKeyRequest())
+              .execute();
 
-      System.out.println(
-          "Enabled service account: "
-              + "your-service-account-name@"
-              + projectId
-              + ".iam.gserviceaccount.com");
+      System.out.println("Created key: " + key.getName());
     } catch (IOException e) {
-      System.out.println("Unable to enable service account: \n" + e.toString());
+      System.out.println("Unable to create service account key: \n" + e.toString());
     }
   }
 
@@ -75,9 +72,9 @@ public class EnableServiceAccount {
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
                 credential)
-            .setApplicationName("service-accounts")
+            .setApplicationName("service-account-keys")
             .build();
     return service;
   }
 }
-// [END iam_enable_service_account]
+// [END iam_create_key]

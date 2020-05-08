@@ -13,27 +13,25 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_list_keys]
+// [START iam_delete_service_account]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.ServiceAccountKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.List;
 
-public class ListServiceAccountKeys {
+public class DeleteServiceAccount {
 
-  // Lists all keys for a service account.
-  public static void listKeys(String projectId) {
+  // Deletes a service account.
+  public static void deleteServiceAccount(String projectId) {
     // String projectId = "my-project-id";
     
-    Iam service = null;
+    Iam service = null; 
     try {
       service = initService();
     } catch (IOException | GeneralSecurityException e) {
@@ -42,24 +40,23 @@ public class ListServiceAccountKeys {
     }
 
     try {
-      List<ServiceAccountKey> keys =
-          service
-              .projects()
-              .serviceAccounts()
-              .keys()
-              .list(
-                  "projects/-/serviceAccounts/"
-                      + "your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com")
-              .execute()
-              .getKeys();
+      service
+          .projects()
+          .serviceAccounts()
+          .delete(
+              "projects/-/serviceAccounts/"
+                  + "your-service-account-name@"
+                  + projectId
+                  + ".iam.gserviceaccount.com")
+          .execute();
 
-      for (ServiceAccountKey key : keys) {
-        System.out.println("Key: " + key.getName());
-      }
+      System.out.println(
+          "Deleted service account: "
+              + "your-service-account-name@"
+              + projectId
+              + ".iam.gserviceaccount.com");
     } catch (IOException e) {
-      System.out.println("Unable to list service account keys: \n" + e.toString());
+      System.out.println("Unable to delete service account: \n" + e.toString());
     }
   }
 
@@ -75,9 +72,9 @@ public class ListServiceAccountKeys {
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
                 credential)
-            .setApplicationName("service-account-keys")
+            .setApplicationName("service-accounts")
             .build();
     return service;
   }
 }
-// [END iam_list_keys]
+// [END iam_delete_service_account]

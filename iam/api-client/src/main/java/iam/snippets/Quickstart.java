@@ -15,7 +15,7 @@
 
 // [START iam_quickstart]
 
-package com.google.iam.snippets;
+package iam.snippets;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;

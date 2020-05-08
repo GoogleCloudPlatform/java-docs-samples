@@ -13,26 +13,24 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_list_service_accounts]
+// [START iam_rename_service_account]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.ListServiceAccountsResponse;
 import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.List;
 
-public class ListServiceAccounts {
+public class RenameServiceAccount {
 
-  // Lists all service accounts for the current project.
-  public static void listServiceAccounts(String projectId) {
-    // String projectId = "my-project-id"
+  // Changes a service account's display name.
+  public static void renameServiceAccount(String projectId) {
+    // String projectId = "my-project-id";
     
     Iam service = null;
     try {
@@ -43,18 +41,34 @@ public class ListServiceAccounts {
     }
 
     try {
-      ListServiceAccountsResponse response =
-          service.projects().serviceAccounts().list("projects/" + projectId).execute();
-      List<ServiceAccount> serviceAccounts = response.getAccounts();
+      // First, get a service account using List() or Get()
+      ServiceAccount serviceAccount =
+          service
+              .projects()
+              .serviceAccounts()
+              .get(
+                  "projects/-/serviceAccounts/"
+                      + "your-service-account-name@"
+                      + projectId
+                      + ".iam.gserviceaccount.com")
+              .execute();
 
-      for (ServiceAccount account : serviceAccounts) {
-        System.out.println("Name: " + account.getName());
-        System.out.println("Display Name: " + account.getDisplayName());
-        System.out.println("Email: " + account.getEmail());
-        System.out.println();
-      }
+      // Then you can update the display name
+      serviceAccount.setDisplayName("your-new-display-name");
+      serviceAccount =
+          service
+              .projects()
+              .serviceAccounts()
+              .update(serviceAccount.getName(), serviceAccount)
+              .execute();
+
+      System.out.println(
+          "Updated display name for "
+              + serviceAccount.getName()
+              + " to: "
+              + serviceAccount.getDisplayName());
     } catch (IOException e) {
-      System.out.println("Unable to list service accounts: \n" + e.toString());
+      System.out.println("Unable to rename service account: \n" + e.toString());
     }
   }
 
@@ -75,4 +89,4 @@ public class ListServiceAccounts {
     return service;
   }
 }
-// [END iam_list_service_accounts]
+// [END iam_rename_service_account]

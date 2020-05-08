@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 // [START iam_quickstart_v2]
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;

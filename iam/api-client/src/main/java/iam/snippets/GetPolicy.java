@@ -13,74 +13,63 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_delete_key]
+// [START iam_get_policy]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.iam.v1.Iam;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.ServiceAccountKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.List;
 
-public class DeleteServiceAccountKey {
+public class GetPolicy {
 
-  // Deletes a service account key.
-  public static void deleteKey(String projectId) {
-    // String projectId = "my-project-id";
-    
-    Iam service = null;
+  // Gets a project's policy.
+  public static Policy getPolicy(String projectId) {
+    // projectId = "my-project-id"
+
+    Policy policy = null;
+
+    CloudResourceManager service = null;
     try {
-      service = initService();
+      service = createCloudResourceManagerService();
     } catch (IOException | GeneralSecurityException e) {
       System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
+      return policy;
     }
 
     try {
-      // First, get the name of the key using List() or Get()
-      List<ServiceAccountKey> keys =
-          service
-              .projects()
-              .serviceAccounts()
-              .keys()
-              .list(
-                  "projects/-/serviceAccounts/"
-                      + "your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com")
-              .execute()
-              .getKeys();
-      String keyToDelete = keys.get(0).getName();
-
-      // Then you can delete the key
-      service.projects().serviceAccounts().keys().delete(keyToDelete).execute();
-
-      System.out.println("Deleted key: " + keyToDelete);
+      GetIamPolicyRequest request = new GetIamPolicyRequest();
+      policy = service.projects().getIamPolicy(projectId, request).execute();
+      System.out.println("Policy retrieved: " + policy.toString());
+      return policy;
     } catch (IOException e) {
-      System.out.println("Unable to delete service account key: \n" + e.toString());
+      System.out.println("Unable to get policy: \n" + e.toString());
+      return policy;
     }
   }
 
-  private static Iam initService() throws GeneralSecurityException, IOException {
+  public static CloudResourceManager createCloudResourceManagerService()
+      throws IOException, GeneralSecurityException {
     // Use the Application Default Credentials strategy for authentication. For more info, see:
     // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-    // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
+
+    CloudResourceManager service =
+        new CloudResourceManager.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
                 credential)
-            .setApplicationName("service-account-keys")
+            .setApplicationName("service-accounts")
             .build();
     return service;
   }
 }
-// [END iam_delete_key]
+// [END iam_get_policy]

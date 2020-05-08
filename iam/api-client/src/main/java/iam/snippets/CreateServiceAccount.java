@@ -13,23 +13,24 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_disable_service_account]
+// [START iam_create_service_account]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.DisableServiceAccountRequest;
+import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
+import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
-public class DisableServiceAccount {
+public class CreateServiceAccount {
 
-  // Disables a service account.
-  public static void disableServiceAccount(String projectId) {
+  // Creates a service account.
+  public static void createServiceAccount(String projectId) {
     // String projectId = "my-project-id";
 
     Iam service = null;
@@ -41,25 +42,18 @@ public class DisableServiceAccount {
     }
 
     try {
-      DisableServiceAccountRequest request = new DisableServiceAccountRequest();
-      service
-          .projects()
-          .serviceAccounts()
-          .disable(
-              "projects/-/serviceAccounts/"
-                  + "your-service-account-name@"
-                  + projectId
-                  + ".iam.gserviceaccount.com",
-              request)
-          .execute();
+      ServiceAccount serviceAccount = new ServiceAccount();
+      serviceAccount.setDisplayName("your-display-name");
+      CreateServiceAccountRequest request = new CreateServiceAccountRequest();
+      request.setAccountId("your-service-account-name");
+      request.setServiceAccount(serviceAccount);
 
-      System.out.println(
-          "Disabled service account: "
-              + "your-service-account-name@"
-              + projectId
-              + ".iam.gserviceaccount.com");
+      serviceAccount =
+          service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
+
+      System.out.println("Created service account: " + serviceAccount.getEmail());
     } catch (IOException e) {
-      System.out.println("Unable to disable service account: \n" + e.toString());
+      System.out.println("Unable to create service account: \n" + e.toString());
     }
   }
 
@@ -80,4 +74,4 @@ public class DisableServiceAccount {
     return service;
   }
 }
-// [END iam_disable_service_account]
+// [END iam_create_service_account]

@@ -13,26 +13,25 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_test_permissions]
+// [START iam_set_policy]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequest;
-import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
+import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import com.google.api.services.iam.v1.IamScopes;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-public class TestPermissions {
+public class SetPolicy {
 
-  // Tests if the caller has the listed permissions.
-  public static void testPermissions(String projectId) {
+  // Sets a project's policy.
+  public static void setPolicy(Policy policy, String projectId) {
+    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
     // projectId = "my-project-id"
 
     CloudResourceManager service = null;
@@ -43,20 +42,13 @@ public class TestPermissions {
       return;
     }
 
-    List<String> permissionsList =
-        Arrays.asList("resourcemanager.projects.get", "resourcemanager.projects.delete");
-
-    TestIamPermissionsRequest requestBody =
-        new TestIamPermissionsRequest().setPermissions(permissionsList);
     try {
-      TestIamPermissionsResponse testIamPermissionsResponse =
-          service.projects().testIamPermissions(projectId, requestBody).execute();
-
-      System.out.println(
-          "Of the permissions listed in the request, the caller has the following: "
-              + testIamPermissionsResponse.getPermissions().toString());
+      SetIamPolicyRequest request = new SetIamPolicyRequest();
+      request.setPolicy(policy);
+      Policy response = service.projects().setIamPolicy(projectId, request).execute();
+      System.out.println("Policy set: " + response.toString());
     } catch (IOException e) {
-      System.out.println("Unable to test permissions: \n" + e.toString());
+      System.out.println("Unable to set policy: \n" + e.toString());
     }
   }
 
@@ -78,4 +70,4 @@ public class TestPermissions {
     return service;
   }
 }
-// [END iam_test_permissions]
+// [END iam_set_policy]

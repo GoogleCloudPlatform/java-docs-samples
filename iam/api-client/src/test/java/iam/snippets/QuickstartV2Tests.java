@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
