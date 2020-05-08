@@ -39,6 +39,7 @@ import snippets.healthcare.fhir.FhirStoreExecuteBundle;
 import snippets.healthcare.fhir.FhirStoreExport;
 import snippets.healthcare.fhir.FhirStoreGet;
 import snippets.healthcare.fhir.FhirStoreGetIamPolicy;
+import snippets.healthcare.fhir.FhirStoreGetMetadata;
 import snippets.healthcare.fhir.FhirStoreImport;
 import snippets.healthcare.fhir.FhirStoreList;
 import snippets.healthcare.fhir.FhirStorePatch;
@@ -119,6 +120,14 @@ public class FhirStoreTests {
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR store retrieved:"));
+  }
+
+  @Test
+  public void test_FhirStoreGetMetadata() throws Exception {
+    FhirStoreGetMetadata.fhirStoreGetMetadata(fhirStoreName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR store metadata retrieved:"));
   }
 
   @Test

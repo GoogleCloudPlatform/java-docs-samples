@@ -49,7 +49,6 @@ import snippets.healthcare.fhir.resources.FhirResourceDelete;
 import snippets.healthcare.fhir.resources.FhirResourceDeletePurge;
 import snippets.healthcare.fhir.resources.FhirResourceGet;
 import snippets.healthcare.fhir.resources.FhirResourceGetHistory;
-import snippets.healthcare.fhir.resources.FhirResourceGetMetadata;
 import snippets.healthcare.fhir.resources.FhirResourceGetPatientEverything;
 import snippets.healthcare.fhir.resources.FhirResourceListHistory;
 import snippets.healthcare.fhir.resources.FhirResourcePatch;
@@ -182,14 +181,6 @@ public class FhirResourceTests {
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource search results:"));
-  }
-
-  @Test
-  public void test_GetFhirResourceMetadata() throws Exception {
-    FhirResourceGetMetadata.fhirResourceGetMetadata(fhirStoreName);
-
-    String output = bout.toString();
-    assertThat(output, containsString("FHIR resource metadata retrieved:"));
   }
 
   @Test
