@@ -225,7 +225,7 @@ public class FhirResourceTests {
     FhirResourceGetHistory.fhirResourceGetHistory(fhirResourceName, versionId);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource history list retrieved:"));
+    assertThat(output, containsString("FHIR resource retrieved from version:"));
   }
 
   @Test

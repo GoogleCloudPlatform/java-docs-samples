@@ -45,7 +45,7 @@ public class FhirResourceGetHistory {
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id", "resource-type", "resource-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type", "resource-id");
     // String versionId = "version-uuid"
 
     // Initialize the client, which will be used to interact with the service.
