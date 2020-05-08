@@ -38,7 +38,7 @@ public class FhirStoreList {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreList(String datasetStoreName) throws IOException {
+  public static void fhirStoreList(String datasetName) throws IOException {
     // String datasetName =
     //    String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
