@@ -26,6 +26,7 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.common.collect.Lists;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * Demonstrate various ways to authenticate requests using Cloud Storage as an example call.
