@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.fhir.resources;
+package snippets.healthcare.fhir;
 
 // [START healthcare_get_metadata]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -29,27 +29,27 @@ import com.google.api.services.healthcare.v1.model.HttpBody;
 import java.io.IOException;
 import java.util.Collections;
 
-public class FhirResourceGetMetadata {
+public class FhirStoreGetMetadata {
   private static final String FHIR_NAME =
-      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceGetMetadata(String resourceName) throws IOException {
-    // String resourceName =
+  public static void fhirStoreGetMetadata(String fhirStoreName) throws IOException {
+    // String fhirStoreName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     // Create request and configure any parameters.
     Capabilities request =
-        client.projects().locations().datasets().fhirStores().fhir().capabilities(resourceName);
+        client.projects().locations().datasets().fhirStores().fhir().capabilities(fhirStoreName);
 
     // Execute the request and process the results.
     HttpBody response = request.execute();
-    System.out.println("FHIR resource metadata retrieved: " + response.toPrettyString());
+    System.out.println("FHIR store metadata retrieved: " + response.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
