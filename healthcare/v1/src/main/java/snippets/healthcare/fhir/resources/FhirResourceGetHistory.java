@@ -37,7 +37,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceGetHistory {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+  private static final String FHIR_NAME =
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -45,7 +46,8 @@ public class FhirResourceGetHistory {
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type",
+    // "resource-id");
     // String versionId = "version-uuid"
 
     // Initialize the client, which will be used to interact with the service.
@@ -74,7 +76,7 @@ public class FhirResourceGetHistory {
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.println("FHIR resource history list retrieved: ");
+    System.out.println("FHIR resource retrieved from version: ");
     responseEntity.writeTo(System.out);
   }
 
