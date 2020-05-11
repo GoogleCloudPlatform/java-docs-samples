@@ -32,8 +32,8 @@ import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -83,9 +83,10 @@ public class QuickstartV2Tests {
 
     try {
       serviceAccount = new ServiceAccount();
-      serviceAccount.setDisplayName("iam-test-account" + new Date().hashCode());
+      String serviceAccountUUID = UUID.randomUUID().toString().split("-")[0];
+      serviceAccount.setDisplayName("iam-test-account" + serviceAccountUUID);
       CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId("iam-test-account" + new Date().hashCode());
+      request.setAccountId("iam-test-account" + serviceAccountUUID);
       request.setServiceAccount(serviceAccount);
 
       serviceAccount =
