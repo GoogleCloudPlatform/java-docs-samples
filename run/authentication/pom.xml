@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
 Copyright 2019 Google LLC
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,9 +35,9 @@ limitations under the License.
 
   <dependencies>
     <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>4.6.0</version>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>0.20.0</version>
     </dependency>
 
     <dependency>
@@ -46,6 +46,11 @@ limitations under the License.
       <version>4.13</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
