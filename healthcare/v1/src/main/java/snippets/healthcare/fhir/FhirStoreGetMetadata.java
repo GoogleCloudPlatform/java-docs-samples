@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package snippets.healthcare.fhir.resources;
+package snippets.healthcare.fhir;
 
 // [START healthcare_get_metadata]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
