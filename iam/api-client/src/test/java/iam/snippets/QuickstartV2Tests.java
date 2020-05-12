@@ -83,10 +83,10 @@ public class QuickstartV2Tests {
 
     try {
       serviceAccount = new ServiceAccount();
-      String serviceAccountUUID = UUID.randomUUID().toString().split("-")[0];
-      serviceAccount.setDisplayName("iam-test-account" + serviceAccountUUID);
+      String serviceAccountUuid = UUID.randomUUID().toString().split("-")[0];
+      serviceAccount.setDisplayName("iam-test-account" + serviceAccountUuid);
       CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId("iam-test-account" + serviceAccountUUID);
+      request.setAccountId("iam-test-account" + serviceAccountUuid);
       request.setServiceAccount(serviceAccount);
 
       serviceAccount =
