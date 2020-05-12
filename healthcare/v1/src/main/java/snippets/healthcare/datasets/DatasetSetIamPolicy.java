@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class DatasetSetIamPolicy {
+  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 

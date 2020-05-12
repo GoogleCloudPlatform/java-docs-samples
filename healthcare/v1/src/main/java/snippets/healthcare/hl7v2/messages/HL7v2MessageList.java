@@ -28,10 +28,7 @@ import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1.model.ListMessagesResponse;
 import com.google.api.services.healthcare.v1.model.Message;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class HL7v2MessageList {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
@@ -48,10 +45,9 @@ public class HL7v2MessageList {
 
     // Results are paginated, so multiple queries may be required.
     String pageToken = null;
-    List<Message> messages = new ArrayList<>();
 
-    do {
-      // Create request and configure any parameters.
+    // Create request and configure any parameters.
+    try {
       Messages.List request =
           client
               .projects()
@@ -63,21 +59,21 @@ public class HL7v2MessageList {
               .setPageSize(100) // Specify pageSize up to 1000
               .setPageToken(pageToken);
 
+      ListMessagesResponse response;
       // Execute response and collect results.
-      ListMessagesResponse response = request.execute();
-      Collection<Message> responseMessages = response.getHl7V2Messages();
-      if (responseMessages != null) {
-        messages.addAll(responseMessages);
-      }
-
-      // Update the page token for the next request.
-      pageToken = response.getNextPageToken();
-    } while (pageToken != null);
-
-    // Print results.
-    System.out.printf("Retrieved %s HL7v2 messages: \n", messages.size());
-    for (Message data : messages) {
-      System.out.println("\t" + data.getData());
+      do {
+        response = request.execute();
+        if (response.getHl7V2Messages() == null) {
+          continue;
+        }
+        System.out.printf("Retrieved %s HL7v2 messages: \n", response.getHl7V2Messages().size());
+        for (Message message : response.getHl7V2Messages()) {
+          System.out.println("\t" + message);
+        }
+        request.setPageToken(response.getNextPageToken());
+      } while (response.getNextPageToken() != null);
+    } catch (IOException e) {
+      System.out.println("Unable to list HL7v2 messages:" + e.toString());
     }
   }
 

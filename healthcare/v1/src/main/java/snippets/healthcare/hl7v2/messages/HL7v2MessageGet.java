@@ -18,7 +18,6 @@ package snippets.healthcare.hl7v2.messages;
 
 // [START healthcare_get_hl7v2_message]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -32,7 +31,7 @@ import java.util.Collections;
 
 public class HL7v2MessageGet {
   private static final String MESSAGE_NAME =
-      "projects/%s/locations/%s/datasets/%s/hl7V2Store/%s/messages/%s";
+      "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
