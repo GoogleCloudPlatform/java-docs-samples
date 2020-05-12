@@ -18,7 +18,6 @@ package snippets.healthcare.hl7v2.messages;
 
 // [START healthcare_get_hl7v2_message]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
