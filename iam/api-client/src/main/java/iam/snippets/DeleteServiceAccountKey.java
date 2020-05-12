@@ -13,24 +13,24 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_create_key]
+// [START iam_delete_key]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.CreateServiceAccountKeyRequest;
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.List;
 
-public class CreateServiceAccountKey {
+public class DeleteServiceAccountKey {
 
-  // Creates a key for a service account.
-  public static void createKey(String projectId) {
+  // Deletes a service account key.
+  public static void deleteKey(String projectId) {
     // String projectId = "my-project-id";
     
     Iam service = null;
@@ -42,21 +42,27 @@ public class CreateServiceAccountKey {
     }
 
     try {
-      ServiceAccountKey key =
+      // First, get the name of the key using List() or Get()
+      List<ServiceAccountKey> keys =
           service
               .projects()
               .serviceAccounts()
               .keys()
-              .create(
-                  "projects/-/serviceAccounts/your-service-account-name@"
+              .list(
+                  "projects/-/serviceAccounts/"
+                      + "your-service-account-name@"
                       + projectId
-                      + ".iam.gserviceaccount.com",
-                  new CreateServiceAccountKeyRequest())
-              .execute();
+                      + ".iam.gserviceaccount.com")
+              .execute()
+              .getKeys();
+      String keyToDelete = keys.get(0).getName();
 
-      System.out.println("Created key: " + key.getName());
+      // Then you can delete the key
+      service.projects().serviceAccounts().keys().delete(keyToDelete).execute();
+
+      System.out.println("Deleted key: " + keyToDelete);
     } catch (IOException e) {
-      System.out.println("Unable to create service account key: \n" + e.toString());
+      System.out.println("Unable to delete service account key: \n" + e.toString());
     }
   }
 
@@ -77,4 +83,4 @@ public class CreateServiceAccountKey {
     return service;
   }
 }
-// [END iam_create_key]
+// [END iam_delete_key]

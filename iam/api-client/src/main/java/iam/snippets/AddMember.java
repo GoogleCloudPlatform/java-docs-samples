@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
 // [START iam_modify_policy_add_member]
 import com.google.api.services.cloudresourcemanager.model.Binding;
@@ -32,7 +32,7 @@ public class AddMember {
     List<Binding> bindings = policy.getBindings();
 
     for (Binding b : bindings) {
-      if (b.getRole() == role) {
+      if (b.getRole().equals(role)) {
         b.getMembers().add(member);
         System.out.println("Member " + member + " added to role " + role);
         return;

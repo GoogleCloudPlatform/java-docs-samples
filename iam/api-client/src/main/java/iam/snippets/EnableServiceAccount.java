@@ -13,24 +13,23 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_create_service_account]
+// [START iam_enable_service_account]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
-import com.google.api.services.iam.v1.model.ServiceAccount;
+import com.google.api.services.iam.v1.model.EnableServiceAccountRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
-public class CreateServiceAccount {
+public class EnableServiceAccount {
 
-  // Creates a service account.
-  public static void createServiceAccount(String projectId) {
+  // Enables a service account.
+  public static void enableServiceAccount(String projectId) {
     // String projectId = "my-project-id";
 
     Iam service = null;
@@ -42,18 +41,25 @@ public class CreateServiceAccount {
     }
 
     try {
-      ServiceAccount serviceAccount = new ServiceAccount();
-      serviceAccount.setDisplayName("your-display-name");
-      CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId("your-service-account-name");
-      request.setServiceAccount(serviceAccount);
+      EnableServiceAccountRequest request = new EnableServiceAccountRequest();
+      service
+          .projects()
+          .serviceAccounts()
+          .enable(
+              "projects/-/serviceAccounts/"
+                  + "your-service-account-name@"
+                  + projectId
+                  + ".iam.gserviceaccount.com",
+              request)
+          .execute();
 
-      serviceAccount =
-          service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
-
-      System.out.println("Created service account: " + serviceAccount.getEmail());
+      System.out.println(
+          "Enabled service account: "
+              + "your-service-account-name@"
+              + projectId
+              + ".iam.gserviceaccount.com");
     } catch (IOException e) {
-      System.out.println("Unable to create service account: \n" + e.toString());
+      System.out.println("Unable to enable service account: \n" + e.toString());
     }
   }
 
@@ -74,4 +80,4 @@ public class CreateServiceAccount {
     return service;
   }
 }
-// [END iam_create_service_account]
+// [END iam_enable_service_account]

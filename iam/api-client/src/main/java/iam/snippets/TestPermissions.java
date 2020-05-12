@@ -13,74 +13,63 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_rename_service_account]
+// [START iam_test_permissions]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.iam.v1.Iam;
+import com.google.api.services.cloudresourcemanager.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsRequest;
+import com.google.api.services.cloudresourcemanager.model.TestIamPermissionsResponse;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-public class RenameServiceAccount {
+public class TestPermissions {
 
-  // Changes a service account's display name.
-  public static void renameServiceAccount(String projectId) {
-    // String projectId = "my-project-id";
-    
-    Iam service = null;
+  // Tests if the caller has the listed permissions.
+  public static void testPermissions(String projectId) {
+    // projectId = "my-project-id"
+
+    CloudResourceManager service = null;
     try {
-      service = initService();
+      service = createCloudResourceManagerService();
     } catch (IOException | GeneralSecurityException e) {
       System.out.println("Unable to initialize service: \n" + e.toString());
       return;
     }
 
-    try {
-      // First, get a service account using List() or Get()
-      ServiceAccount serviceAccount =
-          service
-              .projects()
-              .serviceAccounts()
-              .get(
-                  "projects/-/serviceAccounts/"
-                      + "your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com")
-              .execute();
+    List<String> permissionsList =
+        Arrays.asList("resourcemanager.projects.get", "resourcemanager.projects.delete");
 
-      // Then you can update the display name
-      serviceAccount.setDisplayName("your-new-display-name");
-      serviceAccount =
-          service
-              .projects()
-              .serviceAccounts()
-              .update(serviceAccount.getName(), serviceAccount)
-              .execute();
+    TestIamPermissionsRequest requestBody =
+        new TestIamPermissionsRequest().setPermissions(permissionsList);
+    try {
+      TestIamPermissionsResponse testIamPermissionsResponse =
+          service.projects().testIamPermissions(projectId, requestBody).execute();
 
       System.out.println(
-          "Updated display name for "
-              + serviceAccount.getName()
-              + " to: "
-              + serviceAccount.getDisplayName());
+          "Of the permissions listed in the request, the caller has the following: "
+              + testIamPermissionsResponse.getPermissions().toString());
     } catch (IOException e) {
-      System.out.println("Unable to rename service account: \n" + e.toString());
+      System.out.println("Unable to test permissions: \n" + e.toString());
     }
   }
 
-  private static Iam initService() throws GeneralSecurityException, IOException {
+  public static CloudResourceManager createCloudResourceManagerService()
+      throws IOException, GeneralSecurityException {
     // Use the Application Default Credentials strategy for authentication. For more info, see:
     // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-    // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
+
+    CloudResourceManager service =
+        new CloudResourceManager.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
                 credential)
@@ -89,4 +78,4 @@ public class RenameServiceAccount {
     return service;
   }
 }
-// [END iam_rename_service_account]
+// [END iam_test_permissions]

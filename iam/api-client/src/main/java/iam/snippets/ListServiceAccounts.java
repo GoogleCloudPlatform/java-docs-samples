@@ -13,55 +13,60 @@
  * limitations under the License.
  */
 
-package com.google.iam.snippets;
+package iam.snippets;
 
-// [START iam_set_policy]
+// [START iam_list_service_accounts]
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.Policy;
-import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
+import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
+import com.google.api.services.iam.v1.model.ListServiceAccountsResponse;
+import com.google.api.services.iam.v1.model.ServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.List;
 
-public class SetPolicy {
+public class ListServiceAccounts {
 
-  // Sets a project's policy.
-  public static void setPolicy(Policy policy, String projectId) {
-    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
-    // projectId = "my-project-id"
-
-    CloudResourceManager service = null;
+  // Lists all service accounts for the current project.
+  public static void listServiceAccounts(String projectId) {
+    // String projectId = "my-project-id"
+    
+    Iam service = null;
     try {
-      service = createCloudResourceManagerService();
+      service = initService();
     } catch (IOException | GeneralSecurityException e) {
       System.out.println("Unable to initialize service: \n" + e.toString());
       return;
     }
 
     try {
-      SetIamPolicyRequest request = new SetIamPolicyRequest();
-      request.setPolicy(policy);
-      Policy response = service.projects().setIamPolicy(projectId, request).execute();
-      System.out.println("Policy set: " + response.toString());
+      ListServiceAccountsResponse response =
+          service.projects().serviceAccounts().list("projects/" + projectId).execute();
+      List<ServiceAccount> serviceAccounts = response.getAccounts();
+
+      for (ServiceAccount account : serviceAccounts) {
+        System.out.println("Name: " + account.getName());
+        System.out.println("Display Name: " + account.getDisplayName());
+        System.out.println("Email: " + account.getEmail());
+        System.out.println();
+      }
     } catch (IOException e) {
-      System.out.println("Unable to set policy: \n" + e.toString());
+      System.out.println("Unable to list service accounts: \n" + e.toString());
     }
   }
 
-  public static CloudResourceManager createCloudResourceManagerService()
-      throws IOException, GeneralSecurityException {
+  private static Iam initService() throws GeneralSecurityException, IOException {
     // Use the Application Default Credentials strategy for authentication. For more info, see:
     // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
     GoogleCredential credential =
         GoogleCredential.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
+    // Initialize the IAM service, which can be used to send requests to the IAM API.
+    Iam service =
+        new Iam.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
                 credential)
@@ -70,4 +75,4 @@ public class SetPolicy {
     return service;
   }
 }
-// [END iam_set_policy]
+// [END iam_list_service_accounts]
