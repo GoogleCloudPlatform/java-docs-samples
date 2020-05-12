@@ -68,10 +68,10 @@ public class HL7v2MessageList {
         }
         System.out.printf("Retrieved %s HL7v2 messages: \n", response.getHl7V2Messages().size());
         for (Message message : response.getHl7V2Messages()) {
-            System.out.println("\t" + message);
+          System.out.println("\t" + message);
         }
         request.setPageToken(response.getNextPageToken());
-       } while (response.getNextPageToken() != null);
+      } while (response.getNextPageToken() != null);
     } catch (IOException e) {
       System.out.println("Unable to list HL7v2 messages:" + e.toString());
     }
