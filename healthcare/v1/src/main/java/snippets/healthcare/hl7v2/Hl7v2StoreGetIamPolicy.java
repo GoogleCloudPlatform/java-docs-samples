@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class Hl7v2StoreGetIamPolicy {
-  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
+  private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
