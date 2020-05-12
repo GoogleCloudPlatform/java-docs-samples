@@ -73,7 +73,7 @@ public class HL7v2MessageList {
         request.setPageToken(response.getNextPageToken());
        } while (response.getNextPageToken() != null);
     } catch (IOException e) {
-      System.out.println("Unable to list HL7v2 messages: \n" + e.toString());
+      System.out.println("Unable to list HL7v2 messages:" + e.toString());
     }
   }
 
