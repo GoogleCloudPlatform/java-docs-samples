@@ -222,6 +222,19 @@ class QueryDataSnippets {
   }
 
   /**
+   * Creates a query that combines order by with limitToLast.
+   *
+   * @return query
+   */
+  Query createOrderByNameWithLimitToLastQuery() {
+    CollectionReference cities = db.collection("cities");
+    // [START fs_order_by_name_limit_query]
+    Query query = cities.orderBy("name").limitToLast(3);
+    // [END fs_order_by_name_limit_query]
+    return query;
+  }
+
+  /**
    * Creates a query that orders by country and population(descending).
    *
    * @return query
