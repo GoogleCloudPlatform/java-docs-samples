@@ -43,19 +43,18 @@ public class FhirResourceSearchPost {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceSearchPost(String fhirStoreName, String resourceType)
+  public static void fhirResourceSearchPost(String resourceName)
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
-    // String resourceType = "Patient";
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
 
     HttpClient httpClient = HttpClients.createDefault();
     String uri = String.format(
-        "%sv1/%s/fhir/%s/_search", client.getRootUrl(), fhirStoreName, resourceType);
+        "%sv1/%s/_search", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri)
         .setParameter("access_token", getAccessToken());
     StringEntity requestEntity = new StringEntity("");
@@ -74,7 +73,7 @@ public class FhirResourceSearchPost {
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
       System.err.print(String.format(
-          "Exception searching FHIR resources: %s\n", response.getStatusLine().toString()));
+          "Exception searching POST FHIR resources: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }

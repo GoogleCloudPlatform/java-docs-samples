@@ -67,7 +67,8 @@ public class FhirResourceTests {
   private String fhirResourceId;
   private String fhirResourceName;
 
-  private static String patientType = "Patient";
+  private static String resourcePath;
+  private static String resourceType = "Patient";
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -96,6 +97,7 @@ public class FhirResourceTests {
 
     String fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
     fhirStoreName = String.format("%s/fhirStores/%s", datasetName, fhirStoreId);
+    resourcePath = String.format("%s/fhir/%s", fhirStoreName, resourceType);
     FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
   }
 
@@ -109,12 +111,16 @@ public class FhirResourceTests {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    FhirResourceCreate.fhirResourceCreate(fhirStoreName, patientType);
+    FhirResourceCreate.fhirResourceCreate(fhirStoreName, resourceType);
 
     Matcher idMatcher = Pattern.compile("\"id\": \"([^\"]*)\",").matcher(bout.toString());
     if (idMatcher.find()) {
       fhirResourceId = idMatcher.group(1);
-      fhirResourceName = String.format("%s/fhir/%s/%s", fhirStoreName, patientType, fhirResourceId);
+      fhirResourceName = String.format(
+          "%s/fhir/%s/%s",
+          fhirStoreName,
+          resourceType,
+          fhirResourceId);
     }
 
     bout = new ByteArrayOutputStream();
@@ -130,7 +136,7 @@ public class FhirResourceTests {
 
   @Test
   public void test_FhirResourceCreate() throws Exception {
-    FhirResourceCreate.fhirResourceCreate(fhirStoreName, patientType);
+    FhirResourceCreate.fhirResourceCreate(fhirStoreName, resourceType);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource created:"));
@@ -138,7 +144,7 @@ public class FhirResourceTests {
 
   @Test
   public void test_FhirResourceSearchGet() throws Exception {
-    FhirResourceSearchGet.fhirResourceSearchGet(fhirStoreName);
+    FhirResourceSearchGet.fhirResourceSearchGet(resourcePath);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource search results:"));
@@ -146,7 +152,7 @@ public class FhirResourceTests {
 
   @Test
   public void test_FhirResourceSearchPost() throws Exception {
-    FhirResourceSearchPost.fhirResourceSearchPost(fhirStoreName, patientType);
+    FhirResourceSearchPost.fhirResourceSearchPost(resourcePath);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource search results:"));
@@ -161,7 +167,6 @@ public class FhirResourceTests {
   }
 
   @Test
-  @Ignore("b/135536409")
   public void test_FhirResourcePatch() throws Exception {
     JsonObject json = new JsonObject();
     json.add("op", new JsonPrimitive("add"));
@@ -180,7 +185,7 @@ public class FhirResourceTests {
     FhirResourceGetPatientEverything.fhirResourceGetPatientEverything(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource search results:"));
+    assertThat(output, containsString("Patient compartment results:"));
   }
 
   @Test
@@ -189,14 +194,6 @@ public class FhirResourceTests {
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource deleted."));
-
-    bout.reset();
-    try {
-      FhirResourceGet.fhirResourceGet(fhirResourceName);
-      fail();
-    } catch (RuntimeException ex) {
-      assertThat(ex.getMessage(), containsString("404"));
-    }
   }
 
   @Test
@@ -247,6 +244,6 @@ public class FhirResourceTests {
     FhirResourceDeletePurge.fhirResourceDeletePurge(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource purged."));
+    assertThat(output, containsString("FHIR resource history purged."));
   }
 }

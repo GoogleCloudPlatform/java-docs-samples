@@ -75,7 +75,7 @@ public class FhirResourceDeletePurge {
       responseEntity.writeTo(System.err);
       throw new RuntimeException(errorMessage);
     }
-    System.out.println("FHIR resource purged.");
+    System.out.println("FHIR resource history purged.");
     responseEntity.writeTo(System.out);
   }
 

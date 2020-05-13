@@ -38,7 +38,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceListHistory {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+  private static final String FHIR_NAME =
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -46,7 +47,8 @@ public class FhirResourceListHistory {
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type",
+    //  "resource-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();

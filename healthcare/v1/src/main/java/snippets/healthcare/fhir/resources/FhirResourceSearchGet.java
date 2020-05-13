@@ -46,7 +46,7 @@ public class FhirResourceSearchGet {
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -70,7 +70,7 @@ public class FhirResourceSearchGet {
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
       System.err.print(String.format(
-          "Exception searching FHIR resources: %s\n", response.getStatusLine().toString()));
+          "Exception searching GET FHIR resources: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
