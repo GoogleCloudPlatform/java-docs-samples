@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class DicomStoreGetIamPolicy {
-  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
+  private static final String DICOM_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
