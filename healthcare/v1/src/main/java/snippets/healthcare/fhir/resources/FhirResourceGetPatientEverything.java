@@ -38,7 +38,7 @@ import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceGetPatientEverything {
   private static final String FHIR_NAME =
-      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/Patient/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -46,7 +46,7 @@ public class FhirResourceGetPatientEverything {
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "patient-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -74,7 +74,7 @@ public class FhirResourceGetPatientEverything {
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.println("FHIR resource search results: ");
+    System.out.println("Patient compartment results: ");
     responseEntity.writeTo(System.out);
   }
 
