@@ -17,6 +17,7 @@
 -->
 
 <!-- [START functions_example_pom] -->
+<!-- [START functions_example_pom_dependencies] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -25,6 +26,7 @@
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-hello-world</artifactId>
   <!-- [END functions_example_pom] -->
+  <!-- [END functions_example_pom_dependencies] -->
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -33,6 +35,7 @@
   </parent>
 
   <!-- [START functions_example_pom] -->
+  <!-- [START functions_example_pom_dependencies] -->
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
@@ -47,6 +50,7 @@
       <scope>provided</scope>
     </dependency>
     <!-- [END functions_example_pom] -->
+    <!-- [END functions_example_pom_dependencies] -->
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -67,7 +71,11 @@
       <version>3.3.3</version>
       <scope>test</scope>
     </dependency>
+    <!-- [START functions_example_pom] -->
+    <!-- [START functions_example_pom_dependencies] -->
   </dependencies>
+  <!-- [END functions_example_pom] -->
+  <!-- [END functions_example_pom_dependencies] -->
 
   <!-- Disable tests during GCF builds (from parent POM) -->
   <!--   You can remove this profile to run tests -->
@@ -87,7 +95,7 @@
     </profile>
   </profiles>
 
-  <!-- [START functions_example_pom] -->
+  <!-- [START functions_example_pom_dependencies] -->
   <build>
     <plugins>
       <plugin>
@@ -107,7 +115,7 @@
           <functionTarget>functions.HelloWorld</functionTarget>
         </configuration>
       </plugin>
-      <!-- [END functions_example_pom] -->
+      <!-- [END functions_example_pom_dependencies] -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -123,8 +131,10 @@
           <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
-    <!-- [START functions_example_pom] -->
+      <!-- [START functions_example_pom_dependencies] -->
     </plugins>
   </build>
+  <!-- [START functions_example_pom] -->
 </project>
 <!-- [END functions_example_pom] -->
+<!-- [END functions_example_pom_dependencies] -->
