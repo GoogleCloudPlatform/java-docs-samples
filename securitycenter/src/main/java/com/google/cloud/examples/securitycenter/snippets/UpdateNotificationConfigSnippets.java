@@ -49,7 +49,7 @@ final class UpdateNotificationConfigSnippets {
             .setName(notificationConfigName)
             .setDescription("updated description")
             .setPubsubTopic(pubsubTopic)
-            .setStreamingConfig(StreamingConfig.newBuilder().setFilter("state = \"ACTIVE\"")
+            .setStreamingConfig(StreamingConfig.newBuilder().setFilter("state = \"ACTIVE\""))
             .build();
     FieldMask fieldMask =
         FieldMask.newBuilder()
