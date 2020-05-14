@@ -38,7 +38,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
 public class FhirStoreExecuteBundle {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/dicomStores/%s";
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -47,7 +47,7 @@ public class FhirStoreExecuteBundle {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
-    // String data = "[{\"op\": \"add\", \"path\": \"/active\", \"value\": true}]";
+    // String data = "{\"resourceType\": \"Bundle\",\"type\": \"batch\",\"entry\": []}"
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
