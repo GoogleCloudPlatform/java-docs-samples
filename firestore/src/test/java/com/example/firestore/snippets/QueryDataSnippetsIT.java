@@ -116,6 +116,14 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
   }
 
   @Test
+  public void testOrderByNameWithLimitToLastQuery() throws Exception {
+    Query q = queryDataSnippets.createOrderByNameWithLimitToLastQuery();
+    List<String> result = getResults(q);
+    List<String> expectedResults = Arrays.asList("SF", "TOK", "DC");
+    assertEquals(result, expectedResults);
+  }
+
+  @Test
   public void testOrderByNameDescWithLimitQuery() throws Exception {
     Query q = queryDataSnippets.createOrderByNameDescWithLimitQuery();
     List<String> result = getResults(q);
