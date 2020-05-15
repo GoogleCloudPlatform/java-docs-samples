@@ -329,7 +329,7 @@ most 4 parameters). In most cases, this is project specific information or the p
 file. For example, project specific information (such as `projectId`) or a `filePath` for an
 external file is acceptable, while a parameter for the type of a file or a specific action is not.
  
-Any declared function parameters should include a no-arg, overloaded function with examples for how
+Any declared function parameters should include a no-arg, main function with examples for how
 the user can initialize the function parameters and call the entrypoint for the snippet. If the
 values for these variables need to be replaced by the user, attempt to make it explicitly clear that
 they are example values only.
@@ -338,7 +338,7 @@ Snippet functions should specify a return type of `void` and avoid returning any
 possible. Instead, show the user how to interact with a returned object programmatically by printing
 some example attributes to the console. 
 ```java
-public static void exampleSnippet() {
+public static void main(main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String filePath = "path/to/image.png";
