@@ -32,8 +32,20 @@ import org.junit.BeforeClass;
  */
 public class BaseIntegrationTest {
 
-  protected static String projectId = "java-docs-samples-firestore";
+  protected static final String projectId = detectProjectId();
   protected static Firestore db;
+
+  private static String detectProjectId() {
+    String id = System.getProperty("firestore.project.id");
+    if (id != null) {
+      return id;
+    }
+    id = System.getenv("FIRESTORE_PROJECT_ID");
+    if (id != null) {
+      return id;
+    }
+    return "java-docs-samples-firestore";
+  }
 
   @BeforeClass
   public static void baseSetup() throws Exception {

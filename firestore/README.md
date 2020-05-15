@@ -46,6 +46,6 @@ the Firestore [documentation](https://cloud.google.com/firestore/docs).
 ## Tests
 Run all tests:
 ```
-   mvn clean verify
+   mvn -Dfirestore.project.id="your-firestore-project-id" clean verify
 ```
 
