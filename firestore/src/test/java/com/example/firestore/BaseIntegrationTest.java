@@ -34,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class BaseIntegrationTest {
 
-  protected static final String projectId = getEnvVar("FIRESTORE_PROJECT_ID");
+  protected static String projectId;
   protected static Firestore db;
 
   private static String getEnvVar(String varName) {
@@ -47,6 +47,7 @@ public class BaseIntegrationTest {
 
   @BeforeClass
   public static void baseSetup() throws Exception {
+    projectId = getEnvVar("FIRESTORE_PROJECT_ID");
     FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
         .setProjectId(projectId)
         .build();
