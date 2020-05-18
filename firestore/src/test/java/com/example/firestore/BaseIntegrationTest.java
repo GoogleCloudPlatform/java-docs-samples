@@ -47,7 +47,7 @@ public class BaseIntegrationTest {
 
   @BeforeClass
   public static void baseSetup() throws Exception {
-    projectId = getEnvVar("FIRESTORE_PROJECT_ID");
+    projectId = getEnvVar("GOOGLE_CLOUD_PROJECT");
     FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
         .setProjectId(projectId)
         .build();
