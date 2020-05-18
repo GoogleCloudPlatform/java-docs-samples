@@ -46,7 +46,7 @@ the Firestore [documentation](https://cloud.google.com/firestore/docs).
 ## Tests
 Run all tests:
 
-Set the `GOOGLE_CLOUD_PROJECT` environment variable and run the command:
+Set the `PROJECT_ID` environment variable and run the command:
 ```
    mvn clean verify
 ```
