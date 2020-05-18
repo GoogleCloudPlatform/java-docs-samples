@@ -45,7 +45,9 @@ the Firestore [documentation](https://cloud.google.com/firestore/docs).
 
 ## Tests
 Run all tests:
+
+Set the `FIRESTORE_PROJECT_ID` environment variable and run the command:
 ```
-   mvn -Dfirestore.project.id="your-firestore-project-id" clean verify
+   mvn clean verify
 ```
 

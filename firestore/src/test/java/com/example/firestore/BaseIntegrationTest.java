@@ -27,24 +27,22 @@ import com.google.cloud.firestore.QuerySnapshot;
 import java.util.Map;
 import org.junit.BeforeClass;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Base class for tests like {@link ManageDataSnippetsIT}.
  */
 public class BaseIntegrationTest {
 
-  protected static final String projectId = detectProjectId();
+  protected static final String projectId = getEnvVar("FIRESTORE_PROJECT_ID");
   protected static Firestore db;
 
-  private static String detectProjectId() {
-    String id = System.getProperty("firestore.project.id");
-    if (id != null) {
-      return id;
-    }
-    id = System.getenv("FIRESTORE_PROJECT_ID");
-    if (id != null) {
-      return id;
-    }
-    return "java-docs-samples-firestore";
+  private static String getEnvVar(String varName) {
+    String value = System.getenv(varName);
+    assertNotNull(
+            String.format("Environment variable '%s' must be set to perform these tests.", varName),
+            value);
+    return value;
   }
 
   @BeforeClass
