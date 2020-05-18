@@ -25,6 +25,7 @@
 
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-hello-world</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <!-- [END functions_example_pom] -->
   <!-- [END functions_example_pom_dependencies] -->
 
