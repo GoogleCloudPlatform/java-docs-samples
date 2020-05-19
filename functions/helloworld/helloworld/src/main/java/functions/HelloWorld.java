@@ -15,6 +15,7 @@
  */
 
 // [START functions_helloworld_get]
+
 package functions;
 
 import com.google.cloud.functions.HttpFunction;
