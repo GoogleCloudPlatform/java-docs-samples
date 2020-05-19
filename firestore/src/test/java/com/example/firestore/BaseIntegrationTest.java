@@ -16,6 +16,8 @@
 
 package com.example.firestore;
 
+import static org.junit.Assert.assertNotNull;
+
 import com.example.firestore.snippets.ManageDataSnippetsIT;
 import com.example.firestore.snippets.model.City;
 import com.google.api.core.ApiFuture;
@@ -26,8 +28,6 @@ import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QuerySnapshot;
 import java.util.Map;
 import org.junit.BeforeClass;
-
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Base class for tests like {@link ManageDataSnippetsIT}.
