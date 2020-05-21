@@ -49,7 +49,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.12.0</version>
+      <version>3.12.1</version>
     </dependency>
 
     <!-- Test dependencies -->
