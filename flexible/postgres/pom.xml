@@ -46,7 +46,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <jetty>9.4.28.v20200408</jetty>
+    <jetty>9.4.29.v20200521</jetty>
 <!-- [END_EXCLUDE] -->
     <sqlURL>jdbc:postgresql://google/${database}?useSSL=false&amp;socketFactoryArg=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.postgres.SocketFactory&amp;user=${user}&amp;password=${password}</sqlURL>
   </properties>
