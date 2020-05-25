@@ -3,6 +3,13 @@
 This example implements a simple REST service using [Helidon MP](https://helidon.io/#/) and deployed to [Google App Engine](https://cloud.google.com/appengine) and on it's [Java 11 runtime](https://cloud.google.com/appengine/docs/standard/java11/quickstart).
 
 # Part 1: Build a new Helidon MP Project
+
+## PreRequisites
+The following are required for this example. 
+- Java SDK. This example was built and tested on [OpenJDK 11](https://jdk.java.net/archive/)
+- Apache Maven - This example was built and test suing [3.6.3](https://maven.apache.org/download.cgi)
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts)
+
 ## Step 1 - Build a new Helidon MP Project
 This project was built with this command:
 ```
