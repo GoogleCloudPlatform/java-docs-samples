@@ -1,6 +1,6 @@
 # Helidon MP Example for Google App Engine
 
-This example implements a simple REST service using [Helidon MP](https://helidon.io/#/) and deployed to [Google App Engine](https://cloud.google.com/appengine) and on it's [Java 11 runtime](https://cloud.google.com/appengine/docs/standard/java11/quickstart).
+This example implements a simple REST service using [Helidon MP](https://helidon.io/#/) and deployed to [Google App Engine](https://cloud.google.com/appengine) and on [Java 11 runtime](https://cloud.google.com/appengine/docs/standard/java11/quickstart).
 
 # Part 1: Build a new Helidon MP Project
 
