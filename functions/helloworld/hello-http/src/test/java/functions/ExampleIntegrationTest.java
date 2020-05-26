@@ -24,8 +24,10 @@ import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -60,6 +62,28 @@ public class ExampleIntegrationTest {
 
   @AfterClass
   public static void tearDown() throws IOException {
+    BufferedReader errReader =
+        new BufferedReader(new InputStreamReader(emulatorProcess.getErrorStream()));
+    StringBuilder errBuilder = new StringBuilder();
+    String line = null;
+    while ( (line = errReader.readLine()) != null) {
+      errBuilder.append(line);
+      errBuilder.append(System.getProperty("line.separator"));
+    }
+    String errStream = errBuilder.toString();
+    System.err.println("ERR: " + errStream);
+
+
+    BufferedReader reader =
+        new BufferedReader(new InputStreamReader(emulatorProcess.getInputStream()));
+    StringBuilder builder = new StringBuilder();
+    while ( (line = reader.readLine()) != null) {
+      builder.append(line);
+      builder.append(System.getProperty("line.separator"));
+    }
+    String outStream = builder.toString();
+    System.err.println("OUT: " + outStream);
+
     // Terminate the running Functions Framework Maven plugin process
     emulatorProcess.destroy();
   }
