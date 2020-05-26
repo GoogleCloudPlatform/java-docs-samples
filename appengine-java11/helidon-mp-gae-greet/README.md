@@ -143,13 +143,13 @@ To view your application in the web browser run:
 $ gcloud app browse --project=<gcp-project-name>
 ```
 
-## 7 - Test
+## 6 - Test
 
 Follow the url that shows up in confirmation, like `https://<project-id-on-gce>.uc.r.appspot.com/greet`
 
 ![helidon-mp-example-gae-verify-live-app](https://user-images.githubusercontent.com/902972/82605056-eea00000-9b7a-11ea-8055-435228a8f060.png)
 
 
-## 8 - You may also verify the application on Google App Engine
+## 7 - You may also verify the application on Google App Engine
 
 <img width="1396" alt="helidon-mp-example-gae-gcp-verify-app" src="https://user-images.githubusercontent.com/902972/82605057-eea00000-9b7a-11ea-840b-69c15a4afedf.png">
