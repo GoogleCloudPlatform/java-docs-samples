@@ -86,8 +86,7 @@ public class ExampleIntegrationTest {
     ).apply();
 
     // Verify the function returned the right results
-    String expected = String.format("%s / %s", System.getProperty("basedir"), BASE_URL);
-    assertThat(body).isEqualTo(expected);
+    assertThat(body).isEqualTo("Hello world!");
   }
 }
 // [END functions_http_integration_test]
