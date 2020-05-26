@@ -51,9 +51,6 @@ public class ExampleIntegrationTest {
     // Get the sample's base directory (the one containing a pom.xml file)
     String baseDir = System.getProperty("basedir");
 
-    System.err.println("DBG DIR: " + baseDir);
-    System.err.println("DBG BASE_URL: " + BASE_URL);
-
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
         .command("mvn", "function:run")
@@ -89,7 +86,8 @@ public class ExampleIntegrationTest {
     ).apply();
 
     // Verify the function returned the right results
-    assertThat(body).isEqualTo("Hello world!");
+    String expected = String.format("%s / %s", System.getProperty("basedir"), BASE_URL);
+    assertThat(body).isEqualTo(expected);
   }
 }
 // [END functions_http_integration_test]
