@@ -51,6 +51,9 @@ public class ExampleIntegrationTest {
     // Get the sample's base directory (the one containing a pom.xml file)
     String baseDir = System.getProperty("basedir");
 
+    System.err.println("DBG DIR: " + baseDir);
+    System.err.println("DBG BASE_URL: " + BASE_URL);
+
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
         .command("mvn", "function:run")
