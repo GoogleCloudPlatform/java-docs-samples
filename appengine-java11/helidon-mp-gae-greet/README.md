@@ -7,7 +7,7 @@ This example implements a simple REST service using [Helidon MP](https://helidon
 ## PreRequisites
 The following are required for this example. 
 - Java SDK. This example was built and tested on [OpenJDK 11](https://jdk.java.net/archive/)
-- Apache Maven - This example was built and test suing [3.6.3](https://maven.apache.org/download.cgi)
+- Apache Maven - This example was built and test using [3.6.3](https://maven.apache.org/download.cgi)
 - [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts)
 
 ## Step 1 - Build a new Helidon MP Project
@@ -66,7 +66,7 @@ Open a new browser tab and http://localhost:8080/greet (i'm using a different po
 
 # Part 2: Preparing for Google App Engine
 
-Helidon app may run only on [Java 11 runtime](https://cloud.google.com/appengine/docs/standard/java11) (i haven't tried it on Java 8 runtime).
+Helidon app will run only on [Java 11 runtime](https://cloud.google.com/appengine/docs/standard/java11) (i haven't tried it on Java 8 runtime).
 
 The primary requirement for the application to be deployed to Google app engine is a yaml file.
 
@@ -78,81 +78,44 @@ The primary requirement for the application to be deployed to Google app engine 
 helidon-mp-gae-greet
 |_src
   |_main
-    |_gae
+    |_app-engine
       |_helidon-mp-app.yaml
 ```
 
 Add the below to `helidon-mp-app.yaml`
 ```
 runtime: java11
-entrypoint: java -Xmx64m -jar ${project.artifactId}.jar
 ```
 
-## 3 - The below is added to `pom.xml` (i know this maybe frustrating). Don't worry about all the details, this allows the helion-mp-gae.yaml file to be copied to `/target` folder.
-
-```
-...
-<build>
-  <plugins>
-    <plugin>
-     ...
-    <plugin> 
-    
-    # --add from here..
-    <plugin>                    
-      <groupId>org.apache.maven.plugins</groupId>                  
-      <artifactId>maven-resources-plugin</artifactId>                 
-      <executions>
-        <execution>
-          <id>copy-gae-file</id>
-          <phase>process-resources</phase>                    
-          <goals>
-            <goal>copy-resources</goal>
-          </goals>
-          <configuration>                            
-            <outputDirectory>${project.build.directory}</outputDirectory>
-            <resources>
-              <resource>                                    
-                <filtering>true</filtering>
-                <directory>src/main/gae</directory>
-                <includes>                                         
-                  <include>helidon-mp-app.yaml</include>
-                  <include>.gcloudignore</include>
-                </includes>
-              </resource>
-            </resources>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
-    # --up to here 
-</build>
-```
-
-## 4 - Rebuild the project
+## 3 - Rebuild the project
 ```
 $ mvn clean package
 ```
 
-## 5 - Setup Google App Engine
+## 4 - Setup Google App Engine
 
 Create a new Project on Google Cloud. Create New App, Choose `Java` as Language and `Standard Environment`.
 
 
-
-## 6 - Deploy to Google App Engine
+## 5 - Deploy to Google App Engine
 
 Go to your project root and run this command.
 
 *Tip: You will need Google Cloud SDK installed on your machine. I'm running this on my Mac. Run gcloud -v to make sure gcloud is installed.*
 
 ```
-$ gcloud app deploy ./target/helidon-mp-app.yaml --project=<gcp-project-name>
+$ gcloud app deploy ./target/helidon-mp-gae-greet.jar
+```
+
+or if you have multiple projects on your account, use:
+
+```
+$ gcloud app deploy ./target/helidon-mp-gae-greet.jar --project=<gcp-project-name>
 ```
 
 You will see a confirmation..
 ```
-$ gcloud app deploy ./target/helidon-mp-app.yaml --project=<gcp-project-name>
+$ gcloud app deploy ./target/helidon-mp-gae-greet.jar --project=<gcp-project-name>
 Services to deploy:
 descriptor:      [/Projects/java/helidon/helidon-mp-gae-greet/target/helidon-mp-app.yaml]
 source:          [/Projects/research/java/helidon/helidon-mp-gae-greet/target]

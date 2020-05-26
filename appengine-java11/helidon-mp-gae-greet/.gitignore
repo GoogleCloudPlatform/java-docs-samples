@@ -1,6 +1,3 @@
-# Google App Engine generated folder
-appengine-generated/
-
 # Java
 *.class
 
@@ -19,7 +16,7 @@ hs_err_pid*
 .java-version
 
 # maven
-target/
+target/*
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
