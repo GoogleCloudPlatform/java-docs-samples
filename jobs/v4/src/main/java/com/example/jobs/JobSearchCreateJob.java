@@ -22,11 +22,14 @@ import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.Timestamps;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class JobSearchCreateJob {
 
@@ -61,14 +64,7 @@ public class JobSearchCreateJob {
               "1600 Amphitheatre Parkway, Mountain View, CA 94043",
               "111 8th Avenue, New York, NY 10011");
 
-      // if exp date is not set, by default it will expire in 30 days.
-      Timestamp expirationDate =
-          Timestamps.add(
-              Timestamps.fromMillis(System.currentTimeMillis()),
-              com.google.protobuf.Duration.newBuilder()
-                  .setSeconds(60L * 60L * 24L * 30L) //  30 days ago
-                  .build());
-
+      // By default, job posting will expire in 30 days.
       Job job =
           Job.newBuilder()
               .setCompany(companyId)
@@ -78,7 +74,6 @@ public class JobSearchCreateJob {
               .setApplicationInfo(applicationInfo)
               .addAllAddresses(addresses)
               .setLanguageCode("en-US")
-              .setPostingExpireTime(expirationDate)
               .build();
 
       CreateJobRequest request =
