@@ -38,6 +38,9 @@ public class JobSearchCreateCompany {
   // Create a company.
   public static void createCompany(
       String projectId, String tenantId, String displayName, String externalId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       Company company =

@@ -22,6 +22,8 @@ import com.google.cloud.talent.v4beta1.CreateJobRequest;
 import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.protobuf.Timestamp;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +48,9 @@ public class JobSearchCreateJob {
       String requisitionId,
       String jobApplicationUrl)
       throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       Job.ApplicationInfo applicationInfo =
@@ -53,6 +58,11 @@ public class JobSearchCreateJob {
 
       List<String> addresses = Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043",
               "111 8th Avenue, New York, NY 10011");
+
+      // if exp date is not set, by default it will expire in 30 days.
+      long twoMonthsFromNow = System.currentTimeMillis() +
+               5270400; // 2 months in milliseconds
+      Timestamp expirationDate = Timestamp.newBuilder().setSeconds(twoMonthsFromNow).build();
 
       Job job =
           Job.newBuilder()
@@ -63,6 +73,7 @@ public class JobSearchCreateJob {
               .setApplicationInfo(applicationInfo)
               .addAllAddresses(addresses)
               .setLanguageCode("en-US")
+              .setPostingExpireTime(expirationDate)
               .build();
 
       CreateJobRequest request =

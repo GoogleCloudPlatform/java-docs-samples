@@ -42,6 +42,9 @@ public class CommuteSearchJobs {
 
   // Search Jobs with histogram queries.
   public static void searchJobs(String projectId, String tenantId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       String domain = "www.example.com";

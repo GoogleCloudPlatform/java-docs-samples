@@ -37,6 +37,9 @@ public class JobSearchAutoCompleteJobTitle {
   // Complete job title given partial text (autocomplete).
   public static void completeQuery(String projectId, String tenantId, String query)
       throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (CompletionClient completionClient = CompletionClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       CompleteQueryRequest request =
