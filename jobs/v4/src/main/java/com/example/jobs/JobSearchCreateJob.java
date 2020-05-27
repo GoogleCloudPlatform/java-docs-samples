@@ -23,6 +23,7 @@ import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -60,9 +61,11 @@ public class JobSearchCreateJob {
               "111 8th Avenue, New York, NY 10011");
 
       // if exp date is not set, by default it will expire in 30 days.
-      long twoMonthsFromNow = System.currentTimeMillis() +
-               5270400; // 2 months in milliseconds
-      Timestamp expirationDate = Timestamp.newBuilder().setSeconds(twoMonthsFromNow).build();
+      Timestamp expirationDate =                           Timestamps.add(
+              Timestamps.fromMillis(System.currentTimeMillis()),
+              com.google.protobuf.Duration.newBuilder()
+                      .setSeconds(60L * 60L * 24L * 30L) //  30 days ago
+                      .build());
 
       Job job =
           Job.newBuilder()
