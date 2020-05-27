@@ -64,7 +64,8 @@ public class JobSearchCreateJob {
               "1600 Amphitheatre Parkway, Mountain View, CA 94043",
               "111 8th Avenue, New York, NY 10011");
 
-      // By default, job posting will expire in 30 days.
+      // By default, job will expire in 30 days.
+      // https://cloud.google.com/talent-solution/job-search/docs/jobs
       Job job =
           Job.newBuilder()
               .setCompany(companyId)
