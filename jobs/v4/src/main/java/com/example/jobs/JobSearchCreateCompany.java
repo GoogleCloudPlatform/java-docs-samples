@@ -54,9 +54,9 @@ public class JobSearchCreateCompany {
 
       Company response = companyServiceClient.createCompany(request);
       System.out.println("Created Company");
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("Display Name: %s\n", response.getDisplayName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      System.out.format("Name: %s%n", response.getName());
+      System.out.format("Display Name: %s%n", response.getDisplayName());
+      System.out.format("External ID: %s%n", response.getExternalId());
     }
   }
 }

@@ -24,7 +24,6 @@ import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Timestamps;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -86,7 +85,7 @@ public class JobSearchCreateJob {
           CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
 
       Job response = jobServiceClient.createJob(request);
-      System.out.printf("Created job: %s\n", response.getName());
+      System.out.format("Created job: %s%n", response.getName());
     }
   }
 }

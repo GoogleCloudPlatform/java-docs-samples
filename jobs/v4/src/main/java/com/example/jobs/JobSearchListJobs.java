@@ -44,10 +44,10 @@ public class JobSearchListJobs {
       ListJobsRequest request =
           ListJobsRequest.newBuilder().setParent(parent.toString()).setFilter(filter).build();
       for (Job responseItem : jobServiceClient.listJobs(request).iterateAll()) {
-        System.out.printf("Job name: %s\n", responseItem.getName());
-        System.out.printf("Job requisition ID: %s\n", responseItem.getRequisitionId());
-        System.out.printf("Job title: %s\n", responseItem.getTitle());
-        System.out.printf("Job description: %s\n", responseItem.getDescription());
+        System.out.format("Job name: %s%n", responseItem.getName());
+        System.out.format("Job requisition ID: %s%n", responseItem.getRequisitionId());
+        System.out.format("Job title: %s%n", responseItem.getTitle());
+        System.out.format("Job description: %s%n", responseItem.getDescription());
       }
     }
   }

@@ -47,8 +47,8 @@ public class JobSearchCreateTenant {
 
       Tenant response = tenantServiceClient.createTenant(request);
       System.out.println("Created Tenant");
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      System.out.format("Name: %s%n", response.getName());
+      System.out.format("External ID: %s%n", response.getExternalId());
     }
   }
 }

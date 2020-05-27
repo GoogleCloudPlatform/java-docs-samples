@@ -24,7 +24,7 @@
     </properties>
 
     <prerequisites>
-        <maven>3.5</maven>
+        <maven>3.5.4</maven>
     </prerequisites>
 
     <dependencyManagement>

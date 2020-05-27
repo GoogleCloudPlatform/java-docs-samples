@@ -44,8 +44,8 @@ public class JobSearchGetTenant {
       GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
 
       Tenant response = tenantServiceClient.getTenant(request);
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      System.out.format("Name: %s%n", response.getName());
+      System.out.format("External ID: %s%n", response.getExternalId());
     }
   }
 }

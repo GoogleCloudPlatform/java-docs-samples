@@ -51,9 +51,9 @@ public class JobSearchAutoCompleteJobTitle {
               .build();
       CompleteQueryResponse response = completionClient.completeQuery(request);
       for (CompleteQueryResponse.CompletionResult result : response.getCompletionResultsList()) {
-        System.out.printf("Suggested title: %s\n", result.getSuggestion());
+        System.out.format("Suggested title: %s%n", result.getSuggestion());
         // Suggestion type is JOB_TITLE or COMPANY_TITLE
-        System.out.printf("Suggestion type: %s\n", result.getType());
+        System.out.format("Suggestion type: %s%n", result.getType());
       }
     }
   }

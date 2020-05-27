@@ -46,8 +46,8 @@ public class JobSearchGetCompany {
       GetCompanyRequest request = GetCompanyRequest.newBuilder().setName(name.toString()).build();
 
       Company response = companyServiceClient.getCompany(request);
-      System.out.printf("Company name: %s\n", response.getName());
-      System.out.printf("Display name: %s\n", response.getDisplayName());
+      System.out.format("Company name: %s%n", response.getName());
+      System.out.format("Display name: %s%n", response.getDisplayName());
     }
   }
 }

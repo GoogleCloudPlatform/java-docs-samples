@@ -45,9 +45,9 @@ public class JobSearchListCompanies {
           ListCompaniesRequest.newBuilder().setParent(parent.toString()).build();
 
       for (Company responseItem : companyServiceClient.listCompanies(request).iterateAll()) {
-        System.out.printf("Company Name: %s\n", responseItem.getName());
-        System.out.printf("Display Name: %s\n", responseItem.getDisplayName());
-        System.out.printf("External ID: %s\n", responseItem.getExternalId());
+        System.out.format("Company Name: %s%n", responseItem.getName());
+        System.out.format("Display Name: %s%n", responseItem.getDisplayName());
+        System.out.format("External ID: %s%n", responseItem.getExternalId());
       }
     }
   }

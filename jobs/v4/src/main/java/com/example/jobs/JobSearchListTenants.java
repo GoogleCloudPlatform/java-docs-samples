@@ -44,8 +44,8 @@ public class JobSearchListTenants {
           ListTenantsRequest.newBuilder().setParent(parent.toString()).build();
 
       for (Tenant responseItem : tenantServiceClient.listTenants(request).iterateAll()) {
-        System.out.printf("Tenant Name: %s\n", responseItem.getName());
-        System.out.printf("External ID: %s\n", responseItem.getExternalId());
+        System.out.format("Tenant Name: %s%n", responseItem.getName());
+        System.out.format("External ID: %s%n", responseItem.getExternalId());
       }
     }
   }
