@@ -47,11 +47,14 @@ To switch to an Open JDK 11 in a Cloud shell session, you can use:
 ```
 
 ## Java 11 runtime
+One way to deploy to App Engine Java 11 is directly from source.
 
-The simplest way to deploy to App Engine Java 11 is using an executable [Uber JAR][uber-jar]. App Engine will automatically configure the `entrypoint` to run the JAR file.
+* [`springboot-helloworld`](springboot-helloworld): Deploy a spring-boot application from source
+* [`http-server`](http-server): Deploy an http application from source
 
-* [`springboot-helloworld`](springboot-helloworld): Build a fat JAR with Spring Boot
-* [`http-server`](http-server): Build a JAR using the Maven JAR Plugin
+Another way is using the Maven App Engine Plugin to deploy an executable [Uber JAR][uber-jar]. App Engine will automatically configure the `entrypoint` to run the JAR file. Use this method when your application requires dependencies that are located locally, such as the [`appengine-simple-jetty-main`](appengine-simple-jetty-main) artifact.
+
+* [`gaeinfo`](gaeinfo): Build a JAR using the Maven JAR Plugin
 
 In addition, App Engine allows you to execute the `java` command directly in the `app.yaml` `entrypoint` field, so you can further customize your app's startup.
 
