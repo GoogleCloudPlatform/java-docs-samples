@@ -58,9 +58,9 @@ class SetEndpoint {
 
     for (AnnotateImageResponse response : batchResponse.getResponsesList()) {
       for (EntityAnnotation annotation : response.getTextAnnotationsList()) {
-        System.out.printf("Text: %s\n", annotation.getDescription());
+        System.out.format("Text: %s%n", annotation.getDescription());
         System.out.println("Position:");
-        System.out.printf("%s\n", annotation.getBoundingPoly());
+        System.out.format("%s%n", annotation.getBoundingPoly());
       }
     }
     client.close();

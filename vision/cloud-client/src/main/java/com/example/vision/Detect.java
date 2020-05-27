@@ -95,19 +95,19 @@ public class Detect {
   public static void argsHelper(String[] args, PrintStream out) throws Exception, IOException {
     if (args.length < 1) {
       out.println("Usage:");
-      out.printf(
-          "\tmvn exec:java -DDetect -Dexec.args=\"<command> <path-to-image>\"\n"
+      out.format(
+          "\tmvn exec:java -DDetect -Dexec.args=\"<command> <path-to-image>\"%n"
               + "\tmvn exec:java -DDetect -Dexec.args=\"ocr <path-to-file> <path-to-destination>\""
-              + "\n"
-              + "Commands:\n"
+              + "%n"
+              + "Commands:%n"
               + "\tfaces | labels | landmarks | logos | text | safe-search | properties"
-              + "| web | web-entities | web-entities-include-geo | crop | ocr \n"
-              + "| object-localization \n"
-              + "Path:\n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
-              + "resource (gs://...)\n"
-              + "Path to File:\n\tA path to the remote file on Cloud Storage (gs://...)\n"
-              + "Path to Destination\n\tA path to the remote destination on Cloud Storage for the"
-              + " file to be saved. (gs://BUCKET_NAME/PREFIX/)\n");
+              + "| web | web-entities | web-entities-include-geo | crop | ocr %n"
+              + "| object-localization %n"
+              + "Path:%n\tA file path (ex: ./resources/wakeupcat.jpg) or a URI for a Cloud Storage "
+              + "resource (gs://...)%n"
+              + "Path to File:%n\tA path to the remote file on Cloud Storage (gs://...)%n"
+              + "Path to Destination%n\tA path to the remote destination on Cloud Storage for the"
+              + " file to be saved. (gs://BUCKET_NAME/PREFIX/)%n");
       return;
     }
     String command = args[0];
@@ -219,20 +219,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
-          out.printf(
-              "anger: %s\njoy: %s\nsurprise: %s\nposition: %s",
+          out.format(
+              "anger: %s%njoy: %s%nsurprise: %s%nposition: %s",
               annotation.getAngerLikelihood(),
               annotation.getJoyLikelihood(),
               annotation.getSurpriseLikelihood(),
@@ -264,20 +267,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
-          out.printf(
-              "anger: %s\njoy: %s\nsurprise: %s\nposition: %s",
+          out.format(
+              "anger: %s%njoy: %s%nsurprise: %s%nposition: %s",
               annotation.getAngerLikelihood(),
               annotation.getJoyLikelihood(),
               annotation.getSurpriseLikelihood(),
@@ -308,19 +314,22 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-          annotation.getAllFields().forEach((k, v) -> out.printf("%s : %s\n", k, v.toString()));
+          annotation.getAllFields().forEach((k, v) -> out.format("%s : %s%n", k, v.toString()));
         }
       }
     }
@@ -348,19 +357,22 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-          annotation.getAllFields().forEach((k, v) -> out.printf("%s : %s\n", k, v.toString()));
+          annotation.getAllFields().forEach((k, v) -> out.format("%s : %s%n", k, v.toString()));
         }
       }
     }
@@ -387,20 +399,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getLandmarkAnnotationsList()) {
           LocationInfo info = annotation.getLocationsList().listIterator().next();
-          out.printf("Landmark: %s\n %s\n", annotation.getDescription(), info.getLatLng());
+          out.format("Landmark: %s%n %s%n", annotation.getDescription(), info.getLatLng());
         }
       }
     }
@@ -425,20 +440,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getLandmarkAnnotationsList()) {
           LocationInfo info = annotation.getLocationsList().listIterator().next();
-          out.printf("Landmark: %s\n %s\n", annotation.getDescription(), info.getLatLng());
+          out.format("Landmark: %s%n %s%n", annotation.getDescription(), info.getLatLng());
         }
       }
     }
@@ -465,20 +483,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getLandmarkAnnotationsList()) {
           LocationInfo info = annotation.getLocationsList().listIterator().next();
-          out.printf("Landmark: %s\n %s\n", annotation.getDescription(), info.getLatLng());
+          out.format("Landmark: %s%n %s%n", annotation.getDescription(), info.getLatLng());
         }
       }
     }
@@ -505,13 +526,16 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -544,13 +568,16 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -583,20 +610,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
-          out.printf("Text: %s\n", annotation.getDescription());
-          out.printf("Position : %s\n", annotation.getBoundingPoly());
+          out.format("Text: %s%n", annotation.getDescription());
+          out.format("Position : %s%n", annotation.getBoundingPoly());
         }
       }
     }
@@ -622,20 +652,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
-          out.printf("Text: %s\n", annotation.getDescription());
-          out.printf("Position : %s\n", annotation.getBoundingPoly());
+          out.format("Text: %s%n", annotation.getDescription());
+          out.format("Position : %s%n", annotation.getBoundingPoly());
         }
       }
     }
@@ -663,21 +696,24 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         DominantColorsAnnotation colors = res.getImagePropertiesAnnotation().getDominantColors();
         for (ColorInfo color : colors.getColorsList()) {
-          out.printf(
-              "fraction: %f\nr: %f, g: %f, b: %f\n",
+          out.format(
+              "fraction: %f%nr: %f, g: %f, b: %f%n",
               color.getPixelFraction(),
               color.getColor().getRed(),
               color.getColor().getGreen(),
@@ -709,21 +745,24 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         DominantColorsAnnotation colors = res.getImagePropertiesAnnotation().getDominantColors();
         for (ColorInfo color : colors.getColorsList()) {
-          out.printf(
-              "fraction: %f\nr: %f, g: %f, b: %f\n",
+          out.format(
+              "fraction: %f%nr: %f, g: %f, b: %f%n",
               color.getPixelFraction(),
               color.getColor().getRed(),
               color.getColor().getGreen(),
@@ -755,20 +794,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
-        out.printf(
-            "adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\nracy: %s\n",
+        out.format(
+            "adult: %s%nmedical: %s%nspoofed: %s%nviolence: %s%nracy: %s%n",
             annotation.getAdult(),
             annotation.getMedical(),
             annotation.getSpoof(),
@@ -800,20 +842,23 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
-        out.printf(
-            "adult: %s\nmedical: %s\nspoofed: %s\nviolence: %s\nracy: %s\n",
+        out.format(
+            "adult: %s%nmedical: %s%nspoofed: %s%nviolence: %s%nracy: %s%n",
             annotation.getAdult(),
             annotation.getMedical(),
             annotation.getSpoof(),
@@ -845,13 +890,16 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -866,21 +914,21 @@ public class Detect {
               entity.getDescription() + " : " + entity.getEntityId() + " : " + entity.getScore());
         }
         for (WebLabel label : annotation.getBestGuessLabelsList()) {
-          out.format("\nBest guess label: %s", label.getLabel());
+          out.format("%nBest guess label: %s", label.getLabel());
         }
-        out.println("\nPages with matching images: Score\n==");
+        out.println("%nPages with matching images: Score%n==");
         for (WebPage page : annotation.getPagesWithMatchingImagesList()) {
           out.println(page.getUrl() + " : " + page.getScore());
         }
-        out.println("\nPages with partially matching images: Score\n==");
+        out.println("%nPages with partially matching images: Score%n==");
         for (WebImage image : annotation.getPartialMatchingImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
-        out.println("\nPages with fully matching images: Score\n==");
+        out.println("%nPages with fully matching images: Score%n==");
         for (WebImage image : annotation.getFullMatchingImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
-        out.println("\nPages with visually similar images: Score\n==");
+        out.println("%nPages with visually similar images: Score%n==");
         for (WebImage image : annotation.getVisuallySimilarImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
@@ -910,13 +958,16 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -931,21 +982,21 @@ public class Detect {
               entity.getDescription() + " : " + entity.getEntityId() + " : " + entity.getScore());
         }
         for (WebLabel label : annotation.getBestGuessLabelsList()) {
-          out.format("\nBest guess label: %s", label.getLabel());
+          out.format("%nBest guess label: %s", label.getLabel());
         }
-        out.println("\nPages with matching images: Score\n==");
+        out.println("%nPages with matching images: Score%n==");
         for (WebPage page : annotation.getPagesWithMatchingImagesList()) {
           out.println(page.getUrl() + " : " + page.getScore());
         }
-        out.println("\nPages with partially matching images: Score\n==");
+        out.println("%nPages with partially matching images: Score%n==");
         for (WebImage image : annotation.getPartialMatchingImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
-        out.println("\nPages with fully matching images: Score\n==");
+        out.println("%nPages with fully matching images: Score%n==");
         for (WebImage image : annotation.getFullMatchingImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
-        out.println("\nPages with visually similar images: Score\n==");
+        out.println("%nPages with visually similar images: Score%n==");
         for (WebImage image : annotation.getVisuallySimilarImagesList()) {
           out.println(image.getUrl() + " : " + image.getScore());
         }
@@ -964,7 +1015,10 @@ public class Detect {
    */
   public static void detectWebEntities(String filePath, PrintStream out)
       throws Exception, IOException {
-    // Instantiates a client
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       // Read in the local image
       ByteString contents = ByteString.readFrom(new FileInputStream(filePath));
@@ -993,8 +1047,8 @@ public class Detect {
                       .stream()
                       .forEach(
                           entity -> {
-                            out.format("Description: %s\n", entity.getDescription());
-                            out.format("Score: %f\n", entity.getScore());
+                            out.format("Description: %s%n", entity.getDescription());
+                            out.format("Score: %f%n", entity.getScore());
                           }));
     }
   }
@@ -1009,7 +1063,10 @@ public class Detect {
    */
   public static void detectWebEntitiesGcs(String gcsPath, PrintStream out)
       throws Exception, IOException {
-    // Instantiates a client
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       // Set the image source to the given gs uri
       ImageSource imageSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -1037,8 +1094,8 @@ public class Detect {
                       .stream()
                       .forEach(
                           entity -> {
-                            System.out.format("Description: %s\n", entity.getDescription());
-                            System.out.format("Score: %f\n", entity.getScore());
+                            System.out.format("Description: %s%n", entity.getDescription());
+                            System.out.format("Score: %f%n", entity.getScore());
                           }));
     }
   }
@@ -1054,7 +1111,10 @@ public class Detect {
    */
   public static void detectWebEntitiesIncludeGeoResults(String filePath, PrintStream out)
       throws Exception, IOException {
-    // Instantiates a client
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       // Read in the local image
       ByteString contents = ByteString.readFrom(new FileInputStream(filePath));
@@ -1092,8 +1152,8 @@ public class Detect {
                       .stream()
                       .forEach(
                           entity -> {
-                            out.format("Description: %s\n", entity.getDescription());
-                            out.format("Score: %f\n", entity.getScore());
+                            out.format("Description: %s%n", entity.getDescription());
+                            out.format("Score: %f%n", entity.getScore());
                           }));
     }
   }
@@ -1111,7 +1171,10 @@ public class Detect {
    */
   public static void detectWebEntitiesIncludeGeoResultsGcs(String gcsPath, PrintStream out)
       throws Exception, IOException {
-    // Instantiates a client
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       // Set the image source to the given gs uri
       ImageSource imageSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -1148,8 +1211,8 @@ public class Detect {
                       .stream()
                       .forEach(
                           entity -> {
-                            out.format("Description: %s\n", entity.getDescription());
-                            out.format("Score: %f\n", entity.getScore());
+                            out.format("Description: %s%n", entity.getDescription());
+                            out.format("Score: %f%n", entity.getScore());
                           }));
     }
   }
@@ -1176,13 +1239,16 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -1216,13 +1282,16 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -1257,6 +1326,9 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
@@ -1264,7 +1336,7 @@ public class Detect {
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
 
@@ -1281,21 +1353,21 @@ public class Detect {
                 for (Symbol symbol : word.getSymbolsList()) {
                   wordText = wordText + symbol.getText();
                   out.format(
-                      "Symbol text: %s (confidence: %f)\n",
+                      "Symbol text: %s (confidence: %f)%n",
                       symbol.getText(), symbol.getConfidence());
                 }
-                out.format("Word text: %s (confidence: %f)\n\n", wordText, word.getConfidence());
+                out.format("Word text: %s (confidence: %f)%n%n", wordText, word.getConfidence());
                 paraText = String.format("%s %s", paraText, wordText);
               }
               // Output Example using Paragraph:
-              out.println("\nParagraph: \n" + paraText);
-              out.format("Paragraph Confidence: %f\n", para.getConfidence());
+              out.println("%nParagraph: %n" + paraText);
+              out.format("Paragraph Confidence: %f%n", para.getConfidence());
               blockText = blockText + paraText;
             }
             pageText = pageText + blockText;
           }
         }
-        out.println("\nComplete annotation:");
+        out.println("%nComplete annotation:");
         out.println(annotation.getText());
       }
     }
@@ -1322,6 +1394,9 @@ public class Detect {
         AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
     requests.add(request);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
@@ -1329,7 +1404,7 @@ public class Detect {
 
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          out.printf("Error: %s\n", res.getError().getMessage());
+          out.format("Error: %s%n", res.getError().getMessage());
           return;
         }
         // For full list of available annotations, see http://g.co/cloud/vision/docs
@@ -1345,21 +1420,21 @@ public class Detect {
                 for (Symbol symbol : word.getSymbolsList()) {
                   wordText = wordText + symbol.getText();
                   out.format(
-                      "Symbol text: %s (confidence: %f)\n",
+                      "Symbol text: %s (confidence: %f)%n",
                       symbol.getText(), symbol.getConfidence());
                 }
-                out.format("Word text: %s (confidence: %f)\n\n", wordText, word.getConfidence());
+                out.format("Word text: %s (confidence: %f)%n%n", wordText, word.getConfidence());
                 paraText = String.format("%s %s", paraText, wordText);
               }
               // Output Example using Paragraph:
-              out.println("\nParagraph: \n" + paraText);
-              out.format("Paragraph Confidence: %f\n", para.getConfidence());
+              out.println("%nParagraph: %n" + paraText);
+              out.format("Paragraph Confidence: %f%n", para.getConfidence());
               blockText = blockText + paraText;
             }
             pageText = pageText + blockText;
           }
         }
-        out.println("\nComplete annotation:");
+        out.println("%nComplete annotation:");
         out.println(annotation.getText());
       }
     }
@@ -1378,6 +1453,10 @@ public class Detect {
    */
   public static void detectDocumentsGcs(String gcsSourcePath, String gcsDestinationPath)
       throws Exception {
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       List<AsyncAnnotateFileRequest> requests = new ArrayList<>();
 
@@ -1475,7 +1554,7 @@ public class Detect {
         // The response contains more information:
         // annotation/pages/blocks/paragraphs/words/symbols
         // including confidence score and bounding boxes
-        System.out.format("\nText: %s\n", annotateImageResponse.getFullTextAnnotation().getText());
+        System.out.format("%nText: %s%n", annotateImageResponse.getFullTextAnnotation().getText());
       } else {
         System.out.println("No MATCH");
       }
@@ -1506,21 +1585,24 @@ public class Detect {
             .build();
     requests.add(request);
 
-    // Perform the request
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // Perform the request
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
 
       // Display the results
       for (AnnotateImageResponse res : responses) {
         for (LocalizedObjectAnnotation entity : res.getLocalizedObjectAnnotationsList()) {
-          out.format("Object name: %s\n", entity.getName());
-          out.format("Confidence: %s\n", entity.getScore());
-          out.format("Normalized Vertices:\n");
+          out.format("Object name: %s%n", entity.getName());
+          out.format("Confidence: %s%n", entity.getScore());
+          out.format("Normalized Vertices:%n");
           entity
               .getBoundingPoly()
               .getNormalizedVerticesList()
-              .forEach(vertex -> out.format("- (%s, %s)\n", vertex.getX(), vertex.getY()));
+              .forEach(vertex -> out.format("- (%s, %s)%n", vertex.getX(), vertex.getY()));
         }
       }
     }
@@ -1551,21 +1633,24 @@ public class Detect {
             .build();
     requests.add(request);
 
-    // Perform the request
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // Perform the request
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
       List<AnnotateImageResponse> responses = response.getResponsesList();
       client.close();
       // Display the results
       for (AnnotateImageResponse res : responses) {
         for (LocalizedObjectAnnotation entity : res.getLocalizedObjectAnnotationsList()) {
-          out.format("Object name: %s\n", entity.getName());
-          out.format("Confidence: %s\n", entity.getScore());
-          out.format("Normalized Vertices:\n");
+          out.format("Object name: %s%n", entity.getName());
+          out.format("Confidence: %s%n", entity.getScore());
+          out.format("Normalized Vertices:%n");
           entity
               .getBoundingPoly()
               .getNormalizedVerticesList()
-              .forEach(vertex -> out.format("- (%s, %s)\n", vertex.getX(), vertex.getY()));
+              .forEach(vertex -> out.format("- (%s, %s)%n", vertex.getX(), vertex.getY()));
         }
       }
     }
