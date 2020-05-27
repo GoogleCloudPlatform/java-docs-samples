@@ -57,15 +57,18 @@ public class JobSearchCreateJob {
       Job.ApplicationInfo applicationInfo =
           Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
 
-      List<String> addresses = Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043",
+      List<String> addresses =
+          Arrays.asList(
+              "1600 Amphitheatre Parkway, Mountain View, CA 94043",
               "111 8th Avenue, New York, NY 10011");
 
       // if exp date is not set, by default it will expire in 30 days.
-      Timestamp expirationDate =                           Timestamps.add(
+      Timestamp expirationDate =
+          Timestamps.add(
               Timestamps.fromMillis(System.currentTimeMillis()),
               com.google.protobuf.Duration.newBuilder()
-                      .setSeconds(60L * 60L * 24L * 30L) //  30 days ago
-                      .build());
+                  .setSeconds(60L * 60L * 24L * 30L) //  30 days ago
+                  .build());
 
       Job job =
           Job.newBuilder()
