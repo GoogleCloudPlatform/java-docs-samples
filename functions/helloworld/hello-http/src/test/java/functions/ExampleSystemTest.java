@@ -38,7 +38,7 @@ public class ExampleSystemTest {
 
   @Test
   public void helloHttp_shouldRunWithFunctionsFramework() throws IOException, InterruptedException {
-    String functionUrl = BASE_URL + "/helloHttp";
+    String functionUrl = BASE_URL + "/HelloHttp";
 
     java.net.http.HttpRequest getRequest =
         java.net.http.HttpRequest.newBuilder().uri(URI.create(functionUrl)).GET().build();
