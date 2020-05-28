@@ -212,7 +212,7 @@ public class DetectIT {
   @Test
   public void testDetectWebEntitiesGcs() throws Exception {
     // Act
-    Detect.detectWebDetectionsGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+    Detect.detectWebEntitiesGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
 
     String got = bout.toString().toLowerCase();
     assertThat(got).contains("description");
@@ -322,7 +322,7 @@ public class DetectIT {
   @Test
   public void testDetectLocalizedObjectsGcs() throws Exception {
     // Act
-    Detect.detectLogosGcs("gs://cloud-samples-data/vision/object_localization/puppies.jpg");
+    Detect.detectLocalizedObjectsGcs("gs://cloud-samples-data/vision/object_localization/puppies.jpg");
 
     // Assert
     String got = bout.toString().toLowerCase();
