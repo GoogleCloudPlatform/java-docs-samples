@@ -38,6 +38,9 @@ public class JobSearchCreateCompany {
   // Create a company.
   public static void createCompany(
       String projectId, String tenantId, String displayName, String externalId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       Company company =
@@ -51,9 +54,9 @@ public class JobSearchCreateCompany {
 
       Company response = companyServiceClient.createCompany(request);
       System.out.println("Created Company");
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("Display Name: %s\n", response.getDisplayName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      System.out.format("Name: %s%n", response.getName());
+      System.out.format("Display Name: %s%n", response.getDisplayName());
+      System.out.format("External ID: %s%n", response.getExternalId());
     }
   }
 }
