@@ -18,11 +18,10 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.example.vision.snippets.BatchAnnotateFilesGcs;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import com.example.vision.snippets.BatchAnnotateFilesGcs;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

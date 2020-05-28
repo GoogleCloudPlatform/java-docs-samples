@@ -82,8 +82,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_landmark_detection]
-  public static void detectLandmarks(String filePath)
-      throws Exception, IOException {
+  public static void detectLandmarks(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
 
@@ -164,8 +163,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_landmark_detection_gcs]
-  public static void detectLandmarksGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectLandmarksGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -371,8 +369,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_image_property_detection]
-  public static void detectProperties(String filePath)
-      throws Exception, IOException {
+  public static void detectProperties(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -420,8 +417,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_image_property_detection_gcs]
-  public static void detectPropertiesGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectPropertiesGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -467,8 +463,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_safe_search_detection]
-  public static void detectSafeSearch(String filePath)
-      throws Exception, IOException {
+  public static void detectSafeSearch(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -515,8 +510,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_safe_search_detection_gcs]
-  public static void detectSafeSearchGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectSafeSearchGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -561,8 +555,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectWebDetections(String filePath)
-      throws Exception, IOException {
+  public static void detectWebDetections(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -629,8 +622,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectWebDetectionsGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectWebDetectionsGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -694,8 +686,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectWebEntities(String filePath)
-      throws Exception, IOException {
+  public static void detectWebEntities(String filePath) throws Exception, IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -718,14 +709,10 @@ public class Detect {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
 
       // Display the results
-      response
-          .getResponsesList()
-          .stream()
+      response.getResponsesList().stream()
           .forEach(
               r ->
-                  r.getWebDetection()
-                      .getWebEntitiesList()
-                      .stream()
+                  r.getWebDetection().getWebEntitiesList().stream()
                       .forEach(
                           entity -> {
                             System.out.format("Description: %s%n", entity.getDescription());
@@ -741,8 +728,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectWebEntitiesGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectWebEntitiesGcs(String gcsPath) throws Exception, IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -764,14 +750,10 @@ public class Detect {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
 
       // Display the results
-      response
-          .getResponsesList()
-          .stream()
+      response.getResponsesList().stream()
           .forEach(
               r ->
-                  r.getWebDetection()
-                      .getWebEntitiesList()
-                      .stream()
+                  r.getWebDetection().getWebEntitiesList().stream()
                       .forEach(
                           entity -> {
                             System.out.format("Description: %s%n", entity.getDescription());
@@ -821,14 +803,10 @@ public class Detect {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
 
       // Display the results
-      response
-          .getResponsesList()
-          .stream()
+      response.getResponsesList().stream()
           .forEach(
               r ->
-                  r.getWebDetection()
-                      .getWebEntitiesList()
-                      .stream()
+                  r.getWebDetection().getWebEntitiesList().stream()
                       .forEach(
                           entity -> {
                             System.out.format("Description: %s%n", entity.getDescription());
@@ -879,14 +857,10 @@ public class Detect {
       BatchAnnotateImagesResponse response = client.batchAnnotateImages(Arrays.asList(request));
 
       // Display the results
-      response
-          .getResponsesList()
-          .stream()
+      response.getResponsesList().stream()
           .forEach(
               r ->
-                  r.getWebDetection()
-                      .getWebEntitiesList()
-                      .stream()
+                  r.getWebDetection().getWebEntitiesList().stream()
                       .forEach(
                           entity -> {
                             System.out.format("Description: %s%n", entity.getDescription());
@@ -904,8 +878,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_crop_hint_detection]
-  public static void detectCropHints(String filePath)
-      throws Exception, IOException {
+  public static void detectCropHints(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -947,8 +920,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_crop_hint_detection_gcs]
-  public static void detectCropHintsGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectCropHintsGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -989,8 +961,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_fulltext_detection]
-  public static void detectDocumentText(String filePath)
-      throws Exception, IOException {
+  public static void detectDocumentText(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -1031,7 +1002,8 @@ public class Detect {
                       "Symbol text: %s (confidence: %f)%n",
                       symbol.getText(), symbol.getConfidence());
                 }
-                System.out.format("Word text: %s (confidence: %f)%n%n", wordText, word.getConfidence());
+                System.out.format(
+                    "Word text: %s (confidence: %f)%n%n", wordText, word.getConfidence());
                 paraText = String.format("%s %s", paraText, wordText);
               }
               // Output Example using Paragraph:
@@ -1057,8 +1029,7 @@ public class Detect {
    * @throws IOException on Input/Output errors.
    */
   // [START vision_fulltext_detection_gcs]
-  public static void detectDocumentTextGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectDocumentTextGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();
@@ -1097,7 +1068,8 @@ public class Detect {
                       "Symbol text: %s (confidence: %f)%n",
                       symbol.getText(), symbol.getConfidence());
                 }
-                System.out.format("Word text: %s (confidence: %f)%n%n", wordText, word.getConfidence());
+                System.out.format(
+                    "Word text: %s (confidence: %f)%n%n", wordText, word.getConfidence());
                 paraText = String.format("%s %s", paraText, wordText);
               }
               // Output Example using Paragraph:
@@ -1244,8 +1216,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectLocalizedObjects(String filePath)
-      throws Exception, IOException {
+  public static void detectLocalizedObjects(String filePath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -1291,8 +1262,7 @@ public class Detect {
    * @throws Exception on errors while closing the client.
    * @throws IOException on Input/Output errors.
    */
-  public static void detectLocalizedObjectsGcs(String gcsPath)
-      throws Exception, IOException {
+  public static void detectLocalizedObjectsGcs(String gcsPath) throws Exception, IOException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(gcsPath).build();

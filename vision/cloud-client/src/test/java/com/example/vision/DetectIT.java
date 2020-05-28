@@ -18,7 +18,6 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectFaces;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
@@ -221,7 +220,7 @@ public class DetectIT {
   @Test
   public void testDetectWebEntitiesIncludeGeoResults() throws Exception {
     // Act
-    Detect.detectWebEntitiesIncludeGeoResults( "./resources/city.jpg");
+    Detect.detectWebEntitiesIncludeGeoResults("./resources/city.jpg");
 
     // Assert
     String got = bout.toString().toLowerCase();
@@ -232,7 +231,8 @@ public class DetectIT {
   @Test
   public void testDetectWebEntitiesIncludeGeoResultsGcs() throws Exception {
     // Act
-    Detect.detectWebEntitiesIncludeGeoResultsGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+    Detect.detectWebEntitiesIncludeGeoResultsGcs(
+        "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
 
     String got = bout.toString().toLowerCase();
     assertThat(got).contains("description");
@@ -289,8 +289,9 @@ public class DetectIT {
   @Test
   public void testDetectDocumentsGcs() throws Exception {
     // Act
-    Detect.detectDocumentsGcs("gs://" + ASSET_BUCKET + "/vision/document/custom_0773375000.pdf",
-            "gs://" + OUTPUT_BUCKET + "/" + OUTPUT_PREFIX + "/");
+    Detect.detectDocumentsGcs(
+        "gs://" + ASSET_BUCKET + "/vision/document/custom_0773375000.pdf",
+        "gs://" + OUTPUT_BUCKET + "/" + OUTPUT_PREFIX + "/");
 
     // Assert
     String got = bout.toString();
@@ -312,7 +313,7 @@ public class DetectIT {
   @Test
   public void testDetectLocalizedObjects() throws Exception {
     // Act
-    Detect.detectLocalizedObjects( "./resources/puppies.jpg");
+    Detect.detectLocalizedObjects("./resources/puppies.jpg");
 
     // Assert
     String got = bout.toString().toLowerCase();
@@ -322,7 +323,8 @@ public class DetectIT {
   @Test
   public void testDetectLocalizedObjectsGcs() throws Exception {
     // Act
-    Detect.detectLocalizedObjectsGcs("gs://cloud-samples-data/vision/object_localization/puppies.jpg");
+    Detect.detectLocalizedObjectsGcs(
+        "gs://cloud-samples-data/vision/object_localization/puppies.jpg");
 
     // Assert
     String got = bout.toString().toLowerCase();
