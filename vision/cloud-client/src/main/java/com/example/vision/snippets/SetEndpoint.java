@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.vision;
+package com.example.vision.snippets;
 
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
@@ -29,10 +29,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class SetEndpoint {
+public class SetEndpoint {
 
   // Change your endpoint
-  static void setEndpoint() throws IOException {
+  public static void setEndpoint() throws IOException {
     // [START vision_set_endpoint]
     ImageAnnotatorSettings settings =
         ImageAnnotatorSettings.newBuilder().setEndpoint("eu-vision.googleapis.com:443").build();

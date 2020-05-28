@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.vision;
+package com.example.vision.snippets;
 
 // [START vision_async_batch_annotate_images]
 import com.google.cloud.vision.v1.AnnotateImageRequest;

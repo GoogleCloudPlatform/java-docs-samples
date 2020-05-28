@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,21 @@
 
 package com.example.vision;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-
-import com.example.vision.snippets.BatchAnnotateFilesGcs;
+import com.example.vision.snippets.DetectLabels;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static com.google.common.truth.Truth.assertThat;
+
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class BatchAnnotateFilesGcsTest {
+public class DetectLabelsTest {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -48,11 +47,12 @@ public class BatchAnnotateFilesGcsTest {
   }
 
   @Test
-  public void testSetEndpoint() throws IOException {
-    BatchAnnotateFilesGcs.batchAnnotateFilesGcs(
-        "gs://cloud-samples-data/vision/document_understanding/kafka.pdf");
+  public void testLabels() throws Exception {
+    // Act
+    DetectLabels.detectLabels("./resources/wakeupcat.jpg");
 
-    String got = bout.toString();
-    assertThat(got).contains("Word confidence");
+    // Assert
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("whiskers");
   }
 }

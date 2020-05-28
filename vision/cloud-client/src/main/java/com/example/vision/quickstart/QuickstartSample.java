@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.vision;
+package com.example.vision.quickstart;
 
 // [START vision_quickstart]
 // Imports the Google Cloud client library

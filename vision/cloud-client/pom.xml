@@ -129,7 +129,7 @@
               </execution>
             </executions>
             <configuration>
-              <mainClass>com.example.vision.QuickstartSample</mainClass>
+              <mainClass>com.example.vision.quickstart.QuickstartSample</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </plugin>

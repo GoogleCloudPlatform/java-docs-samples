@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 
-package com.example.vision;
+package com.example.vision.snippets;
 
-// [START vision_batch_annotate_files_gcs]
+// [START vision_batch_annotate_files]
 import com.google.cloud.vision.v1.AnnotateFileRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateFilesRequest;
 import com.google.cloud.vision.v1.BatchAnnotateFilesResponse;
 import com.google.cloud.vision.v1.Block;
 import com.google.cloud.vision.v1.Feature;
-import com.google.cloud.vision.v1.GcsSource;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.InputConfig;
 import com.google.cloud.vision.v1.Page;
 import com.google.cloud.vision.v1.Paragraph;
 import com.google.cloud.vision.v1.Symbol;
 import com.google.cloud.vision.v1.Word;
+import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class BatchAnnotateFilesGcs {
+public class BatchAnnotateFiles {
 
-  public static void batchAnnotateFilesGcs() throws IOException {
-    String gcsUri = "gs://cloud-samples-data/vision/document_understanding/kafka.pdf";
-    batchAnnotateFilesGcs(gcsUri);
+  public static void batchAnnotateFiles() throws IOException {
+    String filePath = "path/to/your/file.pdf";
+    batchAnnotateFiles(filePath);
   }
 
-  public static void batchAnnotateFilesGcs(String gcsUri) throws IOException {
+  public static void batchAnnotateFiles(String filePath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -47,14 +50,16 @@ public class BatchAnnotateFilesGcs {
       // You can send multiple files to be annotated, this sample demonstrates how to do this with
       // one file. If you want to use multiple files, you have to create a `AnnotateImageRequest`
       // object for each file that you want annotated.
-      // First specify where the vision api can find the image
-      GcsSource gcsSource = GcsSource.newBuilder().setUri(gcsUri).build();
+      // First read the files contents
+      Path path = Paths.get(filePath);
+      byte[] data = Files.readAllBytes(path);
+      ByteString content = ByteString.copyFrom(data);
 
-      // Specify the input config with the file's uri and its type.
+      // Specify the input config with the file's contents and its type.
       // Supported mime_type: application/pdf, image/tiff, image/gif
       // https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#inputconfig
       InputConfig inputConfig =
-          InputConfig.newBuilder().setMimeType("application/pdf").setGcsSource(gcsSource).build();
+          InputConfig.newBuilder().setMimeType("application/pdf").setContent(content).build();
 
       // Set the type of annotation you want to perform on the file
       // https://cloud.google.com/vision/docs/reference/rpc/google.cloud.vision.v1#google.cloud.vision.v1.Feature.Type
@@ -106,4 +111,4 @@ public class BatchAnnotateFilesGcs {
     }
   }
 }
-// [END vision_batch_annotate_files_gcs]
+// [END vision_batch_annotate_files]
