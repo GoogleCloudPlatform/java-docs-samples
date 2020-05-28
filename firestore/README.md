@@ -48,6 +48,7 @@ Run all tests:
 
 Set the `FIRESTORE_PROJECT_ID` environment variable and run the command:
 ```
+   export FIRESTORE_PROJECT_ID=<YOUR-PROJECT-ID>
    mvn clean verify
 ```
 

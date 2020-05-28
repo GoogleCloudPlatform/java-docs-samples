@@ -41,10 +41,10 @@ public class ListenDataSnippets {
 
   private static final long TIMEOUT_SECONDS = 5;
 
-  private final Firestore db;
+  private final Firestore database;
 
-  ListenDataSnippets(Firestore db) {
-    this.db = db;
+  ListenDataSnippets(Firestore database) {
+    this.database = database;
   }
 
   /**
@@ -54,7 +54,7 @@ public class ListenDataSnippets {
     final SettableApiFuture<Map<String, Object>> future = SettableApiFuture.create();
 
     // [START listen_to_document]
-    DocumentReference docRef = db.collection("cities").document("SF");
+    DocumentReference docRef = database.collection("cities").document("SF");
     docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
       @Override
       public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -88,7 +88,7 @@ public class ListenDataSnippets {
     final SettableApiFuture<List<String>> future = SettableApiFuture.create();
 
     // [START listen_to_multiple]
-    db.collection("cities")
+    database.collection("cities")
         .whereEqualTo("state", "CA")
         .addSnapshotListener(new EventListener<QuerySnapshot>() {
           @Override
@@ -125,7 +125,7 @@ public class ListenDataSnippets {
     SettableApiFuture<List<DocumentChange>> future = SettableApiFuture.create();
 
     // [START listen_for_changes]
-    db.collection("cities")
+    database.collection("cities")
         .whereEqualTo("state", "CA")
         .addSnapshotListener(new EventListener<QuerySnapshot>() {
           @Override
@@ -168,7 +168,7 @@ public class ListenDataSnippets {
    */
   void detachListener() {
     // [START detach_errors]
-    Query query = db.collection("cities");
+    Query query = database.collection("cities");
     ListenerRegistration registration = query.addSnapshotListener(
         new EventListener<QuerySnapshot>() {
           // [START_EXCLUDE]
@@ -192,7 +192,7 @@ public class ListenDataSnippets {
    */
   void listenErrors() {
     // [START listen_errors]
-    db.collection("cities")
+    database.collection("cities")
         .addSnapshotListener(new EventListener<QuerySnapshot>() {
           @Override
           public void onEvent(@Nullable QuerySnapshot snapshots,

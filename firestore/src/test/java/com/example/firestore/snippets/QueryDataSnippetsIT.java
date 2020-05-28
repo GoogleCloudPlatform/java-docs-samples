@@ -48,7 +48,7 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    queryDataSnippets = new QueryDataSnippets(db);
+    queryDataSnippets = new QueryDataSnippets(database);
     queryDataSnippets.prepareExamples();
   }
 
@@ -179,11 +179,11 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
     Map<String, String> city3 = new ImmutableMap.Builder<String, String>()
         .put("name", "Springfield").put("state", "Wisconsin").build();
 
-    db.collection("us_cities").document("Massachusetts").set(city1).get();
-    db.collection("us_cities").document("Missouri").set(city2).get();
-    db.collection("us_cities").document("Wisconsin").set(city3).get();
+    database.collection("us_cities").document("Massachusetts").set(city1).get();
+    database.collection("us_cities").document("Missouri").set(city2).get();
+    database.collection("us_cities").document("Wisconsin").set(city3).get();
 
-    Query query1 = db.collection("us_cities")
+    Query query1 = database.collection("us_cities")
         .orderBy("name")
         .orderBy("state")
         .startAt("Springfield");
@@ -195,7 +195,7 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
 
 
     // Will return "Springfield, Missouri" and "Springfield, Wisconsin"
-    Query query2 = db.collection("us_cities")
+    Query query2 = database.collection("us_cities")
         .orderBy("name")
         .orderBy("state")
         .startAt("Springfield", "Missouri");
@@ -267,6 +267,6 @@ public class QueryDataSnippetsIT extends BaseIntegrationTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    deleteAllDocuments(db);
+    deleteAllDocuments(database);
   }
 }

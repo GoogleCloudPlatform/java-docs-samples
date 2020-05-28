@@ -36,16 +36,16 @@ import java.util.Map;
  */
 public class Quickstart {
 
-  private Firestore db;
+  private Firestore database;
 
   /**
    * Initialize Firestore using default project ID.
    */
   public Quickstart() {
     // [START fs_initialize]
-    Firestore db = FirestoreOptions.getDefaultInstance().getService();
+    Firestore database = FirestoreOptions.getDefaultInstance().getService();
     // [END fs_initialize]
-    this.db = db;
+    this.database = database;
   }
 
   public Quickstart(String projectId) {
@@ -56,11 +56,11 @@ public class Quickstart {
             .build();
     Firestore db = firestoreOptions.getService();
     // [END fs_initialize_project_id]
-    this.db = db;
+    this.database = db;
   }
 
-  Firestore getDb() {
-    return db;
+  Firestore getDatabase() {
+    return database;
   }
 
   /**
@@ -72,7 +72,7 @@ public class Quickstart {
     switch (docName) {
       case "alovelace": {
         // [START fs_add_data_1]
-        DocumentReference docRef = db.collection("users").document("alovelace");
+        DocumentReference docRef = database.collection("users").document("alovelace");
         // Add document data  with id "alovelace" using a hashmap
         Map<String, Object> data = new HashMap<>();
         data.put("first", "Ada");
@@ -88,7 +88,7 @@ public class Quickstart {
       }
       case "aturing": {
         // [START fs_add_data_2]
-        DocumentReference docRef = db.collection("users").document("aturing");
+        DocumentReference docRef = database.collection("users").document("aturing");
         // Add document data with an additional field ("middle")
         Map<String, Object> data = new HashMap<>();
         data.put("first", "Alan");
@@ -102,7 +102,7 @@ public class Quickstart {
         break;
       }
       case "cbabbage": {
-        DocumentReference docRef = db.collection("users").document("cbabbage");
+        DocumentReference docRef = database.collection("users").document("cbabbage");
         Map<String, Object> data =
             new ImmutableMap.Builder<String, Object>()
                 .put("first", "Charles")
@@ -121,7 +121,7 @@ public class Quickstart {
     // [START fs_add_query]
     // asynchronously query for all users born before 1900
     ApiFuture<QuerySnapshot> query =
-        db.collection("users").whereLessThan("born", 1900).get();
+        database.collection("users").whereLessThan("born", 1900).get();
     // ...
     // query.get() blocks on response
     QuerySnapshot querySnapshot = query.get();
@@ -141,7 +141,7 @@ public class Quickstart {
   void retrieveAllDocuments() throws Exception {
     // [START fs_get_all]
     // asynchronously retrieve all users
-    ApiFuture<QuerySnapshot> query = db.collection("users").get();
+    ApiFuture<QuerySnapshot> query = database.collection("users").get();
     // ...
     // query.get() blocks on response
     QuerySnapshot querySnapshot = query.get();

@@ -46,7 +46,7 @@ public class RetrieveDataSnippetsIT extends BaseIntegrationTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    retrieveDataSnippets = new RetrieveDataSnippets(db);
+    retrieveDataSnippets = new RetrieveDataSnippets(database);
     retrieveDataSnippets.prepareExamples();
   }
 
@@ -100,7 +100,7 @@ public class RetrieveDataSnippetsIT extends BaseIntegrationTest {
     // Add a landmark subcollection
     Map<String, String> data = new HashMap<>();
     data.put("foo", "bar");
-    db.document("cities/SF/landmarks/example").set(data).get();
+    database.document("cities/SF/landmarks/example").set(data).get();
 
     Iterable<CollectionReference> collections =
         retrieveDataSnippets.listCollections();
@@ -115,11 +115,11 @@ public class RetrieveDataSnippetsIT extends BaseIntegrationTest {
   }
 
   private static void deleteAllDocuments() throws Exception {
-    ApiFuture<QuerySnapshot> future = db.collection("cities").get();
+    ApiFuture<QuerySnapshot> future = database.collection("cities").get();
     QuerySnapshot querySnapshot = future.get();
     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
       // block on delete operation
-      db.collection("cities").document(doc.getId()).delete().get();
+      database.collection("cities").document(doc.getId()).delete().get();
     }
   }
 

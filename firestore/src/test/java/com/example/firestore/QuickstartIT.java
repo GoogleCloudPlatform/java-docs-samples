@@ -83,7 +83,7 @@ public class QuickstartIT extends BaseIntegrationTest {
     expectedData.put("first", "Ada");
     expectedData.put("last", "Lovelace");
     expectedData.put("born", 1815L);
-    validate(db.document("users/alovelace"), expectedData);
+    validate(database.document("users/alovelace"), expectedData);
 
     expectedData.clear();
     expectedData.put("first", "Alan");
@@ -91,22 +91,22 @@ public class QuickstartIT extends BaseIntegrationTest {
     expectedData.put("last", "Turing");
     expectedData.put("born", 1912L);
     quickstart.addDocument("aturing");
-    validate(db.document("users/aturing"), expectedData);
+    validate(database.document("users/aturing"), expectedData);
 
     expectedData.clear();
     expectedData.put("first", "Charles");
     expectedData.put("last", "Babbage");
     expectedData.put("born", 1791L);
     quickstart.addDocument("cbabbage");
-    validate(db.document("users/cbabbage"), expectedData);
+    validate(database.document("users/cbabbage"), expectedData);
   }
 
   private void deleteAllDocuments() throws Exception {
-    ApiFuture<QuerySnapshot> future = db.collection("users").get();
+    ApiFuture<QuerySnapshot> future = database.collection("users").get();
     QuerySnapshot querySnapshot = future.get();
     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
       // block on delete operation
-      db.document("users/" + doc.getId()).delete().get();
+      database.document("users/" + doc.getId()).delete().get();
     }
   }
 

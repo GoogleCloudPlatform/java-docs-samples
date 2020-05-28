@@ -35,7 +35,7 @@ import org.junit.BeforeClass;
 public class BaseIntegrationTest {
 
   protected static String projectId;
-  protected static Firestore db;
+  protected static Firestore database;
 
   private static String getEnvVar(String varName) {
     String value = System.getenv(varName);
@@ -51,8 +51,8 @@ public class BaseIntegrationTest {
     FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
         .setProjectId(projectId)
         .build();
-    db = firestoreOptions.getService();
-    deleteAllDocuments(db);
+    database = firestoreOptions.getService();
+    deleteAllDocuments(database);
   }
 
   protected DocumentSnapshot getDocumentData(DocumentReference docRef) throws Exception {

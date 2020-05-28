@@ -23,10 +23,10 @@ import com.google.cloud.firestore.Firestore;
 /** Examples of references to a collection, document in a collection and subcollection. */
 public class References {
 
-  private final Firestore db;
+  private final Firestore database;
 
-  public References(Firestore db) {
-    this.db = db;
+  public References(Firestore database) {
+    this.database = database;
   }
 
   /**
@@ -37,7 +37,7 @@ public class References {
   public CollectionReference getACollectionRef() {
     // [START fs_collection_ref]
     // Reference to the collection "users"
-    CollectionReference collection = db.collection("users");
+    CollectionReference collection = database.collection("users");
     // [END fs_collection_ref]
     return collection;
   }
@@ -50,7 +50,7 @@ public class References {
   public DocumentReference getADocumentRef() {
     // [START fs_document_ref]
     // Reference to a document with id "alovelace" in the collection "users"
-    DocumentReference document = db.collection("users").document("alovelace");
+    DocumentReference document = database.collection("users").document("alovelace");
     // [END fs_document_ref]
     return document;
   }
@@ -63,7 +63,7 @@ public class References {
   public DocumentReference getADocumentRefUsingPath() {
     // [START fs_document_path_ref]
     // Reference to a document with id "alovelace" in the collection "users"
-    DocumentReference document = db.document("users/alovelace");
+    DocumentReference document = database.document("users/alovelace");
     // [END fs_document_path_ref]
     return document;
   }
@@ -77,7 +77,7 @@ public class References {
     // [START fs_subcollection_ref]
     // Reference to a document in subcollection "messages"
     DocumentReference document =
-        db.collection("rooms").document("roomA").collection("messages").document("message1");
+        database.collection("rooms").document("roomA").collection("messages").document("message1");
     // [END fs_subcollection_ref]
     return document;
   }

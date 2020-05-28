@@ -41,16 +41,16 @@ public class ListenDataSnippetsIT extends BaseIntegrationTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    queryDataSnippets = new QueryDataSnippets(db);
+    queryDataSnippets = new QueryDataSnippets(database);
     queryDataSnippets.prepareExamples();
 
-    listenDataSnippets = new ListenDataSnippets(db);
+    listenDataSnippets = new ListenDataSnippets(database);
   }
 
   @Test
   public void testListenDocument() throws Exception {
     Map<String, Object> expectedData = listenDataSnippets.listenToDocument();
-    DocumentReference docRef = db.collection("cities").document("SF");
+    DocumentReference docRef = database.collection("cities").document("SF");
     assertTrue(Objects.equals(expectedData, getDocumentDataAsMap(docRef)));
   }
 
@@ -74,6 +74,6 @@ public class ListenDataSnippetsIT extends BaseIntegrationTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    deleteAllDocuments(db);
+    deleteAllDocuments(database);
   }
 }

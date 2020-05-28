@@ -38,10 +38,12 @@ import java.util.concurrent.TimeoutException;
 /** Snippets to support firestore querying data documentation. */
 class QueryDataSnippets {
 
-  private final Firestore db;
+  private static final String COLLECTION_REFERENCE_NAME = "cities";
+  
+  private final Firestore database;
 
-  QueryDataSnippets(Firestore db) {
-    this.db = db;
+  QueryDataSnippets(Firestore database) {
+    this.database = database;
   }
 
   /**
@@ -52,7 +54,7 @@ class QueryDataSnippets {
   void prepareExamples() throws Exception {
 
     // [START fs_query_create_examples]
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     List<ApiFuture<WriteResult>> futures = new ArrayList<>();
     futures.add(
         cities
@@ -81,13 +83,23 @@ class QueryDataSnippets {
             .document("DC")
             .set(
                 new City(
-                    "Washington D.C.", null, "USA", true, 680000L, Arrays.asList("east_coast"))));
+                    "Washington D.C.",
+                    null,
+                    "USA",
+                    true,
+                    680000L,
+                    Arrays.asList("east_coast"))));
     futures.add(
         cities
             .document("TOK")
             .set(
                 new City(
-                    "Tokyo", null, "Japan", true, 9000000L, Arrays.asList("kanto", "honshu"))));
+                    "Tokyo",
+                    null,
+                    "Japan",
+                    true,
+                    9000000L,
+                    Arrays.asList("kanto", "honshu"))));
     futures.add(
         cities
             .document("BJ")
@@ -112,7 +124,7 @@ class QueryDataSnippets {
   Query createAQuery() throws Exception {
     // [START fs_create_query]
     // Create a reference to the cities collection
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // Create a query against the collection.
     Query query = cities.whereEqualTo("capital", true);
     // retrieve  query results asynchronously using query.get()
@@ -133,7 +145,7 @@ class QueryDataSnippets {
   Query createAQueryAlternate() throws Exception {
     // [START fs_create_query_country]
     // Create a reference to the cities collection
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // Create a query against the collection.
     Query query = cities.whereEqualTo("state", "CA");
     // retrieve  query results asynchronously using query.get()
@@ -153,7 +165,7 @@ class QueryDataSnippets {
    */
   List<Query> createSimpleQueries() {
     List<Query> querys = new ArrayList<>();
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
 
     // [START fs_simple_queries]
     Query stateQuery = cities.whereEqualTo("state", "CA");
@@ -174,7 +186,7 @@ class QueryDataSnippets {
    */
   Query createArrayQuery() {
     // [START fs_array_contains_filter]
-    CollectionReference citiesRef = db.collection("cities");
+    CollectionReference citiesRef = database.collection(COLLECTION_REFERENCE_NAME);
     Query westCoastQuery = citiesRef.whereArrayContains("regions", "west_coast");
     // [END fs_array_contains_filter]
 
@@ -189,9 +201,10 @@ class QueryDataSnippets {
    * @return query
    */
   Query createChainedQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_chained_query]
-    Query chainedQuery1 = cities.whereEqualTo("state", "CO").whereEqualTo("name", "Denver");
+    Query chainedQuery1 = cities.whereEqualTo("state", "CO")
+            .whereEqualTo("name", "Denver");
     // [END fs_chained_query]
     return chainedQuery1;
   }
@@ -203,9 +216,10 @@ class QueryDataSnippets {
    * @return query
    */
   Query createCompositeIndexChainedQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_composite_index_chained_query]
-    Query chainedQuery2 = cities.whereEqualTo("state", "CA").whereLessThan("population", 1000000L);
+    Query chainedQuery2 = cities.whereEqualTo("state", "CA")
+            .whereLessThan("population", 1000000L);
     // [END fs_composite_index_chained_query]
     return chainedQuery2;
   }
@@ -216,11 +230,12 @@ class QueryDataSnippets {
    * @return query
    */
   Query createRangeQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_range_query]
-    Query validQuery1 =
-        cities.whereGreaterThanOrEqualTo("state", "CA").whereLessThanOrEqualTo("state", "IN");
-    Query validQuery2 = cities.whereEqualTo("state", "CA").whereGreaterThan("population", 1000000);
+    Query validQuery1 = cities.whereGreaterThanOrEqualTo("state", "CA")
+                .whereLessThanOrEqualTo("state", "IN");
+    Query validQuery2 = cities.whereEqualTo("state", "CA")
+            .whereGreaterThan("population", 1000000);
     // [END fs_range_query]
     return validQuery1;
   }
@@ -231,11 +246,11 @@ class QueryDataSnippets {
    * @return query
    */
   Query createInvalidRangeQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // Violates constraint : range operators are limited to a single field
     // [START fs_invalid_range_query]
-    Query invalidRangeQuery =
-        cities.whereGreaterThanOrEqualTo("state", "CA").whereGreaterThan("population", 100000);
+    Query invalidRangeQuery = cities.whereGreaterThanOrEqualTo("state", "CA")
+                .whereGreaterThan("population", 100000);
     // [END fs_invalid_range_query]
     return invalidRangeQuery;
   }
@@ -246,7 +261,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createOrderByNameWithLimitQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_order_by_name_limit_query]
     Query query = cities.orderBy("name").limit(3);
     // [END fs_order_by_name_limit_query]
@@ -259,7 +274,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createOrderByNameWithLimitToLastQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_order_by_name_limit_query]
     Query query = cities.orderBy("name").limitToLast(3);
     // [END fs_order_by_name_limit_query]
@@ -272,7 +287,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createOrderByCountryAndPopulation() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_order_by_country_population]
     Query query = cities.orderBy("state").orderBy("population", Direction.DESCENDING);
     // [END fs_order_by_country_population]
@@ -285,7 +300,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createOrderByNameDescWithLimitQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_order_by_name_desc_limit_query]
     Query query = cities.orderBy("name", Direction.DESCENDING).limit(3);
     // [END fs_order_by_name_desc_limit_query]
@@ -298,9 +313,10 @@ class QueryDataSnippets {
    * @return query
    */
   Query createWhereWithOrderByAndLimitQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_where_order_by_limit_query]
-    Query query = cities.whereGreaterThan("population", 2500000L).orderBy("population").limit(2);
+    Query query = cities.whereGreaterThan("population", 2500000L).
+            orderBy("population").limit(2);
     // [END fs_where_order_by_limit_query]
     return query;
   }
@@ -312,7 +328,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createRangeWithOrderByQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_range_order_by_query]
     Query query = cities.whereGreaterThan("population", 2500000L).orderBy("population");
     // [END fs_range_order_by_query]
@@ -326,7 +342,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createInvalidRangeWithOrderByQuery() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // Violates the constraint that range and order by are required to be on the same field
     // [START fs_invalid_range_order_by_query]
     Query query = cities.whereGreaterThan("population", 2500000L).orderBy("country");
@@ -340,7 +356,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createStartAtFieldQueryCursor() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_start_at_field_query_cursor]
     Query query = cities.orderBy("population").startAt(4921000L);
     // [END fs_start_at_field_query_cursor]
@@ -353,7 +369,7 @@ class QueryDataSnippets {
    * @return query
    */
   Query createEndAtFieldQueryCursor() {
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     // [START fs_end_at_field_query_cursor]
     Query query = cities.orderBy("population").endAt(4921000L);
     // [END fs_end_at_field_query_cursor]
@@ -364,11 +380,11 @@ class QueryDataSnippets {
   void createMultipleCursorConditionsQuery() {
     // [START fs_multiple_cursor_conditions]
     // Will return all Springfields
-    Query query1 = db.collection("cities").orderBy("name").orderBy("state").startAt("Springfield");
+    Query query1 = database.collection("cities").orderBy("name").orderBy("state").startAt("Springfield");
 
     // Will return "Springfield, Missouri" and "Springfield, Wisconsin"
     Query query2 =
-        db.collection("cities").orderBy("name").orderBy("state").startAt("Springfield", "Missouri");
+        database.collection("cities").orderBy("name").orderBy("state").startAt("Springfield", "Missouri");
     // [END fs_multiple_cursor_conditions]
   }
 
@@ -381,11 +397,11 @@ class QueryDataSnippets {
       throws InterruptedException, ExecutionException, TimeoutException {
     // [START fs_document_snapshot_cursor]
     // Fetch the snapshot with an API call, waiting for a maximum of 30 seconds for a result.
-    ApiFuture<DocumentSnapshot> future = db.collection("cities").document("SF").get();
+    ApiFuture<DocumentSnapshot> future = database.collection("cities").document("SF").get();
     DocumentSnapshot snapshot = future.get(30, TimeUnit.SECONDS);
 
     // Construct the query
-    Query query = db.collection("cities").orderBy("population").startAt(snapshot);
+    Query query = database.collection("cities").orderBy("population").startAt(snapshot);
     // [END fs_document_snapshot_cursor]
     return query;
   }
@@ -394,7 +410,7 @@ class QueryDataSnippets {
   List<Query> paginateCursor() throws InterruptedException, ExecutionException, TimeoutException {
     // [START fs_paginate_cursor]
     // Construct query for first 25 cities, ordered by population.
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
     Query firstPage = cities.orderBy("population").limit(25);
 
     // Wait for the results of the API call, waiting for a maximum of 30 seconds for a result.
@@ -415,7 +431,7 @@ class QueryDataSnippets {
     // CHECKSTYLE OFF: Indentation
     // CHECKSTYLE OFF: RightCurlyAlone
     // [START fs_collection_group_query_data_setup]
-    CollectionReference cities = db.collection("cities");
+    CollectionReference cities = database.collection(COLLECTION_REFERENCE_NAME);
 
     final List<ApiFuture<WriteResult>> futures =
         Arrays.asList(
@@ -533,7 +549,8 @@ class QueryDataSnippets {
     // [END fs_collection_group_query_data_setup]
 
     // [START fs_collection_group_query]
-    final Query museums = db.collectionGroup("landmarks").whereEqualTo("type", "museum");
+    final Query museums = database.collectionGroup("landmarks")
+            .whereEqualTo("type", "museum");
     final ApiFuture<QuerySnapshot> querySnapshot = museums.get();
     for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
       System.out.println(document.getId());
@@ -545,7 +562,7 @@ class QueryDataSnippets {
 
   public Query arrayContainsAnyQueries() {
     // [START fs_query_filter_array_contains_any]
-    CollectionReference citiesRef = db.collection("cities");
+    CollectionReference citiesRef = database.collection(COLLECTION_REFERENCE_NAME);
 
     Query query =
         citiesRef.whereArrayContainsAny("regions", Arrays.asList("west_coast", "east_coast"));
@@ -555,7 +572,7 @@ class QueryDataSnippets {
 
   public Query inQueryWithoutArray() {
     // [START fs_query_filter_in]
-    CollectionReference citiesRef = db.collection("cities");
+    CollectionReference citiesRef = database.collection(COLLECTION_REFERENCE_NAME);
 
     Query query = citiesRef.whereIn("country", Arrays.asList("USA", "Japan"));
     // [END fs_query_filter_in]
@@ -564,11 +581,12 @@ class QueryDataSnippets {
 
   public Query inQueryWithArray() {
     // [START fs_query_filter_in_with_array]
-    CollectionReference citiesRef = db.collection("cities");
+    CollectionReference citiesRef = database.collection(COLLECTION_REFERENCE_NAME);
 
     Query query =
         citiesRef.whereIn(
-            "regions", Arrays.asList(Arrays.asList("west_coast"), Arrays.asList("east_coast")));
+            "regions", Arrays.asList(
+                    Arrays.asList("west_coast"), Arrays.asList("east_coast")));
     // [END fs_query_filter_in_with_array]
     return query;
   }
