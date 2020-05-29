@@ -51,7 +51,7 @@ cd java-docs-samples/appengine-java11/task-handler
 
 - Deploy the app
 ```
-mvn clean package appengine:deploy
+gcloud app deploy
 ```
 
 ## Run the Sample Using the Command Line
