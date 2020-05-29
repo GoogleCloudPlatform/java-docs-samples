@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.atlassian.commonmark</groupId>
       <artifactId>commonmark</artifactId>
-      <version>0.15.0</version>
+      <version>0.15.1</version>
     </dependency>
     <dependency>
       <groupId>com.atlassian.commonmark</groupId>
