@@ -18,10 +18,13 @@ package com.example.iap;
 // [START iap_validate_jwt]
 
 import com.google.api.client.http.HttpRequest;
+import com.google.api.client.json.webtoken.JsonWebToken;
 import com.google.auth.oauth2.TokenVerifier;
 
 /** Verify IAP authorization JWT token in incoming request. */
 public class VerifyIapRequestHeader {
+
+  private static final String IAP_ISSUER_URL = "https://cloud.google.com/iap";
 
   // Verify jwt tokens addressed to IAP protected resources on App Engine.
   // The project *number* for your Google Cloud project via 'gcloud projects describe $PROJECT_ID'
@@ -54,13 +57,17 @@ public class VerifyIapRequestHeader {
             Long.toUnsignedString(projectNumber), Long.toUnsignedString(backendServiceId)));
   }
 
-  private boolean verifyJwt(String jwtToken, String expectedAudience) throws Exception {
+  private boolean verifyJwt(String jwtToken, String expectedAudience) {
     TokenVerifier tokenVerifier = TokenVerifier.newBuilder()
         .setAudience(expectedAudience)
+        .setIssuer(IAP_ISSUER_URL)
         .build();
     try {
-      tokenVerifier.verify(jwtToken);
-      return true;
+      JsonWebToken jsonWebToken = tokenVerifier.verify(jwtToken);
+
+      // must have subject, email
+      JsonWebToken.Payload payload = jsonWebToken.getPayload();
+      return payload.getSubject() != null && payload.get("email") != null;
     } catch (TokenVerifier.VerificationException e) {
       return false;
     }
