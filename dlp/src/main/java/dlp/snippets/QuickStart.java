@@ -38,7 +38,9 @@ import java.util.stream.Stream;
 public class QuickStart {
 
   public static void main(String[] args) throws IOException {
-    quickstart(args[0]);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    quickstart(projectId);
   }
 
   public static void quickstart(String projectId) throws IOException {

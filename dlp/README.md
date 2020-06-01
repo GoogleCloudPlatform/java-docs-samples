@@ -34,8 +34,12 @@ An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories)
 
 The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
 
+Note that you will need to set the `projectId` in
+[QuickStart.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/dlp/src/main/java/dlp/snippets/QuickStart.java)
+for this to work correctly. If you forget this, you will see a `PERMISSION_DENIED` error.
+
 ```
-   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart MY_PROJECT_ID
+   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart
 ```
 
 ## Inspect data for sensitive elements
@@ -48,24 +52,15 @@ Optional flags are explained in [this resource](https://cloud.google.com/dlp/doc
 ## Automatic redaction of sensitive data from images
 [Automatic redaction](https://cloud.google.com/dlp/docs/redacting-sensitive-data-images) produces an output image with sensitive data matches removed.
 
-```
-Commands:
-  -f <string>                   Source image file
-  -o <string>                   Destination image file
- Options:
-  --help               Show help
-  -minLikelihood       choices: "LIKELIHOOD_UNSPECIFIED", "VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
-                       [default: "LIKELIHOOD_UNSPECIFIED"]
-                       specifies the minimum reporting likelihood threshold.
-  
-  -infoTypes      set of infoTypes to search for [eg. PHONE_NUMBER US_PASSPORT]
-```
-
 ### Example
-TODO: Verify / fix me
-- Redact phone numbers and email addresses from `test.png`:
+- Redact phone numbers and email addresses from `src/test/resources/test.png`:
+
+  Note that you will need to set the `projectId` in
+  [RedactImageFile.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/dlp/src/main/java/dlp/snippets/RedactImageFilet.java)
+  for this to work correctly. If you forget this, you will see a `PERMISSION_DENIED` error.
+
   ```
-    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.RedactImageFile MY_PROJECT_ID src/test/resources/test.png test-redacted.png
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.RedactImageFile
   ```
 
 ## Integration tests

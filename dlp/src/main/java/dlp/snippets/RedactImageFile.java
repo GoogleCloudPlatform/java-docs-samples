@@ -35,7 +35,11 @@ import java.util.List;
 class RedactImageFile {
 
   public static void main(String[] args) {
-    redactImageFile(args[0], args[1], args[2]);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String inputPath = "src/test/resources/test.png";
+    String outputPath = "redacted.png";
+    redactImageFile(projectId, inputPath, outputPath);
   }
 
   static void redactImageFile(String projectId, String inputPath, String outputPath) {
