@@ -69,7 +69,7 @@ Commands:
 TODO: Verify / fix me
 - Redact phone numbers and email addresses from `test.png`:
   ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -f src/test/resources/test.png -o test-redacted.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.RedactImageFile MY_PROJECT_ID src/test/resources/test.png test-redacted.png
   ```
 
 ## Integration tests
