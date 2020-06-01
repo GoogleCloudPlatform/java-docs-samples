@@ -27,7 +27,7 @@ An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories)
 
 [InfoTypes](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current InfoTypes.
   ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.InfoTypesList
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.InfoTypesList
   ``` 
 
 ## Run the quickstart
