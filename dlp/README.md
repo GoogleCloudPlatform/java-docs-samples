@@ -27,14 +27,19 @@ An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories)
 
 [InfoTypes](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current InfoTypes.
   ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.InfoTypesList
   ``` 
 
 ## Run the quickstart
 
 The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
+
+Note that you will need to set the `projectId` in
+[QuickStart.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/dlp/src/main/java/dlp/snippets/QuickStart.java)
+for this to work correctly. If you forget this, you will see a `PERMISSION_DENIED` error.
+
 ```
-   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart
+   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart
 ```
 
 ## Inspect data for sensitive elements
@@ -47,23 +52,15 @@ Optional flags are explained in [this resource](https://cloud.google.com/dlp/doc
 ## Automatic redaction of sensitive data from images
 [Automatic redaction](https://cloud.google.com/dlp/docs/redacting-sensitive-data-images) produces an output image with sensitive data matches removed.
 
-```
-Commands:
-  -f <string>                   Source image file
-  -o <string>                   Destination image file
- Options:
-  --help               Show help
-  -minLikelihood       choices: "LIKELIHOOD_UNSPECIFIED", "VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
-                       [default: "LIKELIHOOD_UNSPECIFIED"]
-                       specifies the minimum reporting likelihood threshold.
-  
-  -infoTypes      set of infoTypes to search for [eg. PHONE_NUMBER US_PASSPORT]
-```
-
 ### Example
-- Redact phone numbers and email addresses from `test.png`:
+- Redact phone numbers and email addresses from `src/test/resources/test.png`:
+
+  Note that you will need to set the `projectId` in
+  [RedactImageFile.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/dlp/src/main/java/dlp/snippets/RedactImageFilet.java)
+  for this to work correctly. If you forget this, you will see a `PERMISSION_DENIED` error.
+
   ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -f src/test/resources/test.png -o test-redacted.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
+    java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.RedactImageFile
   ```
 
 ## Integration tests
