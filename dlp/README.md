@@ -34,12 +34,8 @@ An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories)
 
 The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
 
-Note that you will need to set the `projectId` in
-[QuickStart.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/dlp/src/main/java/dlp/snippets/QuickStart.java)
-for this to work correctly. If you forget this, you will see a `PERMISSION_DENIED` error.
-
 ```
-   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart
+   java -cp target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart MY_PROJECT_ID
 ```
 
 ## Inspect data for sensitive elements
