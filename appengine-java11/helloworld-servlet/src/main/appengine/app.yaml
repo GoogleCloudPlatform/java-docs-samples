@@ -13,6 +13,5 @@
 
 # [START gae_java11_servlet_yaml]
 runtime: java11
-instance_class: F1
 entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main helloworld.war'
 # [END gae_java11_servlet_yaml]
