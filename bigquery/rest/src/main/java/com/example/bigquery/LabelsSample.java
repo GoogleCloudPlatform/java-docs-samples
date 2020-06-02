@@ -16,8 +16,6 @@
 
 package com.example.bigquery;
 
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpHeaders;
@@ -30,6 +28,8 @@ import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Key;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -85,7 +85,8 @@ public class LabelsSample {
     String urlFormat =
         "https://www.googleapis.com/bigquery/v2/projects/%s/datasets/%s"
             + "?fields=labels&access_token=%s";
-    GenericUrl url = new GenericUrl(String.format(urlFormat, projectId, datasetId, accessToken.getTokenValue()));
+    GenericUrl url =
+        new GenericUrl(String.format(urlFormat, projectId, datasetId, accessToken.getTokenValue()));
     HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
     HttpRequest request = requestFactory.buildPostRequest(url, content);
     request.setParser(JSON_FACTORY.createJsonObjectParser());
@@ -131,11 +132,7 @@ public class LabelsSample {
    * documentation</a>.
    */
   public static void labelTable(
-      String projectId,
-      String datasetId,
-      String tableId,
-      String labelKey,
-      String labelValue)
+      String projectId, String datasetId, String tableId, String labelKey, String labelValue)
       throws IOException {
 
     // Authenticate requests using Google Application Default credentials.
@@ -157,7 +154,8 @@ public class LabelsSample {
         "https://www.googleapis.com/bigquery/v2/projects/%s/datasets/%s/tables/%s"
             + "?fields=labels&access_token=%s";
     GenericUrl url =
-        new GenericUrl(String.format(urlFormat, projectId, datasetId, tableId, accessToken.getTokenValue()));
+        new GenericUrl(
+            String.format(urlFormat, projectId, datasetId, tableId, accessToken.getTokenValue()));
     HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
     HttpRequest request = requestFactory.buildPostRequest(url, content);
     request.setParser(JSON_FACTORY.createJsonObjectParser());
