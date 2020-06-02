@@ -17,6 +17,7 @@
 package com.google.cloud.vision.samples.automl;
 
 // Imports the Google Cloud client library
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.ClassificationProto.ClassificationType;
 import com.google.cloud.automl.v1beta1.Dataset;
@@ -28,9 +29,12 @@ import com.google.cloud.automl.v1beta1.InputConfig;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.OutputConfig;
+import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -211,9 +215,21 @@ public class DatasetApi {
       // Import data from the input URI
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
       System.out.println("Processing import...");
-      Empty response = client.importDataAsync(datasetFullId.toString(), inputConfig).get();
-      System.out.println(String.format("Dataset imported. %s", response));
-    } catch (IOException | InterruptedException | ExecutionException e) {
+
+      // Start the import job
+      OperationFuture<Empty, OperationMetadata> operation = client
+          .importDataAsync(datasetFullId, inputConfig);
+
+      // More info on gax longrunning Operation:
+      // http://googleapis.github.io/gax-java/1.4.1/apidocs/com/google/api/gax/grpc/OperationFuture.html
+      System.out.format("Operation name: %s%n", operation.getName());
+
+      // If you want to wait for the operation to finish, adjust the timeout appropriately. The
+      // operation will still run if you choose not to wait for it to complete. You can check the
+      // status of your operation using the operation's name.
+      Empty response = operation.get(5, TimeUnit.MINUTES);
+      System.out.format("Dataset imported. %s%n", response);
+    } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
       e.printStackTrace();
     }
   }
