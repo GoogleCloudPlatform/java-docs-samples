@@ -109,8 +109,8 @@ public class DicomWebStoreInstance {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    credential.refreshAccessToken();
-    return credential.getAccessToken().toString();
+
+    return credential.refreshAccessToken().getTokenValue();
   }
 }
 // [END healthcare_dicomweb_store_instance]

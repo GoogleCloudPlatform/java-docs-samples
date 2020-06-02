@@ -74,8 +74,7 @@ public class LabelsSample {
     // Get a new access token.
     // Note that access tokens have an expiration. You can reuse a token rather than requesting a
     // new one if it is not yet expired.
-    credential.refreshAccessToken();
-    AccessToken accessToken = credential.getAccessToken();
+    AccessToken accessToken = credential.refreshAccessToken();
 
     // Set the content of the request.
     Dataset dataset = new Dataset();
@@ -86,7 +85,7 @@ public class LabelsSample {
     String urlFormat =
         "https://www.googleapis.com/bigquery/v2/projects/%s/datasets/%s"
             + "?fields=labels&access_token=%s";
-    GenericUrl url = new GenericUrl(String.format(urlFormat, projectId, datasetId, accessToken));
+    GenericUrl url = new GenericUrl(String.format(urlFormat, projectId, datasetId, accessToken.getTokenValue()));
     HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
     HttpRequest request = requestFactory.buildPostRequest(url, content);
     request.setParser(JSON_FACTORY.createJsonObjectParser());
@@ -146,8 +145,7 @@ public class LabelsSample {
     // Get a new access token.
     // Note that access tokens have an expiration. You can reuse a token rather than requesting a
     // new one if it is not yet expired.
-    credential.refreshAccessToken();
-    AccessToken accessToken = credential.getAccessToken();
+    AccessToken accessToken = credential.refreshAccessToken();
 
     // Set the content of the request.
     Table table = new Table();
@@ -159,7 +157,7 @@ public class LabelsSample {
         "https://www.googleapis.com/bigquery/v2/projects/%s/datasets/%s/tables/%s"
             + "?fields=labels&access_token=%s";
     GenericUrl url =
-        new GenericUrl(String.format(urlFormat, projectId, datasetId, tableId, accessToken));
+        new GenericUrl(String.format(urlFormat, projectId, datasetId, tableId, accessToken.getTokenValue()));
     HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory();
     HttpRequest request = requestFactory.buildPostRequest(url, content);
     request.setParser(JSON_FACTORY.createJsonObjectParser());

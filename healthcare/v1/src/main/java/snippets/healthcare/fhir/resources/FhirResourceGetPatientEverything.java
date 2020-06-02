@@ -103,8 +103,8 @@ public class FhirResourceGetPatientEverything {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    credential.refreshAccessToken();
-    return credential.getAccessToken().toString();
+    
+    return credential.refreshAccessToken().getTokenValue();
   }
 }
 // [END healthcare_get_patient_everything]
