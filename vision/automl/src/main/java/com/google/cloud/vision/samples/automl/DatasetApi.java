@@ -28,8 +28,8 @@ import com.google.cloud.automl.v1beta1.ImageClassificationDatasetMetadata;
 import com.google.cloud.automl.v1beta1.InputConfig;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
-import com.google.cloud.automl.v1beta1.OutputConfig;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
+import com.google.cloud.automl.v1beta1.OutputConfig;
 import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -217,8 +217,8 @@ public class DatasetApi {
       System.out.println("Processing import...");
 
       // Start the import job
-      OperationFuture<Empty, OperationMetadata> operation = client
-          .importDataAsync(datasetFullId, inputConfig);
+      OperationFuture<Empty, OperationMetadata> operation =
+          client.importDataAsync(datasetFullId, inputConfig);
 
       // More info on gax longrunning Operation:
       // http://googleapis.github.io/gax-java/1.4.1/apidocs/com/google/api/gax/grpc/OperationFuture.html
