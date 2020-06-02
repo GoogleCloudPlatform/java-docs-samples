@@ -65,7 +65,7 @@ public class ComputeEngineSample {
       "https://www.googleapis.com/compute/v1/projects/";
 
   private static final String SOURCE_IMAGE_PATH =
-      "debian-cloud/global/images/debian-7-wheezy-v20150710";
+      "ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20200529";
 
   /** Set the Network configuration values of the sample VM instance to be created. */
   private static final String NETWORK_INTERFACE_CONFIG = "ONE_TO_ONE_NAT";
@@ -163,19 +163,10 @@ public class ComputeEngineSample {
     // Create VM Instance object with the required properties.
     Instance instance = new Instance();
     instance.setName(instanceName);
-    instance.setMachineType(
-        "https://www.googleapis.com/compute/v1/projects/"
-            + PROJECT_ID
-            + "/zones/"
-            + ZONE_NAME
-            + "/machineTypes/n1-standard-1");
-
+    instance.setMachineType(String.format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/machineTypes/e2-standard-1", PROJECT_ID, ZONE_NAME));
     // Add Network Interface to be used by VM Instance.
     NetworkInterface ifc = new NetworkInterface();
-    ifc.setNetwork(
-        "https://www.googleapis.com/compute/v1/projects/"
-            + PROJECT_ID
-            + "/global/networks/default");
+    ifc.setNetwork(String.format("https://www.googleapis.com/compute/v1/projects/%s/global/networks/default", PROJECT_ID));
     List<AccessConfig> configs = new ArrayList<>();
     AccessConfig config = new AccessConfig();
     config.setType(NETWORK_INTERFACE_CONFIG);
@@ -195,12 +186,7 @@ public class ComputeEngineSample {
     // Specify the source operating system machine image to be used by the VM Instance.
     params.setSourceImage(SOURCE_IMAGE_PREFIX + SOURCE_IMAGE_PATH);
     // Specify the disk type as Standard Persistent Disk
-    params.setDiskType(
-        "https://www.googleapis.com/compute/v1/projects/"
-            + PROJECT_ID
-            + "/zones/"
-            + ZONE_NAME
-            + "/diskTypes/pd-standard");
+    params.setDiskType(String.format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/diskTypes/pd-standard", PROJECT_ID, ZONE_NAME));
     disk.setInitializeParams(params);
     instance.setDisks(Collections.singletonList(disk));
 
@@ -222,7 +208,7 @@ public class ComputeEngineSample {
     // bucket named the same as your PROJECT_ID.
     // For info on creating buckets see:
     // https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets
-    item.setValue("gs://" + PROJECT_ID + "/vm-startup.sh");
+    item.setValue(String.format("gs://%s/vm-startup.sh", PROJECT_ID));
     meta.setItems(Collections.singletonList(item));
     instance.setMetadata(meta);
 
