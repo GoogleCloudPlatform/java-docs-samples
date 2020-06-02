@@ -71,7 +71,7 @@ public class DatasetApiIT {
 
     // Act
     DatasetApi.importData(
-        PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/flower_traindata.csv");
+        PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/flower_traindata_concise.csv");
 
     // Assert
     got = bout.toString();
