@@ -25,6 +25,12 @@ import java.util.List;
 
 public class InspectStringWithExclusionDict {
 
+  // TODO: Delete me, only for testing
+  public static void main(String[] args) {
+    String projectId = "crwilson-dlp-experimental";
+    inspectStringWithExclusionDict(projectId, args[0], Arrays.asList(args[1]));
+  }
+
   public static void inspectStringWithExclusionDict() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
@@ -32,8 +38,6 @@ public class InspectStringWithExclusionDict {
     List<String> excludedMatchList = Arrays.asList("example@example.com");
     inspectStringWithExclusionDict(projectId, textToInspect, excludedMatchList);
   }
-
-  // TODO: Refactor a bit?
 
   // Inspects the provided text, avoiding matches specified in the exclusion list.
   public static void inspectStringWithExclusionDict(String projectId, String textToInspect,
