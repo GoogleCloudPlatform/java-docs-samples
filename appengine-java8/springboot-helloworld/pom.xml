@@ -11,20 +11,18 @@
   <name>springboot-appengine-standard</name>
   <description>Demo project for Spring Boot</description>
 
-  <parent>                              <!-- Get parameters and allow bulk testing -->
-    <artifactId>getting-started-java</artifactId>
-    <groupId>com.example</groupId>
-    <version>1.0.0</version>
-    <relativePath>../..</relativePath>
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.17</version>
   </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <spring.boot.version>2.3.0.RELEASE</spring.boot.version> <!-- DO NOT UPDATE w/o MANUAL TESTING -->
-    <java.version>1.8</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <dependencies>
