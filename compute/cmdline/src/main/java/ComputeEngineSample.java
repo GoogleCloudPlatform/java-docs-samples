@@ -163,10 +163,16 @@ public class ComputeEngineSample {
     // Create VM Instance object with the required properties.
     Instance instance = new Instance();
     instance.setName(instanceName);
-    instance.setMachineType(String.format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/machineTypes/e2-standard-1", PROJECT_ID, ZONE_NAME));
+    instance.setMachineType(
+        String.format(
+            "https://www.googleapis.com/compute/v1/projects/%s/zones/%s/machineTypes/e2-standard-1",
+            PROJECT_ID, ZONE_NAME));
     // Add Network Interface to be used by VM Instance.
     NetworkInterface ifc = new NetworkInterface();
-    ifc.setNetwork(String.format("https://www.googleapis.com/compute/v1/projects/%s/global/networks/default", PROJECT_ID));
+    ifc.setNetwork(
+        String.format(
+            "https://www.googleapis.com/compute/v1/projects/%s/global/networks/default",
+            PROJECT_ID));
     List<AccessConfig> configs = new ArrayList<>();
     AccessConfig config = new AccessConfig();
     config.setType(NETWORK_INTERFACE_CONFIG);
@@ -186,7 +192,10 @@ public class ComputeEngineSample {
     // Specify the source operating system machine image to be used by the VM Instance.
     params.setSourceImage(SOURCE_IMAGE_PREFIX + SOURCE_IMAGE_PATH);
     // Specify the disk type as Standard Persistent Disk
-    params.setDiskType(String.format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/diskTypes/pd-standard", PROJECT_ID, ZONE_NAME));
+    params.setDiskType(
+        String.format(
+            "https://www.googleapis.com/compute/v1/projects/%s/zones/%s/diskTypes/pd-standard",
+            PROJECT_ID, ZONE_NAME));
     disk.setInitializeParams(params);
     instance.setDisks(Collections.singletonList(disk));
 
