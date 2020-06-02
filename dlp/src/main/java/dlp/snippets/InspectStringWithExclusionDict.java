@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,12 +41,6 @@ import java.util.List;
 
 public class InspectStringWithExclusionDict {
 
-  // TODO: Delete me, only for testing
-  public static void main(String[] args) {
-    String projectId = "crwilson-dlp-experimental";
-    inspectStringWithExclusionDict(projectId, args[0], Arrays.asList(args[1]));
-  }
-
   public static void inspectStringWithExclusionDict() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
@@ -74,13 +68,13 @@ public class InspectStringWithExclusionDict {
       ContentItem item = ContentItem.newBuilder().setByteItem(byteItem).build();
 
       // Specify the type of info the inspection will look for.
-      List<InfoType> infoTypes = new ArrayList<>();
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types.
+      List<InfoType> infoTypes = new ArrayList<>();
       for (String typeName : new String[]{"PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD_NUMBER"}) {
         infoTypes.add(InfoType.newBuilder().setName(typeName).build());
       }
 
-      // Construct an exclusion rule that will exclude matches from the specified excludedMatchList.
+      // Exclude matches from the specified excludedMatchList.
       ExclusionRule exclusionRule = ExclusionRule.newBuilder()
           .setMatchingType(MatchingType.MATCHING_TYPE_FULL_MATCH)
           .setDictionary(Dictionary.newBuilder()
