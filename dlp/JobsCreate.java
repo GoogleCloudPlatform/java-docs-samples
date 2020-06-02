@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_delete_job]
+// [START dlp_create_job]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.Action;
@@ -115,4 +115,4 @@ public class JobsCreate {
     }
   }
 }
-// [END dlp_delete_job]
+// [END dlp_create_job]
