@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
 
-/**
- * This class manages the details of creating a Storage service, including auth.
- */
+/** This class manages the details of creating a Storage service, including auth. */
 // [START authentication_application_default_credentials]
 public class StorageFactory {
   private static Storage instance = null;

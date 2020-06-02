@@ -39,6 +39,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
+
 // [END iot_mqtt_includes]
 
 /**
@@ -178,7 +179,7 @@ public class MqttExample {
     long retryIntervalMs = initialConnectIntervalMillis;
     long totalRetryTimeMs = 0;
 
-    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected())  {
+    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected()) {
       try {
         client.connect(connectOptions);
       } catch (MqttException e) {

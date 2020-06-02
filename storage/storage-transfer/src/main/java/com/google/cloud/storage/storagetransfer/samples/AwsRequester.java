@@ -30,9 +30,7 @@ import com.google.api.services.storagetransfer.v1.model.TransferSpec;
 import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
- */
+/** Creates a one-off transfer job from Amazon S3 to Google Cloud Storage. */
 public final class AwsRequester {
   /**
    * Creates and executes a request for a TransferJob from Amazon S3 to Cloud Storage.
@@ -42,12 +40,9 @@ public final class AwsRequester {
    * https://developers.google.com/resources/api-libraries/documentation/storagetransfer/v1/java/latest/com/google/api/services/storagetransfer/v1/model/Schedule.html#getStartTimeOfDay()
    *
    * @return the response TransferJob if the request is successful
-   * @throws InstantiationException
-   *           if instantiation fails when building the TransferJob
-   * @throws IllegalAccessException
-   *           if an illegal access occurs when building the TransferJob
-   * @throws IOException
-   *           if the client failed to complete the request
+   * @throws InstantiationException if instantiation fails when building the TransferJob
+   * @throws IllegalAccessException if an illegal access occurs when building the TransferJob
+   * @throws IOException if the client failed to complete the request
    */
   public static TransferJob createAwsTransferJob(
       String projectId,
@@ -110,9 +105,7 @@ public final class AwsRequester {
     out.println("Return transferJob: " + responseT.toPrettyString());
   }
 
-  /**
-   * Output the contents of a successfully created TransferJob.
-   */
+  /** Output the contents of a successfully created TransferJob. */
   public static void main(String[] args) {
     try {
       run(System.out);
@@ -121,4 +114,4 @@ public final class AwsRequester {
     }
   }
 }
-//[END all]
+// [END all]

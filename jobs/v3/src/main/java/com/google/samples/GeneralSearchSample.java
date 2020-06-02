@@ -36,33 +36,31 @@ import java.util.List;
 /**
  * The samples in this file introduce how to do a general search, including:
  *
- * - Basic keyword search
+ * <p>- Basic keyword search
  *
- * - Filter on categories
+ * <p>- Filter on categories
  *
- * - Filter on employment types
+ * <p>- Filter on employment types
  *
- * - Filter on date range
+ * <p>- Filter on date range
  *
- * - Filter on language codes
+ * <p>- Filter on language codes
  *
- * - Filter on company display names
+ * <p>- Filter on company display names
  *
- * - Filter on compensations
+ * <p>- Filter on compensations
  */
 public final class GeneralSearchSample {
 
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
-  //[START basic_keyword_search]
+  // [START basic_keyword_search]
 
-  /**
-   * Simple search jobs with keyword.
-   */
+  /** Simple search jobs with keyword. */
   public static void basicSearcJobs(String companyName, String query)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -97,13 +95,11 @@ public final class GeneralSearchSample {
 
     System.out.println(searchJobsResponse);
   }
-  //[END basic_keyword_search]
+  // [END basic_keyword_search]
 
   // [START category_filter]
 
-  /**
-   * Search on category filter.
-   */
+  /** Search on category filter. */
   public static void categoryFilterSearch(String companyName, List<String> categories)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -141,9 +137,7 @@ public final class GeneralSearchSample {
 
   // [START employment_types_filter]
 
-  /**
-   * Search on employment types.
-   */
+  /** Search on employment types. */
   public static void employmentTypesSearch(String companyName, List<String> employmentTypes)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -202,7 +196,7 @@ public final class GeneralSearchSample {
         new TimestampRange().setStartTime(startTime).setEndTime(endTime);
 
     JobQuery jobQuery = new JobQuery().setPublishTimeRange(timestampRange);
-    //JobQuery jobQuery = new JobQuery().setPublishTimeRange(dateRange);
+    // JobQuery jobQuery = new JobQuery().setPublishTimeRange(dateRange);
 
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
@@ -228,9 +222,7 @@ public final class GeneralSearchSample {
 
   // [START language_code_filter]
 
-  /**
-   * Search on language codes.
-   */
+  /** Search on language codes. */
   public static void languageCodeSearch(String companyName, List<String> languageCodes)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -268,9 +260,7 @@ public final class GeneralSearchSample {
 
   // [START company_display_name_filter]
 
-  /**
-   * Search on company display name.
-   */
+  /** Search on company display name. */
   public static void companyDisplayNameSearch(String companyName, List<String> companyDisplayNames)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -308,9 +298,7 @@ public final class GeneralSearchSample {
 
   // [START compensation_filter]
 
-  /**
-   * Search on compensation.
-   */
+  /** Search on compensation. */
   public static void compensationSearch(String companyName)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -332,8 +320,7 @@ public final class GeneralSearchSample {
                     .setUnits(Arrays.asList("HOURLY"))
                     .setRange(
                         new CompensationRange()
-                            .setMaxCompensation(new Money().setCurrencyCode("USD")
-                                .setUnits(15L))
+                            .setMaxCompensation(new Money().setCurrencyCode("USD").setUnits(15L))
                             .setMinCompensation(
                                 new Money()
                                     .setCurrencyCode("USD")
@@ -365,25 +352,26 @@ public final class GeneralSearchSample {
     Company companyToBeCreated = BasicCompanySample.generateCompany().setDisplayName("Google");
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
-    Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName)
-        .setTitle("Systems Administrator")
-        .setEmploymentTypes(Arrays.asList("FULL_TIME"))
-        .setLanguageCode("en-US")
-        .setCompensationInfo(
-            new CompensationInfo().setEntries(Arrays.asList(
-                new CompensationEntry()
-                    .setType("BASE")
-                    .setUnit("HOURLY")
-                    .setAmount(new Money().setCurrencyCode("USD").setUnits(12L)))));
+    Job jobToBeCreated =
+        BasicJobSample.generateJobWithRequiredFields(companyName)
+            .setTitle("Systems Administrator")
+            .setEmploymentTypes(Arrays.asList("FULL_TIME"))
+            .setLanguageCode("en-US")
+            .setCompensationInfo(
+                new CompensationInfo()
+                    .setEntries(
+                        Arrays.asList(
+                            new CompensationEntry()
+                                .setType("BASE")
+                                .setUnit("HOURLY")
+                                .setAmount(new Money().setCurrencyCode("USD").setUnits(12L)))));
     final String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
 
     // Wait several seconds for post processing
     Thread.sleep(10000);
     basicSearcJobs(companyName, "Systems Administrator");
     categoryFilterSearch(companyName, Arrays.asList("COMPUTER_AND_IT"));
-    dateRangeSearch(companyName,
-        "1980-01-15T01:30:15.01Z",
-        "2099-01-15T01:30:15.01Z");
+    dateRangeSearch(companyName, "1980-01-15T01:30:15.01Z", "2099-01-15T01:30:15.01Z");
     employmentTypesSearch(companyName, Arrays.asList("FULL_TIME", "CONTRACTOR", "PER_DIEM"));
     companyDisplayNameSearch(companyName, Arrays.asList("Google"));
     compensationSearch(companyName);
@@ -393,4 +381,3 @@ public final class GeneralSearchSample {
     BasicCompanySample.deleteCompany(companyName);
   }
 }
-

@@ -16,8 +16,6 @@
 
 package com.example.cloud.iot.endtoend;
 
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
@@ -29,6 +27,8 @@ import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
 import com.google.api.services.cloudiot.v1.model.GatewayConfig;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;

@@ -18,20 +18,18 @@
 
 package com.google.cloud.storage.storagetransfer.samples;
 
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
 import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
 
-/**
- * Create a client to make calls to Storage Transfer API.
- */
+/** Create a client to make calls to Storage Transfer API. */
 public final class TransferClientCreator {
 
   /**
@@ -39,26 +37,21 @@ public final class TransferClientCreator {
    * settings.
    *
    * @return a Storage Transfer client
-   * @throws IOException
-   *           there was an error obtaining application default credentials
+   * @throws IOException there was an error obtaining application default credentials
    */
   public static Storagetransfer createStorageTransferClient() throws IOException {
     HttpTransport httpTransport = Utils.getDefaultTransport();
     JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault();
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
     return createStorageTransferClient(httpTransport, jsonFactory, credential);
   }
 
   /**
    * Create a Storage Transfer client using user-supplied credentials and other settings.
    *
-   * @param httpTransport
-   *          a user-supplied HttpTransport
-   * @param jsonFactory
-   *          a user-supplied JsonFactory
-   * @param credential
-   *          a user-supplied Google credential
+   * @param httpTransport a user-supplied HttpTransport
+   * @param jsonFactory a user-supplied JsonFactory
+   * @param credential a user-supplied Google credential
    * @return a Storage Transfer client
    */
   public static Storagetransfer createStorageTransferClient(
@@ -80,4 +73,4 @@ public final class TransferClientCreator {
         .build();
   }
 }
-//[END all]
+// [END all]

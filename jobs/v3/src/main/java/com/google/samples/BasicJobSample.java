@@ -29,35 +29,32 @@ import java.util.Random;
 /**
  * This file contains the basic knowledge about job, including:
  *
- * - Construct a job with required fields
+ * <p>- Construct a job with required fields
  *
- * - Create a job
+ * <p>- Create a job
  *
- * - Get a job
+ * <p>- Get a job
  *
- * - Update a job
+ * <p>- Update a job
  *
- * - Update a job with field mask
+ * <p>- Update a job with field mask
  *
- * - Delete a job
+ * <p>- Delete a job
  */
 public final class BasicJobSample {
 
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START basic_job]
 
-  /**
-   * Generate a basic job with given companyName.
-   */
+  /** Generate a basic job with given companyName. */
   public static Job generateJobWithRequiredFields(String companyName) {
     // requisition id should be a unique Id in your system.
-    String requisitionId =
-        "jobWithRequiredFields:" + String.valueOf(new Random().nextLong());
+    String requisitionId = "jobWithRequiredFields:" + String.valueOf(new Random().nextLong());
     ApplicationInfo applicationInfo =
         new ApplicationInfo().setUris(Arrays.asList("http://careers.google.com"));
 
@@ -67,8 +64,7 @@ public final class BasicJobSample {
             .setTitle("Software Engineer")
             .setCompanyName(companyName)
             .setApplicationInfo(applicationInfo)
-            .setDescription(
-                "Design, develop, test, deploy, maintain and improve software.");
+            .setDescription("Design, develop, test, deploy, maintain and improve software.");
     System.out.println("Job generated: " + job);
     return job;
   }
@@ -76,16 +72,17 @@ public final class BasicJobSample {
 
   // [START create_job]
 
-  /**
-   * Create a job.
-   */
+  /** Create a job. */
   public static Job createJob(Job jobToBeCreated) throws IOException {
     try {
-      CreateJobRequest createJobRequest =
-          new CreateJobRequest().setJob(jobToBeCreated);
+      CreateJobRequest createJobRequest = new CreateJobRequest().setJob(jobToBeCreated);
 
-      Job jobCreated = talentSolutionClient.projects().jobs()
-          .create(DEFAULT_PROJECT_ID, createJobRequest).execute();
+      Job jobCreated =
+          talentSolutionClient
+              .projects()
+              .jobs()
+              .create(DEFAULT_PROJECT_ID, createJobRequest)
+              .execute();
       System.out.println("Job created: " + jobCreated);
       return jobCreated;
     } catch (IOException e) {
@@ -97,9 +94,7 @@ public final class BasicJobSample {
 
   // [START get_job]
 
-  /**
-   * Get a job.
-   */
+  /** Get a job. */
   public static Job getJob(String jobName) throws IOException {
     try {
       Job jobExisted = talentSolutionClient.projects().jobs().get(jobName).execute();
@@ -114,14 +109,10 @@ public final class BasicJobSample {
 
   // [START update_job]
 
-  /**
-   * Update a job.
-   */
-  public static Job updateJob(String jobName, Job jobToBeUpdated)
-      throws IOException {
+  /** Update a job. */
+  public static Job updateJob(String jobName, Job jobToBeUpdated) throws IOException {
     try {
-      UpdateJobRequest updateJobRequest =
-          new UpdateJobRequest().setJob(jobToBeUpdated);
+      UpdateJobRequest updateJobRequest = new UpdateJobRequest().setJob(jobToBeUpdated);
       Job jobUpdated =
           talentSolutionClient.projects().jobs().patch(jobName, updateJobRequest).execute();
       System.out.println("Job updated: " + jobUpdated);
@@ -136,9 +127,7 @@ public final class BasicJobSample {
 
   // [START update_job_with_field_mask]
 
-  /**
-   * Update a job.
-   */
+  /** Update a job. */
   public static Job updateJobWithFieldMask(String jobName, String fieldMask, Job jobToBeUpdated)
       throws IOException {
     try {
@@ -157,9 +146,7 @@ public final class BasicJobSample {
 
   // [START delete_job]
 
-  /**
-   * Delete a job.
-   */
+  /** Delete a job. */
   public static void deleteJob(String jobName) throws IOException {
     try {
       talentSolutionClient.projects().jobs().delete(jobName).execute();

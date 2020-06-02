@@ -25,15 +25,15 @@ import java.io.InputStream;
 /**
  * Demonstrates the use of GCS's CSEK features via the Java API client library
  *
- *  This program demonstrates some quick, basic examples of using GCS's CSEK functionality.
+ * <p>This program demonstrates some quick, basic examples of using GCS's CSEK functionality.
  *
- *  <p>When run, it begins by uploading an object named "encrypted_file.txt" to the specified bucket
- *  that will be protected with a provided CSEK.</p>
+ * <p>When run, it begins by uploading an object named "encrypted_file.txt" to the specified bucket
+ * that will be protected with a provided CSEK.
  *
- *  <p>Next, it will fetch that object by providing that same CSEK to GCS.</p>
+ * <p>Next, it will fetch that object by providing that same CSEK to GCS.
  *
- *  <p>Finally, it will rotate that key to a new value.</p>
- **/
+ * <p>Finally, it will rotate that key to a new value.
+ */
 class CustomerSuppliedEncryptionKeysSamples {
 
   // You can (and should) generate your own CSEK Key! Try running this from the command line:
@@ -62,9 +62,7 @@ class CustomerSuppliedEncryptionKeysSamples {
    * @param objectName The name of the destination object
    * @param base64CseKey An AES256 key, encoded as a base64 string.
    * @param base64CseKeyHash The SHA-256 hash of the above key, also encoded as a base64 string.
-   *
    * @return An InputStream that contains the decrypted contents of the object.
-   *
    * @throws IOException if there was some error download from GCS.
    */
   public static InputStream downloadObject(
@@ -148,12 +146,12 @@ class CustomerSuppliedEncryptionKeysSamples {
    * @param storage A Storage object, ready for use
    * @param bucketName The name of the destination bucket
    * @param objectName The name of the destination object
-   * @param originalBase64Key The AES256 key currently associated with this object,
-   *     encoded as a base64 string.
-   * @param originalBase64KeyHash The SHA-256 hash of the above key,
-   *     also encoded as a base64 string.
-   * @param newBase64Key An AES256 key which will replace the existing key,
-   *     encoded as a base64 string.
+   * @param originalBase64Key The AES256 key currently associated with this object, encoded as a
+   *     base64 string.
+   * @param originalBase64KeyHash The SHA-256 hash of the above key, also encoded as a base64
+   *     string.
+   * @param newBase64Key An AES256 key which will replace the existing key, encoded as a base64
+   *     string.
    * @param newBase64KeyHash The SHA-256 hash of the above key, also encoded as a base64 string.
    * @throws IOException if there was some error download from GCS.
    */
@@ -203,10 +201,11 @@ class CustomerSuppliedEncryptionKeysSamples {
 
   public static void main(String[] args) throws Exception {
     if (args.length != 1) {
-      System.out.println("\nPlease run this with one argument: "
-          + "the GCS bucket into which this program should upload an object.\n\n"
-          + "You can create a bucket using gsutil like this:\n\n\t"
-          + "gsutil mb gs://name-of-bucket\n\n");
+      System.out.println(
+          "\nPlease run this with one argument: "
+              + "the GCS bucket into which this program should upload an object.\n\n"
+              + "You can create a bucket using gsutil like this:\n\n\t"
+              + "gsutil mb gs://name-of-bucket\n\n");
       System.exit(1);
     }
     String bucketName = args[0];
@@ -223,10 +222,15 @@ class CustomerSuppliedEncryptionKeysSamples {
     StorageUtils.readStream(objectData);
 
     System.out.println("Rotating object to use a different CSEK.");
-    rotateKey(storage, bucketName, OBJECT_NAME, CSEK_KEY, CSEK_KEY_HASH,
-        ANOTHER_CESK_KEY, ANOTHER_CSEK_KEY_HASH);
+    rotateKey(
+        storage,
+        bucketName,
+        OBJECT_NAME,
+        CSEK_KEY,
+        CSEK_KEY_HASH,
+        ANOTHER_CESK_KEY,
+        ANOTHER_CSEK_KEY_HASH);
 
     System.out.println("Done");
   }
-
 }

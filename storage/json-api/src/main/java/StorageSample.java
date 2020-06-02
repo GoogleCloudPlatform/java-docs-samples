@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//[START all]
+// [START all]
 
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.storage.Storage;
@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Main class for the Cloud Storage JSON API sample.
  *
- * Demonstrates how to make an authenticated API call using the Google Cloud Storage API client
+ * <p>Demonstrates how to make an authenticated API call using the Google Cloud Storage API client
  * library for java, with Application Default Credentials.
  */
 public class StorageSample {
@@ -98,24 +98,24 @@ public class StorageSample {
    * @param file the file to upload.
    * @param bucketName the name of the bucket to create the object in.
    */
-  public static void uploadFile(
-      String name, String contentType, File file, String bucketName)
+  public static void uploadFile(String name, String contentType, File file, String bucketName)
       throws IOException, GeneralSecurityException {
-    InputStreamContent contentStream = new InputStreamContent(
-        contentType, new FileInputStream(file));
+    InputStreamContent contentStream =
+        new InputStreamContent(contentType, new FileInputStream(file));
     // Setting the length improves upload performance
     contentStream.setLength(file.length());
-    StorageObject objectMetadata = new StorageObject()
-        // Set the destination object name
-        .setName(name)
-        // Set the access control list to publicly read-only
-        .setAcl(Arrays.asList(
-            new ObjectAccessControl().setEntity("allUsers").setRole("READER")));
+    StorageObject objectMetadata =
+        new StorageObject()
+            // Set the destination object name
+            .setName(name)
+            // Set the access control list to publicly read-only
+            .setAcl(
+                Arrays.asList(new ObjectAccessControl().setEntity("allUsers").setRole("READER")));
 
     // Do the insert
     Storage client = StorageFactory.getService();
-    Storage.Objects.Insert insertRequest = client.objects().insert(
-        bucketName, objectMetadata, contentStream);
+    Storage.Objects.Insert insertRequest =
+        client.objects().insert(bucketName, objectMetadata, contentStream);
 
     insertRequest.execute();
   }
@@ -156,7 +156,6 @@ public class StorageSample {
       System.out.println("timeCreated: " + bucket.getTimeCreated());
       System.out.println("owner: " + bucket.getOwner());
 
-
       // List the contents of the bucket.
       List<StorageObject> bucketContents = listBucket(bucketName);
       if (null == bucketContents) {
@@ -187,4 +186,4 @@ public class StorageSample {
     }
   }
 }
-//[END all]
+// [END all]

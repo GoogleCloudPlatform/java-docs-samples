@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -23,6 +21,8 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.util.Preconditions;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -44,7 +44,7 @@ import javax.xml.transform.stream.StreamSource;
 public final class StorageSample {
 
   /** This class is never instantiated. */
-  private StorageSample() { }
+  private StorageSample() {}
 
   /** Global configuration of Google Cloud Storage OAuth 2.0 scope. */
   private static final String STORAGE_SCOPE =
@@ -54,31 +54,30 @@ public final class StorageSample {
    * Fetches the listing of the given bucket.
    *
    * @param bucketName the name of the bucket to list.
-   *
    * @return the raw XML containing the listing of the bucket.
    * @throws IOException if there's an error communicating with Cloud Storage.
    * @throws GeneralSecurityException for errors creating https connection.
    */
   public static String listBucket(final String bucketName)
       throws IOException, GeneralSecurityException {
-    //[START snippet]
+    // [START snippet]
     // Build an account credential.
-    GoogleCredentials credential = GoogleCredentials.getApplicationDefault()
-        .createScoped(Collections.singleton(STORAGE_SCOPE));
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
+            .createScoped(Collections.singleton(STORAGE_SCOPE));
 
     // Set up and execute a Google Cloud Storage request.
-    String uri = "https://storage.googleapis.com/"
-        + URLEncoder.encode(bucketName, "UTF-8");
+    String uri = "https://storage.googleapis.com/" + URLEncoder.encode(bucketName, "UTF-8");
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    HttpRequestFactory requestFactory = httpTransport.createRequestFactory(
-        new HttpCredentialsAdapter(credential));
+    HttpRequestFactory requestFactory =
+        httpTransport.createRequestFactory(new HttpCredentialsAdapter(credential));
     GenericUrl url = new GenericUrl(uri);
 
     HttpRequest request = requestFactory.buildGetRequest(url);
     HttpResponse response = request.execute();
     String content = response.parseAsString();
-    //[END snippet]
+    // [END snippet]
 
     return content;
   }
@@ -89,21 +88,19 @@ public final class StorageSample {
    * @param bucketName the name of the bucket you're listing.
    * @param content the raw XML string.
    */
-  private static void prettyPrintXml(
-      final String bucketName, final String content) {
+  private static void prettyPrintXml(final String bucketName, final String content) {
     // Instantiate transformer input.
     Source xmlInput = new StreamSource(new StringReader(content));
     StreamResult xmlOutput = new StreamResult(new StringWriter());
 
     // Configure transformer.
     try {
-      Transformer transformer = TransformerFactory.newInstance()
-          .newTransformer(); // An identity transformer
+      Transformer transformer =
+          TransformerFactory.newInstance().newTransformer(); // An identity transformer
       transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "testing.dtd");
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      transformer.setOutputProperty(
-          "{http://xml.apache.org/xslt}indent-amount", "2");
+      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
       transformer.transform(xmlInput, xmlOutput);
 
       // Pretty print the output XML.
@@ -123,8 +120,7 @@ public final class StorageSample {
     try {
       // Check for valid setup.
       Preconditions.checkArgument(
-          args.length == 1,
-          "Please pass in the Google Cloud Storage bucket name to display");
+          args.length == 1, "Please pass in the Google Cloud Storage bucket name to display");
       String bucketName = args[0];
 
       String content = listBucket(bucketName);

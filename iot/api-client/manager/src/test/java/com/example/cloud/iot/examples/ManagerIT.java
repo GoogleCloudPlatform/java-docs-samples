@@ -16,8 +16,6 @@
 
 package com.example.cloud.iot.examples;
 
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
@@ -25,14 +23,13 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.Writer;
-import java.lang.StringBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -43,7 +40,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 
 /** Tests for iot "Management" sample. */
 @RunWith(JUnit4.class)
@@ -108,8 +104,8 @@ public class ManagerIT {
         String registryId = r.getId();
         if (registryId.startsWith("java-reg-")) {
           long currSecs = System.currentTimeMillis() / 1000L;
-          long regSecs = Long.parseLong(registryId.substring(
-              "java-reg-".length(), registryId.length()));
+          long regSecs =
+              Long.parseLong(registryId.substring("java-reg-".length(), registryId.length()));
           long diffSecs = currSecs - regSecs;
           if (diffSecs > (60 * 60 * 24 * 7 * 10)) { // tests from last week or older
             System.out.println("Remove Id: " + r.getId());

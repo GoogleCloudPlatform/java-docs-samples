@@ -45,8 +45,8 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
   /**
    * A constructor using the default Sleeper.
    *
-   * @param wrappedCredential
-   *          the credential used to authenticate with a Google Cloud Platform project
+   * @param wrappedCredential the credential used to authenticate with a Google Cloud Platform
+   *     project
    */
   public RetryHttpInitializerWrapper(Credential wrappedCredential) {
     this(wrappedCredential, Sleeper.DEFAULT);
@@ -55,10 +55,9 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
   /**
    * A constructor used only for testing.
    *
-   * @param wrappedCredential
-   *          the credential used to authenticate with a Google Cloud Platform project
-   * @param sleeper
-   *          a user-supplied Sleeper
+   * @param wrappedCredential the credential used to authenticate with a Google Cloud Platform
+   *     project
+   * @param sleeper a user-supplied Sleeper
    */
   RetryHttpInitializerWrapper(Credential wrappedCredential, Sleeper sleeper) {
     this.wrappedCredential = Preconditions.checkNotNull(wrappedCredential);
@@ -68,8 +67,7 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
   /**
    * Initialize an HttpRequest.
    *
-   * @param request
-   *          an HttpRequest that should be initialized
+   * @param request an HttpRequest that should be initialized
    */
   public void initialize(HttpRequest request) {
     request.setReadTimeout(2 * MILLIS_PER_MINUTE); // 2 minutes read timeout
@@ -98,4 +96,4 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
         new HttpBackOffIOExceptionHandler(new ExponentialBackOff()).setSleeper(sleeper));
   }
 }
-//[END all]
+// [END all]

@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 /**
- * Creates a daily transfer from a standard Cloud Storage bucket to a Cloud Storage Nearline
- * bucket for files untouched for 30 days.
+ * Creates a daily transfer from a standard Cloud Storage bucket to a Cloud Storage Nearline bucket
+ * for files untouched for 30 days.
  */
 public final class NearlineRequester {
 
@@ -44,12 +44,9 @@ public final class NearlineRequester {
    * https://developers.google.com/resources/api-libraries/documentation/storagetransfer/v1/java/latest/com/google/api/services/storagetransfer/v1/model/Schedule.html#getStartTimeOfDay()
    *
    * @return the response TransferJob if the request is successful
-   * @throws InstantiationException
-   *           if instantiation fails when building the TransferJob
-   * @throws IllegalAccessException
-   *           if an illegal access occurs when building the TransferJob
-   * @throws IOException
-   *           if the client failed to complete the request
+   * @throws InstantiationException if instantiation fails when building the TransferJob
+   * @throws IllegalAccessException if an illegal access occurs when building the TransferJob
+   * @throws IOException if the client failed to complete the request
    */
   public static TransferJob createNearlineTransferJob(
       String projectId,
@@ -73,10 +70,8 @@ public final class NearlineRequester {
                         new ObjectConditions()
                             .setMinTimeElapsedSinceLastModification("2592000s" /* 30 days */))
                     .setTransferOptions(
-                        new TransferOptions()
-                            .setDeleteObjectsFromSourceAfterTransfer(true)))
-            .setSchedule(
-                new Schedule().setScheduleStartDate(date).setStartTimeOfDay(time))
+                        new TransferOptions().setDeleteObjectsFromSourceAfterTransfer(true)))
+            .setSchedule(new Schedule().setScheduleStartDate(date).setStartTimeOfDay(time))
             .setStatus("ENABLED");
 
     Storagetransfer client = TransferClientCreator.createStorageTransferClient();
@@ -106,8 +101,7 @@ public final class NearlineRequester {
   /**
    * Output the contents of a successfully created TransferJob.
    *
-   * @param args
-   *          arguments from the command line
+   * @param args arguments from the command line
    */
   public static void main(String[] args) {
     try {
@@ -117,4 +111,4 @@ public final class NearlineRequester {
     }
   }
 }
-//[END all]
+// [END all]

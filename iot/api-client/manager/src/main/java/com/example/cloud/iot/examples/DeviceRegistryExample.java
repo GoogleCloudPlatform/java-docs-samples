@@ -16,8 +16,6 @@
 
 package com.example.cloud.iot.examples;
 
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
@@ -40,10 +38,11 @@ import com.google.api.services.cloudiot.v1.model.ListDevicesResponse;
 import com.google.api.services.cloudiot.v1.model.ModifyCloudToDeviceConfigRequest;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceRequest;
-import com.google.api.services.cloudiot.v1.model.SendCommandToDeviceResponse;
 import com.google.api.services.cloudiot.v1.model.SetIamPolicyRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayRequest;
 import com.google.api.services.cloudiot.v1.model.UnbindDeviceFromGatewayResponse;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
@@ -56,11 +55,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.cli.HelpFormatter;
+
 /**
  * Example of using Cloud IoT device manager API to administer devices, registries and projects.
  *
@@ -91,7 +90,6 @@ import org.apache.commons.cli.HelpFormatter;
  * </code>
  * </pre>
  */
-
 public class DeviceRegistryExample {
 
   static final String APP_NAME = "DeviceRegistryExample";
@@ -106,14 +104,15 @@ public class DeviceRegistryExample {
       final String topicString = topicName.toString();
       // add role -> members binding
       // create updated policy
-      topicAdminClient.setIamPolicy(topicString,
-          com.google.iam.v1.Policy.newBuilder(
-              topicAdminClient.getIamPolicy(topicString))
-                  .addBindings(
-                      Binding.newBuilder()
-                          .addMembers("serviceAccount:cloud-iot@system.gserviceaccount.com")
-                          .setRole(Role.owner().toString())
-                          .build()).build());
+      topicAdminClient.setIamPolicy(
+          topicString,
+          com.google.iam.v1.Policy.newBuilder(topicAdminClient.getIamPolicy(topicString))
+              .addBindings(
+                  Binding.newBuilder()
+                      .addMembers("serviceAccount:cloud-iot@system.gserviceaccount.com")
+                      .setRole(Role.owner().toString())
+                      .build())
+              .build());
 
       System.out.println("Setup topic / policy for: " + topic.getName());
       return topic;
@@ -166,7 +165,7 @@ public class DeviceRegistryExample {
 
     final String registryPath =
         String.format(
-          "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
+            "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     System.out.println("Deleting: " + registryPath);
     service.projects().locations().registries().delete(registryPath).execute();
@@ -175,15 +174,15 @@ public class DeviceRegistryExample {
 
   /**
    * clearRegistry
-   *   <ul>
-   *    <li>Registries can't be deleted if they contain devices,</li>
-   *    <li>Gateways (a type of device) can't be deleted if they have bound devices</li>
-   *    <li>Devices can't be deleted if bound to gateways...</li>
-   *   </ul>
-   *   To completely remove a registry, you must unbind all devices from gateways,
-   *   then remove all devices in a registry before removing the registry.
-   *   As pseudocode:
-   *   <code>
+   *
+   * <ul>
+   *   <li>Registries can't be deleted if they contain devices,
+   *   <li>Gateways (a type of device) can't be deleted if they have bound devices
+   *   <li>Devices can't be deleted if bound to gateways...
+   * </ul>
+   *
+   * To completely remove a registry, you must unbind all devices from gateways, then remove all
+   * devices in a registry before removing the registry. As pseudocode: <code>
    *   ForAll gateways
    *     ForAll devicesBoundToGateway
    *       unbindDeviceFromGateway
@@ -207,16 +206,11 @@ public class DeviceRegistryExample {
         String.format(
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
-    CloudIot.Projects.Locations.Registries regAlias =
-        service.projects().locations().registries();
-    CloudIot.Projects.Locations.Registries.Devices devAlias =
-        regAlias.devices();
+    CloudIot.Projects.Locations.Registries regAlias = service.projects().locations().registries();
+    CloudIot.Projects.Locations.Registries.Devices devAlias = regAlias.devices();
 
     ListDevicesResponse listGatewaysRes =
-        devAlias
-            .list(registryPath)
-            .setGatewayListOptionsGatewayType("GATEWAY")
-            .execute();
+        devAlias.list(registryPath).setGatewayListOptionsGatewayType("GATEWAY").execute();
     List<Device> gateways = listGatewaysRes.getDevices();
 
     // Unbind all devices from all gateways
@@ -243,9 +237,7 @@ public class DeviceRegistryExample {
             UnbindDeviceFromGatewayRequest request = new UnbindDeviceFromGatewayRequest();
             request.setDeviceId(deviceId);
             request.setGatewayId(gatewayId);
-            regAlias
-                .unbindDeviceFromGateway(registryPath, request)
-                .execute();
+            regAlias.unbindDeviceFromGateway(registryPath, request).execute();
           }
         } else {
           System.out.println("Gateway has no bound devices.");
@@ -254,28 +246,21 @@ public class DeviceRegistryExample {
     }
 
     // Remove all devices from the regsitry
-    List<Device> devices =
-        devAlias
-            .list(registryPath)
-            .execute()
-            .getDevices();
+    List<Device> devices = devAlias.list(registryPath).execute().getDevices();
 
     if (devices != null) {
       System.out.println("Found " + devices.size() + " devices");
       for (Device d : devices) {
         String deviceId = d.getId();
-        String devicePath = String.format(
-            "%s/devices/%s", registryPath, deviceId);
+        String devicePath = String.format("%s/devices/%s", registryPath, deviceId);
         service.projects().locations().registries().devices().delete(devicePath).execute();
       }
     }
 
     // Delete the registry
     service.projects().locations().registries().delete(registryPath).execute();
-
   }
   // [END iot_clear_registry]
-
 
   // [START iot_list_devices]
   /** Print all of the devices in this registry to standard out. */
@@ -1201,8 +1186,11 @@ public class DeviceRegistryExample {
     } else if ("create-es".equals(options.command)) {
       System.out.println("Create ES Device:");
       createDeviceWithEs256(
-            options.deviceId, options.ecPublicKeyFile, options.projectId, options.cloudRegion,
-            options.registryName);
+          options.deviceId,
+          options.ecPublicKeyFile,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName);
     } else if ("create-rsa".equals(options.command)) {
       System.out.println("Create RSA Device:");
       createDeviceWithRs256(
@@ -1214,7 +1202,7 @@ public class DeviceRegistryExample {
     } else if ("create-unauth".equals(options.command)) {
       System.out.println("Create Unauth Device");
       createDeviceWithNoAuth(
-            options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+          options.deviceId, options.projectId, options.cloudRegion, options.registryName);
     } else if ("create-registry".equals(options.command)) {
       System.out.println("Create registry");
       createRegistry(
@@ -1229,8 +1217,12 @@ public class DeviceRegistryExample {
       }
 
       createGateway(
-          options.projectId, options.cloudRegion, options.registryName, options.gatewayId,
-          certificateFilePath, algorithm);
+          options.projectId,
+          options.cloudRegion,
+          options.registryName,
+          options.gatewayId,
+          certificateFilePath,
+          algorithm);
     }
   }
 
@@ -1238,8 +1230,7 @@ public class DeviceRegistryExample {
     if ("get-device".equals(options.command)) {
       System.out.println("Get device");
       System.out.println(
-          getDevice(
-              options.deviceId, options.projectId, options.cloudRegion, options.registryName)
+          getDevice(options.deviceId, options.projectId, options.cloudRegion, options.registryName)
               .toPrettyString());
     } else if ("get-iam-permissions".equals(options.command)) {
       System.out.println("Get iam permissions");
@@ -1254,8 +1245,7 @@ public class DeviceRegistryExample {
       }
     } else if ("get-registry".equals(options.command)) {
       System.out.println("Get registry");
-      System.out.println(
-          getRegistry(options.projectId, options.cloudRegion, options.registryName));
+      System.out.println(getRegistry(options.projectId, options.cloudRegion, options.registryName));
     }
   }
 
@@ -1280,8 +1270,7 @@ public class DeviceRegistryExample {
       clearRegistry(options.cloudRegion, options.projectId, options.registryName);
     } else if ("delete-device".equals(options.command)) {
       System.out.println("Delete device");
-      deleteDevice(
-          options.deviceId, options.projectId, options.cloudRegion, options.registryName);
+      deleteDevice(options.deviceId, options.projectId, options.cloudRegion, options.registryName);
     } else if ("delete-registry".equals(options.command)) {
       System.out.println("Delete registry");
       deleteRegistry(options.cloudRegion, options.projectId, options.registryName);
@@ -1335,12 +1324,18 @@ public class DeviceRegistryExample {
     } else if ("bind-device-to-gateway".equals(options.command)) {
       System.out.println("Bind device to gateway:");
       bindDeviceToGateway(
-          options.projectId, options.cloudRegion, options.registryName, options.deviceId,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName,
+          options.deviceId,
           options.gatewayId);
     } else if ("unbind-device-from-gateway".equals(options.command)) {
       System.out.println("Unbind device from gateway:");
       unbindDeviceFromGateway(
-          options.projectId, options.cloudRegion, options.registryName, options.deviceId,
+          options.projectId,
+          options.cloudRegion,
+          options.registryName,
+          options.deviceId,
           options.gatewayId);
     } else if ("list-gateways".equals(options.command)) {
       System.out.println("Listing gateways: ");

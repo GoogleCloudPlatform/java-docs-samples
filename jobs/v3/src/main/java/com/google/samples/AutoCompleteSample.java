@@ -26,25 +26,22 @@ import java.io.IOException;
 /**
  * The samples in this file introduced how to do the auto complete, including:
  *
- * - Default auto complete (on both company display name and job title)
+ * <p>- Default auto complete (on both company display name and job title)
  *
- * - Auto complete on job title only
+ * <p>- Auto complete on job title only
  */
 public final class AutoCompleteSample {
 
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
-  //[START auto_complete_job_title]
+  // [START auto_complete_job_title]
 
-  /**
-   * Auto completes job titles within given companyName.
-   */
-  public static void jobTitleAutoComplete(String companyName, String query)
-      throws IOException {
+  /** Auto completes job titles within given companyName. */
+  public static void jobTitleAutoComplete(String companyName, String query) throws IOException {
 
     Complete complete =
         talentSolutionClient
@@ -64,11 +61,8 @@ public final class AutoCompleteSample {
   }
   // [END auto_complete_default]
 
-  /**
-   * Auto completes job titles within given companyName.
-   */
-  public static void defaultAutoComplete(String companyName, String query)
-      throws IOException {
+  /** Auto completes job titles within given companyName. */
+  public static void defaultAutoComplete(String companyName, String query) throws IOException {
     Complete complete =
         talentSolutionClient
             .projects()
@@ -90,8 +84,8 @@ public final class AutoCompleteSample {
     Company companyToBeCreated = BasicCompanySample.generateCompany().setDisplayName("Google");
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
-    Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName)
-        .setTitle("Software engineer");
+    Job jobToBeCreated =
+        BasicJobSample.generateJobWithRequiredFields(companyName).setTitle("Software engineer");
     final String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
 
     // Wait several seconds for post processing
