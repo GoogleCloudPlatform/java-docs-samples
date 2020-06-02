@@ -62,7 +62,7 @@ public class DatasetApiIT {
     DatasetApi.createDataset(PROJECT_ID, COMPUTE_REGION, datasetName, false);
 
     // Assert
-    got = bout.toString();
+    String got = bout.toString();
     datasetId =
         bout.toString()
             .split("\n")[0]
@@ -74,7 +74,7 @@ public class DatasetApiIT {
         PROJECT_ID, COMPUTE_REGION, datasetId, "gs://" + BUCKET + "/flower_traindata_concise.csv");
 
     // Assert
-    String got = bout.toString();
+    got = bout.toString();
     assertThat(got).contains("Dataset id:");
 
     // Act
