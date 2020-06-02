@@ -107,6 +107,18 @@ public class JobsTests {
   }
 
   @Test
+  public void testGetJobs() throws Exception {
+    // Create a job with a unique UUID to be gotten
+    String jobId = UUID.randomUUID().toString();
+    createJob(jobId);
+
+    // Get the job with the specified ID
+    JobsGet.getJobs(PROJECT_ID, "i-" + jobId);
+    String output = bout.toString();
+    assertThat(output, CoreMatchers.containsString("Job got successfully."));
+  }
+
+  @Test
   public void testListJobs() throws Exception {
     // Call listJobs to print out a list of jobIds
     JobsList.listJobs(PROJECT_ID);
