@@ -63,21 +63,21 @@ import org.apache.commons.cli.HelpFormatter;
 /**
  * Example of using Cloud IoT device manager API to administer devices, registries and projects.
  *
- * <p>This example uses the Device Manager API to create, retrieve, disable, list and delete Cloud
+ * This example uses the Device Manager API to create, retrieve, disable, list and delete Cloud
  * IoT devices and registries, using both RSA and eliptic curve keys for authentication.
  *
- * <p>To start, follow the instructions on the Developer Guide at cloud.google.com/iot to create a
+ * To start, follow the instructions on the Developer Guide at cloud.google.com/iot to create a
  * service_account.json file and Cloud Pub/Sub topic as discussed in the guide. You will then need
  * to point to the service_account.json file as described in
  * https://developers.google.com/identity/protocols/application-default-credentials#howtheywork
  *
- * <p>Before running the example, we have to create private and public keys, as described in
+ * Before running the example, we have to create private and public keys, as described in
  * cloud.google.com/iot. Since we are interacting with the device manager, we will only use the
  * public keys. The private keys are used to sign JWTs to authenticate devices. See the <a
  * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client/mqtt_example">MQTT
  * client example</a> for more information.
  *
- * <p>Finally, compile and run the example with:
+ * Finally, compile and run the example with:
  *
  * <pre>
  * <code>
@@ -404,7 +404,7 @@ public class DeviceRegistryExample {
   /**
    * Create a device that has no credentials.
    *
-   * <p>This is a valid way to construct a device, however until it is patched with a credential the
+   * This is a valid way to construct a device, however until it is patched with a credential the
    * device will not be able to connect to Cloud IoT.
    */
   protected static void createDeviceWithNoAuth(

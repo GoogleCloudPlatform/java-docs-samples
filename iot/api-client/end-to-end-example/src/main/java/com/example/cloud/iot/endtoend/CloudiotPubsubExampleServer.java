@@ -47,16 +47,16 @@ import org.json.JSONObject;
 /**
  * Sample server that pushes configuration to Google Cloud IoT devices.
  *
- * <p>This example represents a server that consumes telemetry data from multiple Cloud IoT devices.
+ * This example represents a server that consumes telemetry data from multiple Cloud IoT devices.
  * The devices report telemetry data, which the server consumes from a Cloud Pub/Sub topic. The
  * server then decides whether to turn on or off individual devices fans.
  *
- * <p>If you are running this example from a Compute Engine VM, you will have to enable the Cloud
+ * If you are running this example from a Compute Engine VM, you will have to enable the Cloud
  * Pub/Sub API for your project, which you can do from the Cloud Console. Create a pubsub topic, for
  * example projects/my-project-id/topics/my-topic-name, and a subscription, for example
  * projects/my-project-id/subscriptions/my-topic-subscription.
  *
- * <p>You can then run the example with <prev> <code>
+ * You can then run the example with <prev> <code>
  * $ mvn clean compile assembly:single
  *
  * $ mvn exec:java \

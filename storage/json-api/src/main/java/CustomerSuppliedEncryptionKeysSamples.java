@@ -25,14 +25,14 @@ import java.io.InputStream;
 /**
  * Demonstrates the use of GCS's CSEK features via the Java API client library
  *
- * <p>This program demonstrates some quick, basic examples of using GCS's CSEK functionality.
+ * This program demonstrates some quick, basic examples of using GCS's CSEK functionality.
  *
- * <p>When run, it begins by uploading an object named "encrypted_file.txt" to the specified bucket
+ * When run, it begins by uploading an object named "encrypted_file.txt" to the specified bucket
  * that will be protected with a provided CSEK.
  *
- * <p>Next, it will fetch that object by providing that same CSEK to GCS.
+ * Next, it will fetch that object by providing that same CSEK to GCS.
  *
- * <p>Finally, it will rotate that key to a new value.
+ * Finally, it will rotate that key to a new value.
  */
 class CustomerSuppliedEncryptionKeysSamples {
 

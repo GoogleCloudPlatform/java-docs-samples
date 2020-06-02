@@ -54,12 +54,12 @@ import org.json.JSONObject;
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via HTTP, using JWT.
  *
- * <p>This example connects to Google Cloud IoT Core via HTTP Bridge, using a JWT for device
+ * This example connects to Google Cloud IoT Core via HTTP Bridge, using a JWT for device
  * authentication. After connecting, by default the device publishes 100 messages at a rate of one
  * per second, and then exits. You can change The behavior to set state instead of events by using
  * flag -message_type to 'state'.
  *
- * <p>To run this example, follow the instructions in the README located in the sample's parent
+ * To run this example, follow the instructions in the README located in the sample's parent
  * folder.
  */
 public class HttpExample {

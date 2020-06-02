@@ -39,7 +39,7 @@ public final class NearlineRequester {
   /**
    * Creates and executes a request for a TransferJob to Cloud Storage Nearline.
    *
-   * <p>The {@code startDate} and {@code startTime} parameters should be set according to the UTC
+   * The {@code startDate} and {@code startTime} parameters should be set according to the UTC
    * Time Zone. See:
    * https://developers.google.com/resources/api-libraries/documentation/storagetransfer/v1/java/latest/com/google/api/services/storagetransfer/v1/model/Schedule.html#getStartTimeOfDay()
    *

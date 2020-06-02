@@ -61,7 +61,7 @@ public class LabelsSample {
   /**
    * Add or modify a label on a dataset.
    *
-   * <p>See <a href="https://cloud.google.com/bigquery/docs/labeling-datasets">the BigQuery
+   * See <a href="https://cloud.google.com/bigquery/docs/labeling-datasets">the BigQuery
    * documentation</a>.
    */
   public static void labelDataset(
@@ -128,7 +128,7 @@ public class LabelsSample {
   /**
    * Add or modify a label on a table.
    *
-   * <p>See <a href="https://cloud.google.com/bigquery/docs/labeling-datasets">the BigQuery
+   * See <a href="https://cloud.google.com/bigquery/docs/labeling-datasets">the BigQuery
    * documentation</a>.
    */
   public static void labelTable(

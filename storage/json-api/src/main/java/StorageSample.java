@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Main class for the Cloud Storage JSON API sample.
  *
- * <p>Demonstrates how to make an authenticated API call using the Google Cloud Storage API client
+ * Demonstrates how to make an authenticated API call using the Google Cloud Storage API client
  * library for java, with Application Default Credentials.
  */
 public class StorageSample {

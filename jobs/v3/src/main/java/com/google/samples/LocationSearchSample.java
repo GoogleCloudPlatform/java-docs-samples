@@ -30,15 +30,15 @@ import java.util.Arrays;
 /**
  * The samples in this file introduce how to do a search with location filter, including:
  *
- * <p>- Basic search with location filter
+ * - Basic search with location filter
  *
- * <p>- Keyword search with location filter
+ * - Keyword search with location filter
  *
- * <p>- Location filter on city level
+ * - Location filter on city level
  *
- * <p>- Broadening search with location filter
+ * - Broadening search with location filter
  *
- * <p>- Location filter of multiple locations
+ * - Location filter of multiple locations
  */
 public final class LocationSearchSample {
 

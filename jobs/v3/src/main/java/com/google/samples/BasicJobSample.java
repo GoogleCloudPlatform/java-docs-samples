@@ -29,17 +29,17 @@ import java.util.Random;
 /**
  * This file contains the basic knowledge about job, including:
  *
- * <p>- Construct a job with required fields
+ * - Construct a job with required fields
  *
- * <p>- Create a job
+ * - Create a job
  *
- * <p>- Get a job
+ * - Get a job
  *
- * <p>- Update a job
+ * - Update a job
  *
- * <p>- Update a job with field mask
+ * - Update a job with field mask
  *
- * <p>- Delete a job
+ * - Delete a job
  */
 public final class BasicJobSample {
 

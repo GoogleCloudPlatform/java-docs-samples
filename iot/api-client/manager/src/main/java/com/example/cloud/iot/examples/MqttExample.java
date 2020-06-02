@@ -45,15 +45,15 @@ import org.joda.time.DateTime;
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
  *
- * <p>This example connects to Google Cloud IoT Core via MQTT, using a JWT for device
+ * This example connects to Google Cloud IoT Core via MQTT, using a JWT for device
  * authentication. After connecting, by default the device publishes 100 messages to the device's
  * MQTT topic at a rate of one per second, and then exits. To set state instead of publishing
  * telemetry events, set the `-message_type` flag to `state.`
  *
- * <p>To run this example, first create your credentials and register your device as described in
+ * To run this example, first create your credentials and register your device as described in
  * the README located in the sample's parent folder.
  *
- * <p>After you have registered your device and generated your credentials, compile and run with the
+ * After you have registered your device and generated your credentials, compile and run with the
  * corresponding algorithm flag, for example:
  *
  * <pre>

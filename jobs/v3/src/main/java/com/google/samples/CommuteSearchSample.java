@@ -31,7 +31,7 @@ import java.util.Arrays;
 /**
  * The samples in this file introduce how to do a commute search.
  *
- * <p>Note: Commute Search is different from location search. It only take latitude and longitude as
+ * Note: Commute Search is different from location search. It only take latitude and longitude as
  * the start location.
  */
 public final class CommuteSearchSample {

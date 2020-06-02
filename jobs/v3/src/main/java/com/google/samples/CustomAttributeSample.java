@@ -34,9 +34,9 @@ import java.util.Random;
 /**
  * This file contains the samples about CustomAttribute, including:
  *
- * <p>- Construct a Job with CustomAttribute
+ * - Construct a Job with CustomAttribute
  *
- * <p>- Search Job with CustomAttributeFilter
+ * - Search Job with CustomAttributeFilter
  */
 public final class CustomAttributeSample {
 

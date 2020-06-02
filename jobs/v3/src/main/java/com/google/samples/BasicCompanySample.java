@@ -26,17 +26,17 @@ import java.util.Random;
 /**
  * This file contains the basic knowledge about company and job, including:
  *
- * <p>- Construct a company with required fields
+ * - Construct a company with required fields
  *
- * <p>- Create a company
+ * - Create a company
  *
- * <p>- Get a company
+ * - Get a company
  *
- * <p>- Update a company
+ * - Update a company
  *
- * <p>- Update a company with field mask
+ * - Update a company with field mask
  *
- * <p>- Delete a company
+ * - Delete a company
  */
 public final class BasicCompanySample {
 

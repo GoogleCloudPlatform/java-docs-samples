@@ -36,19 +36,19 @@ import java.util.List;
 /**
  * The samples in this file introduce how to do a general search, including:
  *
- * <p>- Basic keyword search
+ * - Basic keyword search
  *
- * <p>- Filter on categories
+ * - Filter on categories
  *
- * <p>- Filter on employment types
+ * - Filter on employment types
  *
- * <p>- Filter on date range
+ * - Filter on date range
  *
- * <p>- Filter on language codes
+ * - Filter on language codes
  *
- * <p>- Filter on company display names
+ * - Filter on company display names
  *
- * <p>- Filter on compensations
+ * - Filter on compensations
  */
 public final class GeneralSearchSample {
 

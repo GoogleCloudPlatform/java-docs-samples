@@ -35,13 +35,13 @@ import java.util.List;
 /**
  * The samples in this file introduce how to do batch operation in CJD. Including:
  *
- * <p>- Create job within batch
+ * - Create job within batch
  *
- * <p>- Update job within batch
+ * - Update job within batch
  *
- * <p>- Delete job within batch.
+ * - Delete job within batch.
  *
- * <p>For simplicity, the samples always use the same kind of requests in each batch. In a real case
+ * For simplicity, the samples always use the same kind of requests in each batch. In a real case
  * , you might put different kinds of request in one batch.
  */
 public final class BatchOperationSample {
