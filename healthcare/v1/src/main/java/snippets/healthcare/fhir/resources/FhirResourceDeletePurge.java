@@ -17,13 +17,14 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_delete_resource_purge]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -52,25 +53,24 @@ public class FhirResourceDeletePurge {
     CloudHealthcare client = createClient();
 
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format(
-        "%sv1/%s/$purge", client.getRootUrl(), resourceName);
-    URIBuilder uriBuilder = new URIBuilder(uri)
-        .setParameter("access_token", getAccessToken());
+    String uri = String.format("%sv1/%s/$purge", client.getRootUrl(), resourceName);
+    URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
 
-    HttpUriRequest request = RequestBuilder
-        .delete()
-        .setUri(uriBuilder.build())
-        .addHeader("Content-Type", "application/fhir+json")
-        .addHeader("Accept-Charset", "utf-8")
-        .addHeader("Accept", "application/fhir+json; charset=utf-8")
-        .build();
+    HttpUriRequest request =
+        RequestBuilder.delete()
+            .setUri(uriBuilder.build())
+            .addHeader("Content-Type", "application/fhir+json")
+            .addHeader("Accept-Charset", "utf-8")
+            .addHeader("Accept", "application/fhir+json; charset=utf-8")
+            .build();
 
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      String errorMessage = String.format(
-          "Exception purging FHIR resource: %s\n", response.getStatusLine().toString());
+      String errorMessage =
+          String.format(
+              "Exception purging FHIR resource: %s\n", response.getStatusLine().toString());
       System.err.print(errorMessage);
       responseEntity.writeTo(System.err);
       throw new RuntimeException(errorMessage);
@@ -82,14 +82,14 @@ public class FhirResourceDeletePurge {
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
-          credential.initialize(request);
+          new HttpCredentialsAdapter(credential).initialize(request);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };
@@ -101,11 +101,11 @@ public class FhirResourceDeletePurge {
   }
 
   private static String getAccessToken() throws IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    credential.refreshToken();
-    return credential.getAccessToken();
+    credential.refreshAccessToken();
+    return credential.getAccessToken().toString();
   }
 }
 // [END healthcare_delete_resource_purge]

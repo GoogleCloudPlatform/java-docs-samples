@@ -15,7 +15,6 @@
 
 package iam.snippets;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
@@ -23,21 +22,23 @@ import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.QueryGrantableRolesRequest;
 import com.google.api.services.iam.v1.model.QueryGrantableRolesResponse;
 import com.google.api.services.iam.v1.model.Role;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.util.Collections;
 
 public class GrantableRoles {
 
   public static void main(String[] args) throws Exception {
 
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault()
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
     Iam service =
         new Iam.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
-                credential)
+                new HttpCredentialsAdapter(credential))
             .setApplicationName("grantable-roles")
             .build();
 

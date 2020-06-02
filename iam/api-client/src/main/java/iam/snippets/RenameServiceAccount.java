@@ -16,12 +16,13 @@
 package iam.snippets;
 
 // [START iam_rename_service_account]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ServiceAccount;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class RenameServiceAccount {
   // Changes a service account's display name.
   public static void renameServiceAccount(String projectId) {
     // String projectId = "my-project-id";
-    
+
     Iam service = null;
     try {
       service = initService();
@@ -75,15 +76,15 @@ public class RenameServiceAccount {
   private static Iam initService() throws GeneralSecurityException, IOException {
     // Use the Application Default Credentials strategy for authentication. For more info, see:
     // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault()
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
     Iam service =
         new Iam.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
-                credential)
+                new HttpCredentialsAdapter(credential))
             .setApplicationName("service-accounts")
             .build();
     return service;

@@ -17,13 +17,14 @@
 
 package iam.snippets;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ListRolesResponse;
 import com.google.api.services.iam.v1.model.Role;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class Quickstart {
 
   public static void main(String[] args) throws Exception {
     // Get credentials
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault()
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
     // Create the Cloud IAM service object
@@ -40,7 +41,7 @@ public class Quickstart {
         new Iam.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
-                credential)
+                new HttpCredentialsAdapter(credential))
             .setApplicationName("quickstart")
             .build();
 

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -62,7 +63,7 @@ public final class StorageSample {
       throws IOException, GeneralSecurityException {
     //[START snippet]
     // Build an account credential.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault()
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault()
         .createScoped(Collections.singleton(STORAGE_SCOPE));
 
     // Set up and execute a Google Cloud Storage request.
@@ -71,7 +72,7 @@ public final class StorageSample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory(
-        credential);
+        new HttpCredentialsAdapter(credential));
     GenericUrl url = new GenericUrl(uri);
 
     HttpRequest request = requestFactory.buildGetRequest(url);

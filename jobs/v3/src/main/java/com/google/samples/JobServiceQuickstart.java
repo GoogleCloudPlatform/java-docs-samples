@@ -16,7 +16,8 @@
 
 package com.google.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -44,22 +45,23 @@ public class JobServiceQuickstart {
   private static CloudTalentSolution talentSolutionClient = createTalentSolutionClient(
       generateCredential());
 
-  private static CloudTalentSolution createTalentSolutionClient(GoogleCredential credential) {
+  private static CloudTalentSolution createTalentSolutionClient(GoogleCredentials credential) {
     String url = "https://jobs.googleapis.com";
+    HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
     return new CloudTalentSolution.Builder(
-        NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(credential))
+        NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(requestInitializer))
         .setApplicationName("JobServiceClientSamples")
         .setRootUrl(url)
         .build();
   }
 
-  private static GoogleCredential generateCredential() {
+  private static GoogleCredentials generateCredential() {
     try {
       // Credentials could be downloaded after creating service account
       // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
       // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
-      return GoogleCredential
-          .getApplicationDefault(NET_HTTP_TRANSPORT, JSON_FACTORY)
+      return GoogleCredentials
+          .getApplicationDefault()
           .createScoped(Collections.singleton(SCOPES));
     } catch (Exception e) {
       System.out.print("Error in generating credential");

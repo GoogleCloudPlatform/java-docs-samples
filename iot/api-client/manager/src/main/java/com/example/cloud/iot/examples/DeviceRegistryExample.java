@@ -16,7 +16,8 @@
 
 package com.example.cloud.iot.examples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
@@ -124,10 +125,10 @@ public class DeviceRegistryExample {
   protected static void createRegistry(
       String cloudRegion, String projectId, String registryName, String pubsubTopicPath)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -154,10 +155,10 @@ public class DeviceRegistryExample {
   /** Delete this registry from Cloud IoT. */
   protected static void deleteRegistry(String cloudRegion, String projectId, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -194,10 +195,10 @@ public class DeviceRegistryExample {
   // [START iot_clear_registry]
   protected static void clearRegistry(String cloudRegion, String projectId, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -280,10 +281,10 @@ public class DeviceRegistryExample {
   /** Print all of the devices in this registry to standard out. */
   protected static void listDevices(String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -328,10 +329,10 @@ public class DeviceRegistryExample {
       String cloudRegion,
       String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -376,10 +377,10 @@ public class DeviceRegistryExample {
       String cloudRegion,
       String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -424,10 +425,10 @@ public class DeviceRegistryExample {
   protected static void createDeviceWithNoAuth(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -458,10 +459,10 @@ public class DeviceRegistryExample {
   protected static void deleteDevice(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -482,10 +483,10 @@ public class DeviceRegistryExample {
   protected static Device getDevice(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -506,10 +507,10 @@ public class DeviceRegistryExample {
   protected static List<DeviceState> getDeviceStates(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -534,10 +535,10 @@ public class DeviceRegistryExample {
   protected static DeviceRegistry getRegistry(
       String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -556,10 +557,10 @@ public class DeviceRegistryExample {
   protected static void listDeviceConfigs(
       String deviceId, String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -594,10 +595,10 @@ public class DeviceRegistryExample {
   /** Lists all of the registries associated with the given project. */
   protected static void listRegistries(String projectId, String cloudRegion)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -639,10 +640,10 @@ public class DeviceRegistryExample {
       String cloudRegion,
       String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -687,10 +688,10 @@ public class DeviceRegistryExample {
       String cloudRegion,
       String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -736,10 +737,10 @@ public class DeviceRegistryExample {
       String data,
       long version)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -775,10 +776,10 @@ public class DeviceRegistryExample {
   /** Retrieves IAM permissions for the given registry. */
   protected static void getIamPermissions(String projectId, String cloudRegion, String registryName)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -817,10 +818,10 @@ public class DeviceRegistryExample {
   protected static void setIamPermissions(
       String projectId, String cloudRegion, String registryName, String member, String role)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -886,10 +887,10 @@ public class DeviceRegistryExample {
   protected static void sendCommand(
       String deviceId, String projectId, String cloudRegion, String registryName, String data)
       throws GeneralSecurityException, IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -926,10 +927,10 @@ public class DeviceRegistryExample {
     // [START iot_bind_device_to_gateway]
     createDevice(projectId, cloudRegion, registryName, deviceId);
 
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -959,10 +960,10 @@ public class DeviceRegistryExample {
       String projectId, String cloudRegion, String registryName, String deviceId, String gatewayId)
       throws GeneralSecurityException, IOException {
     // [START iot_unbind_device_from_gateway]
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -993,10 +994,10 @@ public class DeviceRegistryExample {
       String projectId, String cloudRegion, String registryName, String deviceId)
       throws GeneralSecurityException, IOException {
     // [START iot_create_device]
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -1060,10 +1061,10 @@ public class DeviceRegistryExample {
       String algorithm)
       throws GeneralSecurityException, IOException {
     // [START iot_create_gateway]
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -1112,10 +1113,10 @@ public class DeviceRegistryExample {
   protected static void listGateways(String projectId, String cloudRegion, String registryName)
       throws IOException, GeneralSecurityException {
     // [START iot_list_gateways]
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)
@@ -1157,10 +1158,10 @@ public class DeviceRegistryExample {
       String projectId, String cloudRegion, String registryName, String gatewayId)
       throws IOException, GeneralSecurityException {
     // [START iot_list_devices_for_gateway]
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName(APP_NAME)

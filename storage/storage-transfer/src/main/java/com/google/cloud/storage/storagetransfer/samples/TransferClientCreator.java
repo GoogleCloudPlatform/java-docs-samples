@@ -18,7 +18,8 @@
 
 package com.google.cloud.storage.storagetransfer.samples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -44,8 +45,8 @@ public final class TransferClientCreator {
   public static Storagetransfer createStorageTransferClient() throws IOException {
     HttpTransport httpTransport = Utils.getDefaultTransport();
     JsonFactory jsonFactory = Utils.getDefaultJsonFactory();
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(httpTransport, jsonFactory);
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault();
     return createStorageTransferClient(httpTransport, jsonFactory, credential);
   }
 
@@ -61,7 +62,7 @@ public final class TransferClientCreator {
    * @return a Storage Transfer client
    */
   public static Storagetransfer createStorageTransferClient(
-      HttpTransport httpTransport, JsonFactory jsonFactory, GoogleCredential credential) {
+      HttpTransport httpTransport, JsonFactory jsonFactory, GoogleCredentials credential) {
     Preconditions.checkNotNull(httpTransport);
     Preconditions.checkNotNull(jsonFactory);
     Preconditions.checkNotNull(credential);
@@ -73,7 +74,7 @@ public final class TransferClientCreator {
     // Please use custom HttpRequestInitializer for automatic
     // retry upon failures. We provide a simple reference
     // implementation in the "Retry Handling" section.
-    HttpRequestInitializer initializer = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer initializer = new HttpCredentialsAdapter(credential);
     return new Storagetransfer.Builder(httpTransport, jsonFactory, initializer)
         .setApplicationName("storagetransfer-sample")
         .build();

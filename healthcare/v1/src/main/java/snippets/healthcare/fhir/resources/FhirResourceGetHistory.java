@@ -17,13 +17,14 @@
 package snippets.healthcare.fhir.resources;
 
 // [START healthcare_get_resource_history]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -54,25 +55,24 @@ public class FhirResourceGetHistory {
     CloudHealthcare client = createClient();
 
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format(
-        "%sv1/%s/_history/%s", client.getRootUrl(), resourceName, versionId);
-    URIBuilder uriBuilder = new URIBuilder(uri)
-        .setParameter("access_token", getAccessToken());
+    String uri = String.format("%sv1/%s/_history/%s", client.getRootUrl(), resourceName, versionId);
+    URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
 
-    HttpUriRequest request = RequestBuilder
-        .get()
-        .setUri(uriBuilder.build())
-        .addHeader("Content-Type", "application/fhir+json")
-        .addHeader("Accept-Charset", "utf-8")
-        .addHeader("Accept", "application/fhir+json; charset=utf-8")
-        .build();
+    HttpUriRequest request =
+        RequestBuilder.get()
+            .setUri(uriBuilder.build())
+            .addHeader("Content-Type", "application/fhir+json")
+            .addHeader("Accept-Charset", "utf-8")
+            .addHeader("Accept", "application/fhir+json; charset=utf-8")
+            .build();
 
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      System.err.print(String.format(
-          "Exception retrieving FHIR history: %s\n", response.getStatusLine().toString()));
+      System.err.print(
+          String.format(
+              "Exception retrieving FHIR history: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
@@ -83,16 +83,16 @@ public class FhirResourceGetHistory {
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
-          credential.initialize(request);
-          request.setConnectTimeout(1 * 60 * 1000); // 1 minute connect timeout
-          request.setReadTimeout(1 * 60 * 1000); // 1 minute read timeout
+          new HttpCredentialsAdapter(credential).initialize(request);
+          request.setConnectTimeout(60000); // 1 minute connect timeout
+          request.setReadTimeout(60000); // 1 minute read timeout
         };
 
     // Build the client for interacting with the service.
@@ -102,11 +102,11 @@ public class FhirResourceGetHistory {
   }
 
   private static String getAccessToken() throws IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    credential.refreshToken();
-    return credential.getAccessToken();
+    credential.refreshAccessToken();
+    return credential.getAccessToken().toString();
   }
 }
 // [END healthcare_get_resource_history]

@@ -16,7 +16,8 @@
 
 package com.example.bigquery;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpHeaders;
@@ -67,14 +68,14 @@ public class LabelsSample {
       String projectId, String datasetId, String labelKey, String labelValue) throws IOException {
 
     // Authenticate requests using Google Application Default credentials.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
     credential = credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/bigquery"));
 
     // Get a new access token.
     // Note that access tokens have an expiration. You can reuse a token rather than requesting a
     // new one if it is not yet expired.
-    credential.refreshToken();
-    String accessToken = credential.getAccessToken();
+    credential.refreshAccessToken();
+    AccessToken accessToken = credential.getAccessToken();
 
     // Set the content of the request.
     Dataset dataset = new Dataset();
@@ -139,14 +140,14 @@ public class LabelsSample {
       throws IOException {
 
     // Authenticate requests using Google Application Default credentials.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
     credential = credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/bigquery"));
 
     // Get a new access token.
     // Note that access tokens have an expiration. You can reuse a token rather than requesting a
     // new one if it is not yet expired.
-    credential.refreshToken();
-    String accessToken = credential.getAccessToken();
+    credential.refreshAccessToken();
+    AccessToken accessToken = credential.getAccessToken();
 
     // Set the content of the request.
     Table table = new Table();

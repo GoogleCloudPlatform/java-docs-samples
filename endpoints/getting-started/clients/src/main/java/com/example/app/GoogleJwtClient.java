@@ -19,7 +19,7 @@ package com.example.app;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -68,8 +68,8 @@ public class GoogleJwtClient {
 
     // Sign the JWT with a service account
     FileInputStream stream = new FileInputStream(saKeyfile);
-    GoogleCredential cred = GoogleCredential.fromStream(stream);
-    RSAPrivateKey key = (RSAPrivateKey) cred.getServiceAccountPrivateKey();
+    ServiceAccountCredentials cred = ServiceAccountCredentials.fromStream(stream);
+    RSAPrivateKey key = (RSAPrivateKey) cred.getPrivateKey();
     Algorithm algorithm = Algorithm.RSA256(null, key);
     return token.sign(algorithm);
   }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -30,7 +30,8 @@ import com.google.api.services.compute.model.Metadata;
 import com.google.api.services.compute.model.NetworkInterface;
 import com.google.api.services.compute.model.Operation;
 import com.google.api.services.compute.model.ServiceAccount;
-
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,13 +60,16 @@ public class ComputeEngineSample {
   /** Set the name of the sample VM instance to be created. */
   private static final String SAMPLE_INSTANCE_NAME = "my-sample-instance";
 
-  /** Set the path of the OS image for the sample VM instance to be created.  */
-  private static final String SOURCE_IMAGE_PREFIX = "https://www.googleapis.com/compute/v1/projects/";
+  /** Set the path of the OS image for the sample VM instance to be created. */
+  private static final String SOURCE_IMAGE_PREFIX =
+      "https://www.googleapis.com/compute/v1/projects/";
+
   private static final String SOURCE_IMAGE_PATH =
       "debian-cloud/global/images/debian-7-wheezy-v20150710";
 
   /** Set the Network configuration values of the sample VM instance to be created. */
   private static final String NETWORK_INTERFACE_CONFIG = "ONE_TO_ONE_NAT";
+
   private static final String NETWORK_ACCESS_CONFIG = "External NAT";
 
   /** Set the time out limit for operation calls to the Compute Engine API. */
@@ -77,14 +81,12 @@ public class ComputeEngineSample {
   /** Global instance of the JSON factory. */
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-
-
   public static void main(String[] args) {
     try {
       httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
       // Authenticate using Google Application Default Credentials.
-      GoogleCredential credential = GoogleCredential.getApplicationDefault();
+      GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
       if (credential.createScopedRequired()) {
         List<String> scopes = new ArrayList<>();
         // Set Google Cloud Storage scope to Full Control.
@@ -93,10 +95,10 @@ public class ComputeEngineSample {
         scopes.add(ComputeScopes.COMPUTE);
         credential = credential.createScoped(scopes);
       }
-
+      HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
       // Create Compute Engine object for listing instances.
       Compute compute =
-          new Compute.Builder(httpTransport, JSON_FACTORY, credential)
+          new Compute.Builder(httpTransport, JSON_FACTORY, requestInitializer)
               .setApplicationName(APPLICATION_NAME)
               .build();
 
@@ -139,8 +141,9 @@ public class ComputeEngineSample {
     InstanceList list = instances.execute();
     boolean found = false;
     if (list.getItems() == null) {
-      System.out.println("No instances found. Sign in to the Google Developers Console and create "
-          + "an instance at: https://console.developers.google.com/");
+      System.out.println(
+          "No instances found. Sign in to the Google Developers Console and create "
+              + "an instance at: https://console.developers.google.com/");
     } else {
       for (Instance instance : list.getItems()) {
         System.out.println(instance.toPrettyString());
@@ -157,17 +160,22 @@ public class ComputeEngineSample {
   public static Operation startInstance(Compute compute, String instanceName) throws IOException {
     System.out.println("================== Starting New Instance ==================");
 
-
     // Create VM Instance object with the required properties.
     Instance instance = new Instance();
     instance.setName(instanceName);
     instance.setMachineType(
         "https://www.googleapis.com/compute/v1/projects/"
-        + PROJECT_ID + "/zones/" + ZONE_NAME + "/machineTypes/n1-standard-1");
+            + PROJECT_ID
+            + "/zones/"
+            + ZONE_NAME
+            + "/machineTypes/n1-standard-1");
 
     // Add Network Interface to be used by VM Instance.
     NetworkInterface ifc = new NetworkInterface();
-    ifc.setNetwork("https://www.googleapis.com/compute/v1/projects/" + PROJECT_ID + "/global/networks/default");
+    ifc.setNetwork(
+        "https://www.googleapis.com/compute/v1/projects/"
+            + PROJECT_ID
+            + "/global/networks/default");
     List<AccessConfig> configs = new ArrayList<>();
     AccessConfig config = new AccessConfig();
     config.setType(NETWORK_INTERFACE_CONFIG);
@@ -187,8 +195,12 @@ public class ComputeEngineSample {
     // Specify the source operating system machine image to be used by the VM Instance.
     params.setSourceImage(SOURCE_IMAGE_PREFIX + SOURCE_IMAGE_PATH);
     // Specify the disk type as Standard Persistent Disk
-    params.setDiskType("https://www.googleapis.com/compute/v1/projects/" + PROJECT_ID + "/zones/"
-                       + ZONE_NAME + "/diskTypes/pd-standard");
+    params.setDiskType(
+        "https://www.googleapis.com/compute/v1/projects/"
+            + PROJECT_ID
+            + "/zones/"
+            + ZONE_NAME
+            + "/diskTypes/pd-standard");
     disk.setInitializeParams(params);
     instance.setDisks(Collections.singletonList(disk));
 
@@ -208,7 +220,8 @@ public class ComputeEngineSample {
     // If you put a script called "vm-startup.sh" in this Google Cloud Storage
     // bucket, it will execute on VM startup.  This assumes you've created a
     // bucket named the same as your PROJECT_ID.
-    // For info on creating buckets see: https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets
+    // For info on creating buckets see:
+    // https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets
     item.setValue("gs://" + PROJECT_ID + "/vm-startup.sh");
     meta.setItems(Collections.singletonList(item));
     instance.setMetadata(meta);
@@ -230,6 +243,7 @@ public class ComputeEngineSample {
   // [START wait_until_complete]
   /**
    * Wait until {@code operation} is completed.
+   *
    * @param compute the {@code Compute} object
    * @param operation the operation returned by the original request
    * @param timeout the timeout, in millis
@@ -241,7 +255,7 @@ public class ComputeEngineSample {
       Compute compute, Operation operation, long timeout) throws Exception {
     long start = System.currentTimeMillis();
     final long pollInterval = 5 * 1000;
-    String zone = operation.getZone();  // null for global/regional operations
+    String zone = operation.getZone(); // null for global/regional operations
     if (zone != null) {
       String[] bits = zone.split("/");
       zone = bits[bits.length - 1];

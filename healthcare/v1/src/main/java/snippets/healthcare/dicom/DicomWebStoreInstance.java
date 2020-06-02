@@ -17,13 +17,14 @@
 package snippets.healthcare.dicom;
 
 // [START healthcare_dicomweb_store_instance]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -56,27 +57,26 @@ public class DicomWebStoreInstance {
     CloudHealthcare client = createClient();
 
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format(
-        "%sv1/%s/dicomWeb/studies", client.getRootUrl(), dicomStoreName);
-    URIBuilder uriBuilder = new URIBuilder(uri)
-        .setParameter("access_token", getAccessToken());
+    String uri = String.format("%sv1/%s/dicomWeb/studies", client.getRootUrl(), dicomStoreName);
+    URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
     // Load the data from file representing the study.
     File f = new File(filePath);
     byte[] dicomBytes = Files.readAllBytes(Paths.get(filePath));
     ByteArrayEntity requestEntity = new ByteArrayEntity(dicomBytes);
 
-    HttpUriRequest request = RequestBuilder
-        .post(uriBuilder.build())
-        .setEntity(requestEntity)
-        .addHeader("Content-Type","application/dicom")
-        .build();
+    HttpUriRequest request =
+        RequestBuilder.post(uriBuilder.build())
+            .setEntity(requestEntity)
+            .addHeader("Content-Type", "application/dicom")
+            .build();
 
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      System.err.print(String.format(
-          "Exception storing DICOM instance: %s\n", response.getStatusLine().toString()));
+      System.err.print(
+          String.format(
+              "Exception storing DICOM instance: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
@@ -87,14 +87,14 @@ public class DicomWebStoreInstance {
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
-          credential.initialize(request);
+          new HttpCredentialsAdapter(credential).initialize(request);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };
@@ -106,11 +106,11 @@ public class DicomWebStoreInstance {
   }
 
   private static String getAccessToken() throws IOException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    credential.refreshToken();
-    return credential.getAccessToken();
+    credential.refreshAccessToken();
+    return credential.getAccessToken().toString();
   }
 }
 // [END healthcare_dicomweb_store_instance]
