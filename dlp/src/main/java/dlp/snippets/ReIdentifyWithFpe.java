@@ -111,7 +111,7 @@ public class ReIdentifyWithFpe {
       // Combine configurations into a request for the service.
       ReidentifyContentRequest request =
           ReidentifyContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setItem(contentItem)
               .setInspectConfig(inspectConfig)
               .setReidentifyConfig(reidentifyConfig)

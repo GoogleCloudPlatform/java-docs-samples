@@ -45,7 +45,7 @@ public class JobsList {
       // see https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs/list
       ListDlpJobsRequest listDlpJobsRequest =
           ListDlpJobsRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setFilter("state=DONE")
               .setType(DlpJobType.valueOf("INSPECT_JOB"))
               .build();

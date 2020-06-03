@@ -98,7 +98,7 @@ public class InspectStringWithExclusionDict {
       // Construct the Inspect request to be sent by the client.
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
-              .setParent(project.toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setItem(item)
               .setInspectConfig(config)
               .build();

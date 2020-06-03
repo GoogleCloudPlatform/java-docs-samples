@@ -106,7 +106,7 @@ public class TriggersCreate {
       // Create scan request to be sent by client
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setJobTrigger(jobTrigger)
               .build();
 

@@ -70,7 +70,8 @@ public class JobsTests {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(PROJECT_ID).toString())
+              .setParent(
+                  String.format("%s/locations/global", ProjectName.of(PROJECT_ID).toString()))
               .setInspectJob(inspectJobConfig)
               .setJobId(jobId)
               .build();

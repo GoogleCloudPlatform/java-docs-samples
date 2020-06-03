@@ -26,7 +26,6 @@ import com.google.privacy.dlp.v2.DeleteJobTriggerRequest;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.JobTrigger;
-import com.google.privacy.dlp.v2.ListJobTriggersRequest;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.Schedule;
 import com.google.privacy.dlp.v2.StorageConfig;
@@ -38,7 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -86,7 +84,8 @@ public class TriggersTests {
 
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
-              .setParent(ProjectName.of(PROJECT_ID).toString())
+              .setParent(
+                  String.format("%s/locations/global", ProjectName.of(PROJECT_ID).toString()))
               .setJobTrigger(jobTrigger)
               .build();
 

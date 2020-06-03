@@ -105,7 +105,7 @@ class RiskAnalysisKAnonymity {
       // Build the request to be sent by the client
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setRiskJob(riskAnalysisJobConfig)
               .build();
 

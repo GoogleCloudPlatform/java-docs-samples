@@ -82,7 +82,7 @@ public class DeIdentifyWithMasking {
       // Combine configurations into a request for the service.
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setItem(contentItem)
               .setInspectConfig(inspectConfig)
               .setDeidentifyConfig(deidentifyConfig)

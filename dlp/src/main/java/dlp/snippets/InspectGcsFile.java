@@ -17,12 +17,12 @@
 package dlp.snippets;
 
 // [START dlp_inspect_gcs]
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
@@ -100,7 +100,7 @@ public class InspectGcsFile {
       // Create the request for the job configured above.
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setInspectJob(inspectJobConfig)
               .build();
 

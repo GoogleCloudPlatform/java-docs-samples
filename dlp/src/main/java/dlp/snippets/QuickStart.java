@@ -84,7 +84,7 @@ public class QuickStart {
       // Create the request from previous configs
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setInspectConfig(inspectConfig)
               .setItem(contentItem)
               .build();

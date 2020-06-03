@@ -37,7 +37,7 @@ class TriggersList {
       // Build the request to be sent by the client
       ListJobTriggersRequest listJobTriggersRequest =
           ListJobTriggersRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .build();
 
       // Use the client to send the API request.

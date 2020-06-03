@@ -70,7 +70,7 @@ class RedactImageFile {
       // Construct the Redact request to be sent by the client.
       RedactImageRequest request =
           RedactImageRequest.newBuilder()
-              .setParent(project.toString())
+              .setParent(String.format("%s/locations/global", ProjectName.of(projectId).toString()))
               .setByteItem(byteItem)
               .setInspectConfig(config)
               .build();
