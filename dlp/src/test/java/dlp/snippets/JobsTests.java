@@ -104,7 +104,7 @@ public class JobsTests {
     // Call createJobs to create a Dlp job from project id and gcs path.
     JobsCreate.createJobs(PROJECT_ID, GCS_PATH);
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Job created successfully."));
+    assertThat(output, CoreMatchers.containsString("Job created successfully:"));
 
     // Delete the created Dlp Job
     String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
