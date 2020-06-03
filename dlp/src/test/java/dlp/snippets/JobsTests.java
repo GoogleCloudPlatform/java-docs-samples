@@ -111,7 +111,7 @@ public class JobsTests {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
     try (DlpServiceClient client = DlpServiceClient.create()) {
-      dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+      client.deleteDlpJob(deleteDlpJobRequest);
     }
   }
 
@@ -131,7 +131,7 @@ public class JobsTests {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
     try (DlpServiceClient client = DlpServiceClient.create()) {
-      dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+      client.deleteDlpJob(deleteDlpJobRequest);
     }
   }
 
