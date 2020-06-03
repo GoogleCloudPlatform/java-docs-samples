@@ -26,7 +26,7 @@ import com.google.privacy.dlp.v2.DeleteInspectTemplateRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectTemplate;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -69,8 +69,7 @@ public class TemplatesTests {
 
       CreateInspectTemplateRequest createInspectTemplateRequest =
           CreateInspectTemplateRequest.newBuilder()
-              .setParent(
-                  String.format("%s/locations/global", ProjectName.of(PROJECT_ID).toString()))
+              .setParent(LocationName.of(PROJECT_ID, "global").toString())
               .setInspectTemplate(inspectTemplate)
               .build();
 

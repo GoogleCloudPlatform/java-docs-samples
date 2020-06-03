@@ -26,7 +26,7 @@ import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,8 +70,7 @@ public class JobsTests {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(
-                  String.format("%s/locations/global", ProjectName.of(PROJECT_ID).toString()))
+              .setParent(LocationName.of(PROJECT_ID, "global").toString())
               .setInspectJob(inspectJobConfig)
               .setJobId(jobId)
               .build();

@@ -26,7 +26,7 @@ import com.google.privacy.dlp.v2.DeleteJobTriggerRequest;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.JobTrigger;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.Schedule;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.protobuf.Duration;
@@ -84,8 +84,7 @@ public class TriggersTests {
 
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
-              .setParent(
-                  String.format("%s/locations/global", ProjectName.of(PROJECT_ID).toString()))
+              .setParent(LocationName.of(PROJECT_ID, "global").toString())
               .setJobTrigger(jobTrigger)
               .build();
 
