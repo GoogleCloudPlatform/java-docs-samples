@@ -370,7 +370,7 @@ public class SpannerSampleIT {
                   CreateInstanceExample.createInstance(
                       dbId.getInstanceId().getProject(), instanceId);
                 } finally {
-                  SpannerOptions.newBuilder().build();
+                  spanner.getInstanceAdminClient().deleteInstance(instanceId);
                 }
               }
             });

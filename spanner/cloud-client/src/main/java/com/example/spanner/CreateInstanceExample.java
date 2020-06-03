@@ -44,7 +44,7 @@ class CreateInstanceExample {
     // Set Instance configuration.
     String configId = "regional-us-central1";
     int nodeCount = 2;
-    String displayName = "Descriptive name for the instance";
+    String displayName = "Descriptive name";
 
     // Create an InstanceInfo object that will be used to create the instance.
     InstanceInfo instanceInfo =
@@ -60,11 +60,11 @@ class CreateInstanceExample {
       Instance instance = operation.get();
       System.out.printf("Instance %s was successfully created%n", instance.getId());
     } catch (ExecutionException e) {
-      System.err.printf(
-          "Creating instance %s failed with error message %s%n",
+      System.out.printf(
+          "Error: Creating instance %s failed with error message %s%n",
           instanceInfo.getId(), e.getMessage());
     } catch (InterruptedException e) {
-      System.err.println("Waiting for createInstance operation to finish was interrupted");
+      System.out.println("Error: Waiting for createInstance operation to finish was interrupted");
     }
   }
 }
