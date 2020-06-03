@@ -26,17 +26,13 @@ import com.google.cloud.spanner.InstanceId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
-import com.google.common.base.CharMatcher;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +46,8 @@ import org.threeten.bp.temporal.ChronoField;
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
   private static final String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
+  private static final String databaseId =
+      formatForTest(System.getProperty("spanner.sample.database"));
   static Spanner spanner;
   static DatabaseId dbId;
   static DatabaseAdminClient dbClient;
@@ -67,7 +64,7 @@ public class SpannerSampleIT {
   }
 
   @BeforeClass
-  public void setUp() throws Exception {
+  public static void setUp() throws Exception {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
@@ -78,7 +75,7 @@ public class SpannerSampleIT {
   }
 
   @AfterClass
-  public void tearDown() throws Exception {
+  public static void tearDown() throws Exception {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient.dropDatabase(
         dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
