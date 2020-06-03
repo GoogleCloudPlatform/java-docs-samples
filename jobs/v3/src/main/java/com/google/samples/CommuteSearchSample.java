@@ -39,8 +39,8 @@ public final class CommuteSearchSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START commute_search]
 
@@ -62,8 +62,7 @@ public final class CommuteSearchSample {
                     .setCommuteMethod("TRANSIT")
                     .setTravelDuration("1000s")
                     .setStartCoordinates(
-                        new LatLng().setLatitude(37.422408)
-                            .setLongitude(-122.085609)));
+                        new LatLng().setLatitude(37.422408).setLongitude(-122.085609)));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
@@ -75,7 +74,10 @@ public final class CommuteSearchSample {
             .setJobView("JOB_VIEW_FULL")
             .setRequirePreciseResultSize(true);
     SearchJobsResponse response =
-        talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, searchJobsRequest)
+        talentSolutionClient
+            .projects()
+            .jobs()
+            .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
     System.out.println(response);
@@ -86,8 +88,9 @@ public final class CommuteSearchSample {
     Company companyToBeCreated = BasicCompanySample.generateCompany();
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
-    Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName)
-        .setAddresses(Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043"));
+    Job jobToBeCreated =
+        BasicJobSample.generateJobWithRequiredFields(companyName)
+            .setAddresses(Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043"));
     String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
 
     // Wait several seconds for post processing

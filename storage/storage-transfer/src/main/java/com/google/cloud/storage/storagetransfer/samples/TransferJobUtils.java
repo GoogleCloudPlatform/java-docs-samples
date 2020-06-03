@@ -21,30 +21,21 @@ package com.google.cloud.storage.storagetransfer.samples;
 import com.google.api.services.storagetransfer.v1.model.Date;
 import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 
-/**
- * Utility methods for creating TransferJobs.
- *
- */
+/** Utility methods for creating TransferJobs. */
 public final class TransferJobUtils {
   private static final int BASE_10 = 10;
 
-  /**
-   * A private constructor.
-   */
+  /** A private constructor. */
   private TransferJobUtils() {}
 
   /**
    * Parses a Date from a string of the form "YYYY-MM-DD".
    *
-   * @param dateString
-   *          a string of the form "YYYY-MM-DD"
+   * @param dateString a string of the form "YYYY-MM-DD"
    * @return a Google Date representing the desired date
-   * @throws NumberFormatException
-   *           if the input string has an incorrect format
-   * @throws InstantiationException
-   *           if Date object instantiation failed
-   * @throws IllegalAccessException
-   *           if Date object cannot be accessed
+   * @throws NumberFormatException if the input string has an incorrect format
+   * @throws InstantiationException if Date object instantiation failed
+   * @throws IllegalAccessException if Date object cannot be accessed
    */
   public static Date createDate(String dateString)
       throws NumberFormatException, InstantiationException, IllegalAccessException {
@@ -60,15 +51,11 @@ public final class TransferJobUtils {
   /**
    * Parses a TimeOfDay from a string of the form "HH:MM:SS".
    *
-   * @param timeString
-   *          a string of the form "HH:MM:SS"
+   * @param timeString a string of the form "HH:MM:SS"
    * @return a TimeOfDay representing the desired time
-   * @throws NumberFormatException
-   *           if the input string has an incorrect format
-   * @throws InstantiationException
-   *           if Date object instantiation failed
-   * @throws IllegalAccessException
-   *           if Date object cannot be accessed
+   * @throws NumberFormatException if the input string has an incorrect format
+   * @throws InstantiationException if Date object instantiation failed
+   * @throws IllegalAccessException if Date object cannot be accessed
    */
   public static TimeOfDay createTimeOfDay(String timeString)
       throws NumberFormatException, InstantiationException, IllegalAccessException {
@@ -99,4 +86,4 @@ public final class TransferJobUtils {
     return propertyValue;
   }
 }
-//[END all]
+// [END all]

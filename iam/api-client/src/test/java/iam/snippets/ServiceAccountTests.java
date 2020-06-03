@@ -37,7 +37,8 @@ public class ServiceAccountTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(System.getenv(varName),
+    assertNotNull(
+        System.getenv(varName),
         String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 

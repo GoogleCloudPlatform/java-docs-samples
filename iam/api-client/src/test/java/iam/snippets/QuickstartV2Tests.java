@@ -19,7 +19,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
@@ -29,6 +28,8 @@ import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
 import com.google.api.services.iam.v1.model.ServiceAccount;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -65,15 +66,15 @@ public class QuickstartV2Tests {
   @Before
   public void setUp() {
     try {
-      GoogleCredential credential =
-          GoogleCredential.getApplicationDefault()
+      GoogleCredentials credential =
+          GoogleCredentials.getApplicationDefault()
               .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
       iamService =
           new Iam.Builder(
                   GoogleNetHttpTransport.newTrustedTransport(),
                   JacksonFactory.getDefaultInstance(),
-                  credential)
+                  new HttpCredentialsAdapter(credential))
               .setApplicationName("service-accounts")
               .build();
     } catch (IOException | GeneralSecurityException e) {

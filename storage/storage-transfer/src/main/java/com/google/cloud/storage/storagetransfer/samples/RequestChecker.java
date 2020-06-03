@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 /**
  * Queries for TransferOperations associated with a specific TransferJob. A TransferJob is done when
  * all of its associated TransferOperations have completed.
- *
  */
 public final class RequestChecker {
 
@@ -38,15 +37,11 @@ public final class RequestChecker {
   /**
    * Creates and executes a query for all associated TransferOperations.
    *
-   * @param client
-   *          a Storagetransfer client, for interacting with the Storage Transfer API
-   * @param projectId
-   *          the project to query within
-   * @param jobName
-   *          the job Name of the relevant TransferJob
+   * @param client a Storagetransfer client, for interacting with the Storage Transfer API
+   * @param projectId the project to query within
+   * @param jobName the job Name of the relevant TransferJob
    * @return an object containing information on associated TransferOperations
-   * @throws IOException
-   *           if the client failed to complete the request
+   * @throws IOException if the client failed to complete the request
    */
   public static ListOperationsResponse checkTransfer(
       Storagetransfer client, String projectId, String jobName) throws IOException {
@@ -60,8 +55,7 @@ public final class RequestChecker {
   /**
    * Output the returned list of TransferOperations.
    *
-   * @param args
-   *          arguments from the command line
+   * @param args arguments from the command line
    */
   public static void main(String[] args) {
     try {
@@ -73,4 +67,4 @@ public final class RequestChecker {
     }
   }
 }
-//[END all]
+// [END all]
