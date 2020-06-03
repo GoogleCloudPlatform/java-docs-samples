@@ -104,7 +104,6 @@ public class SampleTests {
   public void commuteSearchSampleTest() throws Exception {
     CommuteSearchSample.main();
     String result = bout.toString();
-    assertThat(result).containsMatch(".*matchingJobs.*commuteInfo.*");
     assertThat(result).containsMatch(".*matchingJobs.*1600 Amphitheatre Pkwy.*");
     bout.reset();
   }
@@ -169,7 +168,7 @@ public class SampleTests {
     assertThat(bout.toString()).contains("Request Id is");
     bout.reset();
   }
-  
+
   @Test
   public void locationSearchSampleTest() throws Exception {
     LocationSearchSample.main();
