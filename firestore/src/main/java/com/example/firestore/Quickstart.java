@@ -53,6 +53,7 @@ public class Quickstart {
     FirestoreOptions firestoreOptions =
         FirestoreOptions.getDefaultInstance().toBuilder()
             .setProjectId(projectId)
+            .setCredentials(GoogleCredentials.getApplicationDefault())
             .build();
     Firestore db = firestoreOptions.getService();
     // [END fs_initialize_project_id]
