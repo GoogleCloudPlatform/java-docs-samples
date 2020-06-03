@@ -63,8 +63,9 @@ public class Quickstart {
         .setProjectId(projectId)
         .setCredentials(GoogleCredentials.fromStream(serviceAccountKeyInputStream))
         .build();
+    Firestore db = firestoreOptions.getService();
     // [END fs_initialize_project_id]
-    this.db = firestoreOptions.getService();
+    this.db = db;
   }
 
   Firestore getDb() {
