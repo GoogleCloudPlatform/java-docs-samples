@@ -17,7 +17,6 @@
 package com.example.firestore;
 
 import com.google.api.core.ApiFuture;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
 // [START fs_include_dependencies]
 import com.google.cloud.firestore.Firestore;
@@ -64,7 +63,7 @@ public class Quickstart {
         .setCredentials(GoogleCredentials.fromStream(serviceAccountKeyInputStream))
         .build();
     // [END fs_initialize_project_id]
-    this.db = firestoreOptions.getService();
+    this.db = db;
   }
 
   Firestore getDb() {
