@@ -26,6 +26,9 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.common.collect.ImmutableMap;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,13 +51,17 @@ public class Quickstart {
     this.db = db;
   }
 
-  public Quickstart(String projectId) {
+  public Quickstart(String projectId) throws Exception {
     // [START fs_initialize_project_id]
-    FirestoreOptions firestoreOptions =
-        FirestoreOptions.getDefaultInstance().toBuilder()
-            .setProjectId(projectId)
-            .build();
-    Firestore db = firestoreOptions.getService();
+    String serviceAccountKeyFilename = "<fill_in_with_path_to_service_account_key.json>";
+
+    InputStream serviceAccountKeyInputStream = new FileInputStream(
+        new File(serviceAccountKeyFilename));
+
+    FirestoreOptions firestoreOptions = FirestoreOptions.newBuilder()
+        .setProjectId(projectId)
+        .setCredentials(GoogleCredentials.fromStream(serviceAccountKeyInputStream))
+        .build();
     // [END fs_initialize_project_id]
     this.db = db;
   }
