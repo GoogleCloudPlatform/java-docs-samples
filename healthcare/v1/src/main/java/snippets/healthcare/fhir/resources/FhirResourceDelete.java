@@ -66,6 +66,10 @@ public class FhirResourceDelete {
             .build();
 
     // Execute the request and process the results.
+    // Regardless of whether the operation succeeds or
+    // fails, the server returns a 200 OK HTTP status code. To check that the
+    // resource was successfully deleted, search for or get the resource and
+    // see if it exists.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
