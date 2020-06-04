@@ -16,6 +16,7 @@
 
 package com.example.spanner.jdbc;
 
+//[START spanner_jdbc_create_table]
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -55,3 +56,4 @@ class CreateTableExample {
     System.out.println("Created table [Singers]");
   }
 }
+//[END spanner_jdbc_create_table]

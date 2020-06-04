@@ -16,6 +16,7 @@
 
 package com.example.spanner.jdbc;
 
+//[START spanner_jdbc_insert]
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -86,3 +87,4 @@ class InsertDataExample {
     }
   }
 }
+//[END spanner_jdbc_insert]
