@@ -52,7 +52,8 @@ class BatchDmlExample {
             "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
                 + "VALUES (11, 'Amirah', 'Finney')");
         statement.addBatch(
-            "INSERT INTO Singers (SingerId, FirstName, LastName)\n" + "VALUES (12, 'Reece', 'Dunn')");
+            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+                + "VALUES (12, 'Reece', 'Dunn')");
         int[] updateCounts = statement.executeBatch();
         connection.commit();
         System.out.printf("Batch insert counts: %s%n", Arrays.toString(updateCounts));
