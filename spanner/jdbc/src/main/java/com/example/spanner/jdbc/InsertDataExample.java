@@ -66,7 +66,6 @@ class InsertDataExample {
             "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
             projectId, instanceId, databaseId);
     try (Connection connection = DriverManager.getConnection(connectionUrl)) {
-      connection.setAutoCommit(false);
       try (PreparedStatement ps =
           connection.prepareStatement(
               "INSERT INTO Singers\n"
@@ -81,7 +80,6 @@ class InsertDataExample {
           ps.addBatch();
         }
         int[] updateCounts = ps.executeBatch();
-        connection.commit();
         System.out.printf("Insert counts: %s%n", Arrays.toString(updateCounts));
       }
     }
