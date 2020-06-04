@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_inspect_string_with_exclusion_dict_substring]
+// [START dlp_inspect_string_custom_excluding_substring]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
@@ -117,4 +117,4 @@ public class InspectStringCustomExcludingSubstring {
     }
   }
 }
-// [END dlp_inspect_string_with_exclusion_dict_substring]
+// [END dlp_inspect_string_custom_excluding_substring]
