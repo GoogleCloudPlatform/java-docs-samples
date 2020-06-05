@@ -81,7 +81,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectPhoneNumber() {
+  public void testInspectPhoneNumber() throws Exception {
     InspectString.inspectString(PROJECT_ID, "My phone number is (415) 555-0890");
 
     String output = bout.toString();
@@ -89,7 +89,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectString() {
+  public void testInspectString() throws Exception {
     InspectString.inspectString(PROJECT_ID, "I'm Gary and my email is gary@example.com");
 
     String output = bout.toString();
@@ -98,7 +98,7 @@ public class InspectTests {
 
 
   @Test
-  public void testInspectStringWithExclusionDict() {
+  public void testInspectStringWithExclusionDict() throws Exception {
     InspectStringWithExclusionDict.inspectStringWithExclusionDict(PROJECT_ID,
         "Some email addresses: gary@example.com, example@example.com",
         Arrays.asList("example@example.com"));
@@ -109,7 +109,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectStringWithExclusionDictSubstring() {
+  public void testInspectStringWithExclusionDictSubstring() throws Exception {
     InspectStringWithExclusionDictSubstring.inspectStringWithExclusionDictSubstring(PROJECT_ID,
         "Some email addresses: gary@example.com, TEST@example.com",
         Arrays.asList("TEST"));
@@ -120,7 +120,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectStringWithExclusionRegex() {
+  public void testInspectStringWithExclusionRegex() throws Exception {
     InspectStringWithExclusionRegex.inspectStringWithExclusionRegex(PROJECT_ID,
         "Some email addresses: gary@example.com, bob@example.org",
         ".+@example.com");
@@ -131,7 +131,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectStringCustomExcludingSubstring() {
+  public void testInspectStringCustomExcludingSubstring() throws Exception {
     InspectStringCustomExcludingSubstring.inspectStringCustomExcludingSubstring(PROJECT_ID,
         "Name: Doe, John. Name: Example, Jimmy",
         "[A-Z][a-z]{1,15}, [A-Z][a-z]{1,15}",
@@ -158,7 +158,7 @@ public class InspectTests {
   }
 
   @Test
-  public void textInspectTestFile() {
+  public void textInspectTestFile() throws Exception {
     InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
     String output = bout.toString();
     assertThat(output, containsString("Info type: PHONE_NUMBER"));
@@ -166,7 +166,7 @@ public class InspectTests {
   }
 
   @Test
-  public void testInspectImageFile() {
+  public void testInspectImageFile() throws Exception {
     InspectImageFile.inspectImageFile(PROJECT_ID, "src/test/resources/test.png");
 
     String output = bout.toString();
