@@ -145,6 +145,7 @@ public class InspectTests {
     assertThat(output, not(containsString("Larry Page")));
   }
 
+  @Test
   public void testInspectStringOmitOverlap() throws Exception {
     InspectStringOmitOverlap.inspectStringOmitOverlap(PROJECT_ID, "james@example.com");
 
