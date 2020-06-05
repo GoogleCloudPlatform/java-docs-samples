@@ -23,6 +23,10 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.CancelDlpJobRequest;
+import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.Table;
+import com.google.privacy.dlp.v2.Table.Row;
+import com.google.privacy.dlp.v2.Value;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -136,6 +140,21 @@ public class InspectTests {
     String output = bout.toString();
     assertThat(output, containsString("Doe, John"));
     assertThat(output, not(containsString("Example, Jimmy")));
+  }
+
+  @Test
+  public void testInspectTable() {
+    Table tableToInspect = Table.newBuilder()
+        .addHeaders(FieldId.newBuilder().setName("name").build())
+        .addHeaders(FieldId.newBuilder().setName("phone").build())
+        .addRows(Row.newBuilder()
+            .addValues(Value.newBuilder().setStringValue("John Doe").build())
+            .addValues(Value.newBuilder().setStringValue("(206) 555-0123").build()))
+        .build();
+    InspectTable.inspectTable(PROJECT_ID, tableToInspect);
+
+    String output = bout.toString();
+    assertThat(output, containsString("Info type: PHONE_NUMBER"));
   }
 
   @Test
