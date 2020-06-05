@@ -21,8 +21,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.privacy.dlp.v2.CancelDlpJobRequest;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
@@ -30,7 +28,6 @@ import com.google.privacy.dlp.v2.Value;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -142,6 +139,35 @@ public class InspectTests {
     assertThat(output, not(containsString("Example, Jimmy")));
   }
 
+  @Test
+  public void testInspectStringCustomOmitOverlap() throws Exception {
+    InspectStringCustomOmitOverlap.inspectStringCustomOmitOverlap(PROJECT_ID,
+        "Name: Jane Doe. Name: Larry Page.");
+
+    String output = bout.toString();
+    assertThat(output, containsString("Jane Doe"));
+    assertThat(output, not(containsString("Larry Page")));
+  }
+
+  @Test
+  public void testInspectStringOmitOverlap() throws Exception {
+    InspectStringOmitOverlap.inspectStringOmitOverlap(PROJECT_ID, "james@example.com");
+
+    String output = bout.toString();
+    assertThat(output, containsString("EMAIL_ADDRESS"));
+    assertThat(output, not(containsString("PERSON_NAME")));
+  }
+
+  @Test
+  public void testInspectStringWithoutOverlap() throws Exception {
+    InspectStringWithoutOverlap.inspectStringWithoutOverlap(PROJECT_ID,
+        "example.com is a domain, james@example.org is an email.");
+
+    String output = bout.toString();
+    assertThat(output, containsString("example.com"));
+    assertThat(output, not(containsString("example.org")));
+  }
+  
   @Test
   public void testInspectTable() {
     Table tableToInspect = Table.newBuilder()
