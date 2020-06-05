@@ -145,6 +145,14 @@ public class InspectTests {
     assertThat(output, not(containsString("Larry Page")));
   }
 
+  public void testInspectStringOmitOverlap() throws Exception {
+    InspectStringOmitOverlap.inspectStringOmitOverlap(PROJECT_ID, "james@example.com");
+
+    String output = bout.toString();
+    assertThat(output, containsString("EMAIL_ADDRESS"));
+    assertThat(output, not(containsString("PERSON_NAME")));
+  }
+
   @Test
   public void textInspectTestFile() throws Exception {
     InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
