@@ -28,6 +28,8 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.TopicName;
 import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.UUID;
@@ -101,7 +103,7 @@ public class InspectTests {
   @After
   public void tearDown() throws Exception {
     // Restore stdout
-    System.setOut(null);
+    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
     bout.reset();
 
     // Delete the test topic

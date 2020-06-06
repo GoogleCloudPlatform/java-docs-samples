@@ -28,6 +28,8 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.TopicName;
 import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -74,9 +76,8 @@ public class RiskAnalysisTests {
 
   @Before
   public void setUp() throws Exception {
-    // Capture stdout
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
+    System.out.println(String.format("Using topic '%s' and subscription '%s'",
+        topicName.getTopic(), subscriptionName.getSubscription()));
 
     // Create a new topic
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
@@ -87,20 +88,24 @@ public class RiskAnalysisTests {
       subscriptionAdminClient
           .createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
     }
+
+    // Capture stdout
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
   }
 
 
   @After
   public void tearDown() throws Exception {
     // Restore stdout
-    System.setOut(null);
+    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
     bout.reset();
 
     // Delete the test topic
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.deleteTopic(topicName);
     } catch (ApiException e) {
-      System.out.println(String.format("Error deleting test pubsub topic %s: %s",
+      System.out.println(String.format("Error deleting topic %s: %s",
           topicName.getTopic(), e));
       // Keep trying to clean up
     }
@@ -109,7 +114,7 @@ public class RiskAnalysisTests {
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       subscriptionAdminClient.deleteSubscription(subscriptionName);
     } catch (ApiException e) {
-      System.out.println(String.format("Error deleting test pubsub subscription %s: %s",
+      System.out.println(String.format("Error deleting subscription %s: %s",
           subscriptionName.getSubscription(), e));
       // Keep trying to clean up
     }
