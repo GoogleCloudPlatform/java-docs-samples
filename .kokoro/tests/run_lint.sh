@@ -19,7 +19,7 @@ set -eo pipefail
 
 # If on kokoro, add btlr to the path and cd into repo root
 if [ -n "$KOKORO_GFILE_DIR" ]; then
-  bltr_dir="$KOKORO_GFILE_DIR/btlr/v0.0.1/"
+  bltr_dir="$KOKORO_GFILE_DIR/v0.0.1/"
   chmod +x "${bltr_dir}"btlr
   export PATH="$PATH:$bltr_dir"
   cd github/java-docs-samples || exit
