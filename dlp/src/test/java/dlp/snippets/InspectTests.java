@@ -214,6 +214,24 @@ public class InspectTests {
   }
 
   @Test
+  public void testInspectStringCustomHotword() throws Exception {
+    InspectStringCustomHotword.inspectStringCustomHotword(PROJECT_ID,
+        "patient name: Joe Example", "patient");
+
+    String output = bout.toString();
+    assertThat(output, containsString("Joe Example"));
+  }
+
+  @Test
+  public void testInspectStringCustomHotwordNegativeExample() throws Exception {
+    InspectStringCustomHotword.inspectStringCustomHotword(PROJECT_ID,
+        "name: Joe Example", "patient");
+
+    String output = bout.toString();
+    assertThat(output, not(containsString("Joe Example")));
+  }
+
+  @Test
   public void textInspectTestFile() throws Exception {
     InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
     String output = bout.toString();
