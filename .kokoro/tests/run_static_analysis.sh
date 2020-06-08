@@ -33,4 +33,4 @@ if [ -n "$GIT_DIFF" ]; then
   )
 fi
 
-btlr "${opts[@]}" run "**/pom.xml" -- mvn -P lint spotbugs:check pmd:cpd-check
+btlr "${opts[@]}" run "**/pom.xml" -- mvn -P lint --quiet --batch-mode spotbugs:check pmd:cpd-check
