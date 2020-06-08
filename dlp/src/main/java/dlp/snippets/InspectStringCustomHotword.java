@@ -43,7 +43,7 @@ public class InspectStringCustomHotword {
   public static void inspectStringCustomHotword() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String textToInspect = "patient name: Joe Example";
+    String textToInspect = "patient name: John Doe";
     String customHotword = "patient";
     inspectStringCustomHotword(projectId, textToInspect, customHotword);
   }

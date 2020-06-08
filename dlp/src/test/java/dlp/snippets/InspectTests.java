@@ -216,19 +216,19 @@ public class InspectTests {
   @Test
   public void testInspectStringCustomHotword() throws Exception {
     InspectStringCustomHotword.inspectStringCustomHotword(PROJECT_ID,
-        "patient name: Joe Example", "patient");
+        "patient name: John Doe", "patient");
 
     String output = bout.toString();
-    assertThat(output, containsString("Joe Example"));
+    assertThat(output, containsString("John Doe"));
   }
 
   @Test
   public void testInspectStringCustomHotwordNegativeExample() throws Exception {
     InspectStringCustomHotword.inspectStringCustomHotword(PROJECT_ID,
-        "name: Joe Example", "patient");
+        "name: John Doe", "patient");
 
     String output = bout.toString();
-    assertThat(output, not(containsString("Joe Example")));
+    assertThat(output, not(containsString("John Doe")));
   }
 
   @Test
