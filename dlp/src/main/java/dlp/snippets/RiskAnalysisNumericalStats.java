@@ -39,12 +39,15 @@ import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 class RiskAnalysisNumericalStats {
 
-  public static void numericalStatsAnalysis() throws Exception {
+  public static void numericalStatsAnalysis()
+      throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String datasetId = "your-bigquery-dataset-id";
@@ -56,7 +59,7 @@ class RiskAnalysisNumericalStats {
 
   public static void numericalStatsAnalysis(
       String projectId, String datasetId, String tableId, String topicId, String subscriptionId)
-      throws Exception {
+      throws ExecutionException, InterruptedException, IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -124,6 +127,9 @@ class RiskAnalysisNumericalStats {
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
         System.out.println("Unable to verify job completion.");
+      } finally {
+        subscriber.stopAsync();
+        subscriber.awaitTerminated();
       }
 
       // Build a request to get the completed job
