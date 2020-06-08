@@ -20,10 +20,8 @@ set -eo pipefail
 # If on kokoro, get btlr binary and move into the right directory
 if [ -n "$KOKORO_GFILE_DIR" ]; then
   bltr_dir="$KOKORO_GFILE_DIR/btlr/v0.0.1/"
-  echo $bltr_dir
-  chmod +x "$bltr_dir"
+  chmod +x "$bltr_dir/btlr"
   export PATH="$PATH:$bltr_dir"
-  echo $PATH
   cd github/java-docs-samples || exit
 fi
 
