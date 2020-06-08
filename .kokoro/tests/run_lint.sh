@@ -17,10 +17,10 @@
 # `-o pipefail` sets the exit code to the rightmost comment to exit with a non-zero
 set -eo pipefail
 
-# If on kokoro, get btlr binary and move into the right directory
+# If on kokoro, add btlr to the path and cd into repo root
 if [ -n "$KOKORO_GFILE_DIR" ]; then
   bltr_dir="$KOKORO_GFILE_DIR/btlr/v0.0.1/"
-  chmod +x "$bltr_dir/btlr"
+  chmod +x "${bltr_dir}"btlr
   export PATH="$PATH:$bltr_dir"
   cd github/java-docs-samples || exit
 fi
