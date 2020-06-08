@@ -21,15 +21,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.api.gax.rpc.ApiException;
+import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.TopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -46,7 +54,16 @@ public class InspectTests {
   // TODO: Update as ENV_VARs
   private static final String datastoreNamespace = "";
   private static final String datastoreKind = "dlp";
+
   private ByteArrayOutputStream bout;
+  private UUID testRunUuid = UUID.randomUUID();
+  private TopicName topicName = TopicName.of(
+      PROJECT_ID,
+      String.format("%s-%s", TOPIC_ID, testRunUuid.toString()));
+  private ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
+      PROJECT_ID,
+      String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
+  private PrintStream originalOut = System.out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -54,8 +71,8 @@ public class InspectTests {
         System.getenv(varName));
   }
 
-  @Before
-  public void checkRequirements() {
+  @BeforeClass
+  public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GCS_PATH");
@@ -66,15 +83,47 @@ public class InspectTests {
   }
 
   @Before
-  public void captureOut() {
+  public void setUp() throws Exception {
+    // Create a new topic
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.createTopic(topicName);
+    }
+
+    // Create a new subscription
+    try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
+      subscriptionAdminClient
+          .createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
+    }
+
+    // Capture stdout
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
 
+
   @After
-  public void releaseOut() {
-    System.setOut(null);
+  public void tearDown() throws Exception {
+    // Restore stdout
+    System.setOut(originalOut);
     bout.reset();
+
+    // Delete the test topic
+    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+      topicAdminClient.deleteTopic(topicName);
+    } catch (ApiException e) {
+      System.err.println(String.format("Error deleting topic %s: %s",
+          topicName.getTopic(), e));
+      // Keep trying to clean up
+    }
+
+    // Delete the test subscription
+    try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
+      subscriptionAdminClient.deleteSubscription(subscriptionName);
+    } catch (ApiException e) {
+      System.err.println(String.format("Error deleting subscription %s: %s",
+          subscriptionName.getSubscription(), e));
+      // Keep trying to clean up
+    }
   }
 
   @Test
@@ -184,6 +233,24 @@ public class InspectTests {
   }
 
   @Test
+  public void testInspectStringCustomHotword() throws Exception {
+    InspectStringCustomHotword.inspectStringCustomHotword(PROJECT_ID,
+        "patient name: John Doe", "patient");
+
+    String output = bout.toString();
+    assertThat(output, containsString("John Doe"));
+  }
+
+  @Test
+  public void testInspectStringCustomHotwordNegativeExample() throws Exception {
+    InspectStringCustomHotword.inspectStringCustomHotword(PROJECT_ID,
+        "name: John Doe", "patient");
+
+    String output = bout.toString();
+    assertThat(output, not(containsString("John Doe")));
+  }
+
+  @Test
   public void textInspectTestFile() throws Exception {
     InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
     String output = bout.toString();
@@ -202,7 +269,9 @@ public class InspectTests {
 
   @Test
   public void testInspectGcsFile() throws Exception {
-    InspectGcsFile.inspectGcsFile(PROJECT_ID, GCS_PATH, TOPIC_ID, SUBSCRIPTION_ID);
+    InspectGcsFile
+        .inspectGcsFile(PROJECT_ID, GCS_PATH, topicName.getTopic(),
+            subscriptionName.getSubscription());
 
     String output = bout.toString();
     assertThat(output, containsString("Job status: DONE"));
@@ -210,9 +279,9 @@ public class InspectTests {
 
   @Test
   public void testInspectDatastoreEntity() throws Exception {
-
-    InspectDatastoreEntity.insepctDatastoreEntity(
-        PROJECT_ID, datastoreNamespace, datastoreKind, TOPIC_ID, SUBSCRIPTION_ID);
+    InspectDatastoreEntity
+        .insepctDatastoreEntity(PROJECT_ID, datastoreNamespace, datastoreKind, topicName.getTopic(),
+            subscriptionName.getSubscription());
 
     String output = bout.toString();
     assertThat(output, containsString("Job status: DONE"));
@@ -220,9 +289,9 @@ public class InspectTests {
 
   @Test
   public void testInspectBigQueryTable() throws Exception {
-
     InspectBigQueryTable
-        .inspectBigQueryTable(PROJECT_ID, DATASET_ID, TABLE_ID, TOPIC_ID, SUBSCRIPTION_ID);
+        .inspectBigQueryTable(PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(),
+            subscriptionName.getSubscription());
 
     String output = bout.toString();
     assertThat(output, containsString("Job status: DONE"));
