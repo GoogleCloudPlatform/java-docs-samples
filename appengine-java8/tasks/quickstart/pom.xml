@@ -92,11 +92,11 @@ Copyright 2018 Google LLC
         </configuration>
       </plugin>
 
-      <plugin>
+      <!-- <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.3</version>
-      </plugin>
+        <version>3.3.0</version>
+      </plugin> -->
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

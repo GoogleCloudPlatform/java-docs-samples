@@ -17,11 +17,13 @@
 package com.example.task;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
@@ -37,6 +39,19 @@ public class CreateTaskIT {
   private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private String location = System.getenv("LOCATION_ID");
   private String queueName = System.getenv("QUEUE_ID");
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        "Environment variable '%s' is required to perform these tests.".format(varName),
+        System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("LOCATION_ID");
+    requireEnvVar("QUEUE_ID");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
 
   @Before
   public void setUp() {
