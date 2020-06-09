@@ -32,10 +32,11 @@ import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.ProjectName;
 import com.google.protobuf.ByteString;
+import java.io.IOException;
 
 public class InspectWithCustomRegex {
 
-  public static void inspectWithCustomRegex() {
+  public static void inspectWithCustomRegex() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String textToInspect = "Patients MRN 444-5-22222";
@@ -45,7 +46,7 @@ public class InspectWithCustomRegex {
 
   // Inspects a BigQuery Table
   public static void inspectWithCustomRegex(
-      String projectId, String textToInspect, String customRegexPattern) {
+      String projectId, String textToInspect, String customRegexPattern) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -95,8 +96,6 @@ public class InspectWithCustomRegex {
         System.out.println("\tInfo type: " + f.getInfoType().getName());
         System.out.println("\tLikelihood: " + f.getLikelihood());
       }
-    } catch (Exception e) {
-      System.out.println("Error during inspectString: \n" + e.toString());
     }
   }
 }
