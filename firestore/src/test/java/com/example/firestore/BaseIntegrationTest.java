@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import com.example.firestore.snippets.ManageDataSnippetsIT;
 import com.example.firestore.snippets.model.City;
 import com.google.api.core.ApiFuture;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
@@ -49,6 +50,7 @@ public class BaseIntegrationTest {
   public static void baseSetup() throws Exception {
     projectId = getEnvVar("FIRESTORE_PROJECT_ID");
     FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
+        .setCredentials(GoogleCredentials.getApplicationDefault())
         .setProjectId(projectId)
         .build();
     db = firestoreOptions.getService();
