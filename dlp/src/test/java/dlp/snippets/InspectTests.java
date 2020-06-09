@@ -252,6 +252,15 @@ public class InspectTests {
   }
 
   @Test
+  public void testInspectStringMultipleRules() throws Exception {
+    InspectStringMultipleRules.inspectStringMultipleRules(PROJECT_ID,
+        "patient: Jane Doe");
+
+    String output = bout.toString();
+    assertThat(output, containsString("VERY_LIKELY"));
+  }
+
+  @Test
   public void textInspectTestFile() throws Exception {
     InspectTextFile.inspectTextFile(PROJECT_ID, "src/test/resources/test.txt");
     String output = bout.toString();
