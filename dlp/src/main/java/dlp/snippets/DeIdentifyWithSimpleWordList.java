@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.privacy.dlp.snippets;
+package dlp.snippets;
 
 // [START dlp_deidentify_simple_word_list]
 
