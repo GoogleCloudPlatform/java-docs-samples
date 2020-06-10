@@ -36,10 +36,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
-  // TODO<developer> set these environment variables
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
-  private static final String RESULTS_TOPIC_NAME = System.getenv("RESULT_TOPIC");
   private static final Logger logger = Logger.getLogger(OcrTranslateText.class.getName());
+
+  // TODO<developer> set these environment variables
+  private static final String PROJECT_ID = getenv("GCP_PROJECT");
+  private static final String RESULTS_TOPIC_NAME = getenv("RESULT_TOPIC");
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
 
   private Publisher publisher;
@@ -96,6 +97,17 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
       // Log error (since these exception types cannot be thrown by a function)
       logger.log(Level.SEVERE, "Error publishing translation save request: " + e.getMessage(), e);
     }
+  }
+
+  // Avoid ungraceful deployment failures due to unset environment variables.
+  // If you get this warning you should redeploy with the variable set.
+  private static String getenv(String name) {
+    String value = System.getenv(name);
+    if (value == null) {
+      logger.warning("Environment variable " + name + " was not set");
+      value = "MISSING";
+    }
+    return value;
   }
 }
 // [END functions_ocr_translate]
