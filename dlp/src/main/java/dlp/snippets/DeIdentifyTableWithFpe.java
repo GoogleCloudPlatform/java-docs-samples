@@ -49,6 +49,12 @@ public class DeIdentifyTableWithFpe {
   public static void deIdentifyTableWithFpe() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
+    String kmsKeyName =
+        "projects/YOUR_PROJECT/"
+            + "locations/YOUR_KEYRING_REGION/"
+            + "keyRings/YOUR_KEYRING_NAME/"
+            + "cryptoKeys/YOUR_KEY_NAME";
+    String wrappedAesKey = "YOUR_ENCRYPTED_AES_256_KEY";
     Table tableToDeIdentify = Table.newBuilder()
         .addHeaders(FieldId.newBuilder().setName("Employee ID").build())
         .addHeaders(FieldId.newBuilder().setName("Date").build())
@@ -69,12 +75,6 @@ public class DeIdentifyTableWithFpe {
             .addValues(Value.newBuilder().setStringValue("$15").build())
             .build())
         .build();
-    String kmsKeyName =
-        "projects/YOUR_PROJECT/"
-            + "locations/YOUR_KEYRING_REGION/"
-            + "keyRings/YOUR_KEYRING_NAME/"
-            + "cryptoKeys/YOUR_KEY_NAME";
-    String wrappedAesKey = "YOUR_ENCRYPTED_AES_256_KEY";
     deIdentifyTableWithFpe(projectId, tableToDeIdentify, kmsKeyName, wrappedAesKey);
   }
 
