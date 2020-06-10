@@ -50,6 +50,12 @@ public class ReIdentifyTableWithFpe {
   public static void reIdentifyTableWithFpe() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
+    String kmsKeyName =
+        "projects/YOUR_PROJECT/"
+            + "locations/YOUR_KEYRING_REGION/"
+            + "keyRings/YOUR_KEYRING_NAME/"
+            + "cryptoKeys/YOUR_KEY_NAME";
+    String wrappedAesKey = "YOUR_ENCRYPTED_AES_256_KEY";
     Table tableToReIdentify = Table.newBuilder()
         .addHeaders(FieldId.newBuilder().setName("Employee ID").build())
         .addRows(
@@ -57,12 +63,6 @@ public class ReIdentifyTableWithFpe {
                 Value.newBuilder().setStringValue("28777").build())
                 .build())
         .build();
-    String kmsKeyName =
-        "projects/YOUR_PROJECT/"
-            + "locations/YOUR_KEYRING_REGION/"
-            + "keyRings/YOUR_KEYRING_NAME/"
-            + "cryptoKeys/YOUR_KEY_NAME";
-    String wrappedAesKey = "YOUR_ENCRYPTED_AES_256_KEY";
     reIdentifyTableWithFpe(projectId, tableToReIdentify, kmsKeyName, wrappedAesKey);
   }
 
