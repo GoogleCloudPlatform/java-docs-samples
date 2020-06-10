@@ -97,14 +97,10 @@ public class InspectStringMultipleRules {
       // Construct a ruleset that applies the rules to the PERSON_NAME infotype.
       InspectionRuleSet ruleSet = InspectionRuleSet.newBuilder()
           .addInfoTypes(InfoType.newBuilder().setName("PERSON_NAME"))
-          .addRules(InspectionRule.newBuilder()
-              .setHotwordRule(patientRule))
-          .addRules(InspectionRule.newBuilder()
-              .setHotwordRule(doctorRule))
-          .addRules(InspectionRule.newBuilder()
-              .setExclusionRule(quasimodoRule))
-          .addRules(InspectionRule.newBuilder()
-              .setExclusionRule(redactedRule))
+          .addRules(InspectionRule.newBuilder().setHotwordRule(patientRule))
+          .addRules(InspectionRule.newBuilder().setHotwordRule(doctorRule))
+          .addRules(InspectionRule.newBuilder().setExclusionRule(quasimodoRule))
+          .addRules(InspectionRule.newBuilder().setExclusionRule(redactedRule))
           .build();
 
       // Construct the configuration for the Inspect request, including the ruleset.
