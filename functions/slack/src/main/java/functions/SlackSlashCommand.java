@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class SlackSlashCommand implements HttpFunction {
 
   // [START functions_slack_setup]
-  private static final Logger logger = Logger.getLogger("functions.SlackSlashCommand");
+  private static final Logger logger = Logger.getLogger(SlackSlashCommand.class.getName());
   private static final String API_KEY = getenv("KG_API_KEY");
   private static final String SLACK_SECRET = getenv("SLACK_SECRET");
   private static final Gson gson = new Gson();
