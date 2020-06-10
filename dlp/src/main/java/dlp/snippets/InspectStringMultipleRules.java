@@ -83,14 +83,13 @@ public class InspectStringMultipleRules {
 
       // Construct exclusion rules
       ExclusionRule quasimodoRule = ExclusionRule.newBuilder()
-          .setDictionary(Dictionary.newBuilder()
-              .setWordList(WordList.newBuilder().addWords("Quasimodo")))
+          .setDictionary(
+              Dictionary.newBuilder().setWordList(WordList.newBuilder().addWords("Quasimodo")))
           .setMatchingType(MatchingType.MATCHING_TYPE_PARTIAL_MATCH)
           .build();
 
       ExclusionRule redactedRule = ExclusionRule.newBuilder()
-          .setRegex(Regex.newBuilder()
-              .setPattern("REDACTED"))
+          .setRegex(Regex.newBuilder().setPattern("REDACTED"))
           .setMatchingType(MatchingType.MATCHING_TYPE_PARTIAL_MATCH)
           .build();
 
