@@ -109,14 +109,5 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     }
     return value;
   }
-
-  private static String getenv(String name) {
-    String value = System.getenv(name);
-    if (value == null) {
-      logger.warning("Environment variable " + name + " was not set");
-      value = "MISSING";
-    }
-    return value;
-  }
 }
 // [END functions_ocr_translate]
