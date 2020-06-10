@@ -68,21 +68,17 @@ public class InspectStringMultipleRules {
 
       // Construct hotword rules
       HotwordRule patientRule = HotwordRule.newBuilder()
-          .setHotwordRegex(Regex.newBuilder()
-              .setPattern("patient"))
-          .setProximity(Proximity.newBuilder()
-              .setWindowBefore(10))
-          .setLikelihoodAdjustment(LikelihoodAdjustment.newBuilder()
-              .setFixedLikelihood(Likelihood.VERY_LIKELY))
+          .setHotwordRegex(Regex.newBuilder().setPattern("patient"))
+          .setProximity(Proximity.newBuilder().setWindowBefore(10))
+          .setLikelihoodAdjustment(
+              LikelihoodAdjustment.newBuilder().setFixedLikelihood(Likelihood.VERY_LIKELY))
           .build();
 
       HotwordRule doctorRule = HotwordRule.newBuilder()
-          .setHotwordRegex(Regex.newBuilder()
-              .setPattern("doctor"))
-          .setProximity(Proximity.newBuilder()
-              .setWindowBefore(10))
-          .setLikelihoodAdjustment(LikelihoodAdjustment.newBuilder()
-              .setFixedLikelihood(Likelihood.UNLIKELY))
+          .setHotwordRegex(Regex.newBuilder().setPattern("doctor"))
+          .setProximity(Proximity.newBuilder().setWindowBefore(10))
+          .setLikelihoodAdjustment(
+              LikelihoodAdjustment.newBuilder().setFixedLikelihood(Likelihood.UNLIKELY))
           .build();
 
       // Construct exclusion rules
