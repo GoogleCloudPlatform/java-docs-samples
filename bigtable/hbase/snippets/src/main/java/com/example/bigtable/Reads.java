@@ -16,13 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_reads_row]
-// [START bigtable_reads_row_partial]
-// [START bigtable_reads_rows]
-// [START bigtable_reads_row_range]
-// [START bigtable_reads_row_ranges]
-// [START bigtable_reads_prefix]
-// [START bigtable_reads_filter]
+// [START bigtable_reads_imports]
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.IOException;
@@ -45,13 +39,7 @@ import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class Reads {
-  // [END bigtable_reads_row]
-  // [END bigtable_reads_row_partial]
-  // [END bigtable_reads_rows]
-  // [END bigtable_reads_row_range]
-  // [END bigtable_reads_row_ranges]
-  // [END bigtable_reads_prefix]
-  // [END bigtable_reads_filter]
+  // [END bigtable_reads_imports]
 
   // [START bigtable_reads_row]
   public static void readRow() {
@@ -79,6 +67,8 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
+  // [END bigtable_reads_row]
+  
   // [START bigtable_reads_row_partial]
   public static void readRowPartial() {
     // TODO(developer): Replace these variables before running the sample.
@@ -277,13 +267,7 @@ public class Reads {
   }
   // [END bigtable_reads_filter]
 
-  // [START bigtable_reads_row]
-  // [START bigtable_reads_row_partial]
-  // [START bigtable_reads_rows]
-  // [START bigtable_reads_row_range]
-  // [START bigtable_reads_row_ranges]
-  // [START bigtable_reads_prefix]
-  // [START bigtable_reads_filter]
+  // [START bigtable_reads_print]
   private static void printRow(Result row) {
     System.out.printf("Reading data for %s%n", Bytes.toString(row.rawCells()[0].getRowArray()));
     String colFamily = "";
@@ -302,10 +286,4 @@ public class Reads {
     System.out.println();
   }
 }
-// [END bigtable_reads_row]
-// [END bigtable_reads_row_partial]
-// [END bigtable_reads_rows]
-// [END bigtable_reads_row_range]
-// [END bigtable_reads_row_ranges]
-// [END bigtable_reads_prefix]
-// [END bigtable_reads_filter]
+// [END bigtable_reads_print]
