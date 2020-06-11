@@ -338,7 +338,7 @@ public class Filters {
   }
   // [END bigtable_filters_composing_interleave]
 
-  // [START bigtable_filters_generic]
+  // [START bigtable_filters_print]
   public static void readWithFilter(
       String projectId, String instanceId, String tableId, Scan scan) {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -375,5 +375,5 @@ public class Filters {
     }
     System.out.println();
   }
-  // [END bigtable_filters_generic]
+  // [END bigtable_filters_print]
 }
