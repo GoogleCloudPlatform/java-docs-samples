@@ -54,8 +54,9 @@ import org.apache.hadoop.hbase.filter.SkipFilter;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
+// [END bigtable_filters_imports]
+
 public class Filters {
-  // [END bigtable_filters_imports]
 
   // [START bigtable_filters_limit_row_sample]
   public static void filterLimitRowSample() {
@@ -374,5 +375,5 @@ public class Filters {
     }
     System.out.println();
   }
+  // [END bigtable_filters_generic]
 }
-// [END bigtable_filters_generic]
