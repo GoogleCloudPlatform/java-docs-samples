@@ -1,38 +1,38 @@
 /*
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * This sample creates a Dataproc cluster with an autoscaling policy enabled. The policy we will be creating mirrors
- * the following YAML representation:
- *
-    workerConfig:
-      minInstances: 2
-      maxInstances: 100
-      weight: 1
-    secondaryWorkerConfig:
-      minInstances: 0
-      maxInstances: 100
-      weight: 1
-    basicAlgorithm:
-      cooldownPeriod: 4m
-      yarnConfig:
-        scaleUpFactor: 0.05
-        scaleDownFactor: 1.0
-        scaleUpMinWorkerFraction: 0.0
-        scaleDownMinWorkerFraction: 0.0
-        gracefulDecommissionTimeout: 1h
- */
+* Copyright 2020 Google LLC
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* This sample creates a Dataproc cluster with an autoscaling policy enabled. The policy we will be creating mirrors
+* the following YAML representation:
+*
+   workerConfig:
+     minInstances: 2
+     maxInstances: 100
+     weight: 1
+   secondaryWorkerConfig:
+     minInstances: 0
+     maxInstances: 100
+     weight: 1
+   basicAlgorithm:
+     cooldownPeriod: 4m
+     yarnConfig:
+       scaleUpFactor: 0.05
+       scaleDownFactor: 1.0
+       scaleUpMinWorkerFraction: 0.0
+       scaleDownMinWorkerFraction: 0.0
+       gracefulDecommissionTimeout: 1h
+*/
 
 // [START dataproc_create_autoscaling_cluster]
 
@@ -67,9 +67,11 @@ public class CreateClusterWithAutoscaling {
     AutoscalingPolicyServiceSettings autoscalingPolicyServiceSettings =
         AutoscalingPolicyServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
 
-    // Create a cluster controller client and an autoscaling controller clien with the configured
-    // settings. The clients only need to be created once and can be reused for multiple requests. Using a
-    // try-with-resources closes the client, but this can also be done manually with the .close() method.
+    // Create a cluster controller client and an autoscaling controller client with the configured
+    // settings. The clients only need to be created once and can be reused for multiple requests.
+    // Using a
+    // try-with-resources closes the client, but this can also be done manually with the .close()
+    // method.
     try (ClusterControllerClient clusterControllerClient =
             ClusterControllerClient.create(clusterControllerSettings);
         AutoscalingPolicyServiceClient autoscalingPolicyServiceClient =
@@ -113,10 +115,11 @@ public class CreateClusterWithAutoscaling {
       // Policy is uploaded here.
       autoscalingPolicyServiceClient.createAutoscalingPolicy(parent, autoscalingPolicy);
 
-      // Now the policy can be referrenced when creating a cluster.
+      // Now the policy can be referenced when creating a cluster.
       String autoscalingPolicyURI =
           String.format(
-              "projects/%s/locations/%s/autoscalingPolicies/%s", projectId, region, autoscalingPolicyName);
+              "projects/%s/locations/%s/autoscalingPolicies/%s",
+              projectId, region, autoscalingPolicyName);
       AutoscalingConfig autoscalingConfig =
           AutoscalingConfig.newBuilder().setPolicyUri(autoscalingPolicyURI).build();
 
@@ -151,7 +154,7 @@ public class CreateClusterWithAutoscaling {
       System.out.printf("Cluster created successfully: %s", response.getClusterName());
 
     } catch (ExecutionException e) {
-      System.err.println(String.format("Error executing createCluster: %s ", e.getMessage()));
+      System.err.println(String.format("createClusterWithAutoscaling: %s ", e.getMessage()));
     }
   }
 }
