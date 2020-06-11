@@ -17,19 +17,21 @@
 package dlp.snippets;
 
 // [START dlp_list_triggers]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.JobTrigger;
 import com.google.privacy.dlp.v2.ListJobTriggersRequest;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
+import java.io.IOException;
 
 class TriggersList {
-  public static void listTriggers() throws Exception {
+  public static void listTriggers() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     listTriggers(projectId);
   }
 
-  public static void listTriggers(String projectId) throws Exception {
+  public static void listTriggers(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -37,7 +39,7 @@ class TriggersList {
       // Build the request to be sent by the client
       ListJobTriggersRequest listJobTriggersRequest =
           ListJobTriggersRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .build();
 
       // Use the client to send the API request.

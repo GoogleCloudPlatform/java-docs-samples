@@ -40,6 +40,16 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
   private static final Logger logger = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
   private static final Firestore FIRESTORE = FirestoreOptions.getDefaultInstance().getService();
 
+  private final Firestore firestore;
+
+  public FirebaseFirestoreReactive() {
+    this(FIRESTORE);
+  }
+
+  FirebaseFirestoreReactive(Firestore firestore) {
+    this.firestore = firestore;
+  }
+
   @Override
   public void accept(String json, Context context) {
     // Get the recently-written value

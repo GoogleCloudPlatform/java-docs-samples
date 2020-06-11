@@ -17,7 +17,8 @@
 package functions;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
@@ -29,7 +30,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
 
 @RunWith(JUnit4.class)
 public class ExecutionCountTest {
@@ -46,7 +46,7 @@ public class ExecutionCountTest {
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+    when(response.getWriter()).thenReturn(writerOut);
   }
 
   @Test

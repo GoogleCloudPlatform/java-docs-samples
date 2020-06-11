@@ -19,8 +19,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpRequest.HttpPart;
@@ -44,7 +43,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class HttpFormDataTest {
@@ -64,14 +63,11 @@ public class HttpFormDataTest {
 
   @Before
   public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
-
-    request = mock(HttpRequest.class);
-    response = mock(HttpResponse.class);
+    MockitoAnnotations.initMocks(this);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+    when(response.getWriter()).thenReturn(writerOut);
 
     logHandler.clear();
   }

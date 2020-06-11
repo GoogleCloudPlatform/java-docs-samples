@@ -19,8 +19,7 @@ package functions;
 // [START functions_http_unit_test]
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
@@ -35,7 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class HelloHttpTest {
@@ -47,10 +46,7 @@ public class HelloHttpTest {
 
   @Before
   public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
-
-    request = mock(HttpRequest.class);
-    response = mock(HttpResponse.class);
+    MockitoAnnotations.initMocks(this);
 
     // use an empty string as the default request content
     BufferedReader reader = new BufferedReader(new StringReader(""));

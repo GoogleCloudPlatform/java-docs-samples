@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

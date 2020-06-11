@@ -21,10 +21,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
 
 /** Command line options for the HTTP example. */
 public class HttpExampleOptions {
@@ -42,7 +40,7 @@ public class HttpExampleOptions {
   String messageType = "event";
 
   /** Construct an HttpExampleOptions class from command line flags. */
-  public static @Nullable HttpExampleOptions fromFlags(String...args) {
+  public static @Nullable HttpExampleOptions fromFlags(String... args) {
     // Required arguments
     options.addOption(
         Option.builder()

@@ -16,19 +16,6 @@
 
 package com.example.cloud.iot.examples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudiot.v1.CloudIot;
-import com.google.api.services.cloudiot.v1.CloudIotScopes;
-import com.google.api.services.cloudiot.v1.model.Device;
-import com.google.api.services.cloudiot.v1.model.DeviceCredential;
-import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
-import com.google.api.services.cloudiot.v1.model.EventNotificationConfig;
-import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
-import com.google.common.base.Charsets;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
@@ -38,28 +25,20 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TabBehaviour;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
-
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -72,13 +51,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class MqttCommandsDemo {
 
   static MqttCallback mCallback;
   static Thread mGUIthread;
   static final String APP_NAME = "MqttCommandsDemo";
-
 
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile)
@@ -121,7 +98,6 @@ public class MqttCommandsDemo {
     return jwtBuilder.signWith(SignatureAlgorithm.ES256, kf.generatePrivate(spec)).compact();
   }
 
-
   /** Attaches the callback used when configuration changes occur. */
   public static void attachCallback(MqttClient client, String deviceId, Screen mainScreen)
       throws MqttException {
@@ -153,7 +129,6 @@ public class MqttCommandsDemo {
 
               // [end command respond code]
             }
-
           }
 
           @Override
@@ -202,7 +177,7 @@ public class MqttCommandsDemo {
 
           public boolean isValidColor(JSONObject data, TextColor mainBgColor) throws JSONException {
             return data.get("color") instanceof String
-                    && !mainBgColor.toColor().equals(getColor((String) data.get("color")));
+                && !mainBgColor.toColor().equals(getColor((String) data.get("color")));
           }
         };
 
@@ -217,10 +192,17 @@ public class MqttCommandsDemo {
     client.setCallback(mCallback);
   }
 
-  public static void mqttDeviceDemo(String projectId, String cloudRegion, String registryId,
-                                    String deviceId, String privateKeyFile, String algorithm,
-                                    String mqttBridgeHostname, short mqttBridgePort,
-                                    String messageType, int waitTime)
+  public static void mqttDeviceDemo(
+      String projectId,
+      String cloudRegion,
+      String registryId,
+      String deviceId,
+      String privateKeyFile,
+      String algorithm,
+      String mqttBridgeHostname,
+      short mqttBridgePort,
+      String messageType,
+      int waitTime)
       throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, MqttException,
           InterruptedException {
 
@@ -254,11 +236,9 @@ public class MqttCommandsDemo {
 
     DateTime iat = new DateTime();
     if (algorithm.equals("RS256")) {
-      connectOptions.setPassword(
-          createJwtRsa(projectId, privateKeyFile).toCharArray());
+      connectOptions.setPassword(createJwtRsa(projectId, privateKeyFile).toCharArray());
     } else if (algorithm.equals("ES256")) {
-      connectOptions.setPassword(
-          createJwtEs(projectId, privateKeyFile).toCharArray());
+      connectOptions.setPassword(createJwtEs(projectId, privateKeyFile).toCharArray());
     } else {
       throw new IllegalArgumentException(
           "Invalid algorithm " + algorithm + ". Should be one of 'RS256' or 'ES256'.");
@@ -482,7 +462,6 @@ public class MqttCommandsDemo {
     screen.stopScreen();
   }
 
-
   public static boolean isJsonValid(String data) {
     try {
       new JSONObject(data);
@@ -505,9 +484,16 @@ public class MqttCommandsDemo {
       System.exit(1);
     }
     System.out.println("Starting mqtt demo:");
-    mqttDeviceDemo(options.projectId, options.cloudRegion, options.registryId, options.deviceId,
-            options.privateKeyFile, options.algorithm, options.mqttBridgeHostname,
-            options.mqttBridgePort,"state", options.waitTime);
-
+    mqttDeviceDemo(
+        options.projectId,
+        options.cloudRegion,
+        options.registryId,
+        options.deviceId,
+        options.privateKeyFile,
+        options.algorithm,
+        options.mqttBridgeHostname,
+        options.mqttBridgePort,
+        "state",
+        options.waitTime);
   }
 }

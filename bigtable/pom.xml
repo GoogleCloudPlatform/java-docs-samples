@@ -30,7 +30,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
 
   <name>bigtable</name>
@@ -42,17 +42,18 @@
   </properties>
 
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigtable -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-bigtable</artifactId>
+      <version>1.13.0</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13</version>
       <scope>test</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigtable -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-bigtable</artifactId>
-      <version>1.11.0</version>
     </dependency>
   </dependencies>
 </project>

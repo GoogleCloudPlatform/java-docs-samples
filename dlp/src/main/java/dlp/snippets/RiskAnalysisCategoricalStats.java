@@ -31,21 +31,24 @@ import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PrivacyMetric;
 import com.google.privacy.dlp.v2.PrivacyMetric.CategoricalStatsConfig;
-import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.privacy.dlp.v2.ValueFrequency;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 class RiskAnalysisCategoricalStats {
 
-  public static void categoricalStatsAnalysis() throws Exception {
+  public static void categoricalStatsAnalysis()
+      throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String datasetId = "your-bigquery-dataset-id";
@@ -57,7 +60,7 @@ class RiskAnalysisCategoricalStats {
 
   public static void categoricalStatsAnalysis(
       String projectId, String datasetId, String tableId, String topicId, String subscriptionId)
-      throws Exception {
+      throws ExecutionException, InterruptedException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -97,7 +100,7 @@ class RiskAnalysisCategoricalStats {
       // Build the job creation request to be sent by the client
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setRiskJob(riskAnalysisJobConfig)
               .build();
 
@@ -124,6 +127,9 @@ class RiskAnalysisCategoricalStats {
         Thread.sleep(500); // Wait for the job to become available
       } catch (TimeoutException e) {
         System.out.println("Unable to verify job completion.");
+      } finally {
+        subscriber.stopAsync();
+        subscriber.awaitTerminated();
       }
 
       // Build a request to get the completed job

@@ -39,8 +39,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.ProtocolException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -50,17 +48,18 @@ import java.util.Base64;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 // [END iot_http_includes]
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via HTTP, using JWT.
  *
- * <p>This example connects to Google Cloud IoT Core via HTTP Bridge, using a JWT for device
+ * This example connects to Google Cloud IoT Core via HTTP Bridge, using a JWT for device
  * authentication. After connecting, by default the device publishes 100 messages at a rate of one
  * per second, and then exits. You can change The behavior to set state instead of events by using
  * flag -message_type to 'state'.
  *
- * <p>To run this example, follow the instructions in the README located in the sample's parent
+ * To run this example, follow the instructions in the README located in the sample's parent
  * folder.
  */
 public class HttpExample {
@@ -110,8 +109,14 @@ public class HttpExample {
 
   // [START iot_http_getconfig]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
-  protected static void getConfig(String urlPath, String token, String projectId,
-      String cloudRegion, String registryId, String deviceId, String version)
+  protected static void getConfig(
+      String urlPath,
+      String token,
+      String projectId,
+      String cloudRegion,
+      String registryId,
+      String deviceId,
+      String version)
       throws IOException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
@@ -121,12 +126,13 @@ public class HttpExample {
     urlPath = urlPath + devicePath + "/config?local_version=" + version;
 
     HttpRequestFactory requestFactory =
-        HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-          @Override
-          public void initialize(HttpRequest request) {
-            request.setParser(new JsonObjectParser(JSON_FACTORY));
-          }
-        });
+        HTTP_TRANSPORT.createRequestFactory(
+            new HttpRequestInitializer() {
+              @Override
+              public void initialize(HttpRequest request) {
+                request.setParser(new JsonObjectParser(JSON_FACTORY));
+              }
+            });
 
     final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
     HttpHeaders heads = new HttpHeaders();
@@ -136,13 +142,14 @@ public class HttpExample {
     heads.setCacheControl("no-cache");
 
     req.setHeaders(heads);
-    ExponentialBackOff backoff = new ExponentialBackOff.Builder()
-        .setInitialIntervalMillis(500)
-        .setMaxElapsedTimeMillis(900000)
-        .setMaxIntervalMillis(6000)
-        .setMultiplier(1.5)
-        .setRandomizationFactor(0.5)
-        .build();
+    ExponentialBackOff backoff =
+        new ExponentialBackOff.Builder()
+            .setInitialIntervalMillis(500)
+            .setMaxElapsedTimeMillis(900000)
+            .setMaxIntervalMillis(6000)
+            .setMultiplier(1.5)
+            .setRandomizationFactor(0.5)
+            .build();
     req.setUnsuccessfulResponseHandler(new HttpBackOffUnsuccessfulResponseHandler(backoff));
     HttpResponse res = req.execute();
     System.out.println(res.getStatusCode());
@@ -155,8 +162,15 @@ public class HttpExample {
 
   // [START iot_http_publish]
   /** Publish an event or state message using Cloud IoT Core via the HTTP API. */
-  protected static void publishMessage(String payload, String urlPath, String messageType,
-      String token, String projectId, String cloudRegion, String registryId, String deviceId)
+  protected static void publishMessage(
+      String payload,
+      String urlPath,
+      String messageType,
+      String token,
+      String projectId,
+      String cloudRegion,
+      String registryId,
+      String deviceId)
       throws IOException, JSONException {
     // Build the resource path of the device that is going to be authenticated.
     String devicePath =
@@ -172,14 +186,14 @@ public class HttpExample {
 
     urlPath = urlPath + devicePath + ":" + urlSuffix;
 
-
     final HttpRequestFactory requestFactory =
-        HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-          @Override
-          public void initialize(HttpRequest request) {
-            request.setParser(new JsonObjectParser(JSON_FACTORY));
-          }
-        });
+        HTTP_TRANSPORT.createRequestFactory(
+            new HttpRequestInitializer() {
+              @Override
+              public void initialize(HttpRequest request) {
+                request.setParser(new JsonObjectParser(JSON_FACTORY));
+              }
+            });
 
     HttpHeaders heads = new HttpHeaders();
     heads.setAuthorization(String.format("Bearer %s", token));
@@ -196,20 +210,22 @@ public class HttpExample {
       data.put("state", state);
     }
 
-    ByteArrayContent content = new ByteArrayContent(
-        "application/json", data.toString().getBytes(StandardCharsets.UTF_8.name()));
+    ByteArrayContent content =
+        new ByteArrayContent(
+            "application/json", data.toString().getBytes(StandardCharsets.UTF_8.name()));
 
     final HttpRequest req = requestFactory.buildGetRequest(new GenericUrl(urlPath));
     req.setHeaders(heads);
     req.setContent(content);
     req.setRequestMethod("POST");
-    ExponentialBackOff backoff = new ExponentialBackOff.Builder()
-        .setInitialIntervalMillis(500)
-        .setMaxElapsedTimeMillis(900000)
-        .setMaxIntervalMillis(6000)
-        .setMultiplier(1.5)
-        .setRandomizationFactor(0.5)
-        .build();
+    ExponentialBackOff backoff =
+        new ExponentialBackOff.Builder()
+            .setInitialIntervalMillis(500)
+            .setMaxElapsedTimeMillis(900000)
+            .setMaxIntervalMillis(6000)
+            .setMultiplier(1.5)
+            .setRandomizationFactor(0.5)
+            .build();
     req.setUnsuccessfulResponseHandler(new HttpBackOffUnsuccessfulResponseHandler(backoff));
 
     HttpResponse res = req.execute();
@@ -244,8 +260,14 @@ public class HttpExample {
     System.out.format("Using URL: '%s'%n", urlPath);
 
     // Show the latest configuration
-    getConfig(urlPath, token, options.projectId, options.cloudRegion, options.registryId,
-        options.deviceId, "0");
+    getConfig(
+        urlPath,
+        token,
+        options.projectId,
+        options.cloudRegion,
+        options.registryId,
+        options.deviceId,
+        "0");
 
     // Publish numMessages messages to the HTTP bridge.
     for (int i = 1; i <= options.numMessages; ++i) {
@@ -267,8 +289,15 @@ public class HttpExample {
         }
       }
 
-      publishMessage(payload, urlPath, options.messageType, token, options.projectId,
-              options.cloudRegion, options.registryId, options.deviceId);
+      publishMessage(
+          payload,
+          urlPath,
+          options.messageType,
+          token,
+          options.projectId,
+          options.cloudRegion,
+          options.registryId,
+          options.deviceId);
 
       if ("event".equals(options.messageType)) {
         // Frequently send event payloads (every second)

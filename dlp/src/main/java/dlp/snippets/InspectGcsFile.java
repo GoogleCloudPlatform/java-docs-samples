@@ -17,12 +17,12 @@
 package dlp.snippets;
 
 // [START dlp_inspect_gcs]
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
@@ -34,7 +34,7 @@ import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
@@ -81,7 +81,10 @@ public class InspectGcsFile {
 
       // Specify how the content should be inspected.
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+          InspectConfig.newBuilder()
+              .addAllInfoTypes(infoTypes)
+              .setIncludeQuote(true)
+              .build();
 
       // Specify the action that is triggered when the job completes.
       String pubSubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
@@ -100,7 +103,7 @@ public class InspectGcsFile {
       // Create the request for the job configured above.
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setInspectJob(inspectJobConfig)
               .build();
 
@@ -127,6 +130,9 @@ public class InspectGcsFile {
       } catch (TimeoutException e) {
         System.out.println("Job was not completed after 15 minutes.");
         return;
+      } finally {
+        subscriber.stopAsync();
+        subscriber.awaitTerminated();
       }
 
       // Get the latest state of the job from the service

@@ -29,9 +29,8 @@ import java.util.Arrays;
 public class Scopes implements HttpFunction {
   // Global (instance-wide) scope
   // This computation runs at instance cold-start.
-  // Warning: Class variables used in Servlet classes must be thread-safe,
-  // or else might introduce race conditions in your code.
-  private static final int InstanceVar = heavyComputation();
+  // Warning: Class variables used in functions code must be thread-safe.
+  private static final int INSTANCE_VAR = heavyComputation();
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
@@ -41,7 +40,7 @@ public class Scopes implements HttpFunction {
     int functionVar = lightComputation();
 
     var writer = new PrintWriter(response.getWriter());
-    writer.printf("Instance: %s; function: %s", InstanceVar, functionVar);
+    writer.printf("Instance: %s; function: %s", INSTANCE_VAR, functionVar);
   }
 
   private static int lightComputation() {

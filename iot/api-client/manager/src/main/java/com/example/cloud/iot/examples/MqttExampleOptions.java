@@ -21,10 +21,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
 
 /** Command line options for the MQTT example. */
 public class MqttExampleOptions {
@@ -47,7 +45,7 @@ public class MqttExampleOptions {
   int waitTime = 120;
 
   /** Construct an MqttExampleOptions class from command line flags. */
-  public static @Nullable MqttExampleOptions fromFlags(String...args) {
+  public static @Nullable MqttExampleOptions fromFlags(String... args) {
     // Required arguments
     options.addOption(
         Option.builder()

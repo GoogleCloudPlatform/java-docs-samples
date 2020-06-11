@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package functions;
-
 // [START functions_helloworld_get]
+
+package functions;
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;

@@ -17,6 +17,7 @@
 package com.example.firestore;
 
 import com.google.api.core.ApiFuture;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
 // [START fs_include_dependencies]
 import com.google.cloud.firestore.Firestore;
@@ -48,11 +49,12 @@ public class Quickstart {
     this.db = db;
   }
 
-  public Quickstart(String projectId) {
+  public Quickstart(String projectId) throws Exception {
     // [START fs_initialize_project_id]
     FirestoreOptions firestoreOptions =
         FirestoreOptions.getDefaultInstance().toBuilder()
             .setProjectId(projectId)
+            .setCredentials(GoogleCredentials.getApplicationDefault())
             .build();
     Firestore db = firestoreOptions.getService();
     // [END fs_initialize_project_id]

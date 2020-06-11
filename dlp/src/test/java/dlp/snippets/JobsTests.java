@@ -23,10 +23,11 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DeleteDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class JobsTests {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(PROJECT_ID).toString())
+              .setParent(LocationName.of(PROJECT_ID, "global").toString())
               .setInspectJob(inspectJobConfig)
               .setJobId(jobId)
               .build();
@@ -96,6 +97,42 @@ public class JobsTests {
   public void tearDown() {
     System.setOut(null);
     bout.reset();
+  }
+
+  @Test
+  public void testCreateJobs() throws Exception {
+    // Call createJobs to create a Dlp job from project id and gcs path.
+    JobsCreate.createJobs(PROJECT_ID, GCS_PATH);
+    String output = bout.toString();
+    assertThat(output, CoreMatchers.containsString("Job created successfully:"));
+
+    // Delete the created Dlp Job
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteDlpJob(deleteDlpJobRequest);
+    }
+  }
+
+  @Test
+  public void testGetJobs() throws Exception {
+    // Create a job with a unique UUID to be gotten
+    String jobId = UUID.randomUUID().toString();
+    DlpJob createdDlpJob = createJob(jobId);
+
+    // Get the job with the specified ID
+    JobsGet.getJobs(PROJECT_ID, "i-" + jobId);
+    String output = bout.toString();
+    assertThat(output, CoreMatchers.containsString("Job got successfully."));
+
+    // Delete the created Dlp Job
+    String dlpJobName = createdDlpJob.getName();
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteDlpJob(deleteDlpJobRequest);
+    }
   }
 
   @Test

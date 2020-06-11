@@ -13,5 +13,4 @@
 # limitations under the License.
 
 runtime: java11
-instance_class: F1
-entrypoint: 'java -Xmx32m -jar kotlin-ktor-0.0.1-jar-with-dependencies.jar'
+entrypoint: 'java -jar target/kotlin-ktor-0.0.1-jar-with-dependencies.jar'

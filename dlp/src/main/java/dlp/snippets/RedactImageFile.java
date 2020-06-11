@@ -17,40 +17,41 @@
 package dlp.snippets;
 
 // [START dlp_redact_image]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ByteContentItem.BytesType;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.Likelihood;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.RedactImageRequest;
 import com.google.privacy.dlp.v2.RedactImageResponse;
 import com.google.protobuf.ByteString;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 class RedactImageFile {
 
-  public static void redactImageFile() {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String filePath = "path/to/image.png";
-    redactImageFile(projectId, filePath);
+    String projectId = "my-project-id";
+    String inputPath = "src/test/resources/test.png";
+    String outputPath = "redacted.png";
+    redactImageFile(projectId, inputPath, outputPath);
   }
 
-  static void redactImageFile(String projectId, String filePath) {
+  static void redactImageFile(String projectId, String inputPath, String outputPath)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify the project used for request.
-      ProjectName project = ProjectName.of(projectId);
-
       // Specify the content to be inspected.
-      ByteString fileBytes = ByteString.readFrom(new FileInputStream(filePath));
+      ByteString fileBytes = ByteString.readFrom(new FileInputStream(inputPath));
       ByteContentItem byteItem =
           ByteContentItem.newBuilder().setType(BytesType.IMAGE).setData(fileBytes).build();
 
@@ -69,7 +70,7 @@ class RedactImageFile {
       // Construct the Redact request to be sent by the client.
       RedactImageRequest request =
           RedactImageRequest.newBuilder()
-              .setParent(project.toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setByteItem(byteItem)
               .setInspectConfig(config)
               .build();
@@ -78,14 +79,11 @@ class RedactImageFile {
       RedactImageResponse response = dlp.redactImage(request);
 
       // Parse the response and process results.
-      String outputPath = "redacted.png";
       FileOutputStream redacted = new FileOutputStream(outputPath);
       redacted.write(response.getRedactedImage().toByteArray());
       redacted.close();
       System.out.println("Redacted image written to " + outputPath);
 
-    } catch (Exception e) {
-      System.out.println("Error during inspectFile: \n" + e.toString());
     }
   }
 }

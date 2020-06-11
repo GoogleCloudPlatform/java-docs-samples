@@ -28,14 +28,12 @@ import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.runners.JUnit4;
 
 /**
  * Unit tests for main.java.com.example.functions.helloworld.HelloPubSub.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(HelloPubSub.class)
+@RunWith(JUnit4.class)
 public class HelloPubSubTest {
 
   private HelloPubSub sampleUnderTest;
@@ -44,14 +42,14 @@ public class HelloPubSubTest {
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     sampleUnderTest = new HelloPubSub();
     logger.addHandler(LOG_HANDLER);
     LOG_HANDLER.clear();
   }
 
   @Test
-  public void helloPubSub_shouldPrintName() throws Exception {
+  public void helloPubSub_shouldPrintName() {
     PubSubMessage pubSubMessage = new PubSubMessage();
     pubSubMessage.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
@@ -62,7 +60,7 @@ public class HelloPubSubTest {
   }
 
   @Test
-  public void helloPubSub_shouldPrintHelloWorld() throws Exception {
+  public void helloPubSub_shouldPrintHelloWorld() {
     PubSubMessage pubSubMessage = new PubSubMessage();
     sampleUnderTest.accept(pubSubMessage, null);
 

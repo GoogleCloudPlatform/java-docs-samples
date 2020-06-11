@@ -16,15 +16,14 @@
 
 package functions;
 
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
 import functions.eventpojos.MockContext;
-import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -33,11 +32,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.reflect.Whitebox;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class FirebaseFirestoreReactiveTest {
@@ -57,14 +53,12 @@ public class FirebaseFirestoreReactiveTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
+  public void beforeTest() {
+    MockitoAnnotations.initMocks(this);
 
-    referenceMock = mock(DocumentReference.class, Mockito.RETURNS_DEEP_STUBS);
-    when(referenceMock.set(ArgumentMatchers.any())).thenReturn(null);
+    when(referenceMock.set(any())).thenReturn(null);
 
-    firestoreMock = PowerMockito.mock(Firestore.class);
-    when(firestoreMock.document(ArgumentMatchers.any())).thenReturn(referenceMock);
+    when(firestoreMock.document(any())).thenReturn(referenceMock);
 
     LOG_HANDLER.clear();
   }
@@ -82,8 +76,7 @@ public class FirebaseFirestoreReactiveTest {
     MockContext context = new MockContext();
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
 
-    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
-    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "FIRESTORE", firestoreMock);
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive(firestoreMock);
 
     functionInstance.accept(jsonStr, context);
 
@@ -98,8 +91,7 @@ public class FirebaseFirestoreReactiveTest {
     MockContext context = new MockContext();
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
 
-    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
-    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "FIRESTORE", firestoreMock);
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive(firestoreMock);
 
     IllegalArgumentException e = Assertions.assertThrows(
         IllegalArgumentException.class, () -> functionInstance.accept(jsonStr, context));

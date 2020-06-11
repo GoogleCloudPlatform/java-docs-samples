@@ -36,25 +36,28 @@ public class JobSearchGetJob {
 
   // Get Job.
   public static void getJob(String projectId, String tenantId, String jobId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       JobName name = JobName.ofProjectTenantJobName(projectId, tenantId, jobId);
 
       GetJobRequest request = GetJobRequest.newBuilder().setName(name.toString()).build();
 
       Job response = jobServiceClient.getJob(request);
-      System.out.printf("Job name: %s\n", response.getName());
-      System.out.printf("Requisition ID: %s\n", response.getRequisitionId());
-      System.out.printf("Title: %s\n", response.getTitle());
-      System.out.printf("Description: %s\n", response.getDescription());
-      System.out.printf("Posting language: %s\n", response.getLanguageCode());
+      System.out.format("Job name: %s%n", response.getName());
+      System.out.format("Requisition ID: %s%n", response.getRequisitionId());
+      System.out.format("Title: %s%n", response.getTitle());
+      System.out.format("Description: %s%n", response.getDescription());
+      System.out.format("Posting language: %s%n", response.getLanguageCode());
       for (String address : response.getAddressesList()) {
-        System.out.printf("Address: %s\n", address);
+        System.out.format("Address: %s%n", address);
       }
       for (String email : response.getApplicationInfo().getEmailsList()) {
-        System.out.printf("Email: %s\n", email);
+        System.out.format("Email: %s%n", email);
       }
       for (String websiteUri : response.getApplicationInfo().getUrisList()) {
-        System.out.printf("Website: %s\n", websiteUri);
+        System.out.format("Website: %s%n", websiteUri);
       }
     }
   }

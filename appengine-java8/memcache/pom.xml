@@ -27,7 +27,7 @@ Copyright 2015 Google Inc.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
 
   <properties>
@@ -76,7 +76,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.3</version>
+        <version>3.3.0</version>
       </plugin>
 
     </plugins>

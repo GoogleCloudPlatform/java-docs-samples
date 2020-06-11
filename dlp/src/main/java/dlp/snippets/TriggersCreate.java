@@ -25,25 +25,26 @@ import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.JobTrigger;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.Schedule;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.privacy.dlp.v2.StorageConfig.TimespanConfig;
 import com.google.protobuf.Duration;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TriggersCreate {
 
-  public static void createTrigger() throws Exception {
+  public static void createTrigger() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String gcsPath = "gs://" + "your-bucket-name" + "path/to/file.txt";
     createTrigger(projectId, gcsPath);
   }
 
-  public static void createTrigger(String projectId, String gcsPath) throws Exception {
+  public static void createTrigger(String projectId, String gcsPath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -106,7 +107,7 @@ public class TriggersCreate {
       // Create scan request to be sent by client
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setJobTrigger(jobTrigger)
               .build();
 

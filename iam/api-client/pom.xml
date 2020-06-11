@@ -27,26 +27,31 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
-  
+
   <dependencies>
 <!-- [START iam_java_dependency] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20200221-1.30.9</version>
+      <version>v1-rev20200515-1.30.9</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
     <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>0.20.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20200415-1.30.9</version>
+      <version>v1-rev20200504-1.30.9</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>
@@ -74,12 +79,12 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
+        <version>3.0.0</version>
         <configuration>
           <mainClass>com.google.iam.snippets.GrantableRoles</mainClass>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  
+
 </project>
