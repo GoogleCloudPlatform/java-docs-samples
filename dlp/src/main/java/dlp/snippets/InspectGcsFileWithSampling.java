@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_inspect_gcs]
+// [START dlp_inspect_gcs_with_sampling]
 
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
@@ -171,4 +171,4 @@ public class InspectGcsFileWithSampling {
     }
   }
 }
-// [END dlp_inspect_gcs]
+// [END dlp_inspect_gcs_with_sampling]

@@ -41,12 +41,9 @@ import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class InspectBigQueryTableWithSampling {
 
@@ -88,7 +85,7 @@ public class InspectBigQueryTableWithSampling {
 
       // Specify the type of info the inspection will look for.
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
-      InfoType infoType = InfoType.newBuilder().setName("FIRST_NAME").build();
+      InfoType infoType = InfoType.newBuilder().setName("PERSON_NAME").build();
 
       // Specify how the content should be inspected.
       InspectConfig inspectConfig =
