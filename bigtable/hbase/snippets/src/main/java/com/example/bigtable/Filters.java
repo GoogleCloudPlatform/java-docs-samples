@@ -16,6 +16,8 @@
 
 package com.example.bigtable;
 
+// [START bigtable_filters_imports]
+
 import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 
 import com.google.api.gax.rpc.ServerStream;
@@ -52,36 +54,8 @@ import org.apache.hadoop.hbase.filter.SkipFilter;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-// [START bigtable_filters_limit_row_sample]
-// [START bigtable_filters_limit_row_regex]
-// [START bigtable_filters_limit_cells_per_col]
-// [START bigtable_filters_limit_cells_per_row]
-// [START bigtable_filters_limit_cells_per_row_offset]
-// [START bigtable_filters_limit_col_family_regex]
-// [START bigtable_filters_limit_col_qualifier_regex]
-// [START bigtable_filters_limit_col_range]
-// [START bigtable_filters_limit_value_range]
-// [START bigtable_filters_limit_value_regex]
-// [START bigtable_filters_limit_timestamp_range]
-// [START bigtable_filters_limit_block_all]
-// [START bigtable_filters_composing_chain]
-// [START bigtable_filters_composing_interleave]
-
 public class Filters {
-  // [END bigtable_filters_limit_row_sample]
-  // [END bigtable_filters_limit_row_regex]
-  // [END bigtable_filters_limit_cells_per_col]
-  // [END bigtable_filters_limit_cells_per_row]
-  // [END bigtable_filters_limit_cells_per_row_offset]
-  // [END bigtable_filters_limit_col_family_regex]
-  // [END bigtable_filters_limit_col_qualifier_regex]
-  // [END bigtable_filters_limit_col_range]
-  // [END bigtable_filters_limit_value_range]
-  // [END bigtable_filters_limit_value_regex]
-  // [END bigtable_filters_limit_timestamp_range]
-  // [END bigtable_filters_limit_block_all]
-  // [END bigtable_filters_composing_chain]
-  // [END bigtable_filters_composing_interleave]
+  // [END bigtable_filters_imports]
 
   // [START bigtable_filters_limit_row_sample]
   public static void filterLimitRowSample() {
@@ -363,20 +337,7 @@ public class Filters {
   }
   // [END bigtable_filters_composing_interleave]
 
-  // [START bigtable_filters_limit_row_sample]
-  // [START bigtable_filters_limit_row_regex]
-  // [START bigtable_filters_limit_cells_per_col]
-  // [START bigtable_filters_limit_cells_per_row]
-  // [START bigtable_filters_limit_cells_per_row_offset]
-  // [START bigtable_filters_limit_col_family_regex]
-  // [START bigtable_filters_limit_col_qualifier_regex]
-  // [START bigtable_filters_limit_col_range]
-  // [START bigtable_filters_limit_value_range]
-  // [START bigtable_filters_limit_value_regex]
-  // [START bigtable_filters_limit_timestamp_range]
-  // [START bigtable_filters_limit_block_all]
-  // [START bigtable_filters_composing_chain]
-  // [START bigtable_filters_composing_interleave]
+  // [START bigtable_filters_generic]
   public static void readWithFilter(
       String projectId, String instanceId, String tableId, Scan scan) {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -414,17 +375,4 @@ public class Filters {
     System.out.println();
   }
 }
-// [END bigtable_filters_limit_row_sample]
-// [END bigtable_filters_limit_row_regex]
-// [END bigtable_filters_limit_cells_per_col]
-// [END bigtable_filters_limit_cells_per_row]
-// [END bigtable_filters_limit_cells_per_row_offset]
-// [END bigtable_filters_limit_col_family_regex]
-// [END bigtable_filters_limit_col_qualifier_regex]
-// [END bigtable_filters_limit_col_range]
-// [END bigtable_filters_limit_value_range]
-// [END bigtable_filters_limit_value_regex]
-// [END bigtable_filters_limit_timestamp_range]
-// [END bigtable_filters_limit_block_all]
-// [END bigtable_filters_composing_chain]
-// [END bigtable_filters_composing_interleave]
+// [END bigtable_filters_generic]
