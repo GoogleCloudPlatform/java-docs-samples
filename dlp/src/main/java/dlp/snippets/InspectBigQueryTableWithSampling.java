@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_inspect_bigquery]
+// [START dlp_inspect_bigquery_with_sampling]
 
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
@@ -173,4 +173,4 @@ public class InspectBigQueryTableWithSampling {
     }
   }
 }
-// [END dlp_inspect_bigquery]
+// [END dlp_inspect_bigquery_with_sampling]
