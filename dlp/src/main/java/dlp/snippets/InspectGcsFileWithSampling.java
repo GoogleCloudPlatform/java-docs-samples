@@ -42,16 +42,14 @@ import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class InspectGcsFileWithSampling {
 
-  public static void inspectGcsFileWithSampling() throws InterruptedException, ExecutionException, IOException {
+  public static void inspectGcsFileWithSampling()
+      throws InterruptedException, ExecutionException, IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String gcsUri = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
