@@ -16,13 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_reads_row]
-// [START bigtable_reads_row_partial]
-// [START bigtable_reads_rows]
-// [START bigtable_reads_row_range]
-// [START bigtable_reads_row_ranges]
-// [START bigtable_reads_prefix]
-// [START bigtable_reads_filter]
+// [START bigtable_reads_imports]
 
 import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 
@@ -36,14 +30,9 @@ import com.google.cloud.bigtable.data.v2.models.RowMutation;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 
+// [END bigtable_reads_imports]
+
 public class Reads {
-  // [END bigtable_reads_row]
-  // [END bigtable_reads_row_partial]
-  // [END bigtable_reads_rows]
-  // [END bigtable_reads_row_range]
-  // [END bigtable_reads_row_ranges]
-  // [END bigtable_reads_prefix]
-  // [END bigtable_reads_filter]
 
   // [START bigtable_reads_row]
   public static void readRow() {
@@ -241,13 +230,7 @@ public class Reads {
   }
   // [END bigtable_reads_filter]
 
-  // [START bigtable_reads_row]
-  // [START bigtable_reads_row_partial]
-  // [START bigtable_reads_rows]
-  // [START bigtable_reads_row_range]
-  // [START bigtable_reads_row_ranges]
-  // [START bigtable_reads_prefix]
-  // [START bigtable_reads_filter]
+  // [START bigtable_reads_print]
   private static void printRow(Row row) {
     System.out.printf("Reading data for %s%n", row.getKey().toStringUtf8());
     String colFamily = "";
@@ -262,11 +245,5 @@ public class Reads {
     }
     System.out.println();
   }
+  // [END bigtable_reads_print]
 }
-// [END bigtable_reads_row]
-// [END bigtable_reads_row_partial]
-// [END bigtable_reads_rows]
-// [END bigtable_reads_row_range]
-// [END bigtable_reads_row_ranges]
-// [END bigtable_reads_prefix]
-// [END bigtable_reads_filter]
