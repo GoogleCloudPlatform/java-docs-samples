@@ -52,7 +52,7 @@
     <dependency>                        <!-- REQUIRED -->
       <groupId>javax.servlet</groupId>  <!-- Java Servlet API -->
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <version>4.0.1</version>
     </dependency>
     <!-- [START dependencies] -->
     <dependency>
