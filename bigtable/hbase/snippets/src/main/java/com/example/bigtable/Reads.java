@@ -38,8 +38,9 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
+// [END bigtable_reads_imports]
+
 public class Reads {
-  // [END bigtable_reads_imports]
 
   // [START bigtable_reads_row]
   public static void readRow() {
@@ -285,5 +286,5 @@ public class Reads {
     }
     System.out.println();
   }
+  // [END bigtable_reads_print]
 }
-// [END bigtable_reads_print]
