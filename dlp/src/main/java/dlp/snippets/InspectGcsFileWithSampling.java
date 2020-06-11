@@ -26,14 +26,17 @@ import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
+import com.google.privacy.dlp.v2.CloudStorageOptions.SampleMethod;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.FileType;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
+import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -65,23 +68,31 @@ public class InspectGcsFileWithSampling {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify the GCS file to be inspected.
-      FileSet fileSet = FileSet.newBuilder().setUrl(gcsUri).build();
+      // Specify the GCS file to be inspected and sampling configuration
       CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+          CloudStorageOptions.newBuilder()
+              .setFileSet(FileSet.newBuilder().setUrl(gcsUri))
+              .setBytesLimitPerFile(200)
+              .addFileTypes(FileType.TEXT_FILE)
+              .setFilesLimitPercent(90)
+              .setSampleMethod(SampleMethod.RANDOM_START)
+              .build();
+
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
       // Specify the type of info the inspection will look for.
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
-      List<InfoType> infoTypes =
-          Stream.of("PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD_NUMBER")
-              .map(it -> InfoType.newBuilder().setName(it).build())
-              .collect(Collectors.toList());
+      InfoType infoType = InfoType.newBuilder().setName("PERSON_NAME").build();
 
       // Specify how the content should be inspected.
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+          InspectConfig.newBuilder()
+              .addInfoTypes(infoType)
+              .setExcludeInfoTypes(true)
+              .setIncludeQuote(true)
+              .setMinLikelihood(Likelihood.POSSIBLE)
+              .build();
 
       // Specify the action that is triggered when the job completes.
       String pubSubTopic = String.format("projects/%s/topics/%s", projectId, topicId);

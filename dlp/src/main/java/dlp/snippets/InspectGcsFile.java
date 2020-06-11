@@ -66,9 +66,11 @@ public class InspectGcsFile {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Specify the GCS file to be inspected.
-      FileSet fileSet = FileSet.newBuilder().setUrl(gcsUri).build();
       CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+          CloudStorageOptions.newBuilder()
+              .setFileSet(FileSet.newBuilder().setUrl(gcsUri))
+              .build();
+
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
