@@ -75,7 +75,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.29.v20200521</version>
+        <version>9.4.30.v20200611</version>
       </plugin>
     </plugins>
   </build>
