@@ -16,7 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_reads_imports]
+// [START bigtable_reads_print]
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.IOException;
@@ -38,10 +38,11 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-// [END bigtable_reads_imports]
 
 public class Reads {
 
+  // Write your function here!
+  // [START_EXCLUDE]
   // [START bigtable_reads_row]
   public static void readRow() {
     // TODO(developer): Replace these variables before running the sample.
@@ -69,7 +70,7 @@ public class Reads {
     }
   }
   // [END bigtable_reads_row]
-  
+
   // [START bigtable_reads_row_partial]
   public static void readRowPartial() {
     // TODO(developer): Replace these variables before running the sample.
@@ -267,8 +268,8 @@ public class Reads {
     }
   }
   // [END bigtable_reads_filter]
+  // [END_EXCLUDE]
 
-  // [START bigtable_reads_print]
   private static void printRow(Result row) {
     System.out.printf("Reading data for %s%n", Bytes.toString(row.rawCells()[0].getRowArray()));
     String colFamily = "";
@@ -286,5 +287,5 @@ public class Reads {
     }
     System.out.println();
   }
-  // [END bigtable_reads_print]
 }
+// [END bigtable_reads_print]

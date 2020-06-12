@@ -16,7 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_filters_imports]
+// [START bigtable_filters_print]
 
 import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 
@@ -54,10 +54,10 @@ import org.apache.hadoop.hbase.filter.SkipFilter;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-// [END bigtable_filters_imports]
-
 public class Filters {
 
+  // Write your function here!
+  // [START_EXCLUDE]
   // [START bigtable_filters_limit_row_sample]
   public static void filterLimitRowSample() {
     // TODO(developer): Replace these variables before running the sample.
@@ -337,8 +337,8 @@ public class Filters {
     readWithFilter(projectId, instanceId, tableId, scan);
   }
   // [END bigtable_filters_composing_interleave]
+  // [END_EXCLUDE]
 
-  // [START bigtable_filters_print]
   public static void readWithFilter(
       String projectId, String instanceId, String tableId, Scan scan) {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -375,5 +375,5 @@ public class Filters {
     }
     System.out.println();
   }
-  // [END bigtable_filters_print]
 }
+// [END bigtable_filters_print]

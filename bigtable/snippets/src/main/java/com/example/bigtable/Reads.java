@@ -16,7 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_reads_imports]
+// [START bigtable_reads_print]
 
 import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 
@@ -30,11 +30,10 @@ import com.google.cloud.bigtable.data.v2.models.RowMutation;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 
-// [END bigtable_reads_imports]
-
 public class Reads {
 
-  // [START bigtable_reads_row]
+  // Write your function here!
+  // [START_EXCLUDE]
   public static void readRow() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -229,8 +228,8 @@ public class Reads {
     }
   }
   // [END bigtable_reads_filter]
+  // [END_EXCLUDE]
 
-  // [START bigtable_reads_print]
   private static void printRow(Row row) {
     System.out.printf("Reading data for %s%n", row.getKey().toStringUtf8());
     String colFamily = "";
@@ -245,5 +244,5 @@ public class Reads {
     }
     System.out.println();
   }
-  // [END bigtable_reads_print]
 }
+// [END bigtable_reads_print]
