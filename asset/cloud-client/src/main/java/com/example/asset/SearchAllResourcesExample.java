@@ -17,9 +17,12 @@
 package com.example.asset;
 
 // [START asset_quickstart_search_all_resources]
+import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.asset.v1.AssetServiceClient;
 import com.google.cloud.asset.v1.AssetServiceClient.SearchAllResourcesPagedResponse;
 import com.google.cloud.asset.v1.SearchAllResourcesRequest;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class SearchAllResourcesExample {
@@ -42,9 +45,13 @@ public class SearchAllResourcesExample {
             .build();
     try (AssetServiceClient client = AssetServiceClient.create()) {
       SearchAllResourcesPagedResponse response = client.searchAllResources(request);
-      System.out.println("Search completed: \n" + response.getPage().getValues());
-    } catch (Exception e) {
-      System.out.println("Error during SearchAllResources: \n" + e.toString());
+      System.out.println("Search completed successfully:\n" + response.getPage().getValues());
+    } catch (IOException e) {
+      System.out.println("Failed to create client:\n" + e.toString());
+    } catch (InvalidArgumentException e) {
+      System.out.println("Invalid request:\n" + e.toString());
+    } catch (ApiException e) {
+      System.out.println("Error during SearchAllResources:\n" + e.toString());
     }
   }
 }

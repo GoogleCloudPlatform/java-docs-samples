@@ -17,10 +17,12 @@
 package com.example.asset;
 
 // [START asset_quickstart_search_all_iam_policies]
-
+import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.asset.v1.AssetServiceClient;
 import com.google.cloud.asset.v1.AssetServiceClient.SearchAllIamPoliciesPagedResponse;
 import com.google.cloud.asset.v1.SearchAllIamPoliciesRequest;
+import java.io.IOException;
 
 public class SearchAllIamPoliciesExample {
 
@@ -35,9 +37,13 @@ public class SearchAllIamPoliciesExample {
             .build();
     try (AssetServiceClient client = AssetServiceClient.create()) {
       SearchAllIamPoliciesPagedResponse response = client.searchAllIamPolicies(request);
-      System.out.println("Search completed successfully: \n" + response.getPage().getValues());
-    } catch (Exception e) {
-      System.out.println("Error during SearchAllIamPolicies: \n" + e.toString());
+      System.out.println("Search completed successfully:\n" + response.getPage().getValues());
+    } catch (IOException e) {
+      System.out.println("Failed to create client:\n" + e.toString());
+    } catch (InvalidArgumentException e) {
+      System.out.println("Invalid request:\n" + e.toString());
+    } catch (ApiException e) {
+      System.out.println("Error during SearchAllIamPolicies:\n" + e.toString());
     }
   }
 }
