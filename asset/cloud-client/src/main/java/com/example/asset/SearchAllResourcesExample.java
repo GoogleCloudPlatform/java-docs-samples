@@ -27,13 +27,14 @@ import java.util.Arrays;
 
 public class SearchAllResourcesExample {
 
-  public static void searchAllResources(
-      String scope,
-      String query,
-      String[] assetTypes,
-      int pageSize,
-      String pageToken,
-      String orderBy) {
+  // Searches for all the resources within the given scope.
+  public static void searchAllResources(String scope, String query) {
+    // TODO(developer): Replace these variables before running the sample.
+    String[] assetTypes = {};
+    int pageSize = 0;
+    String pageToken = "";
+    String orderBy = "";
+
     SearchAllResourcesRequest request =
         SearchAllResourcesRequest.newBuilder()
             .setScope(scope)
@@ -43,15 +44,19 @@ public class SearchAllResourcesExample {
             .setPageToken(pageToken)
             .setOrderBy(orderBy)
             .build();
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       SearchAllResourcesPagedResponse response = client.searchAllResources(request);
       System.out.println("Search completed successfully:\n" + response.getPage().getValues());
     } catch (IOException e) {
-      System.out.println("Failed to create client:\n" + e.toString());
+      System.out.println(String.format("Failed to create client:%n%s", e.toString()));
     } catch (InvalidArgumentException e) {
-      System.out.println("Invalid request:\n" + e.toString());
+      System.out.println(String.format("Invalid request:%n%s",  e.toString()));
     } catch (ApiException e) {
-      System.out.println("Error during SearchAllResources:\n" + e.toString());
+      System.out.println(String.format("Error during SearchAllResources:%n%s",  e.toString()));
     }
   }
 }

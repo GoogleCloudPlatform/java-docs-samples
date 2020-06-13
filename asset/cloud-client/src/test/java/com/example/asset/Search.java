@@ -68,12 +68,7 @@ public class Search {
     Thread.sleep(10000);
     String scope = "projects/" + projectId;
     String query = "name:" + datasetName;
-    String[] assetTypes = {};
-    int pageSize = 0;
-    String pageToken = "";
-    String orderBy = "";
-    SearchAllResourcesExample.searchAllResources(
-        scope, query, assetTypes, pageSize, pageToken, orderBy);
+    SearchAllResourcesExample.searchAllResources(scope, query);
     String got = bout.toString();
     assertThat(got).contains(datasetName);
   }
@@ -82,9 +77,7 @@ public class Search {
   public void testSearchAllIamPoliciesExample() throws Exception {
     String scope = "projects/" + projectId;
     String query = "policy:roles/owner";
-    int pageSize = 0;
-    String pageToken = "";
-    SearchAllIamPoliciesExample.searchAllIamPolicies(scope, query, pageSize, pageToken);
+    SearchAllIamPoliciesExample.searchAllIamPolicies(scope, query);
     String got = bout.toString();
     assertThat(got).contains("roles/owner");
   }

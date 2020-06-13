@@ -26,8 +26,12 @@ import java.io.IOException;
 
 public class SearchAllIamPoliciesExample {
 
-  public static void searchAllIamPolicies(
-      String scope, String query, int pageSize, String pageToken) {
+  // Searches for all the iam policies within the given scope.
+  public static void searchAllIamPolicies(String scope, String query) {
+    // TODO(developer): Replace these variables before running the sample.
+    int pageSize = 0;
+    String pageToken = "";
+
     SearchAllIamPoliciesRequest request =
         SearchAllIamPoliciesRequest.newBuilder()
             .setScope(scope)
@@ -35,15 +39,19 @@ public class SearchAllIamPoliciesExample {
             .setPageSize(pageSize)
             .setPageToken(pageToken)
             .build();
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (AssetServiceClient client = AssetServiceClient.create()) {
       SearchAllIamPoliciesPagedResponse response = client.searchAllIamPolicies(request);
       System.out.println("Search completed successfully:\n" + response.getPage().getValues());
     } catch (IOException e) {
-      System.out.println("Failed to create client:\n" + e.toString());
+      System.out.println(String.format("Failed to create client:%n%s", e.toString()));
     } catch (InvalidArgumentException e) {
-      System.out.println("Invalid request:\n" + e.toString());
+      System.out.println(String.format("Invalid request:%n%s", e.toString()));
     } catch (ApiException e) {
-      System.out.println("Error during SearchAllIamPolicies:\n" + e.toString());
+      System.out.println(String.format("Error during SearchAllIamPolicies:%n%s", e.toString()));
     }
   }
 }
