@@ -59,6 +59,7 @@ public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
     }
 
     // Process events that are recent enough
+    // To retry this invocation, throw an exception here
     logger.info(String.format("Processing event %s.", data));
   }
 }
