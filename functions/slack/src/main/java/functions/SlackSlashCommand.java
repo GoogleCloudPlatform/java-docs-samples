@@ -55,6 +55,7 @@ public class SlackSlashCommand implements HttpFunction {
   SlackSlashCommand(SlackSignature.Verifier verifier) throws IOException, GeneralSecurityException {
     this(verifier, API_KEY);
   }
+<<<<<<< HEAD
 
   SlackSlashCommand(SlackSignature.Verifier verifier, String apiKey)
       throws IOException, GeneralSecurityException {
@@ -73,6 +74,15 @@ public class SlackSlashCommand implements HttpFunction {
       value = "MISSING";
     }
     return value;
+=======
+
+  SlackSlashCommand(SlackSignature.Verifier verifier, String apiKey)
+      throws IOException, GeneralSecurityException {
+    this.verifier = verifier;
+    this.apiKey = apiKey;
+    this.kgClient = new Kgsearch.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null).build();
+>>>>>>> 3120eb78f6b9617de12177871ecfe793d9d6215a
   }
   // [END functions_slack_setup]
 
