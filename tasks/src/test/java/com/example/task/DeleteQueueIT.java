@@ -20,8 +20,8 @@ import static org.junit.Assert.assertNotNull;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.LocationName;
-import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Queue;
+import com.google.cloud.tasks.v2.QueueName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -41,7 +41,8 @@ public class DeleteQueueIT {
   private static final String QUEUE_ID = "test-queue-" + UUID.randomUUID();
 
   private ByteArrayOutputStream bout;
-  private PrintStream old_out, out;
+  private PrintStream out;
+  private PrintStream oldOut;
   private Queue queue;
 
   private static void requireEnvVar(String varName) {
@@ -73,12 +74,12 @@ public class DeleteQueueIT {
 
   @After
   public void tearDown() {
-    System.setOut(old_out);
+    System.setOut(oldOut);
     try (CloudTasksClient client = CloudTasksClient.create()) {
       client.deleteQueue(queue.getName());
     } catch (IOException e) {
       System.out.println("Error with queue deletion.");
-    } catch (NotFoundException e){
+    } catch (NotFoundException e) {
       System.out.println("Queue already successfully deleted");
     }
   }

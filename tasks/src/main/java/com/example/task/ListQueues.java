@@ -41,13 +41,13 @@ public class ListQueues {
 
       // Iterate over results and print queue names
       int total = 0;
-      for(Queue queue : response.iterateAll()){
-          System.out.println(queue.getName());
-          total++;
+      for (Queue queue : response.iterateAll()) {
+        System.out.println(queue.getName());
+        total++;
       }
 
-      if(total == 0){
-          System.out.println("No queues found!");
+      if (total == 0) {
+        System.out.println("No queues found!");
       }
     }
   }

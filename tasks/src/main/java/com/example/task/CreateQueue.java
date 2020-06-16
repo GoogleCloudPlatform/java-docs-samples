@@ -17,8 +17,8 @@ package com.example.task;
 // [START cloud_tasks_create_queue]
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.LocationName;
-import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Queue;
+import com.google.cloud.tasks.v2.QueueName;
 
 public class CreateQueue {
   /**
