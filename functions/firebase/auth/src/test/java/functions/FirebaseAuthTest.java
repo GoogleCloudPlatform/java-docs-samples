@@ -18,7 +18,9 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -35,6 +37,8 @@ public class FirebaseAuthTest {
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
+  private static final Gson gson = new Gson();
+
   @BeforeClass
   public static void beforeClass() {
     logger.addHandler(LOG_HANDLER);
@@ -47,7 +51,8 @@ public class FirebaseAuthTest {
 
   @Test
   public void functionsFirebaseAuth_shouldShowUserId() {
-    new FirebaseAuth().accept("{\"uid\": \"foo\"}", null);
+    String jsonStr = gson.toJson(Map.of("uid", "foo"));
+    new FirebaseAuth().accept(jsonStr, null);
 
     Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Function triggered by change to user: foo");
@@ -55,7 +60,8 @@ public class FirebaseAuthTest {
 
   @Test
   public void functionsFirebaseAuth_shouldShowOrigin() {
-    new FirebaseAuth().accept("{\"metadata\": {\"createdAt\": \"123\"}}", null);
+    String jsonStr = gson.toJson(Map.of("metadata", Map.of("createdAt", "123")));
+    new FirebaseAuth().accept(jsonStr, null);
 
     Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Created at: 123");
@@ -63,7 +69,8 @@ public class FirebaseAuthTest {
 
   @Test
   public void functionsFirebaseAuth_shouldShowVersion()  {
-    new FirebaseAuth().accept("{\"email\": \"foo@google.com\"}", null);
+    String jsonStr = gson.toJson(Map.of("email", "foo@google.com"));
+    new FirebaseAuth().accept(jsonStr, null);
 
     Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Email: foo@google.com");
