@@ -66,7 +66,7 @@ public class FirebaseRtdbTest {
 
   @Test
   public void functionsFirebaseRtdb_shouldDisplayAdminStatus() {
-    String jsonStr = gson.toJson(Map.of("auth", Map.of("admin", true )));
+    String jsonStr = gson.toJson(Map.of("auth", Map.of("admin", true)));
 
     MockContext context = new MockContext();
     context.resource = "resource_1";
