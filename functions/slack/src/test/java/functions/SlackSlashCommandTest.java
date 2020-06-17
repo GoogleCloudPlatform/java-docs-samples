@@ -77,12 +77,13 @@ public class SlackSlashCommandTest {
     ).thenReturn(true);
 
     // Construct valid header list
-    HashMap<String, List<String>> validHeaders = new HashMap<String, List<String>>();
     String validSlackSignature = System.getenv("SLACK_TEST_SIGNATURE");
     String timestamp = "0"; // start of Unix epoch
 
-    validHeaders.put("X-Slack-Signature", Arrays.asList(validSlackSignature));
-    validHeaders.put("X-Slack-Request-Timestamp", Arrays.asList(timestamp));
+    Map<String, List<String>> validHeaders = Map.of(
+        "X-Slack-Signature", Arrays.asList(validSlackSignature),
+        "X-Slack-Request-Timestamp", Arrays.asList(timestamp)
+    );
 
     when(request.getHeaders()).thenReturn(validHeaders);
 
