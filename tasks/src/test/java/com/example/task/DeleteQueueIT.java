@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for creating Tasks with HTTP targets. */
+/** Tests for deleting queues. */
 @RunWith(JUnit4.class)
 public class DeleteQueueIT {
   private static final String PROJECT_ID = System.getProperty("GOOGLE_CLOUD_PROJECT");
@@ -42,7 +42,6 @@ public class DeleteQueueIT {
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private PrintStream oldOut;
   private Queue queue;
 
   private static void requireEnvVar(String varName) {
@@ -60,7 +59,6 @@ public class DeleteQueueIT {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    old_out = System.out;
     System.setOut(out);
     
     try (CloudTasksClient client = CloudTasksClient.create()) {
@@ -74,7 +72,6 @@ public class DeleteQueueIT {
 
   @After
   public void tearDown() {
-    System.setOut(oldOut);
     try (CloudTasksClient client = CloudTasksClient.create()) {
       client.deleteQueue(queue.getName());
     } catch (IOException e) {
@@ -82,6 +79,7 @@ public class DeleteQueueIT {
     } catch (NotFoundException e) {
       System.out.println("Queue already successfully deleted");
     }
+    System.setOut(null);
   }
 
   @Test

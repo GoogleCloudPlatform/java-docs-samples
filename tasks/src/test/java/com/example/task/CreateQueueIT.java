@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for creating Tasks with HTTP targets. */
+/** Tests for creating queues. */
 @RunWith(JUnit4.class)
 public class CreateQueueIT {
   private static final String PROJECT_ID = System.getProperty("GOOGLE_CLOUD_PROJECT");
@@ -59,13 +59,13 @@ public class CreateQueueIT {
 
   @After
   public void tearDown() {
-    System.setOut(null);
     try (CloudTasksClient client = CloudTasksClient.create()) {
       String queuePath = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
       client.deleteQueue(queuePath);
     } catch (Exception e) {
       System.out.println("Error with queue deletion.");
     }
+    System.setOut(null);
   }
 
   @Test
