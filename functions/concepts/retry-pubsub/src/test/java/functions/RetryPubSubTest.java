@@ -19,10 +19,12 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
 import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -38,6 +40,8 @@ public class RetryPubSubTest {
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
+  private static final Gson gson = new Gson();
+
   @BeforeClass
   public static void beforeClass() {
     logger.addHandler(LOG_HANDLER);
@@ -50,7 +54,7 @@ public class RetryPubSubTest {
 
   @Test(expected = RuntimeException.class)
   public void retryPubsub_handlesRetryMsg() throws IOException {
-    String data = "{\"retry\": true}";
+    String data = gson.toJson(Map.of("retry", true));
     String encodedData = new String(
         Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
@@ -62,7 +66,7 @@ public class RetryPubSubTest {
 
   @Test
   public void retryPubsub_handlesStopMsg() throws IOException {
-    String data = "{\"retry\": false}";
+    String data = gson.toJson(Map.of("retry", false));
     String encodedData = new String(
         Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 

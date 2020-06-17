@@ -18,9 +18,11 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.gson.Gson;
 import functions.eventpojos.MockContext;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -36,6 +38,8 @@ public class FirebaseRtdbTest {
   private static final Logger logger = Logger.getLogger(FirebaseRtdb.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
+
+  private static final Gson gson = new Gson();
 
   @BeforeClass
   public static void beforeClass() {
@@ -62,7 +66,7 @@ public class FirebaseRtdbTest {
 
   @Test
   public void functionsFirebaseRtdb_shouldDisplayAdminStatus() {
-    String jsonStr = "{\"auth\": { \"admin\": true }}";
+    String jsonStr = gson.toJson(Map.of("auth", Map.of("admin", true)));
 
     MockContext context = new MockContext();
     context.resource = "resource_1";
@@ -78,7 +82,7 @@ public class FirebaseRtdbTest {
 
   @Test
   public void functionsFirebaseRtdb_shouldShowDelta() {
-    String jsonStr = "{\"delta\": { \"value\": 2 }}";
+    String jsonStr = gson.toJson(Map.of("delta", Map.of("value", 2)));
 
     MockContext context = new MockContext();
     context.resource = "resource_1";
@@ -91,7 +95,9 @@ public class FirebaseRtdbTest {
     Truth.assertThat(logs.get(0).getMessage()).isEqualTo(
         "Function triggered by change to: resource_1");
     Truth.assertThat(logs.get(2).getMessage()).isEqualTo("Delta:");
-    Truth.assertThat(logs.get(3).getMessage()).isEqualTo("{\"value\":2}");
+
+    String expectedJsonStr = gson.toJson(Map.of("value", 2));
+    Truth.assertThat(logs.get(3).getMessage()).isEqualTo(expectedJsonStr);
   }
 
 }

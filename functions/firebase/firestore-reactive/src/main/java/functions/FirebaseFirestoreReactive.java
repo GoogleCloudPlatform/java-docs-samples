@@ -75,8 +75,7 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
     String newValue = currentValue.toUpperCase(Locale.getDefault());
 
     // Update Firestore DB with ALL CAPS value
-    Map<String, String> newFields = new HashMap<>();
-    newFields.put("original", newValue);
+    Map<String, String> newFields = Map.of("original", newValue);
 
     String affectedDoc = context.resource().split("/documents/")[1].replace("\"", "");
 
