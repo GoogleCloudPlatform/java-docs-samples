@@ -17,10 +17,12 @@
 package functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 import com.github.seratch.jslack.app_backend.SlackSignature;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -34,15 +36,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.powermock.reflect.Whitebox;
+import org.mockito.MockitoAnnotations;
 
 public class SlackSlashCommandTest {
 
@@ -58,37 +57,27 @@ public class SlackSlashCommandTest {
 
   @Before
   public void beforeTest() throws IOException {
-    request = mock(HttpRequest.class);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("")));
+    MockitoAnnotations.initMocks(this);
 
-    response = mock(HttpResponse.class);
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader("")));
 
     responseOut = new StringWriter();
 
     writerOut = new BufferedWriter(responseOut);
     when(response.getWriter()).thenReturn(writerOut);
 
-    alwaysValidVerifier = mock(SlackSignature.Verifier.class);
-    when(alwaysValidVerifier.isValid(
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.anyLong())
-    ).thenReturn(true);
+    when(alwaysValidVerifier.isValid(any(), any(), any(), anyLong())).thenReturn(true);
 
     // Construct valid header list
     String validSlackSignature = System.getenv("SLACK_TEST_SIGNATURE");
     String timestamp = "0"; // start of Unix epoch
 
     Map<String, List<String>> validHeaders = Map.of(
-        "X-Slack-Signature", Arrays.asList(validSlackSignature),
-        "X-Slack-Request-Timestamp", Arrays.asList(timestamp)
-    );
+        "X-Slack-Signature", List.of(validSlackSignature),
+        "X-Slack-Request-Timestamp", List.of(timestamp));
 
     when(request.getHeaders()).thenReturn(validHeaders);
-
-    // Reset knowledge graph API key
-    Whitebox.setInternalState(SlackSlashCommand.class, "API_KEY", System.getenv("KG_API_KEY"));
+    when(request.getFirstHeader(any())).thenCallRealMethod();
   }
 
   @Test
@@ -126,7 +115,7 @@ public class SlackSlashCommandTest {
     verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
   }
 
-  @Test(expected = GoogleJsonResponseException.class)
+  @Test
   public void handlesSearchErrorTest() throws IOException, GeneralSecurityException {
     String jsonStr = gson.toJson(Map.of("text", "foo"));
     StringReader requestReadable = new StringReader(jsonStr);
@@ -134,12 +123,11 @@ public class SlackSlashCommandTest {
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
 
-    SlackSlashCommand functionInstance = new SlackSlashCommand();
-    Whitebox.setInternalState(functionInstance, "verifier", alwaysValidVerifier);
-    Whitebox.setInternalState(SlackSlashCommand.class, "API_KEY", "gibberish");
+    SlackSlashCommand functionInstance = new SlackSlashCommand(alwaysValidVerifier, "gibberish");
 
     // Should throw a GoogleJsonResponseException (due to invalid API key)
-    functionInstance.service(request, response);
+    assertThrows(
+        GoogleJsonResponseException.class, () -> functionInstance.service(request, response));
   }
 
   @Test
@@ -150,9 +138,7 @@ public class SlackSlashCommandTest {
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
 
-    SlackSlashCommand functionInstance = new SlackSlashCommand();
-    Whitebox.setInternalState(functionInstance, "verifier", alwaysValidVerifier);
-
+    SlackSlashCommand functionInstance = new SlackSlashCommand(alwaysValidVerifier);
 
     functionInstance.service(request, response);
 
@@ -168,9 +154,7 @@ public class SlackSlashCommandTest {
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
 
-    SlackSlashCommand functionInstance = new SlackSlashCommand();
-    Whitebox.setInternalState(functionInstance, "verifier", alwaysValidVerifier);
-
+    SlackSlashCommand functionInstance = new SlackSlashCommand(alwaysValidVerifier);
 
     functionInstance.service(request, response);
 
