@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class WriteConditionally {
+
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("stats_summary");
 
   public static void writeConditionally(String projectId, String instanceId, String tableId) {
