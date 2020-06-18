@@ -26,9 +26,10 @@ import com.google.cloud.bigtable.data.v2.models.RowMutation;
 import com.google.protobuf.ByteString;
 
 public class CassandraMigrationCodelab {
+
   private BigtableDataClient dataClient;
   private String tableId;
-  private final String COLUMN_FAMILY_NAME = "stats_summary";
+  private static final String COLUMN_FAMILY_NAME = "stats_summary";
 
   public CassandraMigrationCodelab(String projectId, String instanceId, String tableId) {
     this.tableId = tableId;
@@ -59,7 +60,7 @@ public class CassandraMigrationCodelab {
       long timestamp = (long) 1556712000 * 1000; // Timestamp of June 1, 2019 12:00
 
       String rowKey = "phone#4c410523#20190501";
-      ByteString one = ByteString.copyFrom(new byte[] {0, 0, 0, 0, 0, 0, 0, 1});
+      ByteString one = ByteString.copyFrom(new byte[]{0, 0, 0, 0, 0, 0, 0, 1});
 
       RowMutation rowMutation =
           RowMutation.create(tableId, rowKey)
@@ -122,7 +123,7 @@ public class CassandraMigrationCodelab {
 
       String rowKey = "phone#4c410523#20190501";
 
-      ByteString zero = ByteString.copyFrom(new byte[] {0, 0, 0, 0, 0, 0, 0, 0});
+      ByteString zero = ByteString.copyFrom(new byte[]{0, 0, 0, 0, 0, 0, 0, 0});
 
       RowMutation rowMutation =
           RowMutation.create(tableId, rowKey)

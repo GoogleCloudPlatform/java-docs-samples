@@ -18,8 +18,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import keyviz.ReadData.ReadDataOptions;
-import keyviz.ReadData.ReadFromTableFn;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +25,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import keyviz.LoadData;
+import keyviz.ReadData.ReadDataOptions;
+import keyviz.ReadData.ReadFromTableFn;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
@@ -143,7 +143,7 @@ public class KeyVizArtTest {
             .build();
 
     // Initiates a new pipeline every second
-    p.apply(Create.of(1l))
+    p.apply(Create.of(1L))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
     p.run().waitUntilFinish();
 
@@ -160,7 +160,7 @@ public class KeyVizArtTest {
     p = Pipeline.create(options);
 
     // Initiates a new pipeline every second
-    p.apply(Create.of(1l))
+    p.apply(Create.of(1L))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
     p.run().waitUntilFinish();
 

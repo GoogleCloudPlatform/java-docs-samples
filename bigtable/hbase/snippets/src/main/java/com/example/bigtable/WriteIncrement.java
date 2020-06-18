@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class WriteIncrement {
+
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("stats_summary");
 
   public static void writeIncrement(String projectId, String instanceId, String tableId) {
