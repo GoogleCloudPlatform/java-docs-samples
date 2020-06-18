@@ -41,7 +41,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 public class Reads {
 
-  // Write your function here!
+  // Write your code here.
   // [START_EXCLUDE]
   // [START bigtable_reads_row]
   public static void readRow() {

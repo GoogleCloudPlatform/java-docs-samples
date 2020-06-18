@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class Reads {
 
-  // Write your function here!
+  // Write your code here.
   // [START_EXCLUDE]
   public static void readRow() {
     // TODO(developer): Replace these variables before running the sample.

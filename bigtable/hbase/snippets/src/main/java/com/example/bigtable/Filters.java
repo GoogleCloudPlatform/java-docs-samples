@@ -56,7 +56,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 public class Filters {
 
-  // Write your function here!
+  // Write your code here.
   // [START_EXCLUDE]
   // [START bigtable_filters_limit_row_sample]
   public static void filterLimitRowSample() {
