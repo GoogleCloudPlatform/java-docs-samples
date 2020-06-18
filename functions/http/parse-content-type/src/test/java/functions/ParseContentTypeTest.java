@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -30,6 +31,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +47,7 @@ public class ParseContentTypeTest {
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
+  private static Gson gson = new Gson();
 
   @Before
   public void beforeTest() throws IOException {
@@ -58,7 +61,8 @@ public class ParseContentTypeTest {
   @Test
   public void parseContentTypeTest_json() throws IOException {
     // Send a request with JSON data
-    BufferedReader bodyReader = new BufferedReader(new StringReader("{\"name\":\"John\"}"));
+    String requestJson = gson.toJson(Map.of("name", "John"));
+    BufferedReader bodyReader = new BufferedReader(new StringReader(requestJson));
 
     when(request.getContentType()).thenReturn(Optional.of("application/json"));
     when(request.getReader()).thenReturn(bodyReader);

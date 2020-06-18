@@ -28,6 +28,7 @@ import com.github.seratch.jslack.app_backend.SlackSignature;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -46,6 +47,8 @@ public class SlackSlashCommandTest {
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
+
+  private static final Gson gson = new Gson();
 
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
@@ -88,7 +91,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void requiresSlackAuthHeadersTest() throws IOException, GeneralSecurityException {
-    StringReader requestReadable = new StringReader("{ \"text\": \"foo\" }\n");
+    String jsonStr = gson.toJson(Map.of("text", "foo"));
+    StringReader requestReadable = new StringReader(jsonStr);
 
     when(request.getMethod()).thenReturn("POST");
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
@@ -113,7 +117,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesSearchErrorTest() throws IOException, GeneralSecurityException {
-    StringReader requestReadable = new StringReader("{ \"text\": \"foo\" }\n");
+    String jsonStr = gson.toJson(Map.of("text", "foo"));
+    StringReader requestReadable = new StringReader(jsonStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
@@ -127,7 +132,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesEmptyKgResultsTest() throws IOException, GeneralSecurityException {
-    StringReader requestReadable = new StringReader("{ \"text\": \"asdfjkl13579\" }\n");
+    String jsonStr = gson.toJson(Map.of("text", "asdfjkl13579"));
+    StringReader requestReadable = new StringReader(jsonStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
@@ -142,7 +148,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesPopulatedKgResultsTest() throws IOException, GeneralSecurityException {
-    StringReader requestReadable = new StringReader("{ \"text\": \"lion\" }\n");
+    String jsonStr = gson.toJson(Map.of("text", "lion"));
+    StringReader requestReadable = new StringReader(jsonStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");

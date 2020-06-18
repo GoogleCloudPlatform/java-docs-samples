@@ -22,6 +22,7 @@ import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,8 +47,11 @@ public class StackdriverLoggingTest {
 
   @Test
   public void stackdriverLogging() throws IOException {
-    PubSubMessage pubsubMessage = gson.fromJson(
-        "{\"data\":\"ZGF0YQ==\",\"messageId\":\"id\"}", PubSubMessage.class);
+    String messageJson = gson.toJson(Map.of(
+        "data", "ZGF0YQ==",
+        "messageId", "id"
+    ));
+    PubSubMessage pubsubMessage = gson.fromJson(messageJson, PubSubMessage.class);
     new StackdriverLogging().accept(pubsubMessage, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();

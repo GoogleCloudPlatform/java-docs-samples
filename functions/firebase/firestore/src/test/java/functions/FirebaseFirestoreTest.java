@@ -18,8 +18,10 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.gson.Gson;
 import functions.eventpojos.MockContext;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -36,6 +38,8 @@ public class FirebaseFirestoreTest {
   private static final Logger logger = Logger.getLogger(FirebaseFirestore.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
+
+  private static final Gson gson = new Gson();
 
   @BeforeClass
   public static void beforeClass() {
@@ -64,7 +68,7 @@ public class FirebaseFirestoreTest {
 
   @Test
   public void functionsFirebaseFirestore_shouldProcessPresentValues() {
-    String jsonStr = "{\"oldValue\": 999, \"value\": 777 }";
+    String jsonStr = gson.toJson(Map.of("oldValue", 999, "value", 777));
 
     MockContext context = new MockContext();
     context.resource = "resource_1";
