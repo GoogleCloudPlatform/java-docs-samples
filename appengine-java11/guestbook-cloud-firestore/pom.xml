@@ -59,9 +59,9 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Dependency needs to be locally install from directory -->
-		<!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
-		<!-- See the README for more information -->
+    <!-- Dependency needs to be locally installed from directory -->
+    <!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
+    <!-- See the README for more information -->
     <dependency>
       <groupId>com.example.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
