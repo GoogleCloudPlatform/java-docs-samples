@@ -17,6 +17,7 @@ package com.example.task;
 // [START cloud_tasks_delete_queue]
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.QueueName;
+import java.io.IOException;
 
 public class DeleteQueue {
   /**
@@ -28,7 +29,7 @@ public class DeleteQueue {
    * @throws Exception on Cloud Tasks Client errors.
    */
   public static void deleteQueue(String projectId, String locationId, String queueId)
-      throws Exception {
+      throws IOException {
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {

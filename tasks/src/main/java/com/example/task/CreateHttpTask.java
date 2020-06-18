@@ -23,6 +23,7 @@ import com.google.cloud.tasks.v2.HttpRequest;
 import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Task;
 import com.google.protobuf.ByteString;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class CreateHttpTask {
@@ -35,7 +36,7 @@ public class CreateHttpTask {
    * @throws Exception on Cloud Tasks Client errors.
    */
   public static void createTask(String projectId, String locationId, String queueId)
-      throws Exception {
+      throws IOException {
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {

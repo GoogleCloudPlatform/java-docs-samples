@@ -18,6 +18,7 @@ package com.example.task;
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.LocationName;
 import com.google.cloud.tasks.v2.Queue;
+import java.io.IOException;
 
 public class ListQueues {
   /**
@@ -28,7 +29,7 @@ public class ListQueues {
    * @throws Exception on Cloud Tasks Client errors.
    */
   public static void listQueues(String projectId, String locationId)
-      throws Exception {
+      throws IOException {
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {

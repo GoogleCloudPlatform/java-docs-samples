@@ -24,6 +24,7 @@ import com.google.cloud.tasks.v2.OidcToken;
 import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Task;
 import com.google.protobuf.ByteString;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class CreateHttpTaskWithToken {
@@ -38,7 +39,7 @@ public class CreateHttpTaskWithToken {
    */
   public static void createTask(
       String projectId, String locationId, String queueId, String serviceAccountEmail)
-      throws Exception {
+      throws IOException {
 
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
