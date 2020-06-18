@@ -21,13 +21,15 @@ import com.example.jobs.JobSearchDeleteTenant;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class JobSearchDeleteTenantTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String TENANT_EXT_ID = "EXTERNAL_TEMP_TENANT_ID";
+  private static final String TENANT_EXT_ID =
+      String.format("EXTERNAL_TEMP_TENANT_ID_%s", UUID.randomUUID().toString().substring(0, 20));
   private String tenantId;
 
   private ByteArrayOutputStream bout;

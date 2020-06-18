@@ -20,6 +20,7 @@ import com.example.jobs.JobSearchDeleteCompany;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,8 @@ public class JobSearchCreateCompanyTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = System.getenv("CTS_TENANT_ID");
 
-  private static final String COMPANY_EXT_ID = "DO_NOT_DELETE_EXT_ID";
+  private static final String COMPANY_EXT_ID =
+      String.format("COMP_EXT_ID_%s", UUID.randomUUID().toString().substring(0, 20));
   private static final String COMPANY_DISPLAY_NAME = "DO_NOT_DELETE_COMPANY";
 
   private String companyId;
