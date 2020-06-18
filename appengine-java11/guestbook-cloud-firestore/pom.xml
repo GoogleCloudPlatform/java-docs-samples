@@ -45,7 +45,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>5.7.0</version>
+        <version>7.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -59,9 +59,9 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Dependency needs to be locally install from directory -->
-		<!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
-		<!-- See the README for more information -->
+    <!-- Dependency needs to be locally installed from directory -->
+    <!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
+    <!-- See the README for more information -->
     <dependency>
       <groupId>com.example.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
