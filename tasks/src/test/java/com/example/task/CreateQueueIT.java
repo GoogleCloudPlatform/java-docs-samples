@@ -32,8 +32,8 @@ import org.junit.runners.JUnit4;
 /** Tests for creating queues. */
 @RunWith(JUnit4.class)
 public class CreateQueueIT {
-  private static final String PROJECT_ID = System.getProperty("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = "us-central1";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION_ID = System.getenv("LOCATION_ID");
   private static final String QUEUE_ID = "test-queue-" + UUID.randomUUID();
 
   private ByteArrayOutputStream bout;
@@ -42,12 +42,13 @@ public class CreateQueueIT {
   private static void requireEnvVar(String varName) {
     assertNotNull(
         String.format("Environment variable '%s' must be set to perform these tests.", varName),
-        System.getProperty(varName));
+        System.getenv(varName));
   }
 
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("LOCATION_ID");
   }
 
   @Before
