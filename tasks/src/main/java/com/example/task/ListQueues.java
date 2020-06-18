@@ -21,13 +21,15 @@ import com.google.cloud.tasks.v2.Queue;
 import java.io.IOException;
 
 public class ListQueues {
-  /**
-   * List queues using the Cloud Tasks client.
-   *
-   * @param projectId the Id of the project.
-   * @param locationId the GCP region of your queue.
-   * @throws Exception on Cloud Tasks Client errors.
-   */
+
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String locationId = "us-central1";
+    listQueues(projectId, locationId);
+  }
+
+  // List queues using the Cloud Tasks client.
   public static void listQueues(String projectId, String locationId)
       throws IOException {
 

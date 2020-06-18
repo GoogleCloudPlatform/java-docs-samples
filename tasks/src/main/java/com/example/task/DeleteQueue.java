@@ -20,14 +20,16 @@ import com.google.cloud.tasks.v2.QueueName;
 import java.io.IOException;
 
 public class DeleteQueue {
-  /**
-   * Delete a queue using the Cloud Tasks client.
-   *
-   * @param projectId the Id of the project.
-   * @param queueId the name of your Queue.
-   * @param locationId the GCP region of your queue.
-   * @throws Exception on Cloud Tasks Client errors.
-   */
+
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String locationId = "us-central1";
+    String queueId = "my-queue";
+    deleteQueue(projectId, locationId, queueId);
+  }
+
+  // Delete a queue using the Cloud Tasks client.
   public static void deleteQueue(String projectId, String locationId, String queueId)
       throws IOException {
 
