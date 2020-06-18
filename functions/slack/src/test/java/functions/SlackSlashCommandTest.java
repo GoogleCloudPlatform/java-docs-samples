@@ -74,6 +74,7 @@ public class SlackSlashCommandTest {
         "X-Slack-Request-Timestamp", List.of(timestamp));
 
     when(request.getHeaders()).thenReturn(validHeaders);
+    when(request.getFirstHeader(any())).thenCallRealMethod();
   }
 
   @Test
