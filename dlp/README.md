@@ -39,8 +39,8 @@ mvn exec:java -Dexec.mainClass="dlp.snippets.<CLASS_NAME>"
     James,(567) 890-1234,8291 3627 8250 1234,19,Male
     Gandalf,(223) 456-7890,4231 5555 6781 9876,27,Male
     Dumbledore,(313) 337-1337,6291 8765 1095 7629,27,Male
-    Joe,(452) 123-1234,3782 2288 1166 3030,35,Male
-    Marie,(452) 123-1234,8291 3627 8250 1234,35,Female
+    Joe,(452) 223-1234,3782 2288 1166 3030,35,Male
+    Marie,(452) 223-1234,8291 3627 8250 1234,35,Female
     Carrie,(567) 890-1234,2253 5218 4251 4526,35,Female
     ```
   - Set the `BIGQUERY_DATASET` and `BIGQUERY_TABLE` environment values.
