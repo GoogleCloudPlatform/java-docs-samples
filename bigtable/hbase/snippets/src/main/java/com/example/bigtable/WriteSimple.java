@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class WriteSimple {
+
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("stats_summary");
 
   public static void writeSimple(String projectId, String instanceId, String tableId) {
@@ -34,9 +35,9 @@ public class WriteSimple {
     // String tableId = "mobile-time-series";
 
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
-      Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(tableId)));
+      final Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(tableId)));
       long timestamp = System.currentTimeMillis();
-      byte[] one = new byte[] {0, 0, 0, 0, 0, 0, 0, 1};
+      byte[] one = new byte[]{0, 0, 0, 0, 0, 0, 0, 1};
 
       String rowKey = "phone#4c410523#20190501";
       Put put = new Put(Bytes.toBytes(rowKey));

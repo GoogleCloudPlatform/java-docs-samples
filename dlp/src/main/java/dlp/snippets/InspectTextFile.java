@@ -17,6 +17,7 @@
 package dlp.snippets;
 
 // [START dlp_inspect_file]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ByteContentItem.BytesType;
@@ -26,15 +27,16 @@ import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectContentRequest;
 import com.google.privacy.dlp.v2.InspectContentResponse;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.protobuf.ByteString;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InspectTextFile {
 
-  public static void inspectTextFile() {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String filePath = "path/to/file.txt";
@@ -42,14 +44,11 @@ public class InspectTextFile {
   }
 
   // Inspects the specified text file.
-  public static void inspectTextFile(String projectId, String filePath) {
+  public static void inspectTextFile(String projectId, String filePath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify the project used for request.
-      ProjectName project = ProjectName.of(projectId);
-
       // Specify the type and content to be inspected.
       ByteString fileBytes = ByteString.readFrom(new FileInputStream(filePath));
       ByteContentItem byteItem =
@@ -59,18 +58,21 @@ public class InspectTextFile {
       // Specify the type of info the inspection will look for.
       List<InfoType> infoTypes = new ArrayList<>();
       // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
-      for (String typeName : new String[] {"PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD_NUMBER"}) {
+      for (String typeName : new String[]{"PHONE_NUMBER", "EMAIL_ADDRESS", "CREDIT_CARD_NUMBER"}) {
         infoTypes.add(InfoType.newBuilder().setName(typeName).build());
       }
 
       // Construct the configuration for the Inspect request.
       InspectConfig config =
-          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+          InspectConfig.newBuilder()
+              .addAllInfoTypes(infoTypes)
+              .setIncludeQuote(true)
+              .build();
 
       // Construct the Inspect request to be sent by the client.
       InspectContentRequest request =
           InspectContentRequest.newBuilder()
-              .setParent(project.toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setItem(item)
               .setInspectConfig(config)
               .build();
@@ -85,8 +87,6 @@ public class InspectTextFile {
         System.out.println("\tInfo type: " + f.getInfoType().getName());
         System.out.println("\tLikelihood: " + f.getLikelihood());
       }
-    } catch (Exception e) {
-      System.out.println("Error during inspectFile: \n" + e.toString());
     }
   }
 }

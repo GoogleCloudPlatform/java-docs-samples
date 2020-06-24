@@ -28,15 +28,15 @@ import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
-import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.ReplaceWithInfoTypeConfig;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class DeIdentifyWithMasking {
 
-  public static void deIdentifyWithMasking() throws IOException {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String textToDeIdentify = "My SSN is 372819127";
@@ -82,7 +82,7 @@ public class DeIdentifyWithMasking {
       // Combine configurations into a request for the service.
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setItem(contentItem)
               .setInspectConfig(inspectConfig)
               .setDeidentifyConfig(deidentifyConfig)

@@ -41,16 +41,16 @@ import java.util.List;
  *
  * - Delete job within batch.
  *
- * For simplicity, the samples always use the same kind of requests in each batch. In a real case ,
- * you might put different kinds of request in one batch.
+ * For simplicity, the samples always use the same kind of requests in each batch. In a real case
+ * , you might put different kinds of request in one batch.
  */
 public final class BatchOperationSample {
 
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START batch_job_create]
   public static List<Job> batchCreateJobs(String companyName) throws IOException {
@@ -60,8 +60,7 @@ public final class BatchOperationSample {
     JsonBatchCallback<Job> createCallback =
         new JsonBatchCallback<Job>() {
           @Override
-          public void onFailure(GoogleJsonError e,
-              HttpHeaders responseHeaders) {
+          public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) {
             System.out.println("Create Error Message: " + e.getMessage());
           }
 
@@ -81,8 +80,7 @@ public final class BatchOperationSample {
             .setRequisitionId("123456")
             .setTitle("Software Engineer")
             .setApplicationInfo(applicationInfo)
-            .setDescription(
-                "Design, develop, test, deploy, maintain and improve software.");
+            .setDescription("Design, develop, test, deploy, maintain and improve software.");
     Job hardwareEngineerJob =
         new Job()
             .setCompanyName(companyName)
@@ -146,12 +144,13 @@ public final class BatchOperationSample {
     }
     // Or just fill in part of field in Job entity and set the updateJobFields
     for (int i = 1; i < jobsToBeUpdate.size(); i += 2) {
-      Job toBeUpdated = new Job().setTitle("Engineer in Mountain View")
-          .setName(jobsToBeUpdate.get(i).getName());
+      Job toBeUpdated =
+          new Job().setTitle("Engineer in Mountain View").setName(jobsToBeUpdate.get(i).getName());
       talentSolutionClient
           .projects()
           .jobs()
-          .patch(toBeUpdated.getName(),
+          .patch(
+              toBeUpdated.getName(),
               new UpdateJobRequest().setJob(toBeUpdated).setUpdateMask("title"))
           .queue(batchUpdate, updateCallback);
     }
@@ -174,8 +173,7 @@ public final class BatchOperationSample {
               batchDelete,
               new JsonBatchCallback<Empty>() {
                 @Override
-                public void onFailure(GoogleJsonError e,
-                    HttpHeaders responseHeaders) {
+                public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) {
                   System.out.println("Delete Error Message: " + e.getMessage());
                 }
 
@@ -190,8 +188,7 @@ public final class BatchOperationSample {
   // [END batch_job_delete]
 
   public static void main(String... args) throws Exception {
-    Company company = BasicCompanySample
-        .createCompany(BasicCompanySample.generateCompany());
+    Company company = BasicCompanySample.createCompany(BasicCompanySample.generateCompany());
 
     // Batch create jobs
     List<Job> createdJobs = batchCreateJobs(company.getName());

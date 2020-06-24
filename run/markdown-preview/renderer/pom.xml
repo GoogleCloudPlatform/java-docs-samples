@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
@@ -36,7 +36,7 @@
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -50,22 +50,22 @@
     <dependency>
       <groupId>com.atlassian.commonmark</groupId>
       <artifactId>commonmark</artifactId>
-      <version>0.15.0</version>
+      <version>0.15.1</version>
     </dependency>
     <dependency>
       <groupId>com.atlassian.commonmark</groupId>
       <artifactId>commonmark-ext-gfm-tables</artifactId>
-      <version>0.15.0</version>
+      <version>0.15.1</version>
     </dependency>
     <dependency>
       <groupId>com.atlassian.commonmark</groupId>
       <artifactId>commonmark-ext-gfm-strikethrough</artifactId>
-      <version>0.15.0</version>
+      <version>0.15.1</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
       <artifactId>owasp-java-html-sanitizer</artifactId>
-      <version>20191001.1</version>
+      <version>20200615.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -94,7 +94,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>2.3.0</version>
+        <version>2.4.0</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/renderer</image>

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
 
-/**
- * This class manages the details of creating a Storage service, including auth.
- */
+/** This class manages the details of creating a Storage service, including auth. */
 // [START authentication_application_default_credentials]
 public class StorageFactory {
   private static Storage instance = null;
@@ -42,7 +41,7 @@ public class StorageFactory {
   private static Storage buildService() throws IOException, GeneralSecurityException {
     HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = new JacksonFactory();
-    GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
 
     // Depending on the environment that provides the default credentials (for
     // example: Compute Engine, App Engine), the credentials may require us to
@@ -53,7 +52,7 @@ public class StorageFactory {
       credential = credential.createScoped(scopes);
     }
 
-    return new Storage.Builder(transport, jsonFactory, credential)
+    return new Storage.Builder(transport, jsonFactory, new HttpCredentialsAdapter(credential))
         .setApplicationName("GCS Samples")
         .build();
   }

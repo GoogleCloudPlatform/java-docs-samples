@@ -136,8 +136,6 @@ public class Hl7v2MessageTests {
 
   @Test
   public void test_Hl7v2MessageList() throws Exception {
-    HL7v2MessageCreate.hl7v2MessageCreate(
-        hl7v2StoreName, "new-hl7v2-message", "src/test/resources/hl7v2-sample-ingest.txt");
     HL7v2MessageList.hl7v2MessageList(hl7v2StoreName);
 
     String output = bout.toString();

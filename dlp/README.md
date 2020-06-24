@@ -10,77 +10,38 @@ a powerful detection engine for personally identifiable information and other pr
 ## Setup
 - A Google Cloud project with billing enabled
 - [Enable](https://console.cloud.google.com/launcher/details/google/dlp.googleapis.com) the DLP API.
-- (Local testing) [Create a service account](https://cloud.google.com/docs/authentication/getting-started)
+- [Create a service account](https://cloud.google.com/docs/authentication/getting-started)
 and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to the downloaded credentials file.
-- (Local testing) Set the `DLP_DEID_WRAPPED_KEY` environment variable to an AES-256 key encrypted ('wrapped') [with a Cloud Key Management Service (KMS) key](https://cloud.google.com/kms/docs/encrypt-decrypt).
-- (Local testing) Set the `DLP_DEID_KEY_NAME` environment variable to the path-name of the Cloud KMS key you wrapped `DLP_DEID_WRAPPED_KEY` with.
 
-## Build
-This project uses the [Assembly Plugin](https://maven.apache.org/plugins/maven-assembly-plugin/usage.html) to build an uber jar.
-Run:
-```
-   mvn clean package -DskipTests
-```
+## Running
 
-## Retrieve InfoTypes
-An [InfoType identifier](https://cloud.google.com/dlp/docs/infotypes-categories) represents an element of sensitive data.
+To run a specific sample, edit any variables under the `TODO(developer):` in the
+function at the top of each sample, and then execute the function as convenient.
 
-[InfoTypes](https://cloud.google.com/dlp/docs/infotypes-reference#global) are updated periodically. Use the API to retrieve the most current InfoTypes.
-  ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Metadata
-  ``` 
-
-## Run the quickstart
-
-The Quickstart demonstrates using the DLP API to identify an InfoType in a given string.
-```
-   java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar dlp.snippets.QuickStart
+For example, if using the command line you might use the following (replacing 
+`<CLASS_NAME>` with the name of the sample):
+```bash
+mvn exec:java -Dexec.mainClass="dlp.snippets.<CLASS_NAME>"
 ```
 
-## Inspect data for sensitive elements
-Inspect strings, files locally and on Google Cloud Storage, Cloud Datastore, and BigQuery with the DLP API.
 
-Note: image scanning is not currently supported on Google Cloud Storage.
-For more information, refer to the [API documentation](https://cloud.google.com/dlp/docs). 
-Optional flags are explained in [this resource](https://cloud.google.com/dlp/docs/reference/rest/v2beta1/content/inspect#InspectConfig).
+## Testing
 
-## Automatic redaction of sensitive data from images
-[Automatic redaction](https://cloud.google.com/dlp/docs/redacting-sensitive-data-images) produces an output image with sensitive data matches removed.
-
-```
-Commands:
-  -f <string>                   Source image file
-  -o <string>                   Destination image file
- Options:
-  --help               Show help
-  -minLikelihood       choices: "LIKELIHOOD_UNSPECIFIED", "VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
-                       [default: "LIKELIHOOD_UNSPECIFIED"]
-                       specifies the minimum reporting likelihood threshold.
-  
-  -infoTypes      set of infoTypes to search for [eg. PHONE_NUMBER US_PASSPORT]
-```
-
-### Example
-- Redact phone numbers and email addresses from `test.png`:
-  ```
-    java -cp dlp/target/dlp-samples-1.0-jar-with-dependencies.jar com.example.dlp.Redact -f src/test/resources/test.png -o test-redacted.png -infoTypes PHONE_NUMBER EMAIL_ADDRESS
-  ```
-
-## Integration tests
 ### Setup
 - Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
+- Set the `DLP_DEID_WRAPPED_KEY` environment variable to an AES-256 key encrypted ('wrapped') [with a Cloud Key Management Service (KMS) key](https://cloud.google.com/kms/docs/encrypt-decrypt).
+- Set the `DLP_DEID_KEY_NAME` environment variable to the path-name of the Cloud KMS key you wrapped `DLP_DEID_WRAPPED_KEY` with.
 - [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt).
     - Set the `GCS_PATH` environment variable to point to the path for the bucket.
 - Copy and paste the data below into a CSV file and [create a BigQuery table](https://cloud.google.com/bigquery/docs/loading-data-local) from the file:
     ```$xslt
     Name,TelephoneNumber,Mystery,Age,Gender
     James,(567) 890-1234,8291 3627 8250 1234,19,Male
-    Gandalf,(123) 456-7890,4231 5555 6781 9876,27,Male
+    Gandalf,(223) 456-7890,4231 5555 6781 9876,27,Male
     Dumbledore,(313) 337-1337,6291 8765 1095 7629,27,Male
-    Joe,(452) 123-1234,3782 2288 1166 3030,35,Male
-    Marie,(452) 123-1234,8291 3627 8250 1234,35,Female
+    Joe,(452) 223-1234,3782 2288 1166 3030,35,Male
+    Marie,(452) 223-1234,8291 3627 8250 1234,35,Female
     Carrie,(567) 890-1234,2253 5218 4251 4526,35,Female
-    
     ```
   - Set the `BIGQUERY_DATASET` and `BIGQUERY_TABLE` environment values.
 - [Create a Google Cloud Pub/Sub](https://console.cloud.google.com/datastore) topic and and a subscription that is subscribed to the topic.
@@ -91,7 +52,7 @@ Commands:
 -  Update the Datastore kind in [InspectTests.java](src/test/java/dlp/snippets/InspectTests.java).
 
 
-## Run
+### Run
 Run all tests:
   ```
      mvn clean verify

@@ -20,18 +20,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
-
 import java.io.IOException;
 import java.util.Map;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * A servlet that echoes JSON message bodies.
- */
+/** A servlet that echoes JSON message bodies. */
 @WebServlet("/echo")
 public class EchoServlet extends HttpServlet {
 

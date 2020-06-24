@@ -164,7 +164,7 @@ for file in **/pom.xml; do
     fi
 
     # Use maven to execute the tests for the project.
-    mvn -P lint -q --batch-mode --fail-at-end clean verify \
+    mvn --quiet --batch-mode --fail-at-end clean verify \
        -Dfile.encoding="UTF-8" \
        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
        -Dmaven.test.redirectTestOutputToFile=true \

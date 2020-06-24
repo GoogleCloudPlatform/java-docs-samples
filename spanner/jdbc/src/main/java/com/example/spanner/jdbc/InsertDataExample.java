@@ -16,6 +16,7 @@
 
 package com.example.spanner.jdbc;
 
+//[START spanner_jdbc_insert]
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -65,7 +66,6 @@ class InsertDataExample {
             "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
             projectId, instanceId, databaseId);
     try (Connection connection = DriverManager.getConnection(connectionUrl)) {
-      connection.setAutoCommit(false);
       try (PreparedStatement ps =
           connection.prepareStatement(
               "INSERT INTO Singers\n"
@@ -80,9 +80,9 @@ class InsertDataExample {
           ps.addBatch();
         }
         int[] updateCounts = ps.executeBatch();
-        connection.commit();
         System.out.printf("Insert counts: %s%n", Arrays.toString(updateCounts));
       }
     }
   }
 }
+//[END spanner_jdbc_insert]

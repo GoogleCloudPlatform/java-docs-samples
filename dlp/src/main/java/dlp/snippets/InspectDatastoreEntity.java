@@ -34,8 +34,8 @@ import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.KindExpression;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PartitionId;
-import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
@@ -49,8 +49,7 @@ import java.util.stream.Stream;
 
 public class InspectDatastoreEntity {
 
-  public static void insepctDatastoreEntity()
-      throws InterruptedException, ExecutionException, IOException {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String datastoreNamespace = "your-datastore-namespace";
@@ -95,7 +94,10 @@ public class InspectDatastoreEntity {
 
       // Specify how the content should be inspected.
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+          InspectConfig.newBuilder()
+              .addAllInfoTypes(infoTypes)
+              .setIncludeQuote(true)
+              .build();
 
       // Specify the action that is triggered when the job completes.
       String pubSubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
@@ -114,7 +116,7 @@ public class InspectDatastoreEntity {
       // Create the request for the job configured above.
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setInspectJob(inspectJobConfig)
               .build();
 
@@ -135,12 +137,16 @@ public class InspectDatastoreEntity {
       Subscriber subscriber = Subscriber.newBuilder(subscriptionName, messageHandler).build();
       subscriber.startAsync();
 
-      // Wait for the original job to complete
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try {
         done.get(15, TimeUnit.MINUTES);
       } catch (TimeoutException e) {
         System.out.println("Job was not completed after 15 minutes.");
         return;
+      } finally {
+        subscriber.stopAsync();
+        subscriber.awaitTerminated();
       }
 
       // Get the latest state of the job from the service

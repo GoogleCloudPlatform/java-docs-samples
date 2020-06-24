@@ -27,7 +27,7 @@ if [ -n "$JIB" ]; then
       --platform=managed \
       --region="${REGION:-us-central1}" \
       --quiet --no-user-output-enabled
-    mvn clean
+    mvn -q -B clean
   }
   trap cleanup EXIT
 
@@ -52,7 +52,7 @@ BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
   # Build the service
   set -x
 
-  mvn jib:build -Dimage="${CONTAINER_IMAGE}" \
+  mvn -q -B jib:build -Dimage="${CONTAINER_IMAGE}" \
     `if [[ "${BASE_IMAGE_SAMPLES[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
 
   gcloud run deploy "${SERVICE_NAME}" \

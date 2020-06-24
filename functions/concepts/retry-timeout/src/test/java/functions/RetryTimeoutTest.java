@@ -19,10 +19,12 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
 import functions.eventpojos.PubSubMessage;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -40,6 +42,8 @@ public class RetryTimeoutTest {
       RetryTimeout.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
+
+  private static final Gson gson = new Gson();
 
   @BeforeClass
   public static void beforeClass() {
@@ -61,8 +65,8 @@ public class RetryTimeoutTest {
 
   @Test
   public void retryTimeout_handlesRetryMsg() {
-    String timestampData = String.format(
-        "{\"timestamp\":\"%s\"}", ZonedDateTime.now(ZoneOffset.UTC).toString());
+    String timestampData = gson.toJson(Map.of(
+        "timestamp", ZonedDateTime.now(ZoneOffset.UTC).toString()));
 
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData(timestampData);
@@ -76,7 +80,7 @@ public class RetryTimeoutTest {
   @Test
   public void retryTimeout_handlesStopMsg() {
     String timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC).toString();
-    String timestampData = String.format("{\"timestamp\":\"%s\"}", timestamp);
+    String timestampData = gson.toJson(Map.of("timestamp", timestamp));
 
 
     PubSubMessage pubsubMessage = new PubSubMessage();
