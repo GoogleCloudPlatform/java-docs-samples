@@ -46,7 +46,7 @@ public class BuildIapRequest {
     if (credentials == null || !(credentials instanceof IdTokenProvider)) {
       throw new Exception(
           String.format(
-              "Expected credentials that can provide id tokens expected - found %s instead",
+              "Expected credentials that can provide id tokens - found %s instead",
               credentials.getClass().getName()));
     }
     return (IdTokenProvider) credentials;
