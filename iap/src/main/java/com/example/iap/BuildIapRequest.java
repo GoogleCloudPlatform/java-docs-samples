@@ -43,7 +43,9 @@ public class BuildIapRequest {
     Preconditions.checkNotNull(credentials, "Expected to load credentials");
     Preconditions.checkState(
         credentials instanceof IdTokenProvider,
-        "Expected credentials that can provide id tokens expected");
+        String.format(
+            "Expected credentials that can provide id tokens, got %s instead",
+            credentials.getClass().getName()));
 
     return (IdTokenProvider) credentials;
   }
