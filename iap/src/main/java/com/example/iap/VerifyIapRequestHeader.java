@@ -65,7 +65,7 @@ public class VerifyIapRequestHeader {
     try {
       JsonWebToken jsonWebToken = tokenVerifier.verify(jwtToken);
 
-      // must have subject, email
+      // Verify that the token contain subject and email claims
       JsonWebToken.Payload payload = jsonWebToken.getPayload();
       return payload.getSubject() != null && payload.get("email") != null;
     } catch (TokenVerifier.VerificationException e) {
