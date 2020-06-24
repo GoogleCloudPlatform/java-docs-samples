@@ -37,8 +37,6 @@ public class BuildIapRequest {
 
   private static final HttpTransport httpTransport = new NetHttpTransport();
 
-  private static Clock clock = Clock.systemUTC();
-
   private BuildIapRequest() {}
 
   private static IdTokenProvider getIdTokenProvider() throws Exception {
@@ -46,7 +44,10 @@ public class BuildIapRequest {
         GoogleCredentials.getApplicationDefault().createScoped(Collections.singleton(IAM_SCOPE));
     // service account credentials are required to sign the jwt token
     if (credentials == null || !(credentials instanceof IdTokenProvider)) {
-      throw new Exception("Google credentials : credentials that can provide id tokens expected");
+      throw new Exception(
+          String.format(
+              "Expected credentials that can provide id tokens expected - found %s instead",
+              credentials.getClass().getName()));
     }
     return (IdTokenProvider) credentials;
   }
