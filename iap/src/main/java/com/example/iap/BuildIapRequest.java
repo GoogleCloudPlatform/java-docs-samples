@@ -25,30 +25,27 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.IdTokenCredentials;
 import com.google.auth.oauth2.IdTokenProvider;
-import java.time.Clock;
+import com.google.common.base.Preconditions;
+
+import java.io.IOException;
 import java.util.Collections;
 
 public class BuildIapRequest {
   private static final String IAM_SCOPE = "https://www.googleapis.com/auth/iam";
-  private static final String OAUTH_TOKEN_URI = "https://www.googleapis.com/oauth2/v4/token";
-  private static final String JWT_BEARER_TOKEN_GRANT_TYPE =
-      "urn:ietf:params:oauth:grant-type:jwt-bearer";
-  private static final long EXPIRATION_TIME_IN_SECONDS = 3600L;
 
   private static final HttpTransport httpTransport = new NetHttpTransport();
 
   private BuildIapRequest() {}
 
-  private static IdTokenProvider getIdTokenProvider() throws Exception {
+  private static IdTokenProvider getIdTokenProvider() throws IOException {
     GoogleCredentials credentials =
         GoogleCredentials.getApplicationDefault().createScoped(Collections.singleton(IAM_SCOPE));
-    // service account credentials are required to sign the jwt token
-    if (credentials == null || !(credentials instanceof IdTokenProvider)) {
-      throw new Exception(
-          String.format(
-              "Expected credentials that can provide id tokens - found %s instead",
-              credentials.getClass().getName()));
-    }
+
+    Preconditions.checkNotNull(credentials, "Expected to load credentials");
+    Preconditions.checkState(
+        credentials instanceof IdTokenProvider,
+        "Expected credentials that can provide id tokens expected");
+
     return (IdTokenProvider) credentials;
   }
 
@@ -58,16 +55,17 @@ public class BuildIapRequest {
    * @param request Request to add authorization header
    * @param iapClientId OAuth 2.0 client ID for IAP protected resource
    * @return Clone of request with Bearer style authorization header with signed jwt token.
-   * @throws Exception exception creating signed JWT
+   * @throws IOException exception creating signed JWT
    */
   public static HttpRequest buildIapRequest(HttpRequest request, String iapClientId)
-      throws Exception {
+      throws IOException {
 
     IdTokenProvider idTokenProvider = getIdTokenProvider();
-    IdTokenCredentials credentials = IdTokenCredentials.newBuilder()
-        .setIdTokenProvider(idTokenProvider)
-        .setTargetAudience(iapClientId)
-        .build();
+    IdTokenCredentials credentials =
+        IdTokenCredentials.newBuilder()
+            .setIdTokenProvider(idTokenProvider)
+            .setTargetAudience(iapClientId)
+            .build();
 
     HttpRequestInitializer httpRequestInitializer = new HttpCredentialsAdapter(credentials);
 
