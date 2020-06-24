@@ -33,9 +33,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-//CHECKSTYLE OFF: AbbreviationAsWordInName
+// CHECKSTYLE OFF: AbbreviationAsWordInName
 public class BuildAndVerifyIapRequestIT {
-  //CHECKSTYLE ON: AbbreviationAsWordInName
+  // CHECKSTYLE ON: AbbreviationAsWordInName
 
   // Update these fields to reflect your IAP protected App Engine credentials
   private static Long IAP_PROJECT_NUMBER = 320431926067L;
