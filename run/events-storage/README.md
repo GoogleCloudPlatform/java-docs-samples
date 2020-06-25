@@ -31,15 +31,17 @@ export MY_GCS_BUCKET="$(gcloud config get-value project)-gcs-bucket"
 ## Quickstart
 
 Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) to build and push your container image:
+
 ```sh
 mvn jib:build -Dimage gcr.io/$(gcloud config get-value project)/$MY_RUN_CONTAINER
 ```
 
 Deploy your Cloud Run service:
+
 ```sh
 gcloud run deploy $MY_RUN_SERVICE \
- --image gcr.io/$(gcloud config get-value project)/$MY_RUN_CONTAINER \
- --allow-unauthenticated
+--image gcr.io/$(gcloud config get-value project)/$MY_RUN_CONTAINER \
+--allow-unauthenticated
 ```
 
 Create a _single region_ Cloud Storage bucket:

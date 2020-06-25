@@ -19,6 +19,9 @@ package com.example.cloudrun;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,18 @@ import org.springframework.test.web.servlet.MockMvc;
 public class EventControllerTests {
 
   @Autowired private MockMvc mockMvc;
+  String mockBody;
+
+  @Before
+  public void setup() throws JSONException {
+    JSONObject message =
+        new JSONObject()
+            .put("data", "dGVzdA==")
+            .put("messageId", "91010751788941")
+            .put("publishTime", "2017-09-25T23:16:42.302Z")
+            .put("attributes", new JSONObject());
+    mockBody = new JSONObject().put("message", message).toString();
+  }
 
   @Test
   public void addEmptyBody() throws Exception {
@@ -42,19 +57,13 @@ public class EventControllerTests {
 
   @Test
   public void addNoMessage() throws Exception {
-    String mockBody = "{}";
-
     mockMvc
-        .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mockBody))
+        .perform(post("/").contentType(MediaType.APPLICATION_JSON).content("{}"))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   public void addInvalidMimetype() throws Exception {
-    String mockBody = "{\"message\":{\"data\":\"dGVzdA==\","
-                      + "\"attributes\":{},\"messageId\":\"91010751788941\""
-                      + ",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}";
-
     mockMvc
         .perform(post("/").contentType(MediaType.TEXT_HTML).content(mockBody))
         .andExpect(status().isUnsupportedMediaType());
@@ -62,18 +71,15 @@ public class EventControllerTests {
 
   @Test
   public void addMinimalBody() throws Exception {
-    String mockBody = "{\"message\":{}}";
+    String minimalMockBody = new JSONObject().put("message", new JSONObject()).toString();
 
     mockMvc
-        .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mockBody))
+        .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(minimalMockBody))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   public void addFullBody() throws Exception {
-    String mockBody = "{\"message\":{\"data\":\"dGVzdA==\","
-                      + "\"attributes\":{},\"messageId\":\"91010751788941\""
-                      + ",\"publishTime\":\"2017-09-25T23:16:42.302Z\"}}";
     mockMvc
         .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mockBody))
         .andExpect(status().isOk());
