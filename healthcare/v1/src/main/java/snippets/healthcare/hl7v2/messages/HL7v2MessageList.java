@@ -47,9 +47,11 @@ public class HL7v2MessageList {
     // Results are paginated, so multiple queries may be required.
     String pageToken = null;
 
-    // Create request and configure any parameters.
-    try {
-      Messages.List request =
+    List<Message> hl7v2Messages;
+
+    do {
+      // Create request and execute.
+      ListMessagesResponse messageResponse =
           client
               .projects()
               .locations()
@@ -57,24 +59,20 @@ public class HL7v2MessageList {
               .hl7V2Stores()
               .messages()
               .list(hl7v2StoreName)
-              .setPageSize(100) // Specify pageSize up to 1000
-              .setPageToken(pageToken);
+              .setPageSize(100)
+              .setPageToken(pageToken)
+              .execute();
 
-      ListMessagesResponse response;
-      // Execute response and collect results.
-      do {
-        response = request.execute();
-        if (response.getHl7V2Messages() == null) {
-          continue;
-        }
-        System.out.printf("Retrieved %s HL7v2 messages: \n", response.getHl7V2Messages().size());
-        for (Message message : response.getHl7V2Messages()) {
-          System.out.println("\t" + message);
-        }
-        request.setPageToken(response.getNextPageToken());
-      } while (response.getNextPageToken() != null);
-    } catch (IOException e) {
-      System.out.println("Unable to list HL7v2 messages:" + e.toString());
+      // Collect results.
+      hl7v2Messages = messageResponse.getHl7V2Messages();
+
+      // Update the page token for the next request.
+      pageToken = messageResponse.getNextPageToken();
+    } while (pageToken != null);
+    // Print results.
+    System.out.printf("Retrieved %s HL7v2 messages: \n", hl7v2Messages.size());
+    for (Message message : hl7v2Messages) {
+      System.out.printf("%s\n", message.getName());
     }
   }
 
@@ -100,3 +98,4 @@ public class HL7v2MessageList {
   }
 }
 // [END healthcare_list_hl7v2_messages]
+
