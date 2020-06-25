@@ -154,6 +154,7 @@ public class CreateClusterWithAutoscaling {
       System.out.printf("Cluster created successfully: %s", response.getClusterName());
 
     } catch (ExecutionException e) {
+      // If cluster creation does not complete successfully, print the error message.
       System.err.println(String.format("createClusterWithAutoscaling: %s ", e.getMessage()));
     }
   }

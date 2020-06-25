@@ -76,7 +76,7 @@ public class SubmitHadoopFSJob {
 
       Job response = submitJobAsOperationAsyncRequest.get();
 
-      // Print output from Google Cloud Storage
+      // Print output from Google Cloud Storage.
       Matcher matches =
           Pattern.compile("gs://(.*?)/(.*)").matcher(response.getDriverOutputResourceUri());
       matches.matches();
@@ -88,6 +88,7 @@ public class SubmitHadoopFSJob {
           String.format("Job finished successfully: %s", new String(blob.getContent())));
 
     } catch (ExecutionException e) {
+      // If the job does not complete successfully, print the error message.
       System.err.println(String.format("submitHadoopFSJob: %s ", e.getMessage()));
     }
   }
