@@ -79,7 +79,7 @@ limitations under the License.
         <version>2.4.0</version>
         <configuration>
           <to>
-            <image>gcr.io/PROJECT_ID/pubsub</image>
+            <image>gcr.io/PROJECT_ID/cloudrun-events-pubsub</image>
           </to>
         </configuration>
       </plugin>
