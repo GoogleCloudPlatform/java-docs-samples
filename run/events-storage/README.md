@@ -25,7 +25,7 @@ Configure environment variables:
 export MY_RUN_SERVICE=gcs-service
 export MY_RUN_CONTAINER=gcs-container
 export MY_GCS_TRIGGER=gcs-trigger
-export MY_GCS_BUCKET=gcs-bucket
+export MY_GCS_BUCKET="$(gcloud config get-value project)-gcs-bucket"
 ```
 
 ## Quickstart
@@ -45,7 +45,6 @@ gcloud run deploy $MY_RUN_SERVICE \
 Create a _single region_ Cloud Storage bucket:
 
 ```sh
-export MY_GCS_BUCKET=<UNIQUE_NAME>
 gsutil mb -p $(gcloud config get-value project) -l us-central1 gs://"$MY_GCS_BUCKET"
 ```
 
