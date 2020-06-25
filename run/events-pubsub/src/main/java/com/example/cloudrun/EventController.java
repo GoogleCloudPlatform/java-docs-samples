@@ -32,7 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EventController {
   @RequestMapping(value = "/", method = RequestMethod.POST)
-  public ResponseEntity<String> receiveMessage(@RequestBody PubSubBody body, @RequestHeader Map<String,String> headers) {
+  public ResponseEntity<String> receiveMessage(
+      @RequestBody PubSubBody body, @RequestHeader Map<String, String> headers) {
     // Get PubSub message from request body.
     PubSubBody.PubSubMessage message = body.getMessage();
     if (message == null) {
