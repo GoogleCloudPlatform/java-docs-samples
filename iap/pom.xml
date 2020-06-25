@@ -60,11 +60,6 @@
       <artifactId>google-auth-library-oauth2-http</artifactId>
       <version>0.21.0</version>
     </dependency>
-    <dependency>
-      <groupId>com.nimbusds</groupId>
-      <artifactId>nimbus-jose-jwt</artifactId>
-      <version>8.19</version>
-    </dependency>
     <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
