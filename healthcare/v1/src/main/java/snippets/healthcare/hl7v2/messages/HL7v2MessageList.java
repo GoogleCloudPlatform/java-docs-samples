@@ -22,7 +22,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
-import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores.Messages;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1.model.ListMessagesResponse;
 import com.google.api.services.healthcare.v1.model.Message;
@@ -98,4 +97,3 @@ public class HL7v2MessageList {
   }
 }
 // [END healthcare_list_hl7v2_messages]
-
