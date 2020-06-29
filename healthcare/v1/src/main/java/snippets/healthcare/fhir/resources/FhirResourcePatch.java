@@ -52,7 +52,7 @@ public class FhirResourcePatch {
     // "resource-id");
     // The following data works with a Patient resource and is not intended to work with
     // other types of FHIR resources. If necessary, supply new values for data that
-    // correspond to the FHIR resource you are updating.
+    // correspond to the FHIR resource you are patching.
     // String data = "[{\"op\": \"replace\", \"path\": \"/active\", \"value\": false}]";
 
     // Initialize the client, which will be used to interact with the service.
