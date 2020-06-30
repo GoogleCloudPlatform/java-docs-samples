@@ -372,6 +372,10 @@ try {
   // IllegalArgumentException's are thrown when an invalid argument has been passed to a function. Ok to ignore.
 }
 ```
+
+For example looking at the code in googleapis/java-dialogflow searching for `throws` and `catch`, I see lots of specific enhanced exceptions - our samples should reflect the richness of those. For example, [ApiException](http://googleapis.github.io/gax-java/1.7.1/apidocs/com/google/api/gax/rpc/ApiException.html) has 16 known subclasses that Gax throws. gRPC also throws [`io.grpc.StatusException`](https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusException.html) which has additional info to help developers understand the cause of their errors. There is also [`io.grpc.StatusRuntimeException`](https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusRuntimeException.html) and [`io.grpc.ManagedChannelProvider.ProviderNotFoundException`](https://grpc.github.io/grpc-java/javadoc/io/grpc/ManagedChannelProvider.ProviderNotFoundException.html).  By listing them explicitly, users are clued into looking them up to understand how the API works and what might happen in production. 
+
+
 ### Client Initialization
 The preferred style for initialization is to use a try-with-resources statement with a comment 
 clarifying how to handle multiple requests and clean up instructions. 
