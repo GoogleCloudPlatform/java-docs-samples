@@ -16,21 +16,22 @@
 
 package com.example.dialogflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.google.cloud.dialogflow.v2.QueryResult;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration (system) tests for {@link DetectIntentWithSentimentAnalysis}.
@@ -43,15 +44,15 @@ public class DetectIntentWithSentimentAndTextToSpeechIT {
   private static String SESSION_ID = UUID.randomUUID().toString();
   private static String LANGUAGE_CODE = "en-US";
   private static List<String> TEXTS = Arrays.asList(
-      "hello",
-      "book a meeting room",
-      "Mountain View",
-      "tomorrow",
-      "10 am",
-      "2 hours",
-      "10 people",
-      "A",
-      "yes");
+          "hello",
+          "book a meeting room",
+          "Mountain View",
+          "tomorrow",
+          "10 am",
+          "2 hours",
+          "10 people",
+          "A",
+          "yes");
 
   @Before
   public void setUp() {
@@ -65,10 +66,10 @@ public class DetectIntentWithSentimentAndTextToSpeechIT {
 
   @Test
   public void testDetectIntentTexts() throws Exception {
-    Map<String, com.google.cloud.dialogflow.v2.QueryResult> queryResults =
-        DetectIntentTexts.detectIntentTexts(PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE);
+    Map<String, QueryResult> queryResults =
+            DetectIntentTexts.detectIntentTexts(PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE);
     com.google.cloud.dialogflow.v2.QueryResult finalResult =
-        queryResults.get(TEXTS.get(TEXTS.size() - 1));
+            queryResults.get(TEXTS.get(TEXTS.size() - 1));
     assertTrue(finalResult.getAllRequiredParamsPresent());
     assertEquals("All set!", finalResult.getFulfillmentText());
   }
@@ -76,13 +77,13 @@ public class DetectIntentWithSentimentAndTextToSpeechIT {
   @Test
   public void testDetectIntentWithSentimentAnalysis() throws Exception {
     assertResults(DetectIntentWithSentimentAnalysis
-        .detectIntentSentimentAnalysis(PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE));
+            .detectIntentSentimentAnalysis(PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE));
   }
 
   @Test
   public void testDetectIntentTextToSpeech() throws Exception {
     assertResults(DetectIntentWithTextToSpeechResponse
-        .detectIntentWithTexttoSpeech(PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE));
+            .detectIntentWithTexttoSpeech(PROJECT_ID, TEXTS, SESSION_ID, LANGUAGE_CODE));
   }
 
   private void assertResults(Map<String, QueryResult> queryResults) {

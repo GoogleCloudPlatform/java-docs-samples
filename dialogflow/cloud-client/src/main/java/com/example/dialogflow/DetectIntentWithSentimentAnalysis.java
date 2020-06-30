@@ -16,6 +16,8 @@
 
 package com.example.dialogflow;
 
+// [START dialogflow_detect_intent_with_sentiment_analysis]
+
 import com.google.cloud.dialogflow.v2.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2.QueryInput;
@@ -26,31 +28,20 @@ import com.google.cloud.dialogflow.v2.SessionName;
 import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.cloud.dialogflow.v2.TextInput;
 import com.google.common.collect.Maps;
+
 import java.util.List;
 import java.util.Map;
 
 public class DetectIntentWithSentimentAnalysis {
-  // [START dialogflow_detect_intent_with_sentiment_analysis]
 
-  /**
-   * Returns the result of detect intent with texts as inputs.
-   *
-   * <p>Using the same `session_id` between requests allows continuation of the conversation.
-   *
-   * @param projectId    Project/Agent Id.
-   * @param texts        The text intents to be detected based on what a user says.
-   * @param sessionId    Identifier of the DetectIntent session.
-   * @param languageCode Language code of the query.
-   * @return The QueryResult for each text in query.
-   */
   public static Map<String, QueryResult>  detectIntentSentimentAnalysis(
-      String projectId,
-      List<String> texts,
-      String sessionId,
-      String languageCode) throws Exception {
+          String projectId,
+          List<String> texts,
+          String sessionId,
+          String languageCode) throws Exception {
     Map<String, QueryResult> queryResults = Maps.newHashMap();
     // Instantiates a client
-    try (SessionsClient sessionsClient = SessionsClient.create()) {
+    try( SessionsClient sessionsClient = SessionsClient.create()){
       // Set the session name using the sessionId (UUID) and projectID (my-project-id)
       SessionName session = SessionName.of(projectId, sessionId);
       System.out.println("Session Path: " + session.toString());
@@ -59,25 +50,25 @@ public class DetectIntentWithSentimentAnalysis {
       for (String text : texts) {
         // Set the text (hello) and language code (en-US) for the query
         TextInput.Builder textInput =
-            TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
+                TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
 
         // Build the query with the TextInput
         QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
 
         //
         SentimentAnalysisRequestConfig sentimentAnalysisRequestConfig =
-            SentimentAnalysisRequestConfig.newBuilder().setAnalyzeQueryTextSentiment(true).build();
+                SentimentAnalysisRequestConfig.newBuilder().setAnalyzeQueryTextSentiment(true).build();
 
         QueryParameters queryParameters =
-            QueryParameters.newBuilder()
-                .setSentimentAnalysisRequestConfig(sentimentAnalysisRequestConfig)
-                .build();
+                QueryParameters.newBuilder()
+                        .setSentimentAnalysisRequestConfig(sentimentAnalysisRequestConfig)
+                        .build();
         DetectIntentRequest detectIntentRequest =
-            DetectIntentRequest.newBuilder()
-                .setSession(session.toString())
-                .setQueryInput(queryInput)
-                .setQueryParams(queryParameters)
-                .build();
+                DetectIntentRequest.newBuilder()
+                        .setSession(session.toString())
+                        .setQueryInput(queryInput)
+                        .setQueryParams(queryParameters)
+                        .build();
 
         // Performs the detect intent request
         DetectIntentResponse response = sessionsClient.detectIntent(detectIntentRequest);
@@ -88,17 +79,17 @@ public class DetectIntentWithSentimentAnalysis {
         System.out.println("====================");
         System.out.format("Query Text: '%s'\n", queryResult.getQueryText());
         System.out.format(
-            "Detected Intent: %s (confidence: %f)\n",
-            queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+                "Detected Intent: %s (confidence: %f)\n",
+                queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
         System.out.format("Fulfillment Text: '%s'\n", queryResult.getFulfillmentText());
         System.out.format(
-            "Sentiment Score: '%s'\n",
-            queryResult.getSentimentAnalysisResult().getQueryTextSentiment().getScore());
+                "Sentiment Score: '%s'\n",
+                queryResult.getSentimentAnalysisResult().getQueryTextSentiment().getScore());
 
         queryResults.put(text, queryResult);
       }
     }
     return queryResults;
   }
-  // [END dialogflow_detect_intent_with_sentiment_analysis]
 }
+// [END dialogflow_detect_intent_with_sentiment_analysis]

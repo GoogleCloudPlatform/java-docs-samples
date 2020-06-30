@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 // Imports the Google Cloud client library
 
+import com.google.cloud.dialogflow.v2.AgentName;
 import com.google.cloud.dialogflow.v2.Context;
 import com.google.cloud.dialogflow.v2.Intent;
 import com.google.cloud.dialogflow.v2.Intent.Message;
@@ -28,6 +29,7 @@ import com.google.cloud.dialogflow.v2.IntentName;
 import com.google.cloud.dialogflow.v2.IntentsClient;
 import com.google.cloud.dialogflow.v2.ProjectAgentName;
 import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class IntentManagement {
     // Instantiates a client
     try (IntentsClient intentsClient = IntentsClient.create()) {
       // Set the project agent name using the projectID (my-project-id)
-      ProjectAgentName parent = ProjectAgentName.of(projectId);
+      AgentName parent = AgentName.of(projectId);
 
       // Performs the list intents request
       for (Intent intent : intentsClient.listIntents(parent).iterateAll()) {
@@ -87,37 +89,37 @@ public class IntentManagement {
    * @return The created Intent.
    */
   public static Intent createIntent(
-      String displayName,
-      String projectId,
-      List<String> trainingPhrasesParts,
-      List<String> messageTexts) throws Exception {
+          String displayName,
+          String projectId,
+          List<String> trainingPhrasesParts,
+          List<String> messageTexts) throws Exception {
     // Instantiates a client
     try (IntentsClient intentsClient = IntentsClient.create()) {
       // Set the project agent name using the projectID (my-project-id)
-      ProjectAgentName parent = ProjectAgentName.of(projectId);
+      AgentName parent = AgentName.of(projectId);
 
       // Build the trainingPhrases from the trainingPhrasesParts
       List<TrainingPhrase> trainingPhrases = new ArrayList<>();
       for (String trainingPhrase : trainingPhrasesParts) {
         trainingPhrases.add(
-            TrainingPhrase.newBuilder().addParts(
-                Part.newBuilder().setText(trainingPhrase).build())
-                .build());
+                TrainingPhrase.newBuilder().addParts(
+                        Part.newBuilder().setText(trainingPhrase).build())
+                        .build());
       }
 
       // Build the message texts for the agent's response
       Message message = Message.newBuilder()
-          .setText(
-              Text.newBuilder()
-                  .addAllText(messageTexts).build()
-          ).build();
+              .setText(
+                      Text.newBuilder()
+                              .addAllText(messageTexts).build()
+              ).build();
 
       // Build the intent
       Intent intent = Intent.newBuilder()
-          .setDisplayName(displayName)
-          .addMessages(message)
-          .addAllTrainingPhrases(trainingPhrases)
-          .build();
+              .setDisplayName(displayName)
+              .addMessages(message)
+              .addAllTrainingPhrases(trainingPhrases)
+              .build();
 
       // Performs the create intent request
       Intent response = intentsClient.createIntent(parent, intent);
@@ -154,7 +156,7 @@ public class IntentManagement {
 
     // Instantiates a client
     try (IntentsClient intentsClient = IntentsClient.create()) {
-      ProjectAgentName parent = ProjectAgentName.of(projectId);
+      AgentName parent = AgentName.of(projectId);
       for (Intent intent : intentsClient.listIntents(parent).iterateAll()) {
         if (intent.getDisplayName().equals(displayName)) {
           String[] splitName = intent.getName().split("/");

@@ -16,48 +16,43 @@
 
 package com.example.dialogflow;
 
+// [START dialogflow_create_document]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.dialogflow.v2beta1.CreateDocumentRequest;
 import com.google.cloud.dialogflow.v2beta1.Document;
 import com.google.cloud.dialogflow.v2beta1.Document.KnowledgeType;
 import com.google.cloud.dialogflow.v2beta1.DocumentsClient;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata;
+
 import java.util.concurrent.TimeUnit;
 
 public class DocumentManagement {
-  // [START dialogflow_create_document]
 
-  /**
-   * @param knowledgeBaseName Knowledge Base id.
-   * @param displayName       display name of the Document.
-   * @param mimeType          MIME type of the Document. e.g. text/csv, text/html
-   * @param knowledgeType     Knowledge Type of the Document. e.g. FAQ, EXTRACTIVE_QA
-   * @param contentUri        Uri of the Document. e.g. gs://path/mydoc.csv, http://mypage.com/faq.html
-   * @return The created document.
-   */
+
   public static Document createDocument(
-      String knowledgeBaseName,
-      String displayName,
-      String mimeType,
-      String knowledgeType,
-      String contentUri)
-      throws Exception {
+          String knowledgeBaseName,
+          String displayName,
+          String mimeType,
+          String knowledgeType,
+          String contentUri)
+          throws Exception {
     // Instantiates a client
     try (DocumentsClient documentsClient = DocumentsClient.create()) {
       Document document =
-          Document.newBuilder()
-              .setDisplayName(displayName)
-              .setContentUri(contentUri)
-              .setMimeType(mimeType)
-              .addKnowledgeTypes(KnowledgeType.valueOf(knowledgeType))
-              .build();
+              Document.newBuilder()
+                      .setDisplayName(displayName)
+                      .setContentUri(contentUri)
+                      .setMimeType(mimeType)
+                      .addKnowledgeTypes(KnowledgeType.valueOf(knowledgeType))
+                      .build();
       CreateDocumentRequest createDocumentRequest =
-          CreateDocumentRequest.newBuilder()
-              .setDocument(document)
-              .setParent(knowledgeBaseName)
-              .build();
+              CreateDocumentRequest.newBuilder()
+                      .setDocument(document)
+                      .setParent(knowledgeBaseName)
+                      .build();
       OperationFuture<Document, KnowledgeOperationMetadata> response =
-          documentsClient.createDocumentAsync(createDocumentRequest);
+              documentsClient.createDocumentAsync(createDocumentRequest);
       Document createdDocument = response.get(180, TimeUnit.SECONDS);
       System.out.format("Created Document:\n");
       System.out.format(" - Display Name: %s\n", createdDocument.getDisplayName());
@@ -71,5 +66,5 @@ public class DocumentManagement {
       return createdDocument;
     }
   }
-  // [END dialogflow_create_document]
 }
+// [END dialogflow_create_document]
