@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class qDetectIntentKnowledgeTest {
+public class DetectIntentKnowledgeTest {
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String TEST_KNOWLEDGE_BASE_ID = "MTA4MzE0ODY5NTczMTQzNzU2ODA";

@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 // [START dialogflow_detect_intent_streaming]
 
+import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.BidiStream;
 import com.google.cloud.dialogflow.v2.AudioEncoding;
 import com.google.cloud.dialogflow.v2.InputAudioConfig;
@@ -28,14 +29,14 @@ import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.cloud.dialogflow.v2.StreamingDetectIntentRequest;
 import com.google.cloud.dialogflow.v2.StreamingDetectIntentResponse;
 import com.google.protobuf.ByteString;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 
 class DetectIntentStream {
 
   // DialogFlow API Detect Intent sample with audio files processes as an audio stream.
-  static void detectIntentStream(String projectId, String audioFilePath, String sessionId) {
+  static void detectIntentStream(String projectId, String audioFilePath, String sessionId)
+      throws IOException, ApiException {
     // String projectId = "YOUR_PROJECT_ID";
     // String audioFilePath = "path_to_your_audio_file";
     // Using the same `sessionId` between requests allows continuation of the conversation.
@@ -49,7 +50,8 @@ class DetectIntentStream {
       // Instructs the speech recognizer how to process the audio content.
       // Note: hard coding audioEncoding and sampleRateHertz for simplicity.
       // Audio encoding of the audio content sent in the query request.
-      InputAudioConfig inputAudioConfig = InputAudioConfig.newBuilder()
+      InputAudioConfig inputAudioConfig =
+          InputAudioConfig.newBuilder()
               .setAudioEncoding(AudioEncoding.AUDIO_ENCODING_LINEAR_16)
               .setLanguageCode("en-US") // languageCode = "en-US"
               .setSampleRateHertz(16000) // sampleRateHertz = 16000
@@ -60,10 +62,11 @@ class DetectIntentStream {
 
       // Create the Bidirectional stream
       BidiStream<StreamingDetectIntentRequest, StreamingDetectIntentResponse> bidiStream =
-              sessionsClient.streamingDetectIntentCallable().call();
+          sessionsClient.streamingDetectIntentCallable().call();
 
       // The first request must **only** contain the audio configuration:
-      bidiStream.send(StreamingDetectIntentRequest.newBuilder()
+      bidiStream.send(
+          StreamingDetectIntentRequest.newBuilder()
               .setSession(session.toString())
               .setQueryInput(queryInput)
               .build());
@@ -76,9 +79,9 @@ class DetectIntentStream {
         int bytes;
         while ((bytes = audioStream.read(buffer)) != -1) {
           bidiStream.send(
-                  StreamingDetectIntentRequest.newBuilder()
-                          .setInputAudio(ByteString.copyFrom(buffer, 0, bytes))
-                          .build());
+              StreamingDetectIntentRequest.newBuilder()
+                  .setInputAudio(ByteString.copyFrom(buffer, 0, bytes))
+                  .build());
         }
       }
 
@@ -90,13 +93,11 @@ class DetectIntentStream {
         System.out.println("====================");
         System.out.format("Intent Display Name: %s\n", queryResult.getIntent().getDisplayName());
         System.out.format("Query Text: '%s'\n", queryResult.getQueryText());
-        System.out.format("Detected Intent: %s (confidence: %f)\n",
-                queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+        System.out.format(
+            "Detected Intent: %s (confidence: %f)\n",
+            queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
         System.out.format("Fulfillment Text: '%s'\n", queryResult.getFulfillmentText());
-
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 }

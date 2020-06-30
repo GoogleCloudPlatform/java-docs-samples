@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 // [START dialogflow_detect_intent_knowledge]
 
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2beta1.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers;
@@ -29,7 +30,7 @@ import com.google.cloud.dialogflow.v2beta1.SessionName;
 import com.google.cloud.dialogflow.v2beta1.SessionsClient;
 import com.google.cloud.dialogflow.v2beta1.TextInput;
 import com.google.common.collect.Maps;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +38,12 @@ public class DetectIntentKnowledge {
 
   // DialogFlow API Detect Intent sample with querying knowledge connector.
   public static Map<String, KnowledgeAnswers> detectIntentKnowledge(
-          String projectId,
-          String knowledgeBaseName,
-          String sessionId,
-          String languageCode,
-          List<String> texts) throws Exception {
+      String projectId,
+      String knowledgeBaseName,
+      String sessionId,
+      String languageCode,
+      List<String> texts)
+      throws IOException, ApiException {
     // Instantiates a client
     Map<String, KnowledgeAnswers> allKnowledgeAnswers = Maps.newHashMap();
     try (SessionsClient sessionsClient = SessionsClient.create()) {
@@ -53,21 +55,19 @@ public class DetectIntentKnowledge {
       for (String text : texts) {
         // Set the text and language code (en-US) for the query
         TextInput.Builder textInput =
-                TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
+            TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
         // Build the query with the TextInput
         QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
 
         QueryParameters queryParameters =
-                QueryParameters.newBuilder()
-                        .addKnowledgeBaseNames(knowledgeBaseName)
-                        .build();
+            QueryParameters.newBuilder().addKnowledgeBaseNames(knowledgeBaseName).build();
 
         DetectIntentRequest detectIntentRequest =
-                DetectIntentRequest.newBuilder()
-                        .setSession(session.toString())
-                        .setQueryInput(queryInput)
-                        .setQueryParams(queryParameters)
-                        .build();
+            DetectIntentRequest.newBuilder()
+                .setSession(session.toString())
+                .setQueryInput(queryInput)
+                .setQueryParams(queryParameters)
+                .build();
         // Performs the detect intent request
         DetectIntentResponse response = sessionsClient.detectIntent(detectIntentRequest);
 
@@ -78,8 +78,8 @@ public class DetectIntentKnowledge {
         System.out.format("====================\n");
         System.out.format("Query Text: '%s'\n", queryResult.getQueryText());
         System.out.format(
-                "Detected Intent: %s (confidence: %f)\n",
-                queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+            "Detected Intent: %s (confidence: %f)\n",
+            queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
         System.out.format("Fulfillment Text: '%s'\n", queryResult.getFulfillmentText());
         KnowledgeAnswers knowledgeAnswers = queryResult.getKnowledgeAnswers();
         for (Answer answer : knowledgeAnswers.getAnswersList()) {

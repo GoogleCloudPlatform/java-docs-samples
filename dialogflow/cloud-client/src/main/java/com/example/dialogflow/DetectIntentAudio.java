@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 // [START dialogflow_detect_intent_audio]
 
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dialogflow.v2.AudioEncoding;
 import com.google.cloud.dialogflow.v2.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2.DetectIntentResponse;
@@ -27,7 +28,6 @@ import com.google.cloud.dialogflow.v2.QueryResult;
 import com.google.cloud.dialogflow.v2.SessionName;
 import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.protobuf.ByteString;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,10 +36,8 @@ public class DetectIntentAudio {
 
   // DialogFlow API Detect Intent sample with audio files.
   public static QueryResult detectIntentAudio(
-          String projectId,
-          String audioFilePath,
-          String sessionId,
-          String languageCode) throws IOException {
+      String projectId, String audioFilePath, String sessionId, String languageCode)
+      throws IOException, ApiException {
     // Instantiates a client
     try (SessionsClient sessionsClient = SessionsClient.create()) {
       // Set the session name using the sessionId (UUID) and projectID (my-project-id)
@@ -52,8 +50,10 @@ public class DetectIntentAudio {
       int sampleRateHertz = 16000;
 
       // Instructs the speech recognizer how to process the audio content.
-      InputAudioConfig inputAudioConfig = InputAudioConfig.newBuilder()
-              .setAudioEncoding(audioEncoding) // audioEncoding = AudioEncoding.AUDIO_ENCODING_LINEAR_16
+      InputAudioConfig inputAudioConfig =
+          InputAudioConfig.newBuilder()
+              .setAudioEncoding(
+                  audioEncoding) // audioEncoding = AudioEncoding.AUDIO_ENCODING_LINEAR_16
               .setLanguageCode(languageCode) // languageCode = "en-US"
               .setSampleRateHertz(sampleRateHertz) // sampleRateHertz = 16000
               .build();
@@ -65,7 +65,8 @@ public class DetectIntentAudio {
       byte[] inputAudio = Files.readAllBytes(Paths.get(audioFilePath));
 
       // Build the DetectIntentRequest
-      DetectIntentRequest request = DetectIntentRequest.newBuilder()
+      DetectIntentRequest request =
+          DetectIntentRequest.newBuilder()
               .setSession(session.toString())
               .setQueryInput(queryInput)
               .setInputAudio(ByteString.copyFrom(inputAudio))
@@ -78,8 +79,9 @@ public class DetectIntentAudio {
       QueryResult queryResult = response.getQueryResult();
       System.out.println("====================");
       System.out.format("Query Text: '%s'\n", queryResult.getQueryText());
-      System.out.format("Detected Intent: %s (confidence: %f)\n",
-              queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+      System.out.format(
+          "Detected Intent: %s (confidence: %f)\n",
+          queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
       System.out.format("Fulfillment Text: '%s'\n", queryResult.getFulfillmentText());
 
       return queryResult;

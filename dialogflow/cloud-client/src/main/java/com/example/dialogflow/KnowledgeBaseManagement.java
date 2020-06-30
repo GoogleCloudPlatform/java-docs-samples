@@ -18,16 +18,17 @@ package com.example.dialogflow;
 
 // [START dialogflow_create_knowledge_base]
 
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBase;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClient;
 import com.google.cloud.dialogflow.v2beta1.ProjectName;
-
+import java.io.IOException;
 
 public class KnowledgeBaseManagement {
 
   // Create a Knowledge base
   public static KnowledgeBase createKnowledgeBase(String projectId, String displayName)
-          throws Exception {
+      throws ApiException, IOException {
     // Instantiates a client
     try (KnowledgeBasesClient knowledgeBasesClient = KnowledgeBasesClient.create()) {
       KnowledgeBase knowledgeBase = KnowledgeBase.newBuilder().setDisplayName(displayName).build();

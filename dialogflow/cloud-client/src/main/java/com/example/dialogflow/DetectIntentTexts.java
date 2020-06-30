@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 // [START dialogflow_detect_intent_text]
 
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dialogflow.v2.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2.QueryInput;
 import com.google.cloud.dialogflow.v2.QueryResult;
@@ -25,7 +26,7 @@ import com.google.cloud.dialogflow.v2.SessionName;
 import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.cloud.dialogflow.v2.TextInput;
 import com.google.common.collect.Maps;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +34,8 @@ public class DetectIntentTexts {
 
   // DialogFlow API Detect Intent sample with text inputs.
   public static Map<String, QueryResult> detectIntentTexts(
-          String projectId,
-          List<String> texts,
-          String sessionId,
-          String languageCode) throws Exception {
+      String projectId, List<String> texts, String sessionId, String languageCode)
+      throws IOException, ApiException {
     Map<String, QueryResult> queryResults = Maps.newHashMap();
     // Instantiates a client
     try (SessionsClient sessionsClient = SessionsClient.create()) {
@@ -48,7 +47,7 @@ public class DetectIntentTexts {
       for (String text : texts) {
         // Set the text (hello) and language code (en-US) for the query
         TextInput.Builder textInput =
-                TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
+            TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
 
         // Build the query with the TextInput
         QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
@@ -61,8 +60,9 @@ public class DetectIntentTexts {
 
         System.out.println("====================");
         System.out.format("Query Text: '%s'\n", queryResult.getQueryText());
-        System.out.format("Detected Intent: %s (confidence: %f)\n",
-                queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+        System.out.format(
+            "Detected Intent: %s (confidence: %f)\n",
+            queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
         System.out.format("Fulfillment Text: '%s'\n", queryResult.getFulfillmentText());
 
         queryResults.put(text, queryResult);

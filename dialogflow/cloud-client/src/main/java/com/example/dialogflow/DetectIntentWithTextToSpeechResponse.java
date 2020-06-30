@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 //   [START dialogflow_detect_intent_with_texttospeech_response]
 
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dialogflow.v2.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2.OutputAudioConfig;
@@ -28,17 +29,15 @@ import com.google.cloud.dialogflow.v2.SessionName;
 import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.cloud.dialogflow.v2.TextInput;
 import com.google.common.collect.Maps;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class DetectIntentWithTextToSpeechResponse {
 
   public static Map<String, QueryResult> detectIntentWithTexttoSpeech(
-          String projectId,
-          List<String> texts,
-          String sessionId,
-          String languageCode) throws Exception {
+      String projectId, List<String> texts, String sessionId, String languageCode)
+      throws IOException, ApiException {
     Map<String, QueryResult> queryResults = Maps.newHashMap();
     // Instantiates a client
     try (SessionsClient sessionsClient = SessionsClient.create()) {
@@ -50,7 +49,7 @@ public class DetectIntentWithTextToSpeechResponse {
       for (String text : texts) {
         // Set the text (hello) and language code (en-US) for the query
         TextInput.Builder textInput =
-                TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
+            TextInput.newBuilder().setText(text).setLanguageCode(languageCode);
 
         // Build the query with the TextInput
         QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
@@ -59,17 +58,17 @@ public class DetectIntentWithTextToSpeechResponse {
         OutputAudioEncoding audioEncoding = OutputAudioEncoding.OUTPUT_AUDIO_ENCODING_LINEAR_16;
         int sampleRateHertz = 16000;
         OutputAudioConfig outputAudioConfig =
-                OutputAudioConfig.newBuilder()
-                        .setAudioEncoding(audioEncoding)
-                        .setSampleRateHertz(sampleRateHertz)
-                        .build();
+            OutputAudioConfig.newBuilder()
+                .setAudioEncoding(audioEncoding)
+                .setSampleRateHertz(sampleRateHertz)
+                .build();
 
         DetectIntentRequest dr =
-                DetectIntentRequest.newBuilder()
-                        .setQueryInput(queryInput)
-                        .setOutputAudioConfig(outputAudioConfig)
-                        .setSession(session.toString())
-                        .build();
+            DetectIntentRequest.newBuilder()
+                .setQueryInput(queryInput)
+                .setOutputAudioConfig(outputAudioConfig)
+                .setSession(session.toString())
+                .build();
 
         // Performs the detect intent request
         DetectIntentResponse response = sessionsClient.detectIntent(dr);
@@ -80,8 +79,8 @@ public class DetectIntentWithTextToSpeechResponse {
         System.out.println("====================");
         System.out.format("Query Text: '%s'\n", queryResult.getQueryText());
         System.out.format(
-                "Detected Intent: %s (confidence: %f)\n",
-                queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+            "Detected Intent: %s (confidence: %f)\n",
+            queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
         System.out.format("Fulfillment Text: '%s'\n", queryResult.getFulfillmentText());
 
         queryResults.put(text, queryResult);
