@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 
@@ -53,7 +54,7 @@ public class DetectIntentStreamIT {
   }
 
   @Test
-  public void testStreamingDetectIntentCallable() {
+  public void testStreamingDetectIntentCallable() throws IOException {
     DetectIntentStream.detectIntentStream(
             PROJECT_ID, audioFilePath, SESSION_ID);
 
