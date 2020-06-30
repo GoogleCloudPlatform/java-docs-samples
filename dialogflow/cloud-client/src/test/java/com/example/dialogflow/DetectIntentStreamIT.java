@@ -35,11 +35,10 @@ import static com.google.common.truth.Truth.assertThat;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DetectIntentStreamIT {
 
-  private ByteArrayOutputStream bout;
-
   private static String audioFilePath = "resources/book_a_room.wav";
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String SESSION_ID = UUID.randomUUID().toString();
+  private ByteArrayOutputStream bout;
 
   @Before
   public void setUp() {

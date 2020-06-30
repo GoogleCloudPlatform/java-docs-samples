@@ -34,14 +34,14 @@ import java.util.Map;
 
 public class DetectIntentWithSentimentAnalysis {
 
-  public static Map<String, QueryResult>  detectIntentSentimentAnalysis(
+  public static Map<String, QueryResult> detectIntentSentimentAnalysis(
           String projectId,
           List<String> texts,
           String sessionId,
           String languageCode) throws Exception {
     Map<String, QueryResult> queryResults = Maps.newHashMap();
     // Instantiates a client
-    try( SessionsClient sessionsClient = SessionsClient.create()){
+    try (SessionsClient sessionsClient = SessionsClient.create()) {
       // Set the session name using the sessionId (UUID) and projectID (my-project-id)
       SessionName session = SessionName.of(projectId, sessionId);
       System.out.println("Session Path: " + session.toString());

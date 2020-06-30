@@ -48,7 +48,7 @@ public class CreateDocumentTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            "Environment variable '%s' is required to perform these tests.".format(varName),
+            String.format(varName),
             String.format(varName));
   }
 

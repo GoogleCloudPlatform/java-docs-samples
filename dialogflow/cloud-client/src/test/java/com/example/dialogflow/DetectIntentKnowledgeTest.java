@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentKnowledgeTest {
+public class qDetectIntentKnowledgeTest {
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String TEST_KNOWLEDGE_BASE_ID = "MTA4MzE0ODY5NTczMTQzNzU2ODA";
@@ -64,7 +64,7 @@ public class DetectIntentKnowledgeTest {
 
   @Test
   public void testDetectIntentKnowledge() throws Exception {
-    KnowledgeBaseName knowledgeBaseName =  KnowledgeBaseName.newBuilder()
+    KnowledgeBaseName knowledgeBaseName = KnowledgeBaseName.newBuilder()
             .setProject(PROJECT_ID).setKnowledgeBase(TEST_KNOWLEDGE_BASE_ID).build();
 
     DocumentName documentName = DocumentName.newBuilder()
