@@ -16,26 +16,24 @@
 
 package com.example.dialogflow;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
+
 import com.google.cloud.dialogflow.v2beta1.DocumentName;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers.Answer;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBaseName;
 import com.google.common.collect.ImmutableList;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
@@ -47,10 +45,14 @@ public class DetectIntentKnowledgeTest {
   private static String SESSION_ID = UUID.randomUUID().toString();
   private static String LANGUAGE_CODE = "en-US";
 
-  private static List<String> TEXTS = ImmutableList
-          .of("How do I sign up?", "Is my data redundant?", "Where can I find pricing information?",
-                  "Where is my data stored?", "What are my support options?",
-                  "How can I maximize the availability of my data?");
+  private static List<String> TEXTS =
+      ImmutableList.of(
+          "How do I sign up?",
+          "Is my data redundant?",
+          "Where can I find pricing information?",
+          "Where is my data stored?",
+          "What are my support options?",
+          "How can I maximize the availability of my data?");
 
   @Before
   public void setUp() {
@@ -64,16 +66,21 @@ public class DetectIntentKnowledgeTest {
 
   @Test
   public void testDetectIntentKnowledge() throws Exception {
-    KnowledgeBaseName knowledgeBaseName = KnowledgeBaseName.newBuilder()
-            .setProject(PROJECT_ID).setKnowledgeBase(TEST_KNOWLEDGE_BASE_ID).build();
+    KnowledgeBaseName knowledgeBaseName =
+        KnowledgeBaseName.newBuilder()
+            .setProject(PROJECT_ID)
+            .setKnowledgeBase(TEST_KNOWLEDGE_BASE_ID)
+            .build();
 
-    DocumentName documentName = DocumentName.newBuilder()
+    DocumentName documentName =
+        DocumentName.newBuilder()
             .setProject(PROJECT_ID)
             .setKnowledgeBase(TEST_KNOWLEDGE_BASE_ID)
             .setDocument(TEST_DOCUMENT_ID)
             .build();
 
-    Map<String, KnowledgeAnswers> allAnswers = DetectIntentKnowledge.detectIntentKnowledge(
+    Map<String, KnowledgeAnswers> allAnswers =
+        DetectIntentKnowledge.detectIntentKnowledge(
             PROJECT_ID, knowledgeBaseName.toString(), SESSION_ID, LANGUAGE_CODE, TEXTS);
     assertEquals(TEXTS.size(), allAnswers.size());
     int answersFound = 0;
@@ -82,7 +89,7 @@ public class DetectIntentKnowledgeTest {
       if (knowledgeAnswers.getAnswersCount() > 0) {
         Answer answer = knowledgeAnswers.getAnswers(0);
         if (text.equals(answer.getFaqQuestion())
-                && documentName.toString().equals(answer.getSource())) {
+            && documentName.toString().equals(answer.getSource())) {
           answersFound++;
         }
       }

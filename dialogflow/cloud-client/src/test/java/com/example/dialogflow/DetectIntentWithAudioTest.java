@@ -16,24 +16,23 @@
 
 package com.example.dialogflow;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
@@ -41,19 +40,25 @@ public class DetectIntentWithAudioTest {
   protected static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   protected static String SESSION_ID = UUID.randomUUID().toString();
   protected static String LANGUAGE_CODE = "en-US";
-  protected static List<String> QUESTIONS = ImmutableList.of(
+  protected static List<String> QUESTIONS =
+      ImmutableList.of(
           "What date?",
           "What time will the meeting start?",
           "How long will it last?",
           "Thanks. How many people are attending?",
           "I can help with that. Where would you like to reserve a room?");
-  protected static Map<String, String> ANSWERS = ImmutableMap.of(
+  protected static Map<String, String> ANSWERS =
+      ImmutableMap.of(
           "I can help with that. Where would you like to reserve a room?",
           "resources/mountain_view.wav",
-          "What date?", "resources/today.wav",
-          "What time will the meeting start?", "resources/230pm.wav",
-          "How long will it last?", "resources/half_an_hour.wav",
-          "Thanks. How many people are attending?", "resources/two_people.wav");
+          "What date?",
+          "resources/today.wav",
+          "What time will the meeting start?",
+          "resources/230pm.wav",
+          "How long will it last?",
+          "resources/half_an_hour.wav",
+          "Thanks. How many people are attending?",
+          "resources/two_people.wav");
 
   @Before
   public void setUp() {
@@ -68,16 +73,18 @@ public class DetectIntentWithAudioTest {
   @Test
   public void testDetectIntentAudio() throws Exception {
     List<String> askedQuestions = Lists.newArrayList();
-    com.google.cloud.dialogflow.v2.QueryResult result = DetectIntentAudio.detectIntentAudio(
+    com.google.cloud.dialogflow.v2.QueryResult result =
+        DetectIntentAudio.detectIntentAudio(
             PROJECT_ID, "resources/book_a_room.wav", SESSION_ID, LANGUAGE_CODE);
     String fulfillmentText = result.getFulfillmentText();
     while (!result.getAllRequiredParamsPresent()
-            && ANSWERS.containsKey(fulfillmentText)
-            && !askedQuestions.contains(fulfillmentText)) {
+        && ANSWERS.containsKey(fulfillmentText)
+        && !askedQuestions.contains(fulfillmentText)) {
       askedQuestions.add(result.getFulfillmentText());
       assertEquals("room.reservation", result.getAction());
       assertThat(QUESTIONS).contains(fulfillmentText);
-      result = DetectIntentAudio.detectIntentAudio(
+      result =
+          DetectIntentAudio.detectIntentAudio(
               PROJECT_ID, ANSWERS.get(fulfillmentText), SESSION_ID, LANGUAGE_CODE);
       fulfillmentText = result.getFulfillmentText();
     }

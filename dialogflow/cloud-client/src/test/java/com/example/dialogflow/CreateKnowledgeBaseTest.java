@@ -16,24 +16,22 @@
 
 package com.example.dialogflow;
 
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
+
 import com.google.cloud.dialogflow.v2beta1.DeleteKnowledgeBaseRequest;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBase;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClient;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
-
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
@@ -46,9 +44,7 @@ public class CreateKnowledgeBaseTest {
   private String knowledgeBaseName;
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(
-            String.format(varName),
-            String.format(varName));
+    assertNotNull(String.format(varName), String.format(varName));
   }
 
   @BeforeClass
@@ -69,7 +65,7 @@ public class CreateKnowledgeBaseTest {
     // Delete the created knowledge base
     try (KnowledgeBasesClient client = KnowledgeBasesClient.create()) {
       DeleteKnowledgeBaseRequest request =
-              DeleteKnowledgeBaseRequest.newBuilder().setName(knowledgeBaseName).setForce(true).build();
+          DeleteKnowledgeBaseRequest.newBuilder().setName(knowledgeBaseName).setForce(true).build();
       client.deleteKnowledgeBase(request);
     }
     System.setOut(null);
@@ -78,7 +74,7 @@ public class CreateKnowledgeBaseTest {
   @Test
   public void testCreateKnowledgeBase() throws Exception {
     KnowledgeBase knowledgeBase =
-            KnowledgeBaseManagement.createKnowledgeBase(PROJECT_ID, KNOWLEDGE_DISPLAY_NAME);
+        KnowledgeBaseManagement.createKnowledgeBase(PROJECT_ID, KNOWLEDGE_DISPLAY_NAME);
     knowledgeBaseName = knowledgeBase.getName();
     String got = bout.toString();
     assertThat(got).contains(KNOWLEDGE_DISPLAY_NAME);

@@ -16,24 +16,23 @@
 
 package com.example.dialogflow;
 
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
+
 import com.google.cloud.dialogflow.v2beta1.DeleteKnowledgeBaseRequest;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBase;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClient;
 import com.google.cloud.dialogflow.v2beta1.ProjectName;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
@@ -47,9 +46,7 @@ public class CreateDocumentTest {
   private String knowledgeBaseName;
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(
-            String.format(varName),
-            String.format(varName));
+    assertNotNull(String.format(varName), String.format(varName));
   }
 
   @BeforeClass
@@ -63,7 +60,7 @@ public class CreateDocumentTest {
     // Create a knowledge base for the document
     try (KnowledgeBasesClient client = KnowledgeBasesClient.create()) {
       KnowledgeBase knowledgeBase =
-              KnowledgeBase.newBuilder().setDisplayName(KNOWLEDGE_DISPLAY_NAME).build();
+          KnowledgeBase.newBuilder().setDisplayName(KNOWLEDGE_DISPLAY_NAME).build();
       ProjectName projectName = ProjectName.of(PROJECT_ID);
       KnowledgeBase response = client.createKnowledgeBase(projectName, knowledgeBase);
       // Save the full name for deletion
@@ -80,7 +77,7 @@ public class CreateDocumentTest {
     // Delete the created knowledge base
     try (KnowledgeBasesClient client = KnowledgeBasesClient.create()) {
       DeleteKnowledgeBaseRequest request =
-              DeleteKnowledgeBaseRequest.newBuilder().setName(knowledgeBaseName).setForce(true).build();
+          DeleteKnowledgeBaseRequest.newBuilder().setName(knowledgeBaseName).setForce(true).build();
       client.deleteKnowledgeBase(request);
     }
 
@@ -90,11 +87,11 @@ public class CreateDocumentTest {
   @Test
   public void testCreateDocument() throws Exception {
     DocumentManagement.createDocument(
-            knowledgeBaseName,
-            DOCUMENT_DISPLAY_NAME,
-            "text/html",
-            "FAQ",
-            "https://cloud.google.com/storage/docs/faq");
+        knowledgeBaseName,
+        DOCUMENT_DISPLAY_NAME,
+        "text/html",
+        "FAQ",
+        "https://cloud.google.com/storage/docs/faq");
     String got = bout.toString();
     assertThat(got).contains(DOCUMENT_DISPLAY_NAME);
   }
