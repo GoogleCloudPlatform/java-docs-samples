@@ -17,7 +17,9 @@
 package com.example.dialogflow;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.dialogflow.v2.AgentName;
 import com.google.cloud.dialogflow.v2.Intent;
