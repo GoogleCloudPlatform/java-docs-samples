@@ -2,12 +2,12 @@ assign_issues:
   - averikitsch
   - dzlier-gcp
   - gguuss
-  - kurtisvg
+  # - kurtisvg (OOO until 7/24)
   - stephaniewang526
 assign_prs:
   - averikitsch
   - dzlier-gcp
   - gguuss
-  - kurtisvg
+  # - kurtisvg (OOO until 7/24)
   - lesv
   - stephaniewang526
