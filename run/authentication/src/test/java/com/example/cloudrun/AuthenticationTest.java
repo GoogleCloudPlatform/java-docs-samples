@@ -17,48 +17,22 @@
 package com.example.cloudrun;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
 
-import java.io.ByteArrayOutputStream;
+import com.google.api.client.http.HttpResponse;
 import java.io.IOException;
-import java.io.PrintStream;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class AuthenticationTest {
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  String expectedResp;
-
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
-
-    // This test uses the existence of env var "GOOGLE_CLOUD_PROJECT"
-    // to determine local vs GCP environment only for testing purposes.
-    if (System.getenv("GOOGLE_CLOUD_PROJECT") != null) {
-      expectedResp = "Id token query succeeded";
-      System.out.println("Running on GCP...");
-    } else {
-      expectedResp = "Id token query failed";
-      System.out.println("Running locally...");
-    }
-  }
-
-  @After
-  public void tearDown() {
-    System.setOut(null);
-  }
 
   @Test
   public void canMakeGetRequest() throws IOException {
-    String url = "http://example.com/";
-    Authentication.makeGetRequest(url);
-    String got = bout.toString();
-    assertThat(got, containsString(expectedResp));
+    String url = "https://example.com";
+    HttpResponse response = Authentication.makeGetRequest(url);
+    assertThat(response.parseAsString(), containsString("Example Domain"));
+    assertThat(response.getContentType(), containsString("text/html"));
+    assertThat(response.getStatusCode(), equalTo(200));
   }
 
   @Test
@@ -67,8 +41,7 @@ public class AuthenticationTest {
     try {
       Authentication.makeGetRequest(url);
     } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(), containsString("Expected URL scheme 'http' or 'https'"));
+      assertThat(e.getMessage(), containsString("no protocol"));
     }
   }
 }
-

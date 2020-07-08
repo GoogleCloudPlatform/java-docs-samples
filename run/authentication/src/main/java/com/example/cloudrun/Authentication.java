@@ -17,47 +17,38 @@
 package com.example.cloudrun;
 
 // [START run_service_to_service_auth]
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.IdTokenCredentials;
+import com.google.auth.oauth2.IdTokenProvider;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class Authentication {
 
-  // Instantiate OkHttpClient
-  private static final OkHttpClient ok =
-      new OkHttpClient.Builder()
-          .readTimeout(10, TimeUnit.SECONDS)
-          .writeTimeout(10, TimeUnit.SECONDS)
-          .build();
-
   // makeGetRequest makes a GET request to the specified Cloud Run endpoint,
-  // serviceUrl (must be a complete URL), by authenticating with the Id token
-  // obtained from the Metadata API.
-  public static Response makeGetRequest(String serviceUrl) throws IOException {
-    Request.Builder serviceRequest = new Request.Builder().url(serviceUrl);
-
-    // Set up metadata server request
-    // https://cloud.google.com/compute/docs/instances/verifying-instance-identity#request_signature
-    String tokenUrl =
-        String.format(
-            "http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=%s",
-            serviceUrl);
-    Request tokenRequest =
-        new Request.Builder().url(tokenUrl).addHeader("Metadata-Flavor", "Google").get().build();
-    // Fetch the token
-    try (Response tokenResponse = ok.newCall(tokenRequest).execute()) {
-      String token = tokenResponse.body().string();
-      // Provide the token in the request to the receiving service
-      serviceRequest.addHeader("Authorization", "Bearer " + token);
-      System.out.println("Id token query succeeded.");
-    } catch (IOException e) {
-      System.out.println("Id token query failed: " + e);
+  // serviceUrl (must be a complete URL), by authenticating with an Id token
+  // retrieved from Application Default Credentials.
+  public static HttpResponse makeGetRequest(String serviceUrl) throws IOException {
+    GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+    if (!(credentials instanceof IdTokenProvider)) {
+      throw new IllegalArgumentException("Credentials are not an instance of IdTokenProvider.");
     }
+    IdTokenCredentials tokenCredential =
+        IdTokenCredentials.newBuilder()
+            .setIdTokenProvider((IdTokenProvider) credentials)
+            .setTargetAudience(serviceUrl)
+            .build();
 
-    return ok.newCall(serviceRequest.get().build()).execute();
+    GenericUrl genericUrl = new GenericUrl(serviceUrl);
+    HttpCredentialsAdapter adapter = new HttpCredentialsAdapter(tokenCredential);
+    HttpTransport transport = new NetHttpTransport();
+    HttpRequest request = transport.createRequestFactory(adapter).buildGetRequest(genericUrl);
+    return request.execute();
   }
 }
 // [END run_service_to_service_auth]
-
