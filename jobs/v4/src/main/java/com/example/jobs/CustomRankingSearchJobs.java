@@ -37,6 +37,9 @@ public class CustomRankingSearchJobs {
 
   // Search Jobs using custom rankings.
   public static void searchCustomRankingJobs(String projectId, String tenantId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       String domain = "www.example.com";
@@ -66,11 +69,11 @@ public class CustomRankingSearchJobs {
               .build();
       for (SearchJobsResponse.MatchingJob responseItem :
           jobServiceClient.searchJobs(request).iterateAll()) {
-        System.out.printf("Job summary: %s\n", responseItem.getJobSummary());
-        System.out.printf("Job title snippet: %s\n", responseItem.getJobTitleSnippet());
+        System.out.format("Job summary: %s%n", responseItem.getJobSummary());
+        System.out.format("Job title snippet: %s%n", responseItem.getJobTitleSnippet());
         Job job = responseItem.getJob();
-        System.out.printf("Job name: %s\n", job.getName());
-        System.out.printf("Job title: %s\n", job.getTitle());
+        System.out.format("Job name: %s%n", job.getName());
+        System.out.format("Job title: %s%n", job.getTitle());
       }
     }
   }

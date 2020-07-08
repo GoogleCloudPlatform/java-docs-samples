@@ -35,14 +35,17 @@ public class JobSearchGetTenant {
 
   // Get Tenant by name.
   public static void getTenant(String projectId, String tenantId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (TenantServiceClient tenantServiceClient = TenantServiceClient.create()) {
       TenantName name = TenantName.of(projectId, tenantId);
 
       GetTenantRequest request = GetTenantRequest.newBuilder().setName(name.toString()).build();
 
       Tenant response = tenantServiceClient.getTenant(request);
-      System.out.printf("Name: %s\n", response.getName());
-      System.out.printf("External ID: %s\n", response.getExternalId());
+      System.out.format("Name: %s%n", response.getName());
+      System.out.format("External ID: %s%n", response.getExternalId());
     }
   }
 }

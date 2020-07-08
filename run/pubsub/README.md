@@ -14,6 +14,6 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 
 ## Dependencies
 
-* **Spark**: Web server framework.
+* **Spring Boot**: Web server framework.
 * **Jib**: Container build tool.
 * **Junit**: [development] Test running framework.

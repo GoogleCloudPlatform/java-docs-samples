@@ -1,8 +1,7 @@
 # Standalone HTTP Server on Google App Engine Standard with Java 11
 
-This sample shows how to deploy an application to Google App Engine using the
-a fat jar. There is no `entrypoint` field listed in the [`app.yaml`](src/main/appengine/app.yaml),
-as the application is a single fat jar with the correct MainClass field in the MANIFEST.
+This sample shows how to deploy an application to Google App Engine from source. The `entrypoint` field listed in the [`app.yaml`](src/main/appengine/app.yaml) is not required,
+as GAE will determine the entrypoint by searching the `target` directory for the .jar file with a Main-Class Manifest entry.
 
 ## Setup
 
@@ -11,7 +10,7 @@ See [Prerequisites](../README.md#Prerequisites).
 ## Deploy to App Engine Standard
 
 ```
-mvn clean package appengine:deploy
+gcloud app deploy
 ```
 
 To view your app, use command:

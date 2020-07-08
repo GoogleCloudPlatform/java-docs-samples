@@ -24,12 +24,12 @@ import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectTemplate;
 import com.google.privacy.dlp.v2.ListInspectTemplatesRequest;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import java.io.IOException;
 
 class TemplatesList {
 
-  public static void listInspectTemplates() throws IOException {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     listInspectTemplates(projectId);
@@ -45,7 +45,7 @@ class TemplatesList {
       // Create the request to be sent by the client
       ListInspectTemplatesRequest request =
           ListInspectTemplatesRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setPageSize(1)
               .build();
 

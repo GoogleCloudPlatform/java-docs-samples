@@ -41,18 +41,18 @@ import org.json.JSONObject;
  * turned on, its temperature decreases by one degree per second, and when the device's fan is
  * turned off, its temperature increases by one degree per second.
  *
- * <p>Every second, the device publishes its temperature reading to Google Cloud IoT Core. The
+ * Every second, the device publishes its temperature reading to Google Cloud IoT Core. The
  * server meanwhile receives these temperature readings, and decides whether to re-configure the
  * device to turn its fan on or off. The server will instruct the device to turn the fan on when the
  * device's temperature exceeds 10 degrees, and to turn it off when the device's temperature is less
  * than 0 degrees. In a real system, one could use the cloud to compute the optimal thresholds for
  * turning on and off the fan, but for illustrative purposes we use a simple threshold model.
  *
- * <p>To connect the device you must have downloaded Google's CA root certificates, and a copy of
+ * To connect the device you must have downloaded Google's CA root certificates, and a copy of
  * your private key file. See cloud.google.com/iot for instructions on how to do this. Run this
  * script with the corresponding algorithm flag.
  *
- * <p><prev> <code>
+ * <prev> <code>
  * $ mvn clean compile assembly:single
  *
  * $ mvn exec:java \
@@ -64,7 +64,7 @@ import org.json.JSONObject;
  *                 -algorithm=RS256|ES256"
  * </code> </prev>
  *
- * <p>With a single server, you can run multiple instances of the device with different device ids,
+ * With a single server, you can run multiple instances of the device with different device ids,
  * and the server will distinguish them. Try creating a few devices and running them all at the same
  * time.
  */

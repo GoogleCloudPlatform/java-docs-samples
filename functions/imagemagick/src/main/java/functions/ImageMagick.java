@@ -68,13 +68,12 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
     logger.info(String.format("Analyzing %s", gcsEvent.getName()));
 
     // Construct request.
-    List<AnnotateImageRequest> requests = new ArrayList<>();
     ImageSource imgSource = ImageSource.newBuilder().setImageUri(gcsPath).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feature = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
     AnnotateImageRequest request =
         AnnotateImageRequest.newBuilder().addFeatures(feature).setImage(img).build();
-    requests.add(request);
+    List<AnnotateImageRequest> requests = List.of(request);
 
     // Send request to the Vision API.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
@@ -113,13 +112,8 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
     blob.downloadTo(download);
 
     // Construct the command.
-    List<String> args = new ArrayList<String>();
-    args.add("convert");
-    args.add(download.toString());
-    args.add("-blur");
-    args.add("0x8");
     Path upload = Paths.get("/tmp/", "blurred-" + fileName);
-    args.add(upload.toString());
+    List<String> args = List.of("convert", download.toString(), "-blur", "0x8", upload.toString());
     try {
       ProcessBuilder pb = new ProcessBuilder(args);
       Process process = pb.start();

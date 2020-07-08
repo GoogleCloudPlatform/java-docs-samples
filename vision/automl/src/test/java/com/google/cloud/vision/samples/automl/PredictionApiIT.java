@@ -26,6 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +48,8 @@ public class PredictionApiIT {
   private PrintStream out;
 
   @Before
-  public void setUp() throws IOException, ExecutionException, InterruptedException {
+  public void setUp()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Verify that the model is deployed for prediction
     try (AutoMlClient client = AutoMlClient.create()) {
       ModelName modelFullId = ModelName.of(PROJECT_ID, "us-central1", modelId);
@@ -54,7 +58,8 @@ public class PredictionApiIT {
         // Deploy the model if not deployed
         DeployModelRequest request =
             DeployModelRequest.newBuilder().setName(modelFullId.toString()).build();
-        client.deployModelAsync(request).get();
+        Future future = client.deployModelAsync(request);
+        future.get(30, TimeUnit.MINUTES);
       }
     }
 

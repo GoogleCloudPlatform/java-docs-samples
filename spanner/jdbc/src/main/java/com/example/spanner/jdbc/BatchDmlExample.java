@@ -16,6 +16,7 @@
 
 package com.example.spanner.jdbc;
 
+//[START spanner_jdbc_batch_transaction]
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -41,18 +42,23 @@ class BatchDmlExample {
         String.format(
             "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
             projectId, instanceId, databaseId);
-    try (Connection connection = DriverManager.getConnection(connectionUrl);
-        Statement statement = connection.createStatement()) {
-      statement.addBatch(
-          "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-              + "VALUES (10, 'Marc', 'Richards')");
-      statement.addBatch(
-          "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-              + "VALUES (11, 'Amirah', 'Finney')");
-      statement.addBatch(
-          "INSERT INTO Singers (SingerId, FirstName, LastName)\n" + "VALUES (12, 'Reece', 'Dunn')");
-      int[] updateCounts = statement.executeBatch();
-      System.out.printf("Batch insert counts: %s%n", Arrays.toString(updateCounts));
+    try (Connection connection = DriverManager.getConnection(connectionUrl)) {
+      connection.setAutoCommit(false);
+      try (Statement statement = connection.createStatement()) {
+        statement.addBatch(
+            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+                + "VALUES (10, 'Marc', 'Richards')");
+        statement.addBatch(
+            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+                + "VALUES (11, 'Amirah', 'Finney')");
+        statement.addBatch(
+            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
+                + "VALUES (12, 'Reece', 'Dunn')");
+        int[] updateCounts = statement.executeBatch();
+        connection.commit();
+        System.out.printf("Batch insert counts: %s%n", Arrays.toString(updateCounts));
+      }
     }
   }
 }
+//[END spanner_jdbc_batch_transaction]

@@ -31,20 +31,22 @@ import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PrivacyMetric;
 import com.google.privacy.dlp.v2.PrivacyMetric.NumericalStatsConfig;
-import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 class RiskAnalysisNumericalStats {
 
-  public static void numericalStatsAnalysis() throws Exception {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String datasetId = "your-bigquery-dataset-id";
@@ -56,7 +58,7 @@ class RiskAnalysisNumericalStats {
 
   public static void numericalStatsAnalysis(
       String projectId, String datasetId, String tableId, String topicId, String subscriptionId)
-      throws Exception {
+      throws ExecutionException, InterruptedException, IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -97,7 +99,7 @@ class RiskAnalysisNumericalStats {
 
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setRiskJob(riskAnalysisJobConfig)
               .build();
 
@@ -120,10 +122,13 @@ class RiskAnalysisNumericalStats {
       // Wait for job completion semi-synchronously
       // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try {
-        done.get(1, TimeUnit.MINUTES);
-        Thread.sleep(500); // Wait for the job to become available
+        done.get(15, TimeUnit.MINUTES);
       } catch (TimeoutException e) {
-        System.out.println("Unable to verify job completion.");
+        System.out.println("Job was not completed after 15 minutes.");
+        return;
+      } finally {
+        subscriber.stopAsync();
+        subscriber.awaitTerminated();
       }
 
       // Build a request to get the completed job

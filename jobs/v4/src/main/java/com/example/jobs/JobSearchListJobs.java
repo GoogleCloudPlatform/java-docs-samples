@@ -36,15 +36,18 @@ public class JobSearchListJobs {
 
   // Search Jobs with histogram queries.
   public static void listJobs(String projectId, String tenantId, String filter) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       ListJobsRequest request =
           ListJobsRequest.newBuilder().setParent(parent.toString()).setFilter(filter).build();
       for (Job responseItem : jobServiceClient.listJobs(request).iterateAll()) {
-        System.out.printf("Job name: %s\n", responseItem.getName());
-        System.out.printf("Job requisition ID: %s\n", responseItem.getRequisitionId());
-        System.out.printf("Job title: %s\n", responseItem.getTitle());
-        System.out.printf("Job description: %s\n", responseItem.getDescription());
+        System.out.format("Job name: %s%n", responseItem.getName());
+        System.out.format("Job requisition ID: %s%n", responseItem.getRequisitionId());
+        System.out.format("Job title: %s%n", responseItem.getTitle());
+        System.out.format("Job description: %s%n", responseItem.getDescription());
       }
     }
   }

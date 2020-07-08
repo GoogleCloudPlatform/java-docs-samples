@@ -31,9 +31,9 @@ import java.util.Random;
 /**
  * The sample in this file introduce featured job, including:
  *
- * <p>- Construct a featured job
+ * - Construct a featured job
  *
- * <p>- Search featured job
+ * - Search featured job
  */
 public final class FeaturedJobsSearchSample {
 

@@ -22,12 +22,12 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.DlpJobType;
 import com.google.privacy.dlp.v2.ListDlpJobsRequest;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import java.io.IOException;
 
 public class JobsList {
 
-  public static void listJobs() throws IOException {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     listJobs(projectId);
@@ -45,7 +45,7 @@ public class JobsList {
       // see https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs/list
       ListDlpJobsRequest listDlpJobsRequest =
           ListDlpJobsRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setFilter("state=DONE")
               .setType(DlpJobType.valueOf("INSPECT_JOB"))
               .build();

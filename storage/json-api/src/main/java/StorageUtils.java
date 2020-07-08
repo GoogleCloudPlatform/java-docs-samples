@@ -19,9 +19,7 @@ import java.io.InputStream;
 
 public class StorageUtils {
 
-  /**
-   * Reads the contents of an InputStream and does nothing with it.
-   */
+  /** Reads the contents of an InputStream and does nothing with it. */
   public static void readStream(InputStream is) throws IOException {
     byte[] inputBuffer = new byte[256];
     while (is.read(inputBuffer) != -1) {}
@@ -30,8 +28,8 @@ public class StorageUtils {
   }
 
   /**
-   * A helper class to provide input streams of any size.
-   * The input streams will be full of null bytes.
+   * A helper class to provide input streams of any size. The input streams will be full of null
+   * bytes.
    */
   static class ArbitrarilyLargeInputStream extends InputStream {
 
@@ -53,4 +51,3 @@ public class StorageUtils {
     }
   }
 }
-

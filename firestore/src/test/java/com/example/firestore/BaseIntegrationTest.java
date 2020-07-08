@@ -16,9 +16,12 @@
 
 package com.example.firestore;
 
+import static org.junit.Assert.assertNotNull;
+
 import com.example.firestore.snippets.ManageDataSnippetsIT;
 import com.example.firestore.snippets.model.City;
 import com.google.api.core.ApiFuture;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
@@ -32,12 +35,22 @@ import org.junit.BeforeClass;
  */
 public class BaseIntegrationTest {
 
-  protected static String projectId = "java-docs-samples-firestore";
+  protected static String projectId;
   protected static Firestore db;
+
+  private static String getEnvVar(String varName) {
+    String value = System.getenv(varName);
+    assertNotNull(
+            String.format("Environment variable '%s' must be set to perform these tests.", varName),
+            value);
+    return value;
+  }
 
   @BeforeClass
   public static void baseSetup() throws Exception {
+    projectId = getEnvVar("FIRESTORE_PROJECT_ID");
     FirestoreOptions firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
+        .setCredentials(GoogleCredentials.getApplicationDefault())
         .setProjectId(projectId)
         .build();
     db = firestoreOptions.getService();

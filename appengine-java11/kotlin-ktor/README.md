@@ -10,7 +10,7 @@ See [Prerequisites](../README.md#Prerequisites).
 ## Deploying
 
 ```bash
- mvn clean package appengine:deploy
+gcloud app deploy
 ```
 
 To view your app, use command:

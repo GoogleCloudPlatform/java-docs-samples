@@ -45,14 +45,12 @@ public final class LocationSearchSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START basic_location_search]
 
-  /**
-   * Basic location Search
-   */
+  /** Basic location Search */
   public static void basicLocationSearch(String companyName, String location, double distance)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -65,10 +63,8 @@ public final class LocationSearchSample {
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
     LocationFilter locationFilter =
-        new LocationFilter().setAddress(location)
-            .setDistanceInMiles(distance);
-    JobQuery jobQuery = new JobQuery()
-        .setLocationFilters(Arrays.asList(locationFilter));
+        new LocationFilter().setAddress(location).setDistanceInMiles(distance);
+    JobQuery jobQuery = new JobQuery().setLocationFilters(Arrays.asList(locationFilter));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
@@ -86,11 +82,9 @@ public final class LocationSearchSample {
 
   // [START keyword_location_search]
 
-  /**
-   * Keyword location Search
-   */
-  public static void keywordLocationSearch(String companyName, String location, double distance,
-      String keyword)
+  /** Keyword location Search */
+  public static void keywordLocationSearch(
+      String companyName, String location, double distance, String keyword)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -102,12 +96,9 @@ public final class LocationSearchSample {
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
     LocationFilter locationFilter =
-        new LocationFilter().setAddress(location)
-            .setDistanceInMiles(distance);
+        new LocationFilter().setAddress(location).setDistanceInMiles(distance);
     JobQuery jobQuery =
-        new JobQuery()
-            .setQuery(keyword)
-            .setLocationFilters(Arrays.asList(locationFilter));
+        new JobQuery().setQuery(keyword).setLocationFilters(Arrays.asList(locationFilter));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
@@ -125,9 +116,7 @@ public final class LocationSearchSample {
 
   // [START city_location_search]
 
-  /**
-   * City location Search
-   */
+  /** City location Search */
   public static void cityLocationSearch(String companyName, String location)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -139,10 +128,8 @@ public final class LocationSearchSample {
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
-    LocationFilter locationFilter = new LocationFilter()
-        .setAddress(location);
-    JobQuery jobQuery = new JobQuery()
-        .setLocationFilters(Arrays.asList(locationFilter));
+    LocationFilter locationFilter = new LocationFilter().setAddress(location);
+    JobQuery jobQuery = new JobQuery().setLocationFilters(Arrays.asList(locationFilter));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
@@ -160,11 +147,9 @@ public final class LocationSearchSample {
 
   // [START multi_locations_search]
 
-  /**
-   * Multiple locations Search
-   */
-  public static void multiLocationsSearch(String companyName, String location1, double distance1,
-      String location2)
+  /** Multiple locations Search */
+  public static void multiLocationsSearch(
+      String companyName, String location1, double distance1, String location2)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -198,9 +183,7 @@ public final class LocationSearchSample {
 
   // [START broadening_location_search]
 
-  /**
-   * Broadening location Search
-   */
+  /** Broadening location Search */
   public static void broadeningLocationsSearch(String companyName, String location)
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -213,9 +196,7 @@ public final class LocationSearchSample {
             // Domain of the website where the search is conducted
             .setDomain("www.google.com");
     JobQuery jobQuery =
-        new JobQuery()
-            .setLocationFilters(Arrays
-                .asList(new LocationFilter().setAddress(location)));
+        new JobQuery().setLocationFilters(Arrays.asList(new LocationFilter().setAddress(location)));
     if (companyName != null) {
       jobQuery.setCompanyNames(Arrays.asList(companyName));
     }
@@ -241,11 +222,15 @@ public final class LocationSearchSample {
     Company companyToBeCreated = BasicCompanySample.generateCompany();
     String companyName = BasicCompanySample.createCompany(companyToBeCreated).getName();
 
-    Job jobToBeCreated = BasicJobSample.generateJobWithRequiredFields(companyName)
-        .setAddresses(Arrays.asList(location)).setTitle(keyword);
+    Job jobToBeCreated =
+        BasicJobSample.generateJobWithRequiredFields(companyName)
+            .setAddresses(Arrays.asList(location))
+            .setTitle(keyword);
     final String jobName = BasicJobSample.createJob(jobToBeCreated).getName();
-    Job jobToBeCreated2 = BasicJobSample.generateJobWithRequiredFields(companyName)
-        .setAddresses(Arrays.asList(location2)).setTitle(keyword);
+    Job jobToBeCreated2 =
+        BasicJobSample.generateJobWithRequiredFields(companyName)
+            .setAddresses(Arrays.asList(location2))
+            .setTitle(keyword);
     final String jobName2 = BasicJobSample.createJob(jobToBeCreated2).getName();
 
     // Wait several seconds for post processing

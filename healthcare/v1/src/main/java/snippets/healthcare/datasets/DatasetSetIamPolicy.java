@@ -17,8 +17,6 @@
 package snippets.healthcare.datasets;
 
 // [START healthcare_dataset_set_iam_policy]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -29,11 +27,14 @@ import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1.model.Binding;
 import com.google.api.services.healthcare.v1.model.Policy;
 import com.google.api.services.healthcare.v1.model.SetIamPolicyRequest;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class DatasetSetIamPolicy {
+  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -66,14 +67,14 @@ public class DatasetSetIamPolicy {
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
-          credential.initialize(request);
+          new HttpCredentialsAdapter(credential).initialize(request);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };

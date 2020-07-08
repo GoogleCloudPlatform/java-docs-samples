@@ -23,11 +23,13 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +45,7 @@ public class HelloHttpTest {
 
   private BufferedWriter writerOut;
   private StringWriter responseOut;
+  private static final Gson gson = new Gson();
 
   @Before
   public void beforeTest() throws IOException {
@@ -78,6 +81,7 @@ public class HelloHttpTest {
 
   @Test
   public void helloHttp_bodyParamsPost() throws IOException {
+    String requestJson = gson.toJson(Map.of("name", "Jane"));
     BufferedReader jsonReader = new BufferedReader(new StringReader("{'name': 'Jane'}"));
 
     when(request.getReader()).thenReturn(jsonReader);

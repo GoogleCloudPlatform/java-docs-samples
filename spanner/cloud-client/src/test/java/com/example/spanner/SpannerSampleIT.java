@@ -22,19 +22,18 @@ import com.google.cloud.spanner.BackupId;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ErrorCode;
+import com.google.cloud.spanner.InstanceId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
-import com.google.common.base.CharMatcher;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -46,10 +45,12 @@ import org.threeten.bp.temporal.ChronoField;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
-  private final String instanceId = System.getProperty("spanner.test.instance");
-  private final String databaseId = formatForTest(System.getProperty("spanner.sample.database"));
-  DatabaseId dbId;
-  DatabaseAdminClient dbClient;
+  private static final String instanceId = System.getProperty("spanner.test.instance");
+  private static final String databaseId =
+      formatForTest(System.getProperty("spanner.sample.database"));
+  static Spanner spanner;
+  static DatabaseId dbId;
+  static DatabaseAdminClient dbClient;
   private long lastUpdateDataTimeInMillis;
 
   private String runSample(String command) throws Exception {
@@ -62,10 +63,10 @@ public class SpannerSampleIT {
     return bout.toString();
   }
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
+    spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
@@ -73,8 +74,8 @@ public class SpannerSampleIT {
         dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @AfterClass
+  public static void tearDown() throws Exception {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient.dropDatabase(
         dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
@@ -347,11 +348,44 @@ public class SpannerSampleIT {
     assertThat(out).contains("Deleted backup [" + backupId + "]");
   }
 
+  private String runSampleRunnable(Runnable sample) {
+    PrintStream stdOut = System.out;
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bout);
+    System.setOut(out);
+    sample.run();
+    System.setOut(stdOut);
+    return bout.toString();
+  }
+
+  @Test
+  public void testCreateInstanceSample() {
+    String instanceId = formatForTest("sample-inst");
+    String out =
+        runSampleRunnable(
+            new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  CreateInstanceExample.createInstance(
+                      dbId.getInstanceId().getProject(), instanceId);
+                } finally {
+                  spanner.getInstanceAdminClient().deleteInstance(instanceId);
+                }
+              }
+            });
+    assertThat(out)
+        .contains(
+            String.format(
+                "Instance %s was successfully created",
+                InstanceId.of(dbId.getInstanceId().getProject(), instanceId)));
+  }
+
   private static int countOccurrences(String input, String search) {
     return input.split(search).length - 1;
   }
 
-  private String formatForTest(String name) {
+  private static String formatForTest(String name) {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 }

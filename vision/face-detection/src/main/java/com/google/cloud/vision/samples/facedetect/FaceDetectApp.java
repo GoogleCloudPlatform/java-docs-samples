@@ -17,7 +17,6 @@
 package com.google.cloud.vision.samples.facedetect;
 
 // [START vision_face_detection_tutorial_imports]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -31,6 +30,8 @@ import com.google.api.services.vision.v1.model.FaceAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.api.services.vision.v1.model.Vertex;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.collect.ImmutableList;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -85,10 +86,13 @@ public class FaceDetectApp {
   // [START vision_face_detection_tutorial_client]
   /** Connects to the Vision API using Application Default Credentials. */
   public static Vision getVisionService() throws IOException, GeneralSecurityException {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(VisionScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(VisionScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    return new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, credential)
+    return new Vision.Builder(
+            GoogleNetHttpTransport.newTrustedTransport(),
+            jsonFactory,
+            new HttpCredentialsAdapter(credential))
         .setApplicationName(APPLICATION_NAME)
         .build();
   }

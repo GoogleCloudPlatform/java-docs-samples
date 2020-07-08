@@ -35,7 +35,6 @@ public class LogHelloWorld implements HttpFunction {
     System.out.println("I am a log to stdout!");
     System.err.println("I am a log to stderr!");
 
-    // Stackdriver does not detect severity from Cloud Functions log output
     logger.info("I am an info log!");
     logger.warning("I am a warning log!");
 

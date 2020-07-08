@@ -17,12 +17,12 @@
 package dlp.snippets;
 
 // [START dlp_inspect_gcs]
+
 import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.common.util.concurrent.SettableFuture;
 import com.google.privacy.dlp.v2.Action;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
@@ -34,7 +34,7 @@ import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
@@ -48,7 +48,7 @@ import java.util.stream.Stream;
 
 public class InspectGcsFile {
 
-  public static void inspectGcsFile() throws InterruptedException, ExecutionException, IOException {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String gcsUri = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
@@ -66,9 +66,11 @@ public class InspectGcsFile {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Specify the GCS file to be inspected.
-      FileSet fileSet = FileSet.newBuilder().setUrl(gcsUri).build();
       CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+          CloudStorageOptions.newBuilder()
+              .setFileSet(FileSet.newBuilder().setUrl(gcsUri))
+              .build();
+
       StorageConfig storageConfig =
           StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
@@ -81,7 +83,10 @@ public class InspectGcsFile {
 
       // Specify how the content should be inspected.
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+          InspectConfig.newBuilder()
+              .addAllInfoTypes(infoTypes)
+              .setIncludeQuote(true)
+              .build();
 
       // Specify the action that is triggered when the job completes.
       String pubSubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
@@ -100,7 +105,7 @@ public class InspectGcsFile {
       // Create the request for the job configured above.
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setInspectJob(inspectJobConfig)
               .build();
 
@@ -121,12 +126,16 @@ public class InspectGcsFile {
       Subscriber subscriber = Subscriber.newBuilder(subscriptionName, messageHandler).build();
       subscriber.startAsync();
 
-      // Wait for the original job to complete
+      // Wait for job completion semi-synchronously
+      // For long jobs, consider using a truly asynchronous execution model such as Cloud Functions
       try {
         done.get(15, TimeUnit.MINUTES);
       } catch (TimeoutException e) {
         System.out.println("Job was not completed after 15 minutes.");
         return;
+      } finally {
+        subscriber.stopAsync();
+        subscriber.awaitTerminated();
       }
 
       // Get the latest state of the job from the service

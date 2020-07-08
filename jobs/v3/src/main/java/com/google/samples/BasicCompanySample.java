@@ -43,18 +43,15 @@ public final class BasicCompanySample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START basic_company]
 
-  /**
-   * Generate a company
-   */
+  /** Generate a company */
   public static Company generateCompany() {
     // distributor company id should be a unique Id in your system.
-    String companyName =
-        "company:" + String.valueOf(new Random().nextLong());
+    String companyName = "company:" + String.valueOf(new Random().nextLong());
 
     Company company =
         new Company()
@@ -68,15 +65,14 @@ public final class BasicCompanySample {
 
   // [START create_company]
 
-  /**
-   * Create a company.
-   */
+  /** Create a company. */
   public static Company createCompany(Company companyToBeCreated) throws IOException {
     try {
       CreateCompanyRequest createCompanyRequest =
           new CreateCompanyRequest().setCompany(companyToBeCreated);
       Company companyCreated =
-          talentSolutionClient.projects()
+          talentSolutionClient
+              .projects()
               .companies()
               .create(DEFAULT_PROJECT_ID, createCompanyRequest)
               .execute();
@@ -91,9 +87,7 @@ public final class BasicCompanySample {
 
   // [START get_company]
 
-  /**
-   * Get a company.
-   */
+  /** Get a company. */
   public static Company getCompany(String companyName) throws IOException {
     try {
       Company companyExisted =
@@ -109,9 +103,7 @@ public final class BasicCompanySample {
 
   // [START update_company]
 
-  /**
-   * Updates a company.
-   */
+  /** Updates a company. */
   public static Company updateCompany(String companyName, Company companyToBeUpdated)
       throws IOException {
     try {
@@ -136,12 +128,9 @@ public final class BasicCompanySample {
 
   // [START update_company_with_field_mask]
 
-  /**
-   * Updates a company.
-   */
-  public static Company updateCompanyWithFieldMask(String companyName, String fieldMask,
-      Company companyToBeUpdated)
-      throws IOException {
+  /** Updates a company. */
+  public static Company updateCompanyWithFieldMask(
+      String companyName, String fieldMask, Company companyToBeUpdated) throws IOException {
     try {
       // String foo = String.format("?updateCompanyFields=%s",fieldMask);
       UpdateCompanyRequest updateCompanyRequest =
@@ -165,9 +154,7 @@ public final class BasicCompanySample {
 
   // [START delete_company]
 
-  /**
-   * Delete a company.
-   */
+  /** Delete a company. */
   public static void deleteCompany(String companyName) throws IOException {
     try {
       talentSolutionClient.projects().companies().delete(companyName).execute();
@@ -191,14 +178,14 @@ public final class BasicCompanySample {
     getCompany(companyName);
 
     // Update a company
-    Company companyToBeUpdated = companyCreated
-        .setCareerSiteUri("https://elgoog.im/");
+    Company companyToBeUpdated = companyCreated.setCareerSiteUri("https://elgoog.im/");
     updateCompany(companyName, companyToBeUpdated);
 
     // Update a company with field mask
-    updateCompanyWithFieldMask(companyName, "displayName",
-        new Company().setDisplayName("changedTitle")
-            .setName(companyCreated.getName()));
+    updateCompanyWithFieldMask(
+        companyName,
+        "displayName",
+        new Company().setDisplayName("changedTitle").setName(companyCreated.getName()));
 
     // Delete a company
     deleteCompany(companyName);

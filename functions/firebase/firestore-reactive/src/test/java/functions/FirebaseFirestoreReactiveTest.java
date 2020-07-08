@@ -23,7 +23,9 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.gson.Gson;
 import functions.eventpojos.MockContext;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -46,6 +48,8 @@ public class FirebaseFirestoreReactiveTest {
   private static final Logger logger = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
+
+  private static final Gson gson = new Gson();
 
   @BeforeClass
   public static void beforeClass() {
@@ -71,7 +75,11 @@ public class FirebaseFirestoreReactiveTest {
 
   @Test
   public void functionsFirebaseReactive_shouldCapitalizeOriginalValue()  {
-    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"stringValue\":\"foo\"}}}}";
+
+    String jsonStr = gson.toJson(Map.of("value",
+        Map.of("fields",
+            Map.of("original",
+                Map.of("stringValue", "foo")))));
 
     MockContext context = new MockContext();
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
@@ -86,7 +94,10 @@ public class FirebaseFirestoreReactiveTest {
 
   @Test
   public void functionsFirebaseReactive_shouldReportBadJson()  {
-    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"missingValue\":\"foo\"}}}}";
+    String jsonStr = gson.toJson(Map.of("value",
+        Map.of("fields",
+            Map.of("original",
+                Map.of("missingValue", "foo")))));
 
     MockContext context = new MockContext();
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";

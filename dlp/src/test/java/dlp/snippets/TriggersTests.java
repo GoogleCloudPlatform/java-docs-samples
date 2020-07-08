@@ -16,47 +16,33 @@
 
 package dlp.snippets;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
+import com.google.common.collect.ImmutableList;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CreateJobTriggerRequest;
 import com.google.privacy.dlp.v2.DeleteJobTriggerRequest;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.JobTrigger;
-import com.google.privacy.dlp.v2.ListJobTriggersRequest;
-import com.google.privacy.dlp.v2.ProjectName;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.Schedule;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.protobuf.Duration;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class TriggersTests {
+public class TriggersTests extends TestBase {
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String GCS_PATH = System.getenv("GCS_PATH");
-
-  private ByteArrayOutputStream bout;
-
-  private static void requireEnvVar(String varName) {
-    assertNotNull(
-        String.format("Environment variable '%s' must be set to perform these tests.", varName),
-        System.getenv(varName));
+  @Override
+  protected ImmutableList<String> requiredEnvVars() {
+    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
   }
 
   private static JobTrigger createTrigger() throws IOException {
@@ -86,7 +72,7 @@ public class TriggersTests {
 
       CreateJobTriggerRequest createJobTriggerRequest =
           CreateJobTriggerRequest.newBuilder()
-              .setParent(ProjectName.of(PROJECT_ID).toString())
+              .setParent(LocationName.of(PROJECT_ID, "global").toString())
               .setJobTrigger(jobTrigger)
               .build();
 
@@ -94,32 +80,11 @@ public class TriggersTests {
     }
   }
 
-  @BeforeClass
-  public static void checkRequirements() {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GCS_PATH");
-  }
-
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-  }
-
-
-  @After
-  public void tearDown() {
-    System.setOut(null);
-    bout.reset();
-  }
-
-
   @Test
   public void testCreateTrigger() throws Exception {
     TriggersCreate.createTrigger(PROJECT_ID, GCS_PATH);
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Created Trigger:"));
+    assertThat(output).contains("Created Trigger:");
 
     // Delete the created trigger
     String triggerId = output.split("Created Trigger: ")[1].split("\n")[0];
@@ -134,7 +99,7 @@ public class TriggersTests {
   public void testListTrigger() throws Exception {
     TriggersList.listTriggers(PROJECT_ID);
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("DLP triggers found:"));
+    assertThat(output).contains("DLP triggers found:");
   }
 
   @Test
@@ -153,6 +118,6 @@ public class TriggersTests {
     // Delete the job with the specified ID
     TriggersDelete.deleteTrigger(PROJECT_ID, triggerId);
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Trigger deleted:"));
+    assertThat(output).contains("Trigger deleted:");
   }
 }

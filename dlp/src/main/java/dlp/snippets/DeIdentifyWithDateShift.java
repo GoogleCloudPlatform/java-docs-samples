@@ -27,8 +27,8 @@ import com.google.privacy.dlp.v2.DeidentifyContentRequest;
 import com.google.privacy.dlp.v2.DeidentifyContentResponse;
 import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.FieldTransformation;
+import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
-import com.google.privacy.dlp.v2.ProjectName;
 import com.google.privacy.dlp.v2.RecordTransformations;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Value;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 
 public class DeIdentifyWithDateShift {
 
-  public static void deIdentifyWithDateShift() throws IOException {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     Path inputCsvFile = Paths.get("path/to/your/input/file.csv");
@@ -98,7 +98,7 @@ public class DeIdentifyWithDateShift {
       // Combine configurations into a request for the service.
       DeidentifyContentRequest request =
           DeidentifyContentRequest.newBuilder()
-              .setParent(ProjectName.of(projectId).toString())
+              .setParent(LocationName.of(projectId, "global").toString())
               .setItem(item)
               .setDeidentifyConfig(deidentifyConfig)
               .build();

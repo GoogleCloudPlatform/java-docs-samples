@@ -15,7 +15,7 @@ project.
 
 ## Setup
 - Install [Maven](http://maven.apache.org/).
-- Open the [Firebase Console](https://console.firebase.com) and click **Add project**.
+- Open the [Firebase Console](https://console.firebase.google.com) and click **Add project**.
 - Select the option to **Enable Cloud Firestore Beta** for this project.
 - Click **Create Project**.
   When you create a Cloud Firestore project, it also enables the API in the
@@ -45,6 +45,8 @@ the Firestore [documentation](https://cloud.google.com/firestore/docs).
 
 ## Tests
 Run all tests:
+
+Set the `FIRESTORE_PROJECT_ID` environment variable and run the command:
 ```
    mvn clean verify
 ```
