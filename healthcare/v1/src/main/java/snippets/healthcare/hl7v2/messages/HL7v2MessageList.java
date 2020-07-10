@@ -29,7 +29,6 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
 public class HL7v2MessageList {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
@@ -47,8 +46,6 @@ public class HL7v2MessageList {
     // Results are paginated, so multiple queries may be required.
     String pageToken = null;
 
-    List<Message> hl7v2Messages;
-
     do {
       // Create request and execute.
       ListMessagesResponse messageResponse =
@@ -63,17 +60,15 @@ public class HL7v2MessageList {
               .setPageToken(pageToken)
               .execute();
 
-      // Collect results.
-      hl7v2Messages = messageResponse.getHl7V2Messages();
-
-      // Update the page token for the next request.
+      if (messageResponse.getHl7V2Messages() != null) {
+        System.out.printf(
+            "Retrieved %s HL7v2 messages: \n", messageResponse.getHl7V2Messages().size());
+        for (Message message : messageResponse.getHl7V2Messages()) {
+          System.out.println(message);
+        }
+      }
       pageToken = messageResponse.getNextPageToken();
     } while (pageToken != null);
-    // Print results.
-    System.out.printf("Retrieved %s HL7v2 messages: \n", hl7v2Messages.size());
-    for (Message message : hl7v2Messages) {
-      System.out.printf("%s\n", message.getName());
-    }
   }
 
   private static CloudHealthcare createClient() throws IOException {
