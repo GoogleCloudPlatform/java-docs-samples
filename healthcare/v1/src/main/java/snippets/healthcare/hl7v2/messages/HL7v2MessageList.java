@@ -61,12 +61,14 @@ public class HL7v2MessageList {
               .execute();
 
       if (messageResponse.getHl7V2Messages() != null) {
+        // Print results.
         System.out.printf(
             "Retrieved %s HL7v2 messages: \n", messageResponse.getHl7V2Messages().size());
         for (Message message : messageResponse.getHl7V2Messages()) {
           System.out.println(message);
         }
       }
+      // Update the page token for the next request.
       pageToken = messageResponse.getNextPageToken();
     } while (pageToken != null);
   }
