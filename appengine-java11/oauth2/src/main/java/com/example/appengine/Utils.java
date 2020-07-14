@@ -25,7 +25,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.google.api.services.oauth2.Oauth2;
-import com.google.api.services.oauth2.model.Userinfoplus;
+import com.google.api.services.oauth2.model.Userinfo;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -100,7 +100,7 @@ public class Utils {
             .build();
 
     // Retrieve user profile
-    Userinfoplus userInfo = oauth2Client.userinfo().get().execute();
+    Userinfo userInfo = oauth2Client.userinfo().get().execute();
     String username = userInfo.getGivenName();
     return username;
   }
