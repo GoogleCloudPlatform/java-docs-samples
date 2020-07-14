@@ -65,7 +65,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-kgsearch</artifactId>
-      <version>v1-rev20200210-1.30.9</version>
+      <version>v1-rev20200210-1.30.10</version>
     </dependency>
     <dependency>
       <groupId>com.github.seratch</groupId>
@@ -83,7 +83,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.3.3</version>
+      <version>3.4.0</version>
       <scope>test</scope>
     </dependency>
 

@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.eclipse.paho</groupId>
       <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudiot</artifactId>
-      <version>v1-rev20200519-1.30.9</version>
+      <version>v1-rev20200519-1.30.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
