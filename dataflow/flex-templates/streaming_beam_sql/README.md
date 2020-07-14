@@ -101,7 +101,7 @@ to transform the message data, and writes the results to a
 [BigQuery](https://cloud.google.com/bigquery) table.
 
 * [Dockerfile](Dockerfile)
-* [StreamingBeamSQL.java](src/main/java/org/apache/beam/samples/StreamingBeamSQL.java)
+* [StreamingBeamSql.java](src/main/java/org/apache/beam/samples/StreamingBeamSql.java)
 * [pom.xml](pom.xml)
 * [metadata.json](metadata.json)
 
@@ -114,7 +114,7 @@ to transform the message data, and writes the results to a
 >
 > ```sh
 > mvn compile exec:java \
->   -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSQL \
+>   -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSql \
 >   -Dexec.args="\
 >     --project=$PROJECT \
 >     --inputSubscription=$SUBSCRIPTION \
