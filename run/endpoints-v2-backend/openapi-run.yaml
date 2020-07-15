@@ -1,0 +1,31 @@
+swagger: "2.0"
+info:
+  title: Cloud Endpoints + Cloud Run
+  description: Sample API on Cloud Endpoints with a Cloud Run backend
+  version: 1.0.0
+paths:
+  /api/v1/repeat:
+    get:
+      tags:
+      - repeat-controller
+      operationId: repeat
+      parameters:
+      - name: text
+        in: query
+        required: true
+        type: string
+      - name: times
+        in: query
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+produces:
+- application/json
+x-google-backend:
+  address: https://endpoints-container-g6pbyv6qka-ue.a.run.app/
+  protocol: h2
+schemes:
+- https
+host: esbv2-g6pbyv6qka-ue.a.run.app

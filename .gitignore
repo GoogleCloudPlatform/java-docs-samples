@@ -53,6 +53,9 @@ tags
 # Gradle
 out/
 .gradle/
+gradle/
+gradlew
+gradlew.bat
 
 # VS Code
 .vscode/

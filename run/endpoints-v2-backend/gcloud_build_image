@@ -1,0 +1,64 @@
+#!/bin/bash
+# Source: https://github.com/GoogleCloudPlatform/esp-v2/blob/master/docker/serverless/gcloud_build_image
+# Copyright 2019 Google LLC
+
+# This script will download the service config and build it into
+# serverless docker image to be used for Cloud Run.
+#
+# gcloud SDK has to be installed and configured with:
+#   gcloud config set project ${PROJECT}
+#   gcloud auth login
+#
+# Following gcloud commands can be used to find out service name
+#   gcloud endpoints services list
+#   gcloud endpoints configs list --service=${SERVICE}
+# Use the latest one for the CONFIG_ID
+
+# Default to the release image if not specified
+BASE_IMAGE=gcr.io/endpoints-release/endpoints-runtime-serverless:2
+
+function error_exit() {
+  # ${BASH_SOURCE[1]} is the file name of the caller.
+  echo "${BASH_SOURCE[1]}: line ${BASH_LINENO[0]}: ${1:-Unknown Error.} (exit ${2:-1})" 1>&2
+  exit ${2:-1}
+}
+
+while getopts :c:s:p:i: arg; do
+  case ${arg} in
+    c) CONFIG_ID="${OPTARG}";;
+    s) SERVICE="${OPTARG}";;
+    p) PROJECT="${OPTARG}";;
+    i) BASE_IMAGE="${OPTARG}";;
+    \?) error_exit "Unrecognized argument -${OPTARG}";;
+  esac
+done
+
+[[ -n "${PROJECT}" ]] || error_exit "Missing required PROJECT"
+[[ -n "${SERVICE}" ]] || error_exit "Missing required SERVICE"
+[[ -n "${CONFIG_ID}" ]] || error_exit "Missing required CONFIG_ID"
+echo "Using base image: ${BASE_IMAGE}"
+
+cd "$(mktemp -d /tmp/docker.XXXX)"
+
+# Be careful about exposing the access token.
+curl --fail -o "service.json" -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  "https://servicemanagement.googleapis.com/v1/services/${SERVICE}/configs/${CONFIG_ID}?view=FULL" \
+  || error_exit "Failed to download service config"
+
+(
+set -x
+
+cat <<EOF > Dockerfile
+FROM ${BASE_IMAGE}
+USER root
+ENV ENDPOINTS_SERVICE_PATH /etc/endpoints/service.json
+COPY service.json \${ENDPOINTS_SERVICE_PATH}
+RUN chown -R envoy:envoy \${ENDPOINTS_SERVICE_PATH} && chmod -R 755 \${ENDPOINTS_SERVICE_PATH}
+USER envoy
+ENTRYPOINT ["/env_start_proxy.py"]
+EOF
+
+NEW_IMAGE="gcr.io/${PROJECT}/endpoints-runtime-serverless:${SERVICE}-${CONFIG_ID}"
+gcloud builds submit --tag "${NEW_IMAGE}" . --project="${PROJECT}"
+)
+
