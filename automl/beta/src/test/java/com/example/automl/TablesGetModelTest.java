@@ -66,6 +66,5 @@ public class TablesGetModelTest {
     GetModel.getModel(PROJECT_ID, MODEL_ID);
     String got = bout.toString();
     assertThat(got).contains("Model id: " + MODEL_ID);
-    assertThat(got).contains("Tables Model Metadata: ");
   }
 }
