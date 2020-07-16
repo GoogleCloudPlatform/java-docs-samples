@@ -35,6 +35,6 @@ dependencies {
 }
 
 jar {
-  // There must be a jar {} section, though the baseName does not have to be 'function'.
-  baseName = 'function'
+  // There must be a jar {} section, though the archiveBaseName does not have to be 'function'.
+  archiveBaseName = 'function'
 }
