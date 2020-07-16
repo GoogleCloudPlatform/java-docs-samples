@@ -60,24 +60,6 @@
     </dependency>
   </dependencies>
 
-  <!-- Disable tests during GCF builds (from parent POM) -->
-  <!--   You can remove this profile to run tests -->
-  <!--   when deploying, but we recommend creating -->
-  <!--   a CI/CD pipeline via Cloud Build instead -->
-  <profiles>
-    <profile>
-      <id>skip_tests_on_gcf</id>
-      <activation>
-        <property>
-          <name>env.NEW_BUILD</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <plugins>
       <plugin>
@@ -92,7 +74,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
         <configuration>
           <functionTarget>functions.HelloGcsGeneric</functionTarget>
         </configuration>
