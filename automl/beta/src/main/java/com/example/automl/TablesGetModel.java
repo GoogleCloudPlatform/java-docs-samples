@@ -22,13 +22,15 @@ import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Model;
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.TablesModelColumnInfo;
+import io.grpc.StatusRuntimeException;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class TablesGetModel {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, StatusRuntimeException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String region = "YOUR_REGION";
@@ -38,7 +40,7 @@ public class TablesGetModel {
 
   // Demonstrates using the AutoML client to get model details.
   public static void getModel(String projectId, String computeRegion, String modelId)
-      throws IOException {
+      throws IOException, StatusRuntimeException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
