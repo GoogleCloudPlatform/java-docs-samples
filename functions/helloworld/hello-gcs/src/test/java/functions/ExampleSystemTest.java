@@ -96,7 +96,7 @@ public class ExampleSystemTest {
 
     // Keep retrying until the logs contain the desired invocation's log entry
     // (If the invocation failed, the retry process will eventually time out)
-    String expected = String.format("File %s uploaded.", filename);
+    String expected = String.format("File: %s", filename);
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
         .maxAttempts(8)
         .intervalFunction(IntervalFunction.ofExponentialBackoff(1000, 2))
