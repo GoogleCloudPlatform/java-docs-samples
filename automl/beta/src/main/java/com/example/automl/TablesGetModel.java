@@ -16,47 +16,68 @@
 
 package com.example.automl;
 
-// [START automl_get_model_beta]
+// [START automl_tables_get_model]
+
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Model;
 import com.google.cloud.automl.v1beta1.ModelName;
+import com.google.cloud.automl.v1beta1.TablesModelColumnInfo;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
-class GetModel {
+public class TablesGetModel {
 
-  static void getModel() throws IOException, StatusRuntimeException {
+  public static void main(String[] args) throws IOException, StatusRuntimeException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
+    String region = "YOUR_REGION";
     String modelId = "YOUR_MODEL_ID";
-    getModel(projectId, modelId);
+    getModel(projectId, region, modelId);
   }
 
-  // Get a model
-  static void getModel(String projectId, String modelId)
+  // Demonstrates using the AutoML client to get model details.
+  public static void getModel(String projectId, String computeRegion, String modelId)
       throws IOException, StatusRuntimeException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (AutoMlClient client = AutoMlClient.create()) {
+
       // Get the full path of the model.
-      ModelName modelFullId = ModelName.of(projectId, "us-central1", modelId);
+      ModelName modelFullId = ModelName.of(projectId, computeRegion, modelId);
+
+      // Get complete detail of the model.
       Model model = client.getModel(modelFullId);
 
       // Display the model information.
       System.out.format("Model name: %s%n", model.getName());
-      // To get the model id, you have to parse it out of the `name` field. As models Ids are
-      // required for other methods.
-      // Name Format: `projects/{project_id}/locations/{location_id}/models/{model_id}`
-      String[] names = model.getName().split("/");
-      String retrievedModelId = names[names.length - 1];
-      System.out.format("Model id: %s%n", retrievedModelId);
+      System.out.format(
+          "Model Id: %s\n", model.getName().split("/")[model.getName().split("/").length - 1]);
       System.out.format("Model display name: %s%n", model.getDisplayName());
-      System.out.println("Model create time:");
-      System.out.format("\tseconds: %s%n", model.getCreateTime().getSeconds());
-      System.out.format("\tnanos: %s%n", model.getCreateTime().getNanos());
+      System.out.format("Dataset Id: %s%n", model.getDatasetId());
+      System.out.println("Tables Model Metadata: ");
+      System.out.format(
+          "\tTraining budget: %s%n", model.getTablesModelMetadata().getTrainBudgetMilliNodeHours());
+      System.out.format(
+          "\tTraining cost: %s%n", model.getTablesModelMetadata().getTrainBudgetMilliNodeHours());
+
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+      String createTime =
+          dateFormat.format(new java.util.Date(model.getCreateTime().getSeconds() * 1000));
+      System.out.format("Model create time: %s%n", createTime);
+
       System.out.format("Model deployment state: %s%n", model.getDeploymentState());
+
+      // Get features of top importance
+      for (TablesModelColumnInfo info :
+          model.getTablesModelMetadata().getTablesModelColumnInfoList()) {
+        System.out.format(
+            "Column: %s - Importance: %.2f%n",
+            info.getColumnDisplayName(), info.getFeatureImportance());
+      }
     }
   }
 }
-// [END automl_get_model_beta]
+// [END automl_tables_get_model]
