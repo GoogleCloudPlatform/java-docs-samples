@@ -19,13 +19,6 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DatasetName;
@@ -33,6 +26,12 @@ import com.google.cloud.automl.v1beta1.GcsSource;
 import com.google.cloud.automl.v1beta1.InputConfig;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
 import com.google.protobuf.Empty;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,7 +43,7 @@ import org.junit.runners.JUnit4;
 public class CancelOperationTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String DATASET_ID = "TRL8242630754622767104";
-private static final String BUCKET = "gs://translate_data_exported/translation.csv";
+  private static final String BUCKET = "gs://translate_data_exported/translation.csv";
 
   private String operationId;
   private String operationFullNam;
@@ -52,9 +51,7 @@ private static final String BUCKET = "gs://translate_data_exported/translation.c
   private PrintStream out;
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(
-        System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+    assertNotNull(System.getenv(varName), String.format(varName));
   }
 
   @BeforeClass
@@ -64,7 +61,8 @@ private static final String BUCKET = "gs://translate_data_exported/translation.c
   }
 
   @Before
-  public void setUp() throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public void setUp()
+      throws InterruptedException, ExecutionException, TimeoutException, IOException {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -76,20 +74,18 @@ private static final String BUCKET = "gs://translate_data_exported/translation.c
 
       // Get multiple Google Cloud Storage URIs to import data from
       GcsSource gcsSource =
-              GcsSource.newBuilder().addAllInputUris(Arrays.asList(BUCKET.split(","))).build();
+          GcsSource.newBuilder().addAllInputUris(Arrays.asList(BUCKET.split(","))).build();
 
       InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
 
       // Start the import job
-      OperationFuture<Empty, OperationMetadata> operation = client
-              .importDataAsync(datasetFullId, inputConfig);
+      OperationFuture<Empty, OperationMetadata> operation =
+          client.importDataAsync(datasetFullId, inputConfig);
 
       System.out.format("Operation name: %s%n", operation.getName());
 
-      operationFullNam =
-              operation.getName();
+      operationFullNam = operation.getName();
     }
-
   }
 
   @After
