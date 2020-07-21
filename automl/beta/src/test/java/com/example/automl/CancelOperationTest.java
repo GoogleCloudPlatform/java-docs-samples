@@ -95,7 +95,7 @@ public class CancelOperationTest {
     // delete the cancelled operation
     try (AutoMlClient client = AutoMlClient.create()) {
       // wait for the operation to be cancelled
-      while(!client.getOperationsClient().getOperation(operationFullNam).getDone()) {
+      while (!client.getOperationsClient().getOperation(operationFullNam).getDone()) {
         Thread.sleep(1000);
       }
       client.getOperationsClient().deleteOperation(operationFullNam);
