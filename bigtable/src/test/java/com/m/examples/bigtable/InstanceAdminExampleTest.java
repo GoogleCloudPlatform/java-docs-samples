@@ -12,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package com.m.examples.bigtable;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.bigtable.admin.v2.BigtableInstanceAdminClient;
@@ -40,9 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Integration tests for {@link InstanceAdminExample}
- */
+/** Integration tests for {@link InstanceAdminExample} */
 public class InstanceAdminExampleTest {
 
   private static final String ID_PREFIX = "instanceadmin";
@@ -94,22 +91,18 @@ public class InstanceAdminExampleTest {
   }
 
   @Test
-  public void testCreateAndDeleteInstance() {
+  public void testCreateAndDeleteInstance() throws IOException {
     // Creates an instance.
     String testInstance = generateId();
     String testCluster = generateId();
-    try {
-      InstanceAdminExample testInstanceAdmin =
-          new InstanceAdminExample(projectId, testInstance, testCluster);
-      testInstanceAdmin.createProdInstance();
-      assertTrue(adminClient.exists(testInstance));
-      // Deletes an instance.
-      testInstanceAdmin.deleteInstance();
-      assertFalse(adminClient.exists(testInstance));
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail();
-    }
+    InstanceAdminExample testInstanceAdmin =
+        new InstanceAdminExample(projectId, testInstance, testCluster);
+    testInstanceAdmin.createProdInstance();
+    assertTrue(adminClient.exists(testInstance));
+
+    // Deletes an instance.
+    testInstanceAdmin.deleteInstance();
+    assertFalse(adminClient.exists(testInstance));
   }
 
   @Test
