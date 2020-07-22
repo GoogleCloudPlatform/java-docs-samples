@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +36,7 @@ public class QuickstartTest {
   private static final String TABLE_ID = "quickstart-table";
   private static String projectId;
   private static String instanceId;
+  final PrintStream oldStdout = System.out;
   private ByteArrayOutputStream bout;
 
   private static String requireEnv(String varName) {
@@ -54,6 +56,11 @@ public class QuickstartTest {
   public void setUp() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+  }
+
+  @After
+  public void tearDown() {
+    System.setOut(oldStdout);
   }
 
   @Test
