@@ -22,9 +22,7 @@ import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.Logging.EntryListOption;
 import com.google.cloud.logging.LoggingOptions;
 
-/**
- * List logs programmatically using the StackDriver Logging API.
- */
+/** List logs programmatically using the StackDriver Logging API. */
 public class ListLogs {
 
   /** Expects an existing Stackdriver log name as an argument. */
@@ -40,15 +38,13 @@ public class ListLogs {
       String logFilter = "logName=projects/" + options.getProjectId() + "/logs/" + logName;
 
       // List all log entries
-      Page<LogEntry> entries = logging.listLogEntries(
-          EntryListOption.filter(logFilter));
+      Page<LogEntry> entries = logging.listLogEntries(EntryListOption.filter(logFilter));
       do {
         for (LogEntry logEntry : entries.iterateAll()) {
           System.out.println(logEntry);
         }
         entries = entries.getNextPage();
       } while (entries != null);
-
     }
     // [END logging_list_log_entries]
   }

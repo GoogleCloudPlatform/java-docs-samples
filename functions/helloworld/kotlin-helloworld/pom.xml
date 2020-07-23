@@ -65,7 +65,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.4.0</version>
+      <version>3.4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -90,26 +90,6 @@
     <!-- [START functions_kotlin_pom] -->
   </dependencies>
 
-  <!-- [END functions_kotlin_pom] -->
-  <!-- Disable tests during GCF builds (from parent POM) -->
-  <!--   You can remove this profile to run tests -->
-  <!--   when deploying, but we recommend creating -->
-  <!--   a CI/CD pipeline via Cloud Build instead -->
-  <profiles>
-    <profile>
-      <id>skip_tests_on_gcf</id>
-      <activation>
-        <property>
-          <name>env.NEW_BUILD</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-
-  <!-- [START functions_kotlin_pom] -->
   <build>
     <plugins>
       <plugin>
@@ -124,7 +104,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
         <configuration>
           <functionTarget>functions.KotlinHelloWorld</functionTarget>
         </configuration>
