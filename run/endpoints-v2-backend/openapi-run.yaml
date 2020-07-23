@@ -24,8 +24,8 @@ paths:
 produces:
 - application/json
 x-google-backend:
-  address: https://endpoints-container-g6pbyv6qka-ue.a.run.app/
   protocol: h2
+  address: https://<YOUR_APP_URI_HERE>-ue.a.run.app/
 schemes:
 - https
-host: esbv2-g6pbyv6qka-ue.a.run.app
+host: <YOUR_HOST_HERE>-ue.a.run.app
