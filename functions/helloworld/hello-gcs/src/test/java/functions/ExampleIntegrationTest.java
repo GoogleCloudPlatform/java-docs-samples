@@ -109,7 +109,7 @@ public class ExampleIntegrationTest {
 
     // Verify desired name value is present
     assertThat(stdoutBytes.toString(StandardCharsets.UTF_8)).contains(
-        String.format("File %s uploaded.", name));
+        String.format("File: %s", name));
   }
 }
 // [END functions_storage_integration_test]

@@ -26,15 +26,13 @@ import com.google.cloud.logging.Payload.StringPayload;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for quickstart sample.
- */
+/** Tests for quickstart sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class LoggingIT {
@@ -44,9 +42,9 @@ public class LoggingIT {
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private Logging logging = LoggingOptions.getDefaultInstance().getService();
+  private static Logging logging = LoggingOptions.getDefaultInstance().getService();
 
-  private void deleteLog(String logName) {
+  private static void deleteLog(String logName) {
     logging.deleteLog(logName);
   }
 
@@ -57,8 +55,8 @@ public class LoggingIT {
     System.setOut(out);
   }
 
-  @After
-  public void tearDown() {
+  @AfterClass
+  public static void tearDown() {
     // Clean up created logs
     deleteLog(QUICKSTART_LOG);
     deleteLog(TEST_WRITE_LOG);
@@ -73,13 +71,14 @@ public class LoggingIT {
     assertThat(got).contains("Logged: Hello, world!");
   }
 
-  @Test(timeout = 60000)
+  @Test(timeout = 30000)
   public void testWriteAndListLogs() throws Exception {
     // write a log entry
-    LogEntry entry = LogEntry.newBuilder(StringPayload.of("Hello world again"))
-        .setLogName(TEST_WRITE_LOG)
-        .setResource(MonitoredResource.newBuilder("global").build())
-        .build();
+    LogEntry entry =
+        LogEntry.newBuilder(StringPayload.of("Hello world again"))
+            .setLogName(TEST_WRITE_LOG)
+            .setResource(MonitoredResource.newBuilder("global").build())
+            .build();
     logging.write(Collections.singleton(entry));
     // flush out log immediately
     logging.flush();

@@ -20,11 +20,12 @@ package com.example.automl;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.Model;
 import com.google.cloud.automl.v1beta1.ModelName;
+import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 
 class GetModel {
 
-  static void getModel() throws IOException {
+  static void getModel() throws IOException, StatusRuntimeException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String modelId = "YOUR_MODEL_ID";
@@ -32,7 +33,8 @@ class GetModel {
   }
 
   // Get a model
-  static void getModel(String projectId, String modelId) throws IOException {
+  static void getModel(String projectId, String modelId)
+      throws IOException, StatusRuntimeException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
