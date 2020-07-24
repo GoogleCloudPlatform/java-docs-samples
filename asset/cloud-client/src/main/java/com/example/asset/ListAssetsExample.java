@@ -20,11 +20,11 @@ package com.example.asset;
 // Imports the Google Cloud client library
 
 import com.google.cloud.ServiceOptions;
+import com.google.cloud.asset.v1.ProjectName;
 import com.google.cloud.asset.v1p5beta1.AssetServiceClient;
 import com.google.cloud.asset.v1p5beta1.AssetServiceClient.ListAssetsPagedResponse;
-import com.google.cloud.asset.v1p5beta1.ListAssetsRequest;
 import com.google.cloud.asset.v1p5beta1.ContentType;
-import com.google.cloud.asset.v1.ProjectName;
+import com.google.cloud.asset.v1p5beta1.ListAssetsRequest;
 import java.util.Arrays;
 
 public class ListAssetsExample {
