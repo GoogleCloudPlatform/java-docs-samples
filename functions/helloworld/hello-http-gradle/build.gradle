@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// START functions_build_gradle
+// [START functions_build_gradle]
 apply plugin: 'java'
 
 repositories {
@@ -39,4 +39,4 @@ jar {
   // There must be a jar {} section, though the archiveBaseName does not have to be 'function'.
   archiveBaseName = 'function'
 }
-// END functions_build_gradle
+// [END functions_build_gradle]
