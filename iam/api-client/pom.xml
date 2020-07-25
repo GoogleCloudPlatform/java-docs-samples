@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20200622-1.30.10</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
+      <version>v1-rev20200720-1.30.10</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>
