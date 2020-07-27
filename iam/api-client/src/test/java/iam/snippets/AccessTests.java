@@ -85,7 +85,7 @@ public class AccessTests {
     Policy policy = GetPolicy.getPolicy(PROJECT_ID);
     SetPolicy.setPolicy(policy, PROJECT_ID);
     String got = bout.toString();
-    assertThat(got, containsString("Policy set: "));
+    assertThat(got, containsString("Policy retrieved: "));
   }
 
   @Test
