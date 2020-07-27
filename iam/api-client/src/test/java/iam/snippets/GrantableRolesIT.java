@@ -15,7 +15,8 @@
 
 package iam.snippets;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -46,6 +47,6 @@ public class GrantableRolesIT {
     GrantableRoles.main(new String[] {resource});
 
     String got = bout.toString();
-    assertTrue(got.contains("Title"));
+    assertThat(got, containsString("Title"));
   }
 }

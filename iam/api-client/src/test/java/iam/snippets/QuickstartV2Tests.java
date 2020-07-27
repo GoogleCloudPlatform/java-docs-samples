@@ -15,9 +15,10 @@
 
 package iam.snippets;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -134,7 +135,7 @@ public class QuickstartV2Tests {
         break;
       }
     }
-    assertTrue(binding.getMembers().contains(member));
+    assertThat(binding.getMembers(), hasItem(member));
 
     // Tests removeMember()
     QuickstartV2.removeMember(crmService, PROJECT_ID, member, role);
@@ -149,7 +150,7 @@ public class QuickstartV2Tests {
       }
     }
     if (binding != null) {
-      assertFalse(binding.getMembers().contains(member));
+      assertThat(binding.getMembers(), not(hasItem(member)));
     }
   }
 }
