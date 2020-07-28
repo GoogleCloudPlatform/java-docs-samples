@@ -54,10 +54,5 @@ tasks.register("runFunction", JavaExec) {
     args('--classpath', files(configurations.runtimeClasspath, sourceSets.main.output).asPath)
   }
 }
-
-jar {
-  // There must be a jar {} section, though the value of archiveBaseName can be changed.
-  archiveBaseName = 'helloworld'
-}
 // [END functions_build_gradle]
 // [END functions_example_pom_dependencies]
