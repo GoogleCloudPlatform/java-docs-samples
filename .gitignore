@@ -29,6 +29,9 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .checkstyle
 
+# gradle
+build/
+
 # Secrets
 service-account.json
 secrets.env
