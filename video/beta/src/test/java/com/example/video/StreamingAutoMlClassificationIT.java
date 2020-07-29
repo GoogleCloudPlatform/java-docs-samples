@@ -17,10 +17,12 @@
 package com.example.video;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -65,6 +67,8 @@ public class StreamingAutoMlClassificationIT {
           assertThat(ex.getMessage()).contains("Bad Gateway");
           tryCount++;
         }
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }
 
