@@ -16,13 +16,6 @@
 
 package com.example.spanner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
@@ -41,6 +34,13 @@ import com.google.cloud.spanner.Struct;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class AsyncTransactionManagerExample {
 
@@ -69,54 +69,52 @@ class AsyncTransactionManagerExample {
       // Loop to retry aborted errors.
       while (true) {
         updateCounts =
-            // The input of the first step of a transaction is Void and is therefore ignored in this
-            // case.
             txn.then(
-                    (transaction, __) -> {
-                      // Execute two reads in parallel and return the result of these as the input
-                      // for the next step of the transaction.
-                      ApiFuture<Struct> album1BudgetFut =
-                          transaction.readRowAsync(
-                              "Albums", Key.of(1, 1), ImmutableList.of("MarketingBudget"));
-                      ApiFuture<Struct> album2BudgetFut =
-                          transaction.readRowAsync(
-                              "Albums", Key.of(2, 2), ImmutableList.of("MarketingBudget"));
-                      return ApiFutures.allAsList(Arrays.asList(album1BudgetFut, album2BudgetFut));
-                    },
-                    executor)
+              (transaction, v) -> {
+                // Execute two reads in parallel and return the result of these as the input
+                // for the next step of the transaction.
+                ApiFuture<Struct> album1BudgetFut =
+                    transaction.readRowAsync(
+                        "Albums", Key.of(1, 1), ImmutableList.of("MarketingBudget"));
+                ApiFuture<Struct> album2BudgetFut =
+                    transaction.readRowAsync(
+                        "Albums", Key.of(2, 2), ImmutableList.of("MarketingBudget"));
+                return ApiFutures.allAsList(Arrays.asList(album1BudgetFut, album2BudgetFut));
+              },
+              executor)
                 // The input of the next step of the transaction is the return value of the previous
                 // step, i.e. a list containing the marketing budget of two Albums.
                 .then(
-                    (transaction, budgets) -> {
-                      long album1Budget = budgets.get(0).getLong(0);
-                      long album2Budget = budgets.get(1).getLong(0);
-                      long transfer = 200_000;
-                      if (album2Budget >= transfer) {
-                        album1Budget += transfer;
-                        album2Budget -= transfer;
-                        Statement updateStatement1 =
-                            Statement.newBuilder(
-                                    "UPDATE Albums "
-                                        + "SET MarketingBudget = @AlbumBudget "
-                                        + "WHERE SingerId = 1 and AlbumId = 1")
-                                .bind("AlbumBudget")
-                                .to(album1Budget)
-                                .build();
-                        Statement updateStatement2 =
-                            Statement.newBuilder(
-                                    "UPDATE Albums "
-                                        + "SET MarketingBudget = @AlbumBudget "
-                                        + "WHERE SingerId = 2 and AlbumId = 2")
-                                .bind("AlbumBudget")
-                                .to(album2Budget)
-                                .build();
-                        return transaction.batchUpdateAsync(
-                            ImmutableList.of(updateStatement1, updateStatement2));
-                      } else {
-                        return ApiFutures.immediateFuture(new long[] {0L, 0L});
-                      }
-                    },
-                    executor);
+                  (transaction, budgets) -> {
+                    long album1Budget = budgets.get(0).getLong(0);
+                    long album2Budget = budgets.get(1).getLong(0);
+                    long transfer = 200_000;
+                    if (album2Budget >= transfer) {
+                      album1Budget += transfer;
+                      album2Budget -= transfer;
+                      Statement updateStatement1 =
+                          Statement.newBuilder(
+                                  "UPDATE Albums "
+                                      + "SET MarketingBudget = @AlbumBudget "
+                                      + "WHERE SingerId = 1 and AlbumId = 1")
+                              .bind("AlbumBudget")
+                              .to(album1Budget)
+                              .build();
+                      Statement updateStatement2 =
+                          Statement.newBuilder(
+                                  "UPDATE Albums "
+                                      + "SET MarketingBudget = @AlbumBudget "
+                                      + "WHERE SingerId = 2 and AlbumId = 2")
+                              .bind("AlbumBudget")
+                              .to(album2Budget)
+                              .build();
+                      return transaction.batchUpdateAsync(
+                          ImmutableList.of(updateStatement1, updateStatement2));
+                    } else {
+                      return ApiFutures.immediateFuture(new long[] {0L, 0L});
+                    }
+                  },
+                  executor);
         // Commit after the updates.
         CommitTimestampFuture commitTsFut = updateCounts.commitAsync();
         try {

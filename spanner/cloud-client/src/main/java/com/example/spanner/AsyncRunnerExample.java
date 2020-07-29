@@ -16,12 +16,6 @@
 
 package com.example.spanner;
 
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
@@ -38,6 +32,12 @@ import com.google.cloud.spanner.TransactionContext;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class AsyncRunnerExample {
 
@@ -59,7 +59,8 @@ class AsyncRunnerExample {
   static void asyncRunner(DatabaseClient client)
       throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService executor = Executors.newSingleThreadExecutor();
-    // The transaction returns the total number of rows that were updated as a future array of longs.
+    // The transaction returns the total number of rows that were updated as a future array of
+    // longs.
     ApiFuture<long[]> rowCounts =
         client
             .runAsync()
@@ -103,7 +104,8 @@ class AsyncRunnerExample {
                                 .bind("AlbumBudget")
                                 .to(album2Budget)
                                 .build();
-                        return txn.batchUpdateAsync(ImmutableList.of(updateStatement1, updateStatement2));
+                        return txn.batchUpdateAsync(
+                            ImmutableList.of(updateStatement1, updateStatement2));
                       } else {
                         return ApiFutures.immediateFuture(new long[] {0L, 0L});
                       }

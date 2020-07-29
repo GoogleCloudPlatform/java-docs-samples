@@ -16,10 +16,6 @@
 
 package com.example.spanner;
 
-import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
@@ -31,6 +27,10 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Struct;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class AsyncReadRowExample {
 
@@ -49,7 +49,8 @@ class AsyncReadRowExample {
   }
 
   // Read a single row asynchronously and print out the result when available.
-  static void asyncReadRow(DatabaseClient client) throws InterruptedException, ExecutionException, TimeoutException {
+  static void asyncReadRow(DatabaseClient client)
+      throws InterruptedException, ExecutionException, TimeoutException {
     ApiFuture<Struct> row =
         client
             .singleUse()

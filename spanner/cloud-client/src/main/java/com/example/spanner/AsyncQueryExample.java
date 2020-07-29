@@ -16,11 +16,6 @@
 
 package com.example.spanner;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
@@ -31,6 +26,11 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class AsyncQueryExample {
 
@@ -70,20 +70,23 @@ class AsyncQueryExample {
                   try {
                     while (true) {
                       switch (resultSet.tryNext()) {
-                          // OK: There is a row ready.
+                        // OK: There is a row ready.
                         case OK:
                           System.out.printf(
                               "%d %d %s%n",
                               resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
                           break;
 
-                          // DONE: There are no more rows in the result set.
+                        // DONE: There are no more rows in the result set.
                         case DONE:
                           return CallbackResponse.DONE;
 
-                          // NOT_READY: There are currently no more rows in the buffer.
+                        // NOT_READY: There are currently no more rows in the buffer.
                         case NOT_READY:
                           return CallbackResponse.CONTINUE;
+
+                        default:
+                          throw new IllegalStateException();
                       }
                     }
                   } catch (SpannerException e) {

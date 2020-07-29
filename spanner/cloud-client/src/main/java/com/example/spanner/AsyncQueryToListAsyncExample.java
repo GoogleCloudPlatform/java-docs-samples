@@ -16,11 +16,6 @@
 
 package com.example.spanner;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.DatabaseClient;
@@ -29,6 +24,11 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.common.collect.ImmutableList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class AsyncQueryToListAsyncExample {
   static class Album {

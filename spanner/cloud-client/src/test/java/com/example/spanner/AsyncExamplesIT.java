@@ -1,6 +1,32 @@
+/*
+ * Copyright 2020 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import com.google.cloud.spanner.DatabaseAdminClient;
+import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.Instance;
+import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spanner.Mutation;
+import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerOptions;
+import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -16,17 +42,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.spanner.DatabaseAdminClient;
-import com.google.cloud.spanner.DatabaseClient;
-import com.google.cloud.spanner.DatabaseId;
-import com.google.cloud.spanner.Instance;
-import com.google.cloud.spanner.KeySet;
-import com.google.cloud.spanner.Mutation;
-import com.google.cloud.spanner.Spanner;
-import com.google.cloud.spanner.SpannerOptions;
-import com.google.cloud.spanner.Struct;
-import com.google.common.collect.ImmutableList;
 
 /** Integration tests for Cloud Spanner Async API examples. */
 @RunWith(JUnit4.class)
@@ -201,7 +216,9 @@ public class AsyncExamplesIT {
   @Test
   public void asyncQueryToListAsync_shouldReturnData()
       throws InterruptedException, ExecutionException, TimeoutException {
-    String out = runExample(() -> AsyncQueryToListAsyncExample.asyncQueryToList(spanner.getDatabaseClient(dbId)));
+    String out =
+        runExample(
+            () -> AsyncQueryToListAsyncExample.asyncQueryToList(spanner.getDatabaseClient(dbId)));
     assertAlbumsOutput(out);
   }
 
@@ -215,7 +232,9 @@ public class AsyncExamplesIT {
   @Test
   public void asyncReadUsingIndex_shouldReturnDataInCorrectOrder()
       throws InterruptedException, ExecutionException, TimeoutException {
-    String out = runExample(() -> AsyncReadUsingIndexExample.asyncReadUsingIndex(spanner.getDatabaseClient(dbId)));
+    String out =
+        runExample(
+            () -> AsyncReadUsingIndexExample.asyncReadUsingIndex(spanner.getDatabaseClient(dbId)));
     assertThat(out)
         .contains(
             "2 Forever Hold Your Peace\n"
@@ -228,7 +247,11 @@ public class AsyncExamplesIT {
   @Test
   public void asyncReadOnlyTransaction_shouldReturnData()
       throws InterruptedException, ExecutionException, TimeoutException {
-    String out = runExample(() -> AsyncReadOnlyTransactionExample.asyncReadOnlyTransaction(spanner.getDatabaseClient(dbId)));
+    String out =
+        runExample(
+            () ->
+                AsyncReadOnlyTransactionExample.asyncReadOnlyTransaction(
+                    spanner.getDatabaseClient(dbId)));
     assertAlbumsOutput(out);
     assertSingersOutput(out);
   }
@@ -250,13 +273,19 @@ public class AsyncExamplesIT {
   @Test
   public void asyncTransactionManager_shouldUpdateRows()
       throws InterruptedException, ExecutionException, TimeoutException {
-    String out = runExample(() -> AsyncTransactionManagerExample.asyncTransactionManager(spanner.getDatabaseClient(dbId)));
+    String out =
+        runExample(
+            () ->
+                AsyncTransactionManagerExample.asyncTransactionManager(
+                    spanner.getDatabaseClient(dbId)));
     assertThat(out).contains("2 records updated.");
   }
-  
+
   @Test
-  public void asyncReadRow_shouldPrintRow() throws InterruptedException, ExecutionException, TimeoutException {
-    String out = runExample(() -> AsyncReadRowExample.asyncReadRow(spanner.getDatabaseClient(dbId)));
+  public void asyncReadRow_shouldPrintRow()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    String out =
+        runExample(() -> AsyncReadRowExample.asyncReadRow(spanner.getDatabaseClient(dbId)));
     assertThat(out).contains("1 1 Total Junk");
     assertThat(out).doesNotContain("1 2 Go, Go, Go");
     assertThat(out).doesNotContain("2 1 Green");

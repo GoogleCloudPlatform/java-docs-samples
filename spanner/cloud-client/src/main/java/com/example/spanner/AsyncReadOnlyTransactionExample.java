@@ -16,17 +16,11 @@
 
 package com.example.spanner;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
 import com.google.cloud.spanner.AsyncResultSet.ReadyCallback;
-import com.google.common.collect.ImmutableList;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ReadOnlyTransaction;
@@ -34,6 +28,12 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
+import com.google.common.collect.ImmutableList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class AsyncReadOnlyTransactionExample {
 
@@ -80,6 +80,8 @@ class AsyncReadOnlyTransactionExample {
                             return CallbackResponse.DONE;
                           case NOT_READY:
                             return CallbackResponse.CONTINUE;
+                          default:
+                            throw new IllegalStateException();
                         }
                       }
                     } catch (SpannerException e) {
@@ -104,12 +106,16 @@ class AsyncReadOnlyTransactionExample {
                           case OK:
                             System.out.printf(
                                 "%d %s %s%n",
-                                resultSet.getLong(0), resultSet.getString(1), resultSet.getString(2));
+                                resultSet.getLong(0),
+                                resultSet.getString(1),
+                                resultSet.getString(2));
                             break;
                           case DONE:
                             return CallbackResponse.DONE;
                           case NOT_READY:
                             return CallbackResponse.CONTINUE;
+                          default:
+                            throw new IllegalStateException();
                         }
                       }
                     } catch (SpannerException e) {

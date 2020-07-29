@@ -16,10 +16,6 @@
 
 package com.example.spanner;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.spanner.AsyncRunner.AsyncWork;
 import com.google.cloud.spanner.DatabaseClient;
@@ -28,6 +24,10 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TransactionContext;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 
 class AsyncDmlExample {
 
