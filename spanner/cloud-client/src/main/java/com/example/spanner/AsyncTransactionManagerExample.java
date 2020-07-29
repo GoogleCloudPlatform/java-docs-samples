@@ -68,56 +68,56 @@ class AsyncTransactionManagerExample {
       TransactionContextFuture txn = mgr.beginAsync();
       // Loop to retry aborted errors.
       while (true) {
-        updateCounts =
-            txn.then(
-              (transaction, v) -> {
-                // Execute two reads in parallel and return the result of these as the input
-                // for the next step of the transaction.
-                ApiFuture<Struct> album1BudgetFut =
-                    transaction.readRowAsync(
-                        "Albums", Key.of(1, 1), ImmutableList.of("MarketingBudget"));
-                ApiFuture<Struct> album2BudgetFut =
-                    transaction.readRowAsync(
-                        "Albums", Key.of(2, 2), ImmutableList.of("MarketingBudget"));
-                return ApiFutures.allAsList(Arrays.asList(album1BudgetFut, album2BudgetFut));
-              },
-              executor)
-                // The input of the next step of the transaction is the return value of the previous
-                // step, i.e. a list containing the marketing budget of two Albums.
-                .then(
-                  (transaction, budgets) -> {
-                    long album1Budget = budgets.get(0).getLong(0);
-                    long album2Budget = budgets.get(1).getLong(0);
-                    long transfer = 200_000;
-                    if (album2Budget >= transfer) {
-                      album1Budget += transfer;
-                      album2Budget -= transfer;
-                      Statement updateStatement1 =
-                          Statement.newBuilder(
-                                  "UPDATE Albums "
-                                      + "SET MarketingBudget = @AlbumBudget "
-                                      + "WHERE SingerId = 1 and AlbumId = 1")
-                              .bind("AlbumBudget")
-                              .to(album1Budget)
-                              .build();
-                      Statement updateStatement2 =
-                          Statement.newBuilder(
-                                  "UPDATE Albums "
-                                      + "SET MarketingBudget = @AlbumBudget "
-                                      + "WHERE SingerId = 2 and AlbumId = 2")
-                              .bind("AlbumBudget")
-                              .to(album2Budget)
-                              .build();
-                      return transaction.batchUpdateAsync(
-                          ImmutableList.of(updateStatement1, updateStatement2));
-                    } else {
-                      return ApiFutures.immediateFuture(new long[] {0L, 0L});
-                    }
-                  },
-                  executor);
-        // Commit after the updates.
-        CommitTimestampFuture commitTsFut = updateCounts.commitAsync();
         try {
+          updateCounts =
+              txn.then(
+                (transaction, v) -> {
+                  // Execute two reads in parallel and return the result of these as the input
+                  // for the next step of the transaction.
+                  ApiFuture<Struct> album1BudgetFut =
+                      transaction.readRowAsync(
+                          "Albums", Key.of(1, 1), ImmutableList.of("MarketingBudget"));
+                  ApiFuture<Struct> album2BudgetFut =
+                      transaction.readRowAsync(
+                          "Albums", Key.of(2, 2), ImmutableList.of("MarketingBudget"));
+                  return ApiFutures.allAsList(Arrays.asList(album1BudgetFut, album2BudgetFut));
+                },
+                executor)
+                  // The input of the next step of the transaction is the return value of the
+                  // previous step, i.e. a list containing the marketing budget of two Albums.
+                  .then(
+                    (transaction, budgets) -> {
+                      long album1Budget = budgets.get(0).getLong(0);
+                      long album2Budget = budgets.get(1).getLong(0);
+                      long transfer = 200_000;
+                      if (album2Budget >= transfer) {
+                        album1Budget += transfer;
+                        album2Budget -= transfer;
+                        Statement updateStatement1 =
+                            Statement.newBuilder(
+                                    "UPDATE Albums "
+                                        + "SET MarketingBudget = @AlbumBudget "
+                                        + "WHERE SingerId = 1 and AlbumId = 1")
+                                .bind("AlbumBudget")
+                                .to(album1Budget)
+                                .build();
+                        Statement updateStatement2 =
+                            Statement.newBuilder(
+                                    "UPDATE Albums "
+                                        + "SET MarketingBudget = @AlbumBudget "
+                                        + "WHERE SingerId = 2 and AlbumId = 2")
+                                .bind("AlbumBudget")
+                                .to(album2Budget)
+                                .build();
+                        return transaction.batchUpdateAsync(
+                            ImmutableList.of(updateStatement1, updateStatement2));
+                      } else {
+                        return ApiFutures.immediateFuture(new long[] {0L, 0L});
+                      }
+                    },
+                    executor);
+          // Commit after the updates.
+          CommitTimestampFuture commitTsFut = updateCounts.commitAsync();
           // Wait for the transaction to finish and execute a retry if necessary.
           commitTsFut.get();
           break;
