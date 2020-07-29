@@ -29,7 +29,6 @@ import com.google.cloud.videointelligence.v1p3beta1.StreamingVideoConfig;
 import com.google.cloud.videointelligence.v1p3beta1.StreamingVideoIntelligenceServiceClient;
 import com.google.protobuf.ByteString;
 import io.grpc.StatusRuntimeException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +39,7 @@ class StreamingAutoMlClassification {
 
   // Perform streaming video classification with an AutoML Model
   static void streamingAutoMlClassification(String filePath, String projectId, String modelId)
-          throws StatusRuntimeException, IOException {
+      throws StatusRuntimeException, IOException {
     // String filePath = "path_to_your_video_file";
     // String projectId = "YOUR_GCP_PROJECT_ID";
     // String modelId = "YOUR_AUTO_ML_CLASSIFICATION_MODEL_ID";
