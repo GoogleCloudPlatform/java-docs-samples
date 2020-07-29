@@ -41,6 +41,10 @@ dependencies {
   // [START functions_example_pom_dependencies]
 }
 
+jar {
+  // The jar {} block is needed if you use settings.gradle.
+}
+
 // Register a "runFunction" task to run the function locally
 tasks.register("runFunction", JavaExec) {
   main = 'com.google.cloud.functions.invoker.runner.Invoker'
