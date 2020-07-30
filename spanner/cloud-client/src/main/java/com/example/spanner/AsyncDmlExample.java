@@ -17,6 +17,7 @@
 package com.example.spanner;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.spanner.AsyncRunner;
 import com.google.cloud.spanner.AsyncRunner.AsyncWork;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -49,23 +50,22 @@ class AsyncDmlExample {
   static void asyncDml(DatabaseClient client)
       throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService executor = Executors.newSingleThreadExecutor();
+    AsyncRunner runner = client.runAsync();
     ApiFuture<Long> rowCount =
-        client
-            .runAsync()
-            .runAsync(
-                new AsyncWork<Long>() {
-                  @Override
-                  public ApiFuture<Long> doWorkAsync(TransactionContext txn) {
-                    String sql =
-                        "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES "
-                            + "(12, 'Melissa', 'Garcia'), "
-                            + "(13, 'Russell', 'Morales'), "
-                            + "(14, 'Jacqueline', 'Long'), "
-                            + "(15, 'Dylan', 'Shaw')";
-                    return txn.executeUpdateAsync(Statement.of(sql));
-                  }
-                },
-                executor);
+        runner.runAsync(
+            new AsyncWork<Long>() {
+              @Override
+              public ApiFuture<Long> doWorkAsync(TransactionContext txn) {
+                String sql =
+                    "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES "
+                        + "(12, 'Melissa', 'Garcia'), "
+                        + "(13, 'Russell', 'Morales'), "
+                        + "(14, 'Jacqueline', 'Long'), "
+                        + "(15, 'Dylan', 'Shaw')";
+                return txn.executeUpdateAsync(Statement.of(sql));
+              }
+            },
+            executor);
     System.out.printf("%d records inserted.%n", rowCount.get());
     executor.shutdown();
   }

@@ -66,60 +66,57 @@ class AsyncRunnerExample {
     // The transaction returns the total number of rows that were updated as a future array of
     // longs.
     ApiFuture<long[]> rowCounts =
-        runner
-            .runAsync(
-                new AsyncWork<long[]>() {
-                  @Override
-                  public ApiFuture<long[]> doWorkAsync(TransactionContext txn) {
-                    // Transfer marketing budget from one album to another. We do it in a
-                    // transaction to ensure that the transfer is atomic.
-                    ApiFuture<Struct> album1BudgetFut =
-                        txn.readRowAsync(
-                            "Albums", Key.of(1, 1), ImmutableList.of("MarketingBudget"));
-                    ApiFuture<Struct> album2BudgetFut =
-                        txn.readRowAsync(
-                            "Albums", Key.of(2, 2), ImmutableList.of("MarketingBudget"));
+        runner.runAsync(
+            new AsyncWork<long[]>() {
+              @Override
+              public ApiFuture<long[]> doWorkAsync(TransactionContext txn) {
+                // Transfer marketing budget from one album to another. We do it in a
+                // transaction to ensure that the transfer is atomic.
+                ApiFuture<Struct> album1BudgetFut =
+                    txn.readRowAsync("Albums", Key.of(1, 1), ImmutableList.of("MarketingBudget"));
+                ApiFuture<Struct> album2BudgetFut =
+                    txn.readRowAsync("Albums", Key.of(2, 2), ImmutableList.of("MarketingBudget"));
 
-                    try {
-                      // Transaction will only be committed if this condition still holds at the
-                      // time of commit. Otherwise it will be aborted and the AsyncWork will be
-                      // rerun by the client library.
-                      long transfer = 200_000;
-                      if (album2BudgetFut.get().getLong(0) >= transfer) {
-                        long album1Budget = album1BudgetFut.get().getLong(0);
-                        long album2Budget = album2BudgetFut.get().getLong(0);
+                try {
+                  // Transaction will only be committed if this condition still holds at the
+                  // time of commit. Otherwise it will be aborted and the AsyncWork will be
+                  // rerun by the client library.
+                  long transfer = 200_000;
+                  if (album2BudgetFut.get().getLong(0) >= transfer) {
+                    long album1Budget = album1BudgetFut.get().getLong(0);
+                    long album2Budget = album2BudgetFut.get().getLong(0);
 
-                        album1Budget += transfer;
-                        album2Budget -= transfer;
-                        Statement updateStatement1 =
-                            Statement.newBuilder(
-                                    "UPDATE Albums "
-                                        + "SET MarketingBudget = @AlbumBudget "
-                                        + "WHERE SingerId = 1 and AlbumId = 1")
-                                .bind("AlbumBudget")
-                                .to(album1Budget)
-                                .build();
-                        Statement updateStatement2 =
-                            Statement.newBuilder(
-                                    "UPDATE Albums "
-                                        + "SET MarketingBudget = @AlbumBudget "
-                                        + "WHERE SingerId = 2 and AlbumId = 2")
-                                .bind("AlbumBudget")
-                                .to(album2Budget)
-                                .build();
-                        return txn.batchUpdateAsync(
-                            ImmutableList.of(updateStatement1, updateStatement2));
-                      } else {
-                        return ApiFutures.immediateFuture(new long[] {0L, 0L});
-                      }
-                    } catch (ExecutionException e) {
-                      throw SpannerExceptionFactory.newSpannerException(e.getCause());
-                    } catch (InterruptedException e) {
-                      throw SpannerExceptionFactory.propagateInterrupt(e);
-                    }
+                    album1Budget += transfer;
+                    album2Budget -= transfer;
+                    Statement updateStatement1 =
+                        Statement.newBuilder(
+                                "UPDATE Albums "
+                                    + "SET MarketingBudget = @AlbumBudget "
+                                    + "WHERE SingerId = 1 and AlbumId = 1")
+                            .bind("AlbumBudget")
+                            .to(album1Budget)
+                            .build();
+                    Statement updateStatement2 =
+                        Statement.newBuilder(
+                                "UPDATE Albums "
+                                    + "SET MarketingBudget = @AlbumBudget "
+                                    + "WHERE SingerId = 2 and AlbumId = 2")
+                            .bind("AlbumBudget")
+                            .to(album2Budget)
+                            .build();
+                    return txn.batchUpdateAsync(
+                        ImmutableList.of(updateStatement1, updateStatement2));
+                  } else {
+                    return ApiFutures.immediateFuture(new long[] {0L, 0L});
                   }
-                },
-                executor);
+                } catch (ExecutionException e) {
+                  throw SpannerExceptionFactory.newSpannerException(e.getCause());
+                } catch (InterruptedException e) {
+                  throw SpannerExceptionFactory.propagateInterrupt(e);
+                }
+              }
+            },
+            executor);
 
     ApiFuture<Long> totalUpdateCount =
         ApiFutures.transform(
