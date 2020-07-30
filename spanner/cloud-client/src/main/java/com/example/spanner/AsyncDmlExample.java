@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+// [START spanner_async_dml_standard_insert]
 import com.google.api.core.ApiFuture;
 import com.google.cloud.spanner.AsyncRunner;
 import com.google.cloud.spanner.AsyncRunner.AsyncWork;
@@ -70,3 +71,4 @@ class AsyncDmlExample {
     executor.shutdown();
   }
 }
+//[END spanner_async_dml_standard_insert]

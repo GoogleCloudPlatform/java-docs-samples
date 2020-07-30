@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+//[START spanner_async_transaction_manager]
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
@@ -143,3 +144,4 @@ class AsyncTransactionManagerExample {
     executor.shutdown();
   }
 }
+//[END spanner_async_transaction_manager]

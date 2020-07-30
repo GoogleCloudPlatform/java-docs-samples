@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+//[START spanner_async_read_write_transaction]
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
@@ -133,3 +134,4 @@ class AsyncRunnerExample {
     executor.shutdown();
   }
 }
+//[END spanner_async_read_write_transaction]

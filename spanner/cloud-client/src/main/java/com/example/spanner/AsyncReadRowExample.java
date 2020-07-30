@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+//[START spanner_async_read_row]
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
@@ -80,3 +81,4 @@ class AsyncReadRowExample {
     printed.get(30L, TimeUnit.SECONDS);
   }
 }
+//[END spanner_async_read_row]

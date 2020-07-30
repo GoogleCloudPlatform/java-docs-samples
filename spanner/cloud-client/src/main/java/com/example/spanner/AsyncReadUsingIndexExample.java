@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+//[START spanner_async_read_data_with_index]
 import com.google.api.core.ApiFuture;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
@@ -108,3 +109,4 @@ class AsyncReadUsingIndexExample {
     executor.shutdown();
   }
 }
+//[END spanner_async_read_data_with_index]

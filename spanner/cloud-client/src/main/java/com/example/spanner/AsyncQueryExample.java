@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+// [START spanner_async_query_data]
 import com.google.api.core.ApiFuture;
 import com.google.cloud.spanner.AsyncResultSet;
 import com.google.cloud.spanner.AsyncResultSet.CallbackResponse;
@@ -103,3 +104,4 @@ class AsyncQueryExample {
     executor.shutdown();
   }
 }
+//[END spanner_async_query_data]

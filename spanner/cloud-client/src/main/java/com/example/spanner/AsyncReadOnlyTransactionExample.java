@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+// [START spanner_async_read_only_transaction]
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.cloud.spanner.AsyncResultSet;
@@ -131,3 +132,4 @@ class AsyncReadOnlyTransactionExample {
     executor.shutdown();
   }
 }
+//[END spanner_async_read_only_transaction]
