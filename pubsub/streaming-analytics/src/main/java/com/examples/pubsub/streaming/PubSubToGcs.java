@@ -13,7 +13,9 @@
 // limitations under the License.
 
 package com.examples.pubsub.streaming;
+
 // [START pubsub_to_gcs]
+
 import java.io.IOException;
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
@@ -28,12 +30,12 @@ import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.joda.time.Duration;
 
-public class PubSubToGCS {
+public class PubSubToGcs {
   /*
    * Define your own configuration options. Add your own arguments to be processed
    * by the command-line parser, and specify default values for them.
    */
-  public interface PubSubToGCSOptions extends PipelineOptions, StreamingOptions {
+  public interface PubSubToGcsOptions extends PipelineOptions, StreamingOptions {
     @Description("The Cloud Pub/Sub topic to read from.")
     @Required
     String getInputTopic();
@@ -57,8 +59,8 @@ public class PubSubToGCS {
     // The maximum number of shards when writing output.
     int numShards = 1;
 
-    PubSubToGCSOptions options =
-        PipelineOptionsFactory.fromArgs(args).withValidation().as(PubSubToGCSOptions.class);
+    PubSubToGcsOptions options =
+        PipelineOptionsFactory.fromArgs(args).withValidation().as(PubSubToGcsOptions.class);
 
     options.setStreaming(true);
 
