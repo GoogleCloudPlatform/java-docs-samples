@@ -19,6 +19,7 @@ package com.example.spanner;
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
+import com.google.cloud.spanner.AsyncRunner;
 import com.google.cloud.spanner.AsyncRunner.AsyncWork;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -59,11 +60,13 @@ class AsyncRunnerExample {
   static void asyncRunner(DatabaseClient client)
       throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    // Create an async transaction runner.
+    AsyncRunner runner = client.runAsync();
     // The transaction returns the total number of rows that were updated as a future array of
     // longs.
     ApiFuture<long[]> rowCounts =
-        client
-            .runAsync()
+        runner
             .runAsync(
                 new AsyncWork<long[]>() {
                   @Override
