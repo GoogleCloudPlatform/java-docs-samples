@@ -17,12 +17,10 @@
 package com.example.video;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -62,6 +60,9 @@ public class StreamingAutoMlClassificationIT {
       try {
         StreamingAutoMlClassification.streamingAutoMlClassification(
             "resources/cat.mp4", PROJECT_ID, MODEL_ID);
+        assertThat(bout.toString()).contains("Video streamed successfully.");
+
+        break;
       } catch (StatusRuntimeException ex) {
         if (ex.getStatus().getCode() == Status.Code.UNAVAILABLE) {
           assertThat(ex.getMessage()).contains("Bad Gateway");
@@ -71,7 +72,5 @@ public class StreamingAutoMlClassificationIT {
         e.printStackTrace();
       }
     }
-
-    assertThat(bout.toString()).contains("Video streamed successfully.");
   }
 }
