@@ -19,6 +19,7 @@ package com.example.asset;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.ServiceOptions;
+import com.google.cloud.asset.v1p5beta1.ContentType;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -48,8 +49,12 @@ public class ListAssets {
 
   @Test
   public void testListAssetsExample() throws Exception {
-    String assetTypes = "storage.googleapis.com/Bucket,bigquery.googleapis.com/Table";
-    ListAssetsExample.main(assetTypes);
+    // Use the default project Id (configure it by setting environment variable
+    // "GOOGLE_CLOUD_PROJECT").
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String[] assetTypes = {"storage.googleapis.com/Bucket", "bigquery.googleapis.com/Table"};
+    ContentType contentType = ContentType.CONTENT_TYPE_UNSPECIFIED;
+    ListAssetsExample.listAssets(projectId, assetTypes, contentType);
     String got = bout.toString();
     if (!got.isEmpty()) {
       assertThat(got).contains("asset");

@@ -29,26 +29,32 @@ import java.util.Arrays;
 
 public class ListAssetsExample {
 
-  // Use the default project Id (configure it by setting environment variable
-  // "GOOGLE_CLOUD_PROJECT").
-  private static final String projectId = ServiceOptions.getDefaultProjectId();
-
-  // List assets of a project.
-  // @param args types of the assets to list.
-  public static void main(String... args) throws Exception {
-    // Asset types, e.g.:
-    // "storage.googleapis.com/Bucket,bigquery.googleapis.com/Table".
+  public static void listAssets() throws Exception {
+    // The project id of the asset parent to list.
+    String projectId = "YOUR_PROJECT_ID";
+    // The asset types to list. E.g.,
+    // ["storage.googleapis.com/Bucket", "bigquery.googleapis.com/Table"].
     // See full list of supported asset types at
     // https://cloud.google.com/asset-inventory/docs/supported-asset-types.
-    String[] assetTypes = args[0].split(",");
+    String[] assetTypes = {"YOUR_ASSET_TYPES_TO_LIST"};
+    // The asset content type to list. E.g., ContentType.CONTENT_TYPE_UNSPECIFIED.
+    // See full list of content types at
+    // https://cloud.google.com/asset-inventory/docs/reference/rpc/google.cloud.asset.v1p5beta1#contenttype
+    ContentType contentType = ContentType.CONTENT_TYPE_UNSPECIFIED;
+  }
+
+  public static void listAssets(String projectId, String[] assetTypes, ContentType contentType)
+      throws Exception {
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
-      ContentType contentType = ContentType.CONTENT_TYPE_UNSPECIFIED;
+
+      // Build initial ListAssetsRequest without setting page token.
       ListAssetsRequest request = ListAssetsRequest.newBuilder()
           .setParent(parent.toString())
           .addAllAssetTypes(Arrays.asList(assetTypes))
           .setContentType(contentType)
           .build();
+
       // Repeatedly call ListAssets until page token is empty.
       ListAssetsPagedResponse response = client.listAssets(request);
       System.out.println(response);
