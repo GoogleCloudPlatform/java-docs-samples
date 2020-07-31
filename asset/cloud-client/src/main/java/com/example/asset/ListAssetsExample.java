@@ -41,6 +41,7 @@ public class ListAssetsExample {
     // See full list of content types at
     // https://cloud.google.com/asset-inventory/docs/reference/rpc/google.cloud.asset.v1p5beta1#contenttype
     ContentType contentType = ContentType.CONTENT_TYPE_UNSPECIFIED;
+    listAssets(projectId, assetTypes, contentType);
   }
 
   public static void listAssets(String projectId, String[] assetTypes, ContentType contentType)
