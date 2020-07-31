@@ -16,9 +16,9 @@
 
 package com.example.spanner;
 
+//[START spanner_set_custom_timeout_and_retry]
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode.Code;
-// [START spanner_set_custom_timeout_and_retry]
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
