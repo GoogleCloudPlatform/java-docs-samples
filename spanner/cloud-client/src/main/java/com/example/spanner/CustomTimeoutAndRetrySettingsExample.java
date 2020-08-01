@@ -44,6 +44,8 @@ class CustomTimeoutAndRetrySettingsExample {
       String projectId, String instanceId, String databaseId) {
     SpannerOptions.Builder builder = SpannerOptions.newBuilder().setProjectId(projectId);
     // Set custom timeout and retry settings for the ExecuteSql RPC.
+    // This must be done in a separate chain as the setRetryableCodes and setRetrySettings methods
+    // return a UnaryCallSettings.Builder instead of a SpannerOptions.Builder.
     builder
         .getSpannerStubSettingsBuilder()
         .executeSqlSettings()
