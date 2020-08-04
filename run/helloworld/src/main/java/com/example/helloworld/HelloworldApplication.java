@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START run_hello_service]
 package com.example.helloworld;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -40,3 +41,4 @@ public class HelloworldApplication {
     SpringApplication.run(HelloworldApplication.class, args);
   }
 }
+// [END run_hello_service]
