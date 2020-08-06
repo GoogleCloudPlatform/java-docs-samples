@@ -1,3 +1,0 @@
-package demo;
-
-class PubSubApplicationIT {}
