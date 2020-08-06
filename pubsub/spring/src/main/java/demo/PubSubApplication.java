@@ -53,11 +53,14 @@ public class PubSubApplication {
   }
 
   // [START pubsub_spring_inbound_channel_adapter]
+  // Create a message channel for messages arriving from the subscription `sub-one`.
   @Bean
   public MessageChannel inputMessageChannelForSubOne() {
     return new PublishSubscribeChannel();
   }
 
+  // Create an inbound channel adapter to listen to the subscription `sub-one` and send
+  // messages to the input message channel.
   @Bean
   public PubSubInboundChannelAdapter inboundChannelAdapter(
       @Qualifier("inputMessageChannelForSubOne") MessageChannel messageChannel,
@@ -70,6 +73,7 @@ public class PubSubApplication {
     return adapter;
   }
 
+  // Define what happens to the messages arriving in the message channel.
   @ServiceActivator(inputChannel = "inputMessageChannelForSubOne")
   public void messageReceiver(
       String payload,
@@ -80,6 +84,8 @@ public class PubSubApplication {
   // [END pubsub_spring_inbound_channel_adapter]
 
   // [START pubsub_spring_outbound_channel_adapter]
+  // Create an outbound channel adapter to send messages from the input message channel to the
+  // topic `topic-two`.
   @Bean
   @ServiceActivator(inputChannel = "inputMessageChannelForSubOne")
   public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
@@ -102,6 +108,7 @@ public class PubSubApplication {
   // [END pubsub_spring_outbound_channel_adapter]
 
   // [START pubsub_spring_cloud_stream_input_binder]
+  // Create an input binder to receive messages from `topic-two` using a Consumer bean.
   @Bean
   public Consumer<Message<String>> receiveMessageFromTopicTwo() {
     return message -> {
@@ -112,10 +119,12 @@ public class PubSubApplication {
   // [END pubsub_spring_cloud_stream_input_binder]
 
   // [START pubsub_spring_cloud_stream_output_binder]
+  // Create an output binder to send messages to `topic-one` using a Supplier bean.
   @Bean
   public Supplier<Flux<Message<String>>> sendMessageToTopicOne() {
     return () ->
         Flux.fromStream(
+                // Generate a stream that sends a numbered message every 10 seconds.
                 Stream.generate(
                     new Supplier<Message<String>>() {
                       @Override
@@ -125,8 +134,7 @@ public class PubSubApplication {
                         } finally {
                           Random rand = new Random();
                           Message<String> message =
-                              MessageBuilder.withPayload(Integer.toString(rand.nextInt(1000)))
-                                  .build();
+                              MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
                           LOGGER.info(
                               "Sending a message via the output binder to topic-one! Payload: "
                                   + message.getPayload());
