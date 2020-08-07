@@ -64,7 +64,7 @@ public class SpannerSampleIT {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    SpannerOptions options = SpannerOptions.newBuilder().setHost("https://staging-wrenchworks.sandbox.googleapis.com").build();
+    SpannerOptions options = SpannerOptions.newBuilder().build();
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
