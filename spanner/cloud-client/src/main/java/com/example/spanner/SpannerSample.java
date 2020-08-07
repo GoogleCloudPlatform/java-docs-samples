@@ -64,6 +64,7 @@ import com.google.spanner.admin.database.v1.OptimizeRestoredDatabaseMetadata;
 import com.google.spanner.admin.database.v1.RestoreDatabaseMetadata;
 import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
 import com.google.spanner.v1.ExecuteSqlRequest.QueryOptions;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,6 +149,7 @@ public class SpannerSample {
     final String lastContactDate;
     final boolean outdoorVenue;
     final float popularityScore;
+    final BigDecimal revenue;
 
     Venue(
         long venueId,
@@ -157,7 +159,8 @@ public class SpannerSample {
         Value availableDates,
         String lastContactDate,
         boolean outdoorVenue,
-        float popularityScore) {
+        float popularityScore,
+        BigDecimal revenue) {
       this.venueId = venueId;
       this.venueName = venueName;
       this.venueInfo = venueInfo;
@@ -166,6 +169,7 @@ public class SpannerSample {
       this.lastContactDate = lastContactDate;
       this.outdoorVenue = outdoorVenue;
       this.popularityScore = popularityScore;
+      this.revenue = revenue;
     }
   }
 
@@ -227,11 +231,35 @@ public class SpannerSample {
   static final List<Venue> VENUES =
       Arrays.asList(
           new Venue(
-              4, "Venue 4", exampleBytes1, 1800, availableDates1, "2018-09-02", false, 0.85543f),
+              4,
+              "Venue 4",
+              exampleBytes1,
+              1800,
+              availableDates1,
+              "2018-09-02",
+              false,
+              0.85543f,
+              new BigDecimal("215100.10")),
           new Venue(
-              19, "Venue 19", exampleBytes2, 6300, availableDates2, "2019-01-15", true, 0.98716f),
+              19,
+              "Venue 19",
+              exampleBytes2,
+              6300,
+              availableDates2,
+              "2019-01-15",
+              true,
+              0.98716f,
+              new BigDecimal("1200100.00")),
           new Venue(
-              42, "Venue 42", exampleBytes3, 3000, availableDates3, "2018-10-01", false, 0.72598f));
+              42,
+              "Venue 42",
+              exampleBytes3,
+              3000,
+              availableDates3,
+              "2018-10-01",
+              false,
+              0.72598f,
+              new BigDecimal("390650.99")));
   // [END spanner_insert_datatypes_data]
 
   // [START spanner_create_database]
@@ -1271,6 +1299,7 @@ public class SpannerSample {
                     + "  LastContactDate DATE,"
                     + "  OutdoorVenue    BOOL, "
                     + "  PopularityScore FLOAT64, "
+                    + "  Revenue         NUMERIC, "
                     + "  LastUpdateTime  TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp=true)"
                     + ") PRIMARY KEY (VenueId)"),
             null);
@@ -1311,6 +1340,8 @@ public class SpannerSample {
               .to(venue.outdoorVenue)
               .set("PopularityScore")
               .to(venue.popularityScore)
+              .set("Revenue")
+              .to(venue.revenue)
               .set("LastUpdateTime")
               .to(Value.COMMIT_TIMESTAMP)
               .build());
@@ -1489,6 +1520,61 @@ public class SpannerSample {
     }
   }
   // [END spanner_query_with_timestamp_parameter]
+
+  // [START spanner_query_with_numeric_parameter]
+  static void queryWithNumeric(DatabaseClient dbClient) {
+    BigDecimal exampleNumeric = new BigDecimal("300000");
+    Statement statement =
+        Statement.newBuilder(
+                "SELECT VenueId, VenueName, Revenue\n"
+                    + "FROM Venues\n"
+                    + "WHERE Revenue >= @revenue")
+            .bind("revenue")
+            .to(exampleNumeric)
+            .build();
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %s %s%n",
+            resultSet.getLong("VenueId"),
+            resultSet.getString("VenueName"),
+            resultSet.getBigDecimal("Revenue"));
+      }
+    }
+  }
+  // [END spanner_query_with_numeric_parameter]
+
+  // [START cast_numeric_type]
+  static void castNumeric(DatabaseClient dbClient) {
+    Statement statement =
+        Statement.of(
+            "SELECT\n"
+                + "CAST(Revenue         AS STRING)  AS RevenueString,\n"
+                + "CAST(Revenue         AS INT64)   AS RevenueInt64,\n"
+                + "CAST(Revenue         AS FLOAT64) AS RevenueFloat64,\n"
+                + "CAST(VenueId         AS NUMERIC) AS VenueIdNumeric,\n"
+                + "CAST(PopularityScore AS NUMERIC) AS PopularityScoreNumeric,\n"
+                + "\n"
+                + "-- SAFE_CAST returns NULL for invalid casts\n"
+                + "SAFE_CAST(VenueName AS NUMERIC)  AS VenueNameNumeric\n"
+                + "FROM Venues\n"
+                + "ORDER BY VenueId");
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%s %s %s %s %s %s%n",
+            resultSet.getString("RevenueString"),
+            resultSet.getLong("RevenueInt64"),
+            resultSet.getDouble("RevenueFloat64"),
+            resultSet.getBigDecimal("VenueIdNumeric"),
+            resultSet.getBigDecimal("PopularityScoreNumeric"),
+            resultSet.isNull("VenueNameNumeric")
+                ? "NULL"
+                : resultSet.getBigDecimal("VenueNameNumeric"));
+      }
+    }
+  }
+  // [END cast_numeric_type]
 
   // [START spanner_create_client_with_query_options]
   static void clientWithQueryOptions(DatabaseId db) {
@@ -1972,6 +2058,12 @@ public class SpannerSample {
       case "querywithtimestampparameter":
         queryWithTimestampParameter(dbClient);
         break;
+      case "querywithnumeric":
+        queryWithNumeric(dbClient);
+        break;
+      case "castnumeric":
+        castNumeric(dbClient);
+        break;
       case "clientwithqueryoptions":
         clientWithQueryOptions(database);
         break;
@@ -2084,7 +2176,7 @@ public class SpannerSample {
       printUsageAndExit();
     }
     // [START init_client]
-    SpannerOptions options = SpannerOptions.newBuilder().build();
+    SpannerOptions options = SpannerOptions.newBuilder().setHost("https://staging-wrenchworks.sandbox.googleapis.com").build();
     Spanner spanner = options.getService();
     try {
       String command = args[0];
