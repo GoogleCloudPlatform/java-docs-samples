@@ -17,7 +17,6 @@
 package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
-
 import com.google.cloud.spanner.BackupId;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -65,7 +64,7 @@ public class SpannerSampleIT {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
+    SpannerOptions options = SpannerOptions.newBuilder().setHost("https://staging-wrenchworks.sandbox.googleapis.com").build();
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
@@ -251,6 +250,15 @@ public class SpannerSampleIT {
     assertThat(out).contains("4 Venue 4");
     assertThat(out).contains("19 Venue 19");
     assertThat(out).contains("42 Venue 42");
+
+    out = runSample("querywithnumeric");
+    assertThat(out).contains("19 Venue 19 1200100");
+    assertThat(out).contains("42 Venue 42 390650.99");
+
+    out = runSample("castnumeric");
+    assertThat(out).contains("215100.1 215100 215100.1 4 0.855430007 NULL");
+    assertThat(out).contains("1200100 1200100 1200100.0 19 0.987160027 NULL");
+    assertThat(out).contains("390650.99 390651 390650.99 42 0.725979984 NULL");
 
     out = runSample("clientwithqueryoptions");
     assertThat(out).contains("1 1 Total Junk");
