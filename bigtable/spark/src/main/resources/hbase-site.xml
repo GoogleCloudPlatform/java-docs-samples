@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+/**
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+    <property>
+        <name>google.bigtable.project.id</name>
+        <value>your-google-cloud-project</value>
+    </property>
+    <property>
+        <name>google.bigtable.instance.id</name>
+        <value>your-bigtable-instance</value>
+    </property>
+    <property>
+        <name>hbase.client.connection.impl</name>
+        <value>com.google.cloud.bigtable.hbase2_x.BigtableConnection</value>
+    </property>
+
+    <!-- shc uses namespaces, which bigtable doesn't support. This has the
+    Bigtable client log warns rather than throw -->
+    <property>
+        <name>google.bigtable.namespace.warnings</name>
+        <value>true</value>
+    </property>
+
+    <!--  workaround: https://issues.apache.org/jira/browse/SPARK-21549 -->
+    <property>
+        <name>mapreduce.output.fileoutputformat.outputdir</name>
+        <value>/tmp</value>
+    </property>
+</configuration>
