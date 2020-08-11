@@ -47,18 +47,7 @@ import reactor.core.scheduler.Schedulers;
 public class PubSubApplication {
 
   private static final Log LOGGER = LogFactory.getLog(PubSubApplication.class);
-
-  public static Message<String> generateOneMessagePeriodically(int millis) {
-    try {
-      Thread.sleep(millis);
-    } finally {
-      Random rand = new Random();
-      Message<String> message = MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
-      LOGGER.info(
-          "Sending a message via the output binder to topic-one! Payload: " + message.getPayload());
-      return message;
-    }
-  }
+  private static final Random rand = new Random(2020);
 
   public static void main(String[] args) {
     SpringApplication.run(PubSubApplication.class, args);
@@ -141,7 +130,16 @@ public class PubSubApplication {
                     new Supplier<Message<String>>() {
                       @Override
                       public Message<String> get() {
-                        return generateOneMessagePeriodically(10000);
+                        try {
+                          Thread.sleep(10000);
+                        } finally {
+                          Message<String> message =
+                              MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
+                          LOGGER.info(
+                              "Sending a message via the output binder to topic-one! Payload: "
+                                  + message.getPayload());
+                          return message;
+                        }
                       }
                     }))
             .subscribeOn(Schedulers.elastic())

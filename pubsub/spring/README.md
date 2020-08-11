@@ -33,11 +33,11 @@ This sample requires [Java](https://www.java.com/en/download/) and [Maven](http:
     ```
     You should observe an incoming message getting sent to `topic-one`, received from `sub-one`, sent to `topic-two`, and received from `topic-two` in the logged messages:
     ```
-    2020-08-06 15:42:32.289  INFO 80190 --- [           main] demo.PubSubApplication                   : Started PubSubApplication in 8.394 seconds (JVM running for 8.77)
-    2020-08-06 15:42:39.543  INFO 80190 --- [      elastic-3] demo.PubSubApplication                   : Sending a message via the output binder to topic-one! Payload: message-589
-    2020-08-06 15:42:40.964  INFO 80190 --- [sub-subscriber1] o.s.i.h.s.MessagingMethodInvokerHelper   : Overriding default instance of MessageHandlerMethodFactory with provided one.
-    2020-08-06 15:42:40.969  INFO 80190 --- [sub-subscriber1] demo.PubSubApplication                   : Message arrived via an inbound channel adapter from sub-one! Payload: message-589
-    2020-08-06 15:42:41.350  INFO 80190 --- [bsub-publisher4] demo.PubSubApplication                   : Message was sent via the outbound channel adapter to topic-two!
-    2020-08-06 15:42:41.351  INFO 80190 --- [sub-subscriber2] o.s.i.h.s.MessagingMethodInvokerHelper   : Overriding default instance of MessageHandlerMethodFactory with provided one.
-    2020-08-06 15:42:41.376  INFO 80190 --- [sub-subscriber2] demo.PubSubApplication                   : Message arrived via an input binder from topic-two! Payload: message-589
+    2020-08-10 17:29:18.807  INFO 27310 --- [           main] demo.PubSubApplication                   : Started PubSubApplication in 6.063 seconds (JVM running for 6.393)
+    2020-08-10 17:29:27.084  INFO 27310 --- [      elastic-3] demo.PubSubApplication                   : Sending a message via the output binder to topic-one! Payload: message-548
+    2020-08-10 17:29:27.604  INFO 27310 --- [sub-subscriber1] o.s.i.h.s.MessagingMethodInvokerHelper   : Overriding default instance of MessageHandlerMethodFactory with provided one.
+    2020-08-10 17:29:27.608  INFO 27310 --- [sub-subscriber1] demo.PubSubApplication                   : Message arrived via an inbound channel adapter from sub-one! Payload: message-548
+    2020-08-10 17:29:28.269  INFO 27310 --- [bsub-publisher1] demo.PubSubApplication                   : Message was sent via the outbound channel adapter to topic-two!
+    2020-08-10 17:29:28.269  INFO 27310 --- [sub-subscriber2] o.s.i.h.s.MessagingMethodInvokerHelper   : Overriding default instance of MessageHandlerMethodFactory with provided one.
+    2020-08-10 17:29:28.290  INFO 27310 --- [sub-subscriber2] demo.PubSubApplication                   : Message arrived via an input binder from topic-two! Payload: message-548
     ```
