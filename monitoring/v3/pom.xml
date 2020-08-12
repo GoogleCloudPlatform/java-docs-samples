@@ -36,16 +36,16 @@
     </properties>
 
     <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-bom</artifactId>
-            <version>0.132.0</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>libraries-bom</artifactId>
+          <version>8.1.0</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
