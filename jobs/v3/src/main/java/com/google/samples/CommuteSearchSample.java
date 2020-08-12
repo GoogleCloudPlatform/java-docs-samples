@@ -80,7 +80,7 @@ public final class CommuteSearchSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Search jobs for commute results: %s\n", response);
   }
   // [END commute_search]
 
