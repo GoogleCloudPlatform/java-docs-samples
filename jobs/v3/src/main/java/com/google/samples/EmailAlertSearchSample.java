@@ -63,7 +63,7 @@ public final class EmailAlertSearchSample {
             .searchForAlert(DEFAULT_PROJECT_ID, request)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Search jobs for alert results: %s\n", response);
   }
   // [END search_for_alerts]
 

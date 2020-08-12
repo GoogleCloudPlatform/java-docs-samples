@@ -26,9 +26,9 @@ import java.io.IOException;
 /**
  * The samples in this file introduced how to do the auto complete, including:
  *
- * - Default auto complete (on both company display name and job title)
+ * <p>- Default auto complete (on both company display name and job title)
  *
- * - Auto complete on job title only
+ * <p>- Auto complete on job title only
  */
 public final class AutoCompleteSample {
 

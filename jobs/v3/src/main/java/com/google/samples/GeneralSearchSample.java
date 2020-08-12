@@ -92,8 +92,7 @@ public final class GeneralSearchSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-
-    System.out.println(searchJobsResponse);
+    System.out.printf("Simple search jobs results: %s\n", searchJobsResponse);
   }
   // [END basic_keyword_search]
 
@@ -131,7 +130,7 @@ public final class GeneralSearchSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Category search jobs results: %s\n", searchJobsResponse);
   }
   // [END category_filter]
 
@@ -169,7 +168,7 @@ public final class GeneralSearchSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Employee type search jobs results: %s\n", searchJobsResponse);
   }
   // [END employment_types_filter]
 
@@ -216,7 +215,7 @@ public final class GeneralSearchSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Search results on jobs with a date range: %s\n", searchJobsResponse);
   }
   // [END date_range_filter]
 
@@ -254,7 +253,7 @@ public final class GeneralSearchSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Search results on jobs with a language code: %s\n", searchJobsResponse);
   }
   // [END language_code_filter]
 
@@ -292,7 +291,7 @@ public final class GeneralSearchSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Search results by display name of company: %s\n", searchJobsResponse);
   }
   // [END company_display_name_filter]
 
@@ -344,7 +343,7 @@ public final class GeneralSearchSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Search results by compensation: %s\n", searchJobsResponse);
   }
   // [END compensation_filter]
 
