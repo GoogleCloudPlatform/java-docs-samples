@@ -53,9 +53,12 @@ public class SampleTests {
     AutoCompleteSample.main();
     assertThat(bout.toString())
         .containsMatch(
-            ".*completionResults.*\"suggestion\":\"Google\",\"type\":\"COMPANY_NAME\"}.*\n"
-                + ".*completionResults.*\"suggestion\":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n"
-                + ".*completionResults.*\"suggestion\":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n");
+            ".*completionResults.*\"suggestion\":" +
+                    "\"Google\",\"type\":\"COMPANY_NAME\"}.*\n"
+                + ".*completionResults.*\"suggestion\"" +
+                    ":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n"
+                + ".*completionResults.*\"suggestion\"" +
+                    ":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n");
     bout.reset();
   }
 
@@ -95,7 +98,8 @@ public class SampleTests {
             ".*"
                 + "Company generated:.*\nCompany created:.*\n"
                 + "Create Job:.*\nCreate Job:.*\n"
-                + "Update Job:.*Engineer in Mountain View.*\nUpdate Job:.*Engineer in Mountain View.*\n"
+                + "Update Job:.*Engineer in Mountain View.*\n" +
+                    "Update Job:.*Engineer in Mountain View.*\n"
                 + "Job deleted.*\nJob deleted.*\n"
                 + "Company deleted.*\n");
     bout.reset();
