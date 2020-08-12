@@ -1,10 +1,10 @@
 package example
 
-import org.apache.hadoop.hbase.spark.datasources.HBaseTableCatalog
+import org.apache.hadoop.hbase.spark.datasources.{HBaseSparkConf, HBaseTableCatalog}
 
 import scala.util.Try
 
-object Wordcount extends App {
+object DataFrameDemo extends App {
 
   println("Starting up...")
 
@@ -32,14 +32,41 @@ object Wordcount extends App {
   val opts = Map(
     HBaseTableCatalog.tableCatalog -> catalog,
     HBaseTableCatalog.newTable -> "5",
-    "hbase.spark.use.hbasecontext" -> "false")
+    HBaseSparkConf.USE_HBASECONTEXT -> "false") // accepts xml configs only
+
+  val projectId = args(2)
+  val instanceId = args(3)
+
+  // Hack to specify HBase properties on command line
+  // BEGIN
+  // import org.apache.hadoop.hbase.HBaseConfiguration
+  // val conf = HBaseConfiguration.create()
+  // conf.set("google.bigtable.project.id", projectId)
+  // conf.set("google.bigtable.instance.id", instanceId)
+  import com.google.cloud.bigtable.hbase.BigtableConfiguration
+  val conf = BigtableConfiguration.configure(projectId, instanceId)
+  import org.apache.hadoop.hbase.spark.HBaseContext
+  val hbaseContext = new HBaseContext(spark.sparkContext, conf)
+  val opts_nouse = opts.filterNot { case (k, _) => k == HBaseSparkConf.USE_HBASECONTEXT }
+  // END
+
   records
     .write
     .format("org.apache.hadoop.hbase.spark")
-    .options(opts)
+    .options(opts_nouse)
     .save
 
-  println("Done.")
+  println(s"Writing to $table...DONE")
+
+  println(s"Loading $table")
+  spark
+    .read
+    .format("org.apache.hadoop.hbase.spark")
+    .options(opts_nouse)
+    .load
+    .show(truncate = false)
+  println(s"Loading $table...DONE")
+
 }
 
 case class BigtableRecord(

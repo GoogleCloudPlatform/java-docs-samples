@@ -2,9 +2,7 @@
 
 ## Overview
 
-The project shows how to load or save data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/master/spark) . 
-
-The project uses [sbt](https://www.scala-sbt.org/) as the build tool.
+The project shows how to load or save data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/master/spark).
 
 ## Prerequisites
 
