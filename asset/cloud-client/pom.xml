@@ -35,7 +35,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-asset</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
     <!-- [END asset_java_dependencies] -->
 
@@ -61,12 +61,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
-      <version>1.116.7</version>
+      <version>1.116.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.108.0</version>
+      <version>1.108.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
