@@ -17,9 +17,9 @@ Please be aware of [Cloud Bigtable](https://cloud.google.com/bigtable/pricing) p
 
 1. A basic familiarity with [Apache Spark](https://spark.apache.org/) and [Scala](https://www.scala-lang.org/).
 
-## Assemble the Example
+## Assemble the Examples
 
-The Spark application can be assembled into an uber/fat jar with all of its dependencies and configuration. To build use `sbt` as follows:
+Execute the following `sbt` command to assemble the sample applications as a single uber/fat jar (with all of its dependencies and configuration).
 
 ```
 sbt clean assembly
@@ -27,34 +27,53 @@ sbt clean assembly
 
 The above command should build `target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar` file.
 
-**NOTE**: Since the Cloud Bigtable configuration is included in the (fat) jar, any changes will require re-assembling it.
-
 ## Start Bigtable Emulator
 
 ```
 gcloud beta emulators bigtable start
 ```
 
-## Configure the Example
+## Environment Variables
 
-Create environment variables for the following commands:
+Set the following environment variables for the sample applications to use:
 
 ```
-BIGTABLE_TABLE=wordcount
-NUMBER_OF_ROWS=5
+GOOGLE_CLOUD_PROJECT=your-project-id
+BIGTABLE_INSTANCE=your-bigtable-instance
 ```
 
-## Run
+## Run Examples with Bigtable Emulator
 
 ```
 $(gcloud beta emulators bigtable env-init)
 ```
 
+Use one of the Spark sample applications as the `--class` parameter.
+
+### Wordcount
+
+The following `spark-submit` uses [example.Wordcount](src/main/scala/example/Wordcount.scala).
+
 ```
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
+  --class example.Wordcount \
   target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
-  $BIGTABLE_TABLE $NUMBER_OF_ROWS
+  $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
+  wordcount-rdd README.md
+```
+
+### DataFrameDemo
+
+The following `spark-submit` uses [example.DataFrameDemo](src/main/scala/example/DataFrameDemo.scala).
+
+```
+$SPARK_HOME/bin/spark-submit \
+  --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
+  --class example.DataFrameDemo \
+  target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
+  $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
+  wordcount-dataframe 5
 ```
 
 ## Verify
@@ -63,8 +82,8 @@ There should be one table.
 
 ```
 $ cbt \
-  -project=your-google-cloud-project \
-  -instance=your-bigtable-instance \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  -instance=$BIGTABLE_INSTANCE \
   ls
 wordcount
 ```
@@ -73,11 +92,53 @@ There should be the number of rows that you requested on command line.
 
 ```
 cbt \
-  -project=your-google-cloud-project \
-  -instance=your-bigtable-instance \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  -instance=$BIGTABLE_INSTANCE \
   read $BIGTABLE_TABLE
 ```
 
-## Configure the Example to use Cloud Bigtable
+## Run Wordcount with Cloud Bigtable
 
-Set the Google Cloud Project ID and Cloud Bigtable instance ID in [hbase-site.xml](src/main/resources/hbase-site.xml) configuration file.
+```
+APP_NAME=example.Wordcount
+WORDCOUNT_BIGTABLE_TABLE=wordcount-rdd
+WORDCOUNT_FILE=README.md
+```
+
+```
+cbt \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  -instance=$BIGTABLE_INSTANCE \
+  createtable $WORDCOUNT_BIGTABLE_TABLE
+```
+
+```
+cbt \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  -instance=$BIGTABLE_INSTANCE \
+  ls
+```
+
+```
+cbt \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  -instance=$BIGTABLE_INSTANCE \
+  createfamily $WORDCOUNT_BIGTABLE_TABLE cf
+```
+
+```
+$SPARK_HOME/bin/spark-submit \
+  --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
+  --class APP_NAME \
+  target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
+  $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
+  $WORDCOUNT_BIGTABLE_TABLE WORDCOUNT_FILE
+```
+
+```
+cbt \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  -instance=$BIGTABLE_INSTANCE \
+  read $WORDCOUNT_BIGTABLE_TABLE
+```
+

@@ -8,12 +8,16 @@ object DataFrameDemo extends App {
 
   println("Starting up...")
 
+  val projectId = args(0)
+  val instanceId = args(1)
+  val table = Try(args(2)).getOrElse("dataframe-demo")
+  val numRecords = Try(args(3).toInt).getOrElse(10)
+
   import org.apache.spark.sql.SparkSession
   val spark = SparkSession.builder().master("local[*]").getOrCreate()
 
   println("Spark version: " + spark.version)
 
-  val table = Try(args(0)).getOrElse("wordcount")
   val catalog =
     s"""{
        |"table":{"namespace":"default", "name":"$table", "tableCoder":"PrimitiveType"},
@@ -25,7 +29,6 @@ object DataFrameDemo extends App {
        |"col3":{"cf":"cf3", "col":"col3", "type":"int"}
        |}
        |}""".stripMargin
-  val numRecords = Try(args(1).toInt).getOrElse(10)
   println(s"Saving $numRecords records to $table")
   import spark.implicits._
   val records = (0 until numRecords).map(BigtableRecord.apply).toDF
@@ -33,9 +36,6 @@ object DataFrameDemo extends App {
     HBaseTableCatalog.tableCatalog -> catalog,
     HBaseTableCatalog.newTable -> "5",
     HBaseSparkConf.USE_HBASECONTEXT -> "false") // accepts xml configs only
-
-  val projectId = args(2)
-  val instanceId = args(3)
 
   // Hack to specify HBase properties on command line
   // BEGIN
