@@ -2,12 +2,17 @@
 
 ## Overview
 
-The project shows how to load or save data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/master/spark).
+The project shows how to read data from or write data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/master/spark).
 
-- Apache Spark is the execution environment that can distribute and parallelize data processing (loading data from and writing data to various data sources).
+**Apache Spark** is the execution environment that can distribute and parallelize data processing (loading data from and writing data to various data sources).
 Apache Spark provides DataSource API for external systems to plug into as data sources (also known as data providers).
-- The Apache HBase™ Spark Connector implements the DataSource API for Apache HBase.
-- `bigtable-hbase-2.x-hadoop` provides a bridge from the HBase API to Cloud Bigtable that allows Spark queries to interact with Bigtable using the native Spark API.
+
+**Apache HBase™ Spark Connector** implements the DataSource API for Apache HBase and allows executing relational queries on data stored in Cloud Bigtable.
+
+**Google Cloud Bigtable** is a fully-managed cloud service for a NoSQL database of petabyte-scale and large analytical and operational workloads.
+`bigtable-hbase-2.x-hadoop` provides a bridge from the HBase API to Cloud Bigtable that allows Spark queries to interact with Bigtable using the native Spark API.
+
+**Google Cloud Dataproc** is a fully-managed cloud service for running [Apache Spark](https://spark.apache.org/) applications and [Apache Hadoop](https://hadoop.apache.org/) clusters.
 
 ## Prerequisites
 
@@ -32,7 +37,7 @@ sbt clean assembly
 
 The above command should build `target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar` file.
 
-## Test Examples using Bigtable Emulator
+## Run Examples with Bigtable Emulator
 
 Start the Bigtable Emulator.
 
@@ -104,17 +109,22 @@ cbt \
 
 ## Run Wordcount with Cloud Bigtable
 
+### Configure Environment
+
 ```
-APP_NAME=example.Wordcount
-WORDCOUNT_BIGTABLE_TABLE=wordcount-rdd
-WORDCOUNT_FILE=README.md
+BIGTABLE_SPARK_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
+BIGTABLE_SPARK_CLASS=example.Wordcount
+BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount-rdd
+BIGTABLE_SPARK_WORDCOUNT_FILE=README.md
 ```
+
+### Configure Cloud Bigtable
 
 ```
 cbt \
   -project=$GOOGLE_CLOUD_PROJECT \
   -instance=$BIGTABLE_INSTANCE \
-  createtable $WORDCOUNT_BIGTABLE_TABLE
+  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE
 ```
 
 ```
@@ -128,26 +138,30 @@ cbt \
 cbt \
   -project=$GOOGLE_CLOUD_PROJECT \
   -instance=$BIGTABLE_INSTANCE \
-  createfamily $WORDCOUNT_BIGTABLE_TABLE cf
+  createfamily $BIGTABLE_SPARK_WORDCOUNT_TABLE cf
 ```
+
+### Submit Wordcount
 
 ```
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
-  --class APP_NAME \
-  target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
+  --class $BIGTABLE_SPARK_CLASS \
+  $BIGTABLE_SPARK_JAR \
   $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
-  $WORDCOUNT_BIGTABLE_TABLE WORDCOUNT_FILE
+  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_WORDCOUNT_FILE
 ```
+
+### Verify
 
 ```
 cbt \
   -project=$GOOGLE_CLOUD_PROJECT \
   -instance=$BIGTABLE_INSTANCE \
-  read $WORDCOUNT_BIGTABLE_TABLE
+  read $BIGTABLE_SPARK_WORDCOUNT_TABLE
 ```
 
-## Delete Cloud Bigtable Instance
+### Delete Cloud Bigtable Instance
 
 ```
 cbt \
@@ -159,4 +173,142 @@ cbt \
 cbt \
   -project=$GOOGLE_CLOUD_PROJECT \
   deleteinstance $BIGTABLE_INSTANCE
+```
+
+## Submit DataFrameDemo to Cloud Dataproc
+
+This section describes the steps to submit [DataFrameDemo](src/main/scala/example/DataFrameDemo.scala) application to [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
+
+**TIP** Read [Quickstart using the gcloud command-line tool](https://cloud.google.com/dataproc/docs/quickstarts/quickstart-gcloud) that shows how to use the Google Cloud SDK `gcloud` command-line tool to create a Google Cloud Dataproc cluster and more.
+
+### Configure Environment
+
+```
+BIGTABLE_SPARK_PROJECT_ID=your-project-id
+BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance-id
+BIGTABLE_SPARK_DATAPROC_CLUSTER=spark-cluster
+BIGTABLE_SPARK_REGION=europe-west4
+BIGTABLE_SPARK_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
+BIGTABLE_SPARK_CLASS=example.DataFrameDemo
+BIGTABLE_SPARK_TABLE=DataFrameDemo
+```
+
+**NOTE** `BIGTABLE_SPARK_REGION` should point to your region. Read [Available regions and zones](https://cloud.google.com/compute/docs/regions-zones#available) in the official documentation.
+
+### Authenticate
+
+Authenticate to a Google Cloud Platform API using service or user accounts.
+Learn about [authenticating to a GCP API](https://cloud.google.com/docs/authentication/) in the Google Cloud documentation.
+
+**NOTE**: In most situations, we recommend [authenticating as a service account](https://cloud.google.com/docs/authentication/production) to a Google Cloud Platform (GCP) API.
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=your-service-account-json
+```
+
+### Create Google Cloud Dataproc Cluster
+
+```
+gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
+  --region=$BIGTABLE_SPARK_REGION \
+  --project=$BIGTABLE_SPARK_PROJECT_ID
+```
+
+### Configure Cloud Bigtable
+
+```
+BIGTABLE_SPARK_INSTANCE_ID=tuesday
+BIGTABLE_SPARK_CLUSTER_ID=tuesday-c1
+BIGTABLE_SPARK_CLUSTER_ZONE=europe-west3-a
+gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
+    --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
+    --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
+    --display-name=$BIGTABLE_SPARK_INSTANCE_ID
+```
+
+```
+BIGTABLE_SPARK_PROJECT_ID=bigtable-spark-connector
+BIGTABLE_SPARK_DataFrameDemo_TABLE=DataFrameDemo
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_DataFrameDemo_TABLE
+```
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  ls
+```
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE rowkey
+
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf1
+
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf2
+
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf3
+```
+
+### Submit Wordcount Job
+
+Submit the Wordcount job to a Cloud Dataproc instance.
+
+```
+gcloud dataproc jobs submit spark \
+  --cluster=$BIGTABLE_SPARK_CLUSTER \
+  --region=$BIGTABLE_SPARK_REGION \
+  --class=$BIGTABLE_SPARK_CLASS \
+  --jars=$BIGTABLE_SPARK_JAR \
+  --properties=spark.jars.packages='org.apache.hbase.connectors.spark:hbase-spark:1.0.0' \
+  -- \
+  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID $BIGTABLE_SPARK_DataFrameDemo_TABLE
+```
+
+### Verify
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  read $BIGTABLE_SPARK_DataFrameDemo_TABLE
+```
+
+### Clean Up
+
+Delete the Bigtable instance.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  deleteinstance $BIGTABLE_SPARK_INSTANCE_ID
+```
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  listinstances
+```
+
+Delete the Dataproc cluster.
+
+```
+gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
+  --region=$BIGTABLE_SPARK_REGION \
+  --project=$BIGTABLE_SPARK_PROJECT_ID \
+  --quiet
 ```

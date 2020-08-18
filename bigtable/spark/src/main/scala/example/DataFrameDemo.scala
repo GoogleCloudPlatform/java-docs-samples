@@ -15,7 +15,7 @@ object DataFrameDemo extends App {
 
   import org.apache.spark.sql.SparkSession
   val spark = SparkSession.builder().master("local[*]").getOrCreate()
-  println("Spark version: " + spark.version)
+  println(s"Spark version: ${spark.version}")
 
   val catalog =
     s"""{
