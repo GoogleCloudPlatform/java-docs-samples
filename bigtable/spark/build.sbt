@@ -4,21 +4,34 @@ version := "0.1"
 
 scalaVersion := "2.11.12"
 
+// Versions to match Dataproc
+val sparkVersion = "2.4.5"
+val hbaseVersion = "2.2.3"
+val bigtableVersion = "1.15.0"
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-sql" % "2.4.5" % Provided,
+  "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
   "org.apache.hbase.connectors.spark" % "hbase-spark" % "1.0.0" % Provided,
-  // Exception: Incompatible Jackson 2.9.2
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10",
-  // NoClassDefFoundError: org/apache/spark/streaming/dstream/DStream
-  // when saving a DataFrame (!)
-  "org.apache.spark" %% "spark-streaming" % "2.4.5" % Provided,
-  "com.google.cloud.bigtable" % "bigtable-hbase-2.x-hadoop" % "1.15.0",
-  // NoClassDefFoundError: org/apache/hadoop/hbase/fs/HFileSystem
-  // Why?!?! The example does NOT use them directly!
-  "org.apache.hbase" % "hbase-server" % "2.2.3",
-  "org.apache.hbase" % "hbase-client" % "2.2.3"
+  "com.google.cloud.bigtable" % "bigtable-hbase-2.x-hadoop" % bigtableVersion
 )
 
+val fixes = Seq(
+  // Fix for Exception: Incompatible Jackson 2.9.2
+  // Version conflict between HBase and Spark
+  // Forcing the version to match Spark
+  // FIXME Would that work with dependencyOverrides?
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10",
+  // Fix for NoClassDefFoundError: org/apache/spark/streaming/dstream/DStream
+  // when saving a DataFrame
+  "org.apache.spark" %% "spark-streaming" % sparkVersion % Provided,
+  // Fix for NoClassDefFoundError: org/apache/hadoop/hbase/fs/HFileSystem
+  // Why?!?! The example does NOT use them directly!
+  "org.apache.hbase" % "hbase-server" % hbaseVersion,
+  "org.apache.hbase" % "hbase-client" % hbaseVersion
+)
+libraryDependencies ++= fixes
+
+// Excluding duplicates for the uber-jar
+// There are other deps to provide necessary packages
 excludeDependencies ++= Seq(
   ExclusionRule(organization = "asm", "asm"),
   ExclusionRule(organization = "commons-beanutils", "commons-beanutils"),

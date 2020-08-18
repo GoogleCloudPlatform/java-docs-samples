@@ -4,6 +4,11 @@
 
 The project shows how to load or save data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/master/spark).
 
+- Apache Spark is the execution environment that can distribute and parallelize data processing (loading data from and writing data to various data sources).
+Apache Spark provides DataSource API for external systems to plug into as data sources (also known as data providers).
+- The Apache HBase™ Spark Connector implements the DataSource API for Apache HBase.
+- `bigtable-hbase-2.x-hadoop` provides a bridge from the HBase API to Cloud Bigtable that allows Spark queries to interact with Bigtable using the native Spark API.
+
 ## Prerequisites
 
 1. A [Google Cloud project](https://console.cloud.google.com/) with billing enabled.
@@ -27,13 +32,13 @@ sbt clean assembly
 
 The above command should build `target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar` file.
 
-## Start Bigtable Emulator
+## Test Examples using Bigtable Emulator
+
+Start the Bigtable Emulator.
 
 ```
 gcloud beta emulators bigtable start
 ```
-
-## Environment Variables
 
 Set the following environment variables for the sample applications to use:
 
@@ -42,7 +47,7 @@ GOOGLE_CLOUD_PROJECT=your-project-id
 BIGTABLE_INSTANCE=your-bigtable-instance
 ```
 
-## Run Examples with Bigtable Emulator
+Initialize the environment to point to the Bigtable Emulator.
 
 ```
 $(gcloud beta emulators bigtable env-init)
@@ -76,7 +81,7 @@ $SPARK_HOME/bin/spark-submit \
   wordcount-dataframe 5
 ```
 
-## Verify
+### Verify
 
 There should be one table.
 
@@ -142,3 +147,16 @@ cbt \
   read $WORDCOUNT_BIGTABLE_TABLE
 ```
 
+## Delete Cloud Bigtable Instance
+
+```
+cbt \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  listinstances
+```
+
+```
+cbt \
+  -project=$GOOGLE_CLOUD_PROJECT \
+  deleteinstance $BIGTABLE_INSTANCE
+```

@@ -15,7 +15,6 @@ object DataFrameDemo extends App {
 
   import org.apache.spark.sql.SparkSession
   val spark = SparkSession.builder().master("local[*]").getOrCreate()
-
   println("Spark version: " + spark.version)
 
   val catalog =
@@ -29,13 +28,19 @@ object DataFrameDemo extends App {
        |"col3":{"cf":"cf3", "col":"col3", "type":"int"}
        |}
        |}""".stripMargin
-  println(s"Saving $numRecords records to $table")
-  import spark.implicits._
-  val records = (0 until numRecords).map(BigtableRecord.apply).toDF
+  println(s"Writing $numRecords records to $table")
+
+  // FIXME Explain the options
+  // FIXME Where to find more options supported? Any docs?
   val opts = Map(
     HBaseTableCatalog.tableCatalog -> catalog,
     HBaseTableCatalog.newTable -> "5",
     HBaseSparkConf.USE_HBASECONTEXT -> "false") // accepts xml configs only
+
+  import spark.implicits._
+  val records = (0 until numRecords).map(BigtableRecord.apply).toDF
+
+  // TODO Use a command-line option to switch between command line params and xml
 
   // Hack to specify HBase properties on command line
   // BEGIN
@@ -45,6 +50,7 @@ object DataFrameDemo extends App {
   // conf.set("google.bigtable.instance.id", instanceId)
   import com.google.cloud.bigtable.hbase.BigtableConfiguration
   val conf = BigtableConfiguration.configure(projectId, instanceId)
+
   import org.apache.hadoop.hbase.spark.HBaseContext
   val hbaseContext = new HBaseContext(spark.sparkContext, conf)
   val opts_nouse = opts.filterNot { case (k, _) => k == HBaseSparkConf.USE_HBASECONTEXT }

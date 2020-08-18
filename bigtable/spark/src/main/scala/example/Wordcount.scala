@@ -28,7 +28,6 @@ object Wordcount extends App {
 
   var conf = BigtableConfiguration.configure(projectId, instanceId)
   conf.set(TableOutputFormat.OUTPUT_TABLE, table)
-  conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
 
   // workaround: https://issues.apache.org/jira/browse/SPARK-21549
   conf.set("mapreduce.output.fileoutputformat.outputdir", "/tmp")
