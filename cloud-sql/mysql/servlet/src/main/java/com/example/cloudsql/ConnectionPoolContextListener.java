@@ -51,6 +51,8 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     HikariConfig config = new HikariConfig();
 
     // Configure which instance and what database user to connect with.
+    // Equivalent URL:
+    // jdbc:mysql:///<DATABASE_NAME>?cloudSqlInstance=<INSTANCE_CONNECTION_NAME>&socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=<MYSQL_USER_NAME>&password=<MYSQL_USER_PASSWORD>
     config.setJdbcUrl(String.format("jdbc:mysql:///%s", DB_NAME));
     config.setUsername(DB_USER); // e.g. "root", "postgres"
     config.setPassword(DB_PASS); // e.g. "my-password"
@@ -110,7 +112,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
           "CREATE TABLE IF NOT EXISTS votes ( "
               + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
               + " PRIMARY KEY (vote_id) );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
       }
     }
