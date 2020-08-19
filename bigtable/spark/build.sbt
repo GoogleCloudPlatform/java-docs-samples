@@ -14,6 +14,10 @@ libraryDependencies ++= Seq(
   "com.google.cloud.bigtable" % "bigtable-hbase-2.x-hadoop" % bigtableVersion
 )
 
+// Extra dependency for command line option parsing
+// https://github.com/scopt/scopt
+libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2"
+
 val fixes = Seq(
   // Fix for Exception: Incompatible Jackson 2.9.2
   // Version conflict between HBase and Spark

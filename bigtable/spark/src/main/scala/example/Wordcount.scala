@@ -1,8 +1,8 @@
 package example
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration
-import org.apache.hadoop.hbase.HConstants
-import org.apache.hadoop.hbase.client.Put
+import org.apache.hadoop.hbase.TableName
+import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
 import org.apache.hadoop.hbase.util.Bytes
@@ -20,6 +20,32 @@ object Wordcount extends App {
   val ColumnFamilyBytes = Bytes.toBytes(ColumnFamily)
   val ColumnNameBytes = Bytes.toBytes("Count")
 
+  var hConf = BigtableConfiguration.configure(projectId, instanceId)
+  hConf.set(TableOutputFormat.OUTPUT_TABLE, table)
+
+  import org.apache.hadoop.mapreduce.Job
+  val job = Job.getInstance(hConf)
+  job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
+  hConf = job.getConfiguration
+
+  // FIXME Command-line option to create the table or not?
+  var admin: Admin = _
+  try {
+    admin = ConnectionFactory.createConnection(hConf).getAdmin
+    val td = TableDescriptorBuilder
+      .newBuilder(TableName.valueOf(table))
+      .setColumnFamily(ColumnFamilyDescriptorBuilder.of(ColumnFamily))
+      .build()
+    if (admin.tableExists(TableName.valueOf(table))) {
+      println(s">>> Table $table exists")
+    } else {
+      println(s">>> Table $table does not exist. Creating it.")
+      admin.createTable(td)
+    }
+  } finally {
+    admin.close()
+  }
+
   import org.apache.spark.SparkConf
   val sparkConf = new SparkConf()
 
@@ -27,16 +53,6 @@ object Wordcount extends App {
   // Workaround for a bug in TableOutputFormat in HBase 1.6.0
   // See https://stackoverflow.com/a/51959451/1305344
   sparkConf.set("spark.hadoop.validateOutputSpecs", "false")
-
-  var conf = BigtableConfiguration.configure(projectId, instanceId)
-  conf.set(TableOutputFormat.OUTPUT_TABLE, table)
-
-  // workaround: https://issues.apache.org/jira/browse/SPARK-21549
-  conf.set("mapreduce.output.fileoutputformat.outputdir", "/tmp")
-  import org.apache.hadoop.mapreduce.Job
-  val job = new Job(conf)
-  job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
-  conf = job.getConfiguration()
 
   val sc = new SparkContext(sparkConf)
   val wordCounts = sc
@@ -48,10 +64,12 @@ object Wordcount extends App {
     .map { case (word, count) =>
       val put = new Put(Bytes.toBytes(word))
         .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count))
+      // The KEY is ignored while the output value must be either a Put or a Delete instance
+      // https://github.com/apache/hbase/blob/rel/2.2.3/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L46-L48
       // The underlying writer ignores keys, only the value matter here.
-      // https://github.com/apache/hbase/blob/1b9269/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L138-L145
+      // https://github.com/apache/hbase/blob/rel/2.2.3/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L138-L145
       (null, put)
     }
-  wordCounts.saveAsNewAPIHadoopDataset(conf)
+  wordCounts.saveAsNewAPIHadoopDataset(hConf)
 
 }

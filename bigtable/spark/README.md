@@ -61,8 +61,8 @@ gcloud beta emulators bigtable start
 Set the following environment variables for the sample applications to use:
 
 ```
-GOOGLE_CLOUD_PROJECT=your-project-id
-BIGTABLE_INSTANCE=your-bigtable-instance
+BIGTABLE_SPARK_PROJECT_ID=your-project-id
+BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance
 ```
 
 Initialize the environment to point to the Bigtable Emulator.
@@ -78,12 +78,15 @@ Use one of the Spark sample applications as the `--class` parameter.
 The following `spark-submit` uses [example.Wordcount](src/main/scala/example/Wordcount.scala).
 
 ```
+BIGTABLE_SPARK_TABLE=wordcount-rdd
+BIGTABLE_SPARK_FILE_NAME=README.md
+
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
   --class example.Wordcount \
   target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
-  $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
-  wordcount-rdd README.md
+  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
+  $BIGTABLE_SPARK_TABLE $BIGTABLE_SPARK_FILE_NAME
 ```
 
 ### DataFrameDemo
@@ -91,36 +94,35 @@ $SPARK_HOME/bin/spark-submit \
 The following `spark-submit` uses [example.DataFrameDemo](src/main/scala/example/DataFrameDemo.scala).
 
 ```
-NUMBER_OF_ROWS=5
-BIGTABLE_TABLE=wordcount-dataframe
+BIGTABLE_SPARK_TABLE=wordcount-dataframe
+BIGTABLE_SPARK_NUMBER_OF_ROWS=5
 
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
   --class example.DataFrameDemo \
   target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
-  $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
-  $BIGTABLE_TABLE $NUMBER_OF_ROWS
+  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
+  $BIGTABLE_SPARK_TABLE $BIGTABLE_SPARK_NUMBER_OF_ROWS
 ```
 
 ### Verify
 
-There should be one table.
-
-```
-$ cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  -instance=$BIGTABLE_INSTANCE \
-  ls
-wordcount
-```
-
-There should be the number of rows that you requested on command line.
+Use the following `cbt ls` command to list the tables.
 
 ```
 cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  -instance=$BIGTABLE_INSTANCE \
-  read $BIGTABLE_TABLE
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  ls
+```
+
+Use the following `cbt read` command to read the rows.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  read $BIGTABLE_SPARK_TABLE
 ```
 
 ## Run Wordcount with Cloud Bigtable
@@ -225,17 +227,23 @@ GOOGLE_APPLICATION_CREDENTIALS=/your/service/account.json
 ### Create Google Cloud Dataproc Cluster
 
 ```
+BIGTABLE_SPARK_DATAPROC_CLUSTER=spark-cluster
+BIGTABLE_SPARK_REGION=your-region
+BIGTABLE_SPARK_PROJECT_ID=your-project-id
+
 gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_REGION \
-  --project=$BIGTABLE_SPARK_PROJECT_ID
+  --project=$BIGTABLE_SPARK_PROJECT_ID \
+  --quiet
 ```
 
 ### Configure Cloud Bigtable
 
 ```
-BIGTABLE_SPARK_INSTANCE_ID=tuesday
-BIGTABLE_SPARK_CLUSTER_ID=tuesday-c1
-BIGTABLE_SPARK_CLUSTER_ZONE=europe-west3-a
+BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
+BIGTABLE_SPARK_CLUSTER_ID=your-cluster-id
+BIGTABLE_SPARK_CLUSTER_ZONE=your-cluster-zone
+
 gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
     --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
     --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
