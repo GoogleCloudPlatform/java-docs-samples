@@ -28,17 +28,14 @@ object DataFrameDemo extends App {
        |"col3":{"cf":"cf3", "col":"col3", "type":"int"}
        |}
        |}""".stripMargin
-  println(s"Writing $numRecords records to $table")
 
   // FIXME Explain the options
   // FIXME Where to find more options supported? Any docs?
   val opts = Map(
     HBaseTableCatalog.tableCatalog -> catalog,
+    // FIXME Why is this 5?
     HBaseTableCatalog.newTable -> "5",
     HBaseSparkConf.USE_HBASECONTEXT -> "false") // accepts xml configs only
-
-  import spark.implicits._
-  val records = (0 until numRecords).map(BigtableRecord.apply).toDF
 
   // TODO Use a command-line option to switch between command line params and xml
 
@@ -56,12 +53,15 @@ object DataFrameDemo extends App {
   val opts_nouse = opts.filterNot { case (k, _) => k == HBaseSparkConf.USE_HBASECONTEXT }
   // END
 
-  records
+  println(s"Writing $numRecords records to $table")
+  import spark.implicits._
+  (0 until numRecords)
+    .map(BigtableRecord.apply)
+    .toDF
     .write
     .format("org.apache.hadoop.hbase.spark")
     .options(opts_nouse)
     .save
-
   println(s"Writing to $table...DONE")
 
   println(s"Loading $table")

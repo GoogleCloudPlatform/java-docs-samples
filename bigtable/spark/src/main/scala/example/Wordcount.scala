@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 
+// FIXME Explain the purpose of the app
 object Wordcount extends App {
 
   val projectId = args(0)
@@ -22,6 +23,7 @@ object Wordcount extends App {
   import org.apache.spark.SparkConf
   val sparkConf = new SparkConf()
 
+  // FIXME Is this workaround still required?
   // Workaround for a bug in TableOutputFormat in HBase 1.6.0
   // See https://stackoverflow.com/a/51959451/1305344
   sparkConf.set("spark.hadoop.validateOutputSpecs", "false")
