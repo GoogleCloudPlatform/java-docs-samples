@@ -50,6 +50,6 @@ assemblyMergeStrategy in assembly := {
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
-    // FIXME
+    // FIXME Make sure first is OK (it's worked well so far)
     MergeStrategy.first
 }

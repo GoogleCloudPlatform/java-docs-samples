@@ -91,12 +91,15 @@ $SPARK_HOME/bin/spark-submit \
 The following `spark-submit` uses [example.DataFrameDemo](src/main/scala/example/DataFrameDemo.scala).
 
 ```
+NUMBER_OF_ROWS=5
+BIGTABLE_TABLE=wordcount-dataframe
+
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
   --class example.DataFrameDemo \
   target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
   $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
-  wordcount-dataframe 5
+  $BIGTABLE_TABLE $NUMBER_OF_ROWS
 ```
 
 ### Verify
@@ -216,7 +219,7 @@ Learn about [authenticating to a GCP API](https://cloud.google.com/docs/authenti
 **NOTE**: In most situations, we recommend [authenticating as a service account](https://cloud.google.com/docs/authentication/production) to a Google Cloud Platform (GCP) API.
 
 ```
-GOOGLE_APPLICATION_CREDENTIALS=your-service-account-json
+GOOGLE_APPLICATION_CREDENTIALS=/your/service/account.json
 ```
 
 ### Create Google Cloud Dataproc Cluster
