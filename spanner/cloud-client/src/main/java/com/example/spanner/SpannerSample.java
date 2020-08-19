@@ -1544,38 +1544,6 @@ public class SpannerSample {
   }
   // [END spanner_query_with_numeric_parameter]
 
-  // [START cast_numeric_type]
-  static void castNumeric(DatabaseClient dbClient) {
-    Statement statement =
-        Statement.of(
-            "SELECT\n"
-                + "CAST(Revenue         AS STRING)  AS RevenueString,\n"
-                + "CAST(Revenue         AS INT64)   AS RevenueInt64,\n"
-                + "CAST(Revenue         AS FLOAT64) AS RevenueFloat64,\n"
-                + "CAST(VenueId         AS NUMERIC) AS VenueIdNumeric,\n"
-                + "CAST(PopularityScore AS NUMERIC) AS PopularityScoreNumeric,\n"
-                + "\n"
-                + "-- SAFE_CAST returns NULL for invalid casts\n"
-                + "SAFE_CAST(VenueName AS NUMERIC)  AS VenueNameNumeric\n"
-                + "FROM Venues\n"
-                + "ORDER BY VenueId");
-    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
-      while (resultSet.next()) {
-        System.out.printf(
-            "%s %s %s %s %s %s%n",
-            resultSet.getString("RevenueString"),
-            resultSet.getLong("RevenueInt64"),
-            resultSet.getDouble("RevenueFloat64"),
-            resultSet.getBigDecimal("VenueIdNumeric"),
-            resultSet.getBigDecimal("PopularityScoreNumeric"),
-            resultSet.isNull("VenueNameNumeric")
-                ? "NULL"
-                : resultSet.getBigDecimal("VenueNameNumeric"));
-      }
-    }
-  }
-  // [END cast_numeric_type]
-
   // [START spanner_create_client_with_query_options]
   static void clientWithQueryOptions(DatabaseId db) {
     SpannerOptions options =
@@ -2060,9 +2028,6 @@ public class SpannerSample {
         break;
       case "querywithnumeric":
         queryWithNumeric(dbClient);
-        break;
-      case "castnumeric":
-        castNumeric(dbClient);
         break;
       case "clientwithqueryoptions":
         clientWithQueryOptions(database);
