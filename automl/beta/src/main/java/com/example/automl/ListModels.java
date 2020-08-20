@@ -17,13 +17,15 @@
 package com.example.automl;
 
 // [START automl_list_models_beta]
+
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.ListModelsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.Model;
-import java.io.IOException;
 import org.threeten.bp.Duration;
+
+import java.io.IOException;
 
 class ListModels {
 
@@ -33,16 +35,13 @@ class ListModels {
     listModels(projectId);
   }
 
-  public static void main(String[] args) throws IOException {
-    listModels();
-  }
-
   // List the models available in the specified location
   static void listModels(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     AutoMlSettings.Builder autoMlSettingsBuilder = AutoMlSettings.newBuilder();
+
     autoMlSettingsBuilder
         .listModelsSettings()
         .setRetrySettings(
