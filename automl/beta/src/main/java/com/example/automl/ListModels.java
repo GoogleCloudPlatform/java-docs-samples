@@ -18,10 +18,12 @@ package com.example.automl;
 
 // [START automl_list_models_beta]
 import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.ListModelsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.Model;
 import java.io.IOException;
+import org.threeten.bp.Duration;
 
 class ListModels {
 
@@ -31,17 +33,33 @@ class ListModels {
     listModels(projectId);
   }
 
+  public static void main(String[] args) throws IOException {
+    listModels();
+  }
+
   // List the models available in the specified location
   static void listModels(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AutoMlClient client = AutoMlClient.create()) {
+    AutoMlSettings.Builder autoMlSettingsBuilder = AutoMlSettings.newBuilder();
+    autoMlSettingsBuilder
+        .listModelsSettings()
+        .setRetrySettings(
+            autoMlSettingsBuilder
+                .listModelsSettings()
+                .getRetrySettings()
+                .toBuilder()
+                .setTotalTimeout(Duration.ofSeconds(30))
+                .build());
+    AutoMlSettings autoMlSettings = autoMlSettingsBuilder.build();
+
+    try (AutoMlClient client = AutoMlClient.create(autoMlSettings)) {
       // A resource that represents Google Cloud Platform location.
       LocationName projectLocation = LocationName.of(projectId, "us-central1");
 
       // Create list models request.
-      ListModelsRequest listModlesRequest =
+      ListModelsRequest listModelsRequest =
           ListModelsRequest.newBuilder()
               .setParent(projectLocation.toString())
               .setFilter("")
@@ -49,7 +67,7 @@ class ListModels {
 
       // List all the models available in the region by applying filter.
       System.out.println("List of models:");
-      for (Model model : client.listModels(listModlesRequest).iterateAll()) {
+      for (Model model : client.listModels(listModelsRequest).iterateAll()) {
         // Display the model information.
         System.out.format("Model name: %s%n", model.getName());
         // To get the model id, you have to parse it out of the `name` field. As models Ids are
