@@ -23,9 +23,8 @@ import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.ListModelsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.Model;
-import org.threeten.bp.Duration;
-
 import java.io.IOException;
+import org.threeten.bp.Duration;
 
 class ListModels {
 
